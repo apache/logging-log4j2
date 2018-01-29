@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.time.ClockFactoryTest;
 import org.apache.logging.log4j.core.util.Constants;

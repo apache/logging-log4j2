@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.time.ClockFactoryTest;
 import org.junit.AfterClass;

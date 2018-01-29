@@ -14,12 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.core.time;
 
 /**
- * @deprecated Use {@link org.apache.logging.log4j.core.time.Clock} instead
- * @see org.apache.logging.log4j.core.time.Clock
+ * Provides the time stamp used in log events.
+ * <p>
+ * This interface replaces {@link org.apache.logging.log4j.core.util.Clock}.
+ * </p>
+ * @since 2.11
  */
-@Deprecated
-public interface Clock extends org.apache.logging.log4j.core.time.Clock {
+public interface Clock {
+    /**
+     * Returns the time in milliseconds since the epoch.
+     *
+     * @return the time in milliseconds since the epoch
+     */
+    long currentTimeMillis();
 }

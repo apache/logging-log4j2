@@ -14,12 +14,23 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+
+package org.apache.logging.log4j.core.time;
+
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
- * @deprecated Use {@link org.apache.logging.log4j.core.time.Clock} instead
- * @see org.apache.logging.log4j.core.time.Clock
+ * Provides the {@link LogEvent#getNanoTime() high-resolution time stamp} used in log events.
+ * <p>
+ * This interface replaces {@link org.apache.logging.log4j.core.util.NanoClock}.
+ * </p>
+ * @since 2.11
  */
-@Deprecated
-public interface Clock extends org.apache.logging.log4j.core.time.Clock {
+public interface NanoClock {
+    /**
+     * Returns the current value of the running Java Virtual Machine's high-resolution time source, in nanoseconds.
+     *
+     * @return the current value of the running Java Virtual Machine's high-resolution time source, in nanoseconds
+     */
+    long nanoTime();
 }

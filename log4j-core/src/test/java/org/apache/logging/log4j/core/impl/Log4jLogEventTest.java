@@ -38,7 +38,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.convert.Base64Converter;
-import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.time.ClockFactoryTest;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;

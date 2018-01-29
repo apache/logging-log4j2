@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.core.time;
 
-import org.apache.logging.log4j.core.util.NanoClock;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;

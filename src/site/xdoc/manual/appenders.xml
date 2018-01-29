@@ -345,7 +345,7 @@
             <tr>
               <td>useClockForTimestampGenerator</td>
               <td>boolean</td>
-              <td>Whether or not to use the configured <code>org.apache.logging.log4j.core.util.Clock</code> as a
+              <td>Whether or not to use the configured <code>org.apache.logging.log4j.core.time.Clock</code> as a
                 <a class="javadoc" href="http://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/TimestampGenerator.html">TimestampGenerator</a>.
                 By default, this is <code>false</code>.</td>
             </tr>

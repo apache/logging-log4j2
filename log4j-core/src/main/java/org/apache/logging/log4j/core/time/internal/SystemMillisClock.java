@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.time.internal;
 
-import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.time.Clock;
 
 /**
  * Implementation of the {@code Clock} interface that returns the system time in millisecond granularity.

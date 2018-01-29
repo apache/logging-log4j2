@@ -22,7 +22,6 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.time.internal.CachedClock;
 import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
-import org.apache.logging.log4j.core.util.Clock;
 import org.junit.Before;
 import org.junit.Test;
 

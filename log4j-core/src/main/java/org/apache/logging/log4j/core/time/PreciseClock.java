@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.time;
 
-import org.apache.logging.log4j.core.util.Clock;
-
 /**
  * Extension of the {@link Clock} interface that is able to provide more accurate time information than milliseconds
  * since the epoch. {@code PreciseClock} implementations are free to return millisecond-precision time

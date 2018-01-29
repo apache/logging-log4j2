@@ -65,7 +65,7 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
-import org.apache.logging.log4j.core.util.NanoClock;
+import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.util.PropertiesUtil;
 

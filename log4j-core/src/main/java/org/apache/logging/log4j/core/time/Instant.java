@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.time;
 
-import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**

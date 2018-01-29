@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.core.time.Clock;
+
 /**
  * @deprecated Use {@link org.apache.logging.log4j.core.time.ClockFactory} instead.
  */

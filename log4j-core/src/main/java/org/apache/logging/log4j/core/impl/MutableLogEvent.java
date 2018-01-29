@@ -26,6 +26,8 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.InternalAsyncUtil;
+import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.util.*;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
