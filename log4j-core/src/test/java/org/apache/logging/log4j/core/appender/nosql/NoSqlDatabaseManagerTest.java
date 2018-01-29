@@ -175,9 +175,9 @@ public class NoSqlDatabaseManagerTest {
 
             assertNull("The thrown should be null.", object.get("thrown"));
 
-            assertTrue("The context map should be empty.", ((Map) object.get("contextMap")).isEmpty());
+            assertTrue("The context map should be empty.", ((Map<?, ?>) object.get("contextMap")).isEmpty());
 
-            assertTrue("The context stack should be null.", ((Collection) object.get("contextStack")).isEmpty());
+            assertTrue("The context stack should be null.", ((Collection<?>) object.get("contextStack")).isEmpty());
 
         }
     }
