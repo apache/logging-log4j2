@@ -15,15 +15,13 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.time.internal;
+package org.apache.logging.log4j.core.time;
+
+import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.core.time.internal.SystemNanoClock;
-import org.apache.logging.log4j.core.util.NanoClock;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the SystemNanoClock.

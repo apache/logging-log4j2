@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.net.SocketAddress;
-import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.time.Clock;
 
 /**
  * Appender plugin that uses a Cassandra database.

@@ -16,10 +16,24 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.core.time.Clock;
+
 /**
- * @deprecated Use {@link org.apache.logging.log4j.core.time.Clock} instead
- * @see org.apache.logging.log4j.core.time.Clock
+ * @deprecated Use {@link org.apache.logging.log4j.core.time.ClockFactory} instead.
  */
 @Deprecated
-public interface Clock extends org.apache.logging.log4j.core.time.Clock {
+public final class ClockFactory {
+
+    /** @see org.apache.logging.log4j.core.time.ClockFactory#PROPERTY_NAME */
+    @Deprecated
+    public static final String PROPERTY_NAME = org.apache.logging.log4j.core.time.ClockFactory.PROPERTY_NAME;
+
+    private ClockFactory() {}
+
+    /** @see org.apache.logging.log4j.core.time.ClockFactory#getClock() */
+    @Deprecated
+    public static Clock getClock() {
+        return org.apache.logging.log4j.core.time.ClockFactory.getClock();
+    }
+
 }

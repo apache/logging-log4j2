@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.cassandra;
 
 import com.datastax.driver.core.TimestampGenerator;
-import org.apache.logging.log4j.core.util.Clock;
-import org.apache.logging.log4j.core.time.internal.ClockFactory;
+import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.core.time.ClockFactory;
 
 /**
  * A {@link TimestampGenerator} implementation using the configured {@link Clock}.

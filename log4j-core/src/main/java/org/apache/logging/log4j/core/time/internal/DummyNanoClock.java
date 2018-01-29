@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.time.internal;
 
-import org.apache.logging.log4j.core.util.NanoClock;
+import org.apache.logging.log4j.core.time.NanoClock;
 
 /**
  * Implementation of the {@code NanoClock} interface that always returns a fixed value.

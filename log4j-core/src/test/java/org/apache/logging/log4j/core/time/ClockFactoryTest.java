@@ -14,22 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.time.internal;
-
-import java.lang.reflect.Field;
+package org.apache.logging.log4j.core.time;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.logging.log4j.core.async.AsyncLogger;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.time.internal.CachedClock;
-import org.apache.logging.log4j.core.time.internal.ClockFactory;
 import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
-import org.apache.logging.log4j.core.util.Clock;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.lang.reflect.Field;
+
+import static org.junit.Assert.assertSame;
 
 public class ClockFactoryTest {
 

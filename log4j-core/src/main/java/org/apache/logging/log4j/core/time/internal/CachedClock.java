@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.time.internal;
 
-import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.util.Log4jThread;
 
 import java.util.concurrent.locks.LockSupport;

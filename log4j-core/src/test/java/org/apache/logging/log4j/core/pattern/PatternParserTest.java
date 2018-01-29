@@ -34,7 +34,7 @@ import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
-import org.apache.logging.log4j.core.time.internal.SystemNanoClock;
+import org.apache.logging.log4j.core.time.SystemNanoClock;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;

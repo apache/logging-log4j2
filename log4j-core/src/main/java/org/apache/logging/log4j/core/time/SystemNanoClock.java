@@ -14,12 +14,24 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.core.time;
 
 /**
- * @deprecated Use {@link org.apache.logging.log4j.core.time.Clock} instead
- * @see org.apache.logging.log4j.core.time.Clock
+ * Implementation of the {@code NanoClock} interface that returns the system nano time.
+ * <p>
+ * This class replaces {@link org.apache.logging.log4j.core.util.SystemNanoClock}.
+ * </p>
+ * @since 2.11
  */
-@Deprecated
-public interface Clock extends org.apache.logging.log4j.core.time.Clock {
+public final class SystemNanoClock implements NanoClock {
+
+    /**
+     * Returns the system high-resolution time.
+     * @return the result of calling {@code System.nanoTime()}
+     */
+    @Override
+    public long nanoTime() {
+        return System.nanoTime();
+    }
+
 }

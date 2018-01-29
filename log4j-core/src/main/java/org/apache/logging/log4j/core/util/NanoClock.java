@@ -18,13 +18,9 @@
 package org.apache.logging.log4j.core.util;
 
 /**
- * Provides the high-resolution time stamp used in log events.
+ * @deprecated Use {@link org.apache.logging.log4j.core.time.NanoClock} instead
+ * @see org.apache.logging.log4j.core.time.NanoClock
  */
-public interface NanoClock {
-    /**
-     * Returns the current value of the running Java Virtual Machine's high-resolution time source, in nanoseconds.
-     *
-     * @return the current value of the running Java Virtual Machine's high-resolution time source, in nanoseconds
-     */
-    long nanoTime();
+@Deprecated
+public interface NanoClock extends org.apache.logging.log4j.core.time.NanoClock {
 }

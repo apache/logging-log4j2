@@ -14,22 +14,23 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.time.internal;
 
-import org.apache.logging.log4j.core.util.NanoClock;
+package org.apache.logging.log4j.core.time;
+
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
- * Implementation of the {@code NanoClock} interface that returns the system nano time.
+ * Provides the {@link LogEvent#getNanoTime() high-resolution time stamp} used in log events.
+ * <p>
+ * This interface replaces {@link org.apache.logging.log4j.core.util.NanoClock}.
+ * </p>
+ * @since 2.11
  */
-public final class SystemNanoClock implements NanoClock {
-
+public interface NanoClock {
     /**
-     * Returns the system high-resolution time.
-     * @return the result of calling {@code System.nanoTime()}
+     * Returns the current value of the running Java Virtual Machine's high-resolution time source, in nanoseconds.
+     *
+     * @return the current value of the running Java Virtual Machine's high-resolution time source, in nanoseconds
      */
-    @Override
-    public long nanoTime() {
-        return System.nanoTime();
-    }
-
+    long nanoTime();
 }

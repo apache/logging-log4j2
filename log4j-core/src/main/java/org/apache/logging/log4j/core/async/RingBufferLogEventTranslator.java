@@ -21,8 +21,8 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.core.util.Clock;
-import org.apache.logging.log4j.core.util.NanoClock;
+import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.message.Message;
 
