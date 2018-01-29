@@ -14,9 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.time.internal;
+package org.apache.logging.log4j.core.time;
 
-import org.apache.logging.log4j.core.time.PreciseClock;
+import org.apache.logging.log4j.core.time.internal.CachedClock;
+import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
+import org.apache.logging.log4j.core.time.internal.SystemClock;
+import org.apache.logging.log4j.core.time.internal.SystemMillisClock;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -28,6 +31,7 @@ import java.util.Map;
 
 /**
  * Factory for {@code Clock} objects.
+ * @since 2.11
  */
 public final class ClockFactory {
 

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.impl.Log4jLogEventTest;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.CoreContextSelectors;
-import org.apache.logging.log4j.core.time.internal.ClockFactory;
+import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.AfterClass;

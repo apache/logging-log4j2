@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.Clock;
-import org.apache.logging.log4j.core.time.internal.ClockFactory;
+import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;

@@ -14,22 +14,27 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.time.internal;
+
+package org.apache.logging.log4j.core.time;
 
 import org.apache.logging.log4j.core.util.NanoClock;
+import org.junit.Test;
+
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertTrue;
 
 /**
- * Implementation of the {@code NanoClock} interface that returns the system nano time.
+ * Tests the SystemNanoClock.
  */
-public final class SystemNanoClock implements NanoClock {
+public class SystemNanoClockTest {
 
-    /**
-     * Returns the system high-resolution time.
-     * @return the result of calling {@code System.nanoTime()}
-     */
-    @Override
-    public long nanoTime() {
-        return System.nanoTime();
+    @Test
+    public void testReturnsSystemNanoTime() {
+        final NanoClock clock = new SystemNanoClock();
+        final long expected = System.nanoTime();
+        final long actual = clock.nanoTime();
+        assertTrue("smal difference", actual - expected < TimeUnit.SECONDS.toNanos(1));
     }
 
 }

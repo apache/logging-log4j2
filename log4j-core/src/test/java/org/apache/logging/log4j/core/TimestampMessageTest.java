@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Clock;
-import org.apache.logging.log4j.core.time.internal.ClockFactory;
-import org.apache.logging.log4j.core.time.internal.ClockFactoryTest;
+import org.apache.logging.log4j.core.time.ClockFactory;
+import org.apache.logging.log4j.core.time.ClockFactoryTest;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.Message;

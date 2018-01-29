@@ -14,21 +14,22 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.cassandra;
-
-import com.datastax.driver.core.TimestampGenerator;
-import org.apache.logging.log4j.core.util.Clock;
-import org.apache.logging.log4j.core.time.ClockFactory;
+package org.apache.logging.log4j.core.util;
 
 /**
- * A {@link TimestampGenerator} implementation using the configured {@link Clock}.
+ * @deprecated Use {@link org.apache.logging.log4j.core.time.SystemNanoClock} instead.
  */
-public class ClockTimestampGenerator implements TimestampGenerator {
+@Deprecated
+public final class SystemNanoClock implements NanoClock {
 
-    private final Clock clock = ClockFactory.getClock();
-
+    /**
+     * @see org.apache.logging.log4j.core.time.SystemNanoClock#nanoTime()
+     * @deprecated use {@link org.apache.logging.log4j.core.time.SystemNanoClock} instead.
+     */
+    @Deprecated
     @Override
-    public long next() {
-        return clock.currentTimeMillis();
+    public long nanoTime() {
+        return System.nanoTime();
     }
+
 }
