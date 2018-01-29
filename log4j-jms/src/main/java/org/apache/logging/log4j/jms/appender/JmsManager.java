@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.appender.mom;
+package org.apache.logging.log4j.jms.appender;
 
 import java.io.Serializable;
 import java.util.Properties;

@@ -1416,6 +1416,9 @@ public class ConnectionFactory {
         <a name="JMSQueueAppender"/>
         <a name="JMSTopicAppender"/>
         <subsection name="JMS Appender">
+          <p>
+             As of Log4j 2.11.0, JPA support has moved from the existing module <code>logj-core</code> to the new module <code>log4j-jms</code>.
+          </p>
           <p>The JMS Appender sends the formatted log event to a JMS Destination.</p>
           <p>
             Note that in Log4j 2.0, this appender was split into a JMSQueueAppender and a JMSTopicAppender. Starting

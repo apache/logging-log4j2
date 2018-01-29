@@ -25,6 +25,16 @@ The new modules are:
 * Old package: `org.apache.logging.log4j.core.appender.mom.jeromq`
 * New package: `org.apache.logging.log4j.jeromq.appender`
 
+### log4j-jms
+
+* Group ID: `org.apache.logging.log4j`
+* Artifact ID: `log4j-jms`
+
+* Old package 1: `org.apache.logging.log4j.core.appender.mom`
+* New package 1: `org.apache.logging.log4j.jms.appender`
+
+
+
 ### log4j-jpa
 
 * Group ID: `org.apache.logging.log4j`

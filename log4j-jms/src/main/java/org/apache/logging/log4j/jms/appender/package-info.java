@@ -20,4 +20,4 @@
  *
  * @since 2.1
  */
-package org.apache.logging.log4j.core.appender.mom;
+package org.apache.logging.log4j.jms.appender;

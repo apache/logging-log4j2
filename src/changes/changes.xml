@@ -176,6 +176,9 @@
       <action issue="LOG4J2-2231" dev="ggregory" type="update" due-to="Gary Gregory">
         Move CSV layout from log4j-core to a new module log4j-csv.
       </action>
+      <action issue="LOG4J2-2232" dev="ggregory" type="update" due-to="Gary Gregory">
+        Move JMS code to a new module log4j-jms.
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak">
