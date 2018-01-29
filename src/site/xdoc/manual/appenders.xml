@@ -982,6 +982,9 @@ CREATE TABLE logs (
         </subsection>
         <a name="JDBCAppender"/>
         <subsection name="JDBCAppender">
+          <p>
+             As of Log4j 2.11.0, JDBC support has moved from the existing module <code>logj-core</code> to the new module <code>log4j-jdbc</code>.
+          </p>
           <p>The JDBCAppender writes log events to a relational database table using standard JDBC. It can be configured
             to obtain JDBC connections using a JNDI <code>DataSource</code> or a custom factory method. Whichever
             approach you take, it <strong><em>must</em></strong> be backed by a connection pool. Otherwise, logging

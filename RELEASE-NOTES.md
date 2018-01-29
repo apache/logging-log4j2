@@ -17,6 +17,14 @@ The new modules are:
 * Old package: `org.apache.logging.log4j.core.layout`
 * New package: `org.apache.logging.log4j.csv.layout`
 
+### log4j-jdbc
+
+* Group ID: `org.apache.logging.log4j`
+* Artifact ID: `log4j-jdbc`
+
+* Old package: `org.apache.logging.log4j.core.appender.db.jdbc`
+* New package: `org.apache.logging.log4j.jdbc.appender`
+
 ### log4j-jeromq
 
 * Group ID: `org.apache.logging.log4j`

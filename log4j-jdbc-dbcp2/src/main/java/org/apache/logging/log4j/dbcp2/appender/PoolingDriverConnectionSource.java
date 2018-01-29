@@ -28,11 +28,11 @@ import org.apache.commons.dbcp2.PoolingDriver;
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.appender.db.jdbc.AbstractDriverManagerConnectionSource;
-import org.apache.logging.log4j.core.appender.db.jdbc.ConnectionSource;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.jdbc.appender.AbstractDriverManagerConnectionSource;
+import org.apache.logging.log4j.jdbc.appender.ConnectionSource;
 
 /**
  * A {@link ConnectionSource} that uses a JDBC connection string, a user name, and a password to call
