@@ -22,7 +22,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.sql.SQLException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,7 +48,7 @@ public class WriterAppenderTest {
         return writer.getClass().getSimpleName() + "." + testName.getMethodName();
     }
 
-    private void test(final ByteArrayOutputStream out, final Writer writer) throws SQLException {
+    private void test(final ByteArrayOutputStream out, final Writer writer) {
         final String name = getName(writer);
         addAppender(writer, name);
         final Logger logger = LogManager.getLogger(name);
@@ -58,7 +57,7 @@ public class WriterAppenderTest {
         Assert.assertTrue(actual, actual.contains(TEST_MSG));
     }
 
-    private void test(final Writer writer) throws SQLException {
+    private void test(final Writer writer) {
         final String name = getName(writer);
         addAppender(writer, name);
         final Logger logger = LogManager.getLogger(name);
@@ -78,26 +77,26 @@ public class WriterAppenderTest {
     }
 
     @Test
-    public void testWriterAppenderToCharArrayWriter() throws SQLException {
+    public void testWriterAppenderToCharArrayWriter() {
         test(new CharArrayWriter());
     }
 
     @Test
-    public void testWriterAppenderToOutputStreamWriter() throws SQLException {
+    public void testWriterAppenderToOutputStreamWriter() {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final Writer writer = new OutputStreamWriter(out);
         test(out, writer);
     }
 
     @Test
-    public void testWriterAppenderToPrintWriter() throws SQLException {
+    public void testWriterAppenderToPrintWriter() {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final Writer writer = new PrintWriter(out);
         test(out, writer);
     }
 
     @Test
-    public void testWriterAppenderToStringWriter() throws SQLException {
+    public void testWriterAppenderToStringWriter() {
         test(new StringWriter());
     }
 
