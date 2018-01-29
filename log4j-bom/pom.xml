@@ -72,6 +72,12 @@
         <artifactId>log4j-jeromq</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- JMS Appender plugin-->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jms</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- JMX GUI -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
