@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
+      <action issue="LOG4J2-2225" dev="rpopma" type="update">
+        Moved time-related classes from core.util to core.time. Classes considered private moved to core.time.internal.
+      </action>
       <action issue="LOG4J2-1883" dev="rpopma" type="add" due-to="Anthony Maire">
         Added support for precise (micro and nanosecond) timestamps when running on Java 9. A limited number of precise %d date formats are supported with PatternLayout. POTENTIAL BREAKING CHANGE: The XML, JSON and YAML formats have changed: they no longer have the "timeMillis" attribute and instead have an "Instant" element with "epochSecond" and "nanoOfSecond" attributes.
       </action>
