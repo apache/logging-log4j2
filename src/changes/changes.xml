@@ -37,6 +37,9 @@
       <action issue="LOG4J2-2225" dev="rpopma" type="update">
         Moved time-related classes from core.util to core.time. Classes considered private moved to core.time.internal.
       </action>
+      <action issue="LOG4J2-2236" dev="rpopma" type="update">
+        Removed unnecessary dependency on jcommander since Log4j uses embedded picocli since 2.9.
+      </action>
       <action issue="LOG4J2-1883" dev="rpopma" type="add" due-to="Anthony Maire">
         Added support for precise (micro and nanosecond) timestamps when running on Java 9. A limited number of precise %d date formats are supported with PatternLayout. POTENTIAL BREAKING CHANGE: The XML, JSON and YAML formats have changed: they no longer have the "timeMillis" attribute and instead have an "Instant" element with "epochSecond" and "nanoOfSecond" attributes.
       </action>
@@ -169,21 +172,6 @@
       </action>
       <action issue="LOG4J2-2229" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Jackson from 2.9.3 to 2.9.4.
-      </action>
-      <action issue="LOG4J2-2228" dev="ggregory" type="update" due-to="Gary Gregory">
-        Split off ZeroMq/JeroMq support into a new module log4j-jeromq.
-      </action>
-      <action issue="LOG4J2-2227" dev="ggregory" type="update" due-to="Gary Gregory">
-        Split off Kafka support into a new module log4j-kafka.
-      </action>
-      <action issue="LOG4J2-2230" dev="ggregory" type="update" due-to="Gary Gregory">
-        Split off SMTP support into a new module log4j-smtp.
-      </action>
-      <action issue="LOG4J2-2231" dev="ggregory" type="update" due-to="Gary Gregory">
-        Move CSV layout from log4j-core to a new module log4j-csv.
-      </action>
-      <action issue="LOG4J2-2232" dev="ggregory" type="update" due-to="Gary Gregory">
-        Move JMS code to a new module log4j-jms.
       </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
