@@ -16,8 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
+
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,12 +52,6 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NoSqlDatabaseManagerTest {
@@ -173,9 +175,9 @@ public class NoSqlDatabaseManagerTest {
 
             assertNull("The thrown should be null.", object.get("thrown"));
 
-            assertTrue("The context map should be empty.", ((Map) object.get("contextMap")).isEmpty());
+            assertTrue("The context map should be empty.", ((Map<?, ?>) object.get("contextMap")).isEmpty());
 
-            assertTrue("The context stack should be null.", ((Collection) object.get("contextStack")).isEmpty());
+            assertTrue("The context stack should be null.", ((Collection<?>) object.get("contextStack")).isEmpty());
 
         }
     }
@@ -291,7 +293,7 @@ public class NoSqlDatabaseManagerTest {
             then(provider).should().getConnection();
 
             final IOException exception1 = new IOException("This is the cause.");
-            final SQLException exception2 = new SQLException("This is the result.", exception1);
+            final IllegalStateException exception2 = new IllegalStateException("This is the result.", exception1);
             final Map<String, String> context = new HashMap<>();
             context.put("hello", "world");
             context.put("user", "pass");
@@ -377,7 +379,7 @@ public class NoSqlDatabaseManagerTest {
             assertTrue("The thrown should be a map.", object.get("thrown") instanceof Map);
             @SuppressWarnings("unchecked")
             final Map<String, Object> thrown = (Map<String, Object>) object.get("thrown");
-            assertEquals("The thrown type is not correct.", "java.sql.SQLException", thrown.get("type"));
+            assertEquals("The thrown type is not correct.", "java.lang.IllegalStateException", thrown.get("type"));
             assertEquals("The thrown message is not correct.", "This is the result.", thrown.get("message"));
             assertTrue("The thrown stack trace should be a list.", thrown.get("stackTrace") instanceof List);
             @SuppressWarnings("unchecked")

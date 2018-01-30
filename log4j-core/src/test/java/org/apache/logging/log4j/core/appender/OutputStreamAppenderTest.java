@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.sql.SQLException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,7 +59,7 @@ public class OutputStreamAppenderTest {
     }
 
     @Test
-    public void testOutputStreamAppenderToBufferedOutputStream() throws SQLException {
+    public void testOutputStreamAppenderToBufferedOutputStream() {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final OutputStream os = new BufferedOutputStream(out);
         final String name = getName(out);
@@ -72,7 +71,7 @@ public class OutputStreamAppenderTest {
     }
 
     @Test
-    public void testOutputStreamAppenderToByteArrayOutputStream() throws SQLException {
+    public void testOutputStreamAppenderToByteArrayOutputStream() {
         final OutputStream out = new ByteArrayOutputStream();
         final String name = getName(out);
         final Logger logger = LogManager.getLogger(name);
