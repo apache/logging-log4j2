@@ -297,11 +297,6 @@
         <version>3.7</version>
       </dependency>
       <dependency>
-        <groupId>com.beust</groupId>
-        <artifactId>jcommander</artifactId>
-        <version>1.48</version>
-      </dependency>
-      <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
         <version>${logbackVersion}</version>
