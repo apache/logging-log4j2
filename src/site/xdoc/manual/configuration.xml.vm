@@ -1811,7 +1811,7 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="contextDataInjector"/>log4j2.contextDataInjector</td>
+    <td><a name="ContextDataInjector"/>log4j2.ContextDataInjector</td>
     <td>LOG4J_CONTEXT_DATA_INJECTOR</td>
     <td><a name="log4j2.ContextDataInjector"/>log4j2.ContextDataInjector</td>
     <td>&nbsp;</td>

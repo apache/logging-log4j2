@@ -534,7 +534,7 @@ ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLi
             The default implementation is ThreadContextDataInjector, which obtains context attributes from the ThreadContext.
           </p><p>
           Applications may replace the default ContextDataInjector by setting the value of the system property
-          <tt>log4j2.contextDataInjector</tt> to the name of the custom ContextDataInjector class.
+          <tt>log4j2.ContextDataInjector</tt> to the name of the custom ContextDataInjector class.
         </p><p>
           Implementors should be aware there are some subtleties related to thread-safety and implementing a
           context data injector in a garbage-free manner.
