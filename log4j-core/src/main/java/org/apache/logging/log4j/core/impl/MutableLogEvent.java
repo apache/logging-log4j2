@@ -295,7 +295,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
             return message;
         }
         final Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
-        return new ParameterizedMessage(messageText.toString(), params);
+        return new MementoMessage(null, params, messageText.toString(), thrown);
     }
 
     @Override
