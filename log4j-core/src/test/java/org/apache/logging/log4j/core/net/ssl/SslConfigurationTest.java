@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.net.ssl;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.UnknownHostException;
 
 import javax.net.ssl.SSLSocket;
@@ -104,6 +105,8 @@ public class SslConfigurationTest {
             }
         } catch (final UnknownHostException offline) {
             // this exception is thrown on Windows when offline
+        } catch (final ConnectException connectionTimeout) {
+            // this exception is thrown on Windows when host is behind a proxy that does not allow connection to external network
         }
     }
 
@@ -124,6 +127,8 @@ public class SslConfigurationTest {
             }
         } catch (final UnknownHostException offline) {
             // this exception is thrown on Windows when offline
+        } catch (final ConnectException connectionTimeout) {
+            // this exception is thrown on Windows when host is behind a proxy that does not allow connection to external network
         }
     }
 
