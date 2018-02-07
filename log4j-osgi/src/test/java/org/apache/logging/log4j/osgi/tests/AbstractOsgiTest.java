@@ -27,7 +27,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.launch.FrameworkFactory;
 
 /**
- * Tests a basic Log4J 'setup' in an OSGi container.
+ * Subclasses can tests a basic setup in an OSGi container.
  */
 public abstract class AbstractOsgiTest {
 
