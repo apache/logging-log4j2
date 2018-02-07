@@ -26,7 +26,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.launch.FrameworkFactory;
 
 /**
  * Tests a basic Log4J 'setup' in an OSGi container.
@@ -54,8 +53,6 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
         return getBundleContext().installBundle(apiPath.toUri().toString());
     }
 
-    
-    protected abstract FrameworkFactory getFactory();
     
     private void log(final Bundle dummy) throws ReflectiveOperationException {
         // use reflection to log in the context of the dummy bundle
