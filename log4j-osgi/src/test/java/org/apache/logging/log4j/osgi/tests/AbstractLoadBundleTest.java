@@ -59,7 +59,7 @@ public abstract class AbstractLoadBundleTest {
      * Called before each @Test.
      */
     @Before
-    public void before() throws BundleException {
+    public void before() {
         bundleContext = osgi.getFramework().getBundleContext();
         
         here = Paths.get(".").toAbsolutePath().normalize();
@@ -150,7 +150,7 @@ public abstract class AbstractLoadBundleTest {
      * Tests starting, then stopping, then restarting, then stopping, and finally uninstalling the API and Core bundles
      */
     @Test
-    public void testApiCoreStartStopStartStop() throws BundleException, ReflectiveOperationException {
+    public void testApiCoreStartStopStartStop() throws BundleException {
 
         final Bundle api = getApiBundle();
         final Bundle core = getCoreBundle();
