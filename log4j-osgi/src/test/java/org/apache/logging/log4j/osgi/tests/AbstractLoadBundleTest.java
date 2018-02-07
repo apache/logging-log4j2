@@ -66,23 +66,23 @@ public abstract class AbstractLoadBundleTest {
     }
 
     private Bundle getApiBundle() throws BundleException {
-        final Path apiPath = here.resolveSibling("log4j-api").resolve("target").resolve("log4j-api-" + bundleTestInfo.getVersion() + ".jar");
+        final Path apiPath = here.resolveSibling("log4j-api").resolve("target").resolve(bundleTestInfo.buildJarFileName("log4j-api"));
         return bundleContext.installBundle(apiPath.toUri().toString());
     }
 
 
     private Bundle getCoreBundle() throws BundleException {
-        final Path corePath = here.resolveSibling("log4j-core").resolve("target").resolve("log4j-core-" + bundleTestInfo.getVersion() + ".jar");
+        final Path corePath = here.resolveSibling("log4j-core").resolve("target").resolve(bundleTestInfo.buildJarFileName("log4j-core"));
         return bundleContext.installBundle(corePath.toUri().toString());
     }
     
     private Bundle getDummyBundle() throws BundleException {
-        final Path dumyPath = here.resolveSibling("log4j-samples").resolve("log4j-samples-configuration").resolve("target").resolve("log4j-samples-configuration-" + bundleTestInfo.getVersion() + ".jar");
+        final Path dumyPath = here.resolveSibling("log4j-samples").resolve("log4j-samples-configuration").resolve("target").resolve(bundleTestInfo.buildJarFileName("log4j-samples-configuration"));
         return bundleContext.installBundle(dumyPath.toUri().toString());
     }
 
     private Bundle get12ApiBundle() throws BundleException {
-        final Path apiPath = here.resolveSibling("log4j-1.2-api").resolve("target").resolve("log4j-1.2-api-" + bundleTestInfo.getVersion() + ".jar");
+        final Path apiPath = here.resolveSibling("log4j-1.2-api").resolve("target").resolve(bundleTestInfo.buildJarFileName("log4j-1.2-api"));
         return bundleContext.installBundle(apiPath.toUri().toString());
     }
 

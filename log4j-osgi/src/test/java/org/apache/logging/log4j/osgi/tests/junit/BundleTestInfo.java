@@ -45,6 +45,10 @@ public class BundleTestInfo {
         }
     }
 
+    public String buildJarFileName(final String artifactId) {
+        return artifactId + "-" + getVersion() + ".jar";
+    }
+
     /**
      * Gets the Maven artifact ID.
      *
@@ -67,5 +71,4 @@ public class BundleTestInfo {
     public String toString() {
         return "BundleTestInfo [project=" + project + "]";
     }
-
 }
