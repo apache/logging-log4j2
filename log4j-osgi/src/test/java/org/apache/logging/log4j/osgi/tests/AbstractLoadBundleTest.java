@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.logging.log4j.osgi.tests.junit.BundleTestInfo;
-import org.apache.logging.log4j.osgi.tests.junit.OsgiRule;
+import org.apache.logging.log4j.osgi.tests.junit.OsgiTestRule;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -46,7 +46,7 @@ public abstract class AbstractLoadBundleTest {
     private Path here;
     
     @Rule
-    public OsgiRule osgi = new OsgiRule(getFactory());
+    public OsgiTestRule osgi = new OsgiTestRule(getFactory());
     /**
      * Constructs a test for a given bundle.
      */
