@@ -28,12 +28,12 @@ import org.osgi.framework.launch.FrameworkFactory;
 /**
  * JUnit rule to initialize and shutdown an OSGi framework.
  */
-public class OsgiRule extends ExternalResource {
+public class OsgiTestRule extends ExternalResource {
 
     private final FrameworkFactory factory;
     private Framework framework;
 
-    public OsgiRule(final FrameworkFactory factory) {
+    public OsgiTestRule(final FrameworkFactory factory) {
         this.factory = factory;
     }
 
