@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -273,9 +274,13 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         } catch (final NoSuchMethodException nsme) {
             LOGGER.warn("{} is missing the proper constructor", JANSI_CLASS);
         } catch (final Exception ex) {
-            LOGGER.warn("Unable to instantiate {} due to {}", JANSI_CLASS, Throwables.getRootCause(ex).toString().trim());
+            LOGGER.warn("Unable to instantiate {} due to {}", JANSI_CLASS, clean(Throwables.getRootCause(ex).toString()).trim());
         }
         return outputStream;
+    }
+
+    private static String clean(String string) {
+        return string.replace(Chars.NUL, Chars.SPACE);
     }
 
     /**
