@@ -89,7 +89,7 @@ public class JavaLookup extends AbstractLookup {
     }
 
     /**
-     * Looks up the value of the environment variable.
+     * Looks up the value of the Java platform key.
      *
      * @param event
      *        The current LogEvent (is ignored by this StrLookup).
