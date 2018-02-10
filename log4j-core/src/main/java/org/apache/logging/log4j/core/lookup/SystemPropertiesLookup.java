@@ -33,7 +33,7 @@ public class SystemPropertiesLookup extends AbstractLookup {
     private static final Marker LOOKUP = MarkerManager.getMarker("LOOKUP");
 
     /**
-     * Looks up the value for the key using the data in the LogEvent.
+     * Looks up the value for the key from system properties.
      * @param event The current LogEvent.
      * @param key  the key to be looked up, may be null
      * @return The value associated with the key.
