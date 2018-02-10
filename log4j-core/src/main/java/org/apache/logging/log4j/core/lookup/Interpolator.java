@@ -32,7 +32,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 
 /**
- * Proxies all the other {@link StrLookup}s.
+ * Proxies other {@link StrLookup}s using a keys within ${} markers.
  */
 public class Interpolator extends AbstractConfigurationAwareLookup {
 
