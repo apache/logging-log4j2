@@ -26,10 +26,6 @@ import org.apache.logging.log4j.core.LogEvent;
  * demand based on the key.
  * </p>
  * <p>
- * This class comes complete with various factory methods.
- * If these do not suffice, you can subclass and implement your own matcher.
- * </p>
- * <p>
  * For example, it would be possible to implement a lookup that used the
  * key as a primary key, and looked up the value on demand from the database
  * </p>
