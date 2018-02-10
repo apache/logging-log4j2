@@ -55,6 +55,9 @@
       <action issue="LOG4J2-2233" dev="ggregory" type="update" due-to="Gary Gregory">
         Move JDBC code to a new module log4j-jdbc.
       </action>
+      <action issue="LOG4J2-2244" dev="ggregory" type="update" due-to="Gary Gregory">
+        org.apache.logging.log4j.core.lookup.EnvironmentLookup may throw NPE.
+      </action>      
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
       <action issue="LOG4J2-2236" dev="rpopma" type="update">
