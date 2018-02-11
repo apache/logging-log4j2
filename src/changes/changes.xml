@@ -170,6 +170,9 @@
       <action issue="LOG4J2-2243" dev="ggregory" type="update" due-to="Gary Gregory">
         Cannot see or copy all of certain JAnsi exception messages on Windows due to NUL characters.
       </action>
+      <action issue="LOG4J2-2245" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update Apache Commons Compress from 1.15 to 1.16.1.
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak">
