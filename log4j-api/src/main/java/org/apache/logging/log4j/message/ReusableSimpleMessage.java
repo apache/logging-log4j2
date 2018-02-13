@@ -43,7 +43,7 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence, Par
 
     @Override
     public String getFormat() {
-        return getFormattedMessage();
+        return charSequence instanceof String ? (String) charSequence : null;
     }
 
     @Override

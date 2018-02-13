@@ -77,6 +77,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     private String threadName;
     private String loggerName;
     private Message message;
+    private String messageFormat;
     private StringBuilder messageText;
     private Object[] parameters;
     private transient Throwable thrown;
@@ -129,6 +130,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         if (msg instanceof ReusableMessage) {
             final ReusableMessage reusable = (ReusableMessage) msg;
             reusable.formatTo(getMessageTextForWriting());
+            messageFormat = reusable.getFormat();
             if (parameters != null) {
                 parameters = reusable.swapParameters(parameters);
                 parameterCount = reusable.getParameterCount();
@@ -229,7 +231,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      */
     @Override
     public String getFormat() {
-        return null;
+        return messageFormat;
     }
 
     /**
@@ -405,6 +407,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.fqcn = null;
         this.level = null;
         this.message = null;
+        this.messageFormat = null;
         this.thrown = null;
         this.thrownProxy = null;
         this.contextStack = null;
