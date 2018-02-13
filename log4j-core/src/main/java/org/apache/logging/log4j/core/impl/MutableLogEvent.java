@@ -56,6 +56,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     private String threadName;
     private String loggerName;
     private Message message;
+    private String messageFormat;
     private StringBuilder messageText;
     private Object[] parameters;
     private Throwable thrown;
@@ -126,6 +127,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         level = null;
         loggerName = null;
         message = null;
+        messageFormat = null;
         thrown = null;
         thrownProxy = null;
         source = null;
@@ -211,6 +213,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         if (msg instanceof ReusableMessage) {
             final ReusableMessage reusable = (ReusableMessage) msg;
             reusable.formatTo(getMessageTextForWriting());
+            this.messageFormat = msg.getFormat();
             if (parameters != null) {
                 parameters = reusable.swapParameters(parameters);
                 parameterCount = reusable.getParameterCount();
@@ -243,7 +246,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
      */
     @Override
     public String getFormat() {
-        return null;
+        return messageFormat;
     }
 
     /**

@@ -50,7 +50,7 @@ public class ReusableSimpleMessageTest {
 
     @Test
     public void testGetFormat_InitiallyStringNull() throws Exception {
-        assertEquals("null", new ReusableSimpleMessage().getFormat());
+        assertNull(new ReusableSimpleMessage().getFormat());
     }
 
     @Test

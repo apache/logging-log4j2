@@ -28,7 +28,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -110,6 +112,32 @@ public class MutableLogEventTest {
         assertEquals("throwns", source.getThrown(), mutable.getThrown());
         assertEquals("proxy", source.getThrownProxy(), mutable.getThrownProxy());
         assertEquals("millis", source.getTimeMillis(), mutable.getTimeMillis());
+    }
+
+    @Test
+    public void testInitFromReusableCopiesFormatString() {
+        Message message = ReusableMessageFactory.INSTANCE.newMessage("msg in a {}", "bottle");
+        final Log4jLogEvent source = Log4jLogEvent.newBuilder() //
+                .setContextData(CONTEXT_DATA) //
+                .setContextStack(STACK) //
+                .setEndOfBatch(true) //
+                .setIncludeLocation(true) //
+                .setLevel(Level.FATAL) //
+                .setLoggerFqcn("a.b.c.d.e") //
+                .setLoggerName("my name is Logger") //
+                .setMarker(MarkerManager.getMarker("on your marks")) //
+                .setMessage(message) //
+                .setNanoTime(1234567) //
+                .setSource(new StackTraceElement("myclass", "mymethod", "myfile", 123)) //
+                .setThreadId(100).setThreadName("threadname").setThreadPriority(10) //
+                .setThrown(new RuntimeException("run")) //
+                .setTimeMillis(987654321)
+                .build();
+        final MutableLogEvent mutable = new MutableLogEvent();
+        mutable.initFrom(source);
+        assertEquals("format", "msg in a {}", mutable.getFormat());
+        assertEquals("formatted", "msg in a bottle", mutable.getFormattedMessage());
+        assertEquals("parameters", new String[] {"bottle"}, mutable.getParameters());
     }
 
     @Test
