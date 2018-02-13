@@ -55,7 +55,7 @@ public class ReusableObjectMessage implements ReusableMessage {
      */
     @Override
     public String getFormat() {
-        return getFormattedMessage();
+        return obj instanceof String ? (String) obj : null;
     }
 
     /**
