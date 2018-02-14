@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.impl;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
-import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -32,6 +31,7 @@ import org.apache.logging.log4j.core.util.*;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.message.*;
+import org.apache.logging.log4j.util.MessageParameters;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -251,7 +251,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
      */
     @Override
     public Object[] getParameters() {
-        return parameters == null ? null : Arrays.copyOf(parameters, parameterCount);
+        return MessageParameters.getParametersNullable(parameters, parameterCount);
     }
 
     /**
@@ -296,7 +296,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         if (message != null) {
             return message;
         }
-        final Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
+        final Object[] params = MessageParameters.getParameters(parameters, parameterCount);
         return new ParameterizedMessage(messageText.toString(), params);
     }
 
