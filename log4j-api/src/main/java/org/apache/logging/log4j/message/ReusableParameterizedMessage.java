@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableParameterizedMessage implements ReusableMessage {
+public class ReusableParameterizedMessage implements ReusableMessage, ParameterVisitableMessage {
 
     private static final int MIN_BUILDER_SIZE = 512;
     private static final int MAX_PARMS = 10;
@@ -102,6 +102,14 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     @Override
     public short getParameterCount() {
         return (short) argCount;
+    }
+
+    @Override
+    public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
+        Object[] parameters = getParams();
+        for (short i = 0; i < argCount; i++) {
+            action.accept(parameters[i], i, state);
+        }
     }
 
     @Override
