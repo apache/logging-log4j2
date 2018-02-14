@@ -19,8 +19,9 @@ package org.apache.logging.log4j.message;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -448,7 +449,7 @@ final class ParameterFormatter {
      * @param str    the StringBuilder that o will be appended to
      * @param dejaVu a list of container identities that were already used.
      */
-    static void recursiveDeepToString(final Object o, final StringBuilder str, final Set<String> dejaVu) {
+    static void recursiveDeepToString(final Object o, final StringBuilder str, final Set<Object> dejaVu) {
         if (appendSpecialTypes(o, str)) {
             return;
         }
@@ -490,7 +491,7 @@ final class ParameterFormatter {
     }
 
     private static void appendPotentiallyRecursiveValue(final Object o, final StringBuilder str,
-            final Set<String> dejaVu) {
+            final Set<Object> dejaVu) {
         final Class<?> oClass = o.getClass();
         if (oClass.isArray()) {
             appendArray(o, str, dejaVu, oClass);
@@ -501,7 +502,7 @@ final class ParameterFormatter {
         }
     }
 
-    private static void appendArray(final Object o, final StringBuilder str, Set<String> dejaVu,
+    private static void appendArray(final Object o, final StringBuilder str, Set<Object> dejaVu,
             final Class<?> oClass) {
         if (oClass == byte[].class) {
             str.append(Arrays.toString((byte[]) o));
@@ -521,14 +522,12 @@ final class ParameterFormatter {
             str.append(Arrays.toString((char[]) o));
         } else {
             if (dejaVu == null) {
-                dejaVu = new HashSet<>();
+                dejaVu = identityHashSet();
             }
             // special handling of container Object[]
-            final String id = identityToString(o);
-            if (dejaVu.contains(id)) {
-                str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
+            if (!dejaVu.add(o)) {
+                str.append(RECURSION_PREFIX).append(identityToString(o)).append(RECURSION_SUFFIX);
             } else {
-                dejaVu.add(id);
                 final Object[] oArray = (Object[]) o;
                 str.append('[');
                 boolean first = true;
@@ -538,7 +537,7 @@ final class ParameterFormatter {
                     } else {
                         str.append(", ");
                     }
-                    recursiveDeepToString(current, str, new HashSet<>(dejaVu));
+                    recursiveDeepToString(current, str, identityHashSet(dejaVu));
                 }
                 str.append(']');
             }
@@ -546,16 +545,14 @@ final class ParameterFormatter {
         }
     }
 
-    private static void appendMap(final Object o, final StringBuilder str, Set<String> dejaVu) {
+    private static void appendMap(final Object o, final StringBuilder str, Set<Object> dejaVu) {
         // special handling of container Map
         if (dejaVu == null) {
-            dejaVu = new HashSet<>();
+            dejaVu = identityHashSet();
         }
-        final String id = identityToString(o);
-        if (dejaVu.contains(id)) {
-            str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
+        if (!dejaVu.add(o)) {
+            str.append(RECURSION_PREFIX).append(identityToString(o)).append(RECURSION_SUFFIX);
         } else {
-            dejaVu.add(id);
             final Map<?, ?> oMap = (Map<?, ?>) o;
             str.append('{');
             boolean isFirst = true;
@@ -568,24 +565,22 @@ final class ParameterFormatter {
                 }
                 final Object key = current.getKey();
                 final Object value = current.getValue();
-                recursiveDeepToString(key, str, new HashSet<>(dejaVu));
+                recursiveDeepToString(key, str, identityHashSet(dejaVu));
                 str.append('=');
-                recursiveDeepToString(value, str, new HashSet<>(dejaVu));
+                recursiveDeepToString(value, str, identityHashSet(dejaVu));
             }
             str.append('}');
         }
     }
 
-    private static void appendCollection(final Object o, final StringBuilder str, Set<String> dejaVu) {
+    private static void appendCollection(final Object o, final StringBuilder str, Set<Object> dejaVu) {
         // special handling of container Collection
         if (dejaVu == null) {
-            dejaVu = new HashSet<>();
+            dejaVu = identityHashSet();
         }
-        final String id = identityToString(o);
-        if (dejaVu.contains(id)) {
-            str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
+        if (!dejaVu.add(o)) {
+            str.append(RECURSION_PREFIX).append(identityToString(o)).append(RECURSION_SUFFIX);
         } else {
-            dejaVu.add(id);
             final Collection<?> oCol = (Collection<?>) o;
             str.append('[');
             boolean isFirst = true;
@@ -595,7 +590,7 @@ final class ParameterFormatter {
                 } else {
                     str.append(", ");
                 }
-                recursiveDeepToString(anOCol, str, new HashSet<>(dejaVu));
+                recursiveDeepToString(anOCol, str, identityHashSet(dejaVu));
             }
             str.append(']');
         }
@@ -651,4 +646,13 @@ final class ParameterFormatter {
         return obj.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(obj));
     }
 
+    private static <T> Set<T> identityHashSet() {
+        return Collections.newSetFromMap(new IdentityHashMap<T, Boolean>());
+    }
+
+    private static <T> Set<T> identityHashSet(Collection<T> from) {
+        Set<T> result = Collections.newSetFromMap(new IdentityHashMap<T, Boolean>(from.size() * 2));
+        result.addAll(from);
+        return result;
+    }
 }
