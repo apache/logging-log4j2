@@ -30,11 +30,7 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.util.*;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.message.ReusableMessage;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.message.TimestampMessage;
+import org.apache.logging.log4j.message.*;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
@@ -46,7 +42,7 @@ import com.lmax.disruptor.EventFactory;
  * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
  * the life of the RingBuffer.
  */
-public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequence {
+public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequence, ParameterVisitableMessage {
 
     /** The {@code EventFactory} for {@code RingBufferLogEvent}s. */
     public static final Factory FACTORY = new Factory();
@@ -279,6 +275,15 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     @Override
     public short getParameterCount() {
         return parameterCount;
+    }
+
+    @Override
+    public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
+        if (parameters != null) {
+            for (short i = 0; i < parameterCount; i++) {
+                action.accept(parameters[i], i, state);
+            }
+        }
     }
 
     @Override
