@@ -1636,26 +1636,29 @@ public class AwesomeTest {
 <table style="table-layout: fixed; width: 100%">
   <caption align="top">Log4j 2 global configuration properties</caption>
   <tr>
-    <th>Property Name</th>
+    <th>Property Name <br /> (Legacy Property Name)</th>
     <th>Environment Variable</th>
-    <td>Legacy Property Name</td>
     <th>Default Value</th>
     <th>Description</th>
   </tr>
 
   <tr>
-    <td><a name="configurationFile"/>log4j2.configurationFile</td>
+    <td><a name="configurationFile"/>log4j2.configurationFile
+      <br />
+      (<a name="log4j.configurationFile"/>log4j.configurationFile)
+    </td>
     <td>LOG4J_CONFIGURATION_FILE</td>
-    <td><a name="log4j.configurationFile"/>log4j.configurationFile</td>
     <td>&nbsp;</td>
     <td>
       Path to an Log4j 2 configuration file. May also contain a comma separated list of configuration file names.
     </td>
   </tr>
   <tr>
-    <td><a name="debug"/>log4j2.debug</td>
+    <td><a name="debug"/>log4j2.debug
+      <br />
+      (<a name="log4j2.debug"/>log4j2.debug)
+    </td>
     <td>LOG4J_DEBUG</td>
-    <td><a name="log4j2.debug"/>log4j2.debug</td>
     <td>&nbsp;</td>
     <td>
       Log4j2 will print all internal logging to the console if system property
@@ -1663,9 +1666,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="mergeFactory"/>log4j2.mergeFactory</td>
+    <td><a name="mergeFactory"/>log4j2.mergeFactory
+      <br />
+      (<a name="log4j.mergeFactory"/>log4j.mergeFactory)
+    </td>
     <td>LOG4J_MERGE_FACTORY</td>
-    <td><a name="log4j.mergeFactory"/>log4j.mergeFactory</td>
     <td>&nbsp;</td>
     <td>
       The name of the class that implements the MergeStrategy interface. If not specified
@@ -1673,9 +1678,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="contextSelector"/>log4j2.contextSelector</td>
+    <td><a name="contextSelector"/>log4j2.contextSelector
+      <br />
+      (<a name="Log4jContextSelector"/>Log4jContextSelector)
+    </td>
     <td>LOG4J_CONTEXT_SELECTOR</td>
-    <td><a name="Log4jContextSelector"/>Log4jContextSelector</td>
     <td>ClassLoaderContextSelector</td>
     <td>
       Creates the <tt>LoggerContext</tt>s. An application can have one or more active LoggerContexts depending
@@ -1691,9 +1698,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="logEventFactory"/>log4j2.logEventFactory</td>
+    <td><a name="logEventFactory"/>log4j2.logEventFactory
+      <br />
+      (<a name="Log4jLogEventFactory"/>Log4jLogEventFactory)
+    </td>
     <td>LOG4J_LOG_EVENT_FACTORY</td>
-    <td><a name="Log4jLogEventFactory"/>Log4jLogEventFactory</td>
     <!-- deliberately inserted spaces to allow line break -->
     <td>org.apache.logging.log4j.core.impl .DefaultLogEventFactory</td>
     <td>
@@ -1702,9 +1711,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="loggerContextFactory"/>log4j2.loggerContextFactory</td>
+    <td><a name="loggerContextFactory"/>log4j2.loggerContextFactory
+      <br />
+      (<a name="log4j2.loggerContextFactory"/>log4j2.loggerContextFactory)
+    </td>
     <td>LOG4J_LOGGER_CONTEXT_FACTORY</td>
-    <td><a name="log4j2.loggerContextFactory"/>log4j2.loggerContextFactory</td>
     <!-- deliberately inserted spaces to allow line break -->
     <td>org.apache.logging.log4j.simple .SimpleLoggerContextFactory</td>
     <td>
@@ -1714,9 +1725,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="configurationFactory"/>log4j2.configurationFactory</td>
+    <td><a name="configurationFactory"/>log4j2.configurationFactory
+      <br />
+      (<a name="log4j.configurationFactory"/>log4j.configurationFactory)
+    </td>
     <td>LOG4J_CONFIGURATION_FACTORY</td>
-    <td><a name="log4j.configurationFactory"/>log4j.configurationFactory</td>
     <td>&nbsp;</td>
     <td>
       Fully specified class name of a class extending <tt>org.apache.logging.log4j.core
@@ -1725,9 +1738,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="shutdownHookEnabled"/>log4j2.shutdownHookEnabled</td>
+    <td><a name="shutdownHookEnabled"/>log4j2.shutdownHookEnabled
+      <br />
+      (<a name="log4j.shutdownHookEnabled"/>log4j.shutdownHookEnabled)
+    </td>
     <td>LOG4J_SHUTDOWN_HOOK_ENABLED</td>
-    <td><a name="log4j.shutdownHookEnabled"/>log4j.shutdownHookEnabled</td>
     <td>true</td>
     <td>
       Overrides the global flag for whether or not a shutdown hook should be used to stop a <tt>LoggerContext</tt>.
@@ -1736,9 +1751,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="shutdownCallbackRegistry"/>log4j2.shutdownCallbackRegistry</td>
+    <td><a name="shutdownCallbackRegistry"/>log4j2.shutdownCallbackRegistry
+      <br />
+      (<a name="log4j.shutdownCallbackRegistry"/>log4j.shutdownCallbackRegistry)
+    </td>
     <td>LOG4J_SHUTDOWN_CALLBACK_REGISTRY</td>
-    <td><a name="log4j.shutdownCallbackRegistry"/>log4j.shutdownCallbackRegistry</td>
     <!-- deliberately inserted spaces to allow line break -->
     <td>org.apache.logging.log4j.core.util .DefaultShutdownCallbackRegistry</td>
     <td>
@@ -1749,12 +1766,14 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="clock"/>log4j2.clock</td>
+    <td><a name="clock"/>log4j2.clock
+      <br />
+      (<a name="log4j.Clock"/>log4j.Clock)
+    </td>
     <td>LOG4J_CLOCK</td>
-    <td><a name="log4j.Clock"/>log4j.Clock</td>
     <td>SystemClock</td>
     <td>
-      Implementation of the <tt>org.apache.logging.log4j.core.time.Clock</tt>
+      Implementation of the <tt>org.apache.logging.log4j .core.time.Clock</tt>
       interface that is used for timestamping the log events.
       <br />
       By default, <tt>System.currentTimeMillis</tt> is called on every log event.
@@ -1764,9 +1783,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="level"/>log4j2.level</td>
+    <td><a name="level"/>log4j2.level
+      <br />
+      (<a name="org.apache.logging.log4j.level"/>org.apache.logging.log4j.level)
+    </td>
     <td>LOG4J_LEVEL</td>
-    <td><a name="org.apache.logging.log4j.level"/>org.apache.logging.log4j.level</td>
     <td>ERROR</td>
     <td>
       Log level of the default configuration. The default configuration is used if the ConfigurationFactory
@@ -1774,9 +1795,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="disableThreadContext"/>log4j2.disableThreadContext</td>
+    <td><a name="disableThreadContext"/>log4j2.disableThreadContext
+      <br />
+      (disableThreadContext)
+    </td>
     <td>LOG4J_DISABLE_THREAD_CONTEXT</td>
-    <td>disableThreadContext</td>
     <td>false</td>
     <td>
       If <tt>true</tt>, the ThreadContext stack and map are disabled.
@@ -1784,18 +1807,22 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="disableThreadContextStack"/>log4j2.disableThreadContextStack</td>
+    <td><a name="disableThreadContextStack"/>log4j2.disableThreadContextStack
+      <br />
+      (disableThreadContextStack)
+    </td>
     <td>LOG4J_DISABLE_THREAD_CONTEXT_STACK</td>
-    <td>disableThreadContextStack</td>
     <td>false</td>
     <td>
       If <tt>true</tt>, the ThreadContext stack is disabled.
     </td>
   </tr>
   <tr>
-    <td><a name="disableThreadContextMap"/>log4j2.disableThreadContextMap</td>
+    <td><a name="disableThreadContextMap"/>log4j2.disableThreadContextMap
+      <br />
+      (disableThreadContextMap)
+    </td>
     <td>LOG4J_DISABLE_THREAD_CONTEXT_MAP</td>
-    <td>disableThreadContextMap</td>
     <td>false</td>
     <td>
       If <tt>true</tt>, the ThreadContext map is disabled.
@@ -1803,18 +1830,22 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="log4j2.threadContextMap"/>log4j2.threadContextMap</td>
+    <td><a name="log4j2.threadContextMap"/>log4j2.threadContextMap
+      <br />
+      (log4j2.threadContextMap)
+    </td>
     <td>LOG4J_THREAD_CONTEXT_MAP</td>
-    <td>log4j2.threadContextMap</td>
     <td>&nbsp;</td>
     <td>
       Fully specified class name of a custom <tt>ThreadContextMap</tt> implementation class.
     </td>
   </tr>
   <tr>
-    <td><a name="isThreadContextMapInheritable"/>log4j2.isThreadContextMapInheritable</td>
+    <td><a name="isThreadContextMapInheritable"/>log4j2.isThreadContextMapInheritable
+      <br />
+      (isThreadContextMapInheritable)
+    </td>
     <td>LOG4J_IS_THREAD_CONTEXT_MAP_INHERITABLE</td>
-    <td>isThreadContextMapInheritable</td>
     <td>false</td>
     <td>
       If <tt>true</tt> use a <tt>InheritableThreadLocal</tt> to implement the ThreadContext map.
@@ -1823,27 +1854,33 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="contextDataInjector"/>log4j2.contextDataInjector</td>
+    <td><a name="contextDataInjector"/>log4j2.contextDataInjector
+      <br />
+      (<a name="log4j2.ContextDataInjector"/>log4j2.ContextDataInjector)
+    </td>
     <td>LOG4J_CONTEXT_DATA_INJECTOR</td>
-    <td><a name="log4j2.ContextDataInjector"/>log4j2.ContextDataInjector</td>
     <td>&nbsp;</td>
     <td>
       Fully specified class name of a custom <tt>ContextDataInjector</tt> implementation class.
     </td>
   </tr>
   <tr>
-    <td><a name="garbagefreeThreadContextMap"/>log4j2.garbagefreeThreadContextMap</td>
+    <td><a name="garbagefreeThreadContextMap"/>log4j2.garbagefreeThreadContextMap
+      <br />
+      (<a name="log4j2.garbagefree.threadContextMap"/>log4j2.garbagefree.threadContextMap)
+    </td>
     <td>LOG4J_GARBAGEFREE_THREAD_CONTEXT_MAP</td>
-    <td><a name="log4j2.garbagefree.threadContextMap"/>log4j2.garbagefree.threadContextMap</td>
     <td>false</td>
     <td>
       Specify "true" to make the ThreadContext map garbage-free.
     </td>
   </tr>
   <tr>
-    <td><a name="disableJmx"/>log4j2.disableJmx</td>
+    <td><a name="disableJmx"/>log4j2.disableJmx
+      <br />
+      (<a name="log4j2.disable.jmx"/>log4j2.disable.jmx)
+    </td>
     <td>LOG4J_DISABLE_JMX</td>
-    <td><a name="log4j2.disable.jmx"/>log4j2.disable.jmx</td>
     <td>false</td>
     <td>
       If <tt>true</tt>, Log4j configuration objects like LoggerContexts, Appenders, Loggers, etc.
@@ -1851,9 +1888,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="jmxNotifyAsync"/>log4j2.jmxNotifyAsync</td>
+    <td><a name="jmxNotifyAsync"/>log4j2.jmxNotifyAsync
+      <br />
+      (<a name="log4j2.jmx.notify.async"/>log4j2.jmx.notify.async)
+    </td>
     <td>LOG4J_JMX_NOTIFY_ASYNC</td>
-    <td><a name="log4j2.jmx.notify.async"/>log4j2.jmx.notify.async</td>
     <td>false for web apps, true otherwise</td>
     <td>
       If <tt>true</tt>, log4j's JMX notifications are sent from a separate background thread,
@@ -1864,18 +1903,22 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="skipJansi"/>log4j2.skipJansi</td>
+    <td><a name="skipJansi"/>log4j2.skipJansi
+      <br />
+      (<a name="log4j.skipJansi"/>log4j.skipJansi)
+    </td>
     <td>LOG4J_SKIP_JANSI</td>
-    <td><a name="log4j.skipJansi"/>log4j.skipJansi</td>
     <td>true</td>
     <td>
       If <tt>true</tt>, the ConsoleAppender will not try to use the Jansi output stream on Windows.
     </td>
   </tr>
   <tr>
-    <td><a name="ignoreTCL"/>log4j2.ignoreTCL</td>
+    <td><a name="ignoreTCL"/>log4j2.ignoreTCL
+      <br />
+      (<a name="log4j.ignoreTCL"/>log4j.ignoreTCL)
+    </td>
     <td>LOG4J_IGNORE_TCL</td>
-    <td><a name="log4j.ignoreTCL"/>log4j.ignoreTCL</td>
     <td>false</td>
     <td>
       If <tt>true</tt>, classes are only loaded with the default class loader.
@@ -1884,9 +1927,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="uuidSequence"/>log4j2.uuidSequence</td>
+    <td><a name="uuidSequence"/>log4j2.uuidSequence
+      <br />
+      (<a name="org.apache.logging.log4j.uuidSequence"/>org.apache.logging.log4j.uuidSequence)
+    </td>
     <td>LOG4J_UUID_SEQUENCE</td>
-    <td><a name="org.apache.logging.log4j.uuidSequence"/>org.apache.logging.log4j.uuidSequence</td>
     <td>0</td>
     <td>
       System property that may be used to seed the UUID generation with an integer value.
@@ -1904,55 +1949,67 @@ public class AwesomeTest {
   </tr>
   -->
   <tr>
-    <td><a name="simplelogShowContextMap"/>log4j2.simplelogShowContextMap</td>
+    <td><a name="simplelogShowContextMap"/>log4j2.simplelogShowContextMap
+      <br />
+      <!-- deliberately inserted spaces to allow line break -->
+      (<a name="org.apache.logging.log4j.simplelog.showContextMap"/>org.apache.logging.log4j .simplelog.showContextMap)
+    </td>
     <td>LOG4J_SIMPLELOG_SHOW_CONTEXT_MAP</td>
-    <!-- deliberately inserted spaces to allow line break -->
-    <td><a name="org.apache.logging.log4j.simplelog.showContextMap"/>org.apache.logging.log4j.simplelog .showContextMap</td>
     <td>false</td>
     <td>If <tt>true</tt>, the full ThreadContext map is included in each SimpleLogger log message.</td>
   </tr>
   <tr>
-    <td><a name="simplelogShowlogname"/>log4j2.simplelogShowlogname</td>
+    <td><a name="simplelogShowlogname"/>log4j2.simplelogShowlogname
+      <br />
+      <!-- deliberately inserted spaces to allow line break -->
+      (<a name="org.apache.logging.log4j.simplelog.showlogname"/>org.apache.logging.log4j .simplelog.showlogname)
+    </td>
     <td>LOG4J_SIMPLELOG_SHOWLOGNAME</td>
-    <!-- deliberately inserted spaces to allow line break -->
-    <td><a name="org.apache.logging.log4j.simplelog.showlogname"/>org.apache.logging.log4j.simplelog .showlogname</td>
     <td>false</td>
     <td>If <tt>true</tt>, the logger name is included in each SimpleLogger log message.</td>
   </tr>
   <tr>
-    <td><a name="simplelogShowShortLogname"/>log4j2.simplelogShowShortLogname</td>
+    <td><a name="simplelogShowShortLogname"/>log4j2.simplelogShowShortLogname
+      <br />
+      <!-- deliberately inserted spaces to allow line break -->
+      (<a name="org.apache.logging.log4j.simplelog.showShortLogname"/>org.apache.logging.log4j  .simplelog.showShortLogname)
+    </td>
     <td>LOG4J_SIMPLELOG_SHOW_SHORT_LOGNAME</td>
-    <!-- deliberately inserted spaces to allow line break -->
-    <td><a name="org.apache.logging.log4j.simplelog.showShortLogname"/>org.apache.logging.log4j.simplelog .showShortLogname</td>
     <td>true</td>
     <td>If <tt>true</tt>, only the last component of a logger name is included in SimpleLogger log messages.
     (E.g., if the logger name is "mycompany.myproject.mycomponent", only "mycomponent" is logged.
     </td>
   </tr>
   <tr>
-    <td><a name="simplelogShowdatetime"/>log4j2.simplelogShowdatetime</td>
+    <td><a name="simplelogShowdatetime"/>log4j2.simplelogShowdatetime
+      <br />
+      <!-- deliberately inserted spaces to allow line break -->
+      (<a name="org.apache.logging.log4j.simplelog.showdatetime"/>org.apache.logging.log4j .simplelog.showdatetime)
+    </td>
     <td>LOG4J_SIMPLELOG_SHOWDATETIME</td>
-    <!-- deliberately inserted spaces to allow line break -->
-    <td><a name="org.apache.logging.log4j.simplelog.showdatetime"/>org.apache.logging.log4j.simplelog .showdatetime</td>
     <td>false</td>
     <td>If <tt>true</tt>, SimpleLogger log messages contain timestamp information.
     </td>
   </tr>
   <tr>
-    <td><a name="simplelogDateTimeFormat"/>log4j2.simplelogDateTimeFormat</td>
+    <td><a name="simplelogDateTimeFormat"/>log4j2.simplelogDateTimeFormat
+      <br />
+      <!-- deliberately inserted spaces to allow line break -->
+      (<a name="org.apache.logging.log4j.simplelog.dateTimeFormat"/>org.apache.logging.log4j .simplelog.dateTimeFormat)
+    </td>
     <td>LOG4J_SIMPLELOG_DATE_TIME_FORMAT</td>
-    <!-- deliberately inserted spaces to allow line break -->
-    <td><a name="org.apache.logging.log4j.simplelog.dateTimeFormat"/>org.apache.logging.log4j.simplelog .dateTimeFormat</td>
     <td>"yyyy/MM/dd HH:mm:ss:SSS zzz"</td>
     <td>Date-time format to use.
-    Ignored if <tt>org.apache.logging.log4j.simplelog.showdatetime</tt> is <tt>false</tt>.
+    Ignored if <tt>org.apache.logging.log4j .simplelog.showdatetime</tt> is <tt>false</tt>.
     </td>
   </tr>
   <tr>
-    <td><a name="simplelogLogFile"/>log4j2.simplelogLogFile</td>
+    <td><a name="simplelogLogFile"/>log4j2.simplelogLogFile
+      <br />
+      <!-- deliberately inserted spaces to allow line break -->
+      (<a name="org.apache.logging.log4j.simplelog.logFile"/>org.apache.logging.log4j .simplelog.logFile)
+    </td>
     <td>LOG4J_SIMPLELOG_LOG_FILE</td>
-    <!-- deliberately inserted spaces to allow line break -->
-    <td><a name="org.apache.logging.log4j.simplelog.logFile"/>org.apache.logging.log4j.simplelog .logFile</td>
     <td>system.err</td>
     <td>"system.err" (case-insensitive) logs to System.err,
     "system.out" (case-insensitive) logs to System.out,
@@ -1960,38 +2017,46 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="simplelogLevel"/>log4j2.simplelogLevel</td>
+    <td><a name="simplelogLevel"/>log4j2.simplelogLevel
+      <br />
+      <!-- deliberately inserted spaces to allow line break -->
+      (<a name="org.apache.logging.log4j.simplelog.level"/>org.apache.logging.log4j .simplelog.level)
+    </td>
     <td>LOG4J_SIMPLELOG_LEVEL</td>
-    <!-- deliberately inserted spaces to allow line break -->
-    <td><a name="org.apache.logging.log4j.simplelog.level"/>org.apache.logging.log4j.simplelog .level</td>
     <td>ERROR</td>
     <td>Default level for new SimpleLogger instances.
     </td>
   </tr>
   <tr>
-    <td>log4j2.simplelog.&lt;loggerName&gt;.level</td>
+    <td>log4j2.simplelog.&lt;loggerName&gt;.level
+      <br />
+      <!-- deliberately inserted spaces to allow line break -->
+      (<a name="org.apache.logging.log4j.simplelog.[loggerName]level"/>org.apache.logging.log4j .simplelog.&lt;loggerName&gt;.level)
+    </td>
     <td>LOG4J_SIMPLELOG_&lt;LOGGER_NAME&gt;_LEVEL</td>
-    <!-- deliberately inserted spaces to allow line break -->
-    <td><a name="org.apache.logging.log4j.simplelog.[loggerName]level"/>org.apache.logging.log4j.simplelog.&lt;loggerName&gt;.level</td>
     <td>SimpleLogger default log level</td>
     <td>Log level for a the SimpleLogger instance with the specified name.</td>
   </tr>
   <tr>
-    <td><a name="simplelogStatusLoggerLevel"/>log4j2.simplelogStatusLoggerLevel</td>
+    <td><a name="simplelogStatusLoggerLevel"/>log4j2.simplelogStatusLoggerLevel
+      <br />
+      <!-- deliberately inserted spaces to allow line break -->
+      (<a name="org.apache.logging.log4j.simplelog.StatusLogger.level" />org.apache.logging.log4j.simplelog .StatusLogger.level)
+    </td>
     <td>LOG4J_SIMPLELOG_STATUS_LOGGER_LEVEL</td>
-    <!-- deliberately inserted spaces to allow line break -->
-    <td><a name="org.apache.logging.log4j.simplelog.StatusLogger.level" />org.apache.logging.log4j.simplelog .StatusLogger.level</td>
     <td>ERROR</td>
     <td>This property is used to control the initial StatusLogger level, and can be overridden in code by calling
-    <code>StatusLogger.getLogger().setLevel(someLevel)</code>.
+    <code>StatusLogger.getLogger() .setLevel(someLevel)</code>.
     Note that the StatusLogger level is only used to determine the status log output level
     until a listener is registered. In practice, a listener is registered when a configuration is found,
     and from that point onwards, status messages are only sent to the listeners (depending on their statusLevel).</td>
   </tr>
   <tr>
-    <td><a name="defaultStatusLevel"/>log4j2.defaultStatusLevel</td>
+    <td><a name="defaultStatusLevel"/>log4j2.defaultStatusLevel
+      <br />
+      (<a name="Log4jDefaultStatusLevel" />Log4jDefaultStatusLevel)
+    </td>
     <td>LOG4J_DEFAULT_STATUS_LEVEL</td>
-    <td><a name="Log4jDefaultStatusLevel" />Log4jDefaultStatusLevel</td>
     <td>ERROR</td>
     <td>
       <p>The StatusLogger logs events that occur in the logging system to the console.
@@ -2005,9 +2070,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="statusLoggerLevel"/>log4j2.statusLoggerLevel</td>
+    <td><a name="statusLoggerLevel"/>log4j2.statusLoggerLevel
+      <br />
+      (<a name="log4j2.StatusLogger.level"/>log4j2.StatusLogger.level)
+    </td>
     <td>LOG4J_STATUS_LOGGER_LEVEL</td>
-    <td><a name="log4j2.StatusLogger.level"/>log4j2.StatusLogger.level</td>
     <td>WARN</td>
     <td>
       <p>The initial "listenersLevel" of the StatusLogger. If StatusLogger listeners are added, the "listenerLevel"
@@ -2025,9 +2092,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="statusEntries"/>log4j2.statusEntries</td>
+    <td><a name="statusEntries"/>log4j2.statusEntries
+      <br />
+      (<a name="log4j2.status.entries"/>log4j2.status.entries)
+    </td>
     <td>LOG4J_STATUS_ENTRIES</td>
-    <td><a name="log4j2.status.entries"/>log4j2.status.entries</td>
     <td>200</td>
     <td>
       Number of StatusLogger events that are kept in a buffer and can be retrieved with
@@ -2035,37 +2104,45 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="statusLoggerDateformat"/>log4j2.statusLoggerDateformat</td>
+    <td><a name="statusLoggerDateformat"/>log4j2.statusLoggerDateformat
+      <br />
+      (<a name="log4j2.StatusLogger.dateformat"/>log4j2.StatusLogger.dateformat)
+    </td>
     <td>LOG4J_STATUS_LOGGER_DATEFORMAT</td>
-    <td><a name="log4j2.StatusLogger.dateformat"/>log4j2.StatusLogger.dateformat</td>
-    <td><code>"yyyy/MM/dd HH:mm:ss:SSS zzz"</code></td>
+    <td>&nbsp;</td>
     <td>
       Date-time format string to use as the format for timestamps
       in the status logger output. See <code>java.text.SimpleDateFormat</code> for supported formats.
     </td>
   </tr>
   <tr>
-    <td><a name="asyncLoggerExceptionHandler"/>log4j2.asyncLoggerExceptionHandler</td>
+    <td><a name="asyncLoggerExceptionHandler"/>log4j2.asyncLoggerExceptionHandler
+      <br />
+      (<a name="AsyncLogger.ExceptionHandler"/>AsyncLogger.ExceptionHandler)
+    </td>
     <td>LOG4J_ASYNC_LOGGER_EXCEPTION_HANDLER</td>
-    <td><a name="AsyncLogger.ExceptionHandler"/>AsyncLogger.ExceptionHandler</td>
     <td>default handler</td>
     <td>
       See <a href="async.html#SysPropsAllAsync">Async Logger System Properties</a> for details.
     </td>
   </tr>
   <tr>
-    <td><a name="asyncLoggerRingBufferSize"/>log4j2.asyncLoggerRingBufferSize</td>
+    <td><a name="asyncLoggerRingBufferSize"/>log4j2.asyncLoggerRingBufferSize
+      <br />
+      (<a name="AsyncLogger.RingBufferSize"/>AsyncLogger.RingBufferSize)
+    </td>
     <td>LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE</td>
-    <td><a name="AsyncLogger.RingBufferSize"/>AsyncLogger.RingBufferSize</td>
     <td>256&#160;*&#160;1024</td>
     <td>
       See <a href="async.html#SysPropsAllAsync">Async Logger System Properties</a> for details.
     </td>
   </tr>
   <tr>
-    <td><a name="asyncLoggerWaitStrategy"/>log4j2.asyncLoggerWaitStrategy</td>
+    <td><a name="asyncLoggerWaitStrategy"/>log4j2.asyncLoggerWaitStrategy
+      <br />
+      (<a name="AsyncLogger.WaitStrategy" />AsyncLogger.WaitStrategy)
+    </td>
     <td>LOG4J_ASYNC_LOGGER_WAIT_STRATEGY</td>
-    <td><a name="AsyncLogger.WaitStrategy" />AsyncLogger.WaitStrategy</td>
     <td>
       Timeout
     </td>
@@ -2074,9 +2151,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="asyncLoggerThreadNameStrategy"/>log4j2.asyncLoggerThreadNameStrategy</td>
+    <td><a name="asyncLoggerThreadNameStrategy"/>log4j2.asyncLoggerThreadNameStrategy
+      <br />
+      (<a name="AsyncLogger.ThreadNameStrategy"/>AsyncLogger.ThreadNameStrategy)
+    </td>
     <td>LOG4J_ASYNC_LOGGER_THREAD_NAME_STRATEGY</td>
-    <td><a name="AsyncLogger.ThreadNameStrategy"/>AsyncLogger.ThreadNameStrategy</td>
     <td>
       CACHED
     </td>
@@ -2085,27 +2164,33 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="asyncLoggerConfigExceptionHandler"/>log4j2.asyncLoggerConfigExceptionHandler</td>
+    <td><a name="asyncLoggerConfigExceptionHandler"/>log4j2.asyncLoggerConfigExceptionHandler
+      <br />
+      (<a name="AsyncLoggerConfig.ExceptionHandler"/>AsyncLoggerConfig.ExceptionHandler)
+    </td>
     <td>LOG4J_ASYNC_LOGGER_CONFIG_EXCEPTION_HANDLER</td>
-    <td><a name="AsyncLoggerConfig.ExceptionHandler"/>AsyncLoggerConfig.ExceptionHandler</td>
     <td>default handler</td>
     <td>
       See <a href="async.html#SysPropsMixedSync-Async">Mixed Async/Synchronous Logger System Properties</a> for details.
     </td>
   </tr>
   <tr>
-    <td><a name="asyncLoggerConfigRingBufferSize"/>log4j2.asyncLoggerConfigRingBufferSize</td>
+    <td><a name="asyncLoggerConfigRingBufferSize"/>log4j2.asyncLoggerConfigRingBufferSize
+      <br />
+      (<a name="AsyncLoggerConfig.RingBufferSize"/>AsyncLoggerConfig.RingBufferSize)
+    </td>
     <td>LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE</td>
-    <td><a name="AsyncLoggerConfig.RingBufferSize"/>AsyncLoggerConfig.RingBufferSize</td>
     <td>256&#160;*&#160;1024</td>
     <td>
       See <a href="async.html#SysPropsMixedSync-Async">Mixed Async/Synchronous Logger System Properties</a> for details.
     </td>
   </tr>
   <tr>
-    <td><a name="asyncLoggerConfigWaitStrategy"/>log4j2.asyncLoggerConfigWaitStrategy</td>
+    <td><a name="asyncLoggerConfigWaitStrategy"/>log4j2.asyncLoggerConfigWaitStrategy
+      <br />
+      (<a name="AsyncLoggerConfig.WaitStrategy"/>AsyncLoggerConfig.WaitStrategy)
+    </td>
     <td>LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY</td>
-    <td><a name="AsyncLoggerConfig.WaitStrategy"/>AsyncLoggerConfig.WaitStrategy</td>
     <td>
       Timeout
     </td>
@@ -2114,11 +2199,13 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="julLoggerAdapter"/>log4j2.julLoggerAdapter</td>
+    <td><a name="julLoggerAdapter"/>log4j2.julLoggerAdapter
+      <br />
+      (<a name="log4j.jul.LoggerAdapter"/>log4j.jul.LoggerAdapter)
+    </td>
     <td>LOG4J_JUL_LOGGER_ADAPTER</td>
-    <td><a name="log4j.jul.LoggerAdapter"/>log4j.jul.LoggerAdapter</td>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging.log4j.jul .ApiLoggerAdapter</td>
+    <td>org.apache.logging.log4j .jul.ApiLoggerAdapter</td>
     <td>
       Default LoggerAdapter to use in the JUL adapter. By default, if log4j-core is available, then the class
       <code>org.apache.logging.log4j.jul .CoreLoggerAdapter</code> will be used. Otherwise, the
@@ -2126,9 +2213,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="formatMsgAsync"/>log4j2.formatMsgAsync</td>
+    <td><a name="formatMsgAsync"/>log4j2.formatMsgAsync
+      <br />
+      (<a name="log4j.format.msg.async"/>log4j.format.msg.async)
+    </td>
     <td>LOG4J_FORMAT_MSG_ASYNC</td>
-    <td><a name="log4j.format.msg.async"/>log4j.format.msg.async</td>
     <td>
       false
     </td>
@@ -2138,9 +2227,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="asyncQueueFullPolicy"/>log4j2.asyncQueueFullPolicy</td>
+    <td><a name="asyncQueueFullPolicy"/>log4j2.asyncQueueFullPolicy
+      <br />
+      (<a name="log4j2.AsyncQueueFullPolicy"/>log4j2.AsyncQueueFullPolicy)
+    </td>
     <td>LOG4J_ASYNC_QUEUE_FULL_POLICY</td>
-    <td><a name="log4j2.AsyncQueueFullPolicy"/>log4j2.AsyncQueueFullPolicy</td>
     <td>&nbsp;</td>
     <td>
       <p>Used by Async Loggers and the AsyncAppender to maintain application throughput even when
@@ -2152,9 +2243,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="discardThreshold"/>log4j2.discardThreshold</td>
+    <td><a name="discardThreshold"/>log4j2.discardThreshold
+      <br />
+      (<a name="log4j2.DiscardThreshold"/>log4j2.DiscardThreshold)
+    </td>
     <td>LOG4J_DISCARD_THRESHOLD</td>
-    <td><a name="log4j2.DiscardThreshold"/>log4j2.DiscardThreshold</td>
     <td>INFO</td>
     <td>Used by the DiscardingAsyncQueueFullPolicy to determine which events to drop when the queue
       becomes full. By default, <tt>INFO</tt>, <tt>DEBUG</tt> and <tt>TRACE</tt> level
@@ -2163,32 +2256,40 @@ public class AwesomeTest {
       <tt>log4j2.AsyncQueueFullPolicy</tt>.</td>
   </tr>
   <tr>
-    <td><a name="messageFactory"/>log4j2.messageFactory</td>
+    <td><a name="messageFactory"/>log4j2.messageFactory
+      <br />
+      (<a name="log4j2.messageFactory" />log4j2.messageFactory)
+    </td>
     <td>LOG4J_MESSAGE_FACTORY</td>
-    <td><a name="log4j2.messageFactory" />log4j2.messageFactory</td>
     <td>org.apache.logging.log4j.message. ParameterizedMessageFactory or
       org.apache.logging.log4j.message. ReusableMessageFactory in garbage-free mode</td>
     <td>Default message factory used by Loggers if no factory was specified.</td>
   </tr>
   <tr>
-    <td><a name="flowMessageFactory"/>log4j2.flowMessageFactory</td>
+    <td><a name="flowMessageFactory"/>log4j2.flowMessageFactory
+      <br />
+      (<a name="log4j2.flowMessageFactory" />log4j2.flowMessageFactory)
+    </td>
     <td>LOG4J_FLOW_MESSAGE_FACTORY</td>
-    <td><a name="log4j2.flowMessageFactory" />log4j2.flowMessageFactory</td>
     <td>org.apache.logging.log4j.message. DefaultFlowMessageFactory</td>
     <td>Default flow message factory used by Loggers.</td>
   </tr>
   <tr>
-    <td><a name="isWebapp"/>log4j2.isWebapp</td>
+    <td><a name="isWebapp"/>log4j2.isWebapp
+      <br />
+      (<a name="log4j2.is.webapp"/>log4j2.is.webapp)
+    </td>
     <td>LOG4J_IS_WEBAPP</td>
-    <td><a name="log4j2.is.webapp"/>log4j2.is.webapp</td>
     <td>true if <tt>Servlet</tt> class on class path </td>
     <td>This system property can be used to force Log4j 2 to behave as if it is part of a web application (when true)
     or as if it is not part of a web application (when false).</td>
   </tr>
   <tr>
-    <td><a name="enableThreadlocals"/>log4j2.enableThreadlocals</td>
+    <td><a name="enableThreadlocals"/>log4j2.enableThreadlocals
+      <br />
+      (<a name="log4j2.enable.threadlocals" />log4j2.enable.threadlocals)
+    </td>
     <td>LOG4J_ENABLE_THREADLOCALS</td>
-    <td><a name="log4j2.enable.threadlocals" />log4j2.enable.threadlocals</td>
     <td>true</td>
     <td>This system property can be used to switch off the use of threadlocals, which will partly disable
       Log4j's garbage-free behaviour: to be fully garbage-free, Log4j stores
@@ -2196,9 +2297,11 @@ public class AwesomeTest {
       Note that this property is not effective when Log4j detects it is running in a web application.</td>
   </tr>
   <tr>
-    <td><a name="enableDirectEncoders"/>log4j2.enableDirectEncoders</td>
+    <td><a name="enableDirectEncoders"/>log4j2.enableDirectEncoders
+      <br />
+      (<a name="log4j2.enable.direct.encoders" />log4j2.enable.direct.encoders)
+    </td>
     <td>LOG4J_ENABLE_DIRECT_ENCODERS</td>
-    <td><a name="log4j2.enable.direct.encoders" />log4j2.enable.direct.encoders</td>
     <td>true</td>
     <td>This property can be used to force garbage-aware Layouts and Appenders to revert to the
       pre-2.6 behaviour where converting log events to text generates temporary objects like
@@ -2207,33 +2310,41 @@ public class AwesomeTest {
       to text will convert this text to bytes without creating temporary objects.</td>
   </tr>
   <tr>
-    <td><a name="initialReusableMsgSize"/>log4j2.initialReusableMsgSize</td>
+    <td><a name="initialReusableMsgSize"/>log4j2.initialReusableMsgSize
+      <br />
+      (<a name="log4j.initialReusableMsgSize" />log4j.initialReusableMsgSize)
+    </td>
     <td>LOG4J_INITIAL_REUSABLE_MSG_SIZE</td>
-    <td><a name="log4j.initialReusableMsgSize" />log4j.initialReusableMsgSize</td>
     <td>128</td>
     <td>In GC-free mode, this property determines the initial size of the reusable StringBuilders where the message
      text is formatted and potentially passed to background threads.</td>
   </tr>
   <tr>
-    <td><a name="maxReusableMsgSize"/>log4j2.maxReusableMsgSize</td>
+    <td><a name="maxReusableMsgSize"/>log4j2.maxReusableMsgSize
+      <br />
+      (<a name="log4j.maxReusableMsgSize" />log4j.maxReusableMsgSize)
+    </td>
     <td>LOG4J_MAX_REUSABLE_MSG_SIZE</td>
-    <td><a name="log4j.maxReusableMsgSize" />log4j.maxReusableMsgSize</td>
     <td>518</td>
     <td>In GC-free mode, this property determines the maximum size of the reusable StringBuilders where the message
      text is formatted and potentially passed to background threads.</td>
   </tr>
   <tr>
-    <td><a name="layoutStringBuilderMaxSize"/>log4j2.layoutStringBuilderMaxSize</td>
+    <td><a name="layoutStringBuilderMaxSize"/>log4j2.layoutStringBuilderMaxSize
+      <br />
+      (<a name="log4j.layoutStringBuilder.maxSize" />log4j.layoutStringBuilder.maxSize)
+    </td>
     <td>LOG4J_LAYOUT_STRING_BUILDER_MAX_SIZE</td>
-    <td><a name="log4j.layoutStringBuilder.maxSize" />log4j.layoutStringBuilder.maxSize</td>
     <td>2048</td>
     <td>This property determines the maximum size of the thread-local reusable StringBuilders
      used to format the log event to text by Layouts that extend AbstractStringLayout.</td>
   </tr>
   <tr>
-    <td><a name="unboxRingbufferSize"/>log4j2.unboxRingbufferSize</td>
+    <td><a name="unboxRingbufferSize"/>log4j2.unboxRingbufferSize
+      <br />
+      (<a name="log4j.unbox.ringbuffer.size" />log4j.unbox.ringbuffer.size)
+    </td>
     <td>LOG4J_UNBOX_RINGBUFFER_SIZE</td>
-    <td><a name="log4j.unbox.ringbuffer.size" />log4j.unbox.ringbuffer.size</td>
     <td>32</td>
     <td>The <tt>org.apache.logging.log4j.util.Unbox</tt> utility
     manages a small thread-local ring buffer of StringBuilders.
@@ -2245,17 +2356,21 @@ public class AwesomeTest {
      Note that the specified number will be rounded up to the nearest power of 2.</p></td>
   </tr>
   <tr>
-    <td><a name="loggerContextStacktraceOnStart"/>log4j2.loggerContextStacktraceOnStart</td>
+    <td><a name="loggerContextStacktraceOnStart"/>log4j2.loggerContextStacktraceOnStart
+      <br />
+      (<a name="log4j.LoggerContext.stacktrace.on.start" />log4j.LoggerContext.stacktrace.on.start)
+    </td>
     <td>LOG4J_LOGGER_CONTEXT_STACKTRACE_ON_START</td>
-    <td><a name="log4j.LoggerContext.stacktrace.on.start" />log4j.LoggerContext.stacktrace.on.start</td>
     <td>false</td>
     <td>Prints a stacktrace to the <a href="#StatusMessages">status logger</a> at DEBUG level
     when the LoggerContext is started. For debug purposes.</td>
   </tr>
   <tr>
-      <td><a name="formatMsgNoLookups"/>log4j2.formatMsgNoLookups</td>
+      <td><a name="formatMsgNoLookups"/>log4j2.formatMsgNoLookups
+        <br />
+        (<a name="log4j2.formatMsgNoLookups" />log4j2.formatMsgNoLookups)
+      </td>
       <td>FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS</td>
-      <td><a name="log4j2.formatMsgNoLookups" />log4j2.formatMsgNoLookups</td>
       <td>false</td>
       <td>Disables message pattern lookups globally when set to <tt>true</tt>.
           This is equivalent to defining all message patterns using <tt>%m{nolookups}</tt>.</td>
