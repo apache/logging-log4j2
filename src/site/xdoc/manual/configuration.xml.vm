@@ -1623,7 +1623,17 @@ public class AwesomeTest {
             column contains the name used in properties files and system properties; <i>Environemt Variable</i>
             for the equivalent environment variable; and <i>Legacy Property Name</i> for the pre-2.10 name.
           </p>
-<table>
+<style>
+  * { // this works for all but td
+  word-wrap:break-word;
+  }
+
+  table { // this somehow makes it work for td
+  table-layout:fixed;
+  width:100%;
+  }
+</style>
+<table style="table-layout: fixed; width: 100%">
   <caption align="top">Log4j 2 global configuration properties</caption>
   <tr>
     <th>Property Name</th>
@@ -1699,7 +1709,8 @@ public class AwesomeTest {
     <td>org.apache.logging.log4j.simple .SimpleLoggerContextFactory</td>
     <td>
       Factory class used by LogManager to bootstrap the logging implementation.
-      The core jar provides <tt>org.apache.logging.log4j.core.impl.Log4jContextFactory</tt>.
+      The core jar provides <tt>org.apache.logging.log4j.core
+      .impl.Log4jContextFactory</tt>.
     </td>
   </tr>
   <tr>
@@ -1708,7 +1719,8 @@ public class AwesomeTest {
     <td><a name="log4j.configurationFactory"/>log4j.configurationFactory</td>
     <td>&nbsp;</td>
     <td>
-      Fully specified class name of a class extending <tt>org.apache.logging.log4j.core.config.ConfigurationFactory</tt>.
+      Fully specified class name of a class extending <tt>org.apache.logging.log4j.core
+      .config.ConfigurationFactory</tt>.
       If specified, an instance of this class is added to the list of configuration factories.
     </td>
   </tr>
@@ -2020,6 +2032,16 @@ public class AwesomeTest {
     <td>
       Number of StatusLogger events that are kept in a buffer and can be retrieved with
       <tt>StatusLogger.getStatusData()</tt>.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="statusLoggerDateformat"/>log4j2.statusLoggerDateformat</td>
+    <td>LOG4J_STATUS_LOGGER_DATEFORMAT</td>
+    <td><a name="log4j2.StatusLogger.dateformat"/>log4j2.StatusLogger.dateformat</td>
+    <td><code>"yyyy/MM/dd HH:mm:ss:SSS zzz"</code></td>
+    <td>
+      Date-time format string to use as the format for timestamps
+      in the status logger output. See <code>java.text.SimpleDateFormat</code> for supported formats.
     </td>
   </tr>
   <tr>
