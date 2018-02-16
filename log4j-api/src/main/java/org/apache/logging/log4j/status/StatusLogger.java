@@ -103,9 +103,10 @@ public final class StatusLogger extends AbstractLogger {
 
     private StatusLogger(final String name, final MessageFactory messageFactory) {
         super(name, messageFactory);
-        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false,
-                System.getProperty(STATUS_DATE_FORMAT, Strings.EMPTY),
-                messageFactory, PROPS, System.err);
+        final String dateFormat = PROPS.getStringProperty(STATUS_DATE_FORMAT, Strings.EMPTY);
+        final boolean showDateTime = !Strings.isEmpty(dateFormat);
+        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, showDateTime, false,
+                dateFormat, messageFactory, PROPS, System.err);
         this.listenersLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
 
         // LOG4J2-1813 if system property "log4j2.debug" is defined, print all status logging
