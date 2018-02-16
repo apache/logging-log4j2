@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
+      <action issue="LOG4J2-2250" dev="rpopma" type="update">
+        The internal status logger timestamp format is now configurable with system property `log4j2.StatusLogger.dateformat`.
+      </action>
       <action issue="LOG4J2-2236" dev="rpopma" type="update">
         Removed unnecessary dependency on jcommander since Log4j uses embedded picocli since 2.9.
       </action>
