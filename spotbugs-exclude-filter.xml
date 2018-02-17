@@ -17,7 +17,7 @@
 -->
 
 <!-- ===================================================================== -->
-<!-- $Id: findbugs-exclude-filter.xml 773234 2009-05-09 15:27:59Z rgoers $ -->
+<!-- $Id: spotbugs-exclude-filter.xml 773234 2009-05-09 15:27:59Z rgoers $ -->
 <!-- ===================================================================== -->
 <FindBugsFilter>
   <!-- Enable only high priority warnings -->

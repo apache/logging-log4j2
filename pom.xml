@@ -190,7 +190,8 @@
     <mongodb3.version>3.6.1</mongodb3.version>
     <compiler.plugin.version>3.7.0</compiler.plugin.version>
     <pmd.plugin.version>3.8</pmd.plugin.version>
-    <findbugs.plugin.version>3.0.5</findbugs.plugin.version>
+    <spotbugs.plugin.version>3.1.0-RC7</spotbugs.plugin.version>
+    <spotbugs.version>3.1.1</spotbugs.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
     <javadoc.plugin.version>3.0.0</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
@@ -215,8 +216,8 @@
     <velocity.plugin.version>1.5</velocity.plugin.version>
     <remote.resources.plugin.version>1.5</remote.resources.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
@@ -831,7 +832,7 @@
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
         <version>2.0.1</version>
         <scope>test</scope>
-      </dependency>      
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
@@ -975,6 +976,19 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
           <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>${spotbugs.plugin.version}</version>
+          <dependencies>
+            <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
+            <dependency>
+              <groupId>com.github.spotbugs</groupId>
+              <artifactId>spotbugs</artifactId>
+              <version>${spotbugs.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
       </plugins>
     </pluginManagement>
