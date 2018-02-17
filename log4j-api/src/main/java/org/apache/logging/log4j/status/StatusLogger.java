@@ -69,7 +69,7 @@ public final class StatusLogger extends AbstractLogger {
      * in the status logger output. See {@link java.text.SimpleDateFormat} for supported formats.
      * @since 2.11.0
      */
-    public static final String STATUS_DATE_FORMAT = "log4j2.StatusLogger.dateformat";
+    public static final String STATUS_DATE_FORMAT = "log4j2.StatusLogger.DateFormat";
 
     private static final long serialVersionUID = 2L;
 

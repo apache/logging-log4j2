@@ -2106,7 +2106,7 @@ public class AwesomeTest {
   <tr>
     <td><a name="statusLoggerDateformat"/>log4j2.statusLoggerDateformat
       <br />
-      (<a name="log4j2.StatusLogger.dateformat"/>log4j2.StatusLogger.dateformat)
+      (<a name="log4j2.StatusLogger.DateFormat"/>log4j2.StatusLogger.DateFormat)
     </td>
     <td>LOG4J_STATUS_LOGGER_DATEFORMAT</td>
     <td>&nbsp;</td>
