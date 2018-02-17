@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2018-xx-xx" description="GA Release 3.0.0">
+      <action issue="LOG4J2-2255" dev="rgoers" type="update">
+        Use Spotbugs instead of Findbugs. Minimum version is Java 8.
+      </action>
       <action issue="LOG4J2-2224" dev="rpopma" type="update">
         Renamed package core.util.datetime to core.time.internal.format to clarify these classes are to be considered private.
       </action>
