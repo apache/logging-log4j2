@@ -87,7 +87,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             return;
         }
         try {
-            if (randomAccessFile.length() == 0) {
+            if (randomAccessFile != null && randomAccessFile.length() == 0) {
                 // write to the file, not to the buffer: the buffer may not be empty
                 randomAccessFile.write(header, 0, header.length);
             }
