@@ -437,7 +437,7 @@
             <goals>
               <goal>jar</goal>
             </goals>
-            <configuration>
+            <configuration combine.self="override">
               <archive>
                 <manifestFile>${manifestfile}</manifestFile>
                 <manifestEntries>
