@@ -63,6 +63,9 @@
       </action>      
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
+      <action issue="LOG4J2-2254" dev="rgoers" type="fix">
+        Incorrect automatics module name header was being included in manifests.
+      </action>
       <action issue="LOG4J2-2247" dev="rgoers" type="fix">
         NullPointerException would occur when header was provided to a Layout on RollingRandingAccessFileAppender
         with DirectWriteRolloverStrategy.
