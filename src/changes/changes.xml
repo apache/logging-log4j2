@@ -76,6 +76,9 @@
       <action issue="LOG4J2-2083" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Eclipse javax.persistence from 2.1.1 to 2.2.0.
       </action>      
+      <action issue="LOG4J2-2083" dev="ggregory" type="update">
+        Update build to expect Java 8 sources and generate Java 8 byte codes.
+      </action>      
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
       <action issue="LOG4J2-2254" dev="rgoers" type="fix">
