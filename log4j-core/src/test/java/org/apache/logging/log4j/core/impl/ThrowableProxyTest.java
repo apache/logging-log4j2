@@ -35,21 +35,21 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.IvParameterSpec;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.convert.Base64Converter;
-import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
-import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  *
@@ -111,16 +111,6 @@ public class ThrowableProxyTest {
         assertEquals(expected.proxy.getCommonElementCount(), actual.proxy.getCommonElementCount());
         assertArrayEquals(expected.proxy.getExtendedStackTrace(), actual.proxy.getExtendedStackTrace());
         assertEquals(expected.proxy, actual.proxy);
-    }
-
-    @Test
-    public void testIoContainerAsJson() throws IOException {
-        testIoContainer(new Log4jJsonObjectMapper());
-    }
-
-    @Test
-    public void testIoContainerAsXml() throws IOException {
-        testIoContainer(new Log4jXmlObjectMapper());
     }
 
     /**

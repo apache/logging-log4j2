@@ -35,12 +35,12 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.util.StringMap;
 
-class LogEventFixtures {
+public class LogEventFixtures {
 
     /**
      * @return a log event that uses all the bells and whistles, features, nooks and crannies
      */
-    static Log4jLogEvent createLogEvent() {
+    public static Log4jLogEvent createLogEvent() {
         final Marker cMarker = MarkerManager.getMarker("Marker1");
         final Marker pMarker1 = MarkerManager.getMarker("ParentMarker1");
         final Marker pMarker2 = MarkerManager.getMarker("ParentMarker2");
@@ -84,7 +84,7 @@ class LogEventFixtures {
     }
 
     @SuppressWarnings("deprecation")
-    static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource,
+    public static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource,
             final boolean includeContext, final boolean includeStacktrace) {
         assertEquals(expected.getClass(), actual.getClass());
         assertEquals(includeContext ? expected.getContextData() : ContextDataFactory.createContextData(), actual.getContextData());

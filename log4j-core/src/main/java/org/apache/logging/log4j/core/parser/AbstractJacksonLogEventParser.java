@@ -24,10 +24,10 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 
 import java.io.IOException;
 
-class AbstractJacksonLogEventParser implements TextLogEventParser {
+public class AbstractJacksonLogEventParser implements TextLogEventParser {
     private final ObjectReader objectReader;
 
-    AbstractJacksonLogEventParser(final ObjectMapper objectMapper) {
+    protected AbstractJacksonLogEventParser(final ObjectMapper objectMapper) {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.objectReader = objectMapper.readerFor(Log4jLogEvent.class);
     }

@@ -294,7 +294,7 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public String getContentType() {
-        return JsonLayout.CONTENT_TYPE + "; charset=" + this.getCharset();
+        return "application/json; charset=" + this.getCharset();
     }
 
     @Override
