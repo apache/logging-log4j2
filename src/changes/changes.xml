@@ -79,6 +79,9 @@
       <action issue="LOG4J2-2083" dev="ggregory" type="update">
         Update build to expect Java 8 sources and generate Java 8 byte codes.
       </action>      
+      <action issue="LOG4J2-2259" dev="ggregory" type="update">
+        Update MongoDB 3 module from driver 3.6.1 to 3.6.3.
+      </action>      
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
       <action issue="LOG4J2-2254" dev="rgoers" type="fix">
