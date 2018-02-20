@@ -756,7 +756,7 @@
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit</artifactId>
-        <version>1.28.1</version>
+        <version>1.28.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
