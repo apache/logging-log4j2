@@ -245,6 +245,9 @@
       <action issue="LOG4J2-2260" dev="ggregory" type="update">
         [SMTP] Update javax.mail from 1.6.0 to 1.6.1.
       </action>      
+      <action issue="LOG4J2-2264" dev="ggregory" type="update">
+        Update JAnsi from 1.16 to 1.17.
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak">
@@ -376,6 +379,9 @@
       </action>
       <action issue="LOG4J2-2117" dev="ggregory" type="update">
         Jackson dependencies for 2.9.2 incorrectly bring in jackson-annotations 2.9.0 instead of 2.9.2.
+      </action>
+      <action issue="LOG4J2-2264" dev="ggregory" type="update">
+        Update JAnsi from 1.16 to 1.17.
       </action>
     </release>
     <release version="2.9.1" date="2017-09-17" description="GA Release 2.9.1">
