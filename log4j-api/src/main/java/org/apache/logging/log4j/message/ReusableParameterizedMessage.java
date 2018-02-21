@@ -19,6 +19,7 @@ package org.apache.logging.log4j.message;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.MessageParameters;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilders;
 
@@ -53,7 +54,9 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     }
 
     private Object[] getTrimmedParams() {
-        return varargs == null ? Arrays.copyOf(params, argCount) : varargs;
+        return varargs != null ?
+                varargs :
+                MessageParameters.getParameters(params, argCount);
     }
 
     private Object[] getParams() {

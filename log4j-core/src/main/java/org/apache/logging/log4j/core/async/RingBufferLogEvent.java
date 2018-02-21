@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.async;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -37,6 +36,7 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
+import org.apache.logging.log4j.util.MessageParameters;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
@@ -243,7 +243,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      */
     @Override
     public Object[] getParameters() {
-        return parameters == null ? null : Arrays.copyOf(parameters, parameterCount);
+        return MessageParameters.getParametersNullable(parameters, parameterCount);
     }
 
     /**
@@ -288,7 +288,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         if (message != null) {
             return message;
         }
-        final Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
+        final Object[] params = MessageParameters.getParameters(parameters, parameterCount);
         return new ParameterizedMessage(messageText.toString(), params);
     }
 
