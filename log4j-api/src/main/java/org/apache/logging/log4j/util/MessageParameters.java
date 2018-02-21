@@ -33,7 +33,7 @@ public final class MessageParameters {
      * @param parameters     Original array, nullable
      * @param parameterCount number of parameters in use
      * @return an array of parameters sized to the number of parameters
-     * present, or null if the parameters argument is null.
+     * present, or an empty array if the parameters argument is null.
      */
     public static Object[] getParameters(/* nullable */ Object[] parameters, int parameterCount) {
         return (parameterCount == 0 || parameters == null) ?
