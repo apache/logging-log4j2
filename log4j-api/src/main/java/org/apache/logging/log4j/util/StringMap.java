@@ -64,7 +64,7 @@ public interface StringMap extends ReadOnlyStringMap {
     boolean isFrozen();
 
     /**
-     * Copy all key-value pairs from the specified {@code ReadOnlyStringMap} into this {@code StringMap}.
+     * Copies all key-value pairs from the specified {@code ReadOnlyStringMap} into this {@code StringMap}.
      * @param source the {@code ReadOnlyStringMap} to copy key-value pairs from
      * @throws java.util.ConcurrentModificationException some implementations may not support structural modifications
      *          to this data structure while iterating over the contents with {@link #forEach(BiConsumer)} or

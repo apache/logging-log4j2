@@ -266,7 +266,7 @@ public class JmsAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        this.manager.send(event, getLayout().toSerializable(event));
+        this.manager.send(event, toSerializable(event));
     }
 
     public JmsManager getManager() {

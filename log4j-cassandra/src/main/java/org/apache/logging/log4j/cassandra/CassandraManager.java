@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.cassandra;
 
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,8 +87,14 @@ public class CassandraManager extends AbstractDatabaseManager {
         // a Session automatically manages connections for us
     }
 
+    @Deprecated
     @Override
     protected void writeInternal(final LogEvent event) {
+        writeInternal(event, null);
+    }
+    
+    @Override
+    protected void writeInternal(final LogEvent event, final Serializable serializable) {
         for (int i = 0; i < columnMappings.size(); i++) {
             final ColumnMapping columnMapping = columnMappings.get(i);
             if (ThreadContextMap.class.isAssignableFrom(columnMapping.getType())
@@ -190,7 +197,7 @@ public class CassandraManager extends AbstractDatabaseManager {
                             final String clusterName, final String keyspace, final String table, final String username,
                             final String password, final boolean useClockForTimestampGenerator, final int bufferSize,
                             final boolean batched, final BatchStatement.Type batchType) {
-            super(bufferSize);
+            super(bufferSize, null);
             this.contactPoints = convertAndAddDefaultPorts(contactPoints);
             this.columns = columns;
             this.useTls = useTls;

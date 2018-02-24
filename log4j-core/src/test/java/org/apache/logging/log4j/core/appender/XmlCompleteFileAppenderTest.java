@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.Layouts;
@@ -38,6 +38,8 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
@@ -75,12 +77,14 @@ public class XmlCompleteFileAppenderTest {
         String line2;
         String line3;
         String line4;
+        String line5;
         try (final BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
             line1 = reader.readLine();
             line2 = reader.readLine();
             reader.readLine(); // ignore the empty line after the <Events> root
             line3 = reader.readLine();
             line4 = reader.readLine();
+            line5 = reader.readLine();
         } finally {
             logFile.delete();
         }
@@ -97,8 +101,12 @@ public class XmlCompleteFileAppenderTest {
         assertTrue("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + ']', line3.contains(msg3));
 
         assertNotNull("line4", line4);
-        final String msg4 = logMsg;
+        final String msg4 = "<Instant epochSecond=";
         assertTrue("line4 incorrect: [" + line4 + "], does not contain: [" + msg4 + ']', line4.contains(msg4));
+
+        assertNotNull("line5", line5);
+        final String msg5 = logMsg;
+        assertTrue("line5 incorrect: [" + line5 + "], does not contain: [" + msg5 + ']', line5.contains(msg5));
 
         final String location = "testFlushAtEndOfBatch";
         assertTrue("no location", !line1.contains(location));
@@ -108,17 +116,19 @@ public class XmlCompleteFileAppenderTest {
      * Test the indentation of the Events XML.
      * <p>Expected Events XML is as below.</p>
      * <pre>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;Events xmlns=&quot;http://logging.apache.org/log4j/2.0/events&quot;&gt;
+&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;Events xmlns="http://logging.apache.org/log4j/2.0/events">
 
-  &lt;Event xmlns=&quot;http://logging.apache.org/log4j/2.0/events&quot; timeMillis=&quot;1460974522088&quot; thread=&quot;main&quot; level=&quot;INFO&quot; loggerName=&quot;com.foo.Bar&quot; endOfBatch=&quot;false&quot; loggerFqcn=&quot;org.apache.logging.log4j.spi.AbstractLogger&quot; threadId=&quot;11&quot; threadPriority=&quot;5&quot;&gt;
-    &lt;Message&gt;First Msg tag must be in level 2 after correct indentation&lt;/Message&gt;
-  &lt;/Event&gt;
+  &lt;Event xmlns="http://logging.apache.org/log4j/2.0/events" thread="main" level="INFO" loggerName="com.foo.Bar" endOfBatch="true" loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger" threadId="12" threadPriority="5">
+    &lt;Instant epochSecond="1515889414" nanoOfSecond="144000000" epochMillisecond="1515889414144" nanoOfMillisecond="0"/>
+    &lt;Message>First Msg tag must be in level 2 after correct indentation&lt;/Message>
+  &lt;/Event>
 
-  &lt;Event xmlns=&quot;http://logging.apache.org/log4j/2.0/events&quot; timeMillis=&quot;1460974522089&quot; thread=&quot;main&quot; level=&quot;INFO&quot; loggerName=&quot;com.foo.Bar&quot; endOfBatch=&quot;true&quot; loggerFqcn=&quot;org.apache.logging.log4j.spi.AbstractLogger&quot; threadId=&quot;11&quot; threadPriority=&quot;5&quot;&gt;
-    &lt;Message&gt;Second Msg tag must also be in level 2 after correct indentation&lt;/Message&gt;
-  &lt;/Event&gt;
-&lt;/Events&gt;
+  &lt;Event xmlns="http://logging.apache.org/log4j/2.0/events" thread="main" level="INFO" loggerName="com.foo.Bar" endOfBatch="true" loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger" threadId="12" threadPriority="5">
+    &lt;Instant epochSecond="1515889414" nanoOfSecond="144000000" epochMillisecond="1515889414144" nanoOfMillisecond="0"/>
+    &lt;Message>Second Msg tag must also be in level 2 after correct indentation&lt;/Message>
+  &lt;/Event>
+&lt;/Events>
      * </pre>
      * @throws Exception
      */
@@ -131,55 +141,32 @@ public class XmlCompleteFileAppenderTest {
         logger.info(secondLogMsg);
         CoreLoggerContexts.stopLoggerContext(false, logFile); // stop async thread
 
-        final String[] lines = new String[9];
+        int[] indentations = {
+                0, //"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                0, //"<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">\n"
+                -1, // empty
+                2, //"  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\" loggerName=\"com.foo.Bar\" endOfBatch=\"true\" loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n"
+                4, //"    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\" nanoOfMillisecond=\"0\"/>\n"
+                4, //"    <Message>First Msg tag must be in level 2 after correct indentation</Message>\n" +
+                2, //"  </Event>\n"
+                -1, // empty
+                2, //"  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\" loggerName=\"com.foo.Bar\" endOfBatch=\"true\" loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n" +
+                4, //"    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\" nanoOfMillisecond=\"0\"/>\n" +
+                4, //"    <Message>Second Msg tag must also be in level 2 after correct indentation</Message>\n" +
+                2, //"  </Event>\n" +
+                0, //"</Events>\n";
+        };
+        List<String> lines1 = Files.readAllLines(logFile.toPath(), Charset.forName("UTF-8"));
 
-        try (final BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
-
-            int usefulLinesIndex = 0;
-            String readLine;
-            while((readLine = reader.readLine()) != null) {
-
-                if (!"".equals(readLine.trim())) {
-                    lines[usefulLinesIndex] = readLine;
-                    usefulLinesIndex++;
-                }
+        assertEquals("number of lines", indentations.length, lines1.size());
+        for (int i = 0; i < indentations.length; i++) {
+            String line = lines1.get(i);
+            if (line.trim().isEmpty()) {
+                assertEquals(-1, indentations[i]);
+            } else {
+                String padding = "        ".substring(0, indentations[i]);
+                assertTrue("Expected " + indentations[i] + " leading spaces but got: " + line, line.startsWith(padding));
             }
-        } finally {
-            logFile.delete();
         }
-
-        String currentLine = lines[0];
-        assertFalse("line1 incorrect: [" + currentLine + "], must have no indentation", currentLine.startsWith(" "));
-        // <EVENTS
-        currentLine = lines[1];
-        assertFalse("line2 incorrect: [" + currentLine + "], must have no indentation", currentLine.startsWith(" "));
-        // <EVENT
-        currentLine = lines[2];
-        assertTrue("line3 incorrect: [" + currentLine + "], must have two-space indentation", currentLine.startsWith("  "));
-        assertFalse("line3 incorrect: [" + currentLine + "], must not have more than two-space indentation", currentLine.startsWith("   "));
-        // <MSG
-        currentLine = lines[3];
-        assertTrue("line4 incorrect: [" + currentLine + "], must have four-space indentation", currentLine.startsWith("    "));
-        assertFalse("line4 incorrect: [" + currentLine + "], must not have more than four-space indentation", currentLine.startsWith("     "));
-        // </EVENT
-        currentLine = lines[4];
-        assertTrue("line5 incorrect: [" + currentLine + "], must have two-space indentation", currentLine.startsWith("  "));
-        assertFalse("line5 incorrect: [" + currentLine + "], must not have more than two-space indentation", currentLine.startsWith("   "));
-
-        // <EVENT
-        currentLine = lines[5];
-        assertTrue("line6 incorrect: [" + currentLine + "], must have two-space indentation", currentLine.startsWith("  "));
-        assertFalse("line6 incorrect: [" + currentLine + "], must not have more than two-space indentation", currentLine.startsWith("   "));
-        // <MSG
-        currentLine = lines[6];
-        assertTrue("line7 incorrect: [" + currentLine + "], must have four-space indentation", currentLine.startsWith("    "));
-        assertFalse("line7 incorrect: [" + currentLine + "], must not have more than four-space indentation", currentLine.startsWith("     "));
-        // </EVENT
-        currentLine = lines[7];
-        assertTrue("line8 incorrect: [" + currentLine + "], must have two-space indentation", currentLine.startsWith("  "));
-        assertFalse("line8 incorrect: [" + currentLine + "], must not have more than two-space indentation", currentLine.startsWith("   "));
-        // </EVENTS
-        currentLine = lines[8];
-        assertFalse("line9 incorrect: [" + currentLine + "], must have no indentation", currentLine.startsWith(" "));
     }
 }

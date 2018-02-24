@@ -93,7 +93,7 @@ public class ReusableParameterizedMessageTest {
     public void testFormatStringArgsWithTrailingText() {
         final String testMsg = "Test message {}{} {}Text";
         final String[] args = { "a", "b", "c" };
-        final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();;
+        final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
         assertEquals("Test message ab cText", result);
     }
 

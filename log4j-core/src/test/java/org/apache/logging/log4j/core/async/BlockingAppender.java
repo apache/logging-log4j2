@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.async;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;

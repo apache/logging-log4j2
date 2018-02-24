@@ -28,6 +28,9 @@ public class YamlLogEventParserTest extends LogEventParserTest {
 
     private static final String YAML = "---\n" +
             "timeMillis: 1493121664118\n" +
+            "instant:\n" +
+            " epochSecond: 1493121664\n" +
+            " nanoOfSecond: 118000000\n" +
             "thread: \"main\"\n" +
             "level: \"INFO\"\n" +
             "loggerName: \"HelloWorld\"\n" +
@@ -92,9 +95,14 @@ public class YamlLogEventParserTest extends LogEventParserTest {
         parser.parseFrom("---\n");
     }
 
+    @Test
+    public void testTimeMillisIgnored() throws ParseException {
+        parser.parseFrom("---\ntimeMillis: \"foobar\"\n");
+    }
+
     @Test(expected = ParseException.class)
     public void testStringWrongPropertyType() throws ParseException {
-        parser.parseFrom("---\ntimeMillis: \"foobar\"\n");
+        parser.parseFrom("---\nthreadId: \"foobar\"\n");
     }
 
     @Test

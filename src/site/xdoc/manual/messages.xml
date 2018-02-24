@@ -199,15 +199,39 @@ public class MyApp {
       <h4>MapMessage</h4>
         <a name="MapMessage"/>
         <p>
-          A MapMessage contains a Map of String keys and values. MapMessage implements FormattedMessage and accepts
-          a format specifier of "XML", in which case the Map will be formatted as XML. Otherwise, the Map will be
-          formatted as "key1=value1 key2=value2...".
+          A <code>MapMessage</code> contains a Map of String keys and values. <code>MapMessage</code> implements 
+          <code>FormattedMessage</code> and accepts format specifiers of "XML", "JSON" or "JAVA", in which case the Map
+          will be formatted as XML, JSON or as documented by
+          <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/util/AbstractMap.html#toString()">java.util.AbstractMap.toString()</a>.
+          Otherwise, the Map will be formatted as <code>"key1=value1 key2=value2 ..."</code>.
+        </p>
+        <p>
+          Some Appenders make special use of <code>MapMessage</code> objects: 
+        </p>
+        <ul>
+          <li>
+            When a <a href="appenders.html#JMSAppender">JMS Appender</a> is configured with a <code>MessageLayout</code>, it converts a Log4j 
+            <code>MapMessage</code> to a JMS <code>javax.jms.MapMessage</code>.
+          </li>
+          <li>
+            When a <a href="appenders.html#JDBCAppender">JDBC Appender</a> is configured with a <code>MessageLayout</code>, it converts a Log4j 
+            <code>MapMessage</code> to values in a SQL INSERT statement.
+          </li>
+          <li>
+            When a <a href="appenders.html#NoSQLAppenderMongoDB2">MongoDB2 Appender</a> or 
+            <a href="appenders.html#NoSQLAppenderMongoDB3">MongoDB3 Appender</a> is configured with a <code>MessageLayout</code>, it converts a Log4j 
+            <code>MapMessage</code> to fields in a MongoDB object. 
+          </li>
+        </ul>
+        <p>
+          When an Appender is <code>MessageLayout</code>-aware, the object Log4j sends to target is not a Log4j Log 
+          Event but a custom object.
         </p>
         <h4>MessageFormatMessage</h4>
         <a name="MessageFormatMessage"/>
         <p>
           <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/MessageFormatMessage.html">MessageFormatMessage</a>
-          handles messages that use a <a href="http://docs.oracle.com/javase/6/docs/api/java/text/MessageFormat.html">conversion format</a>.
+          handles messages that use a <a href="https://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html">conversion format</a>.
           While this Message has more flexibility than ParameterizedMessage, it is also about two times slower.
         </p>
       <h4>MultiformatMessage</h4>
@@ -239,7 +263,7 @@ public class MyApp {
           In garbage-free mode, this message is used to pass logged Objects to the Layout and Appenders.
           Functionally equivalent to <a href="#ObjectMessage">ObjectMessage</a>.
         </p>
-      <h4>ReusableObjectMessage</h4>
+      <h4>ReusableParameterizedMessage</h4>
         <a name="ReusableParameterizedMessage"/>
         <p>
           In garbage-free mode, this message is used to handle messages that contain "{}" in the format to
@@ -261,8 +285,8 @@ public class MyApp {
         <a name="StringFormattedMessage"/>
         <p>
           <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/StringFormattedMessage.html">StringFormattedMessage</a>
-          handles messages that use a <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax">conversion format</a>
-          that is compliant with <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/lang/String.html#format(java.lang.String, java.lang.Object...)">java.lang.String.format()</a>.
+          handles messages that use a <a href="https://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html#syntax">conversion format</a>
+          that is compliant with <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/lang/String.html#format(java.lang.String, java.lang.Object...)">java.lang.String.format()</a>.
           While this Message has more flexibility than ParameterizedMessage, it is also 5 to 10 times slower.
         </p>
       <h4>StructuredDataMessage</h4>
@@ -275,8 +299,8 @@ public class MyApp {
       <h4>ThreadDumpMessage</h4>
         <a name="ThreadDumpMessage"/>
         <p>
-          A ThreadDumpMessage, if logged, will generate stack traces for all threads. If running on Java 6+ the
-          stack traces will include any locks that are held.
+          A ThreadDumpMessage, if logged, will generate stack traces for all threads.
+          The stack traces will include any locks that are held.
         </p>
       <h4>TimestampMessage</h4>
         <a name="TimestampMessage"/>

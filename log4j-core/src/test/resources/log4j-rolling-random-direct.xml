@@ -27,7 +27,7 @@
       <PatternLayout pattern="%m%n"/>
     </Console>
     <RollingRandomAccessFile name="RollingFile" filePattern="${logDir}/test1-%d{MM-dd-yy-HH-mm}-%i.log.gz">
-      <PatternLayout>
+      <PatternLayout header="This is a test">
         <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <Policies>

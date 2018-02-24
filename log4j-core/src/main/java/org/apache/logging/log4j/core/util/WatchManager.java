@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.util;
 
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,7 +31,10 @@ import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Manages FileWatchers.
+ * Manages {@link FileWatcher}s.
+ * 
+ * @see FileWatcher
+ * @see ConfigurationScheduler
  */
 public class WatchManager extends AbstractLifeCycle {
 
@@ -44,6 +48,53 @@ public class WatchManager extends AbstractLifeCycle {
         this.scheduler = scheduler;
     }
 
+    /**
+     * Resets all file monitors to their current last modified time. If this manager does not watch any file, nothing
+     * happens.
+     * <p>
+     * This allows you to start, stop, reset and start again a manager, without triggering file modified events if the a
+     * watched file has changed during the period of time when the manager was stopped.
+     * </p>
+     * 
+     * @since 2.11.0
+     */
+    public void reset() {
+        logger.debug("Resetting {}", this);
+        for (final File file : watchers.keySet()) {
+            reset(file);
+        }
+    }
+
+    /**
+     * Resets the file monitor for the given file being watched to its current last modified time. If this manager does
+     * not watch the given file, nothing happens.
+     * <p>
+     * This allows you to start, stop, reset and start again a manager, without triggering file modified events if the
+     * given watched file has changed during the period of time when the manager was stopped.
+     * </p>
+     * 
+     * @param file
+     *            the file for the monitor to reset.
+     * @since 2.11.0
+     */
+    public void reset(final File file) {
+        if (file == null) {
+            return;
+        }
+        final FileMonitor fileMonitor = watchers.get(file);
+        if (fileMonitor != null) {
+            final long lastModifiedMillis = file.lastModified();
+            if (lastModifiedMillis != fileMonitor.lastModifiedMillis) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Resetting file monitor for '{}' from {} ({}) to {} ({})", file,
+                            millisToString(fileMonitor.lastModifiedMillis), fileMonitor.lastModifiedMillis,
+                            millisToString(lastModifiedMillis), lastModifiedMillis);
+                }
+                fileMonitor.setLastModifiedMillis(lastModifiedMillis);
+            }
+        }
+    }
+
     public void setIntervalSeconds(final int intervalSeconds) {
         if (!isStarted()) {
             if (this.intervalSeconds > 0 && intervalSeconds == 0) {
@@ -55,6 +106,11 @@ public class WatchManager extends AbstractLifeCycle {
         }
     }
 
+    /**
+     * Gets how often this manager checks for file modifications.
+     * 
+     * @return how often, in seconds, this manager checks for file modifications.
+     */
     public int getIntervalSeconds() {
         return this.intervalSeconds;
     }
@@ -76,33 +132,69 @@ public class WatchManager extends AbstractLifeCycle {
         return stopped;
     }
 
-    public void watchFile(final File file, final FileWatcher watcher) {
-        watchers.put(file, new FileMonitor(file.lastModified(), watcher));
+    /**
+     * Unwatches the given file.
+     * 
+     * @param file
+     *            the file to stop watching.
+     * @since 2.11.0
+     */
+    public void unwatchFile(final File file) {
+        logger.debug("Unwatching file '{}'", file);
+        watchers.remove(file);
+    }
 
+    /**
+     * Watches the given file.
+     * 
+     * @param file
+     *            the file to watch.
+     * @param watcher
+     *            the watcher to notify of file changes.
+     */
+    public void watchFile(final File file, final FileWatcher watcher) {
+        final long lastModified = file.lastModified();
+        if (logger.isDebugEnabled()) {
+            logger.debug("Watching file '{}' for lastModified {} ({})", file, millisToString(lastModified), lastModified);
+        }
+        watchers.put(file, new FileMonitor(lastModified, watcher));
     }
 
     public Map<File, FileWatcher> getWatchers() {
-        final Map<File, FileWatcher> map = new HashMap<>();
+        final Map<File, FileWatcher> map = new HashMap<>(watchers.size());
         for (final Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
             map.put(entry.getKey(), entry.getValue().fileWatcher);
         }
         return map;
     }
 
-    private class WatchRunnable implements Runnable {
+    private String millisToString(final long millis) {
+        return new Date(millis).toString();
+    }
+    
+    private final class WatchRunnable implements Runnable {
+
+        // Use a hard class reference here in case a refactoring changes the class name.
+        private final String SIMPLE_NAME = WatchRunnable.class.getSimpleName();
 
         @Override
         public void run() {
+            logger.trace("{} run triggered.", SIMPLE_NAME);
             for (final Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
                 final File file = entry.getKey();
                 final FileMonitor fileMonitor = entry.getValue();
                 final long lastModfied = file.lastModified();
                 if (fileModified(fileMonitor, lastModfied)) {
-                    logger.info("File {} was modified on {}, previous modification was {}", file, lastModfied, fileMonitor.lastModifiedMillis);
+                    if (logger.isInfoEnabled()) {
+                        logger.info("File '{}' was modified on {} ({}), previous modification was on {} ({})", file,
+                                millisToString(lastModfied), lastModfied, millisToString(fileMonitor.lastModifiedMillis),
+                                fileMonitor.lastModifiedMillis);
+                    }
                     fileMonitor.lastModifiedMillis = lastModfied;
                     fileMonitor.fileWatcher.fileModified(file);
                 }
             }
+            logger.trace("{} run ended.", SIMPLE_NAME);
         }
 
         private boolean fileModified(final FileMonitor fileMonitor, final long lastModifiedMillis) {
@@ -110,12 +202,16 @@ public class WatchManager extends AbstractLifeCycle {
         }
     }
 
-    private class FileMonitor {
+    private final class FileMonitor {
         private final FileWatcher fileWatcher;
-        private long lastModifiedMillis;
+        private volatile long lastModifiedMillis;
 
         public FileMonitor(final long lastModifiedMillis, final FileWatcher fileWatcher) {
             this.fileWatcher = fileWatcher;
+            this.lastModifiedMillis = lastModifiedMillis;
+        }
+
+        private void setLastModifiedMillis(final long lastModifiedMillis) {
             this.lastModifiedMillis = lastModifiedMillis;
         }
 
@@ -123,6 +219,7 @@ public class WatchManager extends AbstractLifeCycle {
         public String toString() {
             return "FileMonitor [fileWatcher=" + fileWatcher + ", lastModifiedMillis=" + lastModifiedMillis + "]";
         }
+
     }
 
     @Override

@@ -166,26 +166,32 @@ public class StrSubstitutor implements ConfigurationAware {
      * Stores the escape character.
      */
     private char escapeChar;
+
     /**
      * Stores the variable prefix.
      */
     private StrMatcher prefixMatcher;
+
     /**
      * Stores the variable suffix.
      */
     private StrMatcher suffixMatcher;
+
     /**
      * Stores the default variable value delimiter
      */
     private StrMatcher valueDelimiterMatcher;
+
     /**
      * Variable resolution is delegated to an implementer of VariableResolver.
      */
     private StrLookup variableResolver;
+
     /**
      * The flag whether substitution in variable names is enabled.
      */
     private boolean enableSubstitutionInVariables = true;
+
     /**
      * The currently active Configuration for use by ConfigurationAware StrLookup implementations.
      */

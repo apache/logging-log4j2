@@ -16,6 +16,12 @@
 */
 package org.apache.logging.log4j.core.appender.rewrite;
 
+import static org.apache.logging.log4j.hamcrest.MapMatchers.hasSize;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,34 +29,33 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.util.StringMap;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.apache.logging.log4j.hamcrest.MapMatchers.hasSize;
-import static org.hamcrest.Matchers.hasEntry;
-
-import static org.junit.Assert.*;
-
 
 public class MapRewritePolicyTest {
+    private static final StringMap stringMap = ContextDataFactory.createContextData();
     private static Map<String, String> map = new HashMap<>();
     private static KeyValuePair[] rewrite;
     private static LogEvent logEvent0, logEvent1, logEvent2, logEvent3;
 
     @BeforeClass
     public static void setupClass() {
-        map.put("test1", "one");
-        map.put("test2", "two");
+        stringMap.putValue("test1", "one");
+        stringMap.putValue("test2", "two");
+        map = stringMap.toMap(); 
         logEvent0 = Log4jLogEvent.newBuilder() //
                 .setLoggerName("test") //
-                .setContextMap(map) //
+                .setContextData(stringMap) //
                 .setLoggerFqcn("MapRewritePolicyTest.setupClass()") //
                 .setLevel(Level.ERROR) //
                 .setMessage(new SimpleMessage("Test")) //

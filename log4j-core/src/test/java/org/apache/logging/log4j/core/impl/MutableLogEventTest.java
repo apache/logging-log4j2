@@ -30,10 +30,12 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -45,11 +47,23 @@ public class MutableLogEventTest {
     private static final StringMap CONTEXT_DATA = createContextData();
     private static final ThreadContext.ContextStack STACK = new MutableThreadContextStack(Arrays.asList("abc", "xyz"));
 
+    static boolean useObjectInputStream = false;
+
     private static StringMap createContextData() {
         final StringMap result = new SortedArrayStringMap();
         result.putValue("a", "1");
         result.putValue("b", "2");
         return result;
+    }
+
+    @BeforeClass
+    public static void setupClass() {
+        try {
+            Class.forName("java.io.ObjectInputFilter");
+            useObjectInputStream = true;
+        } catch (ClassNotFoundException ex) {
+            // Ignore the exception
+        }
     }
 
     @Test
@@ -278,7 +292,8 @@ public class MutableLogEventTest {
 
     private Log4jLogEvent deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
-        final ObjectInputStream in = new ObjectInputStream(inArr);
+        final ObjectInputStream in = useObjectInputStream ? new ObjectInputStream(inArr) :
+                new FilteredObjectInputStream(inArr);
         final Log4jLogEvent result = (Log4jLogEvent) in.readObject();
         return result;
     }

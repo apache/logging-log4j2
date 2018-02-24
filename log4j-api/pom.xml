@@ -88,7 +88,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.0.1</version>
+        <version>3.0.2</version>
         <executions>
           <execution>
             <id>unpack-classes</id>
@@ -159,28 +159,51 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>${manifestfile}</manifestFile>
-            <manifestEntries>
-              <Specification-Title>${project.name}</Specification-Title>
-              <Specification-Version>${project.version}</Specification-Version>
-              <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-              <Implementation-Title>${project.name}</Implementation-Title>
-              <Implementation-Version>${project.version}</Implementation-Version>
-              <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-              <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-              <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-              <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-              <Multi-Release>true</Multi-Release>
-            </manifestEntries>
-          </archive>
-        </configuration>
         <executions>
           <execution>
+            <id>default-jar</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration combine.self="override">
+              <archive>
+                <manifestFile>${manifestfile}</manifestFile>
+                <manifestEntries>
+                  <Specification-Title>${project.name}</Specification-Title>
+                  <Specification-Version>${project.version}</Specification-Version>
+                  <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                  <Implementation-Title>${project.name}</Implementation-Title>
+                  <Implementation-Version>${project.version}</Implementation-Version>
+                  <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                  <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
+                  <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
+                  <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                  <Multi-Release>true</Multi-Release>
+                </manifestEntries>
+              </archive>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default</id>
             <goals>
               <goal>test-jar</goal>
             </goals>
+            <configuration>
+              <archive>
+                <manifestFile>${manifestfile}</manifestFile>
+                <manifestEntries>
+                  <Specification-Title>${project.name}</Specification-Title>
+                  <Specification-Version>${project.version}</Specification-Version>
+                  <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                  <Implementation-Title>${project.name}</Implementation-Title>
+                  <Implementation-Version>${project.version}</Implementation-Version>
+                  <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                  <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
+                  <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
+                  <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                </manifestEntries>
+              </archive>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -216,18 +239,11 @@
             <_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
           </instructions>
         </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>biz.aQute.bnd</groupId>
-            <artifactId>biz.aQute.bndlib</artifactId>
-            <version>3.5.0</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.8.2</version>
+        <version>${deploy.plugin.version}</version>
       </plugin>
     </plugins>
   </build>

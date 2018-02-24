@@ -38,7 +38,7 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Returns the onMatch result if the script returns True and returns the onMisMatch value otherwise.
+ * Returns the onMatch result if the script returns True and returns the onMismatch value otherwise.
  */
 @Plugin(name = "ScriptFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class ScriptFilter extends AbstractFilter {
@@ -130,6 +130,7 @@ public final class ScriptFilter extends AbstractFilter {
      * @param configuration the configuration 
      * @return A ScriptFilter.
      */
+    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static ScriptFilter createFilter(
             @PluginElement("Script") final AbstractScript script,

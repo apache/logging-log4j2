@@ -28,6 +28,8 @@ import java.util.TimeZone;
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -148,6 +150,71 @@ public class DatePatternConverterTest {
         }
     }
 
+    private String precisePattern(final String pattern, int precision) {
+        String seconds = pattern.substring(0, pattern.indexOf("SSS"));
+        return seconds + "nnnnnnnnn".substring(0, precision);
+    }
+
+    // test with all formats from one 'n' (100s of millis) to 'nnnnnnnnn' (nanosecond precision)
+    @Test
+    public void testPredefinedFormatWithAnyValidNanoPrecision() {
+        final StringBuilder precise = new StringBuilder();
+        final StringBuilder milli = new StringBuilder();
+        final LogEvent event = new MyLogEvent();
+
+        for (String timeZone : new String[]{"PDT", null}) { // Pacific Daylight Time=UTC-8:00
+            for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
+                for (int i = 1; i <= 9; i++) {
+                    if (format.getPattern().endsWith("n")) {
+                        continue; // ignore patterns that already have precise time formats
+                    }
+                    precise.setLength(0);
+                    milli.setLength(0);
+
+                    final String[] preciseOptions = {precisePattern(format.getPattern(), i), timeZone};
+                    final DatePatternConverter preciseConverter = DatePatternConverter.newInstance(preciseOptions);
+                    preciseConverter.format(event, precise);
+
+                    final String[] milliOptions = {format.getPattern(), timeZone};
+                    DatePatternConverter.newInstance(milliOptions).format(event, milli);
+                    milli.setLength(milli.length() - 3); // truncate millis
+                    String expected = milli.append("987123456".substring(0, i)).toString();
+
+                    assertEquals(expected, precise.toString());
+                    //System.out.println(preciseOptions[0] + ": " + precise);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testInvalidLongPatternIgnoresExcessiveDigits() {
+        final StringBuilder precise = new StringBuilder();
+        final StringBuilder milli = new StringBuilder();
+        final LogEvent event = new MyLogEvent();
+
+            for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
+                if (format.getPattern().endsWith("n")) {
+                    continue; // ignore patterns that already have precise time formats
+                }
+                precise.setLength(0);
+                milli.setLength(0);
+
+                final String pattern = format.getPattern().substring(0, format.getPattern().indexOf("SSS"));
+                final String[] preciseOptions = {pattern + "nnnnnnnnn" + "n"}; // too long
+                final DatePatternConverter preciseConverter = DatePatternConverter.newInstance(preciseOptions);
+                preciseConverter.format(event, precise);
+
+                final String[] milliOptions = {format.getPattern()};
+                DatePatternConverter.newInstance(milliOptions).format(event, milli);
+                milli.setLength(milli.length() - 3); // truncate millis
+                String expected = milli.append("987123456").toString();
+
+                assertEquals(expected, precise.toString());
+                //System.out.println(preciseOptions[0] + ": " + precise);
+            }
+    }
+
     private class MyLogEvent extends AbstractLogEvent {
         private static final long serialVersionUID = 0;
 
@@ -157,6 +224,13 @@ public class DatePatternConverterTest {
             cal.set(2011, Calendar.DECEMBER, 30, 10, 56, 35);
             cal.set(Calendar.MILLISECOND, 987);
             return cal.getTimeInMillis();
+        }
+
+        @Override
+        public Instant getInstant() {
+            MutableInstant result = new MutableInstant();
+            result.initFromEpochMilli(getTimeMillis(), 123456);
+            return result;
         }
     }
 

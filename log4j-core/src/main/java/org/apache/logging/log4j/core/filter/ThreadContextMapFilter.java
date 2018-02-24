@@ -194,6 +194,7 @@ public class ThreadContextMapFilter extends MapFilter {
         return filter();
     }
 
+    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static ThreadContextMapFilter createFilter(
             @PluginElement("Pairs") final KeyValuePair[] pairs,

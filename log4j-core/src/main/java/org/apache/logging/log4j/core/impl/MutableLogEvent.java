@@ -26,7 +26,9 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.InternalAsyncUtil;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.*;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.message.*;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -43,7 +45,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     private int threadPriority;
     private long threadId;
-    private long timeMillis;
+    private MutableInstant instant = new MutableInstant();
     private long nanoTime;
     private short parameterCount;
     private boolean includeLocation;
@@ -92,9 +94,10 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         this.marker = event.getMarker();
         this.level = event.getLevel();
         this.loggerName = event.getLoggerName();
-        this.timeMillis = event.getTimeMillis();
         this.thrown = event.getThrown();
         this.thrownProxy = event.getThrownProxy();
+
+        this.instant.initFrom(event.getInstant());
 
         // NOTE: this ringbuffer event SHOULD NOT keep a reference to the specified
         // thread-local MutableLogEvent's context data, because then two threads would call
@@ -304,13 +307,27 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         this.thrown = thrown;
     }
 
+    void initTime(final Clock clock, final NanoClock nanoClock) {
+        if (message instanceof TimestampMessage) {
+            instant.initFromEpochMilli(((TimestampMessage) message).getTimestamp(), 0);
+        } else {
+            instant.initFrom(clock);
+        }
+        nanoTime = nanoClock.nanoTime();
+    }
+
     @Override
     public long getTimeMillis() {
-        return timeMillis;
+        return instant.getEpochMillisecond();
     }
 
     public void setTimeMillis(final long timeMillis) {
-        this.timeMillis = timeMillis;
+        this.instant.initFromEpochMilli(timeMillis, 0);
+    }
+
+    @Override
+    public Instant getInstant() {
+        return instant;
     }
 
     /**
@@ -472,7 +489,8 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
                 .setThreadPriority(threadPriority) //
                 .setThrown(getThrown()) // may deserialize from thrownProxy
                 .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
-                .setTimeMillis(timeMillis);
+                .setInstant(instant) //
+        ;
     }
 
     private Message getNonNullImmutableMessage() {

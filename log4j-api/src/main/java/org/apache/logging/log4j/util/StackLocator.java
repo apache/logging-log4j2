@@ -53,7 +53,6 @@ public final class StackLocator {
     static final int JDK_7u25_OFFSET;
     // CHECKSTYLE:OFF
 
-    private static final boolean SUN_REFLECTION_SUPPORTED;
     private static final Method GET_CALLER_CLASS;
 
     private static final StackLocator INSTANCE;
@@ -65,7 +64,7 @@ public final class StackLocator {
             final Class<?> sunReflectionClass = LoaderUtil.loadClass("sun.reflect.Reflection");
             getCallerClass = sunReflectionClass.getDeclaredMethod("getCallerClass", int.class);
             Object o = getCallerClass.invoke(null, 0);
-            final Object test1 = getCallerClass.invoke(null, 0);
+            getCallerClass.invoke(null, 0);
             if (o == null || o != sunReflectionClass) {
                 getCallerClass = null;
                 java7u25CompensationOffset = -1;
@@ -83,7 +82,6 @@ public final class StackLocator {
             java7u25CompensationOffset = -1;
         }
 
-        SUN_REFLECTION_SUPPORTED = getCallerClass != null;
         GET_CALLER_CLASS = getCallerClass;
         JDK_7u25_OFFSET = java7u25CompensationOffset;
 
@@ -252,33 +250,5 @@ public final class StackLocator {
             return super.getClassContext();
         }
 
-        protected Class<?> getCallerClass(final String fqcn, final String pkg) {
-            boolean next = false;
-            for (final Class<?> clazz : getClassContext()) {
-                if (fqcn.equals(clazz.getName())) {
-                    next = true;
-                    continue;
-                }
-                if (next && clazz.getName().startsWith(pkg)) {
-                    return clazz;
-                }
-            }
-            // TODO: return Object.class
-            return null;
-        }
-
-        protected Class<?> getCallerClass(final Class<?> anchor) {
-            boolean next = false;
-            for (final Class<?> clazz : getClassContext()) {
-                if (anchor.equals(clazz)) {
-                    next = true;
-                    continue;
-                }
-                if (next) {
-                    return clazz;
-                }
-            }
-            return Object.class;
-        }
     }
 }

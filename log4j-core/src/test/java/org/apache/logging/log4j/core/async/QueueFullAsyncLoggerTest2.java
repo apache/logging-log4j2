@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +24,6 @@ import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -35,8 +33,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests queue full scenarios with pure AsyncLoggers (all loggers async).

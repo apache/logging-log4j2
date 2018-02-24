@@ -218,7 +218,7 @@ public final class TimeFilter extends AbstractFilter {
     }
 
     /**
-     * Create a TimeFilter.
+     * Creates a TimeFilter.
      * @param start The start time.
      * @param end The end time.
      * @param tz timezone.
@@ -226,6 +226,7 @@ public final class TimeFilter extends AbstractFilter {
      * @param mismatch Action to perform if the action does not match.
      * @return A TimeFilter.
      */
+    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static TimeFilter createFilter(
             @PluginAttribute("start") final String start,

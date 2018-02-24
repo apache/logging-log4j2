@@ -16,8 +16,13 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.core.time.PreciseClock;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Supplier;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Factory for {@code Clock} objects.
@@ -62,30 +67,42 @@ public final class ClockFactory {
         return createClock();
     }
 
+    private static Map<String, Supplier<Clock>> aliases() {
+        Map<String, Supplier<Clock>> result = new HashMap<>();
+        result.put("SystemClock",       new Supplier<Clock>() { @Override public Clock get() { return new SystemClock(); } });
+        result.put("SystemMillisClock", new Supplier<Clock>() { @Override public Clock get() { return new SystemMillisClock(); } });
+        result.put("CachedClock",       new Supplier<Clock>() { @Override public Clock get() { return CachedClock.instance(); } });
+        result.put("CoarseCachedClock", new Supplier<Clock>() { @Override public Clock get() { return CoarseCachedClock.instance(); } });
+        result.put("org.apache.logging.log4j.core.util.CachedClock", new Supplier<Clock>() { @Override public Clock get() { return CachedClock.instance(); } });
+        result.put("org.apache.logging.log4j.core.util.CoarseCachedClock", new Supplier<Clock>() { @Override public Clock get() { return CoarseCachedClock.instance(); } });
+        return result;
+    }
+
     private static Clock createClock() {
         final String userRequest = PropertiesUtil.getProperties().getStringProperty(PROPERTY_NAME);
-        if (userRequest == null || "SystemClock".equals(userRequest)) {
+        if (userRequest == null) {
             LOGGER.trace("Using default SystemClock for timestamps.");
-            return new SystemClock();
+            return logSupportedPrecision(new SystemClock());
         }
-        if (CachedClock.class.getName().equals(userRequest)
-                || "CachedClock".equals(userRequest)) {
-            LOGGER.trace("Using specified CachedClock for timestamps.");
-            return CachedClock.instance();
-        }
-        if (CoarseCachedClock.class.getName().equals(userRequest)
-                || "CoarseCachedClock".equals(userRequest)) {
-            LOGGER.trace("Using specified CoarseCachedClock for timestamps.");
-            return CoarseCachedClock.instance();
+        Supplier<Clock> specified = aliases().get(userRequest);
+        if (specified != null) {
+            LOGGER.trace("Using specified {} for timestamps.", userRequest);
+            return logSupportedPrecision(specified.get());
         }
         try {
             final Clock result = Loader.newCheckedInstanceOf(userRequest, Clock.class);
             LOGGER.trace("Using {} for timestamps.", result.getClass().getName());
-            return result;
+            return logSupportedPrecision(result);
         } catch (final Exception e) {
             final String fmt = "Could not create {}: {}, using default SystemClock for timestamps.";
             LOGGER.error(fmt, userRequest, e);
-            return new SystemClock();
+            return logSupportedPrecision(new SystemClock());
         }
+    }
+
+    private static Clock logSupportedPrecision(Clock clock) {
+        String support = clock instanceof PreciseClock ? "supports" : "does not support";
+        LOGGER.debug("{} {} precise timestamps.", clock.getClass().getName(), support);
+        return clock;
     }
 }

@@ -147,13 +147,14 @@ public final class StructuredDataFilter extends MapFilter {
     }
 
     /**
-     * Create the StructuredDataFilter.
+     * Creates the StructuredDataFilter.
      * @param pairs Key and value pairs.
      * @param oper The operator to perform. If not "or" the operation will be an "and".
      * @param match The action to perform on a match.
      * @param mismatch The action to perform on a mismatch.
      * @return The StructuredDataFilter.
      */
+    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static StructuredDataFilter createFilter(
             @PluginElement("Pairs") final KeyValuePair[] pairs,

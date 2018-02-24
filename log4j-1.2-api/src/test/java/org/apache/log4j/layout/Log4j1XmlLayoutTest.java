@@ -16,15 +16,14 @@
  */
 package org.apache.log4j.layout;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.StringMap;
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 public class Log4j1XmlLayoutTest {
 
@@ -53,9 +52,9 @@ public class Log4j1XmlLayoutTest {
     public void testWithPropertiesAndLocationInfo() {
         final Log4j1XmlLayout layout = Log4j1XmlLayout.createLayout(true, true);
 
-        final Map<String, String> contextMap = new HashMap<>(2);
-        contextMap.put("key1", "value1");
-        contextMap.put("key2", "value2");
+        final StringMap contextMap = ContextDataFactory.createContextData(2);
+        contextMap.putValue("key1", "value1");
+        contextMap.putValue("key2", "value2");
         final Log4jLogEvent event = Log4jLogEvent.newBuilder()
                 .setLoggerName("a.B")
                 .setLevel(Level.INFO)
@@ -63,7 +62,7 @@ public class Log4j1XmlLayoutTest {
                 .setTimeMillis(System.currentTimeMillis() + 17)
                 .setIncludeLocation(true)
                 .setSource(new StackTraceElement("pack.MyClass", "myMethod", "MyClass.java", 17))
-                .setContextMap(contextMap)
+                .setContextData(contextMap)
                 .build();
 
         final String result = layout.toSerializable(event);

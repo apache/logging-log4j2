@@ -16,13 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+import java.io.Serializable;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.junit.Test;
 
 public class AbstractDatabaseManagerTest {
     private AbstractDatabaseManager manager;
@@ -89,21 +97,21 @@ public class AbstractDatabaseManagerTest {
         then(manager).should().startupInternal();
         reset(manager);
 
-        manager.write(event1);
+        manager.write(event1, null);
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event1));
+        then(manager).should().writeInternal(same(event1), (Serializable) isNull());
         then(manager).should().commitAndClose();
         reset(manager);
 
-        manager.write(event2);
+        manager.write(event2, null);
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event2));
+        then(manager).should().writeInternal(same(event2), (Serializable) isNull());
         then(manager).should().commitAndClose();
         reset(manager);
 
-        manager.write(event3);
+        manager.write(event3, null);
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event3));
+        then(manager).should().writeInternal(same(event3), (Serializable) isNull());
         then(manager).should().commitAndClose();
         then(manager).shouldHaveNoMoreInteractions();
     }
@@ -130,16 +138,16 @@ public class AbstractDatabaseManagerTest {
         manager.startup();
         then(manager).should().startupInternal();
 
-        manager.write(event1);
-        manager.write(event2);
-        manager.write(event3);
-        manager.write(event4);
+        manager.write(event1, null);
+        manager.write(event2, null);
+        manager.write(event3, null);
+        manager.write(event4, null);
 
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event1copy));
-        then(manager).should().writeInternal(same(event2copy));
-        then(manager).should().writeInternal(same(event3copy));
-        then(manager).should().writeInternal(same(event4copy));
+        then(manager).should().writeInternal(same(event1copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event2copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event3copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event4copy), (Serializable) isNull());
         then(manager).should().commitAndClose();
         then(manager).shouldHaveNoMoreInteractions();
     }
@@ -163,15 +171,15 @@ public class AbstractDatabaseManagerTest {
         manager.startup();
         then(manager).should().startupInternal();
 
-        manager.write(event1);
-        manager.write(event2);
-        manager.write(event3);
+        manager.write(event1, null);
+        manager.write(event2, null);
+        manager.write(event3, null);
         manager.flush();
 
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event1copy));
-        then(manager).should().writeInternal(same(event2copy));
-        then(manager).should().writeInternal(same(event3copy));
+        then(manager).should().writeInternal(same(event1copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event2copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event3copy), (Serializable) isNull());
         then(manager).should().commitAndClose();
         then(manager).shouldHaveNoMoreInteractions();
     }
@@ -195,15 +203,15 @@ public class AbstractDatabaseManagerTest {
         manager.startup();
         then(manager).should().startupInternal();
 
-        manager.write(event1);
-        manager.write(event2);
-        manager.write(event3);
+        manager.write(event1, null);
+        manager.write(event2, null);
+        manager.write(event3, null);
         manager.shutdown();
 
         then(manager).should().connectAndStart();
-        then(manager).should().writeInternal(same(event1copy));
-        then(manager).should().writeInternal(same(event2copy));
-        then(manager).should().writeInternal(same(event3copy));
+        then(manager).should().writeInternal(same(event1copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event2copy), (Serializable) isNull());
+        then(manager).should().writeInternal(same(event3copy), (Serializable) isNull());
         then(manager).should().commitAndClose();
         then(manager).should().shutdownInternal();
         then(manager).shouldHaveNoMoreInteractions();
@@ -218,6 +226,7 @@ public class AbstractDatabaseManagerTest {
 
         @Override
         protected void startupInternal() throws Exception {
+            // noop
         }
 
         @Override
@@ -227,15 +236,23 @@ public class AbstractDatabaseManagerTest {
 
         @Override
         protected void connectAndStart() {
+            // noop
+        }
+
+        @Deprecated
+        @Override
+        protected void writeInternal(final LogEvent event) {
+            // noop
         }
 
         @Override
-        protected void writeInternal(final LogEvent event) {
+        protected void writeInternal(LogEvent event, Serializable serializable) {
+            // noop
         }
-
         @Override
         protected boolean commitAndClose() {
             return true;
         }
+
     }
 }

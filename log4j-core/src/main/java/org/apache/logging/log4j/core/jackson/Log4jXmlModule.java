@@ -38,7 +38,7 @@ final class Log4jXmlModule extends JacksonXmlModule {
         this.stacktraceAsString = stacktraceAsString;
         // MUST init here.
         // Calling this from setupModule is too late!
-        new SimpleModuleInitializer().initialize(this);
+        new SimpleModuleInitializer().initialize(this, false);
     }
 
     @Override

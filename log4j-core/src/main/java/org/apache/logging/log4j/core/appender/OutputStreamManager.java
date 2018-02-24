@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -289,7 +290,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @since 2.6
      */
     protected synchronized void flushBuffer(final ByteBuffer buf) {
-        buf.flip();
+        ((Buffer) buf).flip();
         if (buf.remaining() > 0) {
             writeToDestination(buf.array(), buf.arrayOffset() + buf.position(), buf.remaining());
         }

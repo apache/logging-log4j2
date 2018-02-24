@@ -47,9 +47,9 @@ public class SortedArrayStringMapTest {
         new SortedArrayStringMap(-1);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorDisallowsZeroCapacity() throws Exception {
-        new SortedArrayStringMap(0);
+    public void testConstructorAllowsZeroCapacity() throws Exception {
+        SortedArrayStringMap sortedArrayStringMap = new SortedArrayStringMap(0);
+        assertEquals(0, sortedArrayStringMap.size());
     }
 
     @Test
@@ -167,9 +167,10 @@ public class SortedArrayStringMapTest {
 
     private SortedArrayStringMap deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
-        final ObjectInputStream in = new ObjectInputStream(inArr);
-        final SortedArrayStringMap result = (SortedArrayStringMap) in.readObject();
-        return result;
+        try (final ObjectInputStream in = new FilteredObjectInputStream(inArr)) {
+            final SortedArrayStringMap result = (SortedArrayStringMap) in.readObject();
+            return result;
+        }
     }
 
     @Test

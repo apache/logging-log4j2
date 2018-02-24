@@ -25,8 +25,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginValue;
 /**
  * Container for the language and body of a script.
  */
-@Plugin(name = "Script", category = Node.CATEGORY, printObject = true)
+@Plugin(name = Script.PLUGIN_NAME, category = Node.CATEGORY, printObject = true)
 public class Script extends AbstractScript {
+
+    private static final String ATTR_LANGUAGE = "language";
+    private static final String ATTR_SCRIPT_TEXT = "scriptText";
+    static final String PLUGIN_NAME = "Script";
 
     public Script(final String name, final String language, final String scriptText) {
         super(name, language, scriptText);
@@ -36,15 +40,15 @@ public class Script extends AbstractScript {
     public static Script createScript(
             // @formatter:off
             @PluginAttribute("name") final String name,
-            @PluginAttribute("language") String language,
-            @PluginValue("scriptText") final String scriptText) {
+            @PluginAttribute(ATTR_LANGUAGE) String language,
+            @PluginValue(ATTR_SCRIPT_TEXT) final String scriptText) {
             // @formatter:on
         if (language == null) {
-            LOGGER.info("No script language supplied, defaulting to {}", DEFAULT_LANGUAGE);
+            LOGGER.error("No '{}' attribute provided for {} plugin '{}'", ATTR_LANGUAGE, PLUGIN_NAME, name);
             language = DEFAULT_LANGUAGE;
         }
         if (scriptText == null) {
-            LOGGER.error("No scriptText attribute provided for ScriptFile {}", name);
+            LOGGER.error("No '{}' attribute provided for {} plugin '{}'", ATTR_SCRIPT_TEXT, PLUGIN_NAME, name);
             return null;
         }
         return new Script(name, language, scriptText);

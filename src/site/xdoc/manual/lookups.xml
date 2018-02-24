@@ -81,6 +81,16 @@
     <pattern>%d %p %c{1.} [%t] $${env:USER} %m%n</pattern>
   </PatternLayout>
 </File>]]></pre>
+          <p>
+            This lookup also supports default value syntax. In the sample below, when the <code>USER</code> environment
+            variable is undefined, the default value <code>jdoe</code> is used:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${env:USER:-jdoe} %m%n</pattern>
+  </PatternLayout>
+</File>]]></pre>           
         </subsection>
         <a name="JavaLookup"/>
         <subsection name="Java Lookup">
@@ -421,6 +431,14 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
 <Appenders>
   <File name="ApplicationLog" fileName="${sys:logPath}/app.log"/>
 </Appenders>]]></pre>
+          <p>
+            This lookup also supports default value syntax. In the sample below, when the <code>logPath</code> system
+            property is undefined, the default value <code>/var/logs</code> is used:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<Appenders>
+  <File name="ApplicationLog" fileName="${sys:logPath:-/var/logs}/app.log"/>
+</Appenders>]]></pre>            
         </subsection>
         <a name="WebLookup"/>
         <subsection name="Web Lookup">

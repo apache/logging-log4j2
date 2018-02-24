@@ -42,22 +42,170 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 @Plugin(name = "ColumnMapping", category = Core.CATEGORY_NAME, printObject = true)
 public class ColumnMapping {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
+    /**
+     * Builder for {@link ColumnMapping}.
+     */
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ColumnMapping> {
 
-    private final String name;
-    private final StringLayout layout;
-    private final String literalValue;
-    private final Class<?> type;
+        @PluginConfiguration
+        private Configuration configuration;
 
-    private ColumnMapping(final String name, final StringLayout layout, final String literalValue, final Class<?> type) {
-        this.name = name;
-        this.layout = layout;
-        this.literalValue = literalValue;
-        this.type = type;
+        @PluginElement("Layout")
+        private StringLayout layout;
+
+        @PluginBuilderAttribute
+        private String literal;
+
+        @PluginBuilderAttribute
+        @Required(message = "No column name provided")
+        private String name;
+
+        @PluginBuilderAttribute
+        private String parameter;
+
+        @PluginBuilderAttribute
+        private String pattern;
+
+        @PluginBuilderAttribute
+        private String source;
+
+        @PluginBuilderAttribute
+        @Required(message = "No conversion type provided")
+        private Class<?> type = String.class;
+
+        @Override
+        public ColumnMapping build() {
+            if (pattern != null) {
+                layout = PatternLayout.newBuilder()
+                    .withPattern(pattern)
+                    .withConfiguration(configuration)
+                    .build();
+            }
+            if (!(layout == null
+                || literal == null
+                || Date.class.isAssignableFrom(type)
+                || ReadOnlyStringMap.class.isAssignableFrom(type)
+                || ThreadContextMap.class.isAssignableFrom(type)
+                || ThreadContextStack.class.isAssignableFrom(type))) {
+                LOGGER.error("No 'layout' or 'literal' value specified and type ({}) is not compatible with ThreadContextMap, ThreadContextStack, or java.util.Date for the mapping", type, this);
+                return null;
+            }
+            if (literal != null && parameter != null) {
+                LOGGER.error("Only one of 'literal' or 'parameter' can be set on the column mapping {}", this);
+                return null;
+            }
+            return new ColumnMapping(name, source, layout, literal, parameter, type);
+        }
+
+        public Builder setConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        /**
+         * Layout of value to write to database (before type conversion). Not applicable if {@link #setType(Class)} is
+         * a {@link ReadOnlyStringMap}, {@link ThreadContextMap}, or {@link ThreadContextStack}.
+         * 
+         * @return this. 
+         */
+        public Builder setLayout(final StringLayout layout) {
+            this.layout = layout;
+            return this;
+        }
+
+        /**
+         * Literal value to use for populating a column. This is generally useful for functions, stored procedures,
+         * etc. No escaping will be done on this value.
+         * 
+         * @return this. 
+         */
+        public Builder setLiteral(final String literal) {
+            this.literal = literal;
+            return this;
+        }
+
+        /**
+         * Column name.
+         * 
+         * @return this. 
+         */
+        public Builder setName(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        /**
+         * Parameter value to use for populating a column, MUST contain a single parameter marker '?'. This is generally useful for functions, stored procedures,
+         * etc. No escaping will be done on this value.
+         * 
+         * @return this. 
+         */
+        public Builder setParameter(final String parameter) {
+            this.parameter= parameter;
+            return this;
+        }
+
+        /**
+         * Pattern to use as a {@link PatternLayout}. Convenient shorthand for {@link #setLayout(StringLayout)} with a
+         * PatternLayout.
+         * 
+         * @return this. 
+         */
+        public Builder setPattern(final String pattern) {
+            this.pattern = pattern;
+            return this;
+        }
+
+        /**
+         * Source name. Useful when combined with a {@link org.apache.logging.log4j.message.MapMessage} depending on the
+         * appender.
+         * 
+         * @return this.
+         */
+        public Builder setSource(final String source) {
+            this.source = source;
+            return this;
+        }
+
+        /**
+         * Class to convert value to before storing in database. If the type is compatible with {@link ThreadContextMap} or
+         * {@link ReadOnlyStringMap}, then the MDC will be used. If the type is compatible with {@link ThreadContextStack},
+         * then the NDC will be used. If the type is compatible with {@link Date}, then the event timestamp will be used.
+         * 
+         * @return this. 
+         */
+        public Builder setType(final Class<?> type) {
+            this.type = type;
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return "Builder [name=" + name + ", source=" + source + ", literal=" + literal + ", parameter=" + parameter
+                    + ", pattern=" + pattern + ", type=" + type + ", layout=" + layout + "]";
+        }
     }
 
-    public String getName() {
-        return name;
+    private static final Logger LOGGER = StatusLogger.getLogger();
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+    
+    private final StringLayout layout;
+    private final String literalValue;
+    private final String name;
+    private final String parameter;
+    private final String source;
+    private final Class<?> type;
+
+    private ColumnMapping(final String name, final String source, final StringLayout layout, final String literalValue, final String parameter, final Class<?> type) {
+        this.name = name;
+        this.source = source;
+        this.layout = layout;
+        this.literalValue = literalValue;
+        this.parameter = parameter;
+        this.type = type;
     }
 
     public StringLayout getLayout() {
@@ -68,106 +216,26 @@ public class ColumnMapping {
         return literalValue;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getParameter() {
+        return parameter;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
     public Class<?> getType() {
         return type;
     }
 
-    @PluginBuilderFactory
-    public static Builder newBuilder() {
-        return new Builder();
+    @Override
+    public String toString() {
+        return "ColumnMapping [name=" + name + ", source=" + source + ", literalValue=" + literalValue + ", parameter="
+                + parameter + ", type=" + type + ", layout=" + layout + "]";
     }
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ColumnMapping> {
-
-        @PluginBuilderAttribute
-        @Required(message = "No column name provided")
-        private String name;
-
-        @PluginElement("Layout")
-        private StringLayout layout;
-
-        @PluginBuilderAttribute
-        private String pattern;
-
-        @PluginBuilderAttribute
-        private String literal;
-
-        @PluginBuilderAttribute
-        @Required(message = "No conversion type provided")
-        private Class<?> type = String.class;
-
-        @PluginConfiguration
-        private Configuration configuration;
-
-        /**
-         * Column name.
-         */
-        public Builder setName(final String name) {
-            this.name = name;
-            return this;
-        }
-
-        /**
-         * Layout of value to write to database (before type conversion). Not applicable if {@link #setType(Class)} is
-         * a {@link ReadOnlyStringMap}, {@link ThreadContextMap}, or {@link ThreadContextStack}.
-         */
-        public Builder setLayout(final StringLayout layout) {
-            this.layout = layout;
-            return this;
-        }
-
-        /**
-         * Pattern to use as a {@link PatternLayout}. Convenient shorthand for {@link #setLayout(StringLayout)} with a
-         * PatternLayout.
-         */
-        public Builder setPattern(final String pattern) {
-            this.pattern = pattern;
-            return this;
-        }
-
-        /**
-         * Literal value to use for populating a column. This is generally useful for functions, stored procedures,
-         * etc. No escaping will be done on this value.
-         */
-        public Builder setLiteral(final String literal) {
-            this.literal = literal;
-            return this;
-        }
-
-        /**
-         * Class to convert value to before storing in database. If the type is compatible with {@link ThreadContextMap} or
-         * {@link ReadOnlyStringMap}, then the MDC will be used. If the type is compatible with {@link ThreadContextStack},
-         * then the NDC will be used. If the type is compatible with {@link Date}, then the event timestamp will be used.
-         */
-        public Builder setType(final Class<?> type) {
-            this.type = type;
-            return this;
-        }
-
-        public Builder setConfiguration(final Configuration configuration) {
-            this.configuration = configuration;
-            return this;
-        }
-
-        @Override
-        public ColumnMapping build() {
-            if (pattern != null) {
-                layout = PatternLayout.newBuilder()
-                    .withPattern(pattern)
-                    .withConfiguration(configuration)
-                    .build();
-            }
-            if (!(layout != null
-                || literal != null
-                || Date.class.isAssignableFrom(type)
-                || ReadOnlyStringMap.class.isAssignableFrom(type)
-                || ThreadContextMap.class.isAssignableFrom(type)
-                || ThreadContextStack.class.isAssignableFrom(type))) {
-                LOGGER.error("No layout or literal value specified and type ({}) is not compatible with " +
-                    "ThreadContextMap, ThreadContextStack, or java.util.Date", type);
-                return null;
-            }
-            return new ColumnMapping(name, layout, literal, type);
-        }
-    }
 }

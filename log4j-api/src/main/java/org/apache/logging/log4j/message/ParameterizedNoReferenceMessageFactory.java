@@ -46,6 +46,7 @@ public final class ParameterizedNoReferenceMessageFactory extends AbstractMessag
      * @since 2.6
      */
     static class StatusMessage implements Message {
+        private static final long serialVersionUID = 4199272162767841280L;
         private final String formattedMessage;
         private final Throwable throwable;
         private final StackTraceElement source;

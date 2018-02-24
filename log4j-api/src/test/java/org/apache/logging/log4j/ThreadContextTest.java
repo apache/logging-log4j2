@@ -28,6 +28,9 @@ import static org.junit.Assert.*;
  *
  */
 public class ThreadContextTest {
+    public static void reinitThreadContext() {
+        ThreadContext.init();
+    }
 
     @Test
     public void testPush() {

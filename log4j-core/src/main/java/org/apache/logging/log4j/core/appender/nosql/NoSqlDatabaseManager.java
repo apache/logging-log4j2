@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
+import java.io.Serializable;
+
+import javax.jms.JMSException;
+
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -23,6 +27,7 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
@@ -64,14 +69,40 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         }
     }
 
+    @Deprecated
     @Override
     protected void writeInternal(final LogEvent event) {
+        writeInternal(event, null);
+    }
+    
+    @Override
+    protected void writeInternal(final LogEvent event, final Serializable serializable) {
         if (!this.isRunning() || this.connection == null || this.connection.isClosed()) {
             throw new AppenderLoggingException(
                     "Cannot write logging event; NoSQL manager not connected to the database.");
         }
 
         final NoSqlObject<W> entity = this.connection.createObject();
+        if (serializable instanceof MapMessage) {
+            setFields((MapMessage<?, ?>) serializable, entity);
+        } else {
+            setFields(event, entity);
+        }
+
+        this.connection.insertObject(entity);
+    }
+
+    private void setFields(final MapMessage<?, ?> mapMessage, final NoSqlObject<W> noSqlObject) {
+        // Map without calling org.apache.logging.log4j.message.MapMessage#getData() which makes a copy of the map.
+        mapMessage.forEach(new BiConsumer<String, Object>() {
+            @Override
+            public void accept(final String key, final Object value) {
+                noSqlObject.set(key, value);
+            }
+        });
+    }
+
+    private void setFields(final LogEvent event, final NoSqlObject<W> entity) {
         entity.set("level", event.getLevel());
         entity.set("loggerName", event.getLoggerName());
         entity.set("message", event.getMessage() == null ? null : event.getMessage().getFormattedMessage());
@@ -139,8 +170,6 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         } else {
             entity.set("contextStack", contextStack.asList().toArray());
         }
-
-        this.connection.insertObject(entity);
     }
 
     private NoSqlObject<W> buildMarkerEntity(final Marker marker) {
@@ -205,7 +234,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         private final NoSqlProvider<?> provider;
 
         protected FactoryData(final int bufferSize, final NoSqlProvider<?> provider) {
-            super(bufferSize);
+            super(bufferSize, null);
             this.provider = provider;
         }
     }

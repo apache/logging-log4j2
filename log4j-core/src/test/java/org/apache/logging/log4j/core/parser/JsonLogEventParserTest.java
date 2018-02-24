@@ -28,6 +28,7 @@ public class JsonLogEventParserTest extends LogEventParserTest {
 
     private static final String JSON = "{\n" +
             "  \"timeMillis\" : 1493121664118,\n" +
+            "  \"instant\":{\"epochSecond\":1493121664,\"nanoOfSecond\":118000000},\n" +
             "  \"thread\" : \"main\",\n" +
             "  \"threadId\" : 1,\n" +
             "  \"threadPriority\" : 5,\n" +
@@ -105,7 +106,7 @@ public class JsonLogEventParserTest extends LogEventParserTest {
 
     @Test(expected = ParseException.class)
     public void testStringWrongPropertyType() throws ParseException {
-        parser.parseFrom("{\"timeMillis\":\"foobar\"}");
+        parser.parseFrom("{\"threadId\":\"foobar\"}");
     }
 
     @Test

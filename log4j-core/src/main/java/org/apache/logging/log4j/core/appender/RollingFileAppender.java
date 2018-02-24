@@ -56,6 +56,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
      * 
      * @param <B>
      *            The type to build
+     * @since 2.7
      */
     public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<RollingFileAppender> {
@@ -398,6 +399,12 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         // @formatter:on
     }
 
+    /**
+     * Creates a new Builder.
+     * 
+     * @return a new Builder.
+     * @since 2.7
+     */
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();

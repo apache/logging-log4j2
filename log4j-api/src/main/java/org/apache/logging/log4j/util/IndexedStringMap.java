@@ -30,4 +30,5 @@ package org.apache.logging.log4j.util;
  * @since 2.8
  */
 public interface IndexedStringMap extends IndexedReadOnlyStringMap, StringMap {
+    // nothing more
 }

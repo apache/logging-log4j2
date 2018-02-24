@@ -345,7 +345,10 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           Log event follows this pattern:
           </p>
           <pre class="prettyprint linenums">{
-  "timeMillis" : 1493121664118,
+  "instant" : {
+    "epochSecond" : 1493121664,
+    "nanoOfSecond" : 118000000
+  },
   "thread" : "main",
   "level" : "INFO",
   "loggerName" : "HelloWorld",
@@ -465,6 +468,11 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>includeNullDelimiter</td>
               <td>boolean</td>
               <td>Whether to include NULL byte as delimiter after each event (optional, default to false).</td>
+            </tr>
+            <tr>
+              <td>objectMessageAsJsonObject</td>
+              <td>boolean</td>
+              <td>If true, ObjectMessage is serialized as JSON object to the "message" field of the output log. Defaults to false.</td>
             </tr>
             <caption align="top">JsonLayout Parameters</caption>
           </table>
@@ -731,7 +739,15 @@ WARN  [main]: Message 2</pre>
                     </tr>
                     <tr>
                       <td>%d{DEFAULT}</td>
-                      <td>2012-11-02 14:34:02,781</td>
+                      <td>2012-11-02 14:34:02,123</td>
+                    </tr>
+                    <tr>
+                      <td>%d{DEFAULT_MICROS}</td>
+                      <td>2012-11-02 14:34:02,123456</td>
+                    </tr>
+                    <tr>
+                      <td>%d{DEFAULT_NANOS}</td>
+                      <td>2012-11-02 14:34:02,123456789</td>
                     </tr>
                     <tr>
                       <td>%d{ISO8601}</td>
@@ -746,6 +762,14 @@ WARN  [main]: Message 2</pre>
                       <td>14:34:02,781</td>
                     </tr>
                     <tr>
+                      <td>%d{ABSOLUTE_MICROS}</td>
+                      <td>14:34:02,123456</td>
+                    </tr>
+                    <tr>
+                      <td>%d{ABSOLUTE_NANOS}</td>
+                      <td>14:34:02,123456789</td>
+                    </tr>
+                    <tr>
                       <td>%d{DATE}</td>
                       <td>02 Nov 2012 14:34:02,781</td>
                     </tr>
@@ -755,11 +779,19 @@ WARN  [main]: Message 2</pre>
                     </tr>
                     <tr>
                       <td>%d{HH:mm:ss,SSS}</td>
-                      <td>14:34:02,781</td>
+                      <td>14:34:02,123</td>
+                    </tr>
+                    <tr>
+                      <td>%d{HH:mm:ss,nnnn} to %d{HH:mm:ss,nnnnnnnnn}</td>
+                      <td>14:34:02,1234 to 14:34:02,123456789</td>
                     </tr>
                     <tr>
                       <td>%d{dd MMM yyyy HH:mm:ss,SSS}</td>
-                      <td>02 Nov 2012 14:34:02,781</td>
+                      <td>02 Nov 2012 14:34:02,123</td>
+                    </tr>
+                    <tr>
+                      <td>%d{dd MMM yyyy HH:mm:ss,nnnn} to %d{dd MMM yyyy HH:mm:ss,nnnnnnnnn}</td>
+                      <td>02 Nov 2012 14:34:02,1234 to 02 Nov 2012 14:34:02,123456789</td>
                     </tr>
                     <tr>
                       <td>%d{HH:mm:ss}{GMT+0}</td>
@@ -783,6 +815,18 @@ WARN  [main]: Message 2</pre>
                   (<a href="http://msdn.microsoft.com/en-us/windows/hardware/gg463266.aspx">Windows</a>).
                   This is an efficient way to output the event time because only a conversion from long to String
                   takes place, there is no Date formatting involved.
+                </p>
+                <p>
+                  Log4j 2.11 adds limited support for timestamps more precise than milliseconds when running on Java 9.
+                  Note that not all
+                  <a href="https://docs.oracle.com/javase/9/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter</a>
+                   formats are supported.
+                  Only timestamps in the formats mentioned in the table above may use the "nano-of-second"
+                  pattern letter <code>n</code> instead of the "fraction-of-second" pattern letter <code>S</code>.
+                </p>
+                <p>
+                  Users may revert back to a millisecond-precision clock when running on Java 9 by setting system property
+                  <code>log4j2.Clock</code> to <code>SystemMillisClock</code>.
                 </p>
               </td>
             </tr>
@@ -901,12 +945,11 @@ WARN  [main]: Message 2</pre>
                 &nbsp;&nbsp;&nbsp;| "short.lineNumber"<br />
                 &nbsp;&nbsp;&nbsp;| "short.methodName"<br />
                 &nbsp;&nbsp;&nbsp;| "short.message"<br />
-                &nbsp;&nbsp;&nbsp;| "short.localizedMessage"]}<br />
-                &nbsp;&nbsp;[,filters(package,package,...)]<br/>
-                &nbsp;&nbsp;[,separator(<i>separator</i>)]<br/>
-                }<br/>
-                {suffix(<i>pattern</i>)<br/>
-                }<br/>
+                &nbsp;&nbsp;&nbsp;| "short.localizedMessage"]<br />
+                }<br />
+                &nbsp;&nbsp;{filters(package,package,...)}<br/>
+                &nbsp;&nbsp;{suffix(<i>pattern</i>)}<br/>
+                &nbsp;&nbsp;{separator(<i>separator</i>)}<br/>
               </td>
               <td>
                 <p>
@@ -944,17 +987,15 @@ WARN  [main]: Message 2</pre>
                   Specifying <code>%throwable{none}</code> or <code>%throwable{0}</code> suppresses output of the exception.
                 </p>
                 <p>
-                  Use <code>filters(<i>packages</i>)</code> where <i>packages</i> is a list of package names to
+                  Use <code>{filters(<i>packages</i>)}</code> where <i>packages</i> is a list of package names to
                   suppress matching stack frames from stack traces.
                 </p>
                 <p>
-                  Use a <code>separator</code> string to separate the lines of a stack trace. For example:
-                  <code>separator(|)</code>. The default value is the <code>line.separator</code> system property,
-                  which is operating system dependent.
+                  Use <code>{suffix(<i>pattern</i>)}</code> to add the output of <i>pattern</i> at the end of each stack frames.
                 </p>
                 <p>
-                  Use <code>ex{suffix(<i>pattern</i>)</code> to add the output of <i>pattern</i> to the output only
-                  when there is a throwable to print.
+                  Use a <code>{separator(...)}</code> as the end-of-line string. For example: <code>separator(|)</code>. 
+                  The default value is the <code>line.separator</code> system property, which is operating system dependent.
                 </p>
               </td>
             </tr>
@@ -1598,7 +1639,7 @@ WARN  [main]: Message 2</pre>
                 <a name="PatternLoggerFqcn"/>
                 <b>fqcn</b>
               </td>
-              <td>Outputs the fully qualified class name of the logging event.</td>
+              <td>Outputs the fully qualified class name of the logger.</td>
             </tr>
             <tr>
               <td align="center">
@@ -2152,7 +2193,6 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           A well-formed XML document follows this pattern:
           </p>
           <pre class="prettyprint linenums">&lt;Event xmlns="http://logging.apache.org/log4j/2.0/events"
-       timeMillis="1493122559666"
        level="INFO"
        loggerName="HelloWorld"
        endOfBatch="false"
@@ -2160,6 +2200,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
        loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger"
        threadId="1"
        threadPriority="5"&gt;
+  &lt;Instant epochSecond="1493121664" nanoOfSecond="118000000"/>
   &lt;Marker name="child"&gt;
     &lt;Parents&gt;
       &lt;Marker name="parent"&gt;
@@ -2291,7 +2332,9 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
             A YAML log event follows this pattern:
           </p>
           <pre class="prettyprint linenums">---
-timeMillis: 1493122307075
+instant:
+ epochSecond: 1493121664
+ nanoOfSecond: 118000000
 thread: "main"
 level: "INFO"
 loggerName: "HelloWorld"

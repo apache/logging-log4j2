@@ -67,7 +67,12 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
         try {
             checkPermission(new AdminPermission(bundle, AdminPermission.RESOURCE));
             checkPermission(new AdaptPermission(BundleWiring.class.getName(), bundle, AdaptPermission.ADAPT));
-            loadProvider(bundle.getBundleContext(), bundle.adapt(BundleWiring.class));
+            final BundleContext bundleContext = bundle.getBundleContext();
+            if (bundleContext == null) {
+                LOGGER.debug("Bundle {} has no context (state={}), skipping loading provider", bundle.getSymbolicName(), toStateString(bundle.getState()));
+            } else {
+                loadProvider(bundleContext, bundle.adapt(BundleWiring.class));
+            }
         } catch (final SecurityException e) {
             LOGGER.debug("Cannot access bundle [{}] contents. Ignoring.", bundle.getSymbolicName(), e);
         } catch (final Exception e) {
@@ -75,13 +80,32 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
         }
     }
 
-    private void loadProvider(final BundleContext context, final BundleWiring bundleWiring) {
+    private String toStateString(final int state) {
+        switch (state) {
+        case Bundle.UNINSTALLED:
+            return "UNINSTALLED";
+        case Bundle.INSTALLED:
+            return "INSTALLED";
+        case Bundle.RESOLVED:
+            return "RESOLVED";
+        case Bundle.STARTING:
+            return "STARTING";
+        case Bundle.STOPPING:
+            return "STOPPING";
+        case Bundle.ACTIVE:
+            return "ACTIVE";
+        default:
+            return Integer.toString(state);
+        }
+    }
+
+    private void loadProvider(final BundleContext bundleContext, final BundleWiring bundleWiring) {
         final String filter = "(APIVersion>=2.60)";
         try {
-            final Collection<ServiceReference<Provider>> serviceReferences = context.getServiceReferences(Provider.class, filter);
+            final Collection<ServiceReference<Provider>> serviceReferences = bundleContext.getServiceReferences(Provider.class, filter);
             Provider maxProvider = null;
             for (final ServiceReference<Provider> serviceReference : serviceReferences) {
-                final Provider provider = context.getService(serviceReference);
+                final Provider provider = bundleContext.getService(serviceReference);
                 if (maxProvider == null || provider.getPriority() > maxProvider.getPriority()) {
                     maxProvider = provider;
                 }
@@ -99,16 +123,16 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
     }
 
     @Override
-    public void start(final BundleContext context) throws Exception {
+    public void start(final BundleContext bundleContext) throws Exception {
         ProviderUtil.STARTUP_LOCK.lock();
         lockingProviderUtil = true;
-        final BundleWiring self = context.getBundle().adapt(BundleWiring.class);
+        final BundleWiring self = bundleContext.getBundle().adapt(BundleWiring.class);
         final List<BundleWire> required = self.getRequiredWires(LoggerContextFactory.class.getName());
         for (final BundleWire wire : required) {
-            loadProvider(context, wire.getProviderWiring());
+            loadProvider(bundleContext, wire.getProviderWiring());
         }
-        context.addBundleListener(this);
-        final Bundle[] bundles = context.getBundles();
+        bundleContext.addBundleListener(this);
+        final Bundle[] bundles = bundleContext.getBundles();
         for (final Bundle bundle : bundles) {
             loadProvider(bundle);
         }
@@ -123,8 +147,8 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
     }
 
     @Override
-    public void stop(final BundleContext context) throws Exception {
-        context.removeBundleListener(this);
+    public void stop(final BundleContext bundleContext) throws Exception {
+        bundleContext.removeBundleListener(this);
         unlockIfReady();
     }
 

@@ -30,16 +30,19 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
  * This policy modifies events by replacing or possibly adding keys and values to the MapMessage.
  */
 @Plugin(name = "PropertiesRewritePolicy", category = Core.CATEGORY_NAME, elementType = "rewritePolicy", printObject = true)
 public final class PropertiesRewritePolicy implements RewritePolicy {
+    
     /**
-     * Allow subclasses access to the status logger without creating another instance.
+     * Allows subclasses access to the status logger without creating another instance.
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -57,22 +60,21 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
     }
 
     /**
-     * Rewrite the event.
+     * Rewrites the event.
      * @param source a logging event that may be returned or
      * used to create a new logging event.
      * @return The LogEvent after rewriting.
      */
     @Override
     public LogEvent rewrite(final LogEvent source) {
-        final Map<String, String> props = new HashMap<>(source.getContextData().toMap());
+        final StringMap newContextData = ContextDataFactory.createContextData(source.getContextData());
         for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
             final Property prop = entry.getKey();
-            props.put(prop.getName(), entry.getValue().booleanValue() ?
+            newContextData.putValue(prop.getName(), entry.getValue().booleanValue() ?
                 config.getStrSubstitutor().replace(prop.getValue()) : prop.getValue());
         }
 
-        final LogEvent result = new Log4jLogEvent.Builder(source).setContextMap(props).build();
-        return result;
+        return new Log4jLogEvent.Builder(source).setContextData(newContextData).build();
     }
 
     @Override
@@ -93,7 +95,7 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
     }
 
     /**
-     * The factory method to create the PropertiesRewritePolicy.
+     * Creates a PropertiesRewritePolicy.
      * @param config The Configuration.
      * @param props key/value pairs for the new keys and values.
      * @return The PropertiesRewritePolicy.

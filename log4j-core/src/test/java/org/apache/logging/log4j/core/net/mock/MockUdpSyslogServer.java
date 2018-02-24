@@ -40,13 +40,13 @@ public class MockUdpSyslogServer extends MockSyslogServer {
         try {
             thread.join(100);
         } catch (InterruptedException ie) {
-            System.out.println("Shutdown of UDP server thread failed.");
+            System.out.println("Shutdown of Log4j UDP server thread failed.");
         }
     }
 
     @Override
     public void run() {
-        System.out.println("UDP Server Started");
+        System.out.println("Log4j UDP Server started.");
         this.thread = Thread.currentThread();
         final byte[] bytes = new byte[4096];
         final DatagramPacket packet = new DatagramPacket(bytes, bytes.length);
@@ -61,6 +61,6 @@ public class MockUdpSyslogServer extends MockSyslogServer {
                 Throwables.rethrow(e);
             }
         }
-        System.out.println("UDP Server stopped");
+        System.out.println("Log4j UDP server stopped.");
     }
 }

@@ -37,7 +37,15 @@
         <item name="JSP Tag Library" href="/log4j-taglib/apidocs/index.html" />
         <item name="JSP Tag Library (TLD Doc)" href="/log4j-taglib/tlddoc/index.html" />
       </item>
-      <item name="Maven, Ivy, Gradle Artifacts" href="/maven-artifacts.html"/>
+      <item name="Maven, Ivy, Gradle Artifacts" href="/maven-artifacts.html" collapse="true">
+        <item name="Maven" href="/maven-artifacts.html#Using_Log4j_in_your_Apache_Maven_build" />
+        <item name="Ivy" href="/maven-artifacts.html#Using_Log4j_in_your_Apache_Ivy_build" />
+        <item name="Gradle" href="/maven-artifacts.html#Using_Log4j_in_your_Gradle_build" />
+        <item name="SBT" href="/maven-artifacts.html#Using_Log4j_in_your_SBT_build" />
+        <item name="Bill of Material" href="/maven-artifacts.html#Bill_of_Material" />
+        <item name="Optional Components" href="/maven-artifacts.html#Optional_Components" />
+        <item name="Snapshot builds" href="/maven-artifacts.html#Snapshot_builds" />
+      </item>
       <item name="Runtime Dependencies" href="/runtime-dependencies.html"/>
       <item name="Changelog" href="/changelog.html"/>
       <item name="FAQ" href="/faq.html"/>
@@ -138,6 +146,10 @@
         <item name="Kafka" href="/manual/appenders.html#KafkaAppender"/>
         <item name="Memory Mapped File" href="/manual/appenders.html#MemoryMappedFileAppender"/>
         <item name="NoSQL" href="/manual/appenders.html#NoSQLAppender"/>
+        <item name="NoSQL for MongoDB" href="/manual/appenders.html#NoSQLAppenderMongoDB"/>
+        <item name="NoSQL for MongoDB 2" href="/manual/appenders.html#NoSQLAppenderMongoDB2"/>
+        <item name="NoSQL for MongoDB 3" href="/manual/appenders.html#NoSQLAppenderMongoDB3"/>
+        <item name="NoSQL for CouchDB" href="/manual/appenders.html#NoSQLAppenderCouchDB"/>
         <item name="Output Stream" href="/manual/appenders.html#OutputStreamAppender"/>
         <item name="Random Access File" href="/manual/appenders.html#RandomAccessFileAppender"/>
         <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>

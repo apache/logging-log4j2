@@ -33,7 +33,10 @@ public final class Chars {
     /** Line Feed. */
     public static final char LF = '\n';
 
-    /** Single Quote [']. */
+    /** NUL. */
+	public static final char NUL = 0;
+
+	/** Single Quote [']. */
     public static final char QUOTE = '\'';
 
     /** Space. */
@@ -43,7 +46,7 @@ public final class Chars {
     public static final char TAB = '\t';
 
     /**
-     * Converts a digit into an uppercase hexadecimal character or the null character if invalid.
+     * Converts a digit into an upper-case hexadecimal character or the null character if invalid.
      *
      * @param digit a number 0 - 15
      * @return the hex character for that digit or '\0' if invalid
@@ -56,7 +59,7 @@ public final class Chars {
     }
 
     /**
-     * Converts a digit into an lowercase hexadecimal character or the null character if invalid.
+     * Converts a digit into an lower-case hexadecimal character or the null character if invalid.
      *
      * @param digit a number 0 - 15
      * @return the hex character for that digit or '\0' if invalid

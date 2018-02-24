@@ -35,7 +35,9 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfiguration
     public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
             final String level) {
         super(builder, "", "Root");
-        addAttribute("level", level);
+        if (level != null) {
+            addAttribute("level", level);
+        }
     }
 
     /**
@@ -47,7 +49,9 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfiguration
     public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
             final String level, final boolean includeLocation) {
         super(builder, "", "Root");
-        addAttribute("level", level);
+        if (level != null) {
+            addAttribute("level", level);
+        }
         addAttribute("includeLocation", includeLocation);
     }
 
@@ -60,7 +64,9 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfiguration
     public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
             final String level, final String type) {
         super(builder, "", type);
-        addAttribute("level", level);
+        if (level != null) {
+            addAttribute("level", level);
+        }
     }
 
 
@@ -73,7 +79,9 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfiguration
     public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
             final String level, final String type, final boolean includeLocation) {
         super(builder, "", type);
-        addAttribute("level", level);
+        if (level != null) {
+            addAttribute("level", level);
+        }
         addAttribute("includeLocation", includeLocation);
     }
 

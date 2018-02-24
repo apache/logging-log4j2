@@ -49,25 +49,51 @@ public final class ThreadContextMapFactory {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String THREAD_CONTEXT_KEY = "log4j2.threadContextMap";
     private static final String GC_FREE_THREAD_CONTEXT_KEY = "log4j2.garbagefree.threadContextMap";
+    
+    private static boolean GcFreeThreadContextKey;
+    private static String ThreadContextMapName;
 
+    static {
+        initPrivate();
+    }
+    
+    /**
+     * Initializes static variables based on system properties. Normally called when this class is initialized by the VM
+     * and when Log4j is reconfigured.
+     */
+    public static void init() {
+        CopyOnWriteSortedArrayThreadContextMap.init();
+        GarbageFreeSortedArrayThreadContextMap.init();
+        DefaultThreadContextMap.init();
+        initPrivate();
+    }
+
+    /**
+     * Initializes static variables based on system properties. Normally called when this class is initialized by the VM
+     * and when Log4j is reconfigured.
+     */
+    private static void initPrivate() {
+        final PropertiesUtil properties = PropertiesUtil.getProperties();
+        ThreadContextMapName = properties.getStringProperty(THREAD_CONTEXT_KEY);
+        GcFreeThreadContextKey = properties.getBooleanProperty(GC_FREE_THREAD_CONTEXT_KEY);
+    }
+    
     private ThreadContextMapFactory() {
     }
 
     public static ThreadContextMap createThreadContextMap() {
-        final PropertiesUtil managerProps = PropertiesUtil.getProperties();
-        final String threadContextMapName = managerProps.getStringProperty(THREAD_CONTEXT_KEY);
         final ClassLoader cl = ProviderUtil.findClassLoader();
         ThreadContextMap result = null;
-        if (threadContextMapName != null) {
+        if (ThreadContextMapName != null) {
             try {
-                final Class<?> clazz = cl.loadClass(threadContextMapName);
+                final Class<?> clazz = cl.loadClass(ThreadContextMapName);
                 if (ThreadContextMap.class.isAssignableFrom(clazz)) {
                     result = (ThreadContextMap) clazz.newInstance();
                 }
             } catch (final ClassNotFoundException cnfe) {
-                LOGGER.error("Unable to locate configured ThreadContextMap {}", threadContextMapName);
+                LOGGER.error("Unable to locate configured ThreadContextMap {}", ThreadContextMapName);
             } catch (final Exception ex) {
-                LOGGER.error("Unable to create configured ThreadContextMap {}", threadContextMapName, ex);
+                LOGGER.error("Unable to create configured ThreadContextMap {}", ThreadContextMapName, ex);
             }
         }
         if (result == null && ProviderUtil.hasProviders() && LogManager.getFactory() != null) { //LOG4J2-1658
@@ -96,7 +122,7 @@ public final class ThreadContextMapFactory {
 
     private static ThreadContextMap createDefaultThreadContextMap() {
         if (Constants.ENABLE_THREADLOCALS) {
-            if (PropertiesUtil.getProperties().getBooleanProperty(GC_FREE_THREAD_CONTEXT_KEY)) {
+            if (GcFreeThreadContextKey) {
                 return new GarbageFreeSortedArrayThreadContextMap();
             }
             return new CopyOnWriteSortedArrayThreadContextMap();

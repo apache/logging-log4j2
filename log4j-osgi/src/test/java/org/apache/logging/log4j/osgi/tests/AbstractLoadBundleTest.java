@@ -77,7 +77,7 @@ public abstract class AbstractLoadBundleTest {
     }
     
     private Bundle getDummyBundle() throws BundleException {
-        final Path dumyPath = here.resolveSibling("log4j-samples").resolve("configuration").resolve("target").resolve("log4j-samples-configuration-" + bundleTestInfo.getVersion() + ".jar");
+        final Path dumyPath = here.resolveSibling("log4j-samples").resolve("log4j-samples-configuration").resolve("target").resolve("log4j-samples-configuration-" + bundleTestInfo.getVersion() + ".jar");
         return bundleContext.installBundle(dumyPath.toUri().toString());
     }
 

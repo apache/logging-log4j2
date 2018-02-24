@@ -30,12 +30,62 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.10.1" date="2017-xx-xx" description="GA Release 2.10.1">
+    <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
+      <action issue="LOG4J2-2254" dev="rgoers" type="fix">
+        Incorrect automatics module name header was being included in manifests.
+      </action>
+      <action issue="LOG4J2-2247" dev="rgoers" type="fix">
+        NullPointerException would occur when header was provided to a Layout on RollingRandingAccessFileAppender
+        with DirectWriteRolloverStrategy.
+      </action>
+      <action issue="LOG4J2-2250" dev="rpopma" type="update">
+        The internal status logger timestamp format is now configurable with system property `log4j2.StatusLogger.DateFormat`.
+      </action>
+      <action issue="LOG4J2-2236" dev="rpopma" type="update">
+        Removed unnecessary dependency on jcommander since Log4j uses embedded picocli since 2.9.
+      </action>
+      <action issue="LOG4J2-1883" dev="rpopma" type="add" due-to="Anthony Maire">
+        Added support for precise (micro and nanosecond) timestamps when running on Java 9. A limited number of precise %d date formats are supported with PatternLayout. POTENTIAL BREAKING CHANGE: The XML, JSON and YAML formats have changed: they no longer have the "timeMillis" attribute and instead have an "Instant" element with "epochSecond" and "nanoOfSecond" attributes.
+      </action>
+      <action issue="LOG4J2-2190" dev="mikes" type="add" due-to="Franz Wong">
+        Output JSON object for ObjectMessage in JsonLayout.
+      </action>
+      <action issue="LOG4J2-2191" dev="rpopma" type="add">
+        Made log4j-core a multi-release ("multi-version") jar, added log4j-core-java9 module.
+      </action>
+      <action issue="LOG4J2-2129" dev="rgoers" type="fix" due-to="Blazej Bucko">
+        Log4j2 throws NoClassDefFoundError in Java 9 in java.util.ServiceLoader.
+      </action>
+      <action issue="LOG4J2-2158" dev="rpopma" type="fix" due-to="Björn Kautler">
+        Fixed bug where ThreadContext map was cleared, resulting in entries being only available for one log event.
+      </action>
+      <action issue="LOG4J2-2002" dev="mikes" type="fix" due-to="Paul Burrowes">
+        Avoid null attribute values in DefaultConfigurationBuilder.
+      </action>
+      <action issue="LOG4J2-2175" dev="mikes" type="fix" due-to="Behrang Saeedzadeh">
+        Fix typo in Property Substitution docs.
+      </action>
+      <action issue="LOG4J2-2163" dev="rgoers" type="fix">
+        Allow SortedArrayStringMap to be filtered upon deserialization. Fix build error in Java 9 when
+        compiling log4j-core test classes.
+      </action>
+      <action issue="LOG4J2-2157" dev="ggregory" type="fix" due-to="Malte Skoruppa">
+        Don't create exit message in traceExit(R) when logging is disabled.
+      </action>
+      <action issue="LOG4J2-2123" dev="rgoers" type="fix" due-to="Jacob Tolar">
+        DefaultMergeStrategy did not merge filters on loggers correctly.
+      </action>
       <action issue="LOG4J2-2146" dev="rgoers" type="update">
-        Update version of bnd. Convert bundle plugin error to a warning.
+        Update version of maven bundle plugin to 3.4.0. Convert bundle plugin error to a warning.
+      </action>
+      <action issue="LOG4J2-2215" dev="rpopma" type="update">
+        Reduce compiler warnings in log4j-api.
       </action>
       <action issue="LOG4J2-2143" dev="mikes" type="add">
         Add missing converters to PatternLayout.
+      </action>
+      <action issue="LOG4J2-2160" dev="ggregory" type="add">
+        Add API org.apache.logging.log4j.core.lookup.Interpolator.getStrLookupMap().
       </action>
       <action issue="LOG4J2-2127" dev="rpopma" type="update" due-to="Carter Kozak">
         Removed unnecessary threadlocal StringBuilder field from MdcPatternConverter.
@@ -43,27 +93,123 @@
       <action issue="LOG4J2-2126" dev="rpopma" type="fix" due-to="Oleg Kalnichevski">
         Removed compile-time dependency on Java Management APIs from Log4J API module to improve compatibility with Android Platform which does not support JMX extensions.
       </action>
+      <action issue="LOG4J2-2194" dev="rpopma" type="update">
+        Require Java 9 to compile the log4j-perf module to allow benchmarking with Java 9 APIs.
+      </action>
+      <action issue="LOG4J2-2193" dev="rpopma" type="update">
+        Update JMH to version 1.19 from 1.1.1.
+      </action>
       <action issue="LOG4J2-2132" dev="ggregory" type="update">
         Update ZeroMQ's jeromq from 0.4.2 to 0.4.3.
       </action>
+      <action issue="LOG4J2-2165" dev="ggregory" type="update">
+        Update Jackson from 2.9.2 to 2.9.3.
+      </action>
+      <action issue="LOG4J2-2179" dev="ggregory" type="add">
+        The MongoDB Appender should use a keys and values for a Log4j MapMessage.
+      </action>
+      <action issue="LOG4J2-2180" dev="ggregory" type="add">
+        Add a MongoDbProvider builder for and deprecate org.apache.logging.log4j.mongodb.MongoDbProvider.createNoSqlProvider().
+      </action>
+      <action issue="LOG4J2-2181" dev="ggregory" type="add">
+        The JDBC Appender should use keys and values from a Log4j MapMessage.
+      </action>
+      <action issue="LOG4J2-2184" dev="ggregory" type="update">
+        Update MongoDB driver from 3.0.4 to 3.6.1.
+      </action>
+      <action issue="LOG4J2-2185" dev="ggregory" type="add">
+        Add a simple JDBC DriverManager-based ConnectionSource that uses JDBC's DriverManager#getConnection(String, String, String).
+      </action>
+      <action issue="LOG4J2-2197" dev="ggregory" type="update" due-to="Fabrice Daugan">
+        Document default property value support.
+      </action>
+      <action issue="LOG4J2-2198" dev="ggregory" type="update">
+        Update MongoDB dependencies from classic to modern.
+      </action>
+      <action issue="LOG4J2-2186" dev="ggregory" type="add">
+        Add a JDBC ConnectionSource that provides pooling through Apache Commons DBCP 2.
+      </action>
+      <action issue="LOG4J2-2187" dev="ggregory" type="add">
+        Add a hook for a Connection Source for a JDBC Appender to release its resources.
+      </action>
+      <action issue="LOG4J2-2203" dev="ggregory" type="add">
+        Add org.apache.logging.log4j.core.util.WatchManager#unwatch(File).
+      </action>
+      <action issue="LOG4J2-2204" dev="ggregory" type="update">
+        org.apache.logging.log4j.core.util.WatchManager.getWatchers() should pre-allocate its new Map.
+      </action>
+      <action issue="LOG4J2-2206" dev="ggregory" type="add">
+        Add method org.apache.logging.log4j.core.util.WatchManager.reset(File) and reset().
+      </action>
+      <action issue="LOG4J2-2208" dev="ggregory" type="add">
+        Add debug logging to org.apache.logging.log4j.mongodb.MongoDbConnection.
+      </action>
+      <action issue="LOG4J2-2209" dev="ggregory" type="update">
+        Rename existing MongoDb plugin and related artifacts from MongoDb to MongoDb2.
+      </action>
+      <action issue="LOG4J2-2210" dev="ggregory" type="update" due-to="Björn Kautler">
+        Fix error log message for Script which says ScriptFile instead.
+      </action>
+      <action issue="LOG4J2-2212" dev="ggregory" type="update" due-to="Daniel Feist, Gary Gregory">
+        Unnecessary contention in CopyOnWriteSortedArrayThreadContextMap.
+      </action>
+      <action issue="LOG4J2-2213" dev="ggregory" type="update" due-to="Daniel Feist, Gary Gregory">
+        Unnecessary contention in GarbageFreeSortedArrayThreadContextMap.
+      </action>
+      <action issue="LOG4J2-2214" dev="ggregory" type="update" due-to="Daniel Feist, Gary Gregory">
+        Unnecessary contention in DefaultThreadContextMap.
+      </action>
+      <action issue="LOG4J2-2182" dev="ggregory" type="update" due-to="liwenxian2017, Gary Gregory">
+        NullPointerException at org.apache.logging.log4j.util.Activator.loadProvider(Activator.java:81) in log4j 2.10.0.
+      </action>
+      <action issue="LOG4J2-2202" dev="ggregory" type="update" due-to="Kilian, Gary Gregory">
+        MarkerFilter onMismatch invalid attribute in .properties.
+      </action>
+      <action issue="LOG4J2-2219" dev="ggregory" type="update" due-to="Kilian, Gary Gregory">
+        Configuration builder classes should look for "onMismatch", not "onMisMatch".
+      </action>
+      <action issue="LOG4J2-2205" dev="ggregory" type="update" due-to="Gary Gregory">
+        New module log4j-mongodb3: Remove use of deprecated MongoDB APIs and code to the Java driver version 3 API.
+      </action>
+      <action issue="LOG4J2-2188" dev="ggregory" type="update" due-to="Gary Gregory">
+        Split off JPA support into a new module log4j-jpa.
+      </action>
+      <action issue="LOG4J2-2229" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update Jackson from 2.9.3 to 2.9.4.
+      </action>
+      <action issue="LOG4J2-2243" dev="ggregory" type="update" due-to="Gary Gregory">
+        Cannot see or copy all of certain JAnsi exception messages on Windows due to NUL characters.
+      </action>
+      <action issue="LOG4J2-2245" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update Apache Commons Compress from 1.15 to 1.16.1.
+      </action>
+      <action issue="LOG4J2-2259" dev="ggregory" type="update">
+        Update MongoDB 3 module from driver 3.6.1 to 3.6.3.
+      </action>      
+      <action issue="LOG4J2-2260" dev="ggregory" type="update">
+        [SMTP] Update javax.mail from 1.6.0 to 1.6.1.
+      </action>
+      <action issue="LOG4J2-2264" dev="ggregory" type="update">
+        Update JAnsi from 1.16 to 1.17.
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
-      <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak">
         Properly escape newlines and other control characters in JSON.
       </action>
-      <action issue="LOG4J2-2109" dev="mikes" type="add" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2109" dev="mikes" type="add" due-to="Carter Douglas Kozak">
         Add property to disable message pattern converter lookups.
       </action>
-      <action issue="LOG4J2-2112" dev="mikes" type="add" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2112" dev="mikes" type="add" due-to="Carter Douglas Kozak">
         MapMessage should use deep toString for values.
       </action>
-      <action issue="LOG4J2-2107" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2107" dev="mikes" type="fix" due-to="Carter Douglas Kozak">
         MapMessage supports both StringBuilderFormattable and MultiformatMessage.
       </action>
-      <action issue="LOG4J2-2102" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2102" dev="mikes" type="fix" due-to="Carter Douglas Kozak">
         MapMessage JSON encoding will escape keys and values.
       </action>
-      <action issue="LOG4J2-2101" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2101" dev="mikes" type="fix" due-to="Carter Douglas Kozak">
         Non-string value in MapMessage caused ClassCastException.
       </action>
       <action issue="LOG4J2-2103" dev="mikes" type="add">
@@ -78,7 +224,7 @@
       <action issue="LOG4J2-2098" dev="rgoers" type="add">
         Add a noop AppenderSkeleton for applications still using Log4j 1.x.
       </action>
-      <action issue="LOG4J2-2091" dev="mikes" type="fix" due-to="Carter Douglas Kozak ">
+      <action issue="LOG4J2-2091" dev="mikes" type="fix" due-to="Carter Douglas Kozak">
         Log4j respects the configured "log4j2.is.webapp" property
       </action>
       <action issue="LOG4J2-2100" dev="ggregory" type="fix">
@@ -928,6 +1074,12 @@
       </action>
       <action issue="LOG4J2-1733" dev="ggregory" type="add" due-to="Vincent Tieleman">
         Add SyncSend attribute to KafkaAppender (as in KafkaLog4jAppender).
+      </action>
+      <action issue="LOG4J2-2195" dev="ggregory" type="fix" due-to="Raman Gupta, Gary Gregory">
+        Cannot define both `filters` and `separator` for PatternLayout %xEx.
+      </action>
+      <action issue="LOG4J2-2221" dev="ggregory" type="fix" due-to="Raman Gupta, Gary Gregory">
+        RootThrowablePatternConverter does not use TextRenderer or line separator options.
       </action>
     </release>
     <release version="2.7" date="2016-10-02" description="GA Release 2.7">

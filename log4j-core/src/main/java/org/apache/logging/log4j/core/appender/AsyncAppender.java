@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.async.ArrayBlockingQueueFactory;
 import org.apache.logging.log4j.core.async.AsyncQueueFullMessageUtil;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
@@ -52,6 +51,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.spi.AbstractLogger;
 
 /**
  * Appends to one or more Appenders asynchronously. You can configure an AsyncAppender with one or more Appenders and an
@@ -161,7 +161,7 @@ public final class AsyncAppender extends AbstractAppender {
         InternalAsyncUtil.makeMessageImmutable(logEvent.getMessage());
         if (!transfer(memento)) {
             if (blocking) {
-                if (Logger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
+                if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
                     // If queue is full AND we are in a recursive call, call appender directly to prevent deadlock
                     final Message message = AsyncQueueFullMessageUtil.transform(logEvent.getMessage());
                     logMessageInCurrentThread(new Log4jLogEvent.Builder(logEvent).setMessage(message).build());

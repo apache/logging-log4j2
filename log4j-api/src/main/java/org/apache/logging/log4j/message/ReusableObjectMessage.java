@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.message;
 
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -29,8 +28,6 @@ public class ReusableObjectMessage implements ReusableMessage {
     private static final long serialVersionUID = 6922476812535519960L;
 
     private transient Object obj;
-    private transient String objectString;
-    private StackTraceElement source;
 
     public void set(final Object object) {
         this.obj = object;

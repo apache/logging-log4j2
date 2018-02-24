@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.ThreadContext;
 import org.junit.Test;
 
 /**
@@ -223,6 +224,7 @@ public class DefaultThreadContextMapTest {
     @Test
     public void testThreadLocalInheritableIfConfigured() {
         System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
+        ThreadContextMapFactory.init();
         try {
             final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
             assertTrue(threadLocal instanceof InheritableThreadLocal<?>);

@@ -47,7 +47,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     /** Constant for the prefix separator. */
     private static final char PREFIX_SEPARATOR = ':';
 
-    private final Map<String, StrLookup> lookups = new HashMap<>();
+    private final Map<String, StrLookup> strLookupMap = new HashMap<>();
 
     private final StrLookup defaultLookup;
 
@@ -71,7 +71,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                lookups.put(entry.getKey(), ReflectionUtil.instantiate(clazz));
+                strLookupMap.put(entry.getKey(), ReflectionUtil.instantiate(clazz));
             } catch (final Throwable t) {
                 handleError(entry.getKey(), t);
             }
@@ -91,16 +91,16 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     public Interpolator(final Map<String, String> properties) {
         this.defaultLookup = new MapLookup(properties == null ? new HashMap<String, String>() : properties);
         // TODO: this ought to use the PluginManager
-        lookups.put("log4j", new Log4jLookup());
-        lookups.put("sys", new SystemPropertiesLookup());
-        lookups.put("env", new EnvironmentLookup());
-        lookups.put("main", MainMapLookup.MAIN_SINGLETON);
-        lookups.put("marker", new MarkerLookup());
-        lookups.put("java", new JavaLookup());
+        strLookupMap.put("log4j", new Log4jLookup());
+        strLookupMap.put("sys", new SystemPropertiesLookup());
+        strLookupMap.put("env", new EnvironmentLookup());
+        strLookupMap.put("main", MainMapLookup.MAIN_SINGLETON);
+        strLookupMap.put("marker", new MarkerLookup());
+        strLookupMap.put("java", new JavaLookup());
         // JNDI
         try {
             // [LOG4J2-703] We might be on Android
-            lookups.put(LOOKUP_KEY_JNDI,
+            strLookupMap.put(LOOKUP_KEY_JNDI,
                 Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
         } catch (final LinkageError | Exception e) {
             handleError(LOOKUP_KEY_JNDI, e);
@@ -108,17 +108,17 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         // JMX input args
         try {
             // We might be on Android
-            lookups.put(LOOKUP_KEY_JVMRUNARGS,
+            strLookupMap.put(LOOKUP_KEY_JVMRUNARGS,
                 Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup",
                         StrLookup.class));
         } catch (final LinkageError | Exception e) {
             handleError(LOOKUP_KEY_JVMRUNARGS, e);
         }
-        lookups.put("date", new DateLookup());
-        lookups.put("ctx", new ContextMapLookup());
+        strLookupMap.put("date", new DateLookup());
+        strLookupMap.put("ctx", new ContextMapLookup());
         if (Constants.IS_WEB_APP) {
             try {
-                lookups.put(LOOKUP_KEY_WEB,
+                strLookupMap.put(LOOKUP_KEY_WEB,
                     Loader.newCheckedInstanceOf("org.apache.logging.log4j.web.WebLookup", StrLookup.class));
             } catch (final Exception ignored) {
                 handleError(LOOKUP_KEY_WEB, ignored);
@@ -126,6 +126,10 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         } else {
             LOGGER.debug("Not in a ServletContext environment, thus not loading WebLookup plugin.");
         }
+    }
+
+    public Map<String, StrLookup> getStrLookupMap() {
+        return strLookupMap;
     }
 
     private void handleError(final String lookupKey, final Throwable t) {
@@ -175,7 +179,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         if (prefixPos >= 0) {
             final String prefix = var.substring(0, prefixPos).toLowerCase(Locale.US);
             final String name = var.substring(prefixPos + 1);
-            final StrLookup lookup = lookups.get(prefix);
+            final StrLookup lookup = strLookupMap.get(prefix);
             if (lookup instanceof ConfigurationAware) {
                 ((ConfigurationAware) lookup).setConfiguration(configuration);
             }
@@ -198,7 +202,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        for (final String name : lookups.keySet()) {
+        for (final String name : strLookupMap.keySet()) {
             if (sb.length() == 0) {
                 sb.append('{');
             } else {
@@ -212,4 +216,5 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         }
         return sb.toString();
     }
+
 }

@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
@@ -40,7 +41,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @JsonRootName(XmlConstants.ELT_EVENT)
 @JacksonXmlRootElement(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_EVENT)
 @JsonFilter("org.apache.logging.log4j.core.impl.Log4jLogEvent")
-@JsonPropertyOrder({ "timeMillis", "threadName", "level", "loggerName", "marker", "message", "thrown", XmlConstants.ELT_CONTEXT_MAP,
+@JsonPropertyOrder({ "timeMillis", XmlConstants.ELT_INSTANT, "threadName", "level", "loggerName", "marker", "message", "thrown", XmlConstants.ELT_CONTEXT_MAP,
         JsonConstants.ELT_CONTEXT_STACK, "loggerFQCN", "Source", "endOfBatch" })
 abstract class LogEventWithContextListMixIn implements LogEvent {
 
@@ -125,10 +126,16 @@ abstract class LogEventWithContextListMixIn implements LogEvent {
     @Override
     public abstract ThrowableProxy getThrownProxy();
 
-    @JsonProperty()
-    @JacksonXmlProperty(isAttribute = true)
+    @JsonIgnore // ignore from 2.11
+//    @JsonProperty()
+//    @JacksonXmlProperty(isAttribute = true)
     @Override
     public abstract long getTimeMillis();
+
+    @JsonProperty(JsonConstants.ELT_INSTANT)
+    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_INSTANT)
+    @Override
+    public abstract Instant getInstant();
 
     @JsonProperty()
     @JacksonXmlProperty(isAttribute = true)

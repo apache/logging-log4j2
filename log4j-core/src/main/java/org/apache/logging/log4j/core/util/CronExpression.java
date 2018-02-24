@@ -920,7 +920,7 @@ public final class CronExpression {
 
     protected int skipWhiteSpace(int i, final String s) {
         for (; i < s.length() && (s.charAt(i) == ' ' || s.charAt(i) == '\t'); i++) {
-            ;
+            // empty
         }
 
         return i;
@@ -928,7 +928,7 @@ public final class CronExpression {
 
     protected int findNextWhiteSpace(int i, final String s) {
         for (; i < s.length() && (s.charAt(i) != ' ' || s.charAt(i) != '\t'); i++) {
-            ;
+            // empty
         }
 
         return i;

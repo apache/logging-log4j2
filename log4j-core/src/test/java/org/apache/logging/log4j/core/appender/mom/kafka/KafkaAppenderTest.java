@@ -20,7 +20,6 @@ package org.apache.logging.log4j.core.appender.mom.kafka;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,6 +37,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -50,21 +50,11 @@ import static org.junit.Assert.*;
 public class KafkaAppenderTest {
 
     private static final MockProducer<byte[], byte[]> kafka = new MockProducer<byte[], byte[]>(true, null, null) {
-        @Override
-        public void close() {
-            try {
-                Thread.sleep(3000);
-            } catch (final InterruptedException ignore) {
-            }
-        }
 
         @Override
         public void close(final long timeout, final TimeUnit timeUnit) {
-            try {
-                Thread.sleep(timeUnit.toMillis(timeout));
-            } catch (final InterruptedException ignore) {
-            }
         }
+
     };
 
     private static final String LOG_MESSAGE = "Hello, world!";
@@ -173,14 +163,9 @@ public class KafkaAppenderTest {
 
     private LogEvent deserializeLogEvent(final byte[] data) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream bis = new ByteArrayInputStream(data);
-        try (ObjectInput ois = new ObjectInputStream(bis)) {
+        try (ObjectInput ois = new FilteredObjectInputStream(bis)) {
             return (LogEvent) ois.readObject();
         }
     }
 
-    @Test(timeout = 2000)
-    public void testClose() throws Exception {
-        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithLayout");
-        appender.stop();
-    }
 }

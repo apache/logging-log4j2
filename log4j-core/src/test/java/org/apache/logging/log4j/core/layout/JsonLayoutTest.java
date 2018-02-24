@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -144,7 +145,7 @@ public class JsonLayoutTest {
         assertEquals(str, !compact || eventEol, str.contains("\n"));
         assertEquals(str, locationInfo, str.contains("source"));
         assertEquals(str, includeContext, str.contains("contextMap"));
-        final Log4jLogEvent actual = new Log4jJsonObjectMapper(contextMapAslist, includeStacktrace, false).readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jJsonObjectMapper(contextMapAslist, includeStacktrace, false, false).readValue(str, Log4jLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, locationInfo, includeContext, includeStacktrace);
         if (includeContext) {
             this.checkMapEntry("MDC.A", "A_Value", compact, str, contextMapAslist);
@@ -153,7 +154,7 @@ public class JsonLayoutTest {
         //
         assertNull(actual.getThrown());
         // make sure the names we want are used
-        this.checkPropertyName("timeMillis", compact, str);
+        this.checkPropertyName("instant", compact, str);
         this.checkPropertyName("thread", compact, str); // and not threadName
         this.checkPropertyName("level", compact, str);
         this.checkPropertyName("loggerName", compact, str);
@@ -342,7 +343,7 @@ public class JsonLayoutTest {
         // @formatter:on
         final String str = layout.toSerializable(expected);
         assertTrue(str, str.contains("\"loggerName\":\"a.B\""));
-        final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false).readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
         assertEquals(expected, actual);
     }
@@ -415,6 +416,38 @@ public class JsonLayoutTest {
         // @formatter:off
         return layout.toSerializable(expected);
     }
+    
+    @Test
+    public void testObjectMessageAsJsonString() {
+    		final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, false);
+		assertTrue(str, str.contains("\"message\":\"" + this.getClass().getCanonicalName() + "$TestClass@"));
+    }
+    
+    @Test
+    public void testObjectMessageAsJsonObject() {
+    		final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, true);
+    		assertTrue(str, str.contains("\"message\":{\"value\":1234}"));
+    }
+    
+    private String prepareJSONForObjectMessageAsJsonObjectTests(final int value, final boolean objectMessageAsJsonObject) {
+    	final TestClass testClass = new TestClass();
+		testClass.setValue(value);
+		// @formatter:off
+		final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
+            .setLoggerName("a.B")
+            .setLoggerFqcn("f.q.c.n")
+            .setLevel(Level.DEBUG)
+            .setMessage(new ObjectMessage(testClass))
+            .setThreadName("threadName")
+            .setTimeMillis(1).build();
+        // @formatter:off
+		final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+				.setCompact(true)
+				.setObjectMessageAsJsonObject(objectMessageAsJsonObject)
+				.build();
+        // @formatter:off
+        return layout.toSerializable(expected);
+    }
 
     @Test
     public void testIncludeNullDelimiterTrue() throws Exception {
@@ -439,4 +472,16 @@ public class JsonLayoutTest {
     private String toPropertySeparator(final boolean compact) {
         return compact ? ":" : " : ";
     }
+    
+	private static class TestClass {
+		private int value;
+
+		public int getValue() {
+			return value;
+		}
+
+		public void setValue(int value) {
+			this.value = value;
+		}
+	}
 }

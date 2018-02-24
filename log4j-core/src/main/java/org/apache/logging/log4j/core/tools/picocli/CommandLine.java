@@ -481,6 +481,7 @@ public class CommandLine {
          * @throws ExecutionException if a problem occurred while processing the parse results; use
          *      {@link ExecutionException#getCommandLine()} to get the command or subcommand where processing failed
          */
+        @Override
         public List<Object> handleParseResult(List<CommandLine> parsedCommands, PrintStream out, Help.Ansi ansi) {
             if (printHelpIfRequested(parsedCommands, out, ansi)) { return Collections.emptyList(); }
             return Arrays.asList(execute(parsedCommands.get(0)));
@@ -531,6 +532,7 @@ public class CommandLine {
          * @throws ExecutionException if a problem occurred while processing the parse results; use
          *      {@link ExecutionException#getCommandLine()} to get the command or subcommand where processing failed
          */
+        @Override
         public List<Object> handleParseResult(List<CommandLine> parsedCommands, PrintStream out, Help.Ansi ansi) {
             if (printHelpIfRequested(parsedCommands, out, ansi)) { return Collections.emptyList(); }
             CommandLine last = parsedCommands.get(parsedCommands.size() - 1);
@@ -556,6 +558,7 @@ public class CommandLine {
          * @throws ExecutionException if a problem occurred while processing the parse results; use
          *      {@link ExecutionException#getCommandLine()} to get the command or subcommand where processing failed
          */
+        @Override
         public List<Object> handleParseResult(List<CommandLine> parsedCommands, PrintStream out, Help.Ansi ansi) {
             if (printHelpIfRequested(parsedCommands, out, ansi)) {
                 return null;
@@ -1773,17 +1776,21 @@ public class CommandLine {
          */
         public boolean contains(int value) { return min <= value && max >= value; }
 
+        @Override
         public boolean equals(Object object) {
             if (!(object instanceof Range)) { return false; }
             Range other = (Range) object;
             return other.max == this.max && other.min == this.min && other.isVariable == this.isVariable;
         }
+        @Override
         public int hashCode() {
             return ((17 * 37 + max) * 37 + min) * 37 + (isVariable ? 1 : 0);
         }
+        @Override
         public String toString() {
             return min == max ? String.valueOf(min) : min + ".." + (isVariable ? "*" : max);
         }
+        @Override
         public int compareTo(Range other) {
             int result = min - other.min;
             return (result == 0) ? max - other.max : result;
@@ -2565,6 +2572,7 @@ public class CommandLine {
             }
             if (type.isEnum()) {
                 return new ITypeConverter<Object>() {
+                    @Override
                     @SuppressWarnings("unchecked")
                     public Object convert(String value) throws Exception {
                         return Enum.valueOf((Class<Enum>) type, value);
@@ -2624,6 +2632,7 @@ public class CommandLine {
         }
     }
     private static class PositionalParametersSorter implements Comparator<Field> {
+        @Override
         public int compare(Field o1, Field o2) {
             int result = Range.parameterIndex(o1).compareTo(Range.parameterIndex(o2));
             return (result == 0) ? Range.parameterArity(o1).compareTo(Range.parameterArity(o2)) : result;
@@ -2637,20 +2646,25 @@ public class CommandLine {
             @Override public Path convert(final String value) { return Paths.get(value); }
         }
         static class StringConverter implements ITypeConverter<String> {
+            @Override
             public String convert(String value) { return value; }
         }
         static class StringBuilderConverter implements ITypeConverter<StringBuilder> {
+            @Override
             public StringBuilder convert(String value) { return new StringBuilder(value); }
         }
         static class CharSequenceConverter implements ITypeConverter<CharSequence> {
+            @Override
             public String convert(String value) { return value; }
         }
         /** Converts text to a {@code Byte} by delegating to {@link Byte#valueOf(String)}.*/
         static class ByteConverter implements ITypeConverter<Byte> {
+            @Override
             public Byte convert(String value) { return Byte.valueOf(value); }
         }
         /** Converts {@code "true"} or {@code "false"} to a {@code Boolean}. Other values result in a ParameterException.*/
         static class BooleanConverter implements ITypeConverter<Boolean> {
+            @Override
             public Boolean convert(String value) {
                 if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
                     return Boolean.parseBoolean(value);
@@ -2660,6 +2674,7 @@ public class CommandLine {
             }
         }
         static class CharacterConverter implements ITypeConverter<Character> {
+            @Override
             public Character convert(String value) {
                 if (value.length() > 1) {
                     throw new TypeConversionException("'" + value + "' is not a single character");
@@ -2669,33 +2684,42 @@ public class CommandLine {
         }
         /** Converts text to a {@code Short} by delegating to {@link Short#valueOf(String)}.*/
         static class ShortConverter implements ITypeConverter<Short> {
+            @Override
             public Short convert(String value) { return Short.valueOf(value); }
         }
         /** Converts text to an {@code Integer} by delegating to {@link Integer#valueOf(String)}.*/
         static class IntegerConverter implements ITypeConverter<Integer> {
+            @Override
             public Integer convert(String value) { return Integer.valueOf(value); }
         }
         /** Converts text to a {@code Long} by delegating to {@link Long#valueOf(String)}.*/
         static class LongConverter implements ITypeConverter<Long> {
+            @Override
             public Long convert(String value) { return Long.valueOf(value); }
         }
         static class FloatConverter implements ITypeConverter<Float> {
+            @Override
             public Float convert(String value) { return Float.valueOf(value); }
         }
         static class DoubleConverter implements ITypeConverter<Double> {
+            @Override
             public Double convert(String value) { return Double.valueOf(value); }
         }
         static class FileConverter implements ITypeConverter<File> {
+            @Override
             public File convert(String value) { return new File(value); }
         }
         static class URLConverter implements ITypeConverter<URL> {
+            @Override
             public URL convert(String value) throws MalformedURLException { return new URL(value); }
         }
         static class URIConverter implements ITypeConverter<URI> {
+            @Override
             public URI convert(String value) throws URISyntaxException { return new URI(value); }
         }
         /** Converts text in {@code yyyy-mm-dd} format to a {@code java.util.Date}. ParameterException on failure. */
         static class ISO8601DateConverter implements ITypeConverter<Date> {
+            @Override
             public Date convert(String value) {
                 try {
                     return new SimpleDateFormat("yyyy-MM-dd").parse(value);
@@ -2707,6 +2731,7 @@ public class CommandLine {
         /** Converts text in any of the following formats to a {@code java.sql.Time}: {@code HH:mm}, {@code HH:mm:ss},
          * {@code HH:mm:ss.SSS}, {@code HH:mm:ss,SSS}. Other formats result in a ParameterException. */
         static class ISO8601TimeConverter implements ITypeConverter<Time> {
+            @Override
             public Time convert(String value) {
                 try {
                     if (value.length() <= 5) {
@@ -2727,22 +2752,28 @@ public class CommandLine {
             }
         }
         static class BigDecimalConverter implements ITypeConverter<BigDecimal> {
+            @Override
             public BigDecimal convert(String value) { return new BigDecimal(value); }
         }
         static class BigIntegerConverter implements ITypeConverter<BigInteger> {
+            @Override
             public BigInteger convert(String value) { return new BigInteger(value); }
         }
         static class CharsetConverter implements ITypeConverter<Charset> {
+            @Override
             public Charset convert(String s) { return Charset.forName(s); }
         }
         /** Converts text to a {@code InetAddress} by delegating to {@link InetAddress#getByName(String)}. */
         static class InetAddressConverter implements ITypeConverter<InetAddress> {
+            @Override
             public InetAddress convert(String s) throws Exception { return InetAddress.getByName(s); }
         }
         static class PatternConverter implements ITypeConverter<Pattern> {
+            @Override
             public Pattern convert(String s) { return Pattern.compile(s); }
         }
         static class UUIDConverter implements ITypeConverter<UUID> {
+            @Override
             public UUID convert(String s) throws Exception { return UUID.fromString(s); }
         }
         private BuiltIn() {} // private constructor: never instantiate
@@ -2979,6 +3010,7 @@ public class CommandLine {
          * @see #detailedSynopsis(Comparator, boolean)
          * @deprecated use {@link #synopsis(int)} instead
          */
+        @Deprecated
         public String synopsis() { return synopsis(0); }
 
         /**
@@ -3018,6 +3050,7 @@ public class CommandLine {
          * @param clusterBooleanOptions {@code true} if boolean short options should be clustered into a single string
          * @return a detailed synopsis
          * @deprecated use {@link #detailedSynopsis(int, Comparator, boolean)} instead. */
+        @Deprecated
         public String detailedSynopsis(Comparator<Field> optionSort, boolean clusterBooleanOptions) {
             return detailedSynopsis(0, optionSort, clusterBooleanOptions);
         }
@@ -3386,10 +3419,12 @@ public class CommandLine {
          * @return a new minimal ParamLabelRenderer */
         public static IParamLabelRenderer createMinimalParamLabelRenderer() {
             return new IParamLabelRenderer() {
+                @Override
                 public Text renderParameterLabel(Field field, Ansi ansi, List<IStyle> styles) {
                     String text = DefaultParamLabelRenderer.renderParameterName(field);
                     return ansi.apply(text, styles);
                 }
+                @Override
                 public String separator() { return ""; }
             };
         }
@@ -3458,6 +3493,7 @@ public class CommandLine {
             public Object command;
             private String sep;
             private boolean showDefault;
+            @Override
             public Text[][] render(Option option, Field field, IParamLabelRenderer paramLabelRenderer, ColorScheme scheme) {
                 String[] names = ShortestFirst.sort(option.names());
                 int shortOptionCount = names[0].length() == 2 ? 1 : 0;
@@ -3545,6 +3581,7 @@ public class CommandLine {
         /** The MinimalOptionRenderer converts {@link Option Options} to a single row with two columns of text: an
          * option name and a description. If multiple names or description lines exist, the first value is used. */
         static class MinimalOptionRenderer implements IOptionRenderer {
+            @Override
             public Text[][] render(Option option, Field field, IParamLabelRenderer parameterLabelRenderer, ColorScheme scheme) {
                 Text optionText = scheme.optionText(option.names()[0]);
                 Text paramLabelText = parameterLabelRenderer.renderParameterLabel(field, scheme.ansi(), scheme.optionParamStyles);
@@ -3556,6 +3593,7 @@ public class CommandLine {
         /** The MinimalParameterRenderer converts {@link Parameters Parameters} to a single row with two columns of
          * text: the parameters label and a description. If multiple description lines exist, the first value is used. */
         static class MinimalParameterRenderer implements IParameterRenderer {
+            @Override
             public Text[][] render(Parameters param, Field field, IParamLabelRenderer parameterLabelRenderer, ColorScheme scheme) {
                 return new Text[][] {{ parameterLabelRenderer.renderParameterLabel(field, scheme.ansi(), scheme.parameterStyles),
                         scheme.ansi().new Text(param.description().length == 0 ? "" : param.description()[0]) }};
@@ -3590,6 +3628,7 @@ public class CommandLine {
          */
         static class DefaultParameterRenderer implements IParameterRenderer {
             public String requiredMarker = " ";
+            @Override
             public Text[][] render(Parameters params, Field field, IParamLabelRenderer paramLabelRenderer, ColorScheme scheme) {
                 Text label = paramLabelRenderer.renderParameterLabel(field, scheme.ansi(), scheme.parameterStyles);
                 Text requiredParameter = scheme.parameterText(Range.parameterArity(field).min > 0 ? requiredMarker : "");
@@ -3640,7 +3679,9 @@ public class CommandLine {
             public DefaultParamLabelRenderer(String separator) {
                 this.separator = Assert.notNull(separator, "separator");
             }
+            @Override
             public String separator() { return separator; }
+            @Override
             public Text renderParameterLabel(Field field, Ansi ansi, List<IStyle> styles) {
                 boolean isOptionParameter = field.isAnnotationPresent(Option.class);
                 Range arity = isOptionParameter ? Range.optionArity(field) : Range.parameterCapacity(field);
@@ -3799,6 +3840,7 @@ public class CommandLine {
         }
         /** Sorts short strings before longer strings. */
         static class ShortestFirst implements Comparator<String> {
+            @Override
             public int compare(String o1, String o2) {
                 return o1.length() - o2.length();
             }
@@ -3811,6 +3853,7 @@ public class CommandLine {
         /** Sorts {@code Option} instances by their name in case-insensitive alphabetic order. If an Option has
          * multiple names, the shortest name is used for the sorting. Help options follow non-help options. */
         static class SortByShortestOptionNameAlphabetically implements Comparator<Field> {
+            @Override
             public int compare(Field f1, Field f2) {
                 Option o1 = f1.getAnnotation(Option.class);
                 Option o2 = f2.getAnnotation(Option.class);
@@ -3824,6 +3867,7 @@ public class CommandLine {
         }
         /** Sorts {@code Option} instances by their max arity first, then their min arity, then delegates to super class. */
         static class SortByOptionArityAndNameAlphabetically extends SortByShortestOptionNameAlphabetically {
+            @Override
             public int compare(Field f1, Field f2) {
                 Option o1 = f1.getAnnotation(Option.class);
                 Option o2 = f2.getAnnotation(Option.class);
@@ -3925,6 +3969,7 @@ public class CommandLine {
              * @param col the column of the cell whose Text to return
              * @return the Text object at the specified row and column
              * @deprecated use {@link #textAt(int, int)} instead */
+            @Deprecated
             public Text cellAt(int row, int col) { return textAt(row, col); }
 
             /** Returns the current number of rows of this {@code TextTable}.
@@ -4077,6 +4122,7 @@ public class CommandLine {
                 //if (Ansi.enabled()) { text.append(Style.reset.off()); }
                 return text;
             }
+            @Override
             public String toString() { return toString(new StringBuilder()).toString(); }
         }
         /** Columns define the width, indent (leading number of spaces in a column before the value) and
@@ -4262,7 +4308,9 @@ public class CommandLine {
                 private final int endCode;
 
                 Style(int startCode, int endCode) {this.startCode = startCode; this.endCode = endCode; }
+                @Override
                 public String on() { return CSI + startCode + "m"; }
+                @Override
                 public String off() { return CSI + endCode + "m"; }
 
 				/** Returns the concatenated ANSI escape codes for turning all specified styles on.
@@ -4348,7 +4396,9 @@ public class CommandLine {
                         this.color = Integer.decode(color);
                     }
                 }
+                @Override
                 public String on() { return String.format(CSI + "%d;5;%dm", fgbg, color); }
+                @Override
                 public String off() { return CSI + (fgbg + 1) + "m"; }
             }
             private static class StyledSection {
@@ -4454,6 +4504,7 @@ public class CommandLine {
                 private void addStyledSection(int start, int length, String startStyle, String endStyle) {
                     sections.add(new StyledSection(start, length, startStyle, endStyle));
                 }
+                @Override
                 public Object clone() {
                     try { return super.clone(); } catch (CloneNotSupportedException e) { throw new IllegalStateException(e); }
                 }
@@ -4547,12 +4598,15 @@ public class CommandLine {
                  * @return the plain text without any formatting */
                 public String plainString() {  return plain.toString().substring(from, from + length); }
 
+                @Override
                 public boolean equals(Object obj) { return toString().equals(String.valueOf(obj)); }
+                @Override
                 public int hashCode() { return toString().hashCode(); }
 
                 /** Returns a String representation of the text with ANSI escape codes embedded, unless ANSI is
                  * {@linkplain Ansi#enabled()} not enabled}, in which case the plain text is returned.
                  * @return a String representation of the text with ANSI escape codes embedded (if enabled) */
+                @Override
                 public String toString() {
                     if (!Ansi.this.enabled()) {
                         return plain.toString().substring(from, from + length);

@@ -21,6 +21,8 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.message.Message;
 
@@ -48,8 +50,8 @@ public class RingBufferLogEventTranslator implements
     private String threadName = Thread.currentThread().getName();
     private int threadPriority = Thread.currentThread().getPriority();
     private StackTraceElement location;
-    private long currentTimeMillis;
-    private long nanoTime;
+    private Clock clock;
+    private NanoClock nanoClock;
 
     // @Override
     @Override
@@ -59,7 +61,7 @@ public class RingBufferLogEventTranslator implements
                 // config properties are taken care of in the EventHandler thread
                 // in the AsyncLogger#actualAsyncLog method
                 injector.injectContextData(null, (StringMap) event.getContextData()), contextStack,
-                threadId, threadName, threadPriority, location, currentTimeMillis, nanoTime);
+                threadId, threadName, threadPriority, location, clock, nanoClock);
 
         clear(); // clear the translator
     }
@@ -77,15 +79,15 @@ public class RingBufferLogEventTranslator implements
                 null, // t
                 null, // contextStack
                 null, // location
-                0, // currentTimeMillis
-                0 // nanoTime
+                null, // clock
+                null // nanoClock
         );
     }
 
     public void setBasicValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
-            final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
-            final ContextStack aContextStack, final StackTraceElement aLocation,
-            final long aCurrentTimeMillis, final long aNanoTime) {
+                               final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
+                               final ContextStack aContextStack, final StackTraceElement aLocation,
+                               final Clock aClock, final NanoClock aNanoClock) {
         this.asyncLogger = anAsyncLogger;
         this.loggerName = aLoggerName;
         this.marker = aMarker;
@@ -95,8 +97,8 @@ public class RingBufferLogEventTranslator implements
         this.thrown = aThrowable;
         this.contextStack = aContextStack;
         this.location = aLocation;
-        this.currentTimeMillis = aCurrentTimeMillis;
-        this.nanoTime = aNanoTime;
+        this.clock = aClock;
+        this.nanoClock = aNanoClock;
     }
 
     public void updateThreadValues() {

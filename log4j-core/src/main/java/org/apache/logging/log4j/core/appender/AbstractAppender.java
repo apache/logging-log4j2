@@ -252,6 +252,17 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         this.handler = handler;
     }
 
+    /**
+     * Serializes the given event using the appender's layout if present.
+     * 
+     * @param event
+     *            the event to serialize.
+     * @return the serialized event or null if no layout is present.
+     */
+    protected Serializable toSerializable(final LogEvent event) {
+        return layout != null ? layout.toSerializable(event) : null;
+    }
+
     @Override
     public String toString() {
         return name;

@@ -47,10 +47,9 @@ property substitution using Lookups, multiple patterns on a PatternLayout and as
 Loggers. Another notable Log4j 2 feature is the ability to be "garbage-free" (avoid allocating
 temporary objects) while logging. In addition, Log4j 2 will not lose events while reconfiguring.
 
-This release contains new features, bugfixes and minor enhancements. Some of the new features include support
-for the Java 9 module system, support for the new SLF4j 1.8 binding mechanism, simplification of the Log4j
-property naming scheme, and native support of Jetty's logger. Log4j API is now a fully compliant module
-while the other Log4j jars are named automatic modules.
+This release contains new features, bugfixes and minor enhancements. The Log4j Core jar is now
+a multi-release jar and adds limited support for precise (micro and nanosecond) timestamps when
+running on Java 9.
 
 As of Log4j 2.9.0, the Log4j API was modified to use java.util.ServiceLoader to locate Log4j implementations,
 although the former binding mechanism is still supported. The Log4j API jar is now a multi-release jar
@@ -84,6 +83,8 @@ We do, however, discourage the use of SerializedLayout and recommend JsonLayout 
         <JsonLayout properties="true"/>
       </Socket>
     </Appenders>
+
+Note that the XML, JSON and YAML formats changed in the 2.11.0 release: they no longer have the "timeMillis" attribute and instead have an "Instant" element with "epochSecond" and "nanoOfSecond" attributes.
 
 Note that subsequent to the 2.9.0 release, for security reasons, Log4j does not process DTD in XML files.
 If you used DTD for including snippets, you have to use XInclude or Composite Configuration instead.

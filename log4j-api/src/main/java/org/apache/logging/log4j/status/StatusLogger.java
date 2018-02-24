@@ -64,6 +64,13 @@ public final class StatusLogger extends AbstractLogger {
      */
     public static final String DEFAULT_STATUS_LISTENER_LEVEL = "log4j2.StatusLogger.level";
 
+    /**
+     * System property that can be configured with a date-time format string to use as the format for timestamps
+     * in the status logger output. See {@link java.text.SimpleDateFormat} for supported formats.
+     * @since 2.11.0
+     */
+    public static final String STATUS_DATE_FORMAT = "log4j2.StatusLogger.DateFormat";
+
     private static final long serialVersionUID = 2L;
 
     private static final String NOT_AVAIL = "?";
@@ -96,8 +103,10 @@ public final class StatusLogger extends AbstractLogger {
 
     private StatusLogger(final String name, final MessageFactory messageFactory) {
         super(name, messageFactory);
-        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, Strings.EMPTY,
-                messageFactory, PROPS, System.err);
+        final String dateFormat = PROPS.getStringProperty(STATUS_DATE_FORMAT, Strings.EMPTY);
+        final boolean showDateTime = !Strings.isEmpty(dateFormat);
+        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, showDateTime, false,
+                dateFormat, messageFactory, PROPS, System.err);
         this.listenersLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
 
         // LOG4J2-1813 if system property "log4j2.debug" is defined, print all status logging

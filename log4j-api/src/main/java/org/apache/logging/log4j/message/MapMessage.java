@@ -126,7 +126,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
-     * Constructs a new instance based on an existing Map.
+     * Constructs a new instance based on an existing {@link Map}.
      * @param map The Map.
      */
     public MapMessage(final Map<String, V> map) {
@@ -516,7 +516,10 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     public Throwable getThrowable() {
         return null;
     }
+    
     /**
+     * Default implementation does nothing.
+     * 
      * @since 2.9
      */
     protected void validate(final String key, final boolean value) {
@@ -524,6 +527,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
+     * Default implementation does nothing.
+     * 
      * @since 2.9
      */
     protected void validate(final String key, final byte value) {
@@ -531,6 +536,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
+     * Default implementation does nothing.
+     * 
      * @since 2.9
      */
     protected void validate(final String key, final char value) {
@@ -538,6 +545,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
+     * Default implementation does nothing.
+     * 
      * @since 2.9
      */
     protected void validate(final String key, final double value) {
@@ -545,6 +554,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
+     * Default implementation does nothing.
+     * 
      * @since 2.9
      */
     protected void validate(final String key, final float value) {
@@ -552,6 +563,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
     
     /**
+     * Default implementation does nothing.
+     * 
      * @since 2.9
      */
     protected void validate(final String key, final int value) {
@@ -559,6 +572,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
+     * Default implementation does nothing.
+     * 
      * @since 2.9
      */
     protected void validate(final String key, final long value) {
@@ -566,6 +581,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
     
     /**
+     * Default implementation does nothing.
+     * 
      * @since 2.9
      */
     protected void validate(final String key, final Object value) {
@@ -573,6 +590,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
+     * Default implementation does nothing.
+     * 
      * @since 2.9
      */
     protected void validate(final String key, final short value) {
@@ -580,6 +599,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
+     * Default implementation does nothing.
+     * 
      * @since 2.9
      */
     protected void validate(final String key, final String value) {

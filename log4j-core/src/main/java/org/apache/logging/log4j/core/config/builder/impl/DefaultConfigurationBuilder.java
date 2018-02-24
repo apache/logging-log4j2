@@ -356,6 +356,16 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
+    public LoggerComponentBuilder newAsyncLogger(String name) {
+        return new DefaultLoggerComponentBuilder(this, name, null, "AsyncLogger");
+    }
+
+    @Override
+    public LoggerComponentBuilder newAsyncLogger(String name, boolean includeLocation) {
+        return new DefaultLoggerComponentBuilder(this, name, null, "AsyncLogger", includeLocation);
+    }
+
+    @Override
     public LoggerComponentBuilder newAsyncLogger(final String name, final Level level) {
         return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger");
     }
@@ -373,6 +383,16 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public LoggerComponentBuilder newAsyncLogger(final String name, final String level, final boolean includeLocation) {
         return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger");
+    }
+
+    @Override
+    public RootLoggerComponentBuilder newAsyncRootLogger() {
+        return new DefaultRootLoggerComponentBuilder(this, "AsyncRoot");
+    }
+
+    @Override
+    public RootLoggerComponentBuilder newAsyncRootLogger(boolean includeLocation) {
+        return new DefaultRootLoggerComponentBuilder(this, null, "AsyncRoot", includeLocation);
     }
 
     @Override
@@ -429,13 +449,13 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public FilterComponentBuilder newFilter(final String type, final Filter.Result onMatch,
-                                            final Filter.Result onMisMatch) {
-        return new DefaultFilterComponentBuilder(this, type, onMatch.name(), onMisMatch.name());
+                                            final Filter.Result onMismatch) {
+        return new DefaultFilterComponentBuilder(this, type, onMatch.name(), onMismatch.name());
     }
 
     @Override
-    public FilterComponentBuilder newFilter(final String type, final String onMatch, final String onMisMatch) {
-        return new DefaultFilterComponentBuilder(this, type, onMatch, onMisMatch);
+    public FilterComponentBuilder newFilter(final String type, final String onMatch, final String onMismatch) {
+        return new DefaultFilterComponentBuilder(this, type, onMatch, onMismatch);
     }
 
     @Override
@@ -443,6 +463,15 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         return new DefaultLayoutComponentBuilder(this, type);
     }
 
+    @Override
+    public LoggerComponentBuilder newLogger(String name) {
+        return new DefaultLoggerComponentBuilder(this, name, null);
+    }
+
+    @Override
+    public LoggerComponentBuilder newLogger(String name, boolean includeLocation) {
+        return new DefaultLoggerComponentBuilder(this, name, null, includeLocation);
+    }
 
     @Override
     public LoggerComponentBuilder newLogger(final String name, final Level level) {
@@ -462,6 +491,16 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public LoggerComponentBuilder newLogger(final String name, final String level, final boolean includeLocation) {
         return new DefaultLoggerComponentBuilder(this, name, level, includeLocation);
+    }
+
+    @Override
+    public RootLoggerComponentBuilder newRootLogger() {
+        return new DefaultRootLoggerComponentBuilder(this, null);
+    }
+
+    @Override
+    public RootLoggerComponentBuilder newRootLogger(boolean includeLocation) {
+        return new DefaultRootLoggerComponentBuilder(this, null, includeLocation);
     }
 
     @Override

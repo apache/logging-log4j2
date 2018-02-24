@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
@@ -94,6 +95,10 @@ public class CompositeConfigurationTest {
                 assertEquals("Expected 2 Appender references for cat1 but got " + appendersMap.size(), 2,
                         appendersMap.size());
                 assertTrue(appendersMap.get("STDOUT") instanceof ConsoleAppender);
+
+                Filter loggerFilter = config.getLogger("cat1").getFilter();
+                assertTrue(loggerFilter instanceof RegexFilter);
+                assertEquals(loggerFilter.getOnMatch(), Filter.Result.DENY);
 
                 appendersMap = config.getLogger("cat2").getAppenders();
                 assertEquals("Expected 1 Appender reference for cat2 but got " + appendersMap.size(), 1,

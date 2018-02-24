@@ -35,6 +35,7 @@ public class XmlLogEventParserTest extends LogEventParserTest {
             "       loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\"\n" +
             "       threadId=\"1\"\n" +
             "       threadPriority=\"5\">\n" +
+            "  <Instant epochSecond=\"1493121664\" nanoOfSecond=\"118000000\"/>\n" +
             "  <Marker name=\"child\">\n" +
             "    <Parents>\n" +
             "      <Marker name=\"parent\">\n" +
@@ -100,6 +101,11 @@ public class XmlLogEventParserTest extends LogEventParserTest {
 
     @Test(expected = ParseException.class)
     public void testStringWrongPropertyType() throws ParseException {
+        parser.parseFrom("<Event><Instant epochSecond=\"bar\">foobar</Instant></Event>");
+    }
+
+    @Test
+    public void testTimeMillisIgnored() throws ParseException {
         parser.parseFrom("<Event><timeMillis>foobar</timeMillis></Event>");
     }
 

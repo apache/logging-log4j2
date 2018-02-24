@@ -29,6 +29,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.junit.ThreadContextStackRule;
 import org.apache.logging.log4j.message.Message;
@@ -101,7 +102,7 @@ public class NoSqlDatabaseManagerTest {
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
             provider)) {
             expectedException.expect(AppenderLoggingException.class);
-            manager.writeInternal(mock(LogEvent.class));
+            manager.writeInternal(mock(LogEvent.class), null);
         }
     }
 
@@ -117,7 +118,7 @@ public class NoSqlDatabaseManagerTest {
             then(provider).should().getConnection();
 
             expectedException.expect(AppenderLoggingException.class);
-            manager.writeInternal(mock(LogEvent.class));
+            manager.writeInternal(mock(LogEvent.class), null);
         }
     }
 
@@ -144,7 +145,7 @@ public class NoSqlDatabaseManagerTest {
                 .setTimeMillis(1234567890123L)
                 .build();
 
-            manager.writeInternal(event);
+            manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
@@ -212,11 +213,11 @@ public class NoSqlDatabaseManagerTest {
                 .setThreadPriority(1)
                 .setTimeMillis(987654321564L)
                 .setThrown(exception)
-                .setContextMap(context)
+                .setContextData(ContextDataFactory.createContextData(context))
                 .setContextStack(stack)
                 .build();
 
-            manager.writeInternal(event);
+            manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
@@ -313,11 +314,11 @@ public class NoSqlDatabaseManagerTest {
                 .setThreadPriority(1)
                 .setTimeMillis(987654321564L)
                 .setThrown(exception2)
-                .setContextMap(context)
+                .setContextData(ContextDataFactory.createContextData(context))
                 .setContextStack(stack)
                 .build();
 
-            manager.writeInternal(event);
+            manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();

@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.util;
 
-import java.io.Console;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;

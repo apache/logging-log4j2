@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.StringMap;
 
 /**
@@ -79,13 +78,10 @@ public class ReusableLogEventFactory implements LogEventFactory {
         result.setLoggerFqcn(fqcn);
         result.setLevel(level == null ? Level.OFF : level);
         result.setMessage(message);
+        result.initTime(CLOCK, Log4jLogEvent.getNanoClock());
         result.setThrown(t);
         result.setContextData(injector.injectContextData(properties, (StringMap) result.getContextData()));
         result.setContextStack(ThreadContext.getDepth() == 0 ? ThreadContext.EMPTY_STACK : ThreadContext.cloneStack());// mutable copy
-        result.setTimeMillis(message instanceof TimestampMessage
-                ? ((TimestampMessage) message).getTimestamp()
-                : CLOCK.currentTimeMillis());
-        result.setNanoTime(Log4jLogEvent.getNanoClock().nanoTime());
 
         if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
             result.setThreadName(Thread.currentThread().getName()); // Thread.getName() allocates Objects on each call

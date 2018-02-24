@@ -614,7 +614,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     }
 
     /**
-     * Create a CompositeFilter.
+     * Creates a CompositeFilter.
      *
      * @param filters
      *            An array of Filters to call.

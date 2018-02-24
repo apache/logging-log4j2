@@ -60,6 +60,8 @@ public class ConfigurationBuilderTest {
         builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG, true).
                     add(builder.newAppenderRef("Stdout")).
                     addAttribute("additivity", false));
+        builder.add(builder.newLogger("org.apache.logging.log4j.core").
+                    add(builder.newAppenderRef("Stdout")));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
 
         builder.addProperty("MyKey", "MyValue");
@@ -79,11 +81,11 @@ public class ConfigurationBuilderTest {
                 INDENT + "<CustomLevels>" + EOL +
                 INDENT + INDENT + "<CustomLevel name=\"Panic\" intLevel=\"17\"/>" + EOL +
                 INDENT + "</CustomLevels>" + EOL +
-                INDENT + "<ThresholdFilter onMatch=\"ACCEPT\" onMisMatch=\"NEUTRAL\" level=\"DEBUG\"/>" + EOL +
+                INDENT + "<ThresholdFilter onMatch=\"ACCEPT\" onMismatch=\"NEUTRAL\" level=\"DEBUG\"/>" + EOL +
                 INDENT + "<Appenders>" + EOL +
                 INDENT + INDENT + "<CONSOLE name=\"Stdout\" target=\"SYSTEM_OUT\">" + EOL +
                 INDENT + INDENT + INDENT + "<PatternLayout pattern=\"%d [%t] %-5level: %msg%n%throwable\"/>" + EOL +
-                INDENT + INDENT + INDENT + "<MarkerFilter onMatch=\"DENY\" onMisMatch=\"NEUTRAL\" marker=\"FLOW\"/>" + EOL +
+                INDENT + INDENT + INDENT + "<MarkerFilter onMatch=\"DENY\" onMismatch=\"NEUTRAL\" marker=\"FLOW\"/>" + EOL +
                 INDENT + INDENT + "</CONSOLE>" + EOL +
                 INDENT + INDENT + "<Kafka name=\"Kafka\" topic=\"my-topic\">" + EOL +
                 INDENT + INDENT + INDENT + "<Property name=\"bootstrap.servers\">localhost:9092</Property>" + EOL +
@@ -94,6 +96,9 @@ public class ConfigurationBuilderTest {
                 INDENT + "</Appenders>" + EOL +
                 INDENT + "<Loggers>" + EOL +
                 INDENT + INDENT + "<Logger name=\"org.apache.logging.log4j\" level=\"DEBUG\" includeLocation=\"true\" additivity=\"false\">" + EOL +
+                INDENT + INDENT + INDENT + "<AppenderRef ref=\"Stdout\"/>" + EOL +
+                INDENT + INDENT + "</Logger>" + EOL +
+                INDENT + INDENT + "<Logger name=\"org.apache.logging.log4j.core\">" + EOL +
                 INDENT + INDENT + INDENT + "<AppenderRef ref=\"Stdout\"/>" + EOL +
                 INDENT + INDENT + "</Logger>" + EOL +
                 INDENT + INDENT + "<Root level=\"ERROR\">" + EOL +

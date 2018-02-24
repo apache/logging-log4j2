@@ -28,19 +28,19 @@ import org.apache.logging.log4j.message.Message;
 /**
  * Formats a {@link LogEvent} in its {@link Message} form.
  * <p>
- * Useful in combination with a JMS Appender to map a Log4j {@link org.apache.logging.log4j.message.StringMapMessage} to a JMS
- * {@link javax.jms.MapMessage}.
+ * Useful in combination with a JMS Appender to map a Log4j {@link org.apache.logging.log4j.message.MapMessage} or
+ * {@link org.apache.logging.log4j.message.StringMapMessage} to a JMS {@link javax.jms.MapMessage}.
  * </p>
  */
 @Plugin(name = "MessageLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public class MessageLayout extends AbstractLayout<Message> {
 
-    public MessageLayout(final Configuration configuration, final byte[] header, final byte[] footer) {
-        super(configuration, header, footer);
-    }
-
     public MessageLayout() {
         super(null, null, null);
+    }
+
+    public MessageLayout(final Configuration configuration, final byte[] header, final byte[] footer) {
+        super(configuration, header, footer);
     }
 
     @Override

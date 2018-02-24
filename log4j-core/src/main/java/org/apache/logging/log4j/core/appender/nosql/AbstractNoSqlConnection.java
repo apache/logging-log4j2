@@ -24,8 +24,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @param <W>
  *            See {@link NoSqlConnection}.
- * @param <T>See
- *            {@link NoSqlConnection}.
+ * @param <T>
+ *            See {@link NoSqlConnection}.
  */
 public abstract class AbstractNoSqlConnection<W, T extends NoSqlObject<W>> implements NoSqlConnection<W, T> {
 
