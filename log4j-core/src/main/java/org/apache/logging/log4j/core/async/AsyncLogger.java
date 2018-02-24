@@ -202,7 +202,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 ThreadContext.getImmutableStack(), //
 
                 // location (expensive to calculate)
-                calcLocationIfRequested(fqcn), //
+                calcLocationIfRequested(fqcn, message), //
                 CLOCK, //
                 nanoClock //
         );
