@@ -115,7 +115,7 @@ public class StringFormattedMessageTest {
     }
 
     @Test
-    public void testSerialization() throws IOException, ClassNotFoundException {
+    public void testSerializationWithoutSource() throws IOException, ClassNotFoundException {
         final StringFormattedMessage expected = new StringFormattedMessage("Msg", "a", "b", "c");
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (final ObjectOutputStream out = new ObjectOutputStream(baos)) {
@@ -128,5 +128,24 @@ public class StringFormattedMessageTest {
         Assert.assertEquals(expected.getFormat(), actual.getFormat());
         Assert.assertEquals(expected.getFormattedMessage(), actual.getFormattedMessage());
         Assert.assertArrayEquals(expected.getParameters(), actual.getParameters());
+        Assert.assertEquals(expected.getSource(), actual.getSource());
+    }
+
+    @Test
+    public void testSerializationWithSource() throws IOException, ClassNotFoundException {
+        final StackTraceElement source = new StackTraceElement("class", "method", "file", 55);
+        final StringFormattedMessage expected = new StringFormattedMessage(source, "Msg", "a", "b", "c");
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (final ObjectOutputStream out = new ObjectOutputStream(baos)) {
+            out.writeObject(expected);
+        }
+        final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        final ObjectInputStream in = new ObjectInputStream(bais);
+        final StringFormattedMessage actual = (StringFormattedMessage) in.readObject();
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected.getFormat(), actual.getFormat());
+        Assert.assertEquals(expected.getFormattedMessage(), actual.getFormattedMessage());
+        Assert.assertArrayEquals(expected.getParameters(), actual.getParameters());
+        Assert.assertEquals(expected.getSource(), actual.getSource());
     }
 }

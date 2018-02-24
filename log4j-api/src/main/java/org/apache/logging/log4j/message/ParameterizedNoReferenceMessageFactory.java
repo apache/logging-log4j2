@@ -49,10 +49,16 @@ public final class ParameterizedNoReferenceMessageFactory extends AbstractMessag
         private static final long serialVersionUID = 4199272162767841280L;
         private final String formattedMessage;
         private final Throwable throwable;
+        private final StackTraceElement source;
 
         public StatusMessage(final String formattedMessage, final Throwable throwable) {
+            this(null, formattedMessage, throwable);
+        }
+
+        public StatusMessage(StackTraceElement source,final String formattedMessage, final Throwable throwable) {
             this.formattedMessage = formattedMessage;
             this.throwable = throwable;
+            this.source = source;
         }
 
         @Override
@@ -73,6 +79,11 @@ public final class ParameterizedNoReferenceMessageFactory extends AbstractMessag
         @Override
         public Throwable getThrowable() {
             return throwable;
+        }
+
+        @Override
+        public StackTraceElement getSource() {
+            return source;
         }
     }
 
@@ -99,10 +110,26 @@ public final class ParameterizedNoReferenceMessageFactory extends AbstractMessag
      */
     @Override
     public Message newMessage(final String message, final Object... params) {
+        return newMessage((StackTraceElement) null, message, params);
+    }
+
+    /**
+     * Creates {@link SimpleMessage} instances containing the formatted parameterized message string, when the location
+     * of the log statement might be known at compile time.
+     *
+     * @param source the location of the log statement, or null
+     * @param message The message pattern.
+     * @param params The message parameters.
+     * @return The Message.
+     *
+     * @see MessageFactory#newMessage(StackTraceElement, String, Object...)
+     */
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object... params) {
         if (params == null) {
-            return new SimpleMessage(message);
+            return new SimpleMessage(source, message);
         }
-        final ParameterizedMessage msg = new ParameterizedMessage(message, params);
-        return new StatusMessage(msg.getFormattedMessage(), msg.getThrowable());
+        final ParameterizedMessage msg = new ParameterizedMessage(source, message, params);
+        return new StatusMessage(source, msg.getFormattedMessage(), msg.getThrowable());
     }
 }

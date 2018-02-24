@@ -40,6 +40,7 @@ public final class ObjectArrayMessage implements Message {
 
     private transient Object[] array;
     private transient String arrayString;
+    private transient StackTraceElement source;
 
     /**
      * Creates the ObjectMessage.
@@ -48,7 +49,18 @@ public final class ObjectArrayMessage implements Message {
      *            The Object to format.
      */
     public ObjectArrayMessage(final Object... obj) {
+        this(null, obj);
+    }
+
+    /**
+     * Creates the ObjectMessage.
+     *
+     * @param obj
+     *            The Object to format.
+     */
+    public ObjectArrayMessage(final StackTraceElement source, final Object... obj) {
         this.array = obj == null ? EMPTY_OBJECT_ARRAY : obj;
+        this.source = source;
     }
 
     private boolean equalObjectsOrStrings(final Object[] left, final Object[] right) {
@@ -110,6 +122,11 @@ public final class ObjectArrayMessage implements Message {
     @Override
     public Throwable getThrowable() {
         return null;
+    }
+
+    @Override
+    public StackTraceElement getSource() {
+        return source;
     }
 
     @Override

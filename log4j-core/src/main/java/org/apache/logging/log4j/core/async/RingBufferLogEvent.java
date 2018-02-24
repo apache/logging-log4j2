@@ -273,6 +273,13 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         return result;
     }
 
+    @Override
+    public StackTraceElement swapSource(StackTraceElement source) {
+        StackTraceElement original = this.location;
+        this.location = source;
+        return original;
+    }
+
     /*
      * @see ReusableMessage#getParameterCount
      */

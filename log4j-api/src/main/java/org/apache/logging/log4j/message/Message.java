@@ -94,4 +94,11 @@ public interface Message extends Serializable {
      * @return the throwable or null.
      */
     Throwable getThrowable();
+
+    /**
+     * A StackTraceElement providing the location of the log statement.
+     * @return a StackTraceElement with the log statement's location, or null.
+     */
+    StackTraceElement getSource();
+
 }

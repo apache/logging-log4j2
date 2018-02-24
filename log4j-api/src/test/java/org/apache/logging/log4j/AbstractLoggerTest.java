@@ -22,11 +22,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.ObjectMessage;
-import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
-import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.*;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.util.MessageSupplier;
@@ -1266,6 +1262,11 @@ public class AbstractLoggerTest {
         @Override
         public Throwable getThrowable() {
             return throwable;
+        }
+
+        @Override
+        public StackTraceElement getSource() {
+            return null;
         }
     }
 }

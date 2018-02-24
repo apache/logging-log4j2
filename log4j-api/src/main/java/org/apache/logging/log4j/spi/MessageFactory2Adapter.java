@@ -115,4 +115,74 @@ public class MessageFactory2Adapter implements MessageFactory2 {
     public Message newMessage(final String message, final Object... params) {
         return wrapped.newMessage(message, params);
     }
+
+    @Override
+    public Message newMessage(StackTraceElement source, CharSequence charSequence) {
+        return wrapped.newMessage(source, charSequence);
+    }
+
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object p0) {
+        return wrapped.newMessage(source, message, p0);
+    }
+
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object p0, Object p1) {
+        return wrapped.newMessage(source, message, p0, p1);
+    }
+
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2) {
+        return wrapped.newMessage(source, message, p0, p1, p2);
+    }
+
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3) {
+        return wrapped.newMessage(source, message, p0, p1, p2, p3);
+    }
+
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+        return wrapped.newMessage(source, message, p0, p1, p2, p3, p4);
+    }
+
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+        return wrapped.newMessage(source, message, p0, p1, p2, p3, p4, p5);
+    }
+
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+        return wrapped.newMessage(source, message, p0, p1, p2, p3, p4, p5, p6);
+    }
+
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+        return wrapped.newMessage(source, message, p0, p1, p2, p3, p4, p5, p6, p7);
+    }
+
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+        return wrapped.newMessage(source, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+    }
+
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+        return wrapped.newMessage(source, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+    }
+
+    @Override
+    public Message newMessage(StackTraceElement source, Object message) {
+        return wrapped.newMessage(source, message);
+    }
+
+    @Override
+    public Message newMessage(StackTraceElement source, String message) {
+        return wrapped.newMessage(source, message);
+    }
+
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object... params) {
+        return wrapped.newMessage(source, message, params);
+    }
 }

@@ -50,6 +50,106 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
     }
 
     /**
+     * Creates {@link ParameterizedMessage} instances, when the location
+     * of the log statement might be known at compile time.
+     *
+     * @param source the location of the log statement, or null
+     * @param message The message pattern.
+     * @param params The message parameters.
+     * @return The Message.
+     *
+     * @see MessageFactory#newMessage(String, Object...)
+     */
+    @Override
+    public Message newMessage(final StackTraceElement source, final String message, final Object... params) {
+        return new ParameterizedMessage(source, message, params);
+    }
+
+    /**
+     * @since
+     */
+    @Override
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0) {
+        return new ParameterizedMessage(source, message, p0);
+    }
+
+    /**
+     * @since
+     */
+    @Override
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1) {
+        return new ParameterizedMessage(source, message, p0, p1);
+    }
+
+    /**
+     * @since
+     */
+    @Override
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2) {
+        return new ParameterizedMessage(source, message, p0, p1, p2);
+    }
+
+    /**
+     * @since
+     */
+    @Override
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+        return new ParameterizedMessage(source, message, p0, p1, p2, p3);
+    }
+
+    /**
+     * @since
+     */
+    @Override
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
+        return new ParameterizedMessage(source, message, p0, p1, p2, p3, p4);
+    }
+
+    /**
+     * @since
+     */
+    @Override
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
+        return new ParameterizedMessage(source, message, p0, p1, p2, p3, p4, p5);
+    }
+
+    /**
+     * @since
+     */
+    @Override
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+            final Object p6) {
+        return new ParameterizedMessage(source, message, p0, p1, p2, p3, p4, p5, p6);
+    }
+
+    /**
+     * @since
+     */
+    @Override
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7) {
+        return new ParameterizedMessage(source, message, p0, p1, p2, p3, p4, p5, p6, p7);
+    }
+
+    /**
+     * @since
+     */
+    @Override
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8) {
+        return new ParameterizedMessage(source, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+    }
+
+    /**
+     * @since
+     */
+    @Override
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8, final Object p9) {
+        return new ParameterizedMessage(source, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+    }
+
+    /**
      * Creates {@link ParameterizedMessage} instances.
      *
      * @param message The message pattern.
@@ -60,7 +160,7 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String message, final Object... params) {
-        return new ParameterizedMessage(message, params);
+        return newMessage((StackTraceElement) null, message, params);
     }
 
     /**
@@ -68,7 +168,7 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String message, final Object p0) {
-        return new ParameterizedMessage(message, p0);
+        return newMessage((StackTraceElement) null, message, p0);
     }
 
     /**
@@ -76,7 +176,7 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1) {
-        return new ParameterizedMessage(message, p0, p1);
+        return newMessage((StackTraceElement) null, message, p0, p1);
     }
 
     /**
@@ -84,7 +184,7 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2) {
-        return new ParameterizedMessage(message, p0, p1, p2);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2);
     }
 
     /**
@@ -92,7 +192,7 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
-        return new ParameterizedMessage(message, p0, p1, p2, p3);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3);
     }
 
     /**
@@ -100,7 +200,7 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
-        return new ParameterizedMessage(message, p0, p1, p2, p3, p4);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4);
     }
 
     /**
@@ -108,7 +208,7 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
-        return new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5);
     }
 
     /**
@@ -116,8 +216,8 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6) {
-        return new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6);
+                              final Object p6) {
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     /**
@@ -125,8 +225,8 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7) {
-        return new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+                              final Object p6, final Object p7) {
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     /**
@@ -134,8 +234,8 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8) {
-        return new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+                              final Object p6, final Object p7, final Object p8) {
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     /**
@@ -143,7 +243,7 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8, final Object p9) {
-        return new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+                              final Object p6, final Object p7, final Object p8, final Object p9) {
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 }

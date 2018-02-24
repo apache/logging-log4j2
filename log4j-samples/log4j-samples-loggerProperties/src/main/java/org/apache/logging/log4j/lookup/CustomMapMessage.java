@@ -31,7 +31,11 @@ public class CustomMapMessage extends StringMapMessage {
     private final String message;
 
     public CustomMapMessage(final String msg, final Map<String, String> map) {
-        super(map);
+        this(null, msg, map);
+    }
+
+    public CustomMapMessage(final StackTraceElement source, final String msg, final Map<String, String> map) {
+        super(source, map);
         this.message = msg;
     }
 
