@@ -53,10 +53,12 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     private static class AbstractFlowMessage implements FlowMessage {
 
         private static final long serialVersionUID = 1L;
+        private final StackTraceElement source;
         private final Message message;
         private final String text;
 
-        AbstractFlowMessage(final String text, final Message message) {
+        AbstractFlowMessage(final StackTraceElement source, final String text, final Message message) {
+            this.source = source;
             this.message = message;
             this.text = text;
         }
@@ -102,14 +104,19 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
         public String getText() {
             return text;
         }
+
+        @Override
+        public StackTraceElement getSource() {
+            return source;
+        }
     }
 
     private static final class SimpleEntryMessage extends AbstractFlowMessage implements EntryMessage {
 
         private static final long serialVersionUID = 1L;
 
-        SimpleEntryMessage(final String entryText, final Message message) {
-            super(entryText, message);
+        SimpleEntryMessage(final StackTraceElement source, final String entryText, final Message message) {
+            super(source, entryText, message);
         }
 
     }
@@ -121,20 +128,20 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
         private final Object result;
         private final boolean isVoid;
 
-        SimpleExitMessage(final String exitText, final EntryMessage message) {
-            super(exitText, message.getMessage());
+        SimpleExitMessage(final StackTraceElement source, final String exitText, final EntryMessage message) {
+            super(source, exitText, message.getMessage());
             this.result = null;
             isVoid = true;
         }
 
-        SimpleExitMessage(final String exitText, final Object result, final EntryMessage message) {
-            super(exitText, message.getMessage());
+        SimpleExitMessage(final StackTraceElement source, final String exitText, final Object result, final EntryMessage message) {
+            super(source, exitText, message.getMessage());
             this.result = result;
             isVoid = false;
         }
 
-        SimpleExitMessage(final String exitText, final Object result, final Message message) {
-            super(exitText, message);
+        SimpleExitMessage(final StackTraceElement source, final String exitText, final Object result, final Message message) {
+            super(source, exitText, message);
             this.result = result;
             isVoid = false;
         }
@@ -171,15 +178,20 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
      * @see org.apache.logging.log4j.message.MessageFactory#newEntryMessage(org.apache.logging.log4j.message.Message)
      */
     @Override
-    public EntryMessage newEntryMessage(final Message message) {
-        return new SimpleEntryMessage(entryText, makeImmutable(message));
+    public EntryMessage newEntryMessage(final StackTraceElement source, final Message message) {
+        return new SimpleEntryMessage(source, entryText, makeImmutable(message));
+    }
+
+    @Override
+    public EntryMessage newEntryMessage(Message message) {
+        return newEntryMessage(null, message);
     }
 
     private Message makeImmutable(final Message message) {
         if (!(message instanceof ReusableMessage)) {
             return message;
         }
-        return new SimpleMessage(message.getFormattedMessage());
+        return new SimpleMessage(message.getSource(), message.getFormattedMessage());
     }
 
     /*
@@ -188,8 +200,13 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
      * @see org.apache.logging.log4j.message.FlowMessageFactory#newExitMessage(org.apache.logging.log4j.message.EntryMessage)
      */
     @Override
-    public ExitMessage newExitMessage(final EntryMessage message) {
-        return new SimpleExitMessage(exitText, message);
+    public ExitMessage newExitMessage(final StackTraceElement source, final EntryMessage message) {
+        return new SimpleExitMessage(source, exitText, message);
+    }
+
+    @Override
+    public ExitMessage newExitMessage(EntryMessage message) {
+        return newExitMessage(null, message);
     }
 
     /*
@@ -198,8 +215,13 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
      * @see org.apache.logging.log4j.message.FlowMessageFactory#newExitMessage(java.lang.Object, org.apache.logging.log4j.message.EntryMessage)
      */
     @Override
-    public ExitMessage newExitMessage(final Object result, final EntryMessage message) {
-        return new SimpleExitMessage(exitText, result, message);
+    public ExitMessage newExitMessage(final StackTraceElement source, final Object result, final EntryMessage message) {
+        return new SimpleExitMessage(source, exitText, result, message);
+    }
+
+    @Override
+    public ExitMessage newExitMessage(Object result, Message message) {
+        return newExitMessage(null, result, message);
     }
 
     /*
@@ -208,7 +230,12 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
      * @see org.apache.logging.log4j.message.FlowMessageFactory#newExitMessage(java.lang.Object, org.apache.logging.log4j.message.Message)
      */
     @Override
-    public ExitMessage newExitMessage(final Object result, final Message message) {
-        return new SimpleExitMessage(exitText, result, message);
+    public ExitMessage newExitMessage(final StackTraceElement source, final Object result, final Message message) {
+        return new SimpleExitMessage(source, exitText, result, message);
+    }
+
+    @Override
+    public ExitMessage newExitMessage(Object result, EntryMessage message) {
+        return newExitMessage(null, result, message);
     }
 }

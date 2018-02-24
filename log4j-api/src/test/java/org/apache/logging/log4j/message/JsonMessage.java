@@ -28,6 +28,7 @@ public class JsonMessage implements Message {
 
     private static final long serialVersionUID = 1L;
     private static final ObjectMapper mapper = new ObjectMapper();
+    private final StackTraceElement source;
     private final Object object;
 
     /**
@@ -35,7 +36,18 @@ public class JsonMessage implements Message {
      *
      * @param object the Object to serialize.
      */
-    public JsonMessage(final Object object) {
+    public JsonMessage(Object object) {
+        this(null, object);
+    }
+
+    /**
+     * Constructs a JsonMessage.
+     *
+     * @param source the location of the log statement.
+     * @param object the Object to serialize.
+     */
+    public JsonMessage(final StackTraceElement source, final Object object) {
+        this.source = source;
         this.object = object;
     }
 
@@ -62,5 +74,10 @@ public class JsonMessage implements Message {
     @Override
     public Throwable getThrowable() {
         return null;
+    }
+
+    @Override
+    public StackTraceElement getSource() {
+        return source;
     }
 }

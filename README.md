@@ -93,7 +93,23 @@ JIRA issue in the Pull Request.
 
 ## Building From Source
 
-Log4j requires Apache Maven 3.x. To build from source and install to your local Maven repository, execute the following:
+Log4j requires Apache Maven 3.x. Java 9 needs to be installed and present in your `~/.m2/toolchains.xml`. See the following for an example.
+ 
+ ```$xml
+<toolchains>
+	<toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>9</version>
+    </provides>
+    <configuration>
+      <jdkHome>C:\Program Files\Java\jdk-9.0.1</jdkHome>
+    </configuration>
+	</toolchain>
+</toolchains>
+```
+ 
+ To build from source and install to your local Maven repository, execute the following:
 
 ```sh
 mvn install

@@ -29,6 +29,7 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
 
     private String message;
     private transient CharSequence charSequence;
+    private StackTraceElement source;
 
     /**
      * Basic constructor.
@@ -42,8 +43,20 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
      * @param message The String message.
      */
     public SimpleMessage(final String message) {
+        this(null, message);
+    }
+
+    /**
+     * Constructor that includes the message, when the location
+     * of the log statement might be known at compile time.
+     *
+     * @param source the location of the log statement, or null
+     * @param message The String message.
+     */
+    public SimpleMessage(final StackTraceElement source, final String message) {
         this.message = message;
         this.charSequence = message;
+        this.source = source;
     }
 
     /**
@@ -52,7 +65,20 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
      */
     public SimpleMessage(final CharSequence charSequence) {
         // this.message = String.valueOf(charSequence); // postponed until getFormattedMessage
+        this(null, charSequence);
+    }
+
+    /**
+     * Constructor that includes the message, when the location
+     * of the log statement might be known at compile time.
+     *
+     * @param source the location of the log statement, or null
+     * @param charSequence The CharSequence message.
+     */
+    public SimpleMessage(final StackTraceElement source, final CharSequence charSequence) {
+        // this.message = String.valueOf(charSequence); // postponed until getFormattedMessage
         this.charSequence = charSequence;
+        this.source = source;
     }
 
     /**
@@ -148,5 +174,10 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         charSequence = message;
+    }
+
+    @Override
+    public StackTraceElement getSource() {
+        return source;
     }
 }

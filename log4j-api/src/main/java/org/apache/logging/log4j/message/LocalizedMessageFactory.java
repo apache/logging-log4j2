@@ -73,7 +73,7 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
         }
         return new LocalizedMessage(resourceBundle, key);
     }
-    
+
     /**
      * Creates {@link LocalizedMessage} instances.
      *
@@ -85,10 +85,25 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String key, final Object... params) {
-        if (resourceBundle == null) {
-            return new LocalizedMessage(baseName, key, params);
-        }
-        return new LocalizedMessage(resourceBundle, key, params);
+        return newMessage((StackTraceElement) null, key, params);
     }
 
+    /**
+     * Creates {@link LocalizedMessage} instances, when the location
+     * of the log statement might be known at compile time.
+     *
+     * @param source the location of the log statement, or null
+     * @param message The key String, used as a message if the key is absent.
+     * @param params The parameters for the message at the given key.
+     * @return The LocalizedMessage.
+     *
+     * @see org.apache.logging.log4j.message.MessageFactory#newMessage(String, Object...)
+     */
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object... params) {
+        if (resourceBundle == null) {
+            return new LocalizedMessage(source, baseName, message, params);
+        }
+        return new LocalizedMessage(source, resourceBundle, message, params);
+    }
 }

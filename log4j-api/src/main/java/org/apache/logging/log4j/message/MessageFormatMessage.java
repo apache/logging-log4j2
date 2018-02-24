@@ -24,6 +24,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.IllegalFormatException;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -33,12 +34,14 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * @serial In version 2.1, due to a bug in the serialization format, the serialization format was changed along with
  * its {@code serialVersionUID} value.
+ * @serial In version , due to the addition of {@code source}, the serialization format was changed along with its
+ * {@code serialVersionUID} value.
  */
 public class MessageFormatMessage implements Message {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     private static final int HASHVAL = 31;
 
@@ -48,6 +51,7 @@ public class MessageFormatMessage implements Message {
     private transient String formattedMessage;
     private transient Throwable throwable;
     private final Locale locale;
+    private StackTraceElement source;
 
     /**
      * Constructs a message.
@@ -58,12 +62,30 @@ public class MessageFormatMessage implements Message {
      * @since 2.6
      */
     public MessageFormatMessage(final Locale locale, final String messagePattern, final Object... parameters) {
+        this(null, locale, messagePattern, parameters);
+    }
+
+    /**
+     * Constructs a message.
+     *
+     * @param locale the locale for this message format
+     * @param messagePattern the pattern for this message format
+     * @param parameters The objects to format
+     * @since 2.6
+     */
+    public MessageFormatMessage(StackTraceElement source, final Locale locale, final String messagePattern, final Object... parameters) {
+        this.source = source;
         this.locale = locale;
         this.messagePattern = messagePattern;
         this.parameters = parameters;
         final int length = parameters == null ? 0 : parameters.length;
         if (length > 0 && parameters[length - 1] instanceof Throwable) {
             this.throwable = (Throwable) parameters[length - 1];
+        }
+        if (length > 0 && parameters[length - 1] instanceof StackTraceElement) {
+            this.source = (StackTraceElement) parameters[length - 1];
+        } else if (length > 1 && parameters[length - 2] instanceof StackTraceElement) {
+            this.source = (StackTraceElement) parameters[length - 2];
         }
     }
 
@@ -74,7 +96,17 @@ public class MessageFormatMessage implements Message {
      * @param parameters The objects to format
      */
     public MessageFormatMessage(final String messagePattern, final Object... parameters) {
-        this(Locale.getDefault(Locale.Category.FORMAT), messagePattern, parameters);
+        this((StackTraceElement) null, messagePattern, parameters);
+    }
+
+    /**
+     * Constructs a message.
+     *
+     * @param messagePattern the pattern for this message format
+     * @param parameters The objects to format
+     */
+    public MessageFormatMessage(final StackTraceElement source, final String messagePattern, final Object... parameters) {
+        this(source, Locale.getDefault(Locale.Category.FORMAT), messagePattern, parameters);
     }
 
     /**
@@ -131,19 +163,20 @@ public class MessageFormatMessage implements Message {
 
         final MessageFormatMessage that = (MessageFormatMessage) o;
 
-        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
+        if (!Objects.equals(messagePattern, that.messagePattern) || !Objects.equals(source, that.source)) {
             return false;
         }
+
         return Arrays.equals(serializedParameters, that.serializedParameters);
     }
 
     @Override
     public int hashCode() {
-        int result = messagePattern != null ? messagePattern.hashCode() : 0;
+        int result = Objects.hashCode(messagePattern);
         result = HASHVAL * result + (serializedParameters != null ? Arrays.hashCode(serializedParameters) : 0);
+        result = HASHVAL * result + Objects.hashCode(source);
         return result;
     }
-
 
     @Override
     public String toString() {
@@ -163,6 +196,66 @@ public class MessageFormatMessage implements Message {
                 out.writeUTF(serializedParameters[i]);
             }
         }
+        out.writeBoolean(source != null);
+        writeSource(out, source);
+    }
+
+    static void writeSource(final ObjectOutputStream out, StackTraceElement source) throws IOException {
+        boolean hasSource = source != null;
+        out.writeBoolean(hasSource);
+        if (hasSource) {
+            writeNullableString(out, source.getFileName());
+            writeNullableString(out, source.getClassName());
+            writeNullableString(out, source.getMethodName());
+            writeNullableInt(out, source.getLineNumber());
+        }
+    }
+
+    static StackTraceElement readSource(final ObjectInputStream in) throws IOException {
+        boolean hasSource = in.readBoolean();
+        StackTraceElement source = null;
+        if (hasSource) {
+            String fileName = readNullableString(in);
+            String className = readNullableString(in);
+            String methodName = readNullableString(in);
+            Integer lineNumber = readNullableInt(in);
+            source = new StackTraceElement(className, methodName, fileName, lineNumber);
+        }
+        return source;
+    }
+
+    static void writeNullableString(final ObjectOutputStream out, String s) throws IOException {
+        boolean hasValue = s != null;
+        out.writeBoolean(hasValue);
+        if (hasValue) {
+            out.writeUTF(s);
+        }
+    }
+
+    static String readNullableString(final ObjectInputStream in) throws IOException {
+        boolean hasValue = in.readBoolean();
+        String result = null;
+        if (hasValue) {
+            result = in.readUTF();
+        }
+        return result;
+    }
+
+    static void writeNullableInt(final ObjectOutputStream out, Integer i) throws IOException {
+        boolean hasValue = i != null;
+        out.writeBoolean(hasValue);
+        if (hasValue) {
+            out.writeInt(i);
+        }
+    }
+
+    static Integer readNullableInt(final ObjectInputStream in) throws IOException {
+        boolean hasvalue = in.readBoolean();
+        Integer result = null;
+        if (hasvalue) {
+            result = in.readInt();
+        }
+        return result;
     }
 
     private void readObject(final ObjectInputStream in) throws IOException {
@@ -175,6 +268,12 @@ public class MessageFormatMessage implements Message {
         for (int i = 0; i < length; ++i) {
             serializedParameters[i] = in.readUTF();
         }
+        source = readSource(in);
+    }
+
+    @Override
+    public StackTraceElement getSource() {
+        return source;
     }
 
     /**
