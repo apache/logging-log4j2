@@ -36,7 +36,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
 
     @Override
     public Message newMessage(final CharSequence message) {
-        return newMessage((SourceLocation) null, message);
+        return newMessage((StackTraceElement) null, message);
     }
 
     /*
@@ -46,7 +46,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      */
     @Override
     public Message newMessage(final Object message) {
-        return newMessage((SourceLocation) null, message);
+        return newMessage((StackTraceElement) null, message);
     }
 
     /*
@@ -56,7 +56,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      */
     @Override
     public Message newMessage(final String message) {
-        return newMessage((SourceLocation) null, message);
+        return newMessage((StackTraceElement) null, message);
     }
 
     /**
@@ -64,7 +64,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      */
     @Override
     public Message newMessage(final String message, final Object p0) {
-        return newMessage((SourceLocation) null, message, p0);
+        return newMessage((StackTraceElement) null, message, p0);
     }
 
     /**
@@ -72,7 +72,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1) {
-        return newMessage((SourceLocation) null, message, p0, p1);
+        return newMessage((StackTraceElement) null, message, p0, p1);
     }
 
     /**
@@ -80,7 +80,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2);
     }
 
     /**
@@ -88,7 +88,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2, p3);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3);
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2, p3, p4);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4);
     }
 
     /**
@@ -104,7 +104,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      */
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2, p3, p4, p5);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5);
     }
 
     /**
@@ -113,7 +113,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2, p3, p4, p5, p6);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     /**
@@ -122,7 +122,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2, p3, p4, p5, p6, p7);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     /**
@@ -131,7 +131,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7, final Object p8) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     /**
@@ -145,27 +145,27 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
 
 
     @Override
-    public Message newMessage(final SourceLocation source, final CharSequence message) {
+    public Message newMessage(final StackTraceElement source, final CharSequence message) {
         return new SimpleMessage(source, message);
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.logging.log4j.message.MessageFactory#newMessage(java.lang.SourceLocation,java.lang.Object)
+     * @see org.apache.logging.log4j.message.MessageFactory#newMessage(java.lang.StackTraceElement,java.lang.Object)
      */
     @Override
-    public Message newMessage(final SourceLocation source, final Object message) {
+    public Message newMessage(final StackTraceElement source, final Object message) {
         return new ObjectMessage(source, message);
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.logging.log4j.message.MessageFactory#newMessage(java.lang.SourceLocation,java.lang.String)
+     * @see org.apache.logging.log4j.message.MessageFactory#newMessage(java.lang.StackTraceElement,java.lang.String)
      */
     @Override
-    public Message newMessage(final SourceLocation source, final String message) {
+    public Message newMessage(final StackTraceElement source, final String message) {
         return new SimpleMessage(source, message);
     }
 
@@ -173,7 +173,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      * @since
      */
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0) {
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0) {
         return newMessage(source, message, new Object[] { p0 });
     }
 
@@ -181,7 +181,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      * @since
      */
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1) {
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1) {
         return newMessage(source, message, new Object[] { p0, p1 });
     }
 
@@ -189,7 +189,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      * @since
      */
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2) {
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2) {
         return newMessage(source, message, new Object[] { p0, p1, p2 });
     }
 
@@ -197,7 +197,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      * @since
      */
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
         return newMessage(source, message, new Object[] { p0, p1, p2, p3 });
     }
 
@@ -205,7 +205,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      * @since
      */
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
         return newMessage(source, message, new Object[] { p0, p1, p2, p3, p4 });
     }
 
@@ -213,7 +213,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      * @since
      */
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
         return newMessage(source, message, new Object[] { p0, p1, p2, p3, p4, p5 });
     }
 
@@ -221,7 +221,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      * @since
      */
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
                               final Object p6) {
         return newMessage(source, message, new Object[] { p0, p1, p2, p3, p4, p5, p6 });
     }
@@ -230,7 +230,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      * @since
      */
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
                               final Object p6, final Object p7) {
         return newMessage(source, message, new Object[] { p0, p1, p2, p3, p4, p5, p6, p7 });
     }
@@ -239,7 +239,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      * @since
      */
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
                               final Object p6, final Object p7, final Object p8) {
         return newMessage(source, message, new Object[] { p0, p1, p2, p3, p4, p5, p6, p7, p8 });
     }
@@ -248,7 +248,7 @@ public abstract class AbstractMessageFactory implements MessageFactory2, Seriali
      * @since
      */
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
                               final Object p6, final Object p7, final Object p8, final Object p9) {
         return newMessage(source, message, new Object[] { p0, p1, p2, p3, p4, p5, p6, p7, p8, p9 });
     }

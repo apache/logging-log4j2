@@ -23,7 +23,6 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.message.SourceLocation;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
@@ -77,11 +76,11 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         entity.set("loggerName", event.getLoggerName());
         entity.set("message", event.getMessage() == null ? null : event.getMessage().getFormattedMessage());
 
-        final SourceLocation source = event.getSource();
+        final StackTraceElement source = event.getSource();
         if (source == null) {
             entity.set("source", (Object) null);
         } else {
-            entity.set("source", this.convertSourceLocation(source));
+            entity.set("source", this.convertStackTraceElement(source));
         }
 
         final Marker marker = event.getMarker();
@@ -178,15 +177,6 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     }
 
     private NoSqlObject<W> convertStackTraceElement(final StackTraceElement element) {
-        final NoSqlObject<W> elementEntity = this.connection.createObject();
-        elementEntity.set("className", element.getClassName());
-        elementEntity.set("methodName", element.getMethodName());
-        elementEntity.set("fileName", element.getFileName());
-        elementEntity.set("lineNumber", element.getLineNumber());
-        return elementEntity;
-    }
-
-    private NoSqlObject<W> convertSourceLocation(final SourceLocation element) {
         final NoSqlObject<W> elementEntity = this.connection.createObject();
         elementEntity.set("className", element.getClassName());
         elementEntity.set("methodName", element.getMethodName());

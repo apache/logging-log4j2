@@ -67,7 +67,7 @@ public class Log4jLogEvent implements LogEvent {
     private long threadId;
     private String threadName;
     private int threadPriority;
-    private SourceLocation source;
+    private StackTraceElement source;
     private boolean includeLocation;
     private boolean endOfBatch = false;
     /** @since Log4J 2.4 */
@@ -89,7 +89,7 @@ public class Log4jLogEvent implements LogEvent {
         private long threadId;
         private String threadName;
         private int threadPriority;
-        private SourceLocation source;
+        private StackTraceElement source;
         private boolean includeLocation;
         private boolean endOfBatch = false;
         private long nanoTime;
@@ -224,7 +224,7 @@ public class Log4jLogEvent implements LogEvent {
             return this;
         }
 
-        public Builder setSource(final SourceLocation source) {
+        public Builder setSource(final StackTraceElement source) {
             this.source = source;
             return this;
         }
@@ -343,7 +343,7 @@ public class Log4jLogEvent implements LogEvent {
    public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
                         final Message message, final Throwable t, final Map<String, String> mdc,
                         final ThreadContext.ContextStack ndc, final String threadName,
-                        final SourceLocation location, final long timestampMillis) {
+                        final StackTraceElement location, final long timestampMillis) {
        this(loggerName, marker, loggerFQCN, level, message, t, null, createContextData(mdc), ndc, 0,
                threadName, 0, location, timestampMillis, nanoClock.nanoTime());
    }
@@ -370,7 +370,7 @@ public class Log4jLogEvent implements LogEvent {
                                             final Level level, final Message message, final Throwable thrown,
                                             final ThrowableProxy thrownProxy,
                                             final Map<String, String> mdc, final ThreadContext.ContextStack ndc,
-                                            final String threadName, final SourceLocation location,
+                                            final String threadName, final StackTraceElement location,
                                             final long timestamp) {
         final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message, thrown,
                 thrownProxy, createContextData(mdc), ndc, 0, threadName, 0, location, timestamp, nanoClock.nanoTime());
@@ -399,7 +399,7 @@ public class Log4jLogEvent implements LogEvent {
     private Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
             final Message message, final Throwable thrown, final ThrowableProxy thrownProxy,
             final StringMap contextData, final ThreadContext.ContextStack contextStack, final long threadId,
-            final String threadName, final int threadPriority, final SourceLocation source,
+            final String threadName, final int threadPriority, final StackTraceElement source,
             final long timestampMillis, final long nanoTime) {
         this.loggerName = loggerName;
         this.marker = marker;
@@ -611,12 +611,12 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     /**
-     * Returns the SourceLocation for the caller. This will be the entry that occurs right
+     * Returns the StackTraceElement for the caller. This will be the entry that occurs right
      * before the first occurrence of FQCN as a class name.
-     * @return the SourceLocation for the caller.
+     * @return the StackTraceElement for the caller.
      */
     @Override
-    public SourceLocation getSource() {
+    public StackTraceElement getSource() {
         if (source != null) {
             return source;
         }
@@ -626,7 +626,7 @@ public class Log4jLogEvent implements LogEvent {
         if (loggerFqcn == null || !includeLocation) {
             return null;
         }
-        source = SourceLocation.valueOf(StackLocatorUtil.calcLocation(loggerFqcn));
+        source = StackLocatorUtil.calcLocation(loggerFqcn);
         return source;
     }
 
@@ -858,7 +858,7 @@ public class Log4jLogEvent implements LogEvent {
         private final String threadName;
         /** @since 2.6 */
         private final int threadPriority;
-        private final SourceLocation source;
+        private final StackTraceElement source;
         private final boolean isLocationRequired;
         private final boolean isEndOfBatch;
         /** @since 2.4 */

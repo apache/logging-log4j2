@@ -158,7 +158,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public void catching(SourceLocation source, Level level, Throwable t) {
+    public void catching(StackTraceElement source, Level level, Throwable t) {
         catching(source, FQCN, level, t);
     }
 
@@ -169,7 +169,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param level The logging level.
      * @param t The Throwable.
      */
-    protected void catching(final SourceLocation source, final String fqcn, final Level level, final Throwable t) {
+    protected void catching(final StackTraceElement source, final String fqcn, final Level level, final Throwable t) {
         if (isEnabled(level, CATCHING_MARKER, (Object) null, null)) {
             logMessageSafely(fqcn, level, CATCHING_MARKER, catchingMsg(source, t), t);
         }
@@ -177,17 +177,17 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void catching(final Throwable t) {
-        catching((SourceLocation) null, t);
+        catching((StackTraceElement) null, t);
     }
 
     @Override
-    public void catching(SourceLocation source, Throwable t) {
+    public void catching(StackTraceElement source, Throwable t) {
         if (isEnabled(Level.ERROR, CATCHING_MARKER, (Object) null, null)) {
             logMessageSafely(FQCN, Level.ERROR, CATCHING_MARKER, catchingMsg(source, t), t);
         }
     }
 
-    protected Message catchingMsg(final SourceLocation source, final Throwable t) {
+    protected Message catchingMsg(final StackTraceElement source, final Throwable t) {
         return messageFactory.newMessage(source, CATCHING);
     }
 
@@ -505,7 +505,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param format Format String for the parameters.
      * @param paramSuppliers The Suppliers of the parameters.
      */
-    protected EntryMessage enter(final SourceLocation source, final String fqcn, final String format, final Supplier<?>... paramSuppliers) {
+    protected EntryMessage enter(final StackTraceElement source, final String fqcn, final String format, final Supplier<?>... paramSuppliers) {
         EntryMessage entryMsg = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
             logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = entryMsg(source, format, paramSuppliers), null);
@@ -521,7 +521,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param paramSuppliers The parameters to the method.
      */
     @Deprecated
-    protected EntryMessage enter(final SourceLocation source, final String fqcn, final String format, final MessageSupplier... paramSuppliers) {
+    protected EntryMessage enter(final StackTraceElement source, final String fqcn, final String format, final MessageSupplier... paramSuppliers) {
         EntryMessage entryMsg = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
             logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = entryMsg(source, format, paramSuppliers), null);
@@ -536,7 +536,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param format The format String for the parameters.
      * @param params The parameters to the method.
      */
-    protected EntryMessage enter(final SourceLocation source, final String fqcn, final String format, final Object... params) {
+    protected EntryMessage enter(final StackTraceElement source, final String fqcn, final String format, final Object... params) {
         EntryMessage entryMsg = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
             logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = entryMsg(source, format, params), null);
@@ -568,7 +568,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      *            the Message.
      * @since 2.6
      */
-    protected EntryMessage enter(final SourceLocation source, final String fqcn, final Message message) {
+    protected EntryMessage enter(final StackTraceElement source, final String fqcn, final Message message) {
         EntryMessage flowMessage = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
             logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, flowMessage = flowMessageFactory.newEntryMessage(source, message),
@@ -593,7 +593,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param params The parameters to the method.
      */
-    protected void entry(final SourceLocation source, final String fqcn, final Object... params) {
+    protected void entry(final StackTraceElement source, final String fqcn, final Object... params) {
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
             if (params == null) {
                 logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(source, null, (Supplier<?>[]) null), null);
@@ -603,7 +603,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
     }
 
-    protected EntryMessage entryMsg(final SourceLocation source, final String format, final Object... params) {
+    protected EntryMessage entryMsg(final StackTraceElement source, final String format, final Object... params) {
         final int count = params == null ? 0 : params.length;
         if (count == 0) {
             if (Strings.isEmpty(format)) {
@@ -627,7 +627,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         return flowMessageFactory.newEntryMessage(source, new SimpleMessage(sb));
     }
 
-    protected EntryMessage entryMsg(final SourceLocation source, final String format, final MessageSupplier... paramSuppliers) {
+    protected EntryMessage entryMsg(final StackTraceElement source, final String format, final MessageSupplier... paramSuppliers) {
         final int count = paramSuppliers == null ? 0 : paramSuppliers.length;
         final Object[] params = new Object[count];
         for (int i = 0; i < count; i++) {
@@ -637,7 +637,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         return entryMsg(source, format, params);
     }
 
-    protected EntryMessage entryMsg(final SourceLocation source, final String format, final Supplier<?>... paramSuppliers) {
+    protected EntryMessage entryMsg(final StackTraceElement source, final String format, final Supplier<?>... paramSuppliers) {
         final int count = paramSuppliers == null ? 0 : paramSuppliers.length;
         final Object[] params = new Object[count];
         for (int i = 0; i < count; i++) {
@@ -925,7 +925,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param result The result being returned from the method call.
      * @return the return value passed to this method.
      */
-    protected <R> R exit(final SourceLocation source, final String fqcn, final R result) {
+    protected <R> R exit(final StackTraceElement source, final String fqcn, final R result) {
         logIfEnabled(fqcn, Level.TRACE, EXIT_MARKER, exitMsg(source, null, result), null);
         return result;
     }
@@ -939,12 +939,12 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param result The result being returned from the method call.
      * @return the return value passed to this method.
      */
-    protected <R> R exit(final SourceLocation source, final String fqcn, final String format, final R result) {
+    protected <R> R exit(final StackTraceElement source, final String fqcn, final String format, final R result) {
         logIfEnabled(fqcn, Level.TRACE, EXIT_MARKER, exitMsg(source, format, result), null);
         return result;
     }
 
-    protected Message exitMsg(final SourceLocation source, final String format, final Object result) {
+    protected Message exitMsg(final StackTraceElement source, final String format, final Object result) {
         if (result == null) {
             if (format == null) {
                 return messageFactory.newMessage(source, "Exit");
@@ -2188,21 +2188,21 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public <T extends Throwable> T throwing(final T t) {
-        return throwing((SourceLocation) null, t);
+        return throwing((StackTraceElement) null, t);
     }
 
     @Override
-    public <T extends Throwable> T throwing(SourceLocation source, T t) {
+    public <T extends Throwable> T throwing(StackTraceElement source, T t) {
         return throwing(source, FQCN, Level.ERROR, t);
     }
 
     @Override
     public <T extends Throwable> T throwing(final Level level, final T t) {
-        return throwing((SourceLocation) null, level, t);
+        return throwing((StackTraceElement) null, level, t);
     }
 
     @Override
-    public <T extends Throwable> T throwing(SourceLocation source, Level level, T t) {
+    public <T extends Throwable> T throwing(StackTraceElement source, Level level, T t) {
         return throwing(source, FQCN, level, t);
     }
 
@@ -2215,14 +2215,14 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param t The Throwable.
      * @return the Throwable.
      */
-    protected <T extends Throwable> T throwing(final SourceLocation source, final String fqcn, final Level level, final T t) {
+    protected <T extends Throwable> T throwing(final StackTraceElement source, final String fqcn, final Level level, final T t) {
         if (isEnabled(level, THROWING_MARKER, (Object) null, null)) {
             logMessageSafely(fqcn, level, THROWING_MARKER, throwingMsg(source, t), t);
         }
         return t;
     }
 
-    protected Message throwingMsg(final SourceLocation source, final Throwable t) {
+    protected Message throwingMsg(final StackTraceElement source, final Throwable t) {
         return messageFactory.newMessage(source, THROWING);
     }
 
@@ -2483,11 +2483,11 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public EntryMessage traceEntry() {
-        return traceEntry((SourceLocation) null);
+        return traceEntry((StackTraceElement) null);
     }
 
     @Override
-    public EntryMessage traceEntry(final SourceLocation source) {
+    public EntryMessage traceEntry(final StackTraceElement source) {
         return enter(source, FQCN, null, (Object[]) null);
     }
 
@@ -2497,7 +2497,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public EntryMessage traceEntry(final SourceLocation source, final String format, final Object... params) {
+    public EntryMessage traceEntry(final StackTraceElement source, final String format, final Object... params) {
         return enter(source, FQCN, format, params);
     }
 
@@ -2507,7 +2507,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public EntryMessage traceEntry(final SourceLocation source, final Supplier<?>... paramSuppliers) {
+    public EntryMessage traceEntry(final StackTraceElement source, final Supplier<?>... paramSuppliers) {
         return enter(source, FQCN, null, paramSuppliers);
     }
 
@@ -2517,7 +2517,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public EntryMessage traceEntry(final SourceLocation source, final String format, final Supplier<?>... paramSuppliers) {
+    public EntryMessage traceEntry(final StackTraceElement source, final String format, final Supplier<?>... paramSuppliers) {
         return enter(source, FQCN, format, paramSuppliers);
     }
 
@@ -2527,27 +2527,27 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public EntryMessage traceEntry(final SourceLocation source, final Message message) {
+    public EntryMessage traceEntry(final StackTraceElement source, final Message message) {
         return enter(source, FQCN, message);
     }
 
     @Override
     public void traceExit() {
-        traceExit((SourceLocation) null);
+        traceExit((StackTraceElement) null);
     }
 
     @Override
-    public void traceExit(final SourceLocation source) {
+    public void traceExit(final StackTraceElement source) {
         exit(source, FQCN, null, null);
     }
 
     @Override
     public <R> R traceExit(final R result) {
-        return traceExit((SourceLocation) null, result);
+        return traceExit((StackTraceElement) null, result);
     }
 
     @Override
-    public <R> R traceExit(final SourceLocation source, final R result) {
+    public <R> R traceExit(final StackTraceElement source, final R result) {
         return exit(source, FQCN, null, result);
     }
 
@@ -2557,17 +2557,17 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public <R> R traceExit(final SourceLocation source, final String format, final R result) {
+    public <R> R traceExit(final StackTraceElement source, final String format, final R result) {
         return exit(source, FQCN, format, result);
     }
 
     @Override
     public void traceExit(final EntryMessage message) {
-        traceExit((SourceLocation) null, message);
+        traceExit((StackTraceElement) null, message);
     }
 
     @Override
-    public void traceExit(final SourceLocation source, final EntryMessage message) {
+    public void traceExit(final StackTraceElement source, final EntryMessage message) {
         // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
         if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessageSafely(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(source, message), null);
@@ -2580,7 +2580,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public <R> R traceExit(final SourceLocation source, final EntryMessage message, final R result) {
+    public <R> R traceExit(final StackTraceElement source, final EntryMessage message, final R result) {
         // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
         if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessageSafely(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(source, result, message), null);
@@ -2594,7 +2594,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public <R> R traceExit(final SourceLocation source, final Message message, final R result) {
+    public <R> R traceExit(final StackTraceElement source, final Message message, final R result) {
         // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
         if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessageSafely(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(source, result, message), null);

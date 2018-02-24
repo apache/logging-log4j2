@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.message.SourceLocation;
 
 
 /**
@@ -58,7 +57,7 @@ public final class ClassNamePatternConverter extends NamePatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final SourceLocation element = event.getSource();
+        final StackTraceElement element = event.getSource();
         if (element == null) {
             toAppendTo.append(NA);
         } else {

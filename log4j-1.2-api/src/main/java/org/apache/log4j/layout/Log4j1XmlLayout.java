@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.Transform;
-import org.apache.logging.log4j.message.SourceLocation;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
@@ -120,7 +119,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         }
 
         if (locationInfo) {
-            final SourceLocation source = event.getSource();
+            final StackTraceElement source = event.getSource();
             if (source != null) {
                 buf.append("<log4j:locationInfo class=\"");
                 buf.append(Transform.escapeHtmlTags(source.getClassName()));

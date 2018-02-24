@@ -29,7 +29,7 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
 
     private String message;
     private transient CharSequence charSequence;
-    private SourceLocation source;
+    private StackTraceElement source;
 
     /**
      * Basic constructor.
@@ -53,7 +53,7 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
      * @param source the location of the log statement, or null
      * @param message The String message.
      */
-    public SimpleMessage(final SourceLocation source, final String message) {
+    public SimpleMessage(final StackTraceElement source, final String message) {
         this.message = message;
         this.charSequence = message;
         this.source = source;
@@ -75,7 +75,7 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
      * @param source the location of the log statement, or null
      * @param charSequence The CharSequence message.
      */
-    public SimpleMessage(final SourceLocation source, final CharSequence charSequence) {
+    public SimpleMessage(final StackTraceElement source, final CharSequence charSequence) {
         // this.message = String.valueOf(charSequence); // postponed until getFormattedMessage
         this.charSequence = charSequence;
         this.source = source;
@@ -177,7 +177,7 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
     }
 
     @Override
-    public SourceLocation getSource() {
+    public StackTraceElement getSource() {
         return source;
     }
 }

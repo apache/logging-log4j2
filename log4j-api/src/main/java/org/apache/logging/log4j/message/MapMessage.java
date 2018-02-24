@@ -91,7 +91,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     private final IndexedStringMap data;
-    private final SourceLocation source;
+    private final StackTraceElement source;
 
     /**
      * Constructs a new instance.
@@ -101,7 +101,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
         source = null;
     }
 
-    public MapMessage(SourceLocation source) {
+    public MapMessage(StackTraceElement source) {
         this.data = new SortedArrayStringMap();
         this.source = source;
     }
@@ -120,7 +120,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      *
      * @param  initialCapacity the initial capacity.
      */
-    public MapMessage(final SourceLocation source, final int initialCapacity) {
+    public MapMessage(final StackTraceElement source, final int initialCapacity) {
         this.data = new SortedArrayStringMap(initialCapacity);
         this.source = source;
     }
@@ -137,7 +137,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * Constructs a new instance based on an existing Map.
      * @param map The Map.
      */
-    public MapMessage(final SourceLocation source, final Map<String, V> map) {
+    public MapMessage(final StackTraceElement source, final Map<String, V> map) {
         this.data = new SortedArrayStringMap(map);
         this.source = source;
     }
@@ -184,7 +184,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     @Override
-    public SourceLocation getSource() {
+    public StackTraceElement getSource() {
         return source;
     }
 

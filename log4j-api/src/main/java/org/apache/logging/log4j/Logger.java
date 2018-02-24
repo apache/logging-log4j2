@@ -88,7 +88,7 @@ public interface Logger {
      * @param level The logging Level.
      * @param t The Throwable.
      */
-    void catching(SourceLocation source, Level level, Throwable t);
+    void catching(StackTraceElement source, Level level, Throwable t);
 
     /**
      * Logs an exception or error that has been caught. Normally, one may wish to provide additional information with an
@@ -109,7 +109,7 @@ public interface Logger {
      *
      * @param t The Throwable.
      */
-    void catching(SourceLocation source, Throwable t);
+    void catching(StackTraceElement source, Throwable t);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
@@ -3025,7 +3025,7 @@ public interface Logger {
      * @param t The Throwable.
      * @return the Throwable.
      */
-    <T extends Throwable> T throwing(SourceLocation source, Level level, T t);
+    <T extends Throwable> T throwing(StackTraceElement source, Level level, T t);
 
     /**
      * Logs an exception or error to be thrown. This may be coded as:
@@ -3052,7 +3052,7 @@ public interface Logger {
      * @param t The Throwable.
      * @return the Throwable.
      */
-    <T extends Throwable> T throwing(SourceLocation source, T t);
+    <T extends Throwable> T throwing(StackTraceElement source, T t);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#TRACE TRACE} level.
@@ -3595,7 +3595,7 @@ public interface Logger {
      */
     EntryMessage traceEntry();
 
-    EntryMessage traceEntry(SourceLocation source);
+    EntryMessage traceEntry(StackTraceElement source);
 
     /**
      * Logs entry to a method along with its parameters. For example,
@@ -3623,7 +3623,7 @@ public interface Logger {
      */
     EntryMessage traceEntry(String format, Object... params);
 
-    EntryMessage traceEntry(SourceLocation source, String format, Object... params);
+    EntryMessage traceEntry(StackTraceElement source, String format, Object... params);
 
     /**
      * Logs entry to a method along with its parameters. For example,
@@ -3642,7 +3642,7 @@ public interface Logger {
      */
     EntryMessage traceEntry(Supplier<?>... paramSuppliers);
 
-    EntryMessage traceEntry(SourceLocation source, Supplier<?>... paramSuppliers);
+    EntryMessage traceEntry(StackTraceElement source, Supplier<?>... paramSuppliers);
 
     /**
      * Logs entry to a method along with its parameters. For example,
@@ -3662,7 +3662,7 @@ public interface Logger {
      */
     EntryMessage traceEntry(String format, Supplier<?>... paramSuppliers);
 
-    EntryMessage traceEntry(SourceLocation source, String format, Supplier<?>... paramSuppliers);
+    EntryMessage traceEntry(StackTraceElement source, String format, Supplier<?>... paramSuppliers);
 
     /**
      * Logs entry to a method using a Message to describe the parameters.
@@ -3687,7 +3687,7 @@ public interface Logger {
      */
     EntryMessage traceEntry(Message message);
 
-    EntryMessage traceEntry(SourceLocation source, Message message);
+    EntryMessage traceEntry(StackTraceElement source, Message message);
 
     /**
      * Logs exit from a method. Used for methods that do not return anything.
@@ -3701,7 +3701,7 @@ public interface Logger {
      *
      * @since
      */
-    void traceExit(SourceLocation source);
+    void traceExit(StackTraceElement source);
 
     /**
      * Logs exiting from a method with the result. This may be coded as:
@@ -3718,7 +3718,7 @@ public interface Logger {
      */
     <R> R traceExit(R result);
 
-    <R> R traceExit(SourceLocation source, R result);
+    <R> R traceExit(StackTraceElement source, R result);
 
     /**
      * Logs exiting from a method with the result. This may be coded as:
@@ -3736,7 +3736,7 @@ public interface Logger {
      */
     <R> R traceExit(String format, R result);
 
-    <R> R traceExit(SourceLocation source, String format, R result);
+    <R> R traceExit(StackTraceElement source, String format, R result);
 
     /**
      * Logs exiting from a method with no result. Allows custom formatting of the result. This may be coded as:
@@ -3754,7 +3754,7 @@ public interface Logger {
      */
     void traceExit(EntryMessage message);
 
-    void traceExit(SourceLocation source, EntryMessage message);
+    void traceExit(StackTraceElement source, EntryMessage message);
 
     /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
@@ -3776,7 +3776,7 @@ public interface Logger {
      */
     <R> R traceExit(EntryMessage message, R result);
 
-    <R> R traceExit(SourceLocation source, EntryMessage message, R result);
+    <R> R traceExit(StackTraceElement source, EntryMessage message, R result);
 
     /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
@@ -3794,7 +3794,7 @@ public interface Logger {
      */
     <R> R traceExit(Message message, R result);
 
-    <R> R traceExit(SourceLocation source, Message message, R result);
+    <R> R traceExit(StackTraceElement source, Message message, R result);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.

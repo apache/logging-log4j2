@@ -43,7 +43,7 @@ public interface MessageFactory {
      *            a message object
      * @return a new message
      */
-    Message newMessage(SourceLocation source, Object message);
+    Message newMessage(StackTraceElement source, Object message);
 
     /**
      * Creates a new message based on a String.
@@ -64,7 +64,7 @@ public interface MessageFactory {
      *            a message String
      * @return a new message
      */
-    Message newMessage(SourceLocation source, String message);
+    Message newMessage(StackTraceElement source, String message);
 
     /**
      * Creates a new parameterized message.
@@ -93,5 +93,5 @@ public interface MessageFactory {
      * @see ParameterizedMessageFactory
      * @see StringFormatterMessageFactory
      */
-    Message newMessage(SourceLocation source, String message, Object... params);
+    Message newMessage(StackTraceElement source, String message, Object... params);
 }

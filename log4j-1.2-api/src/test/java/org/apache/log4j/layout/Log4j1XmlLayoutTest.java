@@ -19,7 +19,6 @@ package org.apache.log4j.layout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.message.SourceLocation;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -63,7 +62,7 @@ public class Log4j1XmlLayoutTest {
                 .setMessage(new SimpleMessage("Hello, World"))
                 .setTimeMillis(System.currentTimeMillis() + 17)
                 .setIncludeLocation(true)
-                .setSource(new SourceLocation("pack.MyClass", "myMethod", "MyClass.java", 17))
+                .setSource(new StackTraceElement("pack.MyClass", "myMethod", "MyClass.java", 17))
                 .setContextMap(contextMap)
                 .build();
 

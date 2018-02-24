@@ -21,7 +21,6 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.message.SourceLocation;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
@@ -102,7 +101,7 @@ abstract class LogEventJsonMixIn implements LogEvent {
     @JsonDeserialize(using = Log4jStackTraceElementDeserializer.class)
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_SOURCE)
     @Override
-    public abstract SourceLocation getSource();
+    public abstract StackTraceElement getSource();
 
     @Override
     @JsonProperty("threadId")

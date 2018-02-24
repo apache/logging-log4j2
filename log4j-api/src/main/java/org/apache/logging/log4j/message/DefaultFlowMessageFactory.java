@@ -53,11 +53,11 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     private static class AbstractFlowMessage implements FlowMessage {
 
         private static final long serialVersionUID = 1L;
-        private final SourceLocation source;
+        private final StackTraceElement source;
         private final Message message;
         private final String text;
 
-        AbstractFlowMessage(final SourceLocation source, final String text, final Message message) {
+        AbstractFlowMessage(final StackTraceElement source, final String text, final Message message) {
             this.source = source;
             this.message = message;
             this.text = text;
@@ -106,7 +106,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
         }
 
         @Override
-        public SourceLocation getSource() {
+        public StackTraceElement getSource() {
             return source;
         }
     }
@@ -115,7 +115,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
 
         private static final long serialVersionUID = 1L;
 
-        SimpleEntryMessage(final SourceLocation source, final String entryText, final Message message) {
+        SimpleEntryMessage(final StackTraceElement source, final String entryText, final Message message) {
             super(source, entryText, message);
         }
 
@@ -128,19 +128,19 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
         private final Object result;
         private final boolean isVoid;
 
-        SimpleExitMessage(final SourceLocation source, final String exitText, final EntryMessage message) {
+        SimpleExitMessage(final StackTraceElement source, final String exitText, final EntryMessage message) {
             super(source, exitText, message.getMessage());
             this.result = null;
             isVoid = true;
         }
 
-        SimpleExitMessage(final SourceLocation source, final String exitText, final Object result, final EntryMessage message) {
+        SimpleExitMessage(final StackTraceElement source, final String exitText, final Object result, final EntryMessage message) {
             super(source, exitText, message.getMessage());
             this.result = result;
             isVoid = false;
         }
 
-        SimpleExitMessage(final SourceLocation source, final String exitText, final Object result, final Message message) {
+        SimpleExitMessage(final StackTraceElement source, final String exitText, final Object result, final Message message) {
             super(source, exitText, message);
             this.result = result;
             isVoid = false;
@@ -178,7 +178,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
      * @see org.apache.logging.log4j.message.MessageFactory#newEntryMessage(org.apache.logging.log4j.message.Message)
      */
     @Override
-    public EntryMessage newEntryMessage(final SourceLocation source, final Message message) {
+    public EntryMessage newEntryMessage(final StackTraceElement source, final Message message) {
         return new SimpleEntryMessage(source, entryText, makeImmutable(message));
     }
 
@@ -200,7 +200,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
      * @see org.apache.logging.log4j.message.FlowMessageFactory#newExitMessage(org.apache.logging.log4j.message.EntryMessage)
      */
     @Override
-    public ExitMessage newExitMessage(final SourceLocation source, final EntryMessage message) {
+    public ExitMessage newExitMessage(final StackTraceElement source, final EntryMessage message) {
         return new SimpleExitMessage(source, exitText, message);
     }
 
@@ -215,7 +215,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
      * @see org.apache.logging.log4j.message.FlowMessageFactory#newExitMessage(java.lang.Object, org.apache.logging.log4j.message.EntryMessage)
      */
     @Override
-    public ExitMessage newExitMessage(final SourceLocation source, final Object result, final EntryMessage message) {
+    public ExitMessage newExitMessage(final StackTraceElement source, final Object result, final EntryMessage message) {
         return new SimpleExitMessage(source, exitText, result, message);
     }
 
@@ -230,7 +230,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
      * @see org.apache.logging.log4j.message.FlowMessageFactory#newExitMessage(java.lang.Object, org.apache.logging.log4j.message.Message)
      */
     @Override
-    public ExitMessage newExitMessage(final SourceLocation source, final Object result, final Message message) {
+    public ExitMessage newExitMessage(final StackTraceElement source, final Object result, final Message message) {
         return new SimpleExitMessage(source, exitText, result, message);
     }
 

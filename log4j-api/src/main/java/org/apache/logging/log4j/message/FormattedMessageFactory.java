@@ -135,7 +135,7 @@ public class FormattedMessageFactory extends AbstractMessageFactory {
     }
 
     @Override
-    public Message newMessage(SourceLocation source, String message, Object... params) {
+    public Message newMessage(StackTraceElement source, String message, Object... params) {
         return new FormattedMessage(source, message, params);
     }
 }

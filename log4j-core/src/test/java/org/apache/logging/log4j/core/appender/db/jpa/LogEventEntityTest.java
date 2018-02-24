@@ -25,7 +25,6 @@ import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.SourceLocation;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -78,7 +77,7 @@ public class LogEventEntityTest {
             }
 
             @Override
-            public SourceLocation getSource() {
+            public StackTraceElement getSource() {
                 return null;
             }
 

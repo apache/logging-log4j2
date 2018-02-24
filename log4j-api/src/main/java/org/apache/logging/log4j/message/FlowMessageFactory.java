@@ -29,7 +29,7 @@ public interface FlowMessageFactory {
      * @param message the original message
      * @return the new entry message
      */
-    EntryMessage newEntryMessage(SourceLocation source, Message message);
+    EntryMessage newEntryMessage(StackTraceElement source, Message message);
 
     EntryMessage newEntryMessage(Message message);
 
@@ -41,7 +41,7 @@ public interface FlowMessageFactory {
      * @param message the original message
      * @return the new exit message
      */
-    ExitMessage newExitMessage(SourceLocation source, Object result, Message message);
+    ExitMessage newExitMessage(StackTraceElement source, Object result, Message message);
 
     ExitMessage newExitMessage(Object result, Message message);
 
@@ -52,7 +52,7 @@ public interface FlowMessageFactory {
      * @param message the original entry message
      * @return the new exit message
      */
-    ExitMessage newExitMessage(SourceLocation source, EntryMessage message);
+    ExitMessage newExitMessage(StackTraceElement source, EntryMessage message);
 
     ExitMessage newExitMessage(EntryMessage message);
 
@@ -64,7 +64,7 @@ public interface FlowMessageFactory {
      * @param message the original entry message
      * @return the new exit message
      */
-    ExitMessage newExitMessage(SourceLocation source, Object result, EntryMessage message);
+    ExitMessage newExitMessage(StackTraceElement source, Object result, EntryMessage message);
 
     ExitMessage newExitMessage(Object result, EntryMessage message);
 

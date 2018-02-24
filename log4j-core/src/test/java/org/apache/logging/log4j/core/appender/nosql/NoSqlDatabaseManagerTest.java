@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.junit.ThreadContextStackRule;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.SourceLocation;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -138,7 +137,7 @@ public class NoSqlDatabaseManagerTest {
                 .setLevel(Level.WARN)
                 .setLoggerName("com.foo.NoSQLDbTest.testWriteInternal01")
                 .setMessage(message)
-                .setSource(new SourceLocation("com.foo.Bar", "testMethod01", "Bar.java", 15))
+                .setSource(new StackTraceElement("com.foo.Bar", "testMethod01", "Bar.java", 15))
                 .setThreadId(1L)
                 .setThreadName("MyThread-A")
                 .setThreadPriority(1)
@@ -206,7 +205,7 @@ public class NoSqlDatabaseManagerTest {
                 .setLevel(Level.DEBUG)
                 .setLoggerName("com.foo.NoSQLDbTest.testWriteInternal02")
                 .setMessage(message)
-                .setSource(new SourceLocation("com.bar.Foo", "anotherMethod03", "Foo.java", 9))
+                .setSource(new StackTraceElement("com.bar.Foo", "anotherMethod03", "Foo.java", 9))
                 .setMarker(MarkerManager.getMarker("LoneMarker"))
                 .setThreadId(1L)
                 .setThreadName("AnotherThread-B")
@@ -305,7 +304,7 @@ public class NoSqlDatabaseManagerTest {
                 .setLevel(Level.DEBUG)
                 .setLoggerName("com.foo.NoSQLDbTest.testWriteInternal02")
                 .setMessage(message)
-                .setSource(new SourceLocation("com.bar.Foo", "anotherMethod03", "Foo.java", 9))
+                .setSource(new StackTraceElement("com.bar.Foo", "anotherMethod03", "Foo.java", 9))
                 .setMarker(MarkerManager.getMarker("AnotherMarker").addParents(
                     MarkerManager.getMarker("Parent1").addParents(MarkerManager.getMarker("GrandParent1")),
                     MarkerManager.getMarker("Parent2")))

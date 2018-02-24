@@ -52,7 +52,7 @@ public interface ReusableMessage extends Message, StringBuilderFormattable {
      */
     Object[] swapParameters(Object[] emptyReplacement);
 
-    SourceLocation swapSource(SourceLocation source);
+    StackTraceElement swapSource(StackTraceElement source);
 
     /**
      * Returns the number of parameters that was used to initialize this reusable message for the current content.

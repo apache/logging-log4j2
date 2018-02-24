@@ -38,7 +38,6 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
 import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.message.SourceLocation;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -463,7 +462,7 @@ public class PatternLayoutTest {
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
                     .setMessage(new SimpleMessage("Hello, world 1!"))
-                    .setSource(new SourceLocation(this.getClass().getName(), "testCallersFqcnTruncationByRetainingPartsFromEnd", this.getClass().getCanonicalName() + ".java", 440))
+                    .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByRetainingPartsFromEnd", this.getClass().getCanonicalName() + ".java", 440))
                     .build();
             final String result1 = layout.toSerializable(event1);
             assertEquals(this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1) + " Hello, world 1!", new String(result1));
@@ -475,7 +474,7 @@ public class PatternLayoutTest {
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
                     .setMessage(new SimpleMessage("Hello, world 1!"))
-                    .setSource(new SourceLocation(this.getClass().getName(), "testCallersFqcnTruncationByRetainingPartsFromEnd", this.getClass().getCanonicalName() + ".java", 440))
+                    .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByRetainingPartsFromEnd", this.getClass().getCanonicalName() + ".java", 440))
                     .build();
             final String result1 = layout.toSerializable(event1);
             String name = this.getClass().getName().substring(0, this.getClass().getName().lastIndexOf("."));
@@ -489,7 +488,7 @@ public class PatternLayoutTest {
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
                     .setMessage(new SimpleMessage("Hello, world 1!"))
-                    .setSource(new SourceLocation(this.getClass().getName(), "testCallersFqcnTruncationByRetainingPartsFromEnd", this.getClass().getCanonicalName() + ".java", 440))
+                    .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByRetainingPartsFromEnd", this.getClass().getCanonicalName() + ".java", 440))
                     .build();
             final String result1 = layout.toSerializable(event1);
             assertEquals(this.getClass().getName() + " Hello, world 1!", new String(result1));
@@ -501,7 +500,7 @@ public class PatternLayoutTest {
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
                     .setMessage(new SimpleMessage("Hello, world 1!"))
-                    .setSource(new SourceLocation(this.getClass().getName(), "testCallersFqcnTruncationByRetainingPartsFromEnd", this.getClass().getCanonicalName() + ".java", 440))
+                    .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByRetainingPartsFromEnd", this.getClass().getCanonicalName() + ".java", 440))
                     .build();
             final String result1 = layout.toSerializable(event1);
             assertEquals(this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1) + " Hello, world 1!", new String(result1));
@@ -569,7 +568,7 @@ public class PatternLayoutTest {
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
                     .setMessage(new SimpleMessage("Hello, world 1!"))
-                    .setSource(new SourceLocation(this.getClass().getName(), "testCallersFqcnTruncationByDroppingPartsFromFront", this.getClass().getCanonicalName() + ".java", 546))
+                    .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByDroppingPartsFromFront", this.getClass().getCanonicalName() + ".java", 546))
                     .build();
             final String result1 = layout.toSerializable(event1);
             final String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
@@ -582,7 +581,7 @@ public class PatternLayoutTest {
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
                     .setMessage(new SimpleMessage("Hello, world 1!"))
-                    .setSource(new SourceLocation(this.getClass().getName(), "testCallersFqcnTruncationByDroppingPartsFromFront", this.getClass().getCanonicalName() + ".java", 546))
+                    .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByDroppingPartsFromFront", this.getClass().getCanonicalName() + ".java", 546))
                     .build();
             final String result1 = layout.toSerializable(event1);
             String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
@@ -597,7 +596,7 @@ public class PatternLayoutTest {
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
                     .setMessage(new SimpleMessage("Hello, world 1!"))
-                    .setSource(new SourceLocation(this.getClass().getName(), "testCallersFqcnTruncationByDroppingPartsFromFront", this.getClass().getCanonicalName() + ".java", 546))
+                    .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByDroppingPartsFromFront", this.getClass().getCanonicalName() + ".java", 546))
                     .build();
             final String result1 = layout.toSerializable(event1);
             String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
@@ -612,7 +611,7 @@ public class PatternLayoutTest {
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
                     .setMessage(new SimpleMessage("Hello, world 1!"))
-                    .setSource(new SourceLocation(this.getClass().getName(), "testCallersFqcnTruncationByDroppingPartsFromFront", this.getClass().getCanonicalName() + ".java", 546))
+                    .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByDroppingPartsFromFront", this.getClass().getCanonicalName() + ".java", 546))
                     .build();
             final String result1 = layout.toSerializable(event1);
             assertEquals(this.getClass().getName() + " Hello, world 1!", new String(result1));

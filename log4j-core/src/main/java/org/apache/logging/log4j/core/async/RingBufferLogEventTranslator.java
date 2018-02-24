@@ -21,7 +21,6 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.message.SourceLocation;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.message.Message;
 
@@ -48,7 +47,7 @@ public class RingBufferLogEventTranslator implements
     private long threadId = Thread.currentThread().getId();
     private String threadName = Thread.currentThread().getName();
     private int threadPriority = Thread.currentThread().getPriority();
-    private SourceLocation location;
+    private StackTraceElement location;
     private long currentTimeMillis;
     private long nanoTime;
 
@@ -85,7 +84,7 @@ public class RingBufferLogEventTranslator implements
 
     public void setBasicValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
             final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
-            final ContextStack aContextStack, final SourceLocation aLocation,
+            final ContextStack aContextStack, final StackTraceElement aLocation,
             final long aCurrentTimeMillis, final long aNanoTime) {
         this.asyncLogger = anAsyncLogger;
         this.loggerName = aLoggerName;

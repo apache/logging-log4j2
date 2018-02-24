@@ -90,7 +90,7 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
     }
 
     @Override
-    public Message newMessage(final SourceLocation source, final CharSequence charSequence) {
+    public Message newMessage(final StackTraceElement source, final CharSequence charSequence) {
         final ReusableSimpleMessage result = getSimple();
         result.set(charSequence);
         result.swapSource(source);
@@ -99,7 +99,7 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
 
     @Override
     public Message newMessage(CharSequence charSequence) {
-        return newMessage((SourceLocation) null, charSequence);
+        return newMessage((StackTraceElement) null, charSequence);
     }
 
     /**
@@ -113,63 +113,63 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
      * @see MessageFactory#newMessage(String, Object...)
      */
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object... params) {
+    public Message newMessage(final StackTraceElement source, final String message, final Object... params) {
         return getParameterized().set(source, message, params);
     }
 
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0) {
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0) {
         return getParameterized().set(source, message, p0);
     }
 
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1) {
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1) {
         return getParameterized().set(source, message, p0, p1);
     }
 
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2) {
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2) {
         return getParameterized().set(source, message, p0, p1, p2);
     }
 
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2,
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2,
             final Object p3) {
         return getParameterized().set(source, message, p0, p1, p2, p3);
     }
 
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4) {
         return getParameterized().set(source, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5) {
         return getParameterized().set(source, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6) {
         return getParameterized().set(source, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7) {
         return getParameterized().set(source, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
         return getParameterized().set(source, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public Message newMessage(final SourceLocation source, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+    public Message newMessage(final StackTraceElement source, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
         return getParameterized().set(source, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
@@ -185,64 +185,64 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
      */
     @Override
     public Message newMessage(final String message, final Object... params) {
-        return newMessage((SourceLocation) null, message, params);
+        return newMessage((StackTraceElement) null, message, params);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0) {
-        return newMessage((SourceLocation) null, message, p0);
+        return newMessage((StackTraceElement) null, message, p0);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1) {
-        return newMessage((SourceLocation) null, message, p0, p1);
+        return newMessage((StackTraceElement) null, message, p0, p1);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2,
                               final Object p3) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2, p3);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
                               final Object p4) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2, p3, p4);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
                               final Object p4, final Object p5) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2, p3, p4, p5);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
                               final Object p4, final Object p5, final Object p6) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2, p3, p4, p5, p6);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
                               final Object p4, final Object p5, final Object p6, final Object p7) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2, p3, p4, p5, p6, p7);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
                               final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
                               final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
-        return newMessage((SourceLocation) null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+        return newMessage((StackTraceElement) null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
     /**
@@ -254,7 +254,7 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
      * @see MessageFactory#newMessage(String)
      */
     @Override
-    public Message newMessage(final SourceLocation source, final String message) {
+    public Message newMessage(final StackTraceElement source, final String message) {
         final ReusableSimpleMessage result = getSimple();
         result.set(message);
         result.swapSource(source);
@@ -263,7 +263,7 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
 
     @Override
     public Message newMessage(String message) {
-        return newMessage((SourceLocation) null, message);
+        return newMessage((StackTraceElement) null, message);
     }
 
     /**
@@ -275,7 +275,7 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
      * @see MessageFactory#newMessage(Object)
      */
     @Override
-    public Message newMessage(final SourceLocation source, final Object message) {
+    public Message newMessage(final StackTraceElement source, final Object message) {
         final ReusableObjectMessage result = getObject();
         result.set(message);
         result.swapSource(source);
@@ -284,6 +284,6 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
 
     @Override
     public Message newMessage(Object message) {
-        return newMessage((SourceLocation) null, message);
+        return newMessage((StackTraceElement) null, message);
     }
 }

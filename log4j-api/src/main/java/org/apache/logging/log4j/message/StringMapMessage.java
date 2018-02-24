@@ -39,7 +39,7 @@ public class StringMapMessage extends MapMessage<StringMapMessage, String> {
         super();
     }
 
-    public StringMapMessage(final SourceLocation source) {
+    public StringMapMessage(final StackTraceElement source) {
         super(source);
     }
 
@@ -53,7 +53,7 @@ public class StringMapMessage extends MapMessage<StringMapMessage, String> {
         this(null, initialCapacity);
     }
 
-    public StringMapMessage(final SourceLocation source, final int initialCapacity) {
+    public StringMapMessage(final StackTraceElement source, final int initialCapacity) {
         super(source, initialCapacity);
     }
 
@@ -67,7 +67,7 @@ public class StringMapMessage extends MapMessage<StringMapMessage, String> {
         this(null, map);
     }
 
-    public StringMapMessage(SourceLocation source, final Map<String, String> map) {
+    public StringMapMessage(StackTraceElement source, final Map<String, String> map) {
         super(source, map);
     }
 

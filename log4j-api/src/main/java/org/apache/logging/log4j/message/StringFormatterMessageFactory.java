@@ -147,7 +147,7 @@ public final class StringFormatterMessageFactory extends AbstractMessageFactory 
     }
 
     @Override
-    public Message newMessage(SourceLocation source, String message, Object... params) {
+    public Message newMessage(StackTraceElement source, String message, Object... params) {
         return new StringFormattedMessage(source, message, params);
     }
 }

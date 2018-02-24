@@ -187,7 +187,7 @@ public interface MessageFactory2 extends MessageFactory {
      * @param charSequence the (potentially mutable) CharSequence
      * @return a new message for the specified CharSequence
      */
-    Message newMessage(SourceLocation source, CharSequence charSequence);
+    Message newMessage(StackTraceElement source, CharSequence charSequence);
 
     /**
      * Creates a new parameterized message, when the location
@@ -199,7 +199,7 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(SourceLocation source, String message, Object p0);
+    Message newMessage(StackTraceElement source, String message, Object p0);
 
     /**
      * Creates a new parameterized message, when the location
@@ -212,7 +212,7 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(SourceLocation source, String message, Object p0, Object p1);
+    Message newMessage(StackTraceElement source, String message, Object p0, Object p1);
 
     /**
      * Creates a new parameterized message, when the location
@@ -226,7 +226,7 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(SourceLocation source, String message, Object p0, Object p1, Object p2);
+    Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2);
 
     /**
      * Creates a new parameterized message, when the location
@@ -241,7 +241,7 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(SourceLocation source, String message, Object p0, Object p1, Object p2, Object p3);
+    Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3);
 
     /**
      * Creates a new parameterized message, when the location
@@ -257,7 +257,7 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(SourceLocation source, String message, Object p0, Object p1, Object p2, Object p3, Object p4);
+    Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
     /**
      * Creates a new parameterized message, when the location
@@ -274,7 +274,7 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(SourceLocation source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
+    Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
     /**
      * Creates a new parameterized message, when the location
@@ -292,7 +292,7 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(SourceLocation source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
+    Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
     /**
      * Creates a new parameterized message, when the location
@@ -311,7 +311,7 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(SourceLocation source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+    Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
                        Object p7);
 
     /**
@@ -332,7 +332,7 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(SourceLocation source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+    Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
                        Object p7, Object p8);
 
     /**
@@ -354,6 +354,6 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(SourceLocation source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+    Message newMessage(StackTraceElement source, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
                        Object p7, Object p8, Object p9);
 }

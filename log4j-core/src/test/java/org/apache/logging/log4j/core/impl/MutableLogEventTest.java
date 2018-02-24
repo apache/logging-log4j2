@@ -30,7 +30,6 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.message.SourceLocation;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
@@ -73,7 +72,7 @@ public class MutableLogEventTest {
                 .setMarker(MarkerManager.getMarker("on your marks")) //
                 .setMessage(new SimpleMessage("msg in a bottle")) //
                 .setNanoTime(1234567) //
-                .setSource(new SourceLocation("myclass", "mymethod", "myfile", 123)) //
+                .setSource(new StackTraceElement("myclass", "mymethod", "myfile", 123)) //
                 .setThreadId(100).setThreadName("threadname").setThreadPriority(10) //
                 .setThrown(new RuntimeException("run")) //
                 .setTimeMillis(987654321)

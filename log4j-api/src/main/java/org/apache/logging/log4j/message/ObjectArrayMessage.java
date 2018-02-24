@@ -40,7 +40,7 @@ public final class ObjectArrayMessage implements Message {
 
     private transient Object[] array;
     private transient String arrayString;
-    private transient SourceLocation source;
+    private transient StackTraceElement source;
 
     /**
      * Creates the ObjectMessage.
@@ -58,7 +58,7 @@ public final class ObjectArrayMessage implements Message {
      * @param obj
      *            The Object to format.
      */
-    public ObjectArrayMessage(final SourceLocation source, final Object... obj) {
+    public ObjectArrayMessage(final StackTraceElement source, final Object... obj) {
         this.array = obj == null ? EMPTY_OBJECT_ARRAY : obj;
         this.source = source;
     }
@@ -125,7 +125,7 @@ public final class ObjectArrayMessage implements Message {
     }
 
     @Override
-    public SourceLocation getSource() {
+    public StackTraceElement getSource() {
         return source;
     }
 
