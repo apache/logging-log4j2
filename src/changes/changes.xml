@@ -58,7 +58,7 @@
       <action issue="LOG4J2-2233" dev="ggregory" type="update" due-to="Gary Gregory">
         Move JDBC code to a new module log4j-jdbc.
       </action>
-      <action issue="LOG4J2-2244" dev="ggregory" type="update" due-to="Gary Gregory">
+      <action issue="LOG4J2-2244" dev="ggregory" type="fix" due-to="Gary Gregory">
         org.apache.logging.log4j.core.lookup.EnvironmentLookup may throw NPE.
       </action>      
       <action issue="LOG4J2-2237" dev="ggregory" type="update" due-to="Gary Gregory">
@@ -84,6 +84,9 @@
       </action>      
       <action issue="LOG4J2-2260" dev="ggregory" type="update">
         [SMTP] Update javax.mail from 1.6.0 to 1.6.1.
+      </action>      
+      <action issue="LOG4J2-2270" dev="ggregory" type="fix" due-to="Cyril Martin">
+        Strings::join, when called with [null] returns "null" instead of EMPTY.
       </action>      
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
