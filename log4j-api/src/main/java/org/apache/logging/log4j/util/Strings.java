@@ -216,7 +216,7 @@ public final class Strings {
         }
         final Object first = iterator.next();
         if (!iterator.hasNext()) {
-            return Objects.toString(first);
+            return Objects.toString(first, EMPTY);
         }
 
         // two or more elements
