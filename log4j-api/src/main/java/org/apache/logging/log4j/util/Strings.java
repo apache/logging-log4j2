@@ -18,7 +18,6 @@ package org.apache.logging.log4j.util;
 
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * <em>Consider this class private.</em>
@@ -216,7 +215,10 @@ public final class Strings {
         }
         final Object first = iterator.next();
         if (!iterator.hasNext()) {
-            return Objects.toString(first);
+            if (first != null) {
+                return first.toString();
+            }
+            return EMPTY;
         }
 
         // two or more elements
