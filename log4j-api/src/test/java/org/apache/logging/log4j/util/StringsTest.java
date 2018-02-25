@@ -20,6 +20,9 @@ package org.apache.logging.log4j.util;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 public class StringsTest {
 
     /**
@@ -36,4 +39,19 @@ public class StringsTest {
         Assert.assertEquals("'Q'", Strings.quote("Q"));
     }
 
+    @Test
+    public void testjoin() {
+        Assert.assertEquals(null, Strings.join((Iterable<?>) null, '.'));
+        Assert.assertEquals(null, Strings.join((Iterator<?>) null, '.'));
+        Assert.assertEquals("", Strings.join((Arrays.asList()), '.'));
+
+        Assert.assertEquals("a", Strings.join(Arrays.asList("a"), '.'));
+        Assert.assertEquals("a.b", Strings.join(Arrays.asList("a", "b"), '.'));
+        Assert.assertEquals("a.b.c", Strings.join(Arrays.asList("a", "b", "c"), '.'));
+
+        Assert.assertEquals("", Strings.join(Arrays.asList((String)null), ':'));
+        Assert.assertEquals(":", Strings.join(Arrays.asList(null, null), ':'));
+        Assert.assertEquals("a:", Strings.join(Arrays.asList("a", null), ':'));
+        Assert.assertEquals(":b", Strings.join(Arrays.asList(null, "b"), ':'));
+    }
 }
