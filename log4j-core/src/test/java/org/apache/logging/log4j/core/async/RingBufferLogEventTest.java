@@ -32,6 +32,7 @@ import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
+import org.apache.logging.log4j.message.ParameterConsumer;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
@@ -188,5 +189,16 @@ public class RingBufferLogEventTest {
         } catch (final NullPointerException e) {
             fail("the messageText field was not set");
         }
+    }
+
+    @Test
+    public void testForEachParameterNothingSet() {
+        final RingBufferLogEvent evt = new RingBufferLogEvent();
+        evt.forEachParameter(new ParameterConsumer<Void>() {
+            @Override
+            public void accept(Object parameter, short parameterIndex, Void state) {
+                fail("Should not have been called");
+            }
+        }, null);
     }
 }

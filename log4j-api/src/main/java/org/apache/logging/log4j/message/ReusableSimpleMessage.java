@@ -23,7 +23,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableSimpleMessage implements ReusableMessage, CharSequence {
+public class ReusableSimpleMessage implements ReusableMessage, CharSequence, ParameterVisitableMessage {
     private static final long serialVersionUID = -9199974506498249809L;
     private static Object[] EMPTY_PARAMS = new Object[0];
     private CharSequence charSequence;
@@ -78,6 +78,10 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence {
     @Override
     public short getParameterCount() {
         return 0;
+    }
+
+    @Override
+    public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
     }
 
     @Override
