@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
  * The simplest possible implementation of Message. It just returns the String given as the constructor argument.
@@ -75,7 +76,7 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
      */
     @Override
     public String getFormat() {
-        return getFormattedMessage();
+        return message;
     }
 
     /**
