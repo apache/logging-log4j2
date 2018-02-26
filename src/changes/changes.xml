@@ -90,6 +90,9 @@
       </action>      
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
+      <action issue="LOG4J2-2253" dev="rpopma" type="add" due-to="Carter Kozak">
+        Add API to enable iterating over message parameters without creating temporary objects.
+      </action>
       <action issue="LOG4J2-2271" dev="rgoers" type="fix">
         Move module-info.class to META-INF/versions/9 directory.
       </action>
