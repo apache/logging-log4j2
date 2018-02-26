@@ -24,7 +24,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableObjectMessage implements ReusableMessage {
+public class ReusableObjectMessage implements ReusableMessage, ParameterVisitableMessage {
     private static final long serialVersionUID = 6922476812535519960L;
 
     private transient Object obj;
@@ -110,6 +110,11 @@ public class ReusableObjectMessage implements ReusableMessage {
     @Override
     public short getParameterCount() {
         return 0;
+    }
+
+    @Override
+    public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
+        action.accept(obj, (short) 0, state);
     }
 
     @Override

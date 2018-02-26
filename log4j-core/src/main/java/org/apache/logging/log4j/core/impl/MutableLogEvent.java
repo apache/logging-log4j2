@@ -42,7 +42,7 @@ import org.apache.logging.log4j.util.Strings;
  * Mutable implementation of the {@code LogEvent} interface.
  * @since 2.6
  */
-public class MutableLogEvent implements LogEvent, ReusableMessage {
+public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisitableMessage {
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
 
     private int threadPriority;
@@ -255,6 +255,15 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     @Override
     public Object[] getParameters() {
         return parameters == null ? null : Arrays.copyOf(parameters, parameterCount);
+    }
+
+    @Override
+    public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
+        if (parameters != null) {
+            for (short i = 0; i < parameterCount; i++) {
+                action.accept(parameters[i], i, state);
+            }
+        }
     }
 
     /**
