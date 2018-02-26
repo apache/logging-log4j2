@@ -9,7 +9,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @since 2.11
  */
 @PerformanceSensitive("allocation")
-public interface ParameterVisitableMessage extends Message {
+public interface ParameterVisitable {
 
     /**
      * Performs the given action for each parameter until all values

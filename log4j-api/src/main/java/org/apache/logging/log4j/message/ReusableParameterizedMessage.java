@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableParameterizedMessage implements ReusableMessage, ParameterVisitableMessage {
+public class ReusableParameterizedMessage implements ReusableMessage, ParameterVisitable {
 
     private static final int MIN_BUILDER_SIZE = 512;
     private static final int MAX_PARMS = 10;
