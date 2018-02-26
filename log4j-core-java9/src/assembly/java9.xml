@@ -35,9 +35,9 @@
         <exclude>module-info.class</exclude>
         <exclude>**/Dummy.class</exclude>
         <exclude>**/util/Clock.class</exclude>
-        <exclude>**/util/Instant.class</exclude>
-        <exclude>**/util/MutableInstant.class</exclude>
-        <exclude>**/util/PreciseClock.class</exclude>
+        <exclude>**/time/Instant.class</exclude>
+        <exclude>**/time/MutableInstant.class</exclude>
+        <exclude>**/time/PreciseClock.class</exclude>
       </excludes>
     </fileSet>
     <fileSet>

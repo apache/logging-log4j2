@@ -14,10 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.core.time;
 
 // This class is here to allow {@link SystemClock}, {@link SystemMillisClock}
 // to compile. It will not be copied into the log4j-core module.
+
+import org.apache.logging.log4j.core.util.Clock;
 
 /**
  * Models a point in time, suitable for event timestamps.
