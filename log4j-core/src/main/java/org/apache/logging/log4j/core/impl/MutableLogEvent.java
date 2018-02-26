@@ -40,7 +40,7 @@ import org.apache.logging.log4j.util.Strings;
  * Mutable implementation of the {@code LogEvent} interface.
  * @since 2.6
  */
-public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisitableMessage {
+public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisitable {
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
 
     private int threadPriority;
