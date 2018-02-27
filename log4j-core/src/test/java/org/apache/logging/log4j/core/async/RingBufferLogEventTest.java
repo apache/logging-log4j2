@@ -196,7 +196,7 @@ public class RingBufferLogEventTest {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
         evt.forEachParameter(new ParameterConsumer<Void>() {
             @Override
-            public void accept(Object parameter, short parameterIndex, Void state) {
+            public void accept(Object parameter, int parameterIndex, Void state) {
                 fail("Should not have been called");
             }
         }, null);

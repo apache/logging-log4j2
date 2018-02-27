@@ -160,7 +160,7 @@ public class ReusableParameterizedMessageTest {
         final List<Object> actual = new LinkedList<>();
         msg.forEachParameter(new ParameterConsumer<Void>() {
             @Override
-            public void accept(Object parameter, short parameterIndex, Void state) {
+            public void accept(Object parameter, int parameterIndex, Void state) {
                 actual.add(parameter);
             }
         }, null);
