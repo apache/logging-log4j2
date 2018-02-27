@@ -114,7 +114,7 @@ public class ReusableObjectMessage implements ReusableMessage, ParameterVisitabl
 
     @Override
     public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
-        action.accept(obj, (short) 0, state);
+        action.accept(obj, 0, state);
     }
 
     @Override
