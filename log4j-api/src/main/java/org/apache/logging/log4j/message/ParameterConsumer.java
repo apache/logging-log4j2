@@ -21,6 +21,6 @@ public interface ParameterConsumer<S> {
      * @param parameterIndex Index of the parameter
      * @param state
      */
-    void accept(Object parameter, short parameterIndex, S state);
+    void accept(Object parameter, int parameterIndex, S state);
 
 }
