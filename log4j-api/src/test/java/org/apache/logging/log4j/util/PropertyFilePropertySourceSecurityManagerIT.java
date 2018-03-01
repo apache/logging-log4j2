@@ -25,6 +25,7 @@ import java.util.PropertyPermission;
 
 import org.apache.logging.log4j.junit.SecurityManagerTestRule;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -43,37 +44,41 @@ import org.junit.Test;
  */
 public class PropertyFilePropertySourceSecurityManagerIT {
 
-	@Rule
-	public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
+    @BeforeClass
+    public static void beforeClass() {
+        Assert.assertTrue(TEST_FIXTURE_PATH, Files.exists(Paths.get(TEST_FIXTURE_PATH)));
+    }
+    
+    @Rule
+    public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
 
-	private static final String TEST_FIXTURE_PATH = "src/test/resources/PropertiesUtilTest.properties";
+    private static final String TEST_FIXTURE_PATH = "src/test/resources/PropertiesUtilTest.properties";
 
-	/**
-	 * Always throws a SecurityException for any environment variables permission
-	 * check.
-	 */
-	private class TestSecurityManager extends SecurityManager {
+    /**
+     * Always throws a SecurityException for any environment variables permission
+     * check.
+     */
+    private class TestSecurityManager extends SecurityManager {
 
-		@Override
-		public void checkPermission(Permission permission) {
-			if (permission instanceof FilePermission && permission.getName().endsWith(TEST_FIXTURE_PATH)) {
-				throw new SecurityException();
-			}
-		}
-	}
+        @Override
+        public void checkPermission(final Permission permission) {
+            if (permission instanceof FilePermission && permission.getName().endsWith(TEST_FIXTURE_PATH)) {
+                throw new SecurityException();
+            }
+        }
+    }
 
-	/**
-	 * Makes sure we do not blow up with exception below due to a security manager
-	 * rejecting environment variable access in
-	 * {@link SystemPropertiesPropertySource}.
-	 * 
-	 * <pre>
-	 * </pre>
-	 */
-	@Test
-	public void test() {
-		Assert.assertTrue(TEST_FIXTURE_PATH, Files.exists(Paths.get(TEST_FIXTURE_PATH)));
-		PropertiesUtil propertiesUtil = new PropertiesUtil(TEST_FIXTURE_PATH);
-		Assert.assertEquals(null, propertiesUtil.getStringProperty("a.1"));
-	}
+    /**
+     * Makes sure we do not blow up with exception below due to a security manager
+     * rejecting environment variable access in
+     * {@link SystemPropertiesPropertySource}.
+     * 
+     * <pre>
+     * </pre>
+     */
+    @Test
+    public void test() {
+        final PropertiesUtil propertiesUtil = new PropertiesUtil(TEST_FIXTURE_PATH);
+        Assert.assertEquals(null, propertiesUtil.getStringProperty("a.1"));
+    }
 }
