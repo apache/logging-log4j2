@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
 
 /**
  * PropertySource backed by the current system properties. Other than having a higher priority over normal properties,
@@ -26,17 +27,27 @@ import java.util.Map;
  */
 public class SystemPropertiesPropertySource implements PropertySource {
 
+    private static final int DEFAULT_PRIORITY = 100;
     private static final String PREFIX = "log4j2.";
 
     @Override
     public int getPriority() {
-        return 100;
+        return DEFAULT_PRIORITY;
     }
 
     @Override
     public void forEach(final BiConsumer<String, String> action) {
-        for (final Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
-            action.accept(((String) entry.getKey()), ((String) entry.getValue()));
+        final Properties properties = System.getProperties();
+        // Lock properties only long enough to get a thread-safe SAFE snapshot of its current keys, an array.
+        final Object[] keySet;
+        synchronized (properties) {
+            keySet = properties.keySet().toArray();
+        }
+        // Then traverse for an unknown amount of time.
+        // Some keys may now be absent, in which case, the value is null.
+        for (final Object key : keySet) {
+            final String keyStr = Objects.toString(key, null);
+            action.accept(keyStr, properties.getProperty(keyStr));
         }
     }
 
