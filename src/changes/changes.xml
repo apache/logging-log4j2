@@ -213,6 +213,9 @@
       <action issue="LOG4J2-2274" dev="ggregory" type="fix" due-to="Sebastien Lannez">
         Allow EnvironmentPropertySource to run with a SecurityManager that rejects environment variable access.
       </action>      
+      <action issue="LOG4J2-2279" dev="ggregory" type="fix" due-to="Gary Gregory">
+        Allow SystemPropertiesPropertySource to run with a SecurityManager that rejects system property access.
+      </action>      
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak">

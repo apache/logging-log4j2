@@ -19,16 +19,26 @@ package org.apache.logging.log4j.util;
 
 import java.security.Permission;
 
+import org.apache.logging.log4j.junit.SecurityManagerTestRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * Tests https://issues.apache.org/jira/browse/LOG4J2-2274.
+ * <p>
+ * Using a security manager can mess up other tests so this is best used from
+ * integration tests (classes that end in "IT" instead of "Test" and
+ * "TestCase".)
+ * </p>
  * 
  * @see EnvironmentPropertySource
  * @see SecurityManager
  * @see System#setSecurityManager(SecurityManager)
  */
-public class EnvironmentPropertySourceSecurityManagerTest {
+public class EnvironmentPropertySourceSecurityManagerIT {
+
+	@Rule
+	public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
 
 	/**
 	 * Always throws a SecurityException for any environment variables permission
@@ -36,7 +46,7 @@ public class EnvironmentPropertySourceSecurityManagerTest {
 	 */
 	private class TestSecurityManager extends SecurityManager {
 		@Override
-		public void checkPermission(Permission permission) {
+		public void checkPermission(final Permission permission) {
 			if ("getenv.*".equals(permission.getName())) {
 				throw new SecurityException();
 			}
@@ -63,12 +73,6 @@ public class EnvironmentPropertySourceSecurityManagerTest {
 	 */
 	@Test
 	public void test() {
-		try {
-			SecurityManager securityManager = new TestSecurityManager();
-			System.setSecurityManager(securityManager);
-		} catch (SecurityException se) {
-			// The SecurityManager is already set
-		}
 		PropertiesUtil.getProperties();
 	}
 }
