@@ -97,6 +97,9 @@
       <action issue="LOG4J2-2279" dev="ggregory" type="fix" due-to="Gary Gregory">
         Allow SystemPropertiesPropertySource to run with a SecurityManager that rejects system property access.
       </action>      
+      <action issue="LOG4J2-2279" dev="ggregory" type="fix" due-to="Remko Popma">
+        Move ProcessIdUtil from log4j-api to log4j-core.
+      </action>      
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
       <action issue="LOG4J2-2273" dev="rpopma" type="update" due-to="Bruno P. Kinoshita">
