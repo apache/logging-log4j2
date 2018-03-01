@@ -26,7 +26,6 @@ import org.apache.logging.log4j.test.RuleChainFactory;
 import org.bson.Document;
 import org.junit.Assert;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
@@ -37,20 +36,17 @@ import com.mongodb.client.MongoDatabase;
 
 /**
  * This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
- *
- * TODO Set up the log4j user in MongoDB.
  */
-@Ignore("TODO Set up the log4j user in MongoDB")
 @Category(Appenders.MongoDb.class)
-public class MongoDbAuthFailureTestJava8 {
+public class MongoDbCappedTest {
 
-    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-auth-failure.xml");
+    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-capped.xml");
 
     private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
             .create(TestConstants.SYS_PROP_NAME_PORT);
 
     private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(),
-            MongoDbAuthFailureTestJava8.class, LoggingTarget.NULL);
+            MongoDbCappedTest.class, LoggingTarget.NULL);
 
     @ClassRule
     public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,
@@ -66,7 +62,8 @@ public class MongoDbAuthFailureTestJava8 {
             final MongoCollection<Document> collection = database.getCollection("applog");
             Assert.assertNotNull(collection);
             final Document first = collection.find().first();
-            Assert.assertNull(first);
+            Assert.assertNotNull(first);
+            Assert.assertEquals(first.toJson(), "Hello log", first.getString("message"));
         }
     }
 }

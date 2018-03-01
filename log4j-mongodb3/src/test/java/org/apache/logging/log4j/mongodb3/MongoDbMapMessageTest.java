@@ -39,7 +39,7 @@ import com.mongodb.client.MongoDatabase;
  * This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
  */
 @Category(Appenders.MongoDb.class)
-public class MongoDbMapMessageTestJava8 {
+public class MongoDbMapMessageTest {
 
     private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-map-message.xml");
 
@@ -47,7 +47,7 @@ public class MongoDbMapMessageTestJava8 {
             .create(TestConstants.SYS_PROP_NAME_PORT);
 
     private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(),
-            MongoDbMapMessageTestJava8.class, LoggingTarget.NULL);
+            MongoDbMapMessageTest.class, LoggingTarget.NULL);
 
     @ClassRule
     public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,

@@ -37,13 +37,13 @@ import com.mongodb.client.MongoIterable;
  * The test framework {@code de.flapdoodle.embed.mongo} requires Java 8.
  * </p>
  */
-public class MongoDbTestTestRuleTestJava8 {
+public class MongoDbTestTestRuleTest {
 
     private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
             .create(TestConstants.SYS_PROP_NAME_PORT);
 
     private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(),
-            MongoDbTestTestRuleTestJava8.class, LoggingTarget.NULL);
+            MongoDbTestTestRuleTest.class, LoggingTarget.NULL);
 
     @ClassRule
     public static RuleChain mongoDbChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule);

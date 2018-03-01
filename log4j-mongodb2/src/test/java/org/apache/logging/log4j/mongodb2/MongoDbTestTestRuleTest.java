@@ -14,33 +14,30 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.mongodb2;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.categories.Appenders;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import java.util.List;
+
+import org.apache.commons.lang3.JavaVersion;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.mongodb2.MongoDbTestRule.LoggingTarget;
 import org.apache.logging.log4j.test.AvailablePortSystemPropertyTestRule;
 import org.apache.logging.log4j.test.RuleChainFactory;
 import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
-
 /**
- * This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
+ * Tests {@link MongoDbTestRule}. This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
+ * <p>
+ * The test framework {@code de.flapdoodle.embed.mongo} requires Java 8.
+ * </p>
  */
-@Category(Appenders.MongoDb.class)
-public class MongoDbTestJava8 {
-
-    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb.xml");
+public class MongoDbTestTestRuleTest {
 
     private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
             .create(TestConstants.SYS_PROP_NAME_PORT);
@@ -48,24 +45,27 @@ public class MongoDbTestJava8 {
     private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(), LoggingTarget.NULL);
 
     @ClassRule
-    public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,
-            loggerContextTestRule);
+    public static RuleChain mongoDbChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule);
+
+    @BeforeClass
+    public static void beforeClass() {
+        Assume.assumeTrue(SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_8));
+    }
 
     @Test
-    public void test() {
-        final Logger logger = LogManager.getLogger();
-        logger.info("Hello log");
-        final MongoClient mongoClient = mongoDbTestRule.getMongoClient();
-        try {
-            final DB database = mongoClient.getDB("test");
-            Assert.assertNotNull(database);
-            final DBCollection collection = database.getCollection("applog");
-            Assert.assertNotNull(collection);
-            final DBObject first = collection.find().next();
-            Assert.assertNotNull(first);
-            Assert.assertEquals(first.toMap().toString(), "Hello log", first.get("message"));
-        } finally {
-            mongoClient.close();
-        }
+    public void testAccess() {
+        final List<String> databaseNames = mongoDbTestRule.getMongoClient().getDatabaseNames();
+        Assert.assertNotNull(databaseNames);
+        Assert.assertFalse(databaseNames.isEmpty());
+        Assert.assertNotNull(databaseNames.get(0));
+    }
+
+    @Test
+    public void testMongoDbTestRule() {
+        Assert.assertNotNull(mongoDbTestRule);
+        Assert.assertNotNull(mongoDbTestRule.getStarter());
+        Assert.assertNotNull(mongoDbTestRule.getMongoClient());
+        Assert.assertNotNull(mongoDbTestRule.getMongodExecutable());
+        Assert.assertNotNull(mongoDbTestRule.getMongodProcess());
     }
 }
