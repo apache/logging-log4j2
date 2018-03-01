@@ -123,7 +123,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
      * @param provider
      *            The NoSQL provider that provides connections to the chosen NoSQL database.
      * @return a new NoSQL appender.
-     * @deprecated since 2.10.1; use {@link Builder}.
+     * @deprecated since 2.11.0; use {@link Builder}.
      */
     @SuppressWarnings("resource")
     @Deprecated

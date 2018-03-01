@@ -23,7 +23,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 /**
  * Formats the EndOfBatch.
  *
- * @since 2.10.1
+ * @since 2.11.0
  */
 @Plugin(name = "EndOfBatchPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "endOfBatch" })
