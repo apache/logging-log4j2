@@ -25,6 +25,7 @@ import java.util.PropertyPermission;
 
 import org.apache.logging.log4j.junit.SecurityManagerTestRule;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -43,6 +44,11 @@ import org.junit.Test;
  */
 public class PropertyFilePropertySourceSecurityManagerIT {
 
+	@BeforeClass
+	public static void beforeClass() {
+		Assert.assertTrue(TEST_FIXTURE_PATH, Files.exists(Paths.get(TEST_FIXTURE_PATH)));
+	}
+	
 	@Rule
 	public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
 
@@ -55,7 +61,7 @@ public class PropertyFilePropertySourceSecurityManagerIT {
 	private class TestSecurityManager extends SecurityManager {
 
 		@Override
-		public void checkPermission(Permission permission) {
+		public void checkPermission(final Permission permission) {
 			if (permission instanceof FilePermission && permission.getName().endsWith(TEST_FIXTURE_PATH)) {
 				throw new SecurityException();
 			}
@@ -72,8 +78,7 @@ public class PropertyFilePropertySourceSecurityManagerIT {
 	 */
 	@Test
 	public void test() {
-		Assert.assertTrue(TEST_FIXTURE_PATH, Files.exists(Paths.get(TEST_FIXTURE_PATH)));
-		PropertiesUtil propertiesUtil = new PropertiesUtil(TEST_FIXTURE_PATH);
+		final PropertiesUtil propertiesUtil = new PropertiesUtil(TEST_FIXTURE_PATH);
 		Assert.assertEquals(null, propertiesUtil.getStringProperty("a.1"));
 	}
 }
