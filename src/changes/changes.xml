@@ -87,6 +87,9 @@
       </action>      
       <action issue="LOG4J2-2270" dev="ggregory" type="fix" due-to="Cyril Martin">
         Strings::join, when called with [null] returns "null" instead of EMPTY.
+      </action>
+      <action issue="LOG4J2-2276" dev="ggregory" type="fix" due-to="Sean Baxter">
+        ConcurrentModificationException from org.apache.logging.log4j.status.StatusLogger.&lt;clinit>(StatusLogger.java:71).
       </action>      
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
@@ -265,7 +268,10 @@
       </action>
       <action issue="LOG4J2-2270" dev="ggregory" type="fix" due-to="Cyril Martin">
         Strings::join, when called with [null] returns "null" instead of EMPTY.
-      </action>      
+      </action>
+      <action issue="LOG4J2-2276" dev="ggregory" type="fix" due-to="Sean Baxter">
+        ConcurrentModificationException from org.apache.logging.log4j.status.StatusLogger.&lt;clinit>(StatusLogger.java:71).
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak">
