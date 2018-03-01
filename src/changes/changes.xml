@@ -210,7 +210,7 @@
       <action issue="LOG4J2-2276" dev="ggregory" type="fix" due-to="Sean Baxter">
         ConcurrentModificationException from org.apache.logging.log4j.status.StatusLogger.&lt;clinit>(StatusLogger.java:71).
       </action>      
-      <action issue="LOG4J2-2274" dev="ggregory" type="fix" due-to="">
+      <action issue="LOG4J2-2274" dev="ggregory" type="fix" due-to="Sebastien Lannez">
         Allow EnvironmentPropertySource to run with a SecurityManager that rejects environment variable access.
       </action>      
     </release>
