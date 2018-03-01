@@ -26,17 +26,28 @@ import java.util.Map;
  * @since 2.10.0
  */
 public class EnvironmentPropertySource implements PropertySource {
+
+    private static final String PREFIX = "LOG4J_";
+    private static final int DEFAULT_PRIORITY = -100;
+
     @Override
     public int getPriority() {
-        return -100;
+        return DEFAULT_PRIORITY;
     }
 
     @Override
     public void forEach(final BiConsumer<String, String> action) {
-        for (final Map.Entry<String, String> entry : System.getenv().entrySet()) {
+        final Map<String, String> getenv;
+        try {
+            getenv = System.getenv();
+        } catch (SecurityException e) {
+            // There is no status logger yet.
+            return;
+        }
+        for (final Map.Entry<String, String> entry : getenv.entrySet()) {
             final String key = entry.getKey();
-            if (key.startsWith("LOG4J_")) {
-                action.accept(key.substring(6), entry.getValue());
+            if (key.startsWith(PREFIX)) {
+                action.accept(key.substring(PREFIX.length()), entry.getValue());
             }
         }
     }
