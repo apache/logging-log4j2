@@ -26,6 +26,7 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests {@link CloseableThreadContext}.
@@ -43,6 +44,7 @@ public class CloseableThreadContextTest {
     @Test
     public void shouldAddAnEntryToTheMap() throws Exception {
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value)) {
+            assertNotNull(ignored);
             assertThat(ThreadContext.get(key), is(value));
         }
     }
@@ -52,6 +54,7 @@ public class CloseableThreadContextTest {
         final String key2 = "key2";
         final String value2 = "value2";
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value).put(key2, value2)) {
+            assertNotNull(ignored);
             assertThat(ThreadContext.get(key), is(value));
             assertThat(ThreadContext.get(key2), is(value2));
         }
@@ -63,8 +66,10 @@ public class CloseableThreadContextTest {
         final String innerValue = "innerValue";
         ThreadContext.put(key, oldValue);
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value)) {
+            assertNotNull(ignored);
             assertThat(ThreadContext.get(key), is(value));
             try (final CloseableThreadContext.Instance ignored2 = CloseableThreadContext.put(key, innerValue)) {
+                assertNotNull(ignored2);
                 assertThat(ThreadContext.get(key), is(innerValue));
             }
             assertThat(ThreadContext.get(key), is(value));
@@ -77,6 +82,7 @@ public class CloseableThreadContextTest {
         final String oldValue = "oldValue";
         ThreadContext.put(key, oldValue);
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value)) {
+            assertNotNull(ignored);
             assertThat(ThreadContext.get(key), is(value));
         }
         assertThat(ThreadContext.get(key), is(oldValue));
@@ -88,6 +94,7 @@ public class CloseableThreadContextTest {
         final String secondValue = "innerValue";
         ThreadContext.put(key, oldValue);
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value).put(key, secondValue)) {
+            assertNotNull(ignored);
             assertThat(ThreadContext.get(key), is(secondValue));
         }
         assertThat(ThreadContext.get(key), is(oldValue));
@@ -97,6 +104,7 @@ public class CloseableThreadContextTest {
     public void shouldPushAndPopAnEntryToTheStack() throws Exception {
         final String message = "message";
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.push(message)) {
+            assertNotNull(ignored);
             assertThat(ThreadContext.peek(), is(message));
         }
         assertThat(ThreadContext.peek(), is(""));
@@ -107,6 +115,7 @@ public class CloseableThreadContextTest {
         final String message1 = "message1";
         final String message2 = "message2";
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.push(message1).push(message2)) {
+            assertNotNull(ignored);
             assertThat(ThreadContext.peek(), is(message2));
         }
         assertThat(ThreadContext.peek(), is(""));
@@ -119,6 +128,7 @@ public class CloseableThreadContextTest {
         final String formattedMessage = parameterizedMessage.replace("{}", parameterizedMessageParameter);
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.push(parameterizedMessage,
                 parameterizedMessageParameter)) {
+            assertNotNull(ignored);
             assertThat(ThreadContext.peek(), is(formattedMessage));
         }
         assertThat(ThreadContext.peek(), is(""));
@@ -127,6 +137,7 @@ public class CloseableThreadContextTest {
     @Test
     public void shouldRemoveAnEntryFromTheMapWhenAutoClosed() throws Exception {
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value)) {
+            assertNotNull(ignored);
             assertThat(ThreadContext.get(key), is(value));
         }
         assertThat(ThreadContext.containsKey(key), is(false));
@@ -136,6 +147,7 @@ public class CloseableThreadContextTest {
     public void shouldAddEntriesToBothStackAndMap() throws Exception {
         final String stackValue = "something";
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value).push(stackValue)) {
+            assertNotNull(ignored);
             assertThat(ThreadContext.get(key), is(value));
             assertThat(ThreadContext.peek(), is(stackValue));
         }
@@ -148,6 +160,7 @@ public class CloseableThreadContextTest {
         final String stackValue = "something";
         // Create a ctc and close it
         final CloseableThreadContext.Instance ctc = CloseableThreadContext.push(stackValue).put(key, value);
+        assertNotNull(ctc);
         assertThat(ThreadContext.get(key), is(value));
         assertThat(ThreadContext.peek(), is(stackValue));
         ctc.close();
@@ -179,6 +192,7 @@ public class CloseableThreadContextTest {
         final String newMapValue = "temp map value";
         final String newStackValue = "temp stack to keep";
         final CloseableThreadContext.Instance ctc = CloseableThreadContext.push(newStackValue).put(key, newMapValue);
+        assertNotNull(ctc);
 
         ctc.close();
         assertThat(ThreadContext.get(key), is(originalMapValue));
@@ -199,6 +213,7 @@ public class CloseableThreadContextTest {
         valuesToPut.put(key, value);
 
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.putAll(valuesToPut)) {
+            assertNotNull(ignored);
             assertThat(ThreadContext.get(key), is(value));
         }
         assertThat(ThreadContext.get(key), is(oldValue));
@@ -213,6 +228,7 @@ public class CloseableThreadContextTest {
         ThreadContext.pop();
 
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.pushAll(messages)) {
+            assertNotNull(ignored);
             assertThat(ThreadContext.peek(), is(key));
         }
         assertThat(ThreadContext.peek(), is(""));
