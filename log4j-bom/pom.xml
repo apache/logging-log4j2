@@ -168,6 +168,12 @@
         <artifactId>log4j-kafka</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- Pulsar Appender Plugin -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-pulsar</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- JPA Appender Plugin -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>

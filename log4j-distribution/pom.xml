@@ -250,6 +250,24 @@
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>
+    <!-- log4j-pulsar -->    
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-pulsar</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-pulsar</artifactId>
+      <version>${project.version}</version>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-pulsar</artifactId>
+      <version>${project.version}</version>
+      <classifier>javadoc</classifier>
+    </dependency>
     <!-- log4j-flume-ng -->        
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

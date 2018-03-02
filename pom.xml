@@ -224,6 +224,7 @@
     <javax.persistence>2.2.0</javax.persistence>
     <osgi.api.version>6.0.0</osgi.api.version>
     <activemq.version>5.15.3</activemq.version>
+    <pulsar.version>1.21.0-incubating</pulsar.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
@@ -600,6 +601,11 @@
         <groupId>org.apache.activemq</groupId>
         <artifactId>activemq-broker</artifactId>
         <version>${activemq.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.pulsar</groupId>
+        <artifactId>pulsar-client</artifactId>
+        <version>${pulsar.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.kafka</groupId>
@@ -1358,6 +1364,7 @@
     <module>log4j-jeromq</module>
     <module>log4j-jms</module>
     <module>log4j-kafka</module>
+    <module>log4j-pulsar</module>
     <module>log4j-couchdb</module>
     <module>log4j-mongodb2</module>
     <module>log4j-mongodb3</module>
