@@ -831,7 +831,7 @@
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
         <version>2.0.3</version>
         <scope>test</scope>
-      </dependency>      
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
@@ -942,6 +942,13 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>clirr-maven-plugin</artifactId>
           <version>${clirr.plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.bcel</groupId>
+              <artifactId>bcel</artifactId>
+              <version>6.2</version>
+            </dependency>
+          </dependencies>
           <configuration>
             <minSeverity>${minSeverity}</minSeverity>
           </configuration>
@@ -1215,6 +1222,21 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>clirr-maven-plugin</artifactId>
+        <version>${clirr.plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.bcel</groupId>
+            <artifactId>bcel</artifactId>
+            <version>6.2</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <minSeverity>${minSeverity}</minSeverity>
+        </configuration>
       </plugin>
     </plugins>
   </build>
