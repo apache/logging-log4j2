@@ -102,6 +102,9 @@
       </action>      
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
+      <action issue="LOG4J2-2104" dev="rgoers" type="fix">
+        LoaderUtil was not looping properly over classloaders.
+      </action>
       <action issue="LOG4J2-2273" dev="rpopma" type="update" due-to="Bruno P. Kinoshita">
         Documentation fix in manual page for custom configurations.
       </action>
