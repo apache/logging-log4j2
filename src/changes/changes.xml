@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
+      <action issue="LOG4J2-1976" dev="rgoers" type="fix">
+        Revert OSGi API version to 4.3.1.
+      </action>
       <action issue="LOG4J2-2273" dev="rpopma" type="update" due-to="Bruno P. Kinoshita">
         Documentation fix in manual page for custom configurations.
       </action>
@@ -197,7 +200,7 @@
       </action>
       <action issue="LOG4J2-2259" dev="ggregory" type="update">
         Update MongoDB 3 module from driver 3.6.1 to 3.6.3.
-      </action>      
+      </action>
       <action issue="LOG4J2-2260" dev="ggregory" type="update">
         [SMTP] Update javax.mail from 1.6.0 to 1.6.1.
       </action>
@@ -206,16 +209,16 @@
       </action>
       <action issue="LOG4J2-2270" dev="ggregory" type="fix" due-to="Cyril Martin">
         Strings::join, when called with [null] returns "null" instead of EMPTY.
-      </action>      
+      </action>
       <action issue="LOG4J2-2276" dev="ggregory" type="fix" due-to="Sean Baxter">
         ConcurrentModificationException from org.apache.logging.log4j.status.StatusLogger.&lt;clinit>(StatusLogger.java:71).
-      </action>      
+      </action>
       <action issue="LOG4J2-2274" dev="ggregory" type="fix" due-to="Sebastien Lannez">
         Allow EnvironmentPropertySource to run with a SecurityManager that rejects environment variable access.
-      </action>      
+      </action>
       <action issue="LOG4J2-2279" dev="ggregory" type="fix" due-to="Gary Gregory">
         Allow SystemPropertiesPropertySource to run with a SecurityManager that rejects system property access.
-      </action>      
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak">

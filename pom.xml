@@ -221,7 +221,8 @@
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <javax.persistence>2.1.1</javax.persistence>
-    <osgi.api.version>6.0.0</osgi.api.version>
+    <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
+    <osgi.api.version>4.3.1</osgi.api.version>
     <!-- Version 5.15.0 requires Java 8 -->
     <activemq.version>5.14.5</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
