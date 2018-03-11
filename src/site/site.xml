@@ -292,7 +292,6 @@
     </menu>
 
     <menu name="Project Information" img="icon-info-sign">
-      <item name="Dependencies" href="/dependencies.html" />
       <item name="Dependency Convergence" href="/dependency-convergence.html" />
       <item name="Dependency Management" href="/dependency-management.html" />
       <item name="Project Team" href="/team-list.html" />
