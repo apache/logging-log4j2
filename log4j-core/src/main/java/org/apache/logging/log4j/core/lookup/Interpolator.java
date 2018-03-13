@@ -47,6 +47,8 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     /** Constant for the prefix separator. */
     private static final char PREFIX_SEPARATOR = ':';
 
+    private static final String DEFAULT_VALUE_SEPARATOR = ":-";
+
     private final Map<String, StrLookup> strLookupMap = new HashMap<>();
 
     private final StrLookup defaultLookup;
@@ -176,9 +178,11 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         }
 
         final int prefixPos = var.indexOf(PREFIX_SEPARATOR);
+        final int defaultPos = var.lastIndexOf(DEFAULT_VALUE_SEPARATOR);
         if (prefixPos >= 0) {
             final String prefix = var.substring(0, prefixPos).toLowerCase(Locale.US);
-            final String name = var.substring(prefixPos + 1);
+            int lastIndex = defaultPos != -1 && defaultPos != prefixPos ? defaultPos : var.length();
+            final String name = var.substring(prefixPos + 1, lastIndex);
             final StrLookup lookup = strLookupMap.get(prefix);
             if (lookup instanceof ConfigurationAware) {
                 ((ConfigurationAware) lookup).setConfiguration(configuration);
@@ -195,6 +199,8 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         }
         if (defaultLookup != null) {
             return event == null ? defaultLookup.lookup(var) : defaultLookup.lookup(event, var);
+        } else if (defaultPos > prefixPos) {
+            return var.substring(defaultPos + DEFAULT_VALUE_SEPARATOR.length());
         }
         return null;
     }

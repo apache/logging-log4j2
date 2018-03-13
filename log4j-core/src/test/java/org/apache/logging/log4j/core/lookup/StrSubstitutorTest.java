@@ -31,28 +31,36 @@ import static org.junit.Assert.*;
  */
 public class StrSubstitutorTest {
 
-    private static final String TESTKEY = "TestKey";
+    private static final String[] TESTKEYS = {"TestKey", "-TestKey", "--TestKey"};
     private static final String TESTVAL = "TestValue";
-
 
     @BeforeClass
     public static void before() {
-        System.setProperty(TESTKEY, TESTVAL);
+        for (String TESTKEY : TESTKEYS) {
+          System.setProperty(TESTKEY, TESTVAL);
+        }
     }
 
     @AfterClass
     public static void after() {
+      for (String TESTKEY : TESTKEYS) {
         System.clearProperty(TESTKEY);
+      }
     }
 
 
     @Test
     public void testLookup() {
         final Map<String, String> map = new HashMap<>();
-        map.put(TESTKEY, TESTVAL);
+        for (String TESTKEY : TESTKEYS) {
+          map.put(TESTKEY, TESTVAL);
+        }
         final StrLookup lookup = new Interpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
-        ThreadContext.put(TESTKEY, TESTVAL);
+        for (String TESTKEY : TESTKEYS) {
+          ThreadContext.put(TESTKEY, TESTVAL);
+        }
+
         String value = subst.replace("${TestKey}-${ctx:TestKey}-${sys:TestKey}");
         assertEquals("TestValue-TestValue-TestValue", value);
         value = subst.replace("${BadKey}");
@@ -64,17 +72,30 @@ public class StrSubstitutorTest {
         assertEquals("Unknown-${ctx:BadKey}-Unknown", value);
         value = subst.replace("${BadKey:-Unknown}-${ctx:BadKey:-}-${sys:BadKey:-Unknown}");
         assertEquals("Unknown--Unknown", value);
+
+        value = subst.replace("${-TestKey}-${ctx:-TestKey}-${sys:-TestKey}");
+        assertEquals("TestValue-TestValue-TestValue", value);
+        value = subst.replace("${--TestKey}-${ctx:--TestKey}-${sys:--TestKey}");
+        assertEquals("TestValue-TestValue-TestValue", value);
     }
 
     @Test
     public void testDefault() {
         final Map<String, String> map = new HashMap<>();
-        map.put(TESTKEY, TESTVAL);
+        for (String TESTKEY : TESTKEYS) {
+          map.put(TESTKEY, TESTVAL);
+        }
         final StrLookup lookup = new Interpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
-        ThreadContext.put(TESTKEY, TESTVAL);
-        //String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
-        final String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
+        for (String TESTKEY : TESTKEYS) {
+          ThreadContext.put(TESTKEY, TESTVAL);
+        }
+
+        String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
+        assertEquals("TestValue", value);
+
+        value = subst.replace("${sys:--TestKey:-${ctx:--TestKey}}");
         assertEquals("TestValue", value);
     }
+
 }

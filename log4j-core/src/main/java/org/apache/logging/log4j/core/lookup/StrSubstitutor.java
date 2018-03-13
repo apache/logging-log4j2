@@ -951,6 +951,9 @@ public class StrSubstitutor implements ConfigurationAware {
                                 String varName = varNameExpr;
                                 String varDefaultValue = null;
 
+                                // resolve the variable
+                                String varValue = resolveVariable(event, varName, buf, startPos, endPos);
+
                                 if (valueDelimiterMatcher != null) {
                                     final char [] varNameExprChars = varNameExpr.toCharArray();
                                     int valueDelimiterMatchLen = 0;
@@ -978,8 +981,6 @@ public class StrSubstitutor implements ConfigurationAware {
                                 checkCyclicSubstitution(varName, priorVariables);
                                 priorVariables.add(varName);
 
-                                // resolve the variable
-                                String varValue = resolveVariable(event, varName, buf, startPos, endPos);
                                 if (varValue == null) {
                                     varValue = varDefaultValue;
                                 }
