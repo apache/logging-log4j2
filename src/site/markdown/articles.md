@@ -44,6 +44,14 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 ## English
 
+* [Tales from the Field: Migrating from Log4J to Log4J2](https://www.javacodegeeks.com/2018/03/tales-from-the-field-migrating-from-log4j-to-log4j2.html)
+(March 12, 2018)
+* [Log4J2 and Java configuration with properties file](https://www.youtube.com/watch?v=sdOiA1Xql0o)
+(February 18, 2018)
+* [Apache Log4j 2 Configuration| Log4j2 with JDK 9.0](https://www.youtube.com/watch?v=BbcSNOtEGWs)
+(January 8, 2018)
+* [Spring Boot - log4j 2 configuration example](https://www.youtube.com/watch?v=KKO5wGi_vEc)
+(December 30,2017)
 * [Log4j 2 Best Practices example](https://examples.javacodegeeks.com/enterprise-java/log4j/log4j-2-best-practices-example/)
 (November 14, 2017)
 * [Intro to Log4j2 - Appenders, Layouts and Filters](http://www.baeldung.com/log4j2-appenders-layouts-filters)
