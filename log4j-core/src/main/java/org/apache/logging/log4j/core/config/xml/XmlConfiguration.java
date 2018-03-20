@@ -199,7 +199,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         return factory.newDocumentBuilder();
     }
 
-    private static void disableDtdProcessing(final DocumentBuilderFactory factory) throws ParserConfigurationException {
+    private static void disableDtdProcessing(final DocumentBuilderFactory factory) {
         factory.setValidating(false);
         factory.setExpandEntityReferences(false);
         setFeature(factory, "http://xml.org/sax/features/external-general-entities", false);
@@ -207,12 +207,9 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         setFeature(factory, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
     }
     
-    private static void setFeature(final DocumentBuilderFactory factory, final String featureName, final boolean value)
-            throws ParserConfigurationException {
+    private static void setFeature(final DocumentBuilderFactory factory, final String featureName, final boolean value) {
         try {
             factory.setFeature(featureName, value);
-        } catch (ParserConfigurationException e) {
-            throw e;
         } catch (Exception | LinkageError e) {
             getStatusLogger().error("Caught {} setting feature {} to {} on DocumentBuilderFactory {}: {}",
                     e.getClass().getCanonicalName(), featureName, value, factory, e, e);
