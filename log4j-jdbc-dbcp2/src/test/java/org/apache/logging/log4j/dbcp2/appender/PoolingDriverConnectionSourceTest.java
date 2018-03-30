@@ -30,8 +30,9 @@ public class PoolingDriverConnectionSourceTest {
     private void openAndClose(final PoolingDriverConnectionSource source) throws SQLException {
         try (Connection conn = source.getConnection()) {
             Assert.assertFalse(conn.isClosed());
+        } finally {
+            source.stop();
         }
-        source.stop();
     }
     
     @Test
