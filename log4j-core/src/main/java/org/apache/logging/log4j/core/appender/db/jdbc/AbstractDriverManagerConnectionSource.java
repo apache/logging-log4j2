@@ -48,19 +48,19 @@ public class AbstractDriverManagerConnectionSource extends AbstractConnectionSou
 
         @PluginBuilderAttribute
         @Required
-        private String connectionString;
+        protected String connectionString;
 
         @PluginBuilderAttribute
-        private String driverClassName;
+        protected String driverClassName;
 
         @PluginBuilderAttribute
-        private char[] password;
+        protected char[] password;
 
         @PluginElement("Properties")
-        private Property[] properties;
+        protected Property[] properties;
 
         @PluginBuilderAttribute
-        private char[] userName;
+        protected char[] userName;
 
         @SuppressWarnings("unchecked")
         protected B asBuilder() {
@@ -206,7 +206,7 @@ public class AbstractDriverManagerConnectionSource extends AbstractConnectionSou
         }
     }
 
-    private Properties toProperties(final Property[] properties) {
+    protected Properties toProperties(final Property[] properties) {
         final Properties props = new Properties();
         for (final Property property : properties) {
             props.setProperty(property.getName(), property.getValue());
@@ -219,7 +219,7 @@ public class AbstractDriverManagerConnectionSource extends AbstractConnectionSou
         return this.connectionString;
     }
 
-    private String toString(final char[] value) {
+    protected String toString(final char[] value) {
         return value == null ? null : String.valueOf(value);
     }
 }

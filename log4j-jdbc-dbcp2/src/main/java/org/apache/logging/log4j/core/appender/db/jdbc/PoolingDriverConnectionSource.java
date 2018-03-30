@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.dbcp2.ConnectionFactory;
@@ -53,20 +54,28 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
         private String poolName = DEFAULT_POOL_NAME;
 
         @Override
-        public PoolingDriverConnectionSource build() {
-            try {
-                return new PoolingDriverConnectionSource(getDriverClassName(), getConnectionString(), getUserName(),
-                        getPassword(), getProperties(), poolName);
-            } catch (final SQLException e) {
-                getLogger().error("Exception constructing {} to '{}'", getClass(), getConnectionString(), e);
-                return null;
-            }
-        }
+		public PoolingDriverConnectionSource build() {
+			try {
+				return new PoolingDriverConnectionSource(getDriverClassName(), getConnectionString(), getUserName(),
+						getPassword(), getProperties(), poolName);
+			} catch (final SQLException e) {
+				getLogger().error("Exception constructing {} to '{}' with {}", PoolingDriverConnectionSource.class,
+						getConnectionString(), this, e);
+				return null;
+			}
+		}
 
         public B setPoolName(final String poolName) {
             this.poolName = poolName;
             return asBuilder();
         }
+
+		@Override
+		public String toString() {
+			return "Builder [poolName=" + poolName + ", connectionString=" + connectionString + ", driverClassName="
+					+ driverClassName + ", properties=" + Arrays.toString(properties) + ", userName="
+					+ Arrays.toString(userName) + "]";
+		}
     }
 
     public static final String URL_PREFIX = "jdbc:apache:commons:dbcp:";
@@ -111,7 +120,18 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
         // using the connect string passed in the command line
         // arguments.
         //
-        final ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(connectionString, null);
+    	final Property[] properties = getProperties();
+    	final char[] userName = getUserName();
+    	final char[] password = getPassword();
+    	final ConnectionFactory connectionFactory;
+        if (properties != null && properties.length > 0) {
+            if (userName != null || password != null) {
+                throw new SQLException("Either set the userName and password, or set the Properties, but not both.");
+            }
+            connectionFactory = new DriverManagerConnectionFactory(connectionString, toProperties(properties));
+        } else {
+        	connectionFactory = new DriverManagerConnectionFactory(connectionString, toString(userName), toString(password));
+        }
 
         //
         // Next, we'll create the PoolableConnectionFactory, which wraps
