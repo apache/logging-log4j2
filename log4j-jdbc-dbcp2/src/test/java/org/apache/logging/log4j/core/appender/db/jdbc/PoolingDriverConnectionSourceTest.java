@@ -75,8 +75,9 @@ public class PoolingDriverConnectionSourceTest {
 		Assert.assertNotNull("PoolingDriverConnectionSource is null", source);
 		try (Connection conn = source.getConnection()) {
             Assert.assertFalse(conn.isClosed());
+        } finally {
+        	source.stop();
         }
-		source.stop();
 	}
 
     @Test
