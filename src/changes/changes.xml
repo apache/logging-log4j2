@@ -106,6 +106,20 @@
       <action issue="LOG4J2-2283" dev="ggregory" type="fix" due-to="Vishnu Priya Matha">
         ParserConfigurationException when using Log4j with oracle.xml.jaxp.JXDocumentBuilderFactory.
       </action>
+      <action issue="LOG4J2-2300" dev="ggregory" type="fix">
+        PoolingDriverConnectionSource does not take into account properties, user name, and password.
+      </action>
+    </release>
+    <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
+      <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">
+        Improve plugin error message when elements are missing.
+      </action>
+      <action issue="LOG4J2-2283" dev="ggregory" type="fix" due-to="Vishnu Priya Matha">
+        ParserConfigurationException when using Log4j with oracle.xml.jaxp.JXDocumentBuilderFactory.
+      </action>
+      <action issue="LOG4J2-2300" dev="ggregory" type="fix">
+        PoolingDriverConnectionSource does not take into account properties, user name, and password.
+      </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
       <action issue="LOG4J2-2104" dev="rgoers" type="fix">
