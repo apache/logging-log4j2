@@ -71,7 +71,7 @@ public class PoolingDriverConnectionSourceTest {
         openAndClose(source);
     }
 
-	public void openAndClose(final PoolingDriverConnectionSource source) throws SQLException {
+	private void openAndClose(final PoolingDriverConnectionSource source) throws SQLException {
 		Assert.assertNotNull("PoolingDriverConnectionSource is null", source);
 		try (Connection conn = source.getConnection()) {
             Assert.assertFalse(conn.isClosed());
