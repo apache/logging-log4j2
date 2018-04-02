@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+  <Appenders>
+    <RandomAccessFile name="File"
+          fileName="target/AsyncLoggerConfigTest4.log"
+          bufferedIO="false"
+          immediateFlush="true"
+          append="false">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %testformat %testparameters %m %ex%n</Pattern>
+      </PatternLayout>
+    </RandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <AsyncLogger name="com.foo.Bar" level="trace">
+      <AppenderRef ref="File"/>
+    </AsyncLogger>
+    <AsyncRoot level="info">
+      <AppenderRef ref="File"/>
+    </AsyncRoot>
+  </Loggers>
+</Configuration>
