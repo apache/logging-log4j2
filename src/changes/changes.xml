@@ -40,6 +40,9 @@
       <action issue="LOG4J2-2300" dev="ggregory" type="fix">
         PoolingDriverConnectionSource does not take into account properties, user name, and password.
       </action>
+      <action issue="LOG4J2-2302" dev="ggregory" type="update">
+        Status logger should show the Log4j name and version when initializing itself.
+      </action>
     </release>
     <release version="2.11.0" date="2018-03-11" description="GA Release 2.11.0">
       <action issue="LOG4J2-2104" dev="rgoers" type="fix">
