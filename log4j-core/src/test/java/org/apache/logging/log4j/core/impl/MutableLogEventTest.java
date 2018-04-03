@@ -138,6 +138,10 @@ public class MutableLogEventTest {
         assertEquals("format", "msg in a {}", mutable.getFormat());
         assertEquals("formatted", "msg in a bottle", mutable.getFormattedMessage());
         assertEquals("parameters", new String[] {"bottle"}, mutable.getParameters());
+        Message memento = mutable.memento();
+        assertEquals("format", "msg in a {}", memento.getFormat());
+        assertEquals("formatted", "msg in a bottle", memento.getFormattedMessage());
+        assertEquals("parameters", new String[] {"bottle"}, memento.getParameters());
     }
 
     @Test

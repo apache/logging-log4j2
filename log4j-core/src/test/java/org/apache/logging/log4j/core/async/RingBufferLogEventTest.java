@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
 import org.apache.logging.log4j.message.ParameterConsumer;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
@@ -179,6 +180,31 @@ public class RingBufferLogEventTest {
         assertEquals(evt.getInstant().getNanoOfMillisecond(), actual.getInstant().getNanoOfMillisecond());
         assertEquals(evt.getSource(), actual.getSource());
         assertEquals(evt.getThrownProxy(), actual.getThrownProxy());
+    }
+
+    @Test
+    public void testCreateMementoRetainsParametersAndFormat() {
+        final RingBufferLogEvent evt = new RingBufferLogEvent();
+        // Initialize the event with parameters
+        evt.swapParameters(new Object[10]);
+        final String loggerName = "logger.name";
+        final Marker marker = MarkerManager.getMarker("marked man");
+        final String fqcn = "f.q.c.n";
+        final Level level = Level.TRACE;
+        ReusableMessageFactory factory = new ReusableMessageFactory();
+        Message message = factory.newMessage("Hello {}!", "World");
+        final Throwable t = new InternalError("not a real error");
+        final ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
+        final String threadName = "main";
+        final StackTraceElement location = null;
+        evt.setValues(null, loggerName, marker, fqcn, level, message, t, (StringMap) evt.getContextData(),
+                contextStack, -1, threadName, -1, location, new FixedPreciseClock(12345, 678), new DummyNanoClock(1));
+        ((StringMap) evt.getContextData()).putValue("key", "value");
+
+        final Message actual = evt.createMemento().getMessage();
+        assertEquals("Hello {}!", actual.getFormat());
+        assertArrayEquals(new String[] { "World" }, actual.getParameters());
+        assertEquals("Hello World!", actual.getFormattedMessage());
     }
 
     @Test
