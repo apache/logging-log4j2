@@ -26,6 +26,7 @@ import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.MementoMessage;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.util.*;
 import org.apache.logging.log4j.core.time.Instant;
@@ -316,7 +317,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
 
     private Message getNonNullImmutableMessage() {
-        return message != null ? message : new SimpleMessage(String.valueOf(messageText));
+        return message != null ? message : new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
     }
 
     @Override
