@@ -115,6 +115,9 @@
       <action issue="LOG4J2-2304" dev="ggregory" type="update" due-to="wumengsheng">
         Log4j2 2.8.2 JMX unregister NullPointerException.
       </action>
+      <action issue="LOG4J2-2306" dev="ckozak" type="fix">
+        FixedDateFormat parses timezone offsets, -8:00 is interpreted as GMT-8:00.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">

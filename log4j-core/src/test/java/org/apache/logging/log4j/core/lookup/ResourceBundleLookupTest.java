@@ -38,6 +38,7 @@ public class ResourceBundleLookupTest {
         Assert.assertEquals("ValueA", lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle:KeyA"));
     }
 
+    @Test
     public void testMissingKey() {
         final StrLookup lookup = new ResourceBundleLookup();
         Assert.assertNull(lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle:KeyUnkown"));

@@ -257,7 +257,7 @@ public final class Server {
      * @param mbs the MBean Server to unregister the instrumented objects from
      */
     public static void unregisterLoggerContext(final String contextName, final MBeanServer mbs) {
-        final String search = String.format(LoggerContextAdminMBean.PATTERN, escape(contextName), "*");
+        final String search = String.format(LoggerContextAdminMBean.PATTERN, escape(contextName));
         unregisterAllMatching(search, mbs); // unregister context mbean
 
         // now unregister all MBeans associated with this logger context
@@ -286,12 +286,12 @@ public final class Server {
     }
 
     private static void unregisterStatusLogger(final String contextName, final MBeanServer mbs) {
-        final String search = String.format(StatusLoggerAdminMBean.PATTERN, escape(contextName), "*");
+        final String search = String.format(StatusLoggerAdminMBean.PATTERN, escape(contextName));
         unregisterAllMatching(search, mbs);
     }
 
     private static void unregisterContextSelector(final String contextName, final MBeanServer mbs) {
-        final String search = String.format(ContextSelectorAdminMBean.PATTERN, escape(contextName), "*");
+        final String search = String.format(ContextSelectorAdminMBean.PATTERN, escape(contextName));
         unregisterAllMatching(search, mbs);
     }
 

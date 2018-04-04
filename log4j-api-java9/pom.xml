@@ -89,6 +89,8 @@
           <target>9</target>
           <release>9</release>
           <proc>none</proc>
+          <!-- disable errorprone -->
+          <compilerId>javac</compilerId>
         </configuration>
       </plugin>
       <plugin>

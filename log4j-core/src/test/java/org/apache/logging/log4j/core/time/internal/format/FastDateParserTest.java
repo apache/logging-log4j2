@@ -670,7 +670,7 @@ public class FastDateParserTest {
 
     @Test
     public void testLang1121() throws ParseException {
-        final TimeZone kst = TimeZone.getTimeZone("KST");
+        final TimeZone kst = TimeZone.getTimeZone("Asia/Seoul");
         final DateParser fdp = getInstance("yyyyMMdd", kst, Locale.KOREA);
 
         try {
