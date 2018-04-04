@@ -54,7 +54,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public final class Server {
 
-    /**
+    private static final String CONTEXT_NAME_ALL = "*";
+	/**
      * The domain part, or prefix ({@value}) of the {@code ObjectName} of all MBeans that instrument Log4J2 components.
      */
     public static final String DOMAIN = "org.apache.logging.log4j2";
@@ -198,8 +199,7 @@ public final class Server {
             LOGGER.debug("JMX disabled for Log4j2. Not unregistering MBeans.");
             return;
         }
-        final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        unregisterMBeans(mbs);
+        unregisterMBeans(ManagementFactory.getPlatformMBeanServer());
     }
 
     /**
@@ -207,16 +207,18 @@ public final class Server {
      *
      * @param mbs the MBean server to unregister from.
      */
-    public static void unregisterMBeans(final MBeanServer mbs) {
-        unregisterStatusLogger("*", mbs);
-        unregisterContextSelector("*", mbs);
-        unregisterContexts(mbs);
-        unregisterLoggerConfigs("*", mbs);
-        unregisterAsyncLoggerRingBufferAdmins("*", mbs);
-        unregisterAsyncLoggerConfigRingBufferAdmins("*", mbs);
-        unregisterAppenders("*", mbs);
-        unregisterAsyncAppenders("*", mbs);
-    }
+	public static void unregisterMBeans(final MBeanServer mbs) {
+		if (mbs != null) {
+			unregisterStatusLogger(CONTEXT_NAME_ALL, mbs);
+			unregisterContextSelector(CONTEXT_NAME_ALL, mbs);
+			unregisterContexts(mbs);
+			unregisterLoggerConfigs(CONTEXT_NAME_ALL, mbs);
+			unregisterAsyncLoggerRingBufferAdmins(CONTEXT_NAME_ALL, mbs);
+			unregisterAsyncLoggerConfigRingBufferAdmins(CONTEXT_NAME_ALL, mbs);
+			unregisterAppenders(CONTEXT_NAME_ALL, mbs);
+			unregisterAsyncAppenders(CONTEXT_NAME_ALL, mbs);
+		}
+	}
 
     /**
      * Returns the {@code ContextSelector} of the current {@code Log4jContextFactory}.
@@ -333,14 +335,16 @@ public final class Server {
         try {
             final ObjectName pattern = new ObjectName(search);
             final Set<ObjectName> found = mbs.queryNames(pattern, null);
-            if (found.isEmpty()) {
+            if (found == null || found.isEmpty()) {
             	LOGGER.trace("Unregistering but no MBeans found matching '{}'", search);
             } else {
             	LOGGER.trace("Unregistering {} MBeans: {}", found.size(), found);
             }
-            for (final ObjectName objectName : found) {
-                mbs.unregisterMBean(objectName);
-            }
+			if (found != null) {
+				for (final ObjectName objectName : found) {
+					mbs.unregisterMBean(objectName);
+				}
+			}
         } catch (final InstanceNotFoundException ex) {
             LOGGER.debug("Could not unregister MBeans for " + search + ". Ignoring " + ex);
         } catch (final Exception ex) {
