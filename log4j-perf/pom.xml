@@ -178,6 +178,8 @@
           <compilerVersion>9</compilerVersion>
           <source>9</source>
           <target>9</target>
+          <!-- disable errorprone -->
+          <compilerId>javac</compilerId>
         </configuration>
       </plugin>
       <plugin>

@@ -104,6 +104,7 @@ public class CsvJsonParameterLayoutFileAppenderTest {
         testNoNulCharacters("[", "[");
     }
 
+    @Test
     public void testNoNulCharactersThreeChars() throws IOException {
         testNoNulCharacters("ABC", "ABC");
     }

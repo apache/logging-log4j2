@@ -306,7 +306,11 @@ public class FixedDateFormat {
         final TimeZone tz;
         if (options.length > 1) {
             if (options[1] != null) {
-                tz = TimeZone.getTimeZone(options[1]);
+                String zoneId = options[1];
+                if (zoneId.startsWith("-") || zoneId.startsWith("+")) {
+                    zoneId = "GMT" + zoneId;
+                }
+                tz = TimeZone.getTimeZone(zoneId);
             } else {
                 tz = TimeZone.getDefault();
             }
