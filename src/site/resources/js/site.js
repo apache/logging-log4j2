@@ -61,7 +61,7 @@ $(document).ready(function() {
 	
 	// Hack to add default visuals to tables
 	$('table').each(function() {
-		if ($(this).hasClass('bodyTable')) {
+		if ($(this).hasClass('bodyTable') || $(this).hasClass('tableblock')) {
 			
 			// Remove border="1" which is added by maven
 			this.border = 0;
