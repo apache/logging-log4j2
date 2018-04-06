@@ -14,7 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Log4j 2 Project Thanks
+= Project Thanks
 
 Log4j 2 is a successful project because of the large and diverse
 community that contributes to it.
