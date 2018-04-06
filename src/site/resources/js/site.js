@@ -52,6 +52,12 @@ $(document).ready(function() {
 			$(this).addClass('linenums');
 		}
 	});
+
+	// decorator for prettyprint support in asciidoc
+	$('pre.highlight > code').each(function() {
+        var parent = $(this).parent();
+		parent.addClass('prettyprint')
+	});
 	
 	// Hack to add default visuals to tables
 	$('table').each(function() {
