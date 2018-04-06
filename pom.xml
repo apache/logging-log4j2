@@ -1143,6 +1143,8 @@
             <attributes>
               <!-- copy any site properties wanted in asciidoc files -->
               <Log4jReleaseVersion>${Log4jReleaseVersion}</Log4jReleaseVersion>
+              <Log4jReleaseManager>${Log4jReleaseManager}</Log4jReleaseManager>
+              <Log4jReleaseKey>${Log4jReleaseKey}</Log4jReleaseKey>
             </attributes>
           </asciidoc>
         </configuration>
