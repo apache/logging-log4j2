@@ -47,6 +47,16 @@
       <jdkHome>/home/jenkins/tools/java/latest1.9</jdkHome>
     </configuration>
   </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>10</version>
+      <vendor>sun</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/home/jenkins/tools/java/latest10</jdkHome>
+    </configuration>
+  </toolchain>
 
   <!-- other toolchains -->
 </toolchains>
