@@ -1139,6 +1139,12 @@
           </moduleExcludes>
           <templateDirectory>${log4jParentDir}/src/site</templateDirectory>
           <template>site.vm</template>
+          <asciidoc>
+            <attributes>
+              <!-- copy any site properties wanted in asciidoc files -->
+              <Log4jReleaseVersion>${Log4jReleaseVersion}</Log4jReleaseVersion>
+            </attributes>
+          </asciidoc>
         </configuration>
       </plugin>
       <!-- <plugin>
