@@ -140,7 +140,7 @@ well. For example, to use a project with Log4j 2 instead of Log4j 1.x:
 
 Dependencies can be globally excluded in Gradle like so:
 
-[source,groovy]
+[source,gradle]
 ----
 configurations {
   all*.exclude group: 'log4j', module: 'log4j'
@@ -150,7 +150,7 @@ configurations {
 The equivalent Gradle config for the above Maven exclusion would look
 like:
 
-[source,groovy,subs=attributes]
+[source,gradle,subs=attributes]
 ----
 dependencies {
   compile('com.example:example-project:1.0') {
@@ -271,17 +271,15 @@ the ``2'' in the file name! (See the
 link:manual/configuration.html#AutomaticConfiguration[configuration
 manual page] for more details.)
 
-*From log4j-2.9 onward*
-
+From log4j-2.9 onward::
 From log4j-2.9 onward, log4j2 will print all internal logging to the
 console if system property `log4j2.debug` is defined (with any or no
 value).
 
-*Prior to log4j-2.9*
-
+Prior to log4j-2.9::
 Prior to log4j-2.9, there are two places where internal logging can be
 controlled:
-
++
 If the configuration file is found correctly, log4j2 internal status
 logging can be controlled by setting `<Configuration status="trace">` in
 the configuration file. This will display detailed log4j2-internal log
@@ -289,7 +287,7 @@ statements on the console about what happens during the configuration
 process. This may be useful to trouble-shoot configuration issues. By
 default the status logger level is WARN, so you only see notifications
 when there is a problem.
-
++
 If the configuration file is not found correctly, you can still enable
 log4j2 internal status logging by setting system property
 `-Dorg.apache.logging.log4j.simplelog.StatusLogger.level=TRACE`.
@@ -366,9 +364,11 @@ link:log4j-core/apidocs/org/apache/logging/log4j/core/config/Configurator.html[`
 from Log4j Core. Be aware that the `Configurator` class is not part of
 the public API.
 
-[source,xml]
+[source,java]
 ----
-// org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.Configurator;
+
+// ...
 
 Configurator.setLevel("com.example.Foo", Level.DEBUG);
 
