@@ -17,26 +17,31 @@
  */
 
 pipeline {
-    agent {
-        label 'ubuntu&&!H20'
-    }
     tools {
         jdk 'JDK 1.8 (latest)'
         maven 'Maven 3 (latest)'
     }
     stages {
-        stage('Build') {
+        stage('Build (Ubuntu)') {
+            agent { label 'ubuntu&&!H20' }
             steps {
                 ansiColor('xterm') {
-                    sh 'mvn -t jenkins-toolchains.xml -Djenkins -DskipTests=true -Dmaven.javadoc.skip=true -V install'
-                    sh 'mvn -t jenkins-toolchains.xml -Djenkins -V install'
+                    sh 'mvn -t toolchains-jenkins-ubuntu.xml -Djenkins -V install'
+                    stash includes: 'target/**', name: 'target'
                 }
+            }
+        }
+        stage('Build (Windows)') {
+            agent { label 'Windows' }
+            steps {
+                bat 'mvn -t toolchains-jenkins-win.xml -Djenkins -V install'
             }
         }
         stage('Deploy') {
             when { branch 'master' }
             steps {
                 ansiColor('xterm') {
+                    unstash 'target'
                     sh 'mvn -t jenkins-toolchains.xml -Djenkins -V deploy'
                 }
             }
