@@ -48,7 +48,7 @@ pipeline {
                         maven 'Maven 3 (latest)'
                     }
                     steps {
-                        bat 'mvn -t toolchains-jenkins-win.xml -V install'
+                        bat 'mvn -t toolchains-jenkins-win.xml -V -Dfile.encoding=UTF-8 install'
                     }
                 }
             }
