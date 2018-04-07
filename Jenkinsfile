@@ -45,7 +45,7 @@ pipeline {
                         maven 'Maven 3 (latest)'
                     }
                     steps {
-                        bat 'mvn -t toolchains-jenkins-win.xml -Djenkins -V install'
+                        bat 'mvn -t toolchains-jenkins-win.xml -V install'
                     }
                 }
             }
