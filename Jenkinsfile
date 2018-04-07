@@ -28,7 +28,8 @@ pipeline {
         stage('Build') {
             steps {
                 ansiColor('xterm') {
-                    sh 'mvn -V -e -t jenkins-toolchains.xml -Djenkins clean install'
+                    sh 'mvn -t jenkins-toolchains.xml -Djenkins -DskipTests=true -Dmaven.javadoc.skip=true -V install'
+                    sh 'mvn -t jenkins-toolchains.xml -Djenkins -V install'
                 }
             }
         }
@@ -36,7 +37,7 @@ pipeline {
             when { branch 'master' }
             steps {
                 ansiColor('xterm') {
-                    sh 'mvn deploy'
+                    sh 'mvn -t jenkins-toolchains.xml -Djenkins -V deploy'
                 }
             }
 //            post {
