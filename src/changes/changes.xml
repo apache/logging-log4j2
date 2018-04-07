@@ -330,6 +330,9 @@
       </action>      
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
+      <action issue="LOG4J2-2289" dev="ggregory" type="fix" due-to="Hari Menon">
+        XML Schema for DynamicFilterThreshold does not accept multiple KeyValuePairs.
+      </action>
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak">
         Properly escape newlines and other control characters in JSON.
       </action>
