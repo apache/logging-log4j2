@@ -18,47 +18,6 @@ limitations under the License.
 /* Executed on page load. */
 $(document).ready(function() {
 
-	//
-	// This is a hack to enable google-code-prettify to work with maven.
-	//
-	// The problem is that maven, when building the site, replaces:
-	// <pre class="prettyprint">...</pre>
-	// with:
-	// <div class="prettyprint"><pre>...</pre></div>
-	//
-	// Effectively, it removes the class parameter from the <pre> element, which
-	// is required for google-code-prettify to work.
-	// 
-	// This hack restores the class of all <pre> elements which are the child of 
-	// a <div class="prettyprint">.
-	//
-	$('pre').each(function() {
-		var parent = $(this).parent();
-		
-		if (parent.hasClass('prettyprint')) {
-			parent.removeClass('prettyprint');
-			$(this).addClass('prettyprint');
-		}
-		
-		if (parent.hasClass('linenums')) {
-			parent.removeClass('linenums');
-			$(this).addClass('linenums');
-		}
-
-		// markdown adds the "source" class instead
-		if (parent.hasClass('source')) {
-			parent.removeClass('source');
-			$(this).addClass('prettyprint');
-			$(this).addClass('linenums');
-		}
-	});
-
-	// decorator for prettyprint support in asciidoc
-	$('pre.highlight > code').each(function() {
-        var parent = $(this).parent();
-		parent.addClass('prettyprint')
-	});
-	
 	// Hack to add default visuals to tables
 	$('table').each(function() {
 		if ($(this).hasClass('bodyTable') || $(this).hasClass('tableblock')) {
@@ -113,7 +72,4 @@ $(document).ready(function() {
 	
 	// Make external links open in new tab
 	$('a.external').attr('target', '_blank');
-
-	// Trigger prettyprint
-	prettyPrint();
 });

@@ -450,10 +450,12 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=${outputEncoding}" />
 		<title>$title - $project.name</title>
 		<link rel="stylesheet" href="$relativePath/css/bootstrap.min.css" type="text/css" />
+		<link rel="stylesheet" href="$relativePath/css/github.css" type="text/css" />
 		<link rel="stylesheet" href="$relativePath/css/site.css" type="text/css" />
 		<script type="text/javascript" src="$relativePath/js/jquery.min.js"></script>
 		<script type="text/javascript" src="$relativePath/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="$relativePath/js/prettify.min.js"></script>
+		<script type="text/javascript" src="$relativePath/js/highlight.pack.js"></script>
+		<script type="text/javascript">hljs.initHighlightingOnLoad();</script>
 		<script type="text/javascript" src="$relativePath/js/site.js"></script>
 #foreach( $author in $authors )
 			<meta name="author" content="$author" />
