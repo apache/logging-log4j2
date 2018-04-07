@@ -1217,6 +1217,8 @@
             <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
             <exclude>src/site/resources/js/jquery.js</exclude>
             <exclude>src/site/resources/js/jquery.min.js</exclude>
+            <!-- highlight.js is BSD3-licensed -->
+            <exclude>src/site/resources/js/highlight.pack.js</exclude>
             <!-- Generated files -->
             <exclude>log4j-distribution/target/**/*</exclude>
             <exclude>log4j-distribution/.project</exclude>
@@ -1341,6 +1343,8 @@
             <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
             <exclude>src/site/resources/js/jquery.js</exclude>
             <exclude>src/site/resources/js/jquery.min.js</exclude>
+            <!-- highlight.js is BSD3-licensed -->
+            <exclude>src/site/resources/js/highlight.pack.js</exclude>
             <!-- Generated files -->
             <exclude>log4j-distribution/target/**/*</exclude>
             <exclude>log4j-distribution/.project</exclude>
@@ -1508,6 +1512,8 @@
                 <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
                 <exclude>src/site/resources/js/jquery.js</exclude>
                 <exclude>src/site/resources/js/jquery.min.js</exclude>
+                <!-- highlight.js is BSD3-licensed -->
+                <exclude>src/site/resources/js/highlight.pack.js</exclude>
                 <!-- Generated files -->
                 <exclude>log4j-distribution/target/**/*</exclude>
                 <exclude>log4j-distribution/.project</exclude>
