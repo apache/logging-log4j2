@@ -40,7 +40,7 @@ pipeline {
                     agent { label 'Windows' }
                     tools {
                         // https://cwiki.apache.org/confluence/display/INFRA/JDK+Installation+Matrix
-                        jdk 'JDK 1.9 (latest)'
+                        jdk 'JDK 1.8 (latest)'
                         // https://cwiki.apache.org/confluence/display/INFRA/Maven+Installation+Matrix
                         maven 'Maven 3 (latest)'
                     }
