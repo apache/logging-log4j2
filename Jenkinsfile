@@ -17,13 +17,16 @@
  */
 
 pipeline {
-    tools {
-        jdk 'JDK 1.8 (latest)'
-        maven 'Maven 3 (latest)'
-    }
+    agent none
     stages {
         stage('Build (Ubuntu)') {
             agent { label 'ubuntu&&!H20' }
+            tools {
+                // https://cwiki.apache.org/confluence/display/INFRA/JDK+Installation+Matrix
+                jdk 'JDK 1.8 (latest)'
+                // https://cwiki.apache.org/confluence/display/INFRA/Maven+Installation+Matrix
+                maven 'Maven 3 (latest)'
+            }
             steps {
                 ansiColor('xterm') {
                     sh 'mvn -t toolchains-jenkins-ubuntu.xml -Djenkins -V install'
@@ -33,16 +36,28 @@ pipeline {
         }
         stage('Build (Windows)') {
             agent { label 'Windows' }
+            tools {
+                // https://cwiki.apache.org/confluence/display/INFRA/JDK+Installation+Matrix
+                jdk 'JDK 1.8 (latest)'
+                // https://cwiki.apache.org/confluence/display/INFRA/Maven+Installation+Matrix
+                maven 'Maven 3 (latest)'
+            }
             steps {
                 bat 'mvn -t toolchains-jenkins-win.xml -Djenkins -V install'
             }
         }
         stage('Deploy') {
             when { branch 'master' }
+            tools {
+                // https://cwiki.apache.org/confluence/display/INFRA/JDK+Installation+Matrix
+                jdk 'JDK 1.8 (latest)'
+                // https://cwiki.apache.org/confluence/display/INFRA/Maven+Installation+Matrix
+                maven 'Maven 3 (latest)'
+            }
             steps {
                 ansiColor('xterm') {
                     unstash 'target'
-                    sh 'mvn -t jenkins-toolchains.xml -Djenkins -V deploy'
+                    sh 'mvn -t jenkins-toolchains.xml -Djenkins -DskipTests -V deploy'
                 }
             }
 //            post {
