@@ -23,6 +23,7 @@ pipeline {
     agent none
     stages {
         stage('Build') {
+            failFast true
             parallel {
                 stage('Ubuntu') {
                     agent { label 'ubuntu&&!H20' }
