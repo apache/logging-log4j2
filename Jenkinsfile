@@ -18,7 +18,7 @@
 
 pipeline {
     agent {
-        label 'ubuntu'
+        label 'ubuntu&&!H20'
     }
     tools {
         jdk 'JDK 1.8 (latest)'
