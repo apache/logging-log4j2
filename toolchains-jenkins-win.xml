@@ -24,7 +24,7 @@
       <vendor>sun</vendor>
     </provides>
     <configuration>
-      <jdkHome>F:\hudson\tools\java\jdk1.7.0_79</jdkHome>
+      <jdkHome>F:\jenkins\tools\java\latest1.7</jdkHome>
     </configuration>
   </toolchain>
   <toolchain>
@@ -34,7 +34,7 @@
       <vendor>sun</vendor>
     </provides>
     <configuration>
-      <jdkHome>F:\jenkins\tools\java\jdk1.8.0_152</jdkHome>
+      <jdkHome>F:\jenkins\tools\java\latest1.8</jdkHome>
     </configuration>
   </toolchain>
   <toolchain>
@@ -44,7 +44,7 @@
       <vendor>sun</vendor>
     </provides>
     <configuration>
-      <jdkHome>F:\jenkins\tools\java\jdk9.0.1</jdkHome>
+      <jdkHome>F:\jenkins\tools\java\latest1.9</jdkHome>
     </configuration>
   </toolchain>
 
