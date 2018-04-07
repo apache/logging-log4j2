@@ -28,7 +28,7 @@ pipeline {
         stage('Build') {
             steps {
                 ansiColor('xterm') {
-                    sh 'mvn -V -t jenkins-toolchains.xml -Djenkins clean install'
+                    sh 'mvn -V -e -t jenkins-toolchains.xml -Djenkins clean install'
                 }
             }
         }
