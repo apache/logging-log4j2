@@ -36,6 +36,7 @@ pipeline {
                     steps {
                         ansiColor('xterm') {
                             sh 'mvn -t toolchains-jenkins-ubuntu.xml -Djenkins -V install'
+                            junit '*/target/*-reports/*.xml'
                             stash includes: 'target/**', name: 'target'
                         }
                     }
@@ -51,6 +52,7 @@ pipeline {
                     steps {
                         bat 'if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo'
                         bat 'mvn -t toolchains-jenkins-win.xml -V -Dfile.encoding=UTF-8 install'
+                        junit '*/target/*-reports/*.xml'
                     }
                 }
             }
