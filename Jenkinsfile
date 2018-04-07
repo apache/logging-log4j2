@@ -48,6 +48,7 @@ pipeline {
                         maven 'Maven 3 (latest)'
                     }
                     steps {
+                        bat 'RD /S /Q %userprofile%\\.embedmongo'
                         bat 'mvn -t toolchains-jenkins-win.xml -V -Dfile.encoding=UTF-8 install'
                     }
                 }
@@ -64,7 +65,7 @@ pipeline {
             steps {
                 ansiColor('xterm') {
                     unstash 'target'
-                    sh 'mvn -t jenkins-toolchains.xml -Djenkins -DskipTests -V deploy'
+                    sh 'mvn -t toolchains-jenkins-ubuntu.xml -Djenkins -DskipTests -V deploy'
                 }
             }
 //            post {
