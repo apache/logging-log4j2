@@ -44,7 +44,7 @@
       <vendor>sun</vendor>
     </provides>
     <configuration>
-      <jdkHome>F:\jenkins\tools\java\latest1.9</jdkHome>
+      <jdkHome>F:\jenkins\tools\java\latest9</jdkHome>
     </configuration>
   </toolchain>
 
