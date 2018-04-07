@@ -19,31 +19,35 @@
 pipeline {
     agent none
     stages {
-        stage('Build (Ubuntu)') {
-            agent { label 'ubuntu&&!H20' }
-            tools {
-                // https://cwiki.apache.org/confluence/display/INFRA/JDK+Installation+Matrix
-                jdk 'JDK 1.8 (latest)'
-                // https://cwiki.apache.org/confluence/display/INFRA/Maven+Installation+Matrix
-                maven 'Maven 3 (latest)'
-            }
-            steps {
-                ansiColor('xterm') {
-                    sh 'mvn -t toolchains-jenkins-ubuntu.xml -Djenkins -V install'
-                    stash includes: 'target/**', name: 'target'
+        stage('Build') {
+            parallel {
+                stage('Ubuntu') {
+                    agent { label 'ubuntu&&!H20' }
+                    tools {
+                        // https://cwiki.apache.org/confluence/display/INFRA/JDK+Installation+Matrix
+                        jdk 'JDK 1.8 (latest)'
+                        // https://cwiki.apache.org/confluence/display/INFRA/Maven+Installation+Matrix
+                        maven 'Maven 3 (latest)'
+                    }
+                    steps {
+                        ansiColor('xterm') {
+                            sh 'mvn -t toolchains-jenkins-ubuntu.xml -Djenkins -V install'
+                            stash includes: 'target/**', name: 'target'
+                        }
+                    }
                 }
-            }
-        }
-        stage('Build (Windows)') {
-            agent { label 'Windows' }
-            tools {
-                // https://cwiki.apache.org/confluence/display/INFRA/JDK+Installation+Matrix
-                jdk 'JDK 1.8 (latest)'
-                // https://cwiki.apache.org/confluence/display/INFRA/Maven+Installation+Matrix
-                maven 'Maven 3 (latest)'
-            }
-            steps {
-                bat 'mvn -t toolchains-jenkins-win.xml -Djenkins -V install'
+                stage('Windows') {
+                    agent { label 'Windows' }
+                    tools {
+                        // https://cwiki.apache.org/confluence/display/INFRA/JDK+Installation+Matrix
+                        jdk 'JDK 1.8 (latest)'
+                        // https://cwiki.apache.org/confluence/display/INFRA/Maven+Installation+Matrix
+                        maven 'Maven 3 (latest)'
+                    }
+                    steps {
+                        bat 'mvn -t toolchains-jenkins-win.xml -Djenkins -V install'
+                    }
+                }
             }
         }
         stage('Deploy') {
