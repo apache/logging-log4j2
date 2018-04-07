@@ -48,7 +48,7 @@ pipeline {
                         maven 'Maven 3 (latest)'
                     }
                     steps {
-                        bat 'RD /S /Q %userprofile%\\.embedmongo'
+                        bat 'if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo'
                         bat 'mvn -t toolchains-jenkins-win.xml -V -Dfile.encoding=UTF-8 install'
                     }
                 }
