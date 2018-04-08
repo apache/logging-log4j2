@@ -59,7 +59,7 @@ judiciously-placed displays. It takes less time to decide where to put
 print statements than to single-step to the critical section of code,
 even assuming we know where that is. More important, debugging
 statements stay with the program; debugging sessions are transient.
-____d
+____
 
 Logging does have its drawbacks. It can slow down an application. If too
 verbose, it can cause scrolling blindness. To alleviate these concerns,
