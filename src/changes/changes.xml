@@ -124,6 +124,9 @@
       <action issue="LOG4J2-2032" dev="ckozak" type="fix" due-to="Kostiantyn Shchepanovskyi">
         Curly braces in parameters are not treated as placeholders.
       </action>
+      <action issue="LOG4J2-2311" dev="ggregory" type="update">
+        Update Jackson from 2.9.4 to 2.9.5.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">
@@ -140,6 +143,9 @@
       </action>
       <action issue="LOG4J2-2304" dev="ggregory" type="update" due-to="wumengsheng">
         Log4j2 2.8.2 JMX unregister NullPointerException.
+      </action>
+      <action issue="LOG4J2-2311" dev="ggregory" type="update">
+        Update Jackson from 2.9.4 to 2.9.5.
       </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
