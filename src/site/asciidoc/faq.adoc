@@ -59,7 +59,7 @@ shows for each Log4j dependency on the left (implicit groupId of
 `org.apache.logging.log4j`), the following dependencies on the right can
 be safely excluded (given in the format `groupId:artifactId`).
 
-[cols="4*"]
+[cols="4*m",options="header"]
 |===
 |Log4j Dependency
 3+|Dependencies to Exclude
