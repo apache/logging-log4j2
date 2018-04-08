@@ -30,6 +30,12 @@ env:
   global:
     JAVA_OPTS=-Xmx4g
 
+cache:
+  directories:
+    - "$HOME/.m2"
+before_cache:
+  - rm -rf $HOME/.m2/repository/org/apache/logging/log4j
+
 install:
   - mvn -t .travis-toolchains.xml install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
