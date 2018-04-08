@@ -20,17 +20,6 @@
   <toolchain>
     <type>jdk</type>
     <provides>
-      <id>java7</id>
-      <version>1.7</version>
-      <vendor>oracle</vendor>
-    </provides>
-    <configuration>
-      <jdkHome>/usr/lib/jvm/java-7-oracle</jdkHome>
-    </configuration>
-  </toolchain>
-  <toolchain>
-    <type>jdk</type>
-    <provides>
       <id>java8</id>
       <version>1.8</version>
       <vendor>oracle</vendor>
