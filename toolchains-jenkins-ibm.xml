@@ -15,28 +15,49 @@
   ~ See the license for the specific language governing permissions and
   ~ limitations under the license.
   -->
-<toolchains xmlns="http://maven.apache.org/TOOLCHAINS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/TOOLCHAINS/1.1.0 http://maven.apache.org/xsd/toolchains-1.1.0.xsd">
+<toolchains>
+  <!-- JDK toolchains -->
   <toolchain>
     <type>jdk</type>
     <provides>
-      <id>java8</id>
+      <version>1.7</version>
+      <vendor>ibm</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/home/jenkins/tools/java/ibm-1.7-64</jdkHome>
+    </configuration>
+  </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
       <version>1.8</version>
-      <vendor>oracle</vendor>
+      <vendor>ibm</vendor>
     </provides>
     <configuration>
-      <jdkHome>/usr/lib/jvm/java-8-oracle</jdkHome>
+      <jdkHome>/home/jenkins/tools/java/ibm-java-x86_64-80</jdkHome>
+    </configuration>
+  </toolchain>
+  <!-- TODO: configure OpenJ9/J9 whenever it's installed -->
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>9</version>
+      <vendor>sun</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/home/jenkins/tools/java/latest1.9</jdkHome>
     </configuration>
   </toolchain>
   <toolchain>
     <type>jdk</type>
     <provides>
-      <id>java9</id>
-      <version>9</version>
-      <vendor>oracle</vendor>
+      <version>10</version>
+      <vendor>sun</vendor>
     </provides>
     <configuration>
-      <jdkHome>/usr/lib/jvm/java-9-oracle</jdkHome>
+      <jdkHome>/home/jenkins/tools/java/latest10</jdkHome>
     </configuration>
   </toolchain>
+
+  <!-- other toolchains -->
 </toolchains>

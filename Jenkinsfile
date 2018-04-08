@@ -18,7 +18,7 @@
 
 pipeline {
     options {
-        timeout time: 40, unit: 'MINUTES'
+        timeout time: 60, unit: 'MINUTES'
     }
     agent none
     stages {
@@ -38,6 +38,19 @@ pipeline {
                             sh 'mvn -t toolchains-jenkins-ubuntu.xml -Djenkins -V install'
                             junit '*/target/*-reports/*.xml'
                             stash includes: 'target/**', name: 'target'
+                        }
+                    }
+                }
+                stage('IBM JDK') {
+                    agent { label 'ubuntu&&!H20' }
+                    tools {
+                        jdk 'IBM 1.8 64-bit (on Ubuntu only)'
+                        maven 'Maven 3 (latest)'
+                    }
+                    steps {
+                        ansiColor('xterm') {
+                            sh 'mvn -t toolchains-jenkins-ibm.xml -Djenkins -V install'
+                            junit '*/target/*-reports/*.xml'
                         }
                     }
                 }
