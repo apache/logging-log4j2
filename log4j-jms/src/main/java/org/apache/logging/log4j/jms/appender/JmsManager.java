@@ -206,23 +206,14 @@ public class JmsManager extends AbstractManager {
     /**
      * Gets a JmsManager using the specified configuration parameters.
      *
-     * @param name
-     *            The name to use for this JmsManager.
-     * @param connectionFactoryName
-     *            The binding name for the {@link javax.jms.ConnectionFactory}.
-     * @param destinationName
-     *            The binding name for the {@link javax.jms.Destination}.
-     * @param userName
-     *            The userName to connect with or {@code null} for no authentication.
-     * @param password
-     *            The password to use with the given userName or {@code null} for no authentication.
-     * @param immediateFail
-     *            Whether or not to fail immediately with a {@link AppenderLoggingException} when connecting to JMS
-     *            fails.
-     * @param reconnectIntervalMillis
-     *            How to log sleep in milliseconds before trying to reconnect to JMS.
-     * @param jndiManager
-     *            The JndiManager to look up JMS information through.
+     * @param name The name to use for this JmsManager.
+     * @param connectionFactoryName The binding name for the {@link javax.jms.ConnectionFactory}.
+     * @param destinationName The binding name for the {@link javax.jms.Destination}.
+     * @param userName The userName to connect with or {@code null} for no authentication.
+     * @param password The password to use with the given userName or {@code null} for no authentication.
+     * @param immediateFail Whether or not to fail immediately with a {@link AppenderLoggingException} when
+     *                      connecting to JMS fails.
+     * @param reconnectIntervalMillis How to log sleep in milliseconds before trying to reconnect to JMS.
      * @return The JmsManager as configured.
      */
     public static JmsManager getJmsManager(final String name, final Properties jndiProperties,
@@ -352,7 +343,7 @@ public class JmsManager extends AbstractManager {
      * @param object
      *            The LogEvent or String message to wrap.
      * @return A new JMS message containing the provided object.
-     * @throws JMSException
+     * @throws JMSException if an error occurs.
      */
     public Message createMessage(final Serializable object) throws JMSException {
         if (object instanceof String) {
@@ -373,7 +364,7 @@ public class JmsManager extends AbstractManager {
      * Creates a MessageConsumer on this Destination using the current Session.
      *
      * @return A MessageConsumer on this Destination.
-     * @throws JMSException
+     * @throws JMSException if an error occurs.
      */
     public MessageConsumer createMessageConsumer() throws JMSException {
         return this.session.createConsumer(this.destination);
@@ -387,7 +378,7 @@ public class JmsManager extends AbstractManager {
      * @param destination
      *            The JMS Destination for the MessageProducer
      * @return A MessageProducer on this Destination.
-     * @throws JMSException
+     * @throws JMSException if an error occurs.
      */
     public MessageProducer createMessageProducer(final Session session, final Destination destination)
             throws JMSException {

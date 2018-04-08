@@ -34,8 +34,9 @@ dt { margin: 15px 0 5px 0; font-size: 1.2em }
 
 .sidebar-nav { padding: 9px 0; }
 
-.logo-left { margin: 10px; float: left }
-.logo-right { margin: 5px; float: right; height: 100px }
+.logo-left { margin: 10px; float: left; height: 100px}
+.logo-center {margin-left: auto; margin-right: auto; display: block; width: 20%}
+.logo-right { margin: 5px; float: right; height: 100px}
 
 .navbar .nav { margin-left: 40px; }
 

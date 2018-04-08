@@ -49,7 +49,7 @@ public class JmsAppender extends AbstractAppender {
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<JmsAppender> {
 
-        public static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 5000;
+        private static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 5000;
 
         @PluginBuilderAttribute
         @Required(message = "A name for the JmsAppender must be specified")
@@ -184,7 +184,10 @@ public class JmsAppender extends AbstractAppender {
         }
 
         /**
+         * Sets the Password.
+         * @param password The new password.
          * @deprecated Use setPassword(char[])
+         * @return the Builder.
          */
         @Deprecated
         public Builder setPassword(final String password) {
@@ -218,7 +221,10 @@ public class JmsAppender extends AbstractAppender {
         }
 
         /**
+         * Sets the user name.
+         * @param username The user's name.
          * @deprecated Use {@link #setUserName(String)}.
+         * @return the Builder.
          */
         @Deprecated
         public Builder setUsername(final String username) {
@@ -254,9 +260,13 @@ public class JmsAppender extends AbstractAppender {
     private volatile JmsManager manager;
 
     /**
-     *
+     * @param name The Appender's name.
+     * @param filter The filter to attach to the Appender, if any.
+     * @param layout The layout to use to render the event.
+     * @param ignoreExceptions true if exceptions should be ignore, false otherwise.
+     * @param manager The JMSManager.
      * @throws JMSException
-     *             not thrown as of 2.9 but retained in the signature for compatibility, will be removed in 3.0
+     *             not thrown as of 2.9 but retained in the signature for compatibility, will be removed in 3.0.
      */
     protected JmsAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
             final boolean ignoreExceptions, final JmsManager manager) throws JMSException {
