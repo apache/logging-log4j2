@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="DEBUG" name="TestKeyValueLayout">
+
+    <Appenders>
+        <Console name="STDOUT">
+            <KeyValueLayout encloseInQuotes="false" escapeQuotes="true" escapeChar="#" messageKey="string" endOfLinePattern="%fqcn">
+                <KeyValuePair key="logger" value="%logger" />
+            </KeyValueLayout>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
