@@ -184,7 +184,7 @@
     <jackson2Version>2.9.5</jackson2Version>
     <springVersion>3.2.18.RELEASE</springVersion>
     <flumeVersion>1.7.0</flumeVersion> <!-- Version 1.8.0 requires Java 8 -->
-    <disruptorVersion>3.3.7</disruptorVersion>
+    <disruptorVersion>3.4.1</disruptorVersion>
     <conversantDisruptorVersion>1.2.10</conversantDisruptorVersion> <!-- Version 1.2.11 requires Java 8 -->
     <mongodb2.version>2.14.3</mongodb2.version>
     <mongodb3.version>3.6.3</mongodb3.version>
@@ -196,8 +196,8 @@
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
     <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
-    <surefire.plugin.version>2.20.1</surefire.plugin.version>
-    <failsafe.plugin.version>2.20.1</failsafe.plugin.version>
+    <surefire.plugin.version>2.21.0</surefire.plugin.version>
+    <failsafe.plugin.version>2.21.0</failsafe.plugin.version>
     <checkstyle.plugin.version>3.0.0</checkstyle.plugin.version>
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
     <rat.plugin.version>0.12</rat.plugin.version>

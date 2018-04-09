@@ -24,8 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.util.Loader;
 
-import com.lmax.disruptor.collections.Histogram;
-
 /**
  * Single-threaded performance test. Usually invoked from PerfTestDriver as part of a series of tests.
  * <p>

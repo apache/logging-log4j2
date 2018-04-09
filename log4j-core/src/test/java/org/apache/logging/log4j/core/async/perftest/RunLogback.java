@@ -21,8 +21,6 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.spi.LifeCycle;
 
-import com.lmax.disruptor.collections.Histogram;
-
 public class RunLogback implements IPerfTestRunner {
     final Logger LOGGER = (Logger) LoggerFactory.getLogger(getClass());
 
