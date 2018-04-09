@@ -1841,6 +1841,14 @@ Windows.
 Otherwise, an attempt is made to load classes with the current thread's
 context class loader before falling back to the default class loader.
 
+
+|[[forceTCLOnly]]log4j2.forceTCLOnly +
+([[log4j.forceTCLOnly]]log4j.forceTCLOnly)
+|LOG4J_FORCE_TCL_ONLY
+|false
+|If `true`, classes and configuration are only loaded with the default context class loader.
+Otherwise, log4j also uses the log4j classloader, parent classloaders and the system classloader.
+
 |[[uuidSequence]]log4j2.uuidSequence +
 ([[org.apache.logging.log4j.uuidSequence]]org.apache.logging.log4j.uuidSequence)
 |LOG4J_UUID_SEQUENCE
