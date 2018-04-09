@@ -268,7 +268,8 @@ public final class LoaderUtil {
     private static boolean isForceTccl() {
         if (forceTcclOnly == null) {
             // PropertiesUtil.getProperties() uses that code path so don't use that!
-            forceTcclOnly = System.getSecurityManager() == null ?
+            try {
+                forceTcclOnly = System.getSecurityManager() == null ?
                     Boolean.getBoolean(FORCE_TCL_ONLY_PROPERTY) :
                     AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
                         @Override
@@ -276,6 +277,9 @@ public final class LoaderUtil {
                             return Boolean.getBoolean(FORCE_TCL_ONLY_PROPERTY);
                         }
                     });
+            } catch (final SecurityException se) {
+                forceTcclOnly = false;
+            }
         }
         return forceTcclOnly;
     }
