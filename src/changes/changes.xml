@@ -50,7 +50,7 @@
       	Update Jackson from 2.9.4 to 2.9.5.
       </action>
       <action issue="LOG4J2-2313" dev="ggregory" type="update">
-      	Update LMAX Disruptor from 3.3.7 to 3.4.1.
+      	Update LMAX Disruptor from 3.3.7 to 3.4.2.
       </action>
     </release>
     <release version="2.11.0" date="2018-03-11" description="GA Release 2.11.0">
