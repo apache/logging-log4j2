@@ -21,8 +21,6 @@ import java.util.concurrent.BlockingQueue;
 
 import org.apache.logging.log4j.core.async.perftest.ResponseTimeTest.PrintingAsyncQueueFullPolicy;
 
-import com.lmax.disruptor.collections.Histogram;
-
 public abstract class AbstractRunQueue implements IPerfTestRunner {
 
     abstract BlockingQueue<String> createQueue(int capacity);

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.async.perftest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
-import com.lmax.disruptor.collections.Histogram;
 
 public class RunLog4j2 implements IPerfTestRunner {
     final Logger LOGGER = LogManager.getLogger(getClass());
