@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -402,7 +403,7 @@ public class LoggerConfig extends AbstractFilterable {
         }
         final LogEvent logEvent = logEventFactory.createEvent(loggerName, marker, fqcn, level, data, props, t);
         try {
-            log(logEvent);
+            log(logEvent, LoggerConfigPredicate.ALL);
         } finally {
             // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
             ReusableLogEventFactory.release(logEvent);
@@ -415,8 +416,19 @@ public class LoggerConfig extends AbstractFilterable {
      * @param event The log event.
      */
     public void log(final LogEvent event) {
+        log(event, LoggerConfigPredicate.ALL);
+    }
+
+    /**
+     * Logs an event.
+     *
+     * @param event The log event.
+     * @param predicate predicate for which LoggerConfig instances to append to.
+     *                  A null value is equivalent to a true predicate.
+     */
+    protected void log(final LogEvent event, final LoggerConfigPredicate predicate) {
         if (!isFiltered(event)) {
-            processLogEvent(event);
+            processLogEvent(event, predicate);
         }
     }
 
@@ -430,15 +442,17 @@ public class LoggerConfig extends AbstractFilterable {
         return reliabilityStrategy;
     }
 
-    private void processLogEvent(final LogEvent event) {
+    private void processLogEvent(final LogEvent event, LoggerConfigPredicate predicate) {
         event.setIncludeLocation(isIncludeLocation());
-        callAppenders(event);
-        logParent(event);
+        if (predicate.allow(this)) {
+            callAppenders(event);
+        }
+        logParent(event, predicate);
     }
 
-    private void logParent(final LogEvent event) {
+    private void logParent(final LogEvent event, final LoggerConfigPredicate predicate) {
         if (additive && parent != null) {
-            parent.log(event);
+            parent.log(event, predicate);
         }
     }
 
@@ -577,4 +591,26 @@ public class LoggerConfig extends AbstractFilterable {
         }
     }
 
+    protected enum LoggerConfigPredicate {
+        ALL() {
+            @Override
+            boolean allow(LoggerConfig config) {
+                return true;
+            }
+        },
+        ASYNCHRONOUS_ONLY() {
+            @Override
+            boolean allow(LoggerConfig config) {
+                return config instanceof AsyncLoggerConfig;
+            }
+        },
+        SYNCHRONOUS_ONLY() {
+            @Override
+            boolean allow(LoggerConfig config) {
+                return !ASYNCHRONOUS_ONLY.allow(config);
+            }
+        };
+
+        abstract boolean allow(LoggerConfig config);
+    }
 }

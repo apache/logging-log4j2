@@ -69,46 +69,46 @@
       </action>
       <action issue="LOG4J2-2244" dev="ggregory" type="fix" due-to="Gary Gregory">
         org.apache.logging.log4j.core.lookup.EnvironmentLookup may throw NPE.
-      </action>      
+      </action>
       <action issue="LOG4J2-2237" dev="ggregory" type="update" due-to="Gary Gregory">
         Move Jackson-based layouts to their own modules: JSON, XML, and YAML.
-      </action>      
+      </action>
       <action issue="LOG4J2-2082" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Apache Flume from 1.7.0 to 1.8.0.
-      </action>      
+      </action>
       <action issue="LOG4J2-2079" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Conversant Disruptor from 1.12.10 to 1.12.11.
-      </action>      
+      </action>
       <action issue="LOG4J2-2258" dev="ggregory" type="update" due-to="Gary Gregory">
         Update LMAX Disruptor from 3.3.7 to 3.3.8.
-      </action>      
+      </action>
       <action issue="LOG4J2-2083" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Eclipse javax.persistence from 2.1.1 to 2.2.0.
-      </action>      
+      </action>
       <action issue="LOG4J2-2083" dev="ggregory" type="update">
         Update build to expect Java 8 sources and generate Java 8 byte codes.
-      </action>      
+      </action>
       <action issue="LOG4J2-2259" dev="ggregory" type="update">
         Update MongoDB 3 module from driver 3.6.1 to 3.6.3.
-      </action>      
+      </action>
       <action issue="LOG4J2-2260" dev="ggregory" type="update">
         [SMTP] Update javax.mail from 1.6.0 to 1.6.1.
-      </action>      
+      </action>
       <action issue="LOG4J2-2270" dev="ggregory" type="fix" due-to="Cyril Martin">
         Strings::join, when called with [null] returns "null" instead of EMPTY.
       </action>
       <action issue="LOG4J2-2276" dev="ggregory" type="fix" due-to="Sean Baxter">
         ConcurrentModificationException from org.apache.logging.log4j.status.StatusLogger.&lt;clinit>(StatusLogger.java:71).
-      </action>      
+      </action>
       <action issue="LOG4J2-2274" dev="ggregory" type="fix" due-to="Sebastien Lannez">
         Allow EnvironmentPropertySource to run with a SecurityManager that rejects environment variable access.
-      </action>      
+      </action>
       <action issue="LOG4J2-2279" dev="ggregory" type="fix" due-to="Gary Gregory">
         Allow SystemPropertiesPropertySource to run with a SecurityManager that rejects system property access.
-      </action>      
+      </action>
       <action issue="LOG4J2-2279" dev="ggregory" type="fix" due-to="Remko Popma">
         Move ProcessIdUtil from log4j-api to log4j-core.
-      </action>      
+      </action>
       <action issue="LOG4J2-2283" dev="ggregory" type="fix" due-to="Vishnu Priya Matha">
         ParserConfigurationException when using Log4j with oracle.xml.jaxp.JXDocumentBuilderFactory.
       </action>
@@ -161,6 +161,9 @@
       </action>
       <action issue="LOG4J2-2328" dev="ggregory" type="update">
         Update JAnsi from 1.17 to 1.17.1.
+      </action>
+      <action issue="LOG4J2-2301" dev="ckozak" type="fix">
+        Mixed async loggers no longer forget parameter values, providing some appenders with an array of nulls.
       </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
@@ -216,6 +219,9 @@
       </action>
       <action issue="LOG4J2-2328" dev="ggregory" type="update">
         Update JAnsi from 1.17 to 1.17.1.
+      </action>
+      <action issue="LOG4J2-2301" dev="ckozak" type="fix">
+        Mixed async loggers no longer forget parameter values, providing some appenders with an array of nulls.
       </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
@@ -388,10 +394,10 @@
       </action>
       <action issue="LOG4J2-2259" dev="ggregory" type="update">
         Update MongoDB 3 module from driver 3.6.1 to 3.6.3.
-      </action>      
+      </action>
       <action issue="LOG4J2-2260" dev="ggregory" type="update">
         [SMTP] Update javax.mail from 1.6.0 to 1.6.1.
-      </action>      
+      </action>
       <action issue="LOG4J2-2264" dev="ggregory" type="update">
         Update JAnsi from 1.16 to 1.17.
       </action>
@@ -403,10 +409,10 @@
       </action>
       <action issue="LOG4J2-2274" dev="ggregory" type="fix" due-to="Sebastien Lannez">
         Allow EnvironmentPropertySource to run with a SecurityManager that rejects environment variable access.
-      </action>      
+      </action>
       <action issue="LOG4J2-2279" dev="ggregory" type="fix" due-to="Gary Gregory">
         Allow SystemPropertiesPropertySource to run with a SecurityManager that rejects system property access.
-      </action>      
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
       <action issue="LOG4J2-2289" dev="ggregory" type="fix" due-to="Hari Menon">
