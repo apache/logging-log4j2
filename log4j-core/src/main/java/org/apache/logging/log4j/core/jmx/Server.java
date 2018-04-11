@@ -137,8 +137,7 @@ public final class Server {
             LOGGER.debug("JMX disabled for Log4j2. Not registering MBeans.");
             return;
         }
-        final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        reregisterMBeansAfterReconfigure(mbs);
+        reregisterMBeansAfterReconfigure(ManagementFactory.getPlatformMBeanServer());
     }
 
     public static void reregisterMBeansAfterReconfigure(final MBeanServer mbs) {
