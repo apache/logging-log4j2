@@ -43,7 +43,7 @@ public enum EventRoute {
 
         @Override
         public void logMessage(final AsyncLoggerConfig asyncLoggerConfig, final LogEvent event) {
-            asyncLoggerConfig.callAppendersInBackgroundThread(event);
+            asyncLoggerConfig.logInBackgroundThread(event);
         }
 
         @Override
@@ -62,7 +62,7 @@ public enum EventRoute {
 
         @Override
         public void logMessage(final AsyncLoggerConfig asyncLoggerConfig, final LogEvent event) {
-            asyncLoggerConfig.callAppendersInCurrentThread(event);
+            asyncLoggerConfig.logToAsyncLoggerConfigsOnCurrentThread(event);
         }
 
         @Override

@@ -84,6 +84,9 @@
       <action issue="LOG4J2-2328" dev="ggregory" type="update">
         Update JAnsi from 1.17 to 1.17.1.
       </action>
+      <action issue="LOG4J2-2301" dev="ckozak" type="fix">
+        Mixed async loggers no longer forget parameter values, providing some appenders with an array of nulls.
+      </action>
     </release>
     <release version="2.11.0" date="2018-03-11" description="GA Release 2.11.0">
       <action issue="LOG4J2-2104" dev="rgoers" type="fix">
