@@ -160,7 +160,7 @@ public final class Server {
             for (final LoggerContext ctx : contexts) {
                 LOGGER.trace("Reregistering context ({}/{}): '{}' {}", ++i, contexts.size(), ctx.getName(), ctx);
                 // first unregister the context and all nested loggers,
-                // appenders, statusLogger, contextSelector, ringbuffers...
+                // appenders, statusLogger, contextSelector, ring buffers...
                 unregisterLoggerContext(ctx.getName(), mbs);
 
                 final LoggerContextAdmin mbean = new LoggerContextAdmin(ctx, executor);
