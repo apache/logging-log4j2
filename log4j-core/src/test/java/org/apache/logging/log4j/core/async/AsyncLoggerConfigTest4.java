@@ -23,7 +23,6 @@ import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -32,6 +31,7 @@ import java.io.File;
 import java.io.FileReader;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -50,7 +50,6 @@ public class AsyncLoggerConfigTest4 {
     }
 
     @Test
-    @Ignore("Ignored until LOG4J2-2301 is resolved")
     public void testParameters() throws Exception {
         final File file = new File("target", "AsyncLoggerConfigTest4.log");
         assertTrue("Deleted old file before test", !file.exists() || file.delete());
@@ -62,10 +61,12 @@ public class AsyncLoggerConfigTest4 {
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
         final String line2 = reader.readLine();
+        final String line3 = reader.readLine();
         reader.close();
         file.delete();
 
         assertThat(line1, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
         assertThat(line2, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
+        assertNull("Expected only two lines to be logged", line3);
     }
 }

@@ -72,6 +72,8 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "asyncLogger", category = Node.CATEGORY, printObject = true)
 public class AsyncLoggerConfig extends LoggerConfig {
 
+    private static final ThreadLocal<Boolean> ASYNC_ON_CURRENT_THREAD = new ThreadLocal<>();
+    private static final ThreadLocal<Boolean> ASYNC_LOGGER_ENTERED = new ThreadLocal<>();
     private final AsyncLoggerConfigDelegate delegate;
 
     protected AsyncLoggerConfig(final String name,
@@ -85,24 +87,58 @@ public class AsyncLoggerConfig extends LoggerConfig {
         delegate.setLogEventFactory(getLogEventFactory());
     }
 
-    /**
-     * Passes on the event to a separate thread that will call
-     * {@link #asyncCallAppenders(LogEvent)}.
-     */
+    private static final LogPredicate IS_ASYNC_CONFIG = new LogPredicate() {
+        @Override
+        public boolean allow(LoggerConfig config) {
+            return config instanceof AsyncLoggerConfig;
+        }
+    };
+
+    private static final LogPredicate NOT_ASYNC_CONFIG = new LogPredicate() {
+        @Override
+        public boolean allow(LoggerConfig config) {
+            return !IS_ASYNC_CONFIG.allow(config);
+        }
+    };
+
+    public void log(final LogEvent event, final LogPredicate predicate) {
+        if (ASYNC_ON_CURRENT_THREAD.get() != null) {
+            super.log(event, predicate == null ? IS_ASYNC_CONFIG : predicate);
+        } else {
+            // Detect the first time we encounter an AsyncLoggerConfig. We must log
+            // to all non-async loggers first, then pass the event to the background
+            // thread once where all async logging is executed.
+            if (ASYNC_LOGGER_ENTERED.get() == null) {
+                ASYNC_LOGGER_ENTERED.set(Boolean.TRUE);
+                try {
+                    super.log(event, predicate == null ? NOT_ASYNC_CONFIG : predicate);
+                    if (!isFiltered(event)) {
+                        // Passes on the event to a separate thread that will call
+                        // asyncCallAppenders(LogEvent).
+                        populateLazilyInitializedFields(event);
+                        if (!delegate.tryEnqueue(event, this)) {
+                            handleQueueFull(event);
+                        }
+                    }
+                } finally {
+                    ASYNC_LOGGER_ENTERED.remove();
+                }
+            } else {
+                super.log(event, predicate == null ? NOT_ASYNC_CONFIG : predicate);
+            }
+        }
+    }
+
     @Override
     protected void callAppenders(final LogEvent event) {
-        populateLazilyInitializedFields(event);
-
-        if (!delegate.tryEnqueue(event, this)) {
-            handleQueueFull(event);
-        }
+        super.callAppenders(event);
     }
 
     private void handleQueueFull(final LogEvent event) {
         if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
             // If queue is full AND we are in a recursive call, call appender directly to prevent deadlock
             AsyncQueueFullMessageUtil.logWarningToStatusLogger();
-            callAppendersInCurrentThread(event);
+            logToAsyncLoggerConfigsOnCurrentThread(event);
         } else {
             // otherwise, we leave it to the user preference
             final EventRoute eventRoute = delegate.getEventRoute(event.getLevel());
@@ -115,17 +151,28 @@ public class AsyncLoggerConfig extends LoggerConfig {
         event.getThreadName();
     }
 
-    void callAppendersInCurrentThread(final LogEvent event) {
-        super.callAppenders(event);
-    }
-
-    void callAppendersInBackgroundThread(final LogEvent event) {
+    void logInBackgroundThread(final LogEvent event) {
         delegate.enqueueEvent(event, this);
     }
 
-    /** Called by AsyncLoggerConfigHelper.RingBufferLog4jEventHandler. */
-    void asyncCallAppenders(final LogEvent event) {
-        super.callAppenders(event);
+    /**
+     * Called by AsyncLoggerConfigHelper.RingBufferLog4jEventHandler.
+     *
+     * This method will log the provided event to only configs of type {@link AsyncLoggerConfig} (not
+     * default {@link LoggerConfig} definitions), which will be invoked on the <b>calling thread</b>.
+     */
+    void logToAsyncLoggerConfigsOnCurrentThread(final LogEvent event) {
+        // If ASYNC_ON_CURRENT_THREAD is already set, we don't want to unset it prematurely
+        if (ASYNC_ON_CURRENT_THREAD.get() != null) {
+            log(event, IS_ASYNC_CONFIG);
+        } else {
+            ASYNC_ON_CURRENT_THREAD.set(Boolean.TRUE);
+            try {
+                log(event, IS_ASYNC_CONFIG);
+            } finally {
+                ASYNC_ON_CURRENT_THREAD.remove();
+            }
+        }
     }
 
     private String displayName() {
