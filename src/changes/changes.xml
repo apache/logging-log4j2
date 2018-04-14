@@ -160,6 +160,9 @@
         Update LMAX Disruptor from 3.3.7 to 3.4.1.
       </action>
     </release>
+    <action issue="LOG4J2-2317" dev="ckozak" type="fix">
+      MutableLogEvent.getNonNullImmutableMessage and Log4jLogEvent.makeMessageImmutable retain format and parameters.
+    </action>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
       <action issue="LOG4J2-2104" dev="rgoers" type="fix">
         LoaderUtil was not looping properly over classloaders.
