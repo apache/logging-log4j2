@@ -499,6 +499,6 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     }
 
     private Message getNonNullImmutableMessage() {
-        return message != null ? message : new SimpleMessage(String.valueOf(messageText));
+        return message != null ? message : new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
     }
 }
