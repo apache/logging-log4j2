@@ -96,11 +96,11 @@
         <p>
           The Log4j 2 Web JAR file is a web-fragment configured to order before any other web fragments in your
           application. It contains a <code>ServletContainerInitializer</code>
-          (<a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContainerInitializer.html"
+          (<a class="javadoc" href="../log4j-web/apidocs/org/apache/logging/log4j/web/Log4jServletContainerInitializer.html"
             >Log4jServletContainerInitializer</a>) that the container automatically discovers and initializes. This adds
           the <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html"
             >Log4jServletContextListener</a> and
-          <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html"
+          <a class="javadoc" href="../log4j-web/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html"
             >Log4jServletFilter</a> to the <code>ServletContext</code>. These classes properly initialize
           and deinitialize the Log4j configuration.
         </p>
@@ -143,9 +143,9 @@
         <p>
           If you are using Log4j in a Servlet 2.5 web application, or if you have disabled auto-initialization with
           the <code>isLog4jAutoInitializationDisabled</code> context parameter, you <em>must</em> configure the
-          <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html"
+          <a class="javadoc" href="../log4j-web/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html"
             >Log4jServletContextListener</a> and
-          <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html"
+          <a class="javadoc" href="../log4j-web/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html"
             >Log4jServletFilter</a> in the deployment descriptor or programmatically. The filter should match all
           requests of any type. The listener should be the very first listener defined in your application, and the
           filter should be the very first filter defined and mapped in your application. This is easily accomplished
@@ -371,7 +371,7 @@ public class TestAsyncServlet extends HttpServlet {
         ]]></pre>
         <p>
           Alternatively, you can obtain the
-          <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jWebLifeCycle.html">Log4jWebLifeCycle</a>
+          <a class="javadoc" href="../log4j-web/apidocs/org/apache/logging/log4j/web/Log4jWebLifeCycle.html">Log4jWebLifeCycle</a>
           instance from the <code>ServletContext</code> attributes, call its <code>setLoggerContext</code> method as
           the very first line of code in your asynchronous thread, and call its <code>clearLoggerContext</code> method
           as the very last line of code in your asynchronous thread. The following code demonstrates this. It uses the
