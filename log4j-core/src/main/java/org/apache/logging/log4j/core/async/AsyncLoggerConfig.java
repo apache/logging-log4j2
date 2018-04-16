@@ -102,8 +102,8 @@ public class AsyncLoggerConfig extends LoggerConfig {
     private void handleQueueFull(final LogEvent event) {
         if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
             // If queue is full AND we are in a recursive call, call appender directly to prevent deadlock
-            final Message message = AsyncQueueFullMessageUtil.transform(event.getMessage());
-            callAppendersInCurrentThread(new Log4jLogEvent.Builder(event).setMessage(message).build());
+            AsyncQueueFullMessageUtil.logWarningToStatusLogger();
+            callAppendersInCurrentThread(event);
         } else {
             // otherwise, we leave it to the user preference
             final EventRoute eventRoute = delegate.getEventRoute(event.getLevel());

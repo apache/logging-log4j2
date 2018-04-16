@@ -96,8 +96,8 @@ public class QueueFullAsyncLoggerLoggingFromToStringTest extends QueueFullAbstra
 
         final Stack<String> actual = transform(blockingAppender.logEvents);
         assertEquals("Jumped the queue: test(2)+domain1(65)+domain2(61)=128: queue full",
-                "Logging in toString() #127 (Log4j2 logged this message out of order to prevent deadlock caused by domain objects logging from their toString method when the async queue is full - LOG4J2-2031)", actual.pop());
-        assertEquals("Logging in toString() #128 (Log4j2 logged this message out of order to prevent deadlock caused by domain objects logging from their toString method when the async queue is full - LOG4J2-2031)", actual.pop());
+                "Logging in toString() #127", actual.pop());
+        assertEquals("Logging in toString() #128", actual.pop());
         assertEquals("logging naughty object #0 Who's bad?!", actual.pop());
 
         for (int i = 0; i < 127; i++) {
