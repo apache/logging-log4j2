@@ -170,8 +170,8 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     private void handleRingBufferFull(final RingBufferLogEventTranslator translator) {
         if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
             // If queue is full AND we are in a recursive call, call appender directly to prevent deadlock
-            final Message message = AsyncQueueFullMessageUtil.transform(translator.message);
-            logMessageInCurrentThread(translator.fqcn, translator.level, translator.marker, message,
+            AsyncQueueFullMessageUtil.logWarningToStatusLogger();
+            logMessageInCurrentThread(translator.fqcn, translator.level, translator.marker, translator.message,
                     translator.thrown);
             return;
         }
@@ -321,8 +321,8 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                                       final Throwable thrown) {
         if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
             // If queue is full AND we are in a recursive call, call appender directly to prevent deadlock
-            final Message message = AsyncQueueFullMessageUtil.transform(msg);
-            logMessageInCurrentThread(fqcn, level, marker, message, thrown);
+            AsyncQueueFullMessageUtil.logWarningToStatusLogger();
+            logMessageInCurrentThread(fqcn, level, marker, msg, thrown);
             return;
         }
         final EventRoute eventRoute = loggerDisruptor.getEventRoute(level);
