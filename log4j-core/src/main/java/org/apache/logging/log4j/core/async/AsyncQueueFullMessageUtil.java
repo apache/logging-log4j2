@@ -16,30 +16,25 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * <b>Consider this class private.</b>
  * <p>
- * Transforms the specified user message to append an internal Log4j2 message explaining why this message appears out
- * of order in the appender.
+ * Logs a warning to the {@link StatusLogger} when events are logged out of order to avoid deadlocks.
  * </p>
  */
-public class AsyncQueueFullMessageUtil {
+public final class AsyncQueueFullMessageUtil {
+    private AsyncQueueFullMessageUtil() {
+        // Utility Class
+    }
+
     /**
-     * Returns a new {@code Message} based on the original message that appends an internal Log4j2 message
-     * explaining why this message appears out of order in the appender.
-     * <p>
-     * Any parameter objects present in the original message are not included in the returned message.
-     * </p>
-     * @param message the message to replace
-     * @return a new {@code Message} object
+     * Logs a warning to the {@link StatusLogger} explaining why a message appears out of order in the appender.
      */
-    public static Message transform(Message message) {
-        SimpleMessage result = new SimpleMessage(message.getFormattedMessage() +
-                " (Log4j2 logged this message out of order to prevent deadlock caused by domain " +
-                "objects logging from their toString method when the async queue is full - LOG4J2-2031)");
-        return result;
+    public static void logWarningToStatusLogger() {
+        StatusLogger.getLogger()
+                .warn("LOG4J2-2031: Log4j2 logged an event out of order to prevent deadlock caused by domain " +
+                        "objects logging from their toString method when the async queue is full");
     }
 }
