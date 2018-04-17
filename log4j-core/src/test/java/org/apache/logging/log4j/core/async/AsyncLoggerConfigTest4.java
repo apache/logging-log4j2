@@ -62,11 +62,15 @@ public class AsyncLoggerConfigTest4 {
         final String line1 = reader.readLine();
         final String line2 = reader.readLine();
         final String line3 = reader.readLine();
+        final String line4 = reader.readLine();
+        final String line5 = reader.readLine();
         reader.close();
         file.delete();
 
         assertThat(line1, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
         assertThat(line2, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
-        assertNull("Expected only two lines to be logged", line3);
+        assertThat(line3, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
+        assertThat(line4, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
+        assertNull("Expected only two lines to be logged", line5);
     }
 }
