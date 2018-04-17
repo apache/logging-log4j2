@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.apache.logging.log4j.junit.StatusLoggerRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -29,9 +32,14 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.MessageFactory2Adapter;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
+import org.junit.Rule;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  *
@@ -58,6 +66,9 @@ public class AbstractLoggerTest {
 
     private static final Marker MARKER = MarkerManager.getMarker("TEST");
     private static final String MARKER_NAME = "TEST";
+
+    @Rule
+    public StatusLoggerRule status = new StatusLoggerRule(Level.WARN);
 
     private static final LogEvent[] EVENTS = new LogEvent[] {
         new LogEvent(null, simple, null),
@@ -902,6 +913,73 @@ public class AbstractLoggerTest {
         logger.log(Level.INFO, MARKER, supplier);
     }
 
+    @Test
+    public void testMessageThrows() {
+        final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
+        logger.error(new TestMessage(new TestMessage.FormattedMessageSupplier() {
+            @Override
+            public String getFormattedMessage() {
+                throw new IllegalStateException("Oops!");
+            }
+        }, "Message Format"));
+        List<StatusData> statusDatalist = StatusLogger.getLogger().getStatusData();
+        StatusData mostRecent = statusDatalist.get(statusDatalist.size() - 1);
+        assertEquals(Level.WARN, mostRecent.getLevel());
+        assertThat(mostRecent.getFormattedStatus(), containsString(
+                "org.apache.logging.log4j.spi.AbstractLogger caught " +
+                        "java.lang.IllegalStateException logging TestMessage: Message Format"));
+    }
+
+    @Test
+    public void testMessageThrowsAndNullFormat() {
+        final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
+        logger.error(new TestMessage(new TestMessage.FormattedMessageSupplier() {
+            @Override
+            public String getFormattedMessage() {
+                throw new IllegalStateException("Oops!");
+            }
+        }, null /* format */));
+        List<StatusData> statusDatalist = StatusLogger.getLogger().getStatusData();
+        StatusData mostRecent = statusDatalist.get(statusDatalist.size() - 1);
+        assertEquals(Level.WARN, mostRecent.getLevel());
+        assertThat(mostRecent.getFormattedStatus(), containsString(
+                "org.apache.logging.log4j.spi.AbstractLogger caught " +
+                        "java.lang.IllegalStateException logging TestMessage: "));
+    }
+
+    private static final class TestMessage implements Message {
+        private final FormattedMessageSupplier formattedMessageSupplier;
+        private final String format;
+        TestMessage(FormattedMessageSupplier formattedMessageSupplier, String format) {
+            this.formattedMessageSupplier = formattedMessageSupplier;
+            this.format = format;
+        }
+
+        @Override
+        public String getFormattedMessage() {
+            return formattedMessageSupplier.getFormattedMessage();
+        }
+
+        @Override
+        public String getFormat() {
+            return format;
+        }
+
+        @Override
+        public Object[] getParameters() {
+            return new Object[0];
+        }
+
+        @Override
+        public Throwable getThrowable() {
+            return null;
+        }
+
+        interface FormattedMessageSupplier {
+            String getFormattedMessage();
+        }
+    }
+
     private static class CountingLogger extends AbstractLogger {
         private static final long serialVersionUID = -3171452617952475480L;
 
@@ -1228,6 +1306,9 @@ public class AbstractLoggerTest {
                 assertNotNull("Expected a Throwable but received null!", t);
             } else {
                 assertNull("Expected null but received a Throwable! "+t, t);
+            }
+            if (message != null) {
+                message.getFormattedMessage();
             }
         }
 
