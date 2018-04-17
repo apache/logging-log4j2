@@ -145,6 +145,9 @@
       <action issue="LOG4J2-2320" dev="ckozak" type="fix">
         Fix NPE in AbstractLogger when another exception is thrown, masking the root cause.
       </action>
+      <action issue="LOG4J2-548" dev="ggregory" type="update" due-to="Shehata, Paresh Varke, Eric Victorson, Martin Laforet">
+        Log4j 2.0 ERROR "Could not search jar" with JBoss EAP 6.2.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">
@@ -167,6 +170,9 @@
       </action>
       <action issue="LOG4J2-2313" dev="ggregory" type="update">
         Update LMAX Disruptor from 3.3.7 to 3.4.1.
+      </action>
+      <action issue="LOG4J2-548" dev="ggregory" type="update" due-to="Shehata, Paresh Varke, Eric Victorson, Martin Laforet">
+        Log4j 2.0 ERROR "Could not search jar" with JBoss EAP 6.2.
       </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
