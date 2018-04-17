@@ -17,8 +17,13 @@
 
 package org.apache.logging.log4j.mongodb3;
 
+import java.io.File;
 import java.util.Objects;
 
+import de.flapdoodle.embed.mongo.config.DownloadConfigBuilder;
+import de.flapdoodle.embed.mongo.config.ExtractedArtifactStoreBuilder;
+import de.flapdoodle.embed.process.io.directories.FixedPath;
+import de.flapdoodle.embed.process.io.progress.Slf4jProgressListener;
 import org.apache.commons.lang3.NotImplementedException;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -69,13 +74,21 @@ public class MongoDbTestRule implements TestRule {
         switch (loggingTarget) {
         case NULL:
             final Logger logger = LoggerFactory.getLogger(MongoDbTestRule.class.getName());
+            final String workingPath = new File("target/mongo-tmp").getAbsolutePath();
             final IRuntimeConfig runtimeConfig = new RuntimeConfigBuilder()
-            // @formatter:off
-                .defaultsWithLogger(Command.MongoD, logger)
-                .processOutput(ProcessOutput.getDefaultInstanceSilent())
-                .build();
-            // @formatter:on
-
+                    .defaultsWithLogger(Command.MongoD, logger)
+                    .processOutput(ProcessOutput.getDefaultInstanceSilent())
+                    .artifactStore(new ExtractedArtifactStoreBuilder()
+                            .defaults(Command.MongoD)
+                            .download(new DownloadConfigBuilder()
+                                    .defaultsForCommand(Command.MongoD)
+                                    .progressListener(new Slf4jProgressListener(logger))
+                                    .artifactStorePath(new FixedPath(workingPath))
+                                    .build())
+                            .tempDir(new FixedPath(workingPath))
+                            .extractDir(new FixedPath(workingPath))
+                            .build())
+                    .build();
             return MongodStarter.getInstance(runtimeConfig);
         case CONSOLE:
             return MongodStarter.getDefaultInstance();
