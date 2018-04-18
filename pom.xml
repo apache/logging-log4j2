@@ -191,7 +191,7 @@
     <compiler.plugin.version>3.7.0</compiler.plugin.version>
     <pmd.plugin.version>3.9.0</pmd.plugin.version>
     <spotbugs.plugin.version>3.1.0-RC7</spotbugs.plugin.version>
-    <spotbugs.version>3.1.1</spotbugs.version>
+    <spotbugs.version>3.1.2</spotbugs.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
     <javadoc.plugin.version>3.0.0</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
