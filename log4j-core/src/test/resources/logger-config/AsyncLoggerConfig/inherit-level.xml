@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Null name="null"/>
+    </Appenders>
+    <Loggers>
+        <AsyncLogger name="com.foo" />
+        <AsyncRoot level="trace">
+            <AppenderRef ref="null" />
+        </AsyncRoot>
+    </Loggers>
+</Configuration>

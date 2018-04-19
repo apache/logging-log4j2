@@ -148,6 +148,9 @@
       <action issue="LOG4J2-548" dev="ggregory" type="update" due-to="Shehata, Paresh Varke, Eric Victorson, Martin Laforet">
         Log4j 2.0 ERROR "Could not search jar" with JBoss EAP 6.2.
       </action>
+      <action issue="LOG4J2-2321" dev="ckozak" type="fix">
+        AsyncLogger uses the correct level when unspecified. This provides parity between AsyncLogger and Logger.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">
