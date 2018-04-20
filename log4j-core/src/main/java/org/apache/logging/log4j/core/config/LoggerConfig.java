@@ -30,6 +30,8 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -489,7 +491,7 @@ public class LoggerConfig extends AbstractFilterable {
         final boolean additive = Booleans.parseBoolean(additivity, true);
 
         return new LoggerConfig(name, appenderRefs, filter, level, additive, properties, config,
-                includeLocation(includeLocation));
+                includeLocation(includeLocation, config));
     }
 
     /**
@@ -521,15 +523,30 @@ public class LoggerConfig extends AbstractFilterable {
     ) {
         final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
         return new LoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
-            includeLocation(includeLocation));
+            includeLocation(includeLocation, config));
+    }
+
+    /**
+     * @deprecated Please use {@link #includeLocation(String, Configuration)}
+     */
+    @Deprecated
+    protected static boolean includeLocation(final String includeLocationConfigValue) {
+        return includeLocation(includeLocationConfigValue, null);
     }
 
     // Note: for asynchronous loggers, includeLocation default is FALSE,
     // for synchronous loggers, includeLocation default is TRUE.
-    protected static boolean includeLocation(final String includeLocationConfigValue) {
+    protected static boolean includeLocation(final String includeLocationConfigValue, final Configuration configuration) {
         if (includeLocationConfigValue == null) {
-            final boolean sync = !AsyncLoggerContextSelector.isSelected();
-            return sync;
+            LoggerContext context = null;
+            if (configuration != null) {
+                context = configuration.getLoggerContext();
+            }
+            if (context != null) {
+                return !(context instanceof AsyncLoggerContext);
+            } else {
+                return !AsyncLoggerContextSelector.isSelected();
+            }
         }
         return Boolean.parseBoolean(includeLocationConfigValue);
     }
@@ -556,7 +573,7 @@ public class LoggerConfig extends AbstractFilterable {
             final boolean additive = Booleans.parseBoolean(additivity, true);
 
             return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, actualLevel, additive,
-                    properties, config, includeLocation(includeLocation));
+                    properties, config, includeLocation(includeLocation, config));
         }
     }
 

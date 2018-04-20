@@ -151,6 +151,10 @@
       <action issue="LOG4J2-2321" dev="ckozak" type="fix">
         AsyncLogger uses the correct level when unspecified. This provides parity between AsyncLogger and Logger.
       </action>
+      <action issue="LOG4J2-2322" dev="ckozak" type="fix">
+        Custom ContextSelector implementations which select an AsyncLoggerContext disable LoggerConfig.includeLocation
+        by default for parity with AsyncLoggerContextSelector.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">
