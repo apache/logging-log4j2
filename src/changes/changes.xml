@@ -139,6 +139,7 @@
       <action issue="LOG4J2-2317" dev="ckozak" type="fix">
         MutableLogEvent.getNonNullImmutableMessage and Log4jLogEvent.makeMessageImmutable retain format and parameters.
       </action>
+<<<<<<< HEAD
       <action issue="LOG4J2-2318" dev="ckozak" type="fix">
         Messages are no longer mutated when the asynchronous queue is full. A warning is logged to the status logger instead.
       </action>
@@ -154,6 +155,9 @@
       <action issue="LOG4J2-2322" dev="ckozak" type="fix">
         Custom ContextSelector implementations which select an AsyncLoggerContext disable LoggerConfig.includeLocation
         by default for parity with AsyncLoggerContextSelector.
+      </action>
+      <action issue="LOG4J2-2269" dev="ckozak" type="fix">
+        MutableLogEvent references to other objects are cleared after each use.
       </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
