@@ -139,7 +139,6 @@
       <action issue="LOG4J2-2317" dev="ckozak" type="fix">
         MutableLogEvent.getNonNullImmutableMessage and Log4jLogEvent.makeMessageImmutable retain format and parameters.
       </action>
-<<<<<<< HEAD
       <action issue="LOG4J2-2318" dev="ckozak" type="fix">
         Messages are no longer mutated when the asynchronous queue is full. A warning is logged to the status logger instead.
       </action>
