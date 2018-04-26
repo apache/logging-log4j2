@@ -81,6 +81,9 @@
         MutableLogEvent references to other objects are cleared after each use.
         Fix a memory leak causing references to parameters to be held after synchronous logging with thread locals enabled.
       </action>
+      <action issue="LOG4J2-2328" dev="ggregory" type="update">
+        Update JAnsi from 1.17 to 1.17.1.
+      </action>
     </release>
     <release version="2.11.0" date="2018-03-11" description="GA Release 2.11.0">
       <action issue="LOG4J2-2104" dev="rgoers" type="fix">
