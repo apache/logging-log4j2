@@ -218,11 +218,13 @@
     <errorprone.version>2.3.0</errorprone.version>
     <plexus.errorprone.version>2.8.4</plexus.errorprone.version>
     <remote.resources.plugin.version>1.5</remote.resources.plugin.version>
+    <lucene5.version>5.5.5</lucene5.version>
+    <lucene7.version>7.3.0</lucene7.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <docLabel>Site Documentation</docLabel>
-    <projectDir />
+    <projectDir/>
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <javax.persistence>2.2.0</javax.persistence>
     <osgi.api.version>6.0.0</osgi.api.version>
@@ -233,7 +235,7 @@
     <mockitoVersion>2.13.0</mockitoVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.7</javaTargetVersion>
-    <module.name />
+    <module.name/>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -904,7 +906,7 @@
             <maxmem>1024</maxmem>
             <compilerArguments>
               <Xmaxwarns>10000</Xmaxwarns>
-              <Xlint />
+              <Xlint/>
             </compilerArguments>
             <compilerId>javac-with-errorprone</compilerId>
             <forceJavacCompilerUse>true</forceJavacCompilerUse>
@@ -1172,7 +1174,7 @@
             </goals>
             <configuration>
               <skip>true</skip>
-              <resourceBundles />
+              <resourceBundles/>
             </configuration>
           </execution>
         </executions>
@@ -1405,6 +1407,8 @@
     <module>log4j-appserver</module>
     <module>log4j-smtp</module>
     <module>log4j-osgi</module>
+    <module>log4j-lucene7</module>
+    <module>log4j-lucene5</module>
   </modules>
   <profiles>
     <profile>
