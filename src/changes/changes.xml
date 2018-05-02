@@ -165,6 +165,9 @@
       <action issue="LOG4J2-2301" dev="ckozak" type="fix">
         Mixed async loggers no longer forget parameter values, providing some appenders with an array of nulls.
       </action>
+      <action issue="LOG4J2-2331" dev="ckozak" type="fix" due-to="Mike Baranski">
+        RollingFileManager debug logging avoids string concatenation and errant braces in favor of parameterized logging.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">
@@ -222,6 +225,9 @@
       </action>
       <action issue="LOG4J2-2301" dev="ckozak" type="fix">
         Mixed async loggers no longer forget parameter values, providing some appenders with an array of nulls.
+      </action>
+      <action issue="LOG4J2-2331" dev="ckozak" type="fix" due-to="Mike Baranski">
+        RollingFileManager debug logging avoids string concatenation and errant braces in favor of parameterized logging.
       </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
