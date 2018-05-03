@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.NoUnresolvedVariables;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
@@ -60,9 +61,11 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         }
 
         @PluginBuilderAttribute("fileName")
+        @NoUnresolvedVariables
         private String fileName;
 
         @PluginBuilderAttribute("filePattern")
+        @NoUnresolvedVariables
         private String filePattern;
 
         @PluginBuilderAttribute("append")

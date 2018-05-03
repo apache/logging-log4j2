@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.NoUnresolvedVariables;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
@@ -53,6 +54,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
         @PluginBuilderAttribute
         @Required
+        @NoUnresolvedVariables
         private String fileName;
 
         @PluginBuilderAttribute

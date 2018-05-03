@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.NoUnresolvedVariables;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Booleans;
@@ -62,10 +63,12 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             implements org.apache.logging.log4j.core.util.Builder<RollingFileAppender> {
 
         @PluginBuilderAttribute
+        @NoUnresolvedVariables
         private String fileName;
 
         @PluginBuilderAttribute
         @Required
+        @NoUnresolvedVariables
         private String filePattern;
 
         @PluginBuilderAttribute
