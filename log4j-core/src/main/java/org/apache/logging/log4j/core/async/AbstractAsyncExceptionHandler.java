@@ -34,9 +34,13 @@ abstract class AbstractAsyncExceptionHandler<T> implements ExceptionHandler<T> {
             System.err.print(", value='");
             try {
                 System.err.print(event);
-            } catch (final Throwable ignored) {
+            } catch (final Throwable t) {
                 System.err.print("ERROR calling toString() on ");
                 System.err.print(event.getClass().getName());
+                System.err.print(": ");
+                System.err.print(t.getClass().getName());
+                System.err.print(": ");
+                System.err.print(t.getMessage());
             }
             System.err.print("': ");
             System.err.print(throwable.getClass().getName());
