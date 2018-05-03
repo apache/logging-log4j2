@@ -16,42 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import com.lmax.disruptor.ExceptionHandler;
-
 /**
  * Default disruptor exception handler for errors that occur in the AsyncLogger background thread.
  */
-public class AsyncLoggerDefaultExceptionHandler implements ExceptionHandler<RingBufferLogEvent> {
-
-    @Override
-    public void handleEventException(final Throwable throwable, final long sequence, final RingBufferLogEvent event) {
-        try {
-            final StringBuilder sb = new StringBuilder(512);
-            sb.append("AsyncLogger error handling event seq=").append(sequence).append(", value='");
-            try {
-                sb.append(event);
-            } catch (final Throwable ignored) {
-                sb.append("[ERROR calling ").append(event.getClass()).append(".toString(): ");
-                sb.append(ignored).append("]");
-            }
-            sb.append("':");
-            System.err.println(sb);
-            throwable.printStackTrace();
-        } catch (final Throwable ignored) {
-            // LOG4J2-2333: Not much we can do here without risking an OOM.
-            // Throwing an error here may kill the background thread.
-        }
-    }
-
-    @Override
-    public void handleOnStartException(final Throwable throwable) {
-        System.err.println("AsyncLogger error starting:");
-        throwable.printStackTrace();
-    }
-
-    @Override
-    public void handleOnShutdownException(final Throwable throwable) {
-        System.err.println("AsyncLogger error shutting down:");
-        throwable.printStackTrace();
-    }
+public class AsyncLoggerDefaultExceptionHandler extends AbstractAsyncExceptionHandler<RingBufferLogEvent> {
 }
