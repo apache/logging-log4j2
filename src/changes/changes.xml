@@ -96,6 +96,9 @@
       <action issue="LOG4J2-2334" dev="ggregory" type="fix">
         Add API org.apache.logging.log4j.core.appender.AsyncAppender.getQueueSize().
       </action>
+      <action issue="LOG4J2-2336" dev="ckozak" type="fix">
+        Remove duplicate hypen from the AsyncLoggerConfig background thread name.
+      </action>
     </release>
     <release version="2.11.0" date="2018-03-11" description="GA Release 2.11.0">
       <action issue="LOG4J2-2104" dev="rgoers" type="fix">
