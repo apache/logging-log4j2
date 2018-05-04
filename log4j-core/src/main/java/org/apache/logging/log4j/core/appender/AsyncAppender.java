@@ -524,4 +524,14 @@ public final class AsyncAppender extends AbstractAppender {
     public int getQueueRemainingCapacity() {
         return queue.remainingCapacity();
     }
+
+    /**
+     * Returns the number of elements in the queue.
+     * 
+     * @return the number of elements in the queue. 
+     * @since 2.11.1
+     */
+    public int getQueueSize() {
+        return queue.size();
+    }
 }
