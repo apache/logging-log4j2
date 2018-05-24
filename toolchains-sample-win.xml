@@ -34,7 +34,7 @@
       <vendor>sun</vendor>
     </provides>
     <configuration>
-      <jdkHome>C:\Program Files\Java\jdk1.8.0_141</jdkHome>
+      <jdkHome>C:\Program Files\Java\jdk1.8.0_171</jdkHome>
     </configuration>
   </toolchain>
   <toolchain>
