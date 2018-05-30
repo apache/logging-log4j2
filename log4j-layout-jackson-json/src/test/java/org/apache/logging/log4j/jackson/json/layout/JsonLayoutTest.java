@@ -36,12 +36,16 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.layout.LogEventFixtures;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
 import org.apache.logging.log4j.jackson.json.Log4jJsonObjectMapper;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
+import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -437,6 +441,76 @@ public class JsonLayoutTest {
         final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testLayoutMessageWithCurlyBraces() throws Exception {
+        final boolean propertiesAsList = false;
+        final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setLocationInfo(false)
+                .setProperties(false)
+                .setPropertiesAsList(propertiesAsList)
+                .setComplete(false)
+                .setCompact(true)
+                .setEventEol(false)
+                .setCharset(StandardCharsets.UTF_8)
+                .setIncludeStacktrace(true)
+                .build();
+        final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
+                .setLoggerName("a.B")
+                .setLoggerFqcn("f.q.c.n")
+                .setLevel(Level.DEBUG)
+                .setMessage(new ParameterizedMessage("Testing {}", new TestObj()))
+                .setThreadName("threadName")
+                .setTimeMillis(1).build();
+        final String str = layout.toSerializable(expected);
+        final String expectedMessage = "Testing " + TestObj.TO_STRING_VALUE;
+        assertTrue(str, str.contains("\"message\":\"" + expectedMessage + '"'));
+        final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
+        assertEquals(expectedMessage, actual.getMessage().getFormattedMessage());
+    }
+
+    // Test for LOG4J2-2345
+    @Test
+    public void testReusableLayoutMessageWithCurlyBraces() throws Exception {
+        final boolean propertiesAsList = false;
+        final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setLocationInfo(false)
+                .setProperties(false)
+                .setPropertiesAsList(propertiesAsList)
+                .setComplete(false)
+                .setCompact(true)
+                .setEventEol(false)
+                .setCharset(StandardCharsets.UTF_8)
+                .setIncludeStacktrace(true)
+                .build();
+        Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
+        try {
+            final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
+                    .setLoggerName("a.B")
+                    .setLoggerFqcn("f.q.c.n")
+                    .setLevel(Level.DEBUG)
+                    .setMessage(message)
+                    .setThreadName("threadName")
+                    .setTimeMillis(1).build();
+            MutableLogEvent mutableLogEvent = new MutableLogEvent();
+            mutableLogEvent.initFrom(expected);
+            final String str = layout.toSerializable(mutableLogEvent);
+            final String expectedMessage = "Testing " + TestObj.TO_STRING_VALUE;
+            assertTrue(str, str.contains("\"message\":\"" + expectedMessage + '"'));
+            final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
+            assertEquals(expectedMessage, actual.getMessage().getFormattedMessage());
+        } finally {
+            ReusableMessageFactory.release(message);
+        }
+    }
+
+    static class TestObj {
+        static final String TO_STRING_VALUE = "This is my toString {} with curly braces";
+        @Override
+        public String toString() {
+            return TO_STRING_VALUE;
+        }
     }
 
     @Test
