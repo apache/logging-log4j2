@@ -99,6 +99,9 @@
       <action issue="LOG4J2-2336" dev="ckozak" type="fix">
         Remove duplicate hyphen from the AsyncLoggerConfig background thread name.
       </action>
+      <action issue="LOG4J2-2347" dev="ggregory" type="fix">
+        Update Apache Commons Compress from 1.16.1 to 1.17.
+      </action>
     </release>
     <release version="2.11.0" date="2018-03-11" description="GA Release 2.11.0">
       <action issue="LOG4J2-2104" dev="rgoers" type="fix">
