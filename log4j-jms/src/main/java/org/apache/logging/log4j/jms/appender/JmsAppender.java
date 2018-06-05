@@ -49,7 +49,7 @@ public class JmsAppender extends AbstractAppender {
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<JmsAppender> {
 
-        private static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 5000;
+        public static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 5000;
 
         @PluginBuilderAttribute
         @Required(message = "A name for the JmsAppender must be specified")
