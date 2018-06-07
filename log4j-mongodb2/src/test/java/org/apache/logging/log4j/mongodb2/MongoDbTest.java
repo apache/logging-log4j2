@@ -25,6 +25,7 @@ import org.apache.logging.log4j.test.AvailablePortSystemPropertyTestRule;
 import org.apache.logging.log4j.test.RuleChainFactory;
 import org.junit.Assert;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
@@ -37,6 +38,7 @@ import com.mongodb.MongoClient;
 /**
  * This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
  */
+@Ignore("LOG4J2-2348: MongoDB tests have high flake rate")
 @Category(Appenders.MongoDb.class)
 public class MongoDbTest {
 
