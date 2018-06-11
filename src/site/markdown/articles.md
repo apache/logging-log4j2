@@ -44,6 +44,12 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 ## English
 
+* [Log4j2 Tutorial](https://howtodoinjava.com/log4j2/)
+(June 3, 2018)
+* [In Java How to Create your own Logging Level using Log4j (Configuring Log4j 2)](https://crunchify.com/java-how-to-create-your-own-logging-level-in-log4j-configuring-log4j/)
+{May 30, 2018)
+* [Programmatic Configuration with Log4j 2](http://www.baeldung.com/log4j2-programmatic-config)
+(May 22, 2018)
 * [Tales from the Field: Migrating from Log4J to Log4J2](https://www.javacodegeeks.com/2018/03/tales-from-the-field-migrating-from-log4j-to-log4j2.html)
 (March 12, 2018)
 * [Log4J2 and Java configuration with properties file](https://www.youtube.com/watch?v=sdOiA1Xql0o)
