@@ -87,7 +87,14 @@ public class AsyncLoggerConfig extends LoggerConfig {
     }
 
     protected void log(final LogEvent event, final LoggerConfigPredicate predicate) {
-        if (predicate == LoggerConfigPredicate.ALL && ASYNC_LOGGER_ENTERED.get() == null) { // See LOG4J2-2301
+        // See LOG4J2-2301
+        if (predicate == LoggerConfigPredicate.ALL &&
+                ASYNC_LOGGER_ENTERED.get() == null &&
+                // Optimization: AsyncLoggerConfig is identical to LoggerConfig
+                // when no appenders are present. Avoid splitting for synchronous
+                // and asynchronous execution paths until encountering an
+                // AsyncLoggerConfig with appenders.
+                hasAppenders()) {
             // This is the first AsnycLoggerConfig encountered by this LogEvent
             ASYNC_LOGGER_ENTERED.set(Boolean.TRUE);
             try {

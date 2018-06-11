@@ -565,6 +565,10 @@ public class LoggerConfig extends AbstractFilterable {
         return Boolean.parseBoolean(includeLocationConfigValue);
     }
 
+    protected final boolean hasAppenders() {
+        return !appenders.isEmpty();
+    }
+
     /**
      * The root Logger.
      */
