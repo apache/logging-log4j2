@@ -180,6 +180,9 @@
       <action issue="LOG4J2-2347" dev="ggregory" type="fix">
         Update Apache Commons Compress from 1.16.1 to 1.17.
       </action>
+      <action issue="LOG4J2-2351" dev="ckozak" type="update">
+        Added AbstractLogEvent.getMutableInstant to allow the MutableInstant instance to be modified by classes extending AbstractLogEvent.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">
@@ -252,6 +255,9 @@
       </action>
       <action issue="LOG4J2-2347" dev="ggregory" type="fix">
         Update Apache Commons Compress from 1.16.1 to 1.17.
+      </action>
+      <action issue="LOG4J2-2351" dev="ckozak" type="update">
+        Added AbstractLogEvent.getMutableInstant to allow the MutableInstant instance to be modified by classes extending AbstractLogEvent.
       </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">

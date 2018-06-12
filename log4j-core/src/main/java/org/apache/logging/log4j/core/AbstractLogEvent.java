@@ -37,7 +37,7 @@ public abstract class AbstractLogEvent implements LogEvent {
 
     private static final long serialVersionUID = 1L;
 
-    private MutableInstant instant = new MutableInstant();
+    private volatile MutableInstant instant;
 
     /**
      * Subclasses should implement this method to provide an immutable version.
@@ -127,6 +127,13 @@ public abstract class AbstractLogEvent implements LogEvent {
 
     @Override
     public Instant getInstant() {
+        return getMutableInstant();
+    }
+
+    protected final MutableInstant getMutableInstant() {
+        if (instant == null) {
+            instant = new MutableInstant();
+        }
         return instant;
     }
 
