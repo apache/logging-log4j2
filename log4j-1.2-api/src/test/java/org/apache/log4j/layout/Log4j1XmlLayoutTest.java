@@ -21,11 +21,16 @@ import static org.junit.Assert.assertEquals;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.StringMap;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class Log4j1XmlLayoutTest {
+
+    @Rule
+    public ThreadContextRule threadContextRule = new ThreadContextRule();
 
     @Test
     public void testWithoutThrown() {
