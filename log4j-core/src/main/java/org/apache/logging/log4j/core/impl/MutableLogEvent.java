@@ -303,11 +303,10 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
 
     @Override
     public Message memento() {
-        if (message != null) {
-            return message;
+        if (message == null) {
+            message = new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
         }
-        final Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
-        return new MementoMessage(messageText.toString(), messageFormat, params);
+        return message;
     }
 
     @Override
@@ -486,7 +485,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
                 .setLoggerFqcn(loggerFqcn) //
                 .setLoggerName(loggerName) //
                 .setMarker(marker) //
-                .setMessage(getNonNullImmutableMessage()) // ensure non-null & immutable
+                .setMessage(memento()) // ensure non-null & immutable
                 .setNanoTime(nanoTime) //
                 .setSource(source) //
                 .setThreadId(threadId) //
@@ -496,9 +495,5 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
                 .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
                 .setInstant(instant) //
         ;
-    }
-
-    private Message getNonNullImmutableMessage() {
-        return message != null ? message : new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
     }
 }
