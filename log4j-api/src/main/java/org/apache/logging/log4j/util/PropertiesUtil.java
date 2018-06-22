@@ -330,13 +330,17 @@ public final class PropertiesUtil {
                 source.forEach(new BiConsumer<String, String>() {
                     @Override
                     public void accept(final String key, final String value) {
-                        literal.put(key, value);
-                        final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-                        if (tokens.isEmpty()) {
-                            normalized.put(source.getNormalForm(Collections.singleton(key)), value);
-                        } else {
-                            normalized.put(source.getNormalForm(tokens), value);
-                            tokenized.put(tokens, value);
+                        if (value != null) {
+                            literal.put(key, value);
+                            final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
+                            if (tokens.isEmpty()) {
+                                normalized.put(source.getNormalForm(Collections.singleton(key)), value);
+                            } else {
+                                normalized.put(source.getNormalForm(tokens), value);
+                                tokenized.put(tokens, value);
+                            }
+                        } else  {
+                            LowLevelLogUtil.log("Property " + key + " was skipped because of null value.");
                         }
                     }
                 });
