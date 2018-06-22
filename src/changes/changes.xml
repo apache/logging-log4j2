@@ -187,6 +187,10 @@
         RingBufferLogEvent memento messages provide the expected format string, and no longer attempt to substitute parameters into curly braces in parameter toString values.
         Both RingBufferLogEvent and MutableLogEvent memento implementations memoize results to avoid rebuilding formatted string values.
       </action>
+      <action issue="LOG4J2-2355" dev="ckozak" type="fix" due-to="Henrik Brautaset Aronsen">
+        PropertiesUtil ignores non-string system properties. Fixes a NoClassDefFoundError initializing StatusLogger
+        caused by an NPE while initializing the static PropertiesUtil field.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">
@@ -266,6 +270,10 @@
       <action issue="LOG4J2-2352" dev="ckozak" type="fix">
         RingBufferLogEvent memento messages provide the expected format string, and no longer attempt to substitute parameters into curly braces in parameter toString values.
         Both RingBufferLogEvent and MutableLogEvent memento implementations memoize results to avoid rebuilding formatted string values.
+      </action>
+      <action issue="LOG4J2-2355" dev="ckozak" type="fix" due-to="Henrik Brautaset Aronsen">
+        PropertiesUtil ignores non-string system properties. Fixes a NoClassDefFoundError initializing StatusLogger
+        caused by an NPE while initializing the static PropertiesUtil field.
       </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
