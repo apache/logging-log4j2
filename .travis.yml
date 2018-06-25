@@ -18,6 +18,7 @@ dist: trusty
 
 jdk:
   - oraclejdk8
+  - oraclejdk10
 
 addons:
   apt:
