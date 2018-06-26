@@ -189,7 +189,7 @@
     <mongodb2.version>2.14.3</mongodb2.version>
     <mongodb3.version>3.6.3</mongodb3.version>
     <compiler.plugin.version>3.7.0</compiler.plugin.version>
-    <pmd.plugin.version>3.9.0</pmd.plugin.version>
+    <pmd.plugin.version>3.10.0</pmd.plugin.version>
     <findbugs.plugin.version>3.0.5</findbugs.plugin.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
     <javadoc.plugin.version>3.0.1</javadoc.plugin.version>
