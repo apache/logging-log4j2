@@ -191,6 +191,9 @@
         PropertiesUtil ignores non-string system properties. Fixes a NoClassDefFoundError initializing StatusLogger
         caused by an NPE while initializing the static PropertiesUtil field.
       </action>
+      <action issue="LOG4J2-2357" dev="ggregory" type="update">
+        Update Jackson from 2.9.5 to 2.9.6.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">
@@ -274,6 +277,9 @@
       <action issue="LOG4J2-2355" dev="ckozak" type="fix" due-to="Henrik Brautaset Aronsen">
         PropertiesUtil ignores non-string system properties. Fixes a NoClassDefFoundError initializing StatusLogger
         caused by an NPE while initializing the static PropertiesUtil field.
+      </action>
+      <action issue="LOG4J2-2357" dev="ggregory" type="update">
+        Update Jackson from 2.9.5 to 2.9.6.
       </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
