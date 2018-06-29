@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableParameterizedMessage implements ReusableMessage, ParameterVisitable {
+public class ReusableParameterizedMessage implements ReusableMessage, ParameterVisitable, Clearable {
 
     private static final int MIN_BUILDER_SIZE = 512;
     private static final int MAX_PARMS = 10;
@@ -340,5 +340,15 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
     public String toString() {
         return "ReusableParameterizedMessage[messagePattern=" + getFormat() + ", stringArgs=" +
                 Arrays.toString(getParameters()) + ", throwable=" + getThrowable() + ']';
+    }
+
+    @Override
+    public void clear() { // LOG4J2-1583
+        // This method does not clear parameter values, those are expected to be swapped to a
+        // reusable message, which is responsible for clearing references.
+        reserved = false;
+        varargs = null;
+        messagePattern = null;
+        throwable = null;
     }
 }
