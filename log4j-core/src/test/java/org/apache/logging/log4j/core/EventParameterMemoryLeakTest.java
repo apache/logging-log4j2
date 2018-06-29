@@ -49,21 +49,27 @@ public class EventParameterMemoryLeakTest {
     }
 
     @Test
+    @SuppressWarnings("UnusedAssignment") // parameter set to null to allow garbage collection
     public void testParametersAreNotLeaked() throws Exception {
         final File file = new File("target", "EventParameterMemoryLeakTest.log");
         assertTrue("Deleted old file before test", !file.exists() || file.delete());
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         CountDownLatch latch = new CountDownLatch(1);
-        log.info("Message with parameter {}", new ParameterObject("paramValue", latch));
+        Object parameter = new ParameterObject("paramValue", latch);
+        log.info("Message with parameter {}", parameter);
+        log.info(parameter);
+        parameter = null;
         CoreLoggerContexts.stopLoggerContext(file);
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
         final String line2 = reader.readLine();
+        final String line3 = reader.readLine();
         reader.close();
         file.delete();
         assertThat(line1, containsString("Message with parameter paramValue"));
-        assertNull("Expected only a single line", line2);
+        assertThat(line2, containsString("paramValue"));
+        assertNull("Expected only a two lines", line3);
         GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
         gcHelper.run();
         try {

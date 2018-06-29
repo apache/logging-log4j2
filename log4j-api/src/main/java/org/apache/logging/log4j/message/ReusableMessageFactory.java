@@ -86,6 +86,8 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
     public static void release(final Message message) { // LOG4J2-1583
         if (message instanceof ReusableParameterizedMessage) {
             ((ReusableParameterizedMessage) message).reserved = false;
+        } else if (message instanceof ReusableObjectMessage) {
+            ((ReusableObjectMessage) message).set(null);
         }
     }
 
