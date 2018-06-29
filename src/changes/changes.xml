@@ -200,6 +200,10 @@
       <action issue="LOG4J2-2312" dev="ckozak" type="fix">
         Jackson layouts used with AsyncLoggerContextSelector output the expected format rather than only a json string of the message text.
       </action>
+      <action issue="LOG4J2-2364" dev="ckozak" type="fix">
+        Fixed a memory leak in which ReusableParameterizedMessage would hold a reference to the most recently
+        logged throwable and provided varargs array.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-1721" dev="rgoers" type="update" due-to="Phokham Nonava">
@@ -309,6 +313,10 @@
       </action>
       <action issue="LOG4J2-2312" dev="ckozak" type="fix">
         Jackson layouts used with AsyncLoggerContextSelector output the expected format rather than only a json string of the message text.
+      </action>
+      <action issue="LOG4J2-2364" dev="ckozak" type="fix">
+        Fixed a memory leak in which ReusableParameterizedMessage would hold a reference to the most recently
+        logged throwable and provided varargs array.
       </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
