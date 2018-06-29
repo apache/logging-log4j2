@@ -59,17 +59,23 @@ public class EventParameterMemoryLeakTest {
         Object parameter = new ParameterObject("paramValue", latch);
         log.info("Message with parameter {}", parameter);
         log.info(parameter);
+        log.info("test", new ObjectThrowable(parameter));
+        log.info("test {}", "hello", new ObjectThrowable(parameter));
         parameter = null;
         CoreLoggerContexts.stopLoggerContext(file);
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
         final String line2 = reader.readLine();
         final String line3 = reader.readLine();
+        final String line4 = reader.readLine();
+        final String line5 = reader.readLine();
         reader.close();
         file.delete();
         assertThat(line1, containsString("Message with parameter paramValue"));
         assertThat(line2, containsString("paramValue"));
-        assertNull("Expected only a two lines", line3);
+        assertThat(line3, containsString("paramValue"));
+        assertThat(line4, containsString("paramValue"));
+        assertNull("Expected only three lines", line5);
         GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
         gcHelper.run();
         try {
@@ -96,6 +102,20 @@ public class EventParameterMemoryLeakTest {
         protected void finalize() throws Throwable {
             latch.countDown();
             super.finalize();
+        }
+    }
+
+    private static final class ObjectThrowable extends RuntimeException {
+        private final Object object;
+
+        ObjectThrowable(Object object) {
+            super(String.valueOf(object));
+            this.object = object;
+        }
+
+        @Override
+        public String toString() {
+            return "ObjectThrowable " + object;
         }
     }
 
