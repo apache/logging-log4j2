@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Supplier;
@@ -46,7 +47,9 @@ public class LambdaLoggerTest {
             this.fqcn = fqcn;
             this.level = level;
             this.marker = marker;
-            this.message = message;
+            this.message = (message instanceof ReusableMessage) ?
+                    ((ReusableMessage) message).memento() :
+                    message;
             this.throwable = t;
         }
     }

@@ -194,6 +194,9 @@
       <action issue="LOG4J2-2357" dev="ggregory" type="update">
         Update Jackson from 2.9.5 to 2.9.6.
       </action>
+      <action issue="LOG4J2-2362" dev="ckozak" type="fix">
+        Fixed a memory leak in which ReusableObjectMessage would hold a reference to the most recently logged object.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">
@@ -283,6 +286,9 @@
       </action>
       <action issue="LOG4J2-2358" dev="ggregory" type="update">
         Update Kafka client from 1.0.0 to 1.1.0.
+      </action>
+      <action issue="LOG4J2-2362" dev="ckozak" type="fix">
+        Fixed a memory leak in which ReusableObjectMessage would hold a reference to the most recently logged object.
       </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
