@@ -199,6 +199,9 @@
       </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
+      <action issue="LOG4J2-2343" dev="rgoers" type="fix" due-to="Raymond Augé">
+        The OSGi Activator specified an incorrect version.
+      </action>
       <action issue="LOG4J2-2305" dev="rgoers" type="fix">
         Change the dependency scope for SLF4J-API to provided in Log4j-SLF4J-Impl to allow users
         to use either SLF4J-API 1.7 or 1.8. Presumably they must have SLF4J as a dependency if they
