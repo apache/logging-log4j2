@@ -55,6 +55,11 @@
       <type>test-jar</type>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.lmax</groupId>
+      <artifactId>disruptor</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
