@@ -356,7 +356,7 @@ public abstract class NameAbbreviator {
             final int max = pos + original.length();
             final StringBuilder sb = destination.append(original);//new StringBuilder(original);
 
-            for (int i = 0; i < fragments.length - 1 && pos < original.length(); i++) {
+            for (int i = 0; i < fragments.length - 1 && pos < max; i++) {
                 pos = fragments[i].abbreviate(sb, pos);
             }
 
