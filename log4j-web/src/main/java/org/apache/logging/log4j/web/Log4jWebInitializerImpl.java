@@ -19,8 +19,10 @@ package org.apache.logging.log4j.web;
 import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -158,14 +160,30 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             this.name = this.servletContext.getContextPath();
             LOGGER.debug("Using the servlet context context-path \"{}\".", this.name);
         }
-
         if (this.name == null && location == null) {
             LOGGER.error("No Log4j context configuration provided. This is very unusual.");
             this.name = new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(new Date());
         }
+        if (location != null && location.contains(",")) {
+            final List<URI> uris = getConfigURIs(location);
+            this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), uris, this.servletContext);
+            return;
+        }
 
         final URI uri = getConfigURI(location);
         this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), uri, this.servletContext);
+    }
+
+    private List<URI> getConfigURIs(final String location) {
+        final String[] parts = location.split(",");
+        final List<URI> uris = new ArrayList<>(parts.length);
+        for (final String part : parts) {
+            final URI uri = getConfigURI(part);
+            if (uri != null) {
+                uris.add(uri);
+            }
+        }
+        return uris;
     }
 
     private URI getConfigURI(final String location) {
