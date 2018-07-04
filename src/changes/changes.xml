@@ -216,9 +216,7 @@
         Make java.util.ServiceLoader properly work in OSGi by using the Service Loader Mediator Specification.
       </action>
       <action issue="LOG4J2-2305" dev="rgoers" type="fix">
-        Change the dependency scope for SLF4J-API to provided in Log4j-SLF4J-Impl to allow users
-        to use either SLF4J-API 1.7 or 1.8. Presumably they must have SLF4J as a dependency if they
-        want to use the module.
+        Split the SLF4J binding into 2 implementations - one for SLF4J 1.7.x and one for SLF4J 1.8+.
       </action>
       <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">
         Improve plugin error message when elements are missing.

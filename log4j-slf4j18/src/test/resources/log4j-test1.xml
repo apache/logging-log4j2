@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error" name="LoggerTest">
+  <properties>
+    <property name="filename">target/test.log</property>
+  </properties>
+  <ThresholdFilter level="trace"/>
+
+  <Appenders>
+    <List name="EventLogger">
+      <PatternLayout pattern="%C{1.} %m%n"/>
+    </List>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%C{1.} %m MDC%X%n"/>
+    </Console>
+    <File name="File" fileName="${filename}">
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </File>
+    <List name="List">
+      <PatternLayout pattern="%C{1.} %m MDC%X%n%ex{0}"/>
+    </List>
+    <SLF4J name="SLF4J"/>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
+      <AppenderRef ref="EventLogger"/>
+    </Logger>>
+
+    <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+      <AppenderRef ref="File"/>
+    </Logger>
+
+    <Root level="trace">
+      <AppenderRef ref="List"/>
+    </Root>
+  </Loggers>
+
+</configuration>
