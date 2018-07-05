@@ -103,7 +103,7 @@
         <executions>
           <execution>
             <id>unpack-classes</id>
-            <phase>prepare-package</phase>
+            <phase>process-resources</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
