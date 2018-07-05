@@ -23,7 +23,7 @@
     <version>2.11.1-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
-  <artifactId>log4j-slf4j18</artifactId>
+  <artifactId>log4j-slf4j18-impl</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j SLF4J 1.8+ Binding</name>
   <description>The Apache Log4j SLF4J 1.8 API binding to Log4j 2 Core</description>
