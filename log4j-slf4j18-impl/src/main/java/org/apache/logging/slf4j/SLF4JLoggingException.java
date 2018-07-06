@@ -16,23 +16,26 @@
  */
 package org.apache.logging.slf4j;
 
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
-import org.junit.Assert;
-import org.junit.Test;
+/**
+ * Exception thrown when the SLF4J adapter encounters a problem.
+ *
+ */
+public class SLF4JLoggingException extends RuntimeException {
 
-public class Log4jMarkerTest {
+    /**
+     * Generated serial version ID.
+     */
+    private static final long serialVersionUID = -1618650972455089998L;
 
-	@Test
-	public void testEquals() {
-		final Marker markerA = MarkerManager.getMarker(Log4jMarkerTest.class.getName() + "-A");
-		final Marker markerB = MarkerManager.getMarker(Log4jMarkerTest.class.getName() + "-B");
-		final Log4jMarker marker1 = new Log4jMarker(markerA);
-		final Log4jMarker marker2 = new Log4jMarker(markerA);
-		final Log4jMarker marker3 = new Log4jMarker(markerB);
-		Assert.assertEquals(marker1, marker2);
-		Assert.assertNotEquals(marker1, null);
-		Assert.assertNotEquals(null, marker1);
-		Assert.assertNotEquals(marker1, marker3);
-	}
+    public SLF4JLoggingException(final String msg) {
+        super(msg);
+    }
+
+    public SLF4JLoggingException(final String msg, final Exception ex) {
+        super(msg, ex);
+    }
+
+    public SLF4JLoggingException(final Exception ex) {
+        super(ex);
+    }
 }

@@ -23,7 +23,7 @@
     <version>3.0.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
-  <artifactId>log4j-slf4j18</artifactId>
+  <artifactId>log4j-slf4j18-impl</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j SLF4J 1.8+ Binding</name>
   <description>The Apache Log4j SLF4J 1.8 API binding to Log4j 2 Core</description>
@@ -57,17 +57,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
-      <scope>provided</scope>
-      <type>zip</type>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
@@ -96,36 +85,6 @@
   </dependencies>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.0.2</version>
-        <executions>
-          <execution>
-            <id>unpack-classes</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-slf4j-impl</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                  <overWrite>false</overWrite>
-                </artifactItem>
-              </artifactItems>
-              <includes>**/*.class</includes>
-              <excludes>**/*.java</excludes>
-              <outputDirectory>${project.build.directory}</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <!-- Include the standard NOTICE and LICENSE -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

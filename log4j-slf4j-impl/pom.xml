@@ -161,46 +161,6 @@
           </instructions>
         </configuration>
       </plugin>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>zip</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>log4j-slf4j-impl-${project.version}</finalName>
-              <attach>false</attach>
-              <appendAssemblyId>false</appendAssemblyId>
-              <descriptors>
-                <descriptor>src/assembly/slf4j.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>zip</id>
-            <phase>install</phase>
-            <goals>
-              <goal>install-file</goal>
-            </goals>
-            <configuration>
-              <groupId>${project.groupId}</groupId>
-              <artifactId>${project.artifactId}</artifactId>
-              <version>${project.version}</version>
-              <packaging>zip</packaging>
-              <file>${project.build.directory}/${project.build.finalName}.zip</file>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
   <reporting>
