@@ -141,6 +141,9 @@
         Fixed a memory leak in which ReusableParameterizedMessage would hold a reference to the most recently
         logged throwable and provided varargs array.
       </action>
+      <action issue="LOG4J2-2368" dev="ckozak" type="fix">
+        Nested logging doesn't clobber AbstractStringLayout cached StringBuidlers
+      </action>
     </release>
     <release version="2.11.0" date="2018-03-11" description="GA Release 2.11.0">
       <action issue="LOG4J2-2104" dev="rgoers" type="fix">
