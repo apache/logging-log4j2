@@ -47,5 +47,34 @@ public class StringBuildersTest {
         assertTrue("trimmed OK", sb.capacity() <= Constants.MAX_REUSABLE_MESSAGE_SIZE);
     }
 
+    @Test
+    public void escapeJsonCharactersCorrectly() {
+        String jsonValueNotEscaped = "{\"field\n1\":\"value_1\"}";
+        String jsonValueEscaped = "{\\\"field\\n1\\\":\\\"value_1\\\"}";
 
+        StringBuilder sb = new StringBuilder();
+        sb.append(jsonValueNotEscaped);
+        assertEquals(jsonValueNotEscaped, sb.toString());
+        StringBuilders.escapeJson(sb, 0);
+        assertEquals(jsonValueEscaped, sb.toString());
+
+        sb = new StringBuilder();
+        String jsonValuePartiallyEscaped = "{\"field\n1\":\\\"value_1\\\"}";
+        sb.append(jsonValueNotEscaped);
+        assertEquals(jsonValueNotEscaped, sb.toString());
+        StringBuilders.escapeJson(sb, 10);
+        assertEquals(jsonValuePartiallyEscaped, sb.toString());
+    }
+
+    @Test
+    public void escapeJsonCharactersISOControl() {
+        String jsonValueNotEscaped = "{\"field\n1\":\"value" + (char) 0x8F + "_1\"}";
+        String jsonValueEscaped = "{\\\"field\\n1\\\":\\\"value\\u008F_1\\\"}";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(jsonValueNotEscaped);
+        assertEquals(jsonValueNotEscaped, sb.toString());
+        StringBuilders.escapeJson(sb, 0);
+        assertEquals(jsonValueEscaped, sb.toString());
+    }
 }
