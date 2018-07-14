@@ -42,13 +42,11 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader) {
-        // Can't use new ctor because it throws an exception
         this(os, streamName, layout, writeHeader, Constants.ENCODER_BYTE_BUFFER_SIZE);
     }
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader, final int bufferSize) {
-        // Can't use new ctor because it throws an exception
         this(os, streamName, layout, writeHeader, ByteBuffer.wrap(new byte[bufferSize]));
     }
 
