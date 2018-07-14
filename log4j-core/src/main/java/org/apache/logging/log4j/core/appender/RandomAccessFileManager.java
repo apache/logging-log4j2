@@ -60,7 +60,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
      * @param fileName The name of the file to manage.
      * @param append true if the file should be appended to, false if it should
      *            be overwritten.
-     * @param isFlush true if the contents should be flushed to disk on every
+     * @param immediateFlush true if the contents should be flushed to disk on every
      *            write
      * @param bufferSize The buffer size.
      * @param advertiseURI the URI to use when advertising the file
@@ -68,12 +68,12 @@ public class RandomAccessFileManager extends OutputStreamManager {
      * @param configuration The configuration.
      * @return A RandomAccessFileManager for the File.
      */
-    public static RandomAccessFileManager getFileManager(final String fileName, final boolean append,
-            final boolean isFlush, final int bufferSize, final String advertiseURI,
-            final Layout<? extends Serializable> layout, final Configuration configuration) {
-        return narrow(RandomAccessFileManager.class, getManager(fileName, new FactoryData(append,
-                isFlush, bufferSize, advertiseURI, layout, configuration), FACTORY));
-    }
+	public static RandomAccessFileManager getFileManager(final String fileName, final boolean append,
+			final boolean immediateFlush, final int bufferSize, final String advertiseURI,
+			final Layout<? extends Serializable> layout, final Configuration configuration) {
+		return narrow(RandomAccessFileManager.class, getManager(fileName,
+				new FactoryData(append, immediateFlush, bufferSize, advertiseURI, layout, configuration), FACTORY));
+	}
 
     public Boolean isEndOfBatch() {
         return isEndOfBatch.get();
