@@ -29,6 +29,8 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "NoOpTriggeringPolicy", category = Core.CATEGORY_NAME, printObject = true)
 public class NoOpTriggeringPolicy extends AbstractTriggeringPolicy {
 
+    public static final NoOpTriggeringPolicy INSTANCE = new NoOpTriggeringPolicy();
+    
 	@Override
 	public void initialize(final RollingFileManager manager) {
 		// NoOp
@@ -36,7 +38,7 @@ public class NoOpTriggeringPolicy extends AbstractTriggeringPolicy {
 
 	@Override
 	public boolean isTriggeringEvent(final LogEvent logEvent) {
-		// NoOp
+		// Never triggers.
 		return false;
 	}
 
