@@ -299,7 +299,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     @Override
     public Message memento() {
         if (message == null) {
-            message = new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
+            message = new MementoMessage(getSource(), String.valueOf(messageText), messageFormat, getParameters());
         }
         return message;
     }

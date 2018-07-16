@@ -304,7 +304,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     @Override
     public Message memento() {
         if (message == null) {
-            message = new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
+            message = new MementoMessage(source, String.valueOf(messageText), messageFormat, getParameters());
         }
         return message;
     }

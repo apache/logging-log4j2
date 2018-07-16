@@ -35,8 +35,21 @@ public final class MementoMessage implements Message, StringBuilderFormattable {
     private final String formattedMessage;
     private final String format;
     private final Object[] parameters;
+    private final StackTraceElement source;
 
+    /**
+     * @deprecated Use {@link #MementoMessage(StackTraceElement, String, String, Object[])}
+     */
+    @Deprecated
     public MementoMessage(String formattedMessage, String format, Object[] parameters) {
+        this.formattedMessage = formattedMessage;
+        this.format = format;
+        this.parameters = parameters;
+        this.source = null;
+    }
+
+    public MementoMessage(StackTraceElement source, String formattedMessage, String format, Object[] parameters) {
+        this.source = source;
         this.formattedMessage = formattedMessage;
         this.format = format;
         this.parameters = parameters;
@@ -65,6 +78,11 @@ public final class MementoMessage implements Message, StringBuilderFormattable {
     @Override
     public Throwable getThrowable() {
         return null;
+    }
+
+    @Override
+    public StackTraceElement getSource() {
+        return source;
     }
 
     @Override
