@@ -53,7 +53,7 @@ public class CleanFolders extends AbstractExternalFileCleaner {
 
 		protected void printf(final String format, final Object... args) {
 			if (printStream != null) {
-				printf(format, args);
+				printStream.printf(format, args);
 			}
 		}
 
