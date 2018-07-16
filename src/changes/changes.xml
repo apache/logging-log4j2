@@ -30,7 +30,144 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
+    <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
+      <action issue="LOG4J2-1721" dev="rgoers" type="update" due-to="Phokham Nonava">
+        Allow composite configuration for context parameter.
+      </action>
+      <action issue="LOG4J2-2343" dev="rgoers" type="fix" due-to="Raymond Augé">
+        The OSGi Activator specified an incorrect version.
+      </action>
+      <action issue="LOG4J2-2305" dev="rgoers" type="fix" due-to="Björn Kautler">
+        Make java.util.ServiceLoader properly work in OSGi by using the Service Loader Mediator Specification.
+      </action>
+      <action issue="LOG4J2-2305" dev="rgoers" type="fix">
+        Split the SLF4J binding into 2 implementations - one for SLF4J 1.7.x and one for SLF4J 1.8+.
+      </action>
+      <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">
+        Improve plugin error message when elements are missing.
+      </action>
+      <action issue="LOG4J2-2283" dev="ggregory" type="fix" due-to="Vishnu Priya Matha">
+        ParserConfigurationException when using Log4j with oracle.xml.jaxp.JXDocumentBuilderFactory.
+      </action>
+      <action issue="LOG4J2-2300" dev="ggregory" type="fix">
+        PoolingDriverConnectionSource does not take into account properties, user name, and password.
+      </action>
+      <action issue="LOG4J2-2302" dev="ggregory" type="update">
+        Status logger should show the Log4j name and version when initializing itself.
+      </action>
+      <action issue="LOG4J2-2304" dev="ggregory" type="update" due-to="wumengsheng">
+        Log4j2 2.8.2 JMX unregister NullPointerException.
+      </action>
+      <action issue="LOG4J2-2311" dev="ggregory" type="update">
+      	Update Jackson from 2.9.4 to 2.9.5.
+      </action>
+      <action issue="LOG4J2-2313" dev="ggregory" type="update">
+      	Update LMAX Disruptor from 3.3.7 to 3.4.2.
+      </action>
+      <action issue="LOG4J2-548" dev="ggregory" type="update" due-to="Shehata, Paresh Varke, Eric Victorson, Martin Laforet">
+      	Log4j 2.0 ERROR "Could not search jar" with JBoss EAP 6.2.
+      </action>
+      <action issue="LOG4J2-2307" dev="ckozak" type="fix">
+        MutableLogEvent and RingBufferLogEvent message mementos retain the original format string.
+      </action>
+      <action issue="LOG4J2-2032" dev="ckozak" type="fix" due-to="Kostiantyn Shchepanovskyi">
+        Curly braces in parameters are not treated as placeholders.
+      </action>
+      <action issue="LOG4J2-2317" dev="ckozak" type="fix">
+        MutableLogEvent.getNonNullImmutableMessage and Log4jLogEvent.makeMessageImmutable retain format and parameters.
+      </action>
+      <action issue="LOG4J2-2318" dev="ckozak" type="fix">
+        Messages are no longer mutated when the asynchronous queue is full. A warning is logged to the status logger instead.
+      </action>
+      <action issue="LOG4J2-2320" dev="ckozak" type="fix">
+        Fix NPE in AbstractLogger when another exception is thrown, masking the root cause.
+      </action>
+      <action issue="LOG4J2-2321" dev="ckozak" type="fix">
+        AsyncLogger uses the correct level when unspecified. This provides parity between AsyncLogger and Logger.
+      </action>
+      <action issue="LOG4J2-2322" dev="ckozak" type="fix">
+        Custom ContextSelector implementations which select an AsyncLoggerContext disable LoggerConfig.includeLocation
+        by default for parity with AsyncLoggerContextSelector.
+      </action>
+      <action issue="LOG4J2-2269" dev="ckozak" type="fix">
+        MutableLogEvent references to other objects are cleared after each use.
+        Fix a memory leak causing references to parameters to be held after synchronous logging with thread locals enabled.
+      </action>
+      <action issue="LOG4J2-2328" dev="ggregory" type="update">
+        Update JAnsi from 1.17 to 1.17.1.
+      </action>
+      <action issue="LOG4J2-2301" dev="ckozak" type="fix">
+        Mixed async loggers no longer forget parameter values, providing some appenders with an array of nulls.
+      </action>
+      <action issue="LOG4J2-2331" dev="ckozak" type="fix" due-to="Mike Baranski">
+        RollingFileManager debug logging avoids string concatenation and errant braces in favor of parameterized logging.
+      </action>
+      <action issue="LOG4J2-2333" dev="ckozak" type="fix">
+        Handle errors thrown in default disruptor ExceptionHandler implementations to avoid killing background threads.
+      </action>
+      <action issue="LOG4J2-2334" dev="ggregory" type="fix">
+        Add API org.apache.logging.log4j.core.appender.AsyncAppender.getQueueSize().
+      </action>
+      <action issue="LOG4J2-2336" dev="ckozak" type="fix">
+        Remove duplicate hyphen from the AsyncLoggerConfig background thread name.
+      </action>
+      <action issue="LOG4J2-2347" dev="ggregory" type="fix">
+        Update Apache Commons Compress from 1.16.1 to 1.17.
+      </action>
+      <action issue="LOG4J2-2351" dev="ckozak" type="update">
+        Added AbstractLogEvent.getMutableInstant to allow the MutableInstant instance to be modified by classes extending AbstractLogEvent.
+      </action>
+      <action issue="LOG4J2-2352" dev="ckozak" type="fix">
+        RingBufferLogEvent memento messages provide the expected format string, and no longer attempt to substitute parameters into curly braces in parameter toString values.
+        Both RingBufferLogEvent and MutableLogEvent memento implementations memoize results to avoid rebuilding formatted string values.
+      </action>
+      <action issue="LOG4J2-2355" dev="ckozak" type="fix" due-to="Henrik Brautaset Aronsen">
+        PropertiesUtil ignores non-string system properties. Fixes a NoClassDefFoundError initializing StatusLogger
+        caused by an NPE while initializing the static PropertiesUtil field.
+      </action>
+      <action issue="LOG4J2-2357" dev="ggregory" type="update">
+        Update Jackson from 2.9.5 to 2.9.6.
+      </action>
+      <action issue="LOG4J2-2358" dev="ggregory" type="update">
+        Update Kafka client from 1.0.0 to 1.1.0.
+      </action>
+      <action issue="LOG4J2-2362" dev="ckozak" type="fix">
+        Fixed a memory leak in which ReusableObjectMessage would hold a reference to the most recently logged object.
+      </action>
+      <action issue="LOG4J2-2312" dev="ckozak" type="fix">
+        Jackson layouts used with AsyncLoggerContextSelector output the expected format rather than only a json string of the message text.
+      </action>
+      <action issue="LOG4J2-2364" dev="ckozak" type="fix">
+        Fixed a memory leak in which ReusableParameterizedMessage would hold a reference to the most recently
+        logged throwable and provided varargs array.
+      </action>
+      <action issue="LOG4J2-2368" dev="ckozak" type="fix">
+        Nested logging doesn't clobber AbstractStringLayout cached StringBuidlers
+      </action>
+      <action issue="LOG4J2-2373" dev="ckozak" type="fix" due-to="Kevin Meurer">
+        StringBuilders.escapeJson implementation runs in linear time. Escaping large JSON strings
+        in EncodingPatternConverter and MapMessage will perform significantly better.
+      </action>
+    </release>
+    <release version="2.11.0" date="2018-03-11" description="GA Release 2.11.0">
+      <action issue="LOG4J2-2104" dev="rgoers" type="fix">
+        LoaderUtil was not looping properly over classloaders.
+      </action>
+      <action issue="LOG4J2-1976" dev="rgoers" type="fix">
+        Revert OSGi API version to 4.3.1.
+      </action>
+      <action issue="LOG4J2-2273" dev="rpopma" type="update" due-to="Bruno P. Kinoshita">
+        Documentation fix in manual page for custom configurations.
+      </action>
+      <action issue="LOG4J2-2252" dev="rpopma" type="update" due-to="Carter Kozak">
+        Reusable LogEvents now pass the original format string to downstream components like layouts and filters.
+      </action>
+      <action issue="LOG4J2-2253" dev="rpopma" type="add" due-to="Carter Kozak">
+        Add API to enable iterating over message parameters without creating temporary objects.
+      </action>
+      <action issue="LOG4J2-2271" dev="rgoers" type="fix">
+        Move module-info.class to META-INF/versions/9 directory.
+      </action>
       <action issue="LOG4J2-2254" dev="rgoers" type="fix">
         Incorrect automatics module name header was being included in manifests.
       </action>
@@ -185,15 +322,30 @@
       </action>
       <action issue="LOG4J2-2259" dev="ggregory" type="update">
         Update MongoDB 3 module from driver 3.6.1 to 3.6.3.
-      </action>      
+      </action>
       <action issue="LOG4J2-2260" dev="ggregory" type="update">
         [SMTP] Update javax.mail from 1.6.0 to 1.6.1.
       </action>
       <action issue="LOG4J2-2264" dev="ggregory" type="update">
         Update JAnsi from 1.16 to 1.17.
       </action>
+      <action issue="LOG4J2-2270" dev="ggregory" type="fix" due-to="Cyril Martin">
+        Strings::join, when called with [null] returns "null" instead of EMPTY.
+      </action>
+      <action issue="LOG4J2-2276" dev="ggregory" type="fix" due-to="Sean Baxter">
+        ConcurrentModificationException from org.apache.logging.log4j.status.StatusLogger.&lt;clinit>(StatusLogger.java:71).
+      </action>
+      <action issue="LOG4J2-2274" dev="ggregory" type="fix" due-to="Sebastien Lannez">
+        Allow EnvironmentPropertySource to run with a SecurityManager that rejects environment variable access.
+      </action>
+      <action issue="LOG4J2-2279" dev="ggregory" type="fix" due-to="Gary Gregory">
+        Allow SystemPropertiesPropertySource to run with a SecurityManager that rejects system property access.
+      </action>
     </release>
     <release version="2.10.0" date="2017-11-18" description="GA Release 2.10.0">
+      <action issue="LOG4J2-2289" dev="ggregory" type="fix" due-to="Hari Menon">
+        XML Schema for DynamicFilterThreshold does not accept multiple KeyValuePairs.
+      </action>
       <action issue="LOG4J2-2120" dev="mikes" type="add" due-to="Carter Douglas Kozak">
         Properly escape newlines and other control characters in JSON.
       </action>

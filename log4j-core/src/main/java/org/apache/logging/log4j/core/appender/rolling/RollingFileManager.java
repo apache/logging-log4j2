@@ -255,7 +255,7 @@ public class RollingFileManager extends FileManager {
 
     @Override
     public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
-        LOGGER.debug("Shutting down RollingFileManager {}" + getName());
+        LOGGER.debug("Shutting down RollingFileManager {}", getName());
         boolean stopped = true;
         if (triggeringPolicy instanceof LifeCycle2) {
             stopped &= ((LifeCycle2) triggeringPolicy).stop(timeout, timeUnit);

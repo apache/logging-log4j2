@@ -19,6 +19,9 @@ package org.apache.logging.log4j.message;
 import org.apache.logging.log4j.junit.Mutable;
 import org.junit.Test;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -143,5 +146,24 @@ public class ReusableParameterizedMessageTest {
         final Throwable EXCEPTION2 = new UnsupportedOperationException("#2");
         msg.set(testMsg, "msgs", EXCEPTION2);
         assertSame(EXCEPTION2, msg.getThrowable());
+    }
+
+    @Test
+    public void testParameterConsumer() {
+        final String testMsg = "Test message {}";
+        final ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
+        final Throwable EXCEPTION1 = new IllegalAccessError("#1");
+        msg.set(testMsg, "msg", EXCEPTION1);
+        List<Object> expected = new LinkedList<>();
+        expected.add("msg");
+        expected.add(EXCEPTION1);
+        final List<Object> actual = new LinkedList<>();
+        msg.forEachParameter(new ParameterConsumer<Void>() {
+            @Override
+            public void accept(Object parameter, int parameterIndex, Void state) {
+                actual.add(parameter);
+            }
+        }, null);
+        assertEquals(expected, actual);
     }
 }

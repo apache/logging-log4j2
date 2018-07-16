@@ -43,7 +43,11 @@ Component | Description
 [Log4j 2 to SLF4J Adapter](log4j-to-slf4j/apidocs/index.html) | An adapter that permits applications written against the Log4j 2 API to log using SLF4J.
 [Apache Flume Appender](log4j-flume-ng/apidocs/index.html) | An Appender that allows applications to send logging events to Apache Flume Agents.
 [Log4j JMX GUI](log4j-jmx-gui/apidocs/index.html) | A Java Swing-based client for remotely viewing the status logger and editing the Log4j configuration.
+[Log4j JPA](log4j-jpa/apidocs/index.html) | Apache Log4j Java Persistence API Appender.
 [Log4j Web Application Support](log4j-web/apidocs/index.html) | Additional classes that enable multiple configurations within a Servlet Container.
 [Log4j CouchDB Support](log4j-couchdb/apidocs/index.html) | Additional Appender for CouchDB.
-[Log4j MongoDB Support](log4j-mongodb/apidocs/index.html) | Additional Appender for MongoDB.
+[Log4j JDBC DBCP 2](log4j-jdbc-dbcp2/apidocs/index.html) | Connection source for the JDBC Appender using Apache Commons DBCP2.
+[Log4j Liquibase Binding](log4j-liquibase/apidocs/index.html) | The Apache Log4j Liquibase binding to Log4j 2 Core.
+[Log4j MongoDB 2 Support](log4j-mongodb2/apidocs/index.html) | Additional Appender for MongoDB using the version 2 driver.
+[Log4j MongoDB 3 Support](log4j-mongodb3/apidocs/index.html) | Additional Appender for MongoDB using the version 3 driver.
 [Log4j Cassandra Support](log4j-cassandra/apidocs/index.html) | Additional Appender for Cassandra.

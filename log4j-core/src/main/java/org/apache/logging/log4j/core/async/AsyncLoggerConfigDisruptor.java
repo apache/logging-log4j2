@@ -108,7 +108,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
         public void onEvent(final Log4jEventWrapper event, final long sequence, final boolean endOfBatch)
                 throws Exception {
             event.event.setEndOfBatch(endOfBatch);
-            event.loggerConfig.asyncCallAppenders(event.event);
+            event.loggerConfig.logToAsyncLoggerConfigsOnCurrentThread(event.event);
             event.clear();
 
             notifyIntermediateProgress(sequence);
@@ -214,7 +214,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
         ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLoggerConfig.RingBufferSize");
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLoggerConfig.WaitStrategy");
 
-        final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLoggerConfig-", true, Thread.NORM_PRIORITY) {
+        final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLoggerConfig", true, Thread.NORM_PRIORITY) {
             @Override
             public Thread newThread(final Runnable r) {
                 final Thread result = super.newThread(r);

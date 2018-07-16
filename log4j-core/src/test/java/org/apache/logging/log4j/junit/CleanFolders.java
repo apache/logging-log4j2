@@ -18,87 +18,89 @@ package org.apache.logging.log4j.junit;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import org.apache.logging.log4j.Logger;
-
 /**
- * A JUnit test rule to automatically delete folders recursively before (optional) and after (optional) a test is run.
+ * A JUnit test rule to automatically delete folders recursively before
+ * (optional) and after (optional) a test is run.
+ * <p>
+ * This class should not perform logging using Log4j to avoid accidentally
+ * loading or re-loading Log4j configurations.
+ * </p>
  */
 public class CleanFolders extends AbstractExternalFileCleaner {
 
-    public static final class DeleteAllFileVisitor extends SimpleFileVisitor<Path> {
+	public static final class DeleteAllFileVisitor extends SimpleFileVisitor<Path> {
 
-        private final Logger logger;
+		private final PrintStream printStream;
 
-        public DeleteAllFileVisitor(final Logger logger) {
-            this.logger = logger;
-        }
+		public DeleteAllFileVisitor(final PrintStream logger) {
+			this.printStream = logger;
+		}
 
-        @Override
-        public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
-            if (logger != null) {
-                logger.debug(CLEANER_MARKER, "Deleting directory {}", dir);
-            }
-            final boolean deleted = Files.deleteIfExists(dir);
-            if (logger != null) {
-                logger.debug(CLEANER_MARKER, "Deleted directory {}: {}", dir, deleted);
-            }
-            return FileVisitResult.CONTINUE;
-        }
+		@Override
+		public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+			printf("%s Deleting directory %s", CLEANER_MARKER, dir);
+			final boolean deleted = Files.deleteIfExists(dir);
+			printf("%s Deleted directory %s: %s", CLEANER_MARKER, dir, deleted);
+			return FileVisitResult.CONTINUE;
+		}
 
-        @Override
-        public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-            if (logger != null) {
-                logger.debug(CLEANER_MARKER, "Deleting file {} with {}", file, attrs);
-            }
-            final boolean deleted = Files.deleteIfExists(file);
-            if (logger != null) {
-                logger.debug(CLEANER_MARKER, "Deleted file {}: {}", file, deleted);
-            }
-            return FileVisitResult.CONTINUE;
-        }
-    }
+		protected void printf(final String format, final Object... args) {
+			if (printStream != null) {
+				printStream.printf(format, args);
+			}
+		}
 
-    private static final int MAX_TRIES = 10;
+		@Override
+		public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+			printf("%s Deleting file %s with %s", CLEANER_MARKER, file, attrs);
+			final boolean deleted = Files.deleteIfExists(file);
+			printf("%s Deleted file %s: %s", CLEANER_MARKER, file, deleted);
+			return FileVisitResult.CONTINUE;
+		}
+	}
 
-    public CleanFolders(final boolean before, final boolean after, final int maxTries, final File... files) {
-        super(before, after, maxTries, null, files);
-    }
+	private static final int MAX_TRIES = 10;
 
-    public CleanFolders(final boolean before, final boolean after, final int maxTries, final String... fileNames) {
-        super(before, after, maxTries, null, fileNames);
-    }
+	public CleanFolders(final boolean before, final boolean after, final int maxTries, final File... files) {
+		super(before, after, maxTries, null, files);
+	}
 
-    public CleanFolders(final File... folders) {
-        super(true, true, MAX_TRIES, null, folders);
-    }
+	public CleanFolders(final boolean before, final boolean after, final int maxTries, final String... fileNames) {
+		super(before, after, maxTries, null, fileNames);
+	}
 
-    public CleanFolders(final Logger logger, final File... folders) {
-        super(true, true, MAX_TRIES, logger, folders);
-    }
+	public CleanFolders(final File... folders) {
+		super(true, true, MAX_TRIES, null, folders);
+	}
 
-    public CleanFolders(final Path... paths) {
-        super(true, true, MAX_TRIES, null, paths);
-    }
+	public CleanFolders(final Path... paths) {
+		super(true, true, MAX_TRIES, null, paths);
+	}
 
-    public CleanFolders(final String... folderNames) {
-        super(true, true, MAX_TRIES, null, folderNames);
-    }
+	public CleanFolders(final PrintStream logger, final File... folders) {
+		super(true, true, MAX_TRIES, logger, folders);
+	}
 
-    private void cleanFolder(final Path folder, final int tryIndex) throws IOException {
-        if (Files.exists(folder) && Files.isDirectory(folder)) {
-            Files.walkFileTree(folder, new DeleteAllFileVisitor(getLogger()));
-        }
-    }
+	public CleanFolders(final String... folderNames) {
+		super(true, true, MAX_TRIES, null, folderNames);
+	}
 
-    @Override
-    protected boolean clean(final Path path, final int tryIndex) throws IOException {
-        cleanFolder(path, tryIndex);
-        return true;
-    }
+	@Override
+	protected boolean clean(final Path path, final int tryIndex) throws IOException {
+		cleanFolder(path, tryIndex);
+		return true;
+	}
+
+	private void cleanFolder(final Path folder, final int tryIndex) throws IOException {
+		if (Files.exists(folder) && Files.isDirectory(folder)) {
+			Files.walkFileTree(folder, new DeleteAllFileVisitor(getPrintStream()));
+		}
+	}
 }

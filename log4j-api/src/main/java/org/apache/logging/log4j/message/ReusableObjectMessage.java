@@ -24,7 +24,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableObjectMessage implements ReusableMessage {
+public class ReusableObjectMessage implements ReusableMessage, ParameterVisitable, Clearable {
     private static final long serialVersionUID = 6922476812535519960L;
 
     private transient Object obj;
@@ -57,7 +57,7 @@ public class ReusableObjectMessage implements ReusableMessage {
      */
     @Override
     public String getFormat() {
-        return getFormattedMessage();
+        return obj instanceof String ? (String) obj : null;
     }
 
     /**
@@ -127,7 +127,17 @@ public class ReusableObjectMessage implements ReusableMessage {
     }
 
     @Override
+    public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
+        action.accept(obj, 0, state);
+    }
+
+    @Override
     public Message memento() {
         return new ObjectMessage(obj);
+    }
+
+    @Override
+    public void clear() {
+        obj = null;
     }
 }

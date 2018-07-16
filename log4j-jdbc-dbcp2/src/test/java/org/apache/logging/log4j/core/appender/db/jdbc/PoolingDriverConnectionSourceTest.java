@@ -35,14 +35,11 @@ public class PoolingDriverConnectionSourceTest {
                 // @formatter:on
         };
         // @formatter:off
-        final PoolingDriverConnectionSource source = (PoolingDriverConnectionSource) PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
+        final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
             .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING)
             .setProperties(properties)
             .build();
-        // @formatter:on
-        try (Connection conn = source.getConnection()) {
-            Assert.assertFalse(conn.isClosed());
-        }
+        openAndClose(source);
     }
 
     @Test
@@ -59,10 +56,7 @@ public class PoolingDriverConnectionSourceTest {
             .setProperties(properties)
             .setPoolName("MyPoolName")
             .build();
-        // @formatter:on
-        try (Connection conn = source.getConnection()) {
-            Assert.assertFalse(conn.isClosed());
-        }
+        openAndClose(source);
     }
 
     @Test
@@ -74,10 +68,17 @@ public class PoolingDriverConnectionSourceTest {
             .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
             .build();
         // @formatter:on
-        try (Connection conn = source.getConnection()) {
-            Assert.assertFalse(conn.isClosed());
-        }
+        openAndClose(source);
     }
+
+	private void openAndClose(final PoolingDriverConnectionSource source) throws SQLException {
+		Assert.assertNotNull("PoolingDriverConnectionSource is null", source);
+		try (Connection conn = source.getConnection()) {
+            Assert.assertFalse(conn.isClosed());
+        } finally {
+        	source.stop();
+        }
+	}
 
     @Test
     public void testH2UserPasswordAndPoolName() throws SQLException {
@@ -88,9 +89,7 @@ public class PoolingDriverConnectionSourceTest {
             .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
             .setPoolName("MyPoolName")
             .build();
-        // @formatter:on
-        try (Connection conn = source.getConnection()) {
-            Assert.assertFalse(conn.isClosed());
-        }
+        openAndClose(source);
     }
+
 }

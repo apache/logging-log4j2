@@ -14,23 +14,29 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
-
-// This class is here to allow {@link SystemClock}, {@link SystemMillisClock}
-// to compile. It will not be copied into the log4j-core module.
+package org.apache.logging.log4j.message;
 
 /**
- * Extension of the {@link Clock} interface that is able to provide more accurate time information than milliseconds
- * since the epoch. {@code PreciseClock} implementations are free to return millisecond-precision time
- * if that is the most accurate time information available on this platform.
+ * An operation that accepts two input arguments and returns no result.
+ *
+ * <p>
+ * The third parameter lets callers pass in a stateful object to be modified with the key-value pairs,
+ * so the ParameterConsumer implementation itself can be stateless and potentially reusable.
+ * </p>
+ *
+ * @param <S> state data
+ * @see ReusableMessage
  * @since 2.11
  */
-public interface PreciseClock extends Clock {
+public interface ParameterConsumer<S> {
 
     /**
-     * Initializes the specified instant with time information as accurate as available on this platform.
-     * @param mutableInstant the container to be initialized with the accurate time information
-     * @since 2.11
+     * Performs an operation given the specified arguments.
+     *
+     * @param parameter the parameter
+     * @param parameterIndex Index of the parameter
+     * @param state
      */
-    void init(final MutableInstant mutableInstant);
+    void accept(Object parameter, int parameterIndex, S state);
+
 }

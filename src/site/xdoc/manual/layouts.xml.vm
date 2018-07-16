@@ -1643,7 +1643,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <a name="PatternLoggerFqcn"/>
+                <a name="EndOfBatch"/>
                 <b>endOfBatch</b>
               </td>
               <td>Outputs the EndOfBatch status of the logging event, as "true" or "false".</td>

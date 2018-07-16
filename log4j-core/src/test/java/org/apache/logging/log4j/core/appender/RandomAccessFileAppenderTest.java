@@ -40,7 +40,7 @@ import static org.junit.Assert.*;
  * Simple tests for both the RandomAccessFileAppender and RollingRandomAccessFileAppender.
  */
 @RunWith(Parameterized.class)
-public class RandomAccessFileAppenderTests {
+public class RandomAccessFileAppenderTest {
 
     @Parameterized.Parameters(name = "{0}, locationEnabled={1}, type={2}")
     public static Collection<Object[]> data() {
@@ -64,7 +64,7 @@ public class RandomAccessFileAppenderTests {
     private final File logFile;
     private final boolean locationEnabled;
 
-    public RandomAccessFileAppenderTests(final String testName, final boolean locationEnabled, final String type) {
+    public RandomAccessFileAppenderTest(final String testName, final boolean locationEnabled, final String type) {
         this.init = new LoggerContextRule(testName + type);
         this.logFile = new File("target", testName + ".log");
         this.files = new CleanFiles(this.logFile);

@@ -49,8 +49,8 @@ public class ReusableObjectMessageTest {
     }
 
     @Test
-    public void testGetFormat_InitiallyNullString() throws Exception {
-        assertEquals("null", new ReusableObjectMessage().getFormat());
+    public void testGetFormat_InitiallyNull() throws Exception {
+        assertNull(new ReusableObjectMessage().getFormat());
     }
 
     @Test

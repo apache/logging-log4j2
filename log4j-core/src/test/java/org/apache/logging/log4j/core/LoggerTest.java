@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -39,9 +40,7 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
-import org.apache.logging.log4j.message.ReusableParameterizedMessage;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -415,14 +414,14 @@ public class LoggerTest {
         logger.error("Throwing with parameters {}", "TestParam", new NullPointerException("Test Exception"));
         final List<LogEvent> events = app.getEvents();
         assertNotNull("Log event list not returned", events);
-        assertTrue("Incorrect number of log events: expected 1, actual " + events.size(), events.size() == 1);
+        assertEquals("Incorrect number of log events", 1, events.size());
         final LogEvent event = events.get(0);
         final Throwable thrown = event.getThrown();
         assertNotNull("No throwable present in log event", thrown);
         final Message msg = event.getMessage();
-        assertTrue("Incorrect message type. Expected ParameterizedMessage/ReusableParameterizedMessage, actual " + msg.getClass().getSimpleName(),
-                msg instanceof ParameterizedMessage || msg instanceof ReusableParameterizedMessage);
-
+        assertEquals("Throwing with parameters {}", msg.getFormat());
+        assertEquals("Throwing with parameters TestParam", msg.getFormattedMessage());
+        assertArrayEquals(new Object[] { "TestParam", thrown }, msg.getParameters());
     }
 }
 

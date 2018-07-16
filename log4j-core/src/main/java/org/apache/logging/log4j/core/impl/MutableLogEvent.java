@@ -40,7 +40,7 @@ import org.apache.logging.log4j.util.Strings;
  * Mutable implementation of the {@code LogEvent} interface.
  * @since 2.6
  */
-public class MutableLogEvent implements LogEvent, ReusableMessage {
+public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisitable {
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
 
     private int threadPriority;
@@ -54,6 +54,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     private String threadName;
     private String loggerName;
     private Message message;
+    private String messageFormat;
     private StringBuilder messageText;
     private Object[] parameters;
     private Throwable thrown;
@@ -124,6 +125,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         level = null;
         loggerName = null;
         message = null;
+        messageFormat = null;
         thrown = null;
         thrownProxy = null;
         source = null;
@@ -209,6 +211,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
         if (msg instanceof ReusableMessage) {
             final ReusableMessage reusable = (ReusableMessage) msg;
             reusable.formatTo(getMessageTextForWriting());
+            this.messageFormat = msg.getFormat();
             if (parameters != null) {
                 parameters = reusable.swapParameters(parameters);
                 parameterCount = reusable.getParameterCount();
@@ -241,7 +244,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
      */
     @Override
     public String getFormat() {
-        return null;
+        return messageFormat;
     }
 
     /**
@@ -250,6 +253,15 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
     @Override
     public Object[] getParameters() {
         return parameters == null ? null : Arrays.copyOf(parameters, parameterCount);
+    }
+
+    @Override
+    public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
+        if (parameters != null) {
+            for (short i = 0; i < parameterCount; i++) {
+                action.accept(parameters[i], i, state);
+            }
+        }
     }
 
     /**
@@ -291,11 +303,10 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
 
     @Override
     public Message memento() {
-        if (message != null) {
-            return message;
+        if (message == null) {
+            message = new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
         }
-        final Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
-        return new ParameterizedMessage(messageText.toString(), params);
+        return message;
     }
 
     @Override
@@ -481,7 +492,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
                 .setLoggerFqcn(loggerFqcn) //
                 .setLoggerName(loggerName) //
                 .setMarker(marker) //
-                .setMessage(getNonNullImmutableMessage()) // ensure non-null & immutable
+                .setMessage(memento()) // ensure non-null & immutable
                 .setNanoTime(nanoTime) //
                 .setSource(source) //
                 .setThreadId(threadId) //
@@ -491,9 +502,5 @@ public class MutableLogEvent implements LogEvent, ReusableMessage {
                 .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
                 .setInstant(instant) //
         ;
-    }
-
-    private Message getNonNullImmutableMessage() {
-        return message != null ? message : new SimpleMessage(String.valueOf(messageText));
     }
 }

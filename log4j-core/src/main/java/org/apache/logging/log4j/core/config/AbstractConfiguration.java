@@ -43,6 +43,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.Version;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
@@ -209,7 +210,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public void initialize() {
-        LOGGER.debug("Initializing configuration {}", this);
+        LOGGER.debug(Version.getProductString() + " initializing configuration {}", this);
         subst.setConfiguration(this);
         try {
             scriptManager = new ScriptManager(this, watchManager);
@@ -239,7 +240,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.debug("Configuration {} initialized", this);
     }
 
-    /**
+	/**
      * Start the configuration.
      */
     @Override

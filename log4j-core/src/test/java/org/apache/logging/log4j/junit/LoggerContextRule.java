@@ -145,8 +145,9 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
      *            the name of the Appender to look up.
      * @return the named Appender or {@code null} if it wasn't defined in the configuration.
      */
-    public Appender getAppender(final String name) {
-        return getConfiguration().getAppenders().get(name);
+    @SuppressWarnings("unchecked") // Assume the call site knows what it is doing.
+	public <T extends Appender> T getAppender(final String name) {
+        return (T) getConfiguration().getAppenders().get(name);
     }
 
     /**

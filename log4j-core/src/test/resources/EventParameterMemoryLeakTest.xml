@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+  <Appenders>
+    <File name="File"
+          fileName="target/EventParameterMemoryLeakTest.log"
+          bufferedIO="false"
+          immediateFlush="true"
+          append="false">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m %throwable{short.message}%n</Pattern>
+      </PatternLayout>
+    </File>
+  </Appenders>
+  <Loggers>
+    <Root level="trace">
+      <AppenderRef ref="File"/>
+    </Root>
+  </Loggers>
+</Configuration>

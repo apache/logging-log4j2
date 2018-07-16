@@ -19,8 +19,6 @@ package org.apache.logging.log4j.core.async.perftest;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import com.lmax.disruptor.collections.Histogram;
-
 public class MultiThreadPerfTest extends PerfTest {
 
     public static void main(final String[] args) throws Exception {

@@ -210,7 +210,7 @@ builder.add( builder.newLogger( "TestLogger", Level.DEBUG )
 
 builder.add( builder.newRootLogger( Level.DEBUG )
     .add( builder.newAppenderRef( "rolling" ) ) );
-LoggerContext ctx = Configurator.intitialize(builder.build());
+LoggerContext ctx = Configurator.initialize(builder.build());
 ]]></pre>
         </subsection>
 

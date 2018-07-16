@@ -25,7 +25,7 @@ public class SLF4JServiceProvider implements org.slf4j.spi.SLF4JServiceProvider 
     public static final String REQUESTED_API_VERSION = "1.8.99";
 
     private ILoggerFactory loggerFactory;
-    private IMarkerFactory markerFactory;
+    private Log4jMarkerFactory markerFactory;
     private MDCAdapter mdcAdapter;
 
     @Override
@@ -50,8 +50,10 @@ public class SLF4JServiceProvider implements org.slf4j.spi.SLF4JServiceProvider 
 
     @Override
     public void initialize() {
-        loggerFactory = new Log4jLoggerFactory();
         markerFactory = new Log4jMarkerFactory();
+        loggerFactory = new Log4jLoggerFactory(markerFactory);
         mdcAdapter = new Log4jMDCAdapter();
     }
+
+
 }

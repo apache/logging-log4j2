@@ -77,15 +77,15 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
     }
 
     /**
-     * Switches the {@code reserved} flag off if the specified message is a ReusableParameterizedMessage,
-     * otherwise does nothing. This flag is used internally to verify that a reusable message is no longer in use and
+     * Invokes {@link Clearable#clear()} when possible.
+     * This flag is used internally to verify that a reusable message is no longer in use and
      * can be reused.
      * @param message the message to make available again
      * @since 2.7
      */
     public static void release(final Message message) { // LOG4J2-1583
-        if (message instanceof ReusableParameterizedMessage) {
-            ((ReusableParameterizedMessage) message).reserved = false;
+        if (message instanceof Clearable) {
+            ((Clearable) message).clear();
         }
     }
 

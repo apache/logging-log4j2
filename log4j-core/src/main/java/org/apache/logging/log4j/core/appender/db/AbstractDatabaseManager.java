@@ -185,7 +185,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * This method manages buffering and writing of events.
      *
      * @param event The event to write to the database.
-     * @deprecated since 2.10.1 Use {@link #write(LogEvent, Serializable)}.
+     * @deprecated since 2.11.0 Use {@link #write(LogEvent, Serializable)}.
      */
     @Deprecated
     public final synchronized void write(final LogEvent event) {

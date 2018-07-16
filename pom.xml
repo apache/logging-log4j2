@@ -20,7 +20,7 @@
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.10.1-SNAPSHOT</version>
+  <version>2.11.1-SNAPSHOT</version>
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
@@ -95,7 +95,7 @@
       <id>mattsicker</id>
       <name>Matt Sicker</name>
       <email>mattsicker@apache.org</email>
-      <organization>Independent Consultant</organization>
+      <organization>CloudBees</organization>
       <roles>
         <role>PMC Chair</role>
       </roles>
@@ -172,7 +172,7 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.10.0</Log4jReleaseVersion>
+    <Log4jReleaseVersion>2.11.0</Log4jReleaseVersion>
     <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
     <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <!--<Log4jReleaseManager>Matt Sicker</Log4jReleaseManager> -->
@@ -181,29 +181,29 @@
     <slf4jVersion>1.7.25</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.9.4</jackson2Version>
+    <jackson2Version>2.9.6</jackson2Version>
     <springVersion>3.2.18.RELEASE</springVersion>
     <flumeVersion>1.7.0</flumeVersion> <!-- Version 1.8.0 requires Java 8 -->
-    <disruptorVersion>3.3.7</disruptorVersion>
+    <disruptorVersion>3.4.2</disruptorVersion>
     <conversantDisruptorVersion>1.2.10</conversantDisruptorVersion> <!-- Version 1.2.11 requires Java 8 -->
     <mongodb2.version>2.14.3</mongodb2.version>
     <mongodb3.version>3.6.3</mongodb3.version>
     <compiler.plugin.version>3.7.0</compiler.plugin.version>
-    <pmd.plugin.version>3.8</pmd.plugin.version>
+    <pmd.plugin.version>3.10.0</pmd.plugin.version>
     <findbugs.plugin.version>3.0.5</findbugs.plugin.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
-    <javadoc.plugin.version>3.0.0</javadoc.plugin.version>
+    <javadoc.plugin.version>3.0.1</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
     <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
-    <surefire.plugin.version>2.20.1</surefire.plugin.version>
-    <failsafe.plugin.version>2.20.1</failsafe.plugin.version>
+    <surefire.plugin.version>2.21.0</surefire.plugin.version>
+    <failsafe.plugin.version>2.21.0</failsafe.plugin.version>
     <checkstyle.plugin.version>3.0.0</checkstyle.plugin.version>
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
     <rat.plugin.version>0.12</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
     <cobertura.plugin.version>2.7</cobertura.plugin.version>
-    <jacoco.plugin.version>0.8.0</jacoco.plugin.version>
+    <jacoco.plugin.version>0.8.1</jacoco.plugin.version>
     <release.plugin.version>2.5.3</release.plugin.version>
     <scm.plugin.version>1.9.5</scm.plugin.version>
     <jxr.plugin.version>2.5</jxr.plugin.version>
@@ -221,7 +221,8 @@
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <javax.persistence>2.1.1</javax.persistence>
-    <osgi.api.version>6.0.0</osgi.api.version>
+    <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
+    <osgi.api.version>4.3.1</osgi.api.version>
     <!-- Version 5.15.0 requires Java 8 -->
     <activemq.version>5.14.5</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
@@ -284,7 +285,7 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
-        <version>3.5.2</version>
+        <version>3.5.4</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -352,6 +353,17 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j18-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jcl</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -404,7 +416,7 @@
       <dependency>
         <groupId>org.fusesource.jansi</groupId>
         <artifactId>jansi</artifactId>
-        <version>1.17</version>
+        <version>1.17.1</version>
         <optional>true</optional>
       </dependency>
       <dependency>
@@ -604,7 +616,7 @@
       <dependency>
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
       </dependency>
       <dependency>
         <groupId>org.zeromq</groupId>
@@ -712,7 +724,7 @@
       <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>1.4.196</version>
+        <version>1.4.197</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
@@ -758,7 +770,7 @@
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit</artifactId>
-        <version>1.28.2</version>
+        <version>1.31.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -784,13 +796,13 @@
         <groupId>com.github.tomakehurst</groupId>
         <artifactId>wiremock</artifactId>
         <scope>test</scope>
-        <version>2.15.0</version>
+        <version>2.18.0</version>
       </dependency>
       <!-- Used for compressing to formats other than zip and gz -->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.16.1</version>
+        <version>1.17</version>
       </dependency>
       <dependency>
         <groupId>org.tukaani</groupId>
@@ -829,9 +841,9 @@
         <!-- Testing MongoDB -->
         <groupId>de.flapdoodle.embed</groupId>
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <version>2.0.3</version>
+        <version>2.1.1</version>
         <scope>test</scope>
-      </dependency>      
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
@@ -942,6 +954,13 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>clirr-maven-plugin</artifactId>
           <version>${clirr.plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.bcel</groupId>
+              <artifactId>bcel</artifactId>
+              <version>6.2</version>
+            </dependency>
+          </dependencies>
           <configuration>
             <minSeverity>${minSeverity}</minSeverity>
           </configuration>
@@ -979,7 +998,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
+          <version>3.1.0</version>
           <executions>
             <execution>
               <id>default-jar</id>
@@ -1016,7 +1035,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -1204,6 +1223,7 @@
               The Apache Logging Services Project creates and maintains open-source software related to the logging of
               application behavior and released at no charge to the public.
             </charter>
+            <pmc>https://logging.apache.org</pmc>
           </asfExtOptions>
         </configuration>
         <executions>
@@ -1215,6 +1235,21 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>clirr-maven-plugin</artifactId>
+        <version>${clirr.plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.bcel</groupId>
+            <artifactId>bcel</artifactId>
+            <version>6.2</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <minSeverity>${minSeverity}</minSeverity>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -1331,6 +1366,7 @@
     <module>log4j-core-its</module>
     <module>log4j-1.2-api</module>
     <module>log4j-slf4j-impl</module>
+    <module>log4j-slf4j18-impl</module>
     <module>log4j-to-slf4j</module>
     <module>log4j-jcl</module>
     <module>log4j-flume-ng</module>

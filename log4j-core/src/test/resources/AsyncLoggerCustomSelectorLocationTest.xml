@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="OFF">
+  <Appenders>
+    <RandomAccessFile name="RandomAccessFile" fileName="target/AsyncLoggerCustomSelectorLocationTest.log"
+                      immediateFlush="false" append="false">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %X{aKey} %location %m %ex%n</Pattern>
+      </PatternLayout>
+    </RandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <Logger name="com.include.location" includeLocation="true"/>
+    <Root level="info">
+      <AppenderRef ref="RandomAccessFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
