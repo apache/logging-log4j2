@@ -31,34 +31,38 @@ import java.nio.file.Path;
  * &#64;Rule
  * public CleanFiles files = new CleanFiles("path/to/file.txt");
  * </pre>
+ * <p>
+ * This class should not perform logging using Log4j to avoid accidentally
+ * loading or re-loading Log4j configurations.
+ * </p>
  *
  */
 public class CleanFiles extends AbstractExternalFileCleaner {
-    private static final int MAX_TRIES = 10;
+	private static final int MAX_TRIES = 10;
 
-    public CleanFiles(final boolean before, final boolean after, final int maxTries, final File... files) {
-        super(before, after, maxTries, null, files);
-    }
+	public CleanFiles(final boolean before, final boolean after, final int maxTries, final File... files) {
+		super(before, after, maxTries, null, files);
+	}
 
-    public CleanFiles(final boolean before, final boolean after, final int maxTries, final String... fileNames) {
-        super(before, after, maxTries, null, fileNames);
-    }
+	public CleanFiles(final boolean before, final boolean after, final int maxTries, final String... fileNames) {
+		super(before, after, maxTries, null, fileNames);
+	}
 
-    public CleanFiles(final File... files) {
-        super(true, true, MAX_TRIES, null, files);
-    }
+	public CleanFiles(final File... files) {
+		super(true, true, MAX_TRIES, null, files);
+	}
 
-    public CleanFiles(final Path... paths) {
-        super(true, true, MAX_TRIES, null, paths);
-    }
+	public CleanFiles(final Path... paths) {
+		super(true, true, MAX_TRIES, null, paths);
+	}
 
-    public CleanFiles(final String... fileNames) {
-        super(true, true, MAX_TRIES, null, fileNames);
-    }
+	public CleanFiles(final String... fileNames) {
+		super(true, true, MAX_TRIES, null, fileNames);
+	}
 
-    @Override
-    protected boolean clean(final Path path, final int tryIndex) throws IOException {
-        return Files.deleteIfExists(path);
-    }
+	@Override
+	protected boolean clean(final Path path, final int tryIndex) throws IOException {
+		return Files.deleteIfExists(path);
+	}
 
 }
