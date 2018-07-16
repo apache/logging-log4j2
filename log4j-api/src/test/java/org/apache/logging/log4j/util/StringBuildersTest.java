@@ -77,4 +77,16 @@ public class StringBuildersTest {
         StringBuilders.escapeJson(sb, 0);
         assertEquals(jsonValueEscaped, sb.toString());
     }
+
+    @Test
+    public void escapeXMLCharactersCorrectly() {
+        String xmlValueNotEscaped = "<\"Salt&Peppa'\">";
+        String xmlValueEscaped = "&lt;&quot;Salt&amp;Peppa&apos;&quot;&gt;";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(xmlValueNotEscaped);
+        assertEquals(xmlValueNotEscaped, sb.toString());
+        StringBuilders.escapeXml(sb, 0);
+        assertEquals(xmlValueEscaped, sb.toString());
+    }
 }

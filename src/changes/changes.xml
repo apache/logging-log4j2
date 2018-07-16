@@ -211,6 +211,10 @@
         StringBuilders.escapeJson implementation runs in linear time. Escaping large JSON strings
         in EncodingPatternConverter and MapMessage will perform significantly better.
       </action>
+      <action issue="LOG4J2-2376" dev="ckozak" type="fix" due-to="Kevin Meurer">
+        StringBuilders.escapeXml implementation runs in linear time. Escaping large XML strings
+        in EncodingPatternConverter and MapMessage will perform significantly better.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-1721" dev="rgoers" type="update" due-to="Phokham Nonava">
@@ -328,6 +332,10 @@
       </action>
       <action issue="LOG4J2-2373" dev="ckozak" type="fix" due-to="Kevin Meurer">
         StringBuilders.escapeJson implementation runs in linear time. Escaping large JSON strings
+        in EncodingPatternConverter and MapMessage will perform significantly better.
+      </action>
+      <action issue="LOG4J2-2376" dev="ckozak" type="fix" due-to="Kevin Meurer">
+        StringBuilders.escapeXml implementation runs in linear time. Escaping large XML strings
         in EncodingPatternConverter and MapMessage will perform significantly better.
       </action>
     </release>
