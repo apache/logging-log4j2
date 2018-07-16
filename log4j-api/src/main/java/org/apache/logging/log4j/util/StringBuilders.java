@@ -245,29 +245,67 @@ public final class StringBuilders {
     }
 
     public static void escapeXml(final StringBuilder toAppendTo, final int start) {
-        for (int i = toAppendTo.length() - 1; i >= start; i--) { // backwards: length may change
+        int escapeCount = 0;
+        for (int i = start; i < toAppendTo.length(); i++) {
             final char c = toAppendTo.charAt(i);
             switch (c) {
                 case '&':
-                    toAppendTo.setCharAt(i, '&');
-                    toAppendTo.insert(i + 1, "amp;");
+                    escapeCount += 4;
                     break;
                 case '<':
-                    toAppendTo.setCharAt(i, '&');
-                    toAppendTo.insert(i + 1, "lt;");
-                    break;
                 case '>':
-                    toAppendTo.setCharAt(i, '&');
-                    toAppendTo.insert(i + 1, "gt;");
+                    escapeCount += 3;
                     break;
                 case '"':
-                    toAppendTo.setCharAt(i, '&');
-                    toAppendTo.insert(i + 1, "quot;");
+                case '\'':
+                    escapeCount += 5;
+            }
+        }
+
+        int lastChar = toAppendTo.length() - 1;
+        toAppendTo.setLength(toAppendTo.length() + escapeCount);
+        int lastPos = toAppendTo.length() - 1;
+
+        for (int i = lastChar; lastPos > i; i--) {
+            final char c = toAppendTo.charAt(i);
+            switch (c) {
+                case '&':
+                    toAppendTo.setCharAt(lastPos--, ';');
+                    toAppendTo.setCharAt(lastPos--, 'p');
+                    toAppendTo.setCharAt(lastPos--, 'm');
+                    toAppendTo.setCharAt(lastPos--, 'a');
+                    toAppendTo.setCharAt(lastPos--, '&');
+                    break;
+                case '<':
+                    toAppendTo.setCharAt(lastPos--, ';');
+                    toAppendTo.setCharAt(lastPos--, 't');
+                    toAppendTo.setCharAt(lastPos--, 'l');
+                    toAppendTo.setCharAt(lastPos--, '&');
+                    break;
+                case '>':
+                    toAppendTo.setCharAt(lastPos--, ';');
+                    toAppendTo.setCharAt(lastPos--, 't');
+                    toAppendTo.setCharAt(lastPos--, 'g');
+                    toAppendTo.setCharAt(lastPos--, '&');
+                    break;
+                case '"':
+                    toAppendTo.setCharAt(lastPos--, ';');
+                    toAppendTo.setCharAt(lastPos--, 't');
+                    toAppendTo.setCharAt(lastPos--, 'o');
+                    toAppendTo.setCharAt(lastPos--, 'u');
+                    toAppendTo.setCharAt(lastPos--, 'q');
+                    toAppendTo.setCharAt(lastPos--, '&');
                     break;
                 case '\'':
-                    toAppendTo.setCharAt(i, '&');
-                    toAppendTo.insert(i + 1, "apos;");
+                    toAppendTo.setCharAt(lastPos--, ';');
+                    toAppendTo.setCharAt(lastPos--, 's');
+                    toAppendTo.setCharAt(lastPos--, 'o');
+                    toAppendTo.setCharAt(lastPos--, 'p');
+                    toAppendTo.setCharAt(lastPos--, 'a');
+                    toAppendTo.setCharAt(lastPos--, '&');
                     break;
+                default:
+                    toAppendTo.setCharAt(lastPos--, c);
             }
         }
     }
