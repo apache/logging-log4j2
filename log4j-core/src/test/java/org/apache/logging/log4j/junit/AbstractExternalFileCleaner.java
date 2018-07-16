@@ -160,7 +160,7 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
 
 	protected void printf(final String format, final Object... args) {
 		if (printStream != null) {
-			printf(format, args);
+		    printStream.printf(format, args);
 		}
 	}
 
