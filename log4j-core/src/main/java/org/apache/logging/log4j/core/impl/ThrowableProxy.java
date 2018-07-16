@@ -738,7 +738,7 @@ public class ThrowableProxy implements Serializable {
                     final CacheEntry entry = this.toCacheEntry(stackTraceElement,
                         this.loadClass(lastLoader, className), false);
                     extClassInfo = entry.element;
-                    map.put(stackTraceElement.toString(), entry);
+                    map.put(className, entry);
                     if (entry.loader != null) {
                         lastLoader = entry.loader;
                     }
