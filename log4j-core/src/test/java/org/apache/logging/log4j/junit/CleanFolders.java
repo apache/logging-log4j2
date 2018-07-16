@@ -61,7 +61,7 @@ public class CleanFolders extends AbstractExternalFileCleaner {
 		public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
 			printf("%s Deleting file %s with %s", CLEANER_MARKER, file, attrs);
 			final boolean deleted = Files.deleteIfExists(file);
-			printf("%s Deleted file %s: %s", file, deleted);
+			printf(CLEANER_MARKER, "%s Deleted file %s: %s", file, deleted);
 			return FileVisitResult.CONTINUE;
 		}
 	}
