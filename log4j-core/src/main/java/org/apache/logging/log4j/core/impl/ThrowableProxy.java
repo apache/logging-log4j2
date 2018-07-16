@@ -99,6 +99,8 @@ public class ThrowableProxy implements Serializable {
 
     private final transient Throwable throwable;
 
+    private static final Map<String, CacheEntry> cacheEntryMap = new HashMap<>();
+
     /**
      * For JSON and XML IO via Jackson.
      */
@@ -133,12 +135,11 @@ public class ThrowableProxy implements Serializable {
         this.name = throwable.getClass().getName();
         this.message = throwable.getMessage();
         this.localizedMessage = throwable.getLocalizedMessage();
-        final Map<String, CacheEntry> map = new HashMap<>();
         final Stack<Class<?>> stack = StackLocatorUtil.getCurrentStackTrace();
-        this.extendedStackTrace = this.toExtendedStackTrace(stack, map, null, throwable.getStackTrace());
+        this.extendedStackTrace = this.toExtendedStackTrace(stack, cacheEntryMap, null, throwable.getStackTrace());
         final Throwable throwableCause = throwable.getCause();
         final Set<Throwable> causeVisited = new HashSet<>(1);
-        this.causeProxy = throwableCause == null ? null : new ThrowableProxy(throwable, stack, map, throwableCause,
+        this.causeProxy = throwableCause == null ? null : new ThrowableProxy(throwable, stack, cacheEntryMap, throwableCause,
             visited, causeVisited);
         this.suppressedProxies = this.toSuppressedProxies(throwable, visited);
     }
@@ -716,6 +717,7 @@ public class ThrowableProxy implements Serializable {
         for (int i = stackLength - 1; i >= 0; --i) {
             final StackTraceElement stackTraceElement = stackTrace[i];
             final String className = stackTraceElement.getClassName();
+            final String stackTraceElementStr = stackTraceElement.toString();
             // The stack returned from getCurrentStack may be missing entries for java.lang.reflect.Method.invoke()
             // and its implementation. The Throwable might also contain stack entries that are no longer
             // present as those methods have returned.
@@ -727,7 +729,7 @@ public class ThrowableProxy implements Serializable {
                 stack.pop();
                 clazz = stack.isEmpty() ? null : stack.peek();
             } else {
-                final CacheEntry cacheEntry = map.get(className);
+                final CacheEntry cacheEntry = map.get(stackTraceElementStr);
                 if (cacheEntry != null) {
                     final CacheEntry entry = cacheEntry;
                     extClassInfo = entry.element;
@@ -738,7 +740,7 @@ public class ThrowableProxy implements Serializable {
                     final CacheEntry entry = this.toCacheEntry(stackTraceElement,
                         this.loadClass(lastLoader, className), false);
                     extClassInfo = entry.element;
-                    map.put(stackTraceElement.toString(), entry);
+                    map.put(stackTraceElementStr, entry);
                     if (entry.loader != null) {
                         lastLoader = entry.loader;
                     }
