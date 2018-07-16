@@ -197,33 +197,28 @@ public final class StringBuilders {
             final char c = toAppendTo.charAt(i);
             switch (c) {
                 case '\b':
-                    toAppendTo.setCharAt(lastPos--, 'b');
-                    toAppendTo.setCharAt(lastPos--, '\\');
+                    lastPos = escapeAndDecrement(toAppendTo, lastPos, 'b');
                     break;
+
                 case '\t':
-                    toAppendTo.setCharAt(lastPos--, 't');
-                    toAppendTo.setCharAt(lastPos--, '\\');
+                    lastPos = escapeAndDecrement(toAppendTo, lastPos, 't');
                     break;
 
                 case '\f':
-                    toAppendTo.setCharAt(lastPos--, 'f');
-                    toAppendTo.setCharAt(lastPos--, '\\');
+                    lastPos = escapeAndDecrement(toAppendTo, lastPos, 'f');
                     break;
 
                 case '\n':
-                    toAppendTo.setCharAt(lastPos--, 'n');
-                    toAppendTo.setCharAt(lastPos--, '\\');
+                    lastPos = escapeAndDecrement(toAppendTo, lastPos, 'n');
                     break;
 
                 case '\r':
-                    toAppendTo.setCharAt(lastPos--, 'r');
-                    toAppendTo.setCharAt(lastPos--, '\\');
+                    lastPos = escapeAndDecrement(toAppendTo, lastPos, 'r');
                     break;
 
                 case '"':
                 case '\\':
-                    toAppendTo.setCharAt(lastPos--, c);
-                    toAppendTo.setCharAt(lastPos--, '\\');
+                    lastPos = escapeAndDecrement(toAppendTo, lastPos, c);
                     break;
 
                 default:
@@ -236,10 +231,17 @@ public final class StringBuilders {
                         toAppendTo.setCharAt(lastPos--, 'u');
                         toAppendTo.setCharAt(lastPos--, '\\');
                     } else {
-                        toAppendTo.setCharAt(lastPos--, c);
+                        toAppendTo.setCharAt(lastPos, c);
+                        lastPos--;
                     }
             }
         }
+    }
+
+    private static int escapeAndDecrement(StringBuilder toAppendTo, int lastPos, char c) {
+        toAppendTo.setCharAt(lastPos--, c);
+        toAppendTo.setCharAt(lastPos--, '\\');
+        return lastPos;
     }
 
     public static void escapeXml(final StringBuilder toAppendTo, final int start) {
