@@ -153,7 +153,7 @@
         in EncodingPatternConverter and MapMessage will perform significantly better.
       </action>
       <action issue="LOG4J2-2377" dev="ggregory" type="fix" due-to="Mirko Rzehak, Gary Gregory">
-        NullPointerException in org.apache.logging.log4j.util.LoaderUtil.getClassLoaders() when using Bootstrap classloader.
+        NullPointerException in org.apache.logging.log4j.util.LoaderUtil.getClassLoaders() when using Bootstrap class loader.
       </action>
     </release>
     <release version="2.11.0" date="2018-03-11" description="GA Release 2.11.0">
