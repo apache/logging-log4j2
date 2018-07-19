@@ -215,6 +215,9 @@
         StringBuilders.escapeXml implementation runs in linear time. Escaping large XML strings
         in EncodingPatternConverter and MapMessage will perform significantly better.
       </action>
+      <action issue="LOG4J2-2380" dev="ggregory" type="fix">
+        Update Conversant Disruptor 1.2.11 to 1.2.13.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-1721" dev="rgoers" type="update" due-to="Phokham Nonava">
