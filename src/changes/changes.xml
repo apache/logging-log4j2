@@ -353,6 +353,9 @@
       <action issue="LOG4J2-2384" dev="ggregory" type="update">
         Update Kafka client from 1.1.0 to 1.1.1.
       </action>
+      <action issue="LOG4J2-2385" dev="ggregory" type="update">
+        Update Groovy from 2.4.13 to 2.5.1.
+      </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
       <action issue="LOG4J2-2104" dev="rgoers" type="fix">
