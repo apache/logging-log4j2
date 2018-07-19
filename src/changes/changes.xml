@@ -321,7 +321,7 @@
         Fixed a memory leak in which ReusableObjectMessage would hold a reference to the most recently logged object.
       </action>
       <action issue="LOG4J2-2312" dev="ckozak" type="fix">
-        Jackson layouts used with AsyncLoggerContextSelector output the expected format rather than only a json string of the message text.
+        Jackson layouts used with AsyncLoggerContextSelector output the expected format rather than only a JSON string of the message text.
       </action>
       <action issue="LOG4J2-2364" dev="ckozak" type="fix">
         Fixed a memory leak in which ReusableParameterizedMessage would hold a reference to the most recently
