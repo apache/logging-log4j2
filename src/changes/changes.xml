@@ -338,6 +338,9 @@
         StringBuilders.escapeXml implementation runs in linear time. Escaping large XML strings
         in EncodingPatternConverter and MapMessage will perform significantly better.
       </action>
+      <action issue="LOG4J2-2377" dev="ggregory" type="fix" due-to="Mirko Rzehak, Gary Gregory">
+        NullPointerException in org.apache.logging.log4j.util.LoaderUtil.getClassLoaders() when using Bootstrap class loader.
+      </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
       <action issue="LOG4J2-2104" dev="rgoers" type="fix">
