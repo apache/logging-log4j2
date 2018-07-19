@@ -215,8 +215,11 @@
         StringBuilders.escapeXml implementation runs in linear time. Escaping large XML strings
         in EncodingPatternConverter and MapMessage will perform significantly better.
       </action>
-      <action issue="LOG4J2-2380" dev="ggregory" type="fix">
+      <action issue="LOG4J2-2380" dev="ggregory" type="update">
         Update Conversant Disruptor 1.2.11 to 1.2.13.
+      </action>
+      <action issue="LOG4J2-2383" dev="ggregory" type="update">
+        Update org.eclipse.persistence.jpa from 2.7.1 to 2.7.2
       </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
@@ -344,7 +347,7 @@
       <action issue="LOG4J2-2377" dev="ggregory" type="fix" due-to="Mirko Rzehak, Gary Gregory">
         NullPointerException in org.apache.logging.log4j.util.LoaderUtil.getClassLoaders() when using Bootstrap class loader.
       </action>
-      <action issue="LOG4J2-2382" dev="ggregory" type="fix">
+      <action issue="LOG4J2-2382" dev="ggregory" type="update">
         Update Mongodb 3 driver from 3.6.3 to 3.8.0.
       </action>
     </release>
