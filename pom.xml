@@ -187,7 +187,7 @@
     <disruptorVersion>3.4.2</disruptorVersion>
     <conversantDisruptorVersion>1.2.13</conversantDisruptorVersion>
     <mongodb2.version>2.14.3</mongodb2.version>
-    <mongodb3.version>3.6.3</mongodb3.version>
+    <mongodb3.version>3.8.0</mongodb3.version>
     <compiler.plugin.version>3.7.0</compiler.plugin.version>
     <pmd.plugin.version>3.10.0</pmd.plugin.version>
     <spotbugs.plugin.version>3.1.5</spotbugs.plugin.version>

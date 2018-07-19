@@ -344,6 +344,9 @@
       <action issue="LOG4J2-2377" dev="ggregory" type="fix" due-to="Mirko Rzehak, Gary Gregory">
         NullPointerException in org.apache.logging.log4j.util.LoaderUtil.getClassLoaders() when using Bootstrap class loader.
       </action>
+      <action issue="LOG4J2-2382" dev="ggregory" type="fix">
+        Update Mongodb 3 driver from 3.6.3 to 3.8.0.
+      </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
       <action issue="LOG4J2-2104" dev="rgoers" type="fix">
