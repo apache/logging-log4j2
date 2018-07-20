@@ -292,7 +292,7 @@ public abstract class AbstractLoadBundleTest {
 
 
     /**
-     * Tests the loading of the 1.2 Compatibitility API bundle, its classes should be loadable from the Core bundle, 
+     * Tests the loading of the 1.2 Compatibility API bundle, its classes should be loadable from the Core bundle, 
      * and the class loader should be the same between a class from core and a class from compat
      */
     @Test
