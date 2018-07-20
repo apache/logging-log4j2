@@ -221,6 +221,9 @@
       <action issue="LOG4J2-2383" dev="ggregory" type="update">
         Update org.eclipse.persistence.jpa from 2.7.1 to 2.7.2
       </action>
+      <action issue="LOG4J2-2387" dev="ggregory" type="update">
+        Update optional Apache Commons DBCP from 2.4.0 to 2.5.0.
+      </action>
     </release>
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
       <action issue="LOG4J2-1721" dev="rgoers" type="update" due-to="Phokham Nonava">
@@ -355,6 +358,9 @@
       </action>
       <action issue="LOG4J2-2385" dev="ggregory" type="update">
         Update Groovy from 2.4.13 to 2.5.1.
+      </action>
+      <action issue="LOG4J2-2386" dev="ggregory" type="update">
+        Update optional Apache Commons DBCP from 2.2.0 to 2.4.0.
       </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
