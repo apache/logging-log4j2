@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
@@ -344,6 +346,20 @@ public class FlumePersistentAppenderTest {
             }
         }
     }
+    
+    @Test
+	public void testLogInterrupted() {
+		final ExecutorService executor = Executors.newSingleThreadExecutor();
+		executor.execute(new Runnable() {
+			public void run() {
+				executor.shutdownNow();
+				final Logger logger = LogManager.getLogger("EventLogger");
+				final Marker marker = MarkerManager.getMarker("EVENT");
+				logger.info(marker, "This is a test message");
+				Assert.assertTrue("Interruption status not preserved", Thread.currentThread().isInterrupted());
+			}
+		});
+	}
 
     /*
     @Test
