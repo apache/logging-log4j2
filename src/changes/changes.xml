@@ -167,7 +167,7 @@
       <action issue="LOG4J2-2386" dev="ggregory" type="update">
         Update optional Apache Commons DBCP from 2.2.0 to 2.4.0.
       </action>
-      <action issue="LOG4J2-2388" dev="ggregory" type="fix">
+      <action issue="LOG4J2-2388" dev="ggregory" type="fix" due-to="Failled">
         Thread indefinitely blocked when logging a message in an interrupted thread.
       </action>
     </release>
