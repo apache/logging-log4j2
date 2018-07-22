@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
+      <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">
+        ThrowableProxy was saving and retrieving cache entries using different keys.
+      </action>
       <action issue="LOG4J2-2316" dev="rgoers" type="fix">
         If root LoggerConfig does not have a Level return ERROR.
       </action>
