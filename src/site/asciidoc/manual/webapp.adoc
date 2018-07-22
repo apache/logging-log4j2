@@ -91,12 +91,13 @@ they skip scanning Log4j JAR files.
 The Log4j 2 Web JAR file is a web-fragment configured to order before
 any other web fragments in your application. It contains a
 `ServletContainerInitializer`
-(link:../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContainerInitializer.html[`Log4jServletContainerInitializer`])
+(link:../log4j-web/apidocs/org/apache/logging/log4j/web/Log4jServletContainerInitializer
+.html[`Log4jServletContainerInitializer`])
 that the container automatically discovers and initializes. This adds
 the
-link:../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html[`Log4jServletContextListener`]
+link:../log4j-web/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html[`Log4jServletContextListener`]
 and
-link:../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html[`Log4jServletFilter`]
+link:../log4j-web/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html[`Log4jServletFilter`]
 to the `ServletContext`. These classes properly initialize and
 deinitialize the Log4j configuration.
 
@@ -146,9 +147,9 @@ If you are using Log4j in a Servlet 2.5 web application, or if you have
 disabled auto-initialization with the
 `isLog4jAutoInitializationDisabled` context parameter, you _must_
 configure the
-link:../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html[`Log4jServletContextListener`]
+link:../log4j-web/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html[`Log4jServletContextListener`]
 and
-link:../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html[`Log4jServletFilter`]
+link:../log4j-web/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html[`Log4jServletFilter`]
 in the deployment descriptor or programmatically. The filter should
 match all requests of any type. The listener should be the very first
 listener defined in your application, and the filter should be the very
@@ -405,7 +406,7 @@ public class TestAsyncServlet extends HttpServlet {
 ----
 
 Alternatively, you can obtain the
-link:../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jWebLifeCycle.html[`Log4jWebLifeCycle`]
+link:../log4j-web/apidocs/org/apache/logging/log4j/web/Log4jWebLifeCycle.html[`Log4jWebLifeCycle`]
 instance from the `ServletContext` attributes, call its
 `setLoggerContext` method as the very first line of code in your
 asynchronous thread, and call its `clearLoggerContext` method as the
