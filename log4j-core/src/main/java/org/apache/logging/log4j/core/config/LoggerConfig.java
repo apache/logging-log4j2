@@ -268,7 +268,7 @@ public class LoggerConfig extends AbstractFilterable {
      * @return the logging Level.
      */
     public Level getLevel() {
-        return level == null ? parent.getLevel() : level;
+        return level == null ? parent == null ? Level.ERROR : parent.getLevel() : level;
     }
 
     /**
