@@ -65,6 +65,10 @@ temporary objects) while logging. In addition, Log4j 2 will not lose events whil
 
 This release contains new features, bugfixes and minor enhancements.
 
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and
+later.
+
 As of Log4j 2.9.0, the Log4j API was modified to use java.util.ServiceLoader to locate Log4j implementations,
 although the former binding mechanism is still supported. The Log4j API jar is now a multi-release jar
 to provide implementations of Java 9 specific classes. Multi-release jars are not supported by
