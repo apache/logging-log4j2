@@ -14,9 +14,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-# Apache Log4j 2.11.0 Release Notes
+# Apache Log4j 2.11.1 Release Notes
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.11.0 release!
+The Apache Log4j 2 team is pleased to announce the Log4j 2.11.1 release!
 
 Apache Log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade
 to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
@@ -26,6 +26,10 @@ Loggers. Another notable Log4j 2 feature is the ability to be "garbage-free" (av
 temporary objects) while logging. In addition, Log4j 2 will not lose events while reconfiguring.
 
 This release contains new features, bugfixes and minor enhancements.
+
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and
+later.
 
 As of Log4j 2.9.0, the Log4j API was modified to use java.util.ServiceLoader to locate Log4j implementations,
 although the former binding mechanism is still supported. The Log4j API jar is now a multi-release jar
@@ -65,145 +69,121 @@ Note that the XML, JSON and YAML formats changed in the 2.11.0 release: they no 
 Note that subsequent to the 2.9.0 release, for security reasons, Log4j does not process DTD in XML files.
 If you used DTD for including snippets, you have to use XInclude or Composite Configuration instead.
 
-The Log4j 2.11.0 API, as well as many core components, maintains binary compatibility with previous releases.
+The Log4j 2.11.1 API, as well as many core components, maintains binary compatibility with previous releases.
 
-## GA Release 2.11.0
+## GA Release 2.11.1
 
 Changes in this version include:
 
-### New Features
-* [LOG4J2-2253](https://issues.apache.org/jira/browse/LOG4J2-2253):
-Add API to enable iterating over message parameters without creating temporary objects. Thanks to Carter Kozak.
-* [LOG4J2-1883](https://issues.apache.org/jira/browse/LOG4J2-1883):
-Added support for precise (micro and nanosecond) timestamps when running on Java 9. A limited number of precise %d date formats are supported with PatternLayout. POTENTIAL BREAKING CHANGE: The XML, JSON and YAML formats have changed: they no longer have the "timeMillis" attribute and instead have an "Instant" element with "epochSecond" and "nanoOfSecond" attributes. Thanks to Anthony Maire.
-* [LOG4J2-2190](https://issues.apache.org/jira/browse/LOG4J2-2190):
-Output JSON object for ObjectMessage in JsonLayout. Thanks to Franz Wong.
-* [LOG4J2-2191](https://issues.apache.org/jira/browse/LOG4J2-2191):
-Made log4j-core a multi-release ("multi-version") jar, added log4j-core-java9 module.
-* [LOG4J2-2143](https://issues.apache.org/jira/browse/LOG4J2-2143):
-Add missing converters to PatternLayout.
-* [LOG4J2-2160](https://issues.apache.org/jira/browse/LOG4J2-2160):
-Add API org.apache.logging.log4j.core.lookup.Interpolator.getStrLookupMap().
-* [LOG4J2-2179](https://issues.apache.org/jira/browse/LOG4J2-2179):
-The MongoDB Appender should use a keys and values for a Log4j MapMessage.
-* [LOG4J2-2180](https://issues.apache.org/jira/browse/LOG4J2-2180):
-Add a MongoDbProvider builder for and deprecate org.apache.logging.log4j.mongodb.MongoDbProvider.createNoSqlProvider().
-* [LOG4J2-2181](https://issues.apache.org/jira/browse/LOG4J2-2181):
-The JDBC Appender should use keys and values from a Log4j MapMessage.
-* [LOG4J2-2185](https://issues.apache.org/jira/browse/LOG4J2-2185):
-Add a simple JDBC DriverManager-based ConnectionSource that uses JDBC's DriverManager#getConnection(String, String, String).
-* [LOG4J2-2186](https://issues.apache.org/jira/browse/LOG4J2-2186):
-Add a JDBC ConnectionSource that provides pooling through Apache Commons DBCP 2.
-* [LOG4J2-2187](https://issues.apache.org/jira/browse/LOG4J2-2187):
-Add a hook for a Connection Source for a JDBC Appender to release its resources.
-* [LOG4J2-2203](https://issues.apache.org/jira/browse/LOG4J2-2203):
-Add org.apache.logging.log4j.core.util.WatchManager#unwatch(File).
-* [LOG4J2-2206](https://issues.apache.org/jira/browse/LOG4J2-2206):
-Add method org.apache.logging.log4j.core.util.WatchManager.reset(File) and reset().
-* [LOG4J2-2208](https://issues.apache.org/jira/browse/LOG4J2-2208):
-Add debug logging to org.apache.logging.log4j.mongodb.MongoDbConnection.
 
 ### Fixed Bugs
-* [LOG4J2-2271](https://issues.apache.org/jira/browse/LOG4J2-2271):
-Move module-info.class to META-INF/versions/9 directory.
-* [LOG4J2-2254](https://issues.apache.org/jira/browse/LOG4J2-2254):
-Incorrect automatics module name header was being included in manifests.
-* [LOG4J2-2247](https://issues.apache.org/jira/browse/LOG4J2-2247):
-NullPointerException would occur when header was provided to a Layout on RollingRandingAccessFileAppender
-        with DirectWriteRolloverStrategy.
-* [LOG4J2-2129](https://issues.apache.org/jira/browse/LOG4J2-2129):
-Log4j2 throws NoClassDefFoundError in Java 9 in java.util.ServiceLoader. Thanks to Blazej Bucko.
-* [LOG4J2-2158](https://issues.apache.org/jira/browse/LOG4J2-2158):
-Fixed bug where ThreadContext map was cleared, resulting in entries being only available for one log event. Thanks to Björn Kautler.
-* [LOG4J2-2002](https://issues.apache.org/jira/browse/LOG4J2-2002):
-Avoid null attribute values in DefaultConfigurationBuilder. Thanks to Paul Burrowes.
-* [LOG4J2-2175](https://issues.apache.org/jira/browse/LOG4J2-2175):
-Fix typo in Property Substitution docs. Thanks to Behrang Saeedzadeh.
-* [LOG4J2-2163](https://issues.apache.org/jira/browse/LOG4J2-2163):
-Allow SortedArrayStringMap to be filtered upon deserialization. Fix build error in Java 9 when
-        compiling log4j-core test classes.
-* [LOG4J2-2157](https://issues.apache.org/jira/browse/LOG4J2-2157):
-Don't create exit message in traceExit(R) when logging is disabled. Thanks to Malte Skoruppa.
-* [LOG4J2-2123](https://issues.apache.org/jira/browse/LOG4J2-2123):
-DefaultMergeStrategy did not merge filters on loggers correctly. Thanks to Jacob Tolar.
-* [LOG4J2-2126](https://issues.apache.org/jira/browse/LOG4J2-2126):
-Removed compile-time dependency on Java Management APIs from Log4J API module to improve compatibility with Android Platform which does not support JMX extensions. Thanks to Oleg Kalnichevski.
-* [LOG4J2-2270](https://issues.apache.org/jira/browse/LOG4J2-2270):
-Strings::join, when called with [null] returns "null" instead of EMPTY. Thanks to Cyril Martin.
-* [LOG4J2-2276](https://issues.apache.org/jira/browse/LOG4J2-2276):
-ConcurrentModificationException from org.apache.logging.log4j.status.StatusLogger.&lt;clinit&gt;(StatusLogger.java:71). Thanks to Sean Baxter.
-* [LOG4J2-2274](https://issues.apache.org/jira/browse/LOG4J2-2274):
-Allow EnvironmentPropertySource to run with a SecurityManager that rejects environment variable access. Thanks to Sebastien Lannez.
-* [LOG4J2-2279](https://issues.apache.org/jira/browse/LOG4J2-2279):
-Allow SystemPropertiesPropertySource to run with a SecurityManager that rejects system property access. Thanks to Gary Gregory.
+* [LOG4J2-2389](https://issues.apache.org/jira/browse/LOG4J2-2389):
+ThrowableProxy was saving and retrieving cache entries using different keys. Thanks to Liu Wen.
+* [LOG4J2-2316](https://issues.apache.org/jira/browse/LOG4J2-2316):
+If root LoggerConfig does not have a Level return ERROR.
+* [LOG4J2-2390](https://issues.apache.org/jira/browse/LOG4J2-2390):
+Fix broken links in log4j web documentation. Thanks to anton-balaniuc.
+* [LOG4J2-2343](https://issues.apache.org/jira/browse/LOG4J2-2343):
+The OSGi Activator specified an incorrect version. Thanks to Raymond Augé.
+* [LOG4J2-2305](https://issues.apache.org/jira/browse/LOG4J2-2305):
+Make java.util.ServiceLoader properly work in OSGi by using the Service Loader Mediator Specification. Thanks to Björn Kautler.
+* [LOG4J2-2305](https://issues.apache.org/jira/browse/LOG4J2-2305):
+Split the SLF4J binding into 2 implementations - one for SLF4J 1.7.x and one for SLF4J 1.8+.
+* [LOG4J2-2268](https://issues.apache.org/jira/browse/LOG4J2-2268):
+Improve plugin error message when elements are missing. Thanks to Tilman Hausherr.
+* [LOG4J2-2283](https://issues.apache.org/jira/browse/LOG4J2-2283):
+ParserConfigurationException when using Log4j with oracle.xml.jaxp.JXDocumentBuilderFactory. Thanks to Vishnu Priya Matha.
+* [LOG4J2-2300](https://issues.apache.org/jira/browse/LOG4J2-2300):
+PoolingDriverConnectionSource does not take into account properties, user name, and password.
+* [LOG4J2-2307](https://issues.apache.org/jira/browse/LOG4J2-2307):
+MutableLogEvent and RingBufferLogEvent message mementos retain the original format string.
+* [LOG4J2-2032](https://issues.apache.org/jira/browse/LOG4J2-2032):
+Curly braces in parameters are not treated as placeholders. Thanks to Kostiantyn Shchepanovskyi.
+* [LOG4J2-2317](https://issues.apache.org/jira/browse/LOG4J2-2317):
+MutableLogEvent.getNonNullImmutableMessage and Log4jLogEvent.makeMessageImmutable retain format and parameters.
+* [LOG4J2-2318](https://issues.apache.org/jira/browse/LOG4J2-2318):
+Messages are no longer mutated when the asynchronous queue is full. A warning is logged to the status logger instead.
+* [LOG4J2-2320](https://issues.apache.org/jira/browse/LOG4J2-2320):
+Fix NPE in AbstractLogger when another exception is thrown, masking the root cause.
+* [LOG4J2-2321](https://issues.apache.org/jira/browse/LOG4J2-2321):
+AsyncLogger uses the correct level when unspecified. This provides parity between AsyncLogger and Logger.
+* [LOG4J2-2322](https://issues.apache.org/jira/browse/LOG4J2-2322):
+Custom ContextSelector implementations which select an AsyncLoggerContext disable LoggerConfig.includeLocation
+        by default for parity with AsyncLoggerContextSelector.
+* [LOG4J2-2269](https://issues.apache.org/jira/browse/LOG4J2-2269):
+MutableLogEvent references to other objects are cleared after each use.
+        Fix a memory leak causing references to parameters to be held after synchronous logging with thread locals enabled.
+* [LOG4J2-2301](https://issues.apache.org/jira/browse/LOG4J2-2301):
+Mixed async loggers no longer forget parameter values, providing some appenders with an array of nulls.
+* [LOG4J2-2331](https://issues.apache.org/jira/browse/LOG4J2-2331):
+RollingFileManager debug logging avoids string concatenation and errant braces in favor of parameterized logging. Thanks to Mike Baranski.
+* [LOG4J2-2333](https://issues.apache.org/jira/browse/LOG4J2-2333):
+Handle errors thrown in default disruptor ExceptionHandler implementations to avoid killing background threads.
+* [LOG4J2-2334](https://issues.apache.org/jira/browse/LOG4J2-2334):
+Add API org.apache.logging.log4j.core.appender.AsyncAppender.getQueueSize().
+* [LOG4J2-2336](https://issues.apache.org/jira/browse/LOG4J2-2336):
+Remove duplicate hyphen from the AsyncLoggerConfig background thread name.
+* [LOG4J2-2347](https://issues.apache.org/jira/browse/LOG4J2-2347):
+Update Apache Commons Compress from 1.16.1 to 1.17.
+* [LOG4J2-2352](https://issues.apache.org/jira/browse/LOG4J2-2352):
+RingBufferLogEvent memento messages provide the expected format string, and no longer attempt to substitute parameters into curly braces in parameter toString values.
+        Both RingBufferLogEvent and MutableLogEvent memento implementations memoize results to avoid rebuilding formatted string values.
+* [LOG4J2-2355](https://issues.apache.org/jira/browse/LOG4J2-2355):
+PropertiesUtil ignores non-string system properties. Fixes a NoClassDefFoundError initializing StatusLogger
+        caused by an NPE while initializing the static PropertiesUtil field. Thanks to Henrik Brautaset Aronsen.
+* [LOG4J2-2362](https://issues.apache.org/jira/browse/LOG4J2-2362):
+Fixed a memory leak in which ReusableObjectMessage would hold a reference to the most recently logged object.
+* [LOG4J2-2312](https://issues.apache.org/jira/browse/LOG4J2-2312):
+Jackson layouts used with AsyncLoggerContextSelector output the expected format rather than only a JSON string of the message text.
+* [LOG4J2-2364](https://issues.apache.org/jira/browse/LOG4J2-2364):
+Fixed a memory leak in which ReusableParameterizedMessage would hold a reference to the most recently
+        logged throwable and provided varargs array.
+* [LOG4J2-2368](https://issues.apache.org/jira/browse/LOG4J2-2368):
+Nested logging doesn't clobber AbstractStringLayout cached StringBuidlers
+* [LOG4J2-2373](https://issues.apache.org/jira/browse/LOG4J2-2373):
+StringBuilders.escapeJson implementation runs in linear time. Escaping large JSON strings
+        in EncodingPatternConverter and MapMessage will perform significantly better. Thanks to Kevin Meurer.
+* [LOG4J2-2376](https://issues.apache.org/jira/browse/LOG4J2-2376):
+StringBuilders.escapeXml implementation runs in linear time. Escaping large XML strings
+        in EncodingPatternConverter and MapMessage will perform significantly better. Thanks to Kevin Meurer.
+* [LOG4J2-2377](https://issues.apache.org/jira/browse/LOG4J2-2377):
+NullPointerException in org.apache.logging.log4j.util.LoaderUtil.getClassLoaders() when using Bootstrap class loader. Thanks to Mirko Rzehak, Gary Gregory.
+* [LOG4J2-2382](https://issues.apache.org/jira/browse/LOG4J2-2382):
+Update Mongodb 3 driver from 3.6.3 to 3.8.0.
+* [LOG4J2-2388](https://issues.apache.org/jira/browse/LOG4J2-2388):
+Thread indefinitely blocked when logging a message in an interrupted thread. Thanks to Failled.
 
 ### Changes
-* [LOG4J2-2273](https://issues.apache.org/jira/browse/LOG4J2-2273):
-Documentation fix in manual page for custom configurations. Thanks to Bruno P. Kinoshita.
-* [LOG4J2-2252](https://issues.apache.org/jira/browse/LOG4J2-2252):
-Reusable LogEvents now pass the original format string to downstream components like layouts and filters. Thanks to Carter Kozak.
-* [LOG4J2-2250](https://issues.apache.org/jira/browse/LOG4J2-2250):
-The internal status logger timestamp format is now configurable with system property `log4j2.StatusLogger.DateFormat`.
-* [LOG4J2-2236](https://issues.apache.org/jira/browse/LOG4J2-2236):
-Removed unnecessary dependency on jcommander since Log4j uses embedded picocli since 2.9.
-* [LOG4J2-2146](https://issues.apache.org/jira/browse/LOG4J2-2146):
-Update version of maven bundle plugin to 3.4.0. Convert bundle plugin error to a warning.
-* [LOG4J2-2215](https://issues.apache.org/jira/browse/LOG4J2-2215):
-Reduce compiler warnings in log4j-api.
-* [LOG4J2-2127](https://issues.apache.org/jira/browse/LOG4J2-2127):
-Removed unnecessary threadlocal StringBuilder field from MdcPatternConverter. Thanks to Carter Kozak.
-* [LOG4J2-2194](https://issues.apache.org/jira/browse/LOG4J2-2194):
-Require Java 9 to compile the log4j-perf module to allow benchmarking with Java 9 APIs.
-* [LOG4J2-2193](https://issues.apache.org/jira/browse/LOG4J2-2193):
-Update JMH to version 1.19 from 1.1.1.
-* [LOG4J2-2132](https://issues.apache.org/jira/browse/LOG4J2-2132):
-Update ZeroMQ's jeromq from 0.4.2 to 0.4.3.
-* [LOG4J2-2165](https://issues.apache.org/jira/browse/LOG4J2-2165):
-Update Jackson from 2.9.2 to 2.9.3.
-* [LOG4J2-2184](https://issues.apache.org/jira/browse/LOG4J2-2184):
-Update MongoDB driver from 3.0.4 to 3.6.1.
-* [LOG4J2-2197](https://issues.apache.org/jira/browse/LOG4J2-2197):
-Document default property value support. Thanks to Fabrice Daugan.
-* [LOG4J2-2198](https://issues.apache.org/jira/browse/LOG4J2-2198):
-Update MongoDB dependencies from classic to modern.
-* [LOG4J2-2204](https://issues.apache.org/jira/browse/LOG4J2-2204):
-org.apache.logging.log4j.core.util.WatchManager.getWatchers() should pre-allocate its new Map.
-* [LOG4J2-2209](https://issues.apache.org/jira/browse/LOG4J2-2209):
-Rename existing MongoDb plugin and related artifacts from MongoDb to MongoDb2.
-* [LOG4J2-2210](https://issues.apache.org/jira/browse/LOG4J2-2210):
-Fix error log message for Script which says ScriptFile instead. Thanks to Björn Kautler.
-* [LOG4J2-2212](https://issues.apache.org/jira/browse/LOG4J2-2212):
-Unnecessary contention in CopyOnWriteSortedArrayThreadContextMap. Thanks to Daniel Feist, Gary Gregory.
-* [LOG4J2-2213](https://issues.apache.org/jira/browse/LOG4J2-2213):
-Unnecessary contention in GarbageFreeSortedArrayThreadContextMap. Thanks to Daniel Feist, Gary Gregory.
-* [LOG4J2-2214](https://issues.apache.org/jira/browse/LOG4J2-2214):
-Unnecessary contention in DefaultThreadContextMap. Thanks to Daniel Feist, Gary Gregory.
-* [LOG4J2-2182](https://issues.apache.org/jira/browse/LOG4J2-2182):
-NullPointerException at org.apache.logging.log4j.util.Activator.loadProvider(Activator.java:81) in log4j 2.10.0. Thanks to liwenxian2017, Gary Gregory.
-* [LOG4J2-2202](https://issues.apache.org/jira/browse/LOG4J2-2202):
-MarkerFilter onMismatch invalid attribute in .properties. Thanks to Kilian, Gary Gregory.
-* [LOG4J2-2219](https://issues.apache.org/jira/browse/LOG4J2-2219):
-Configuration builder classes should look for "onMismatch", not "onMisMatch". Thanks to Kilian, Gary Gregory.
-* [LOG4J2-2205](https://issues.apache.org/jira/browse/LOG4J2-2205):
-New module log4j-mongodb3: Remove use of deprecated MongoDB APIs and code to the Java driver version 3 API. Thanks to Gary Gregory.
-* [LOG4J2-2188](https://issues.apache.org/jira/browse/LOG4J2-2188):
-Split off JPA support into a new module log4j-jpa. Thanks to Gary Gregory.
-* [LOG4J2-2229](https://issues.apache.org/jira/browse/LOG4J2-2229):
-Update Jackson from 2.9.3 to 2.9.4. Thanks to Gary Gregory.
-* [LOG4J2-2243](https://issues.apache.org/jira/browse/LOG4J2-2243):
-Cannot see or copy all of certain JAnsi exception messages on Windows due to NUL characters. Thanks to Gary Gregory.
-* [LOG4J2-2245](https://issues.apache.org/jira/browse/LOG4J2-2245):
-Update Apache Commons Compress from 1.15 to 1.16.1. Thanks to Gary Gregory.
-* [LOG4J2-2259](https://issues.apache.org/jira/browse/LOG4J2-2259):
-Update MongoDB 3 module from driver 3.6.1 to 3.6.3.
-* [LOG4J2-2260](https://issues.apache.org/jira/browse/LOG4J2-2260):
-[SMTP] Update javax.mail from 1.6.0 to 1.6.1.
-* [LOG4J2-2264](https://issues.apache.org/jira/browse/LOG4J2-2264):
-Update JAnsi from 1.16 to 1.17.
+* [LOG4J2-1721](https://issues.apache.org/jira/browse/LOG4J2-1721):
+Allow composite configuration for context parameter. Thanks to Phokham Nonava.
+* [LOG4J2-2302](https://issues.apache.org/jira/browse/LOG4J2-2302):
+Status logger should show the Log4j name and version when initializing itself.
+* [LOG4J2-2304](https://issues.apache.org/jira/browse/LOG4J2-2304):
+Log4j2 2.8.2 JMX unregister NullPointerException. Thanks to wumengsheng.
+* [LOG4J2-2311](https://issues.apache.org/jira/browse/LOG4J2-2311):
+Update Jackson from 2.9.4 to 2.9.5.
+* [LOG4J2-2313](https://issues.apache.org/jira/browse/LOG4J2-2313):
+Update LMAX Disruptor from 3.3.7 to 3.4.2.
+* [LOG4J2-548](https://issues.apache.org/jira/browse/LOG4J2-548):
+Log4j 2.0 ERROR "Could not search jar" with JBoss EAP 6.2. Thanks to Shehata, Paresh Varke, Eric Victorson, Martin Laforet.
+* [LOG4J2-2328](https://issues.apache.org/jira/browse/LOG4J2-2328):
+Update JAnsi from 1.17 to 1.17.1.
+* [LOG4J2-2351](https://issues.apache.org/jira/browse/LOG4J2-2351):
+Added AbstractLogEvent.getMutableInstant to allow the MutableInstant instance to be modified by classes extending AbstractLogEvent.
+* [LOG4J2-2357](https://issues.apache.org/jira/browse/LOG4J2-2357):
+Update Jackson from 2.9.5 to 2.9.6.
+* [LOG4J2-2358](https://issues.apache.org/jira/browse/LOG4J2-2358):
+Update Kafka client from 1.0.0 to 1.1.0.
+* [LOG4J2-2384](https://issues.apache.org/jira/browse/LOG4J2-2384):
+Update Kafka client from 1.1.0 to 1.1.1.
+* [LOG4J2-2385](https://issues.apache.org/jira/browse/LOG4J2-2385):
+Update Groovy from 2.4.13 to 2.5.1.
+* [LOG4J2-2386](https://issues.apache.org/jira/browse/LOG4J2-2386):
+Update optional Apache Commons DBCP from 2.2.0 to 2.4.0.
 
 ---
 
-Apache Log4j 2.11.0 requires a minimum of Java 7 to build and run. Log4j 2.3 was the
+Apache Log4j 2.11.1 requires a minimum of Java 7 to build and run. Log4j 2.3 was the
 last release that supported Java 6.
 
 Basic compatibility with Log4j 1.x is provided through the log4j-1.2-api component, however it
