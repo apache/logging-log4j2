@@ -505,6 +505,20 @@ public class ThrowableProxy implements Serializable {
      */
     public String getExtendedStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         final StringBuilder sb = new StringBuilder(1024);
+        formatExtendedStackTraceTo(sb, ignorePackages, textRenderer, suffix, lineSeparator);
+        return sb.toString();
+    }
+
+    /**
+     * Formats the stack trace including packaging information.
+     *
+     * @param sb Destination.
+     * @param ignorePackages List of packages to be ignored in the trace.
+     * @param textRenderer The message renderer.
+     * @param suffix Append this to the end of each stack frame.
+     * @param lineSeparator The end-of-line separator.
+     */
+    public void formatExtendedStackTraceTo(final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         textRenderer.render(name, sb, "Name");
         textRenderer.render(": ", sb, "NameMessageSeparator");
         textRenderer.render(this.message, sb, "Message");
@@ -514,7 +528,6 @@ public class ThrowableProxy implements Serializable {
         this.formatElements(sb, Strings.EMPTY, 0, causedTrace, this.extendedStackTrace, ignorePackages, textRenderer, suffix, lineSeparator);
         this.formatSuppressed(sb, TAB, this.suppressedProxies, ignorePackages, textRenderer, suffix, lineSeparator);
         this.formatCause(sb, Strings.EMPTY, this.causeProxy, ignorePackages, textRenderer, suffix, lineSeparator);
-        return sb.toString();
     }
 
     public String getLocalizedMessage() {
