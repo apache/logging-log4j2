@@ -657,8 +657,7 @@ public class ThrowableProxy implements Serializable {
      * @param exact             True if the class was obtained via Reflection.getCallerClass.
      * @return The CacheEntry.
      */
-    private CacheEntry toCacheEntry(final StackTraceElement stackTraceElement, final Class<?> callerClass,
-                                    final boolean exact) {
+    private CacheEntry toCacheEntry(final Class<?> callerClass, final boolean exact) {
         String location = "?";
         String version = "?";
         ClassLoader lastLoader = null;
@@ -734,7 +733,7 @@ public class ThrowableProxy implements Serializable {
             // present as those methods have returned.
             ExtendedClassInfo extClassInfo;
             if (clazz != null && className.equals(clazz.getName())) {
-                final CacheEntry entry = this.toCacheEntry(stackTraceElement, clazz, true);
+                final CacheEntry entry = this.toCacheEntry(clazz, true);
                 extClassInfo = entry.element;
                 lastLoader = entry.loader;
                 stack.pop();
@@ -748,8 +747,7 @@ public class ThrowableProxy implements Serializable {
                         lastLoader = entry.loader;
                     }
                 } else {
-                    final CacheEntry entry = this.toCacheEntry(stackTraceElement,
-                        this.loadClass(lastLoader, className), false);
+                    final CacheEntry entry = this.toCacheEntry(this.loadClass(lastLoader, className), false);
                     extClassInfo = entry.element;
                     map.put(className, entry);
                     if (entry.loader != null) {
@@ -771,17 +769,16 @@ public class ThrowableProxy implements Serializable {
     private ThrowableProxy[] toSuppressedProxies(final Throwable thrown, Set<Throwable> suppressedVisited) {
         try {
             final Throwable[] suppressed = thrown.getSuppressed();
-            if (suppressed == null) {
+            if (suppressed == null || suppressed.length == 0) {
                 return EMPTY_THROWABLE_PROXY_ARRAY;
             }
             final List<ThrowableProxy> proxies = new ArrayList<>(suppressed.length);
             if (suppressedVisited == null) {
-                suppressedVisited = new HashSet<>(proxies.size());
+                suppressedVisited = new HashSet<>(suppressed.length);
             }
             for (int i = 0; i < suppressed.length; i++) {
                 final Throwable candidate = suppressed[i];
-                if (!suppressedVisited.contains(candidate)) {
-                    suppressedVisited.add(candidate);
+                if (suppressedVisited.add(candidate)) {
                     proxies.add(new ThrowableProxy(candidate, suppressedVisited));
                 }
             }
