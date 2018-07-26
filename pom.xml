@@ -120,6 +120,15 @@
       </roles>
       <timezone>Europe/Stockholm</timezone>
     </developer>
+    <developer>
+      <id>ckozak</id>
+      <name>Carter Kozak</name>
+      <email>ckozak@apache.org</email>
+      <roles>
+        <role>Committer</role>
+      </roles>
+      <timezone>America/New York</timezone>
+    </developer>
   </developers>
   <!-- Contributors -->
   <contributors>
