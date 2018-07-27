@@ -46,7 +46,7 @@ import java.util.Stack;
  */
 public final class StackLocator {
 
-    private static PrivateSecurityManager SECURITY_MANAGER;
+    private static final PrivateSecurityManager SECURITY_MANAGER;
 
     // Checkstyle Suppress: the lower-case 'u' ticks off CheckStyle...
     // CHECKSTYLE:OFF
@@ -81,6 +81,19 @@ public final class StackLocator {
             getCallerClass = null;
             java7u25CompensationOffset = -1;
         }
+
+        PrivateSecurityManager psm;
+        try {
+            final SecurityManager sm = System.getSecurityManager();
+            if (sm != null) {
+                sm.checkPermission(new RuntimePermission("createSecurityManager"));
+            }
+            psm = new PrivateSecurityManager();
+        } catch (final SecurityException ignored) {
+            psm = null;
+        }
+
+        SECURITY_MANAGER = psm;
 
         GET_CALLER_CLASS = getCallerClass;
         JDK_7u25_OFFSET = java7u25CompensationOffset;
