@@ -30,6 +30,14 @@
          - "update" - Change
          - "remove" - Removed
     -->
+    <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
+      <action issue="LOG4J2-2391" dev="ckozak" type="update">
+        Improve exception logging performance. ThrowableProxy construction uses a more faster
+        method to discover the current stack trace. ThrowablePatternConverter and
+        ExtendedThrowablePatternConverter default configurations no longer allocate
+        an additional buffer for stack trace contents.
+      </action>
+    </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
       <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">
         ThrowableProxy was saving and retrieving cache entries using different keys.
