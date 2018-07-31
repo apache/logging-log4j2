@@ -45,9 +45,9 @@ public class CleanFolders extends AbstractExternalFileCleaner {
 
 		@Override
 		public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
-			printf("%s Deleting directory %s", CLEANER_MARKER, dir);
+			printf("%s Deleting directory %s\n", CLEANER_MARKER, dir);
 			final boolean deleted = Files.deleteIfExists(dir);
-			printf("%s Deleted directory %s: %s", CLEANER_MARKER, dir, deleted);
+			printf("%s Deleted directory %s: %s\n", CLEANER_MARKER, dir, deleted);
 			return FileVisitResult.CONTINUE;
 		}
 
@@ -59,9 +59,9 @@ public class CleanFolders extends AbstractExternalFileCleaner {
 
 		@Override
 		public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-			printf("%s Deleting file %s with %s", CLEANER_MARKER, file, attrs);
+			printf("%s Deleting file %s with %s\n", CLEANER_MARKER, file, attrs);
 			final boolean deleted = Files.deleteIfExists(file);
-			printf(CLEANER_MARKER, "%s Deleted file %s: %s", file, deleted);
+			printf(CLEANER_MARKER, "%s Deleted file %s: %s\n", file, deleted);
 			return FileVisitResult.CONTINUE;
 		}
 	}
