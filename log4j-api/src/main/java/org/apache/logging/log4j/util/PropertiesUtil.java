@@ -316,7 +316,7 @@ public final class PropertiesUtil {
 
         private Environment(final PropertySource propertySource) {
             sources.add(propertySource);
-            for (final PropertySource source : ServiceLoader.load(PropertySource.class)) {
+            for (final PropertySource source : ServiceLoader.load(PropertySource.class, PropertySource.class.getClassLoader())) {
                 sources.add(source);
             }
             reload();
