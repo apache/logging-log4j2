@@ -23,28 +23,32 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class MockTcpSyslogServer extends MockSyslogServer {
-    private final ServerSocket sock;
+    private final ServerSocket socketServer;
     private volatile boolean shutdown = false;
     private Thread thread;
 
     public MockTcpSyslogServer(final int numberOfMessagesToReceive, final int port) throws IOException {
         super(numberOfMessagesToReceive, port);
-        sock = new ServerSocket(port);
+        socketServer = new ServerSocket(port);
     }
 
     @Override
     public void shutdown() {
         this.shutdown = true;
-        try {
-            sock.close();
-        } catch (final IOException e) {
-            e.printStackTrace();
+        if (socketServer != null) {
+            try {
+                socketServer.close();
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
         }
-        thread.interrupt();
-        try {
-            thread.join(100);
-        } catch (InterruptedException ie) {
-            System.out.println("Shutdown of TCP server thread failed.");
+        if (thread != null) {
+            thread.interrupt();
+            try {
+                thread.join(100);
+            } catch (InterruptedException ie) {
+                System.out.println("Shutdown of TCP server thread failed.");
+            }
         }
     }
 
@@ -57,7 +61,7 @@ public class MockTcpSyslogServer extends MockSyslogServer {
                 final byte[] buffer = new byte[4096];
                 Socket socket = null;
                 try {
-                    socket = sock.accept();
+                    socket = socketServer.accept();
                     socket.setSoLinger(true, 0);
                     final InputStream in = socket.getInputStream();
                     int i = in.read(buffer, 0, buffer.length);
