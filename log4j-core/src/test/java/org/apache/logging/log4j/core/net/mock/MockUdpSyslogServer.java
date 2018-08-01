@@ -35,12 +35,16 @@ public class MockUdpSyslogServer extends MockSyslogServer {
     @Override
     public void shutdown() {
         this.shutdown = true;
-        socket.close();
-        thread.interrupt();
-        try {
-            thread.join(100);
-        } catch (InterruptedException ie) {
-            System.out.println("Shutdown of Log4j UDP server thread failed.");
+        if (socket != null) {
+            socket.close();
+        }
+        if (thread != null) {
+            thread.interrupt();
+            try {
+                thread.join(100);
+            } catch (InterruptedException ie) {
+                System.out.println("Shutdown of Log4j UDP server thread failed.");
+            }
         }
     }
 
