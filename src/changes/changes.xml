@@ -230,6 +230,9 @@
         ExtendedThrowablePatternConverter default configurations no longer allocate
         an additional buffer for stack trace contents.
       </action>
+      <action issue="LOG4J2-2397" dev="ggregory" type="fix" due-to="EckelDong">
+        Predeployment of PersistenceUnit that using Log4j as session logger failed (#198).
+      </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
       <action issue="LOG4J2-2391" dev="ckozak" type="update">
@@ -237,6 +240,9 @@
         method to discover the current stack trace. ThrowablePatternConverter and
         ExtendedThrowablePatternConverter default configurations no longer allocate
         an additional buffer for stack trace contents.
+      </action>
+      <action issue="LOG4J2-2397" dev="ggregory" type="fix" due-to="EckelDong">
+        Predeployment of PersistenceUnit that using Log4j as session logger failed (#198).
       </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
