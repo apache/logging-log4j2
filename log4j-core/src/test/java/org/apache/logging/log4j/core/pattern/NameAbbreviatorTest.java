@@ -65,7 +65,7 @@ public class NameAbbreviatorTest {
     }
 
     @Test
-    public void testAbbreviatorPatternsAppend() throws Exception {
+    public void testAbbreviatorPatternsAppendLongPrefix() throws Exception {
         final NameAbbreviator abbreviator = NameAbbreviator.getAbbreviator(this.pattern);
         final String PREFIX = "some random text big enough to be larger than abbreviated string ";
         final StringBuilder destination = new StringBuilder(PREFIX);
@@ -74,4 +74,13 @@ public class NameAbbreviatorTest {
         assertEquals(PREFIX + expected, actual);
     }
 
+    @Test
+    public void testAbbreviatorPatternsAppend() throws Exception {
+        final NameAbbreviator abbreviator = NameAbbreviator.getAbbreviator(this.pattern);
+        final String PREFIX = "some random text";
+        final StringBuilder destination = new StringBuilder(PREFIX);
+        abbreviator.abbreviate(this.getClass().getName(), destination);
+        final String actual = destination.toString();
+        assertEquals(PREFIX + expected, actual);
+    }
 }

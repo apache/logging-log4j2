@@ -40,6 +40,9 @@
       <action issue="LOG4J2-2397" dev="ggregory" type="fix" due-to="EckelDong">
         Predeployment of PersistenceUnit that using Log4j as session logger failed (#198).
       </action>
+      <action issue="LOG4J2-2365" dev="ckozak" type="fix" due-to="Eugene Zimichev">
+        NameAbbreviator correctly abbreviates first fragments (#188).
+      </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
       <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">
