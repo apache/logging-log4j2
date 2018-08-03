@@ -28,25 +28,25 @@ the originals on the main distribution server.
 
 | Distribution                   | Mirrors                                                  | Checksum                                                        | Signature                                                       |
 | ------------------------------ | -------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
-| Apache Log4j 2 binary (tar.gz) | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz][bintar] | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.md5][bintarmd5] | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc][bintarasc] |
-| Apache Log4j 2 binary (zip)    | [apache-log4j-${Log4jReleaseVersion}-bin.zip][binzip]    | [apache-log4j-${Log4jReleaseVersion}-bin.zip.md5][binzipmd5]    | [apache-log4j-${Log4jReleaseVersion}-bin.zip.asc][binzipasc]    |
-| Apache Log4j 2 source (tar.gz) | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz][srctar] | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz.md5][srctarmd5] | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc][srctarasc] |
-| Apache Log4j 2 source (zip)    | [apache-log4j-${Log4jReleaseVersion}-src.zip][srczip]    | [apache-log4j-${Log4jReleaseVersion}-src.zip.md5][srczipmd5]    | [apache-log4j-${Log4jReleaseVersion}-src.zip.asc][srczipasc]    |
+| Apache Log4j 2 binary (tar.gz) | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz][bintar] | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.sha1][bintarsha1] | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc][bintarasc] |
+| Apache Log4j 2 binary (zip)    | [apache-log4j-${Log4jReleaseVersion}-bin.zip][binzip]    | [apache-log4j-${Log4jReleaseVersion}-bin.zip.sha1][binzipsha1]    | [apache-log4j-${Log4jReleaseVersion}-bin.zip.asc][binzipasc]    |
+| Apache Log4j 2 source (tar.gz) | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz][srctar] | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz.sha1][srctarsha1] | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc][srctarasc] |
+| Apache Log4j 2 source (zip)    | [apache-log4j-${Log4jReleaseVersion}-src.zip][srczip]    | [apache-log4j-${Log4jReleaseVersion}-src.zip.sha1][srczipsha1]    | [apache-log4j-${Log4jReleaseVersion}-src.zip.asc][srczipasc]    |
 
 [bintar]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz
-[bintarmd5]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.md5
+[bintarsha1]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.sha1
 [bintarasc]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc
 [binzip]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip
-[binzipmd5]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.md5
+[binzipsha1]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.sha1
 [binzipasc]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.asc
 [srctar]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz
-[srctarmd5]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.md5
+[srctarsha1]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.sha1
 [srctarasc]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc
 [srczip]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip
-[srczipmd5]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.md5
+[srczipsha1]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.sha1
 [srczipasc]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.asc
 
-It is essential that you verify the integrity of the downloaded files using the PGP or MD5 signatures.
+It is essential that you verify the integrity of the downloaded files using the PGP and SHA1 signatures.
 Please read [Verifying Apache HTTP Server Releases](https://httpd.apache.org/dev/verification.html) for more
 information on why you should verify our releases.
 
@@ -60,7 +60,7 @@ than from a mirror. Then verify the signatures using
 
 Apache Log4j ${Log4jReleaseVersion} is signed by ${Log4jReleaseManager} (${Log4jReleaseKey})
 
-Alternatively, you can verify the MD5 signature on the files. A unix program called md5 or md5sum is included
+Alternatively, you can verify the SHA1 signature on the files. A unix program called sha or shasum is included
 in many unix distributions.
 
 $h2 Previous Releases
