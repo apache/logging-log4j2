@@ -20,12 +20,13 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
   <properties>
-    <title>Log4j 2 Architecture</title>
+    <title>Log4j 2 Usage</title>
     <author email="rgoers@apache.org">Ralph Goers</author>
   </properties>
 
   <body>
     <section name="Usage">
+      <a name="StaticVsNonStatic"/>
       <subsection name="Static vs Non-Static Loggers">
         <p>As with any variable in Java, Loggers may be declared as static variables or class member variables. However,
         there are a few factors to consider when choosing to delare a logger as static vs non-static. Generally, it
@@ -51,6 +52,7 @@
         </ol>
          </p>
       </subsection>
+      <a name="LoggerVsClass"/>
       <subsection name="Logging the Logger name vs the Class name">
         <p>
           The logger name of a Logger is specified when the Logger is created. When a log method is called the
@@ -59,8 +61,8 @@
         </p>
 
         <p>The base class creates a static Logger and a logger variable that is initialized as that same Logger.
-          It has two methods that perform logging, once that uses the static logger and one that uses a Logger that
-          can be overridden.
+          It has a method that performs logging, but provides access to two Loggers, one that is static and one
+          that can be overridden.
         </p>
 
 
@@ -74,12 +76,12 @@
   /**
   *
   */
-  public abstract class MySuperClass {
+  public abstract class Parent {
 
-      // The name of this Logger will be "org.apache.logging.MySuperClass"
-      protected static final Logger LOGGER = LogManager.getLogger();
+      // The name of this Logger will be "org.apache.logging.Parent"
+      protected static final Logger parentLogger = LogManager.getLogger();
 
-      private Logger logger = LOGGER;
+      private Logger logger = parentLogger;
 
       protected Logger getLogger() {
           return logger;
@@ -90,15 +92,16 @@
       }
 
 
-      protected void demoLog(Marker marker) {
-          logger.debug(marker,"MySuperClass log message");
+      public void log(Marker marker) {
+          logger.debug(marker,"Parent log message");
       }
   }
 </pre>
 
         <p>
-          This class extends the base class. It provides its own logger and has two methods, one that uses the
-          logger in this class and one that uses the static logger from the base class.
+          This class extends the base class. It provides its own logger and has three methods, one that uses the
+          logger in this class,one that uses the static logger from the base class, and one that where the logger
+          may be set to either the parent or the child.
         </p>
 
 <pre class="prettyprint">
@@ -111,17 +114,21 @@
   /**
   *
   */
-  public class MyClass extends MySuperClass {
+  public class Child extends Parent {
 
-      // The name of this Logge will be "org.apache.logging.MyClass"
-      public Logger logger = LogManager.getLogger();
+      // The name of this Logge will be "org.apache.logging.Child"
+      public Logger childLogger = LogManager.getLogger();
 
-      public void log1(Marker marker) {
-          logger.debug(marker,"MyClass logger message");
+      public void childLog(Marker marker) {
+          childLogger.debug(marker,"Child logger message");
       }
 
-      public void log2(Marker marker) {
-          LOGGER.debug(marker,"MySuperClass logger message from MyClass");
+      public void logFromChild(Marker marker) {
+          getLogger().debug(marker,"Log message from Child");
+      }
+
+      public void parentLog(Marker marker) {
+          parentLogger.debug(marker,"Parent logger, message from Child");
       }
   }
 </pre>
@@ -142,25 +149,23 @@
 
       public static void main( String[] args ) {
           Marker marker = MarkerManager.getMarker("CLASS");
-          MyClass myclass = new MyClass();
+          Child child = new Child();
 
-          System.out.println("------- MySuperClass Logger ----------");
-          myclass.demoLog(null);
-          myclass.demoLog(marker);
-          myclass.log1(null);
-          myclass.log1(marker);
-          myclass.log2(null);
-          myclass.log2(marker);
+          System.out.println("------- Parent Logger ----------");
+          child.log(null);
+          child.log(marker);
+          child.logFromChild(null);
+          child.logFromChild(marker);
+          child.parentLog(null);
+          child.parentLog(marker);
 
-          myclass.setLogger(myclass.logger);
+          child.setLogger(child.childLogger);
 
-          System.out.println("------- MySuperClass Logger set to MyClass Logger ----------");
-          myclass.demoLog(null);
-          myclass.demoLog(marker);
-          myclass.log1(null);
-          myclass.log1(marker);
-          myclass.log2(null);
-          myclass.log2(marker);
+          System.out.println("------- Parent Logger set to Child Logger ----------");
+          child.log(null);
+          child.log(marker);
+          child.logFromChild(null);
+          child.logFromChild(marker);
       }
   }</pre>
 
@@ -174,8 +179,8 @@
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout>
-        <MarkerPatternSelector defaultPattern="%sn. Logger name %c %msg%n">
-          <PatternMatch key="CLASS" pattern="%sn. Class name %C %msg%n"/>
+        <MarkerPatternSelector defaultPattern="%sn. %msg: Logger=%logger%n">
+          <PatternMatch key="CLASS" pattern="%sn. %msg: Class=%class%n"/>
         </MarkerPatternSelector>
       </PatternLayout>
     </Console>
@@ -193,50 +198,44 @@
           name of the class that called the logging method (%C). The numbers in the description of the outcomes in the
           following list match the corresponding numbers shown in the output.
           <ol>
-            <li>Logging is performed in the base class using the static logger with the Logger name pattern. The
-            logger name matches the name of the base class.</li>
-            <li>Logging is performed in the base class using the static logger with the Class name pattern. Although
-              the method was called against the MyClass instance it is implemented in MySuperClass so that is what
+            <li>Logging is performed in the parent class using the static logger with the Logger name pattern. The
+            logger name matches the name of the parent class.</li>
+            <li>Logging is performed in the parent class using the static logger with the Class name pattern. Although
+              the method was called against the Child instance it is implemented in Parent so that is what
               appears.</li>
-            <li>Logging is performed in the subclass using the logger in the subclass, so the name of the
-              subclass is printed as the logger name.</li>
-            <li>Logging is performed in the subclass using the logger in the subclass, so the name of the subclass
-              is printed since that is where the method exists.</li>
-            <li>Logging is performed in the subclass with the static logger of the base class. Thus the name
-              of the base class Logger is printed.</li>
-            <li>Logging is performed in the subclass with the static logger of the base class, so the name
-              of the subclass is printed since that is where the method performing the logging exists.</li>
+            <li>Logging is performed in Child using the logger in the parent, so the name of the
+              parent is printed as the logger name.</li>
+            <li>Logging is performed in Child using the logger in the parent. Since the method calling the logging
+              method is in Child that is the class name that appears.</li>
+            <li>Logging is performed in Child using the static logger in the parent, so the name of the
+              parent is printed as the logger name.</li>
+            <li>Logging is performed in Child using the static logger in the parent. Since the method calling the logging
+              method is in Child that is the class name that appears.</li>
 
-            <li>Logging is performed in the base class using the logger of the subclass. The
-              logger name matches the name of the subclass and so is printed.</li>
-            <li>Logging is performed in the base class using the logger of the subclass. Although
-              the method was called against the MyClass instance it is implemented in MySuperClass so that is what
+            <li>Logging is performed in the parent class using the logger of Child. The
+              logger name matches the name of the child and so it is printed.</li>
+            <li>Logging is performed in the parent class using the logger of the Child. Although
+              the method was called against the Child instance it is implemented in PArent so that is what
               appears as the class name.</li>
-            <li>Logging is performed in the subclass using the logger in the subclass, so the name of the
-              subclass is printed as the logger name.</li>
-            <li>Logging is performed in the subclass using the logger in the subclass, so the name of the subclass
-              is printed since that is where the method exists.</li>
-            <li>Logging is performed in the subclass with the logger of the base class. Thus the name
-              of the base class Logger is printed.</li>
-            <li>Logging is performed in the subclass with the static logger of the base class, so the name
-              of the subclass is printed since that is where the method performing the logging exists.</li>
+            <li>Logging is performed in Child using the logger in the parent which is set to the child logger,
+              so the name of the child is printed as the logger name.</li>
+            <li>Logging is performed in Child using the logger in the parent, which is set to the child logger. Since
+              the method calling the logging method is in Child that is the class name that appears.</li>
           </ol>
         </p>
 <pre class="prettyprint">
-  ------- MySuperClass Logger ----------
-  1. Logger name org.apache.logging.MySuperClass MySuperClass log message
-  2. Class name org.apache.logging.MySuperClass MySuperClass log message
-  3. Logger name org.apache.logging.MyClass MyClass logger message
-  4. Class name org.apache.logging.MyClass MyClass logger message
-  5. Logger name org.apache.logging.MySuperClass MySuperClass logger message from MyClass
-  6. Class name org.apache.logging.MyClass MySuperClass logger message from MyClass
-  ------- MySuperClass Logger set to MyClass Logger ----------
-  7. Logger name org.apache.logging.MyClass MySuperClass log message
-  8. Class name org.apache.logging.MySuperClass MySuperClass log message
-  9. Logger name org.apache.logging.MyClass MyClass logger message
-  10. Class name org.apache.logging.MyClass MyClass logger message
-  11. Logger name org.apache.logging.MySuperClass MySuperClass logger message from MyClass
-  12. Class name org.apache.logging.MyClass MySuperClass logger message from MyClass
+  ------- Parent Logger ----------
+  1. Parent log message: Logger=org.apache.logging.Parent
+  2. Parent log message: Class=org.apache.logging.Parent
+  3. Log message from Child: Logger=org.apache.logging.Parent
+  4. Log message from Child: Class=org.apache.logging.Child
+  5. Parent logger, message from Child: Logger=org.apache.logging.Parent
+  6. Parent logger, message from Child: Class=org.apache.logging.Child
+  ------- Parent Logger set to Child Logger ----------
+  7. Parent log message: Logger=org.apache.logging.Child
+  8. Parent log message: Class=org.apache.logging.Parent
+  9. Log message from Child: Logger=org.apache.logging.Child
+  10. Log message from Child: Class=org.apache.logging.Child
 </pre>
 
         <p>

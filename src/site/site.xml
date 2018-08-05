@@ -109,8 +109,8 @@
       </item>
 
       <item name="Usage" href="/manual/usage.html" collapse="true">
-        <item name="Static vs non-Static Loggers"/>
-        <item name="Logger Name vs Class Name"/>
+        <item name="Static vs non-Static Loggers" href="/manual/usage.html#StaticVsNonStatic"/>
+        <item name="Logger Name vs Class Name" href="/manual/usage.html#LoggerVsClass"/>
       </item>
 
       <item name="Web Applications and JSPs" href="/manual/webapp.html" collapse="true">
