@@ -129,6 +129,7 @@ public class FileAppenderPermissionsTest {
             assertEquals(filePermissions, PosixFilePermissions.toString(Files.getPosixFilePermissions(path)));
         } finally {
             appender.stop();
+            Files.deleteIfExists(path);
         }
         assertFalse("Appender did not stop", appender.isStarted());
     }
@@ -185,6 +186,7 @@ public class FileAppenderPermissionsTest {
             assertEquals(group, Files.readAttributes(path, PosixFileAttributes.class).group().getName());
         } finally {
             appender.stop();
+            Files.deleteIfExists(path);
         }
         assertFalse("Appender did not stop", appender.isStarted());
     }
