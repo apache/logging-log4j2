@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import com.google.common.io.ByteStreams;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -24,14 +23,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -116,49 +111,6 @@ public class EventParameterMemoryLeakTest {
         @Override
         public String toString() {
             return "ObjectThrowable " + object;
-        }
-    }
-
-    private static final class GarbageCollectionHelper implements Closeable, Runnable {
-        private static final OutputStream sink = ByteStreams.nullOutputStream();
-        public final AtomicBoolean running = new AtomicBoolean();
-        private final CountDownLatch latch = new CountDownLatch(1);
-        private final Thread gcThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (running.get()) {
-                        // Allocate data to help suggest a GC
-                        try {
-                            // 1mb of heap
-                            sink.write(new byte[1024 * 1024]);
-                        } catch (IOException ignored) {
-                        }
-                        // May no-op depending on the jvm configuration
-                        System.gc();
-                    }
-                } finally {
-                    latch.countDown();
-                }
-            }
-        });
-
-        @Override
-        public void run() {
-            if (running.compareAndSet(false, true)) {
-                gcThread.start();
-            }
-        }
-
-        @Override
-        public void close() {
-            running.set(false);
-            try {
-                assertTrue("GarbageCollectionHelper did not shut down cleanly",
-                        latch.await(10, TimeUnit.SECONDS));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 }

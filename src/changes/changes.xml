@@ -236,6 +236,9 @@
       <action issue="LOG4J2-2365" dev="ckozak" type="fix" due-to="Eugene Zimichev">
         NameAbbreviator correctly abbreviates first fragments (#188).
       </action>
+      <action issue="LOG4J2-2201" dev="ckozak" type="fix">
+        Fix memory leak in ReusableParameterizedMessage.
+      </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
       <action issue="LOG4J2-2391" dev="ckozak" type="update">
@@ -249,6 +252,9 @@
       </action>
       <action issue="LOG4J2-2365" dev="ckozak" type="fix" due-to="Eugene Zimichev">
         NameAbbreviator correctly abbreviates first fragments (#188).
+      </action>
+      <action issue="LOG4J2-2201" dev="ckozak" type="fix">
+        Fix memory leak in ReusableParameterizedMessage.
       </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
