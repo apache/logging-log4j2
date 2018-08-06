@@ -73,6 +73,10 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
                 if (argCount <= emptyReplacement.length) {
                     // copy params into the specified replacement array and return that
                     System.arraycopy(params, 0, emptyReplacement, 0, argCount);
+                    // Do not retain references to objects in the reusable params array.
+                    for (int i = 0; i < argCount; i++) {
+                        params[i] = null;
+                    }
                     result = emptyReplacement;
                 } else {
                     // replacement array is too small for current content and future content: discard it
