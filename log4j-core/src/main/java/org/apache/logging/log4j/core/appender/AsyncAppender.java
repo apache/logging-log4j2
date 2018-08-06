@@ -534,4 +534,14 @@ public final class AsyncAppender extends AbstractAppender {
     public int getQueueSize() {
         return queue.size();
     }
+
+    /**
+     * Returns the number of elements in the queue from the background thread.
+     * 
+     * @return the number of elements in the queue from the background thread. 
+     * @since 2.11.2
+     */
+	public int getThreadQueueSize() {
+		return thread == null ? 0 : thread.queue == null ? 0 : thread.queue.size();
+	}
 }
