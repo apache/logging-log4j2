@@ -46,8 +46,6 @@ import java.util.Stack;
  */
 public final class StackLocator {
 
-    private static final PrivateSecurityManager SECURITY_MANAGER;
-
     // Checkstyle Suppress: the lower-case 'u' ticks off CheckStyle...
     // CHECKSTYLE:OFF
     static final int JDK_7u25_OFFSET;
@@ -81,19 +79,6 @@ public final class StackLocator {
             getCallerClass = null;
             java7u25CompensationOffset = -1;
         }
-
-        PrivateSecurityManager psm;
-        try {
-            final SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                sm.checkPermission(new RuntimePermission("createSecurityManager"));
-            }
-            psm = new PrivateSecurityManager();
-        } catch (final SecurityException ignored) {
-            psm = null;
-        }
-
-        SECURITY_MANAGER = psm;
 
         GET_CALLER_CLASS = getCallerClass;
         JDK_7u25_OFFSET = java7u25CompensationOffset;
@@ -167,14 +152,8 @@ public final class StackLocator {
     @PerformanceSensitive
     public Stack<Class<?>> getCurrentStackTrace() {
         // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
-        if (getSecurityManager() != null) {
-            final Class<?>[] array = getSecurityManager().getClassContext();
-            final Stack<Class<?>> classes = new Stack<>();
-            classes.ensureCapacity(array.length);
-            for (final Class<?> clazz : array) {
-                classes.push(clazz);
-            }
-            return classes;
+        if (PrivateSecurityManagerStackTraceUtil.isEnabled()) {
+            return PrivateSecurityManagerStackTraceUtil.getCurrentStackTrace();
         }
         // slower version using getCallerClass where we cannot use a SecurityManager
         final Stack<Class<?>> classes = new Stack<>();
@@ -250,18 +229,5 @@ public final class StackLocator {
         }
         // any others?
         return true;
-    }
-
-    protected PrivateSecurityManager getSecurityManager() {
-        return SECURITY_MANAGER;
-    }
-
-    private static final class PrivateSecurityManager extends SecurityManager {
-
-        @Override
-        protected Class<?>[] getClassContext() {
-            return super.getClassContext();
-        }
-
     }
 }
