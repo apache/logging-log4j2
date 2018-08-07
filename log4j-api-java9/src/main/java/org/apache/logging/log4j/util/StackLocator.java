@@ -61,6 +61,10 @@ public class StackLocator {
     }
 
     public Stack<Class<?>> getCurrentStackTrace() {
+        // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
+        if (PrivateSecurityManagerStackTraceUtil.isEnabled()) {
+            return PrivateSecurityManagerStackTraceUtil.getCurrentStackTrace();
+        }
         Stack<Class<?>> stack = new Stack<Class<?>>();
         List<Class<?>> classes = walker.walk(s -> s.map(f -> f.getDeclaringClass()).collect(Collectors.toList()));
         stack.addAll(classes);
