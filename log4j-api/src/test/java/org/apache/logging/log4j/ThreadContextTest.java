@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.junit.ThreadContextRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -31,6 +33,9 @@ public class ThreadContextTest {
     public static void reinitThreadContext() {
         ThreadContext.init();
     }
+
+    @Rule
+    public ThreadContextRule threadContextRule = new ThreadContextRule();
 
     @Test
     public void testPush() {
@@ -45,7 +50,6 @@ public class ThreadContextTest {
 
     @Test
     public void testInheritanceSwitchedOffByDefault() throws Exception {
-        ThreadContext.clearMap();
         ThreadContext.put("Greeting", "Hello");
         StringBuilder sb = new StringBuilder();
         TestThread thread = new TestThread(sb);
@@ -105,8 +109,6 @@ public class ThreadContextTest {
 
     @Test
     public void testPutAll() {
-        ThreadContext.clearMap();
-        //
         assertTrue(ThreadContext.isEmpty());
         assertFalse(ThreadContext.containsKey("key"));
         final int mapSize = 10;
@@ -124,7 +126,6 @@ public class ThreadContextTest {
 
     @Test
     public void testRemove() {
-        ThreadContext.clearMap();
         assertNull(ThreadContext.get("testKey"));
         ThreadContext.put("testKey", "testValue");
         assertEquals("testValue", ThreadContext.get("testKey"));
@@ -136,7 +137,6 @@ public class ThreadContextTest {
 
     @Test
     public void testRemoveAll() {
-        ThreadContext.clearMap();
         ThreadContext.put("testKey1", "testValue1");
         ThreadContext.put("testKey2", "testValue2");
         assertEquals("testValue1", ThreadContext.get("testKey1"));
@@ -151,7 +151,6 @@ public class ThreadContextTest {
 
     @Test
     public void testContainsKey() {
-        ThreadContext.clearMap();
         assertFalse(ThreadContext.containsKey("testKey"));
         ThreadContext.put("testKey", "testValue");
         assertTrue(ThreadContext.containsKey("testKey"));
