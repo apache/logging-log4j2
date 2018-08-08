@@ -381,8 +381,6 @@
           <excludedGroups>
             org.apache.logging.log4j.categories.PerformanceTests
           </excludedGroups>
-          <forkCount>1</forkCount>
-          <reuseForks>false</reuseForks>
           <systemPropertyVariables>
             <org.apache.activemq.SERIALIZABLE_PACKAGES>*</org.apache.activemq.SERIALIZABLE_PACKAGES>
           </systemPropertyVariables>
