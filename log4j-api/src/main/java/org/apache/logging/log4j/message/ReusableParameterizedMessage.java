@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableParameterizedMessage implements ReusableMessage, ParameterVisitable, Clearable {
+public class ReusableParameterizedMessage implements ReusableMessage, ParameterVisitable, Clearable, MessageContentFormatterProvider {
 
     private static final int MIN_BUILDER_SIZE = 512;
     private static final int MAX_PARMS = 10;
@@ -39,8 +39,6 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
 
     private String messagePattern;
     private int argCount;
-    private int usedCount;
-    private final int[] indices = new int[256];
     private transient Object[] varargs;
     private transient Object[] params = new Object[MAX_PARMS];
     private transient Throwable throwable;
@@ -125,25 +123,28 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         this.varargs = null;
         this.messagePattern = messagePattern;
         this.argCount = argCount;
-        final int placeholderCount = count(messagePattern, indices);
-        initThrowable(paramArray, argCount, placeholderCount);
-        this.usedCount = Math.min(placeholderCount, argCount);
+
+        int usedParams = count(messagePattern, null);
+        if (usedParams < argCount && paramArray[argCount - 1] instanceof Throwable) {
+            this.throwable = (Throwable) paramArray[argCount - 1];
+        } else {
+            this.throwable = null;
+        }
     }
 
     private static int count(final String messagePattern, final int[] indices) {
+        if (indices == null) {
+            // if indices is null, we are counting only and don't care about
+            // retaining position information for fast substitution
+            // this is only used to determine if there is a Throwable in the params list
+            return ParameterFormatter.countArgumentPlaceholders(messagePattern);
+        }
+
         try {
             // try the fast path first
             return ParameterFormatter.countArgumentPlaceholders2(messagePattern, indices);
         } catch (final Exception ex) { // fallback if more than int[] length (256) parameter placeholders
             return ParameterFormatter.countArgumentPlaceholders(messagePattern);
-        }
-    }
-
-    private void initThrowable(final Object[] params, final int argCount, final int usedParams) {
-        if (usedParams < argCount && params[argCount - 1] instanceof Throwable) {
-            this.throwable = (Throwable) params[argCount - 1];
-        } else {
-            this.throwable = null;
         }
     }
 
@@ -323,11 +324,7 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
 
     @Override
     public void formatTo(final StringBuilder builder) {
-        if (indices[0] < 0) {
-            ParameterFormatter.formatMessage(builder, messagePattern, getParams(), argCount);
-        } else {
-            ParameterFormatter.formatMessage2(builder, messagePattern, getParams(), usedCount, indices);
-        }
+        formatter.formatTo(messagePattern, getParams(), argCount, builder);
     }
 
     /**
@@ -355,4 +352,35 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         messagePattern = null;
         throwable = null;
     }
+
+    @Override
+    public MessageContentFormatter getMessageContentFormatter() {
+        return formatter;
+    }
+
+    private static final MessageContentFormatter formatter = new MessageContentFormatter() {
+        private final ThreadLocal<int[]> indices = new ThreadLocal<>();
+
+        private int computeIndices(String messagePattern) {
+            int[] result = indices.get();
+            if (result == null) {
+                result = new int[256];
+                indices.set(result);
+            }
+            return ReusableParameterizedMessage.count(messagePattern, result);
+        }
+
+        @Override
+        public void formatTo(String formatString, Object[] parameters, int parameterCount, StringBuilder buffer) {
+            int placeholderCount = computeIndices(formatString);
+            int usedCount = Math.min(placeholderCount, parameterCount);
+            int[] computedIndices = indices.get();
+
+            if (computedIndices[0] < 0) {
+                ParameterFormatter.formatMessage(buffer, formatString, parameters, parameterCount);
+            } else {
+                ParameterFormatter.formatMessage2(buffer, formatString, parameters, usedCount, computedIndices);
+            }
+        }
+    };
 }

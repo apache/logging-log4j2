@@ -48,7 +48,7 @@ import com.lmax.disruptor.EventFactory;
 public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequence, ParameterVisitable {
 
     /** The {@code EventFactory} for {@code RingBufferLogEvent}s. */
-    public static final Factory FACTORY = new Factory();
+    public static final EventFactory<RingBufferLogEvent> FACTORY = new Factory();
 
     private static final long serialVersionUID = 8462119088943934758L;
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
@@ -89,6 +89,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     private Marker marker;
     private String fqcn;
     private StackTraceElement location;
+    private MessageContentFormatter messageContentFormatter;
     private ContextStack contextStack;
 
     private transient AsyncLogger asyncLogger;
@@ -132,7 +133,11 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     private void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
             final ReusableMessage reusable = (ReusableMessage) msg;
-            reusable.formatTo(getMessageTextForWriting());
+            if (Constants.FORMAT_MESSAGES_IN_BACKGROUND && msg instanceof MessageContentFormatterProvider) {
+                messageContentFormatter = ((MessageContentFormatterProvider) msg).getMessageContentFormatter();
+            } else {
+                reusable.formatTo(getMessageTextForWriting());
+            }
             messageFormat = reusable.getFormat();
             if (parameters != null) {
                 parameters = reusable.swapParameters(parameters);
@@ -214,7 +219,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     @Override
     public Message getMessage() {
         if (message == null) {
-            return messageText == null ? EMPTY : this;
+            return (messageText == null && messageContentFormatter == null) ? EMPTY : this;
         }
         return message;
     }
@@ -224,9 +229,13 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      */
     @Override
     public String getFormattedMessage() {
-        return messageText != null // LOG4J2-1527: may be null in web apps
-                ? messageText.toString() // note: please keep below "redundant" braces for readability
-                : (message == null ? null : message.getFormattedMessage());
+        if (messageText != null) { // LOG4J2-1527: may be null in web apps
+            if (messageContentFormatter != null && messageText.length() == 0) {
+                messageContentFormatter.formatTo(messageFormat, parameters, parameterCount, getMessageTextForWriting());
+            }
+            return messageText.toString();
+        }
+        return null;
     }
 
     /**
@@ -258,6 +267,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      */
     @Override
     public void formatTo(final StringBuilder buffer) {
+        if (messageContentFormatter != null && messageText.length() == 0) {
+            messageContentFormatter.formatTo(messageFormat, parameters, parameterCount, getMessageTextForWriting());
+        }
         buffer.append(messageText);
     }
 
@@ -294,7 +306,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     @Override
     public Message memento() {
         if (message == null) {
-            message = new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
+            message = new MementoMessage(getFormattedMessage(), messageFormat, getParameters());
         }
         return message;
     }
@@ -416,6 +428,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
                 contextData.clear();
             }
         }
+        messageContentFormatter = null;
 
         // ensure that excessively long char[] arrays are not kept in memory forever
         StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);

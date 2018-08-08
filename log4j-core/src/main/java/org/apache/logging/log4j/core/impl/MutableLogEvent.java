@@ -65,6 +65,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     private Marker marker;
     private String loggerFqcn;
     private StackTraceElement source;
+    private MessageContentFormatter messageContentFormatter;
     private ThreadContext.ContextStack contextStack;
     transient boolean reserved = false;
 
@@ -139,6 +140,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
             }
         }
         contextStack = null;
+        messageContentFormatter = null;
 
         // ThreadName should not be cleared: this field is set in the ReusableLogEventFactory
         // where this instance is kept in a ThreadLocal, so it usually does not change.
@@ -204,7 +206,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     @Override
     public Message getMessage() {
         if (message == null) {
-            return messageText == null ? EMPTY : this;
+            return (messageText == null && messageContentFormatter == null) ? EMPTY : this;
         }
         return message;
     }
@@ -212,7 +214,11 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     public void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
             final ReusableMessage reusable = (ReusableMessage) msg;
-            reusable.formatTo(getMessageTextForWriting());
+            if (Constants.FORMAT_MESSAGES_IN_BACKGROUND && msg instanceof MessageContentFormatterProvider) {
+                this.messageContentFormatter = ((MessageContentFormatterProvider) msg).getMessageContentFormatter();
+            } else {
+                reusable.formatTo(getMessageTextForWriting());
+            }
             this.messageFormat = msg.getFormat();
             if (parameters != null) {
                 parameters = reusable.swapParameters(parameters);
@@ -238,6 +244,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
      */
     @Override
     public String getFormattedMessage() {
+        if (messageContentFormatter != null && messageText.length() == 0) {
+            messageContentFormatter.formatTo(messageFormat, parameters, parameterCount, getMessageTextForWriting());
+        }
         return messageText.toString();
     }
 
@@ -279,6 +288,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
      */
     @Override
     public void formatTo(final StringBuilder buffer) {
+        if (messageContentFormatter != null && messageText.length() == 0) {
+            messageContentFormatter.formatTo(messageFormat, parameters, parameterCount, getMessageTextForWriting());
+        }
         buffer.append(messageText);
     }
 
@@ -306,7 +318,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     @Override
     public Message memento() {
         if (message == null) {
-            message = new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
+            message = new MementoMessage(getFormattedMessage(), messageFormat, getParameters());
         }
         return message;
     }
