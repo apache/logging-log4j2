@@ -330,10 +330,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     @Override
     public ThrowableProxy getThrownProxy() {
         // lazily instantiate the (expensive) ThrowableProxy
-        if (thrownProxy == null) {
-            if (thrown != null) {
-                thrownProxy = new ThrowableProxy(thrown);
-            }
+        if (thrownProxy == null && thrown != null && Constants.ENABLE_THROWABLE_PROXY) {
+            thrownProxy = new ThrowableProxy(thrown);
         }
         return this.thrownProxy;
     }

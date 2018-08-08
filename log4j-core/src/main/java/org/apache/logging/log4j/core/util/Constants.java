@@ -135,6 +135,17 @@ public final class Constants {
      */
     public static final int ENCODER_BYTE_BUFFER_SIZE = size("log4j.encoder.byteBufferSize", 8 * 1024);
 
+    /**
+     * Kill switch for <code>ThrowableProxy</code> object creation. ThrowableProxy instances provide additional
+     * packaging information about each stack trace element, however in some cases they can be expensive to
+     * create.
+     * Initialization requires a stack trace to be created, as well as several classloader class lookups.
+     *
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2391">LOG4J2-2391</a>
+     * @since 2.11.2
+     */
+    public static final boolean ENABLE_THROWABLE_PROXY = PropertiesUtil.getProperties().getBooleanProperty(
+            "log4j2.enable.throwable.proxy", true);
 
     private static int size(final String property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);

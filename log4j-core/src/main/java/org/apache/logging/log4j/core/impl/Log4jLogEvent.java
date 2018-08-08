@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.time.*;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
@@ -601,12 +602,11 @@ public class Log4jLogEvent implements LogEvent {
      */
     @Override
     public ThrowableProxy getThrownProxy() {
-        if (thrownProxy == null && thrown != null) {
+        if (thrownProxy == null && thrown != null && Constants.ENABLE_THROWABLE_PROXY) {
             thrownProxy = new ThrowableProxy(thrown);
         }
         return thrownProxy;
     }
-
 
     /**
      * Returns the Marker associated with the event, or null.
