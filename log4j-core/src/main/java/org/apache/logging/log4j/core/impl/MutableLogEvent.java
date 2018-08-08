@@ -349,7 +349,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
      */
     @Override
     public ThrowableProxy getThrownProxy() {
-        if (thrownProxy == null && thrown != null) {
+        if (thrownProxy == null && thrown != null && Constants.ENABLE_THROWABLE_PROXY) {
             thrownProxy = new ThrowableProxy(thrown);
         }
         return thrownProxy;
