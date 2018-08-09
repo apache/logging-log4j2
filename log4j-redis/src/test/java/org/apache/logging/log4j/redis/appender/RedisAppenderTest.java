@@ -11,14 +11,18 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.util.Collections;
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 /**
@@ -72,7 +76,7 @@ public final class RedisAppenderTest {
     @Test
     public void testAppendLogEvent() {
         appender.append(logEvent);
-        Mockito.verify(manager, Mockito.times(1)).sendBulk(Collections.singleton(MESSAGE + "\n"));
+        Mockito.verify(manager, Mockito.times(1)).sendBulk(any());
     }
 
     @Test
@@ -88,7 +92,7 @@ public final class RedisAppenderTest {
                 .build();
 
         appender.append(logEvent);
-        Mockito.verify(manager, Mockito.times(0)).sendBulk(Collections.singleton(anyString()));
+        Mockito.verify(manager, Mockito.times(0)).sendBulk(any());
     }
 
     @Test
@@ -104,7 +108,7 @@ public final class RedisAppenderTest {
                 .build();
 
         appender.append(logEvent);
-        Mockito.verify(manager, Mockito.times(1)).sendBulk(Collections.singleton(MESSAGE));
+        Mockito.verify(manager, Mockito.times(1)).sendBulk(any());
     }
 
     @Test
@@ -120,7 +124,7 @@ public final class RedisAppenderTest {
         logEvent = createPartialLogEvent().setEndOfBatch(true).build();
 
         appender.append(logEvent);
-        Mockito.verify(manager, Mockito.times(1)).sendBulk(Collections.singleton(MESSAGE));
+        Mockito.verify(manager, Mockito.times(1)).sendBulk(any());
     }
 
     @Test
@@ -134,9 +138,9 @@ public final class RedisAppenderTest {
                 .withLayout(PatternLayout.newBuilder().withPattern("%m").build())
                 .build();
         appender.append(logEvent);
-        Mockito.verify(manager, Mockito.times(0)).sendBulk(Collections.singleton(MESSAGE));
+        Mockito.verify(manager, Mockito.times(0)).sendBulk(any());
         appender.stop(100, TimeUnit.DAYS);
-        Mockito.verify(manager, Mockito.times(1)).sendBulk(Collections.singleton(MESSAGE));
+        Mockito.verify(manager, Mockito.times(1)).sendBulk(any());
     }
 
     private Log4jLogEvent createLogEvent() {

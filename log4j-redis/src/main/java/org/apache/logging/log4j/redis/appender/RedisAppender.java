@@ -30,9 +30,7 @@ import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -45,12 +43,14 @@ public final class RedisAppender extends AbstractAppender {
     private final RedisManager manager;
     private final LinkedBlockingQueue<String> logQueue;
     private final boolean immediateFlush;
+    private final int queueCapacity;
 
     private RedisAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-                          boolean immediateFlush, final boolean ignoreExceptions, final int queueCapacity, final RedisManager manager) {
+                          final boolean ignoreExceptions, boolean immediateFlush, final int queueCapacity, final RedisManager manager) {
         super(name, filter, layout, ignoreExceptions);
         this.manager = Objects.requireNonNull(manager, "Redis Manager");
         this.immediateFlush = immediateFlush;
+        this.queueCapacity = queueCapacity;
         this.logQueue = new LinkedBlockingQueue<>(queueCapacity);
     }
 
@@ -77,6 +77,12 @@ public final class RedisAppender extends AbstractAppender {
         @PluginAttribute(value = "queueCapacity")
         private int queueCapacity = 20;
 
+        @PluginAttribute(value = "maxRetries")
+        private int maxRetries = 3;
+
+        @PluginAttribute(value = "msBetweenRetries")
+        private long msBetweenRetries = 5000L;
+
         @PluginElement("SslConfiguration")
         private SslConfiguration sslConfiguration;
 
@@ -90,8 +96,8 @@ public final class RedisAppender extends AbstractAppender {
                     getName(),
                     getLayout(),
                     getFilter(),
-                    isImmediateFlush(),
                     isIgnoreExceptions(),
+                    isImmediateFlush(),
                     getQueueCapacity(),
                     getRedisManager()
             );
@@ -111,6 +117,14 @@ public final class RedisAppender extends AbstractAppender {
 
         boolean isImmediateFlush() {
             return immediateFlush;
+        }
+
+        public int getMaxRetries() {
+            return maxRetries;
+        }
+
+        public long getMsBetweenRetries() {
+            return msBetweenRetries;
         }
 
         SslConfiguration getSslConfiguration() {
@@ -145,6 +159,15 @@ public final class RedisAppender extends AbstractAppender {
             return asBuilder();
         }
 
+        public B setMaxRetries(int maxRetries) {
+            this.maxRetries = maxRetries;
+            return asBuilder();
+        }
+
+        public void setMsBetweenRetries(long msBetweenRetries) {
+            this.msBetweenRetries = msBetweenRetries;
+        }
+
         public B setQueueCapacity(final int queueCapacity) {
             this.queueCapacity = queueCapacity;
             return asBuilder();
@@ -172,6 +195,8 @@ public final class RedisAppender extends AbstractAppender {
                     getKeys(),
                     getHost(),
                     getPort(),
+                    getMaxRetries(),
+                    getMsBetweenRetries(),
                     getSslConfiguration(),
                     getPoolConfiguration()
             );
@@ -207,13 +232,11 @@ public final class RedisAppender extends AbstractAppender {
     }
 
     private boolean shouldFlushLogQueue(boolean endOfBatch) {
-        return immediateFlush || endOfBatch || logQueue.remainingCapacity() == 0;
+        return immediateFlush || endOfBatch || logQueue.size() >= queueCapacity;
     }
 
     private void tryFlushQueue() {
-        Set<String> logSet = new HashSet<>();
-        logQueue.drainTo(logSet);
-        manager.sendBulk(logSet);
+        manager.sendBulk(logQueue);
     }
 
     @Override

@@ -8,7 +8,8 @@ import org.mockito.Mockito;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.util.Arrays;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -61,7 +62,10 @@ public class RedisManagerTest {
 
     @Test
     public void testSendsAllValuesInBulk() {
-        manager.sendBulk(Arrays.asList("value1", "value2"));
+        Queue<String> q = new LinkedBlockingQueue<>();
+        q.add("value1");
+        q.add("value2");
+        manager.sendBulk(q);
         Mockito.verify(mockJedis, Mockito.times(KEYS.length)).rpush(anyString(), eq("value1"));
         Mockito.verify(mockJedis, Mockito.times(KEYS.length)).rpush(anyString(), eq("value2"));
     }
@@ -69,7 +73,7 @@ public class RedisManagerTest {
     private class TestRedisManager extends RedisManager {
 
         TestRedisManager(LoggerContext loggerContext, String name, String[] keys, String host, int port) {
-            super(loggerContext, name, keys, host, port, null, null);
+            super(loggerContext, name, keys, host, port, 3, 5000L, null, null);
         }
 
         @Override
