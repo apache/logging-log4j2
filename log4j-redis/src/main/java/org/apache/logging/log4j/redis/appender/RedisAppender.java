@@ -17,17 +17,17 @@
 
 package org.apache.logging.log4j.redis.appender;
 
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.*;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
@@ -63,8 +63,11 @@ public final class RedisAppender extends AbstractAppender {
         @PluginAttribute(value = "port")
         private int port;
 
-        @PluginAttribute(value = "ssl")
-        private boolean ssl = false;
+        @PluginElement("SslConfiguration")
+        private SslConfiguration sslConfiguration;
+
+        @PluginElement("PoolConfiguration")
+        private LoggingJedisPoolConfiguration poolConfiguration;
 
         @SuppressWarnings("resource")
         @Override
@@ -88,36 +91,44 @@ public final class RedisAppender extends AbstractAppender {
             return host;
         }
 
-        boolean getSsl() {
-            return ssl;
+        SslConfiguration getSslConfiguration() {
+            return sslConfiguration;
+        }
+
+        LoggingJedisPoolConfiguration getPoolConfiguration() {
+            return poolConfiguration;
         }
 
         int getPort() {
             return port;
         }
 
-        public B withKeys(final String key) {
+        public B setKeys(final String key) {
             this.keys = new String[]{key};
             return asBuilder();
         }
 
-        public B withKeys(final String[] keys) {
+        public B setKeys(final String[] keys) {
             this.keys = keys;
             return asBuilder();
         }
 
-        public B withHost(final String host) {
+        public B setHost(final String host) {
             this.host = host;
             return asBuilder();
         }
 
-        public B withPort(final int port) {
+        public B setPort(final int port) {
             this.port = port;
             return asBuilder();
         }
 
-        public B withSsl(final boolean ssl) {
-            this.ssl = ssl;
+        public B setPoolConfiguration(final LoggingJedisPoolConfiguration poolConfiguration) {
+            this.poolConfiguration = poolConfiguration;
+            return asBuilder();
+        }
+        public B setSslConfiguration(final SslConfiguration ssl) {
+            this.sslConfiguration = ssl;
             return asBuilder();
         }
 
@@ -128,8 +139,8 @@ public final class RedisAppender extends AbstractAppender {
                     getKeys(),
                     getHost(),
                     getPort(),
-                    getSsl(),
-                    getCharset()
+                    getSslConfiguration(),
+                    getPoolConfiguration()
             );
         }
     }
@@ -160,18 +171,11 @@ public final class RedisAppender extends AbstractAppender {
 
     private void tryAppend(final LogEvent event) {
         final Layout<? extends Serializable> layout = getLayout();
-        final byte[] header = layout.getHeader();
-        final byte[] body = layout.toByteArray(event);
-
-        int len = (header != null ? header.length : 0) + body.length;
-        byte[] data = new byte[len];
-        if (header != null) {
-            System.arraycopy(header, 0, data, 0, header.length);
-            System.arraycopy(body, 0, data, header.length, body.length);
+        if (layout instanceof StringLayout) {
+            manager.send(((StringLayout) layout).toSerializable(event));
         } else {
-            System.arraycopy(body, 0, data, 0, body.length);
+            throw new AppenderLoggingException("The Redis appender only supports StringLayouts.");
         }
-        manager.send(data);
     }
 
     @Override

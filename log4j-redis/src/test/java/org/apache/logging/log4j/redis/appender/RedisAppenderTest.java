@@ -31,6 +31,7 @@ public final class RedisAppenderTest {
     private String DESTINATION_KEY = "destination";
     private String HOST = "localhost";
     private int PORT = 6379;
+    private String MESSAGE = "Important Message";
 
     @Before
     public void setUp() {
@@ -38,9 +39,9 @@ public final class RedisAppenderTest {
 
         appender = new AppenderTestRedisAppenderBuilder()
                         .withName("RedisAppender")
-                        .withKeys(DESTINATION_KEY)
-                        .withHost(HOST)
-                        .withPort(PORT)
+                        .setKeys(DESTINATION_KEY)
+                        .setHost(HOST)
+                        .setPort(PORT)
                         .withLayout(PatternLayout.createDefaultLayout())
                         .build();
         logEvent = createLogEvent();
@@ -48,7 +49,7 @@ public final class RedisAppenderTest {
 
     private void initMocks() {
         manager = Mockito.mock(RedisManager.class);
-        when(manager.createPool(HOST, PORT, true)).thenReturn(Mockito.mock(JedisPool.class));
+        when(manager.createPool(HOST, PORT, null)).thenReturn(Mockito.mock(JedisPool.class));
     }
 
     @Test
@@ -68,8 +69,7 @@ public final class RedisAppenderTest {
     @Test
     public void testAppendLogEvent() {
         appender.append(logEvent);
-        byte[] expectedResult = appender.getLayout().toByteArray(logEvent);
-        Mockito.verify(manager, Mockito.times(1)).send(expectedResult);
+        Mockito.verify(manager, Mockito.times(1)).send(MESSAGE + "\n");
     }
 
     private Log4jLogEvent createLogEvent() {
@@ -77,7 +77,7 @@ public final class RedisAppenderTest {
                 .setLoggerName(RedisAppenderTest.class.getName())
                 .setLoggerFqcn(RedisAppenderTest.class.getName())
                 .setLevel(Level.INFO)
-                .setMessage(new SimpleMessage("Important Message"))
+                .setMessage(new SimpleMessage(MESSAGE))
                 .build();
     }
 

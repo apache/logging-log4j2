@@ -1,6 +1,7 @@
 package org.apache.logging.log4j.redis.appender;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -10,7 +11,7 @@ import redis.clients.jedis.JedisPool;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 public class RedisManagerTest {
@@ -27,9 +28,9 @@ public class RedisManagerTest {
     public void setUp() throws Exception {
         initMocks();
         manager = new ManagerTestRedisAppenderBuilder()
-                .withHost(HOST)
-                .withPort(PORT)
-                .withKeys(KEYS)
+                .setHost(HOST)
+                .setPort(PORT)
+                .setKeys(KEYS)
                 .getRedisManager();
         manager.startup();
     }
@@ -38,13 +39,13 @@ public class RedisManagerTest {
         mockJedisPool = Mockito.mock(JedisPool.class);
         mockJedis = Mockito.mock(Jedis.class);
         when(mockJedisPool.getResource()).thenReturn(mockJedis);
-        when(mockJedis.rpush(any(byte[].class), any(byte[].class))).thenReturn(1L);
+        when(mockJedis.rpush(anyString(), anyString())).thenReturn(1L);
     }
 
     @Test
     public void verifySendsBytesToAllKeys() {
-        manager.send("value".getBytes());
-        Mockito.verify(mockJedis, Mockito.times(KEYS.length)).rpush(any(byte[].class), any(byte[].class));
+        manager.send("value");
+        Mockito.verify(mockJedis, Mockito.times(KEYS.length)).rpush(anyString(), anyString());
         Mockito.verify(mockJedisPool).getResource();
     }
 
@@ -57,11 +58,11 @@ public class RedisManagerTest {
     private class TestRedisManager extends RedisManager {
 
         TestRedisManager(LoggerContext loggerContext, String name, String[] keys, String host, int port, Charset charset) {
-            super(loggerContext, name, keys, host, port, false, charset);
+            super(loggerContext, name, keys, host, port, null, null);
         }
 
         @Override
-        JedisPool createPool(String host, int port, boolean useSsl) {
+        JedisPool createPool(String host, int port, SslConfiguration ssl) {
             return mockJedisPool;
         }
     }

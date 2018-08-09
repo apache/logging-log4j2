@@ -2,54 +2,60 @@ package org.apache.logging.log4j.redis.appender;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 class RedisManager extends AbstractManager {
 
-    private final byte[][] byteKeys;
+    private final String[] keys;
     private final String host;
     private final int port;
-    private final Charset charset;
-    private final boolean ssl;
+    private final SslConfiguration sslConfiguration;
+    private final JedisPoolConfig poolConfiguration;
     private JedisPool jedisPool;
 
-    RedisManager(LoggerContext loggerContext, String name, String[] keys, String host, int port, boolean ssl, Charset charset) {
+    RedisManager(LoggerContext loggerContext, String name, String[] keys, String host, int port, SslConfiguration sslConfiguration, LoggingJedisPoolConfiguration poolConfiguration) {
         super(loggerContext, name);
-        this.byteKeys = new byte[keys.length][];
-        for (int i = 0; i < keys.length; i++) {
-            this.byteKeys[i] = keys[i].getBytes(charset);
-        }
-        this.charset = charset;
+        this.keys = keys;
         this.host = host;
         this.port = port;
-        this.ssl = ssl;
+        this.sslConfiguration = sslConfiguration;
+        if (poolConfiguration == null) {
+            this.poolConfiguration = LoggingJedisPoolConfiguration.defaultConfiguration();
+        } else {
+            this.poolConfiguration = poolConfiguration;
+        }
     }
 
-    JedisPool createPool(String host, int port, boolean ssl) {
-        JedisPoolConfig poolConfig = new JedisPoolConfig();
-        poolConfig.setMaxIdle(5);
-        poolConfig.setMinIdle(1);
-        poolConfig.setTestOnBorrow(true);
-        poolConfig.setTestOnReturn(true);
-        poolConfig.setTestWhileIdle(true);
-        poolConfig.setNumTestsPerEvictionRun(10);
-        poolConfig.setTimeBetweenEvictionRunsMillis(60000);
-        return new JedisPool(poolConfig, host, port, ssl);
+    JedisPool createPool(String host, int port, SslConfiguration sslConfiguration) {
+        if (sslConfiguration != null) {
+            return new JedisPool(
+                    poolConfiguration,
+                    URI.create(host + ":" + String.valueOf(port)),
+                    sslConfiguration.getSslSocketFactory(),
+                    sslConfiguration.getSslContext().getSupportedSSLParameters(),
+                    null
+            );
+        } else {
+            return new JedisPool(poolConfiguration, host, port, false);
+        }
+
     }
 
     public void startup() {
-        jedisPool = createPool(host, port, ssl);
+        jedisPool = createPool(host, port, sslConfiguration);
     }
 
-    public void send(byte[] value) {
+    public void send(String value) {
         try (Jedis jedis = jedisPool.getResource()){
-            for (byte[] key: byteKeys) {
+            for (String key: keys) {
                 jedis.rpush(key, value);
             }
         } catch (JedisConnectionException e) {
@@ -74,13 +80,6 @@ class RedisManager extends AbstractManager {
     }
 
     String getKeysAsString() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < byteKeys.length; i++) {
-            sb.append(new String(byteKeys[i], charset));
-            if (i != byteKeys.length - 1) {
-                sb.append(", ");
-            }
-        }
-        return sb.toString();
+        return String.join(",", keys);
     }
 }
