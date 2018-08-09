@@ -129,13 +129,15 @@ public class ReusableObjectMessage implements ReusableMessage, ParameterVisitabl
 
     @Override
     public MessageContentFormatter getMessageContentFormatter() {
-        return formatter;
+        return Formatter.INSTANCE;
     }
 
-    private static final MessageContentFormatter formatter = new MessageContentFormatter() {
+    private enum Formatter implements MessageContentFormatter {
+        INSTANCE;
+
         @Override
         public void formatTo(String formatString, Object[] parameters, int parameterCount, StringBuilder buffer) {
             StringBuilders.appendValue(buffer, parameters[0]);
         }
-    };
+    }
 }
