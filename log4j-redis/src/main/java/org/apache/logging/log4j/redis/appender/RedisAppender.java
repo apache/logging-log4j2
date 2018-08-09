@@ -26,24 +26,32 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.spi.AbstractLogger;
 
 import java.io.Serializable;
-import java.nio.charset.Charset;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Sends log events to a Redis Queue. All logs are appended Redis lists via the RPUSH command.
+ * Sends log events to a Redis Queue. All logs are appended to Redis lists via the RPUSH command.
  */
 @Plugin(name = "Redis", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RedisAppender extends AbstractAppender {
 
+    private final RedisManager manager;
+    private final LinkedBlockingQueue<String> logQueue;
+    private final boolean immediateFlush;
+
     private RedisAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-                          final boolean ignoreExceptions, final RedisManager manager) {
+                          boolean immediateFlush, final boolean ignoreExceptions, final int queueCapacity, final RedisManager manager) {
         super(name, filter, layout, ignoreExceptions);
         this.manager = Objects.requireNonNull(manager, "Redis Manager");
+        this.immediateFlush = immediateFlush;
+        this.logQueue = new LinkedBlockingQueue<>(queueCapacity);
     }
 
     /**
@@ -61,26 +69,32 @@ public final class RedisAppender extends AbstractAppender {
         private String host;
 
         @PluginAttribute(value = "port")
-        private int port;
+        private int port = 6379;
+
+        @PluginAttribute(value = "immediateFlush")
+        private boolean immediateFlush = true;
+
+        @PluginAttribute(value = "queueCapacity")
+        private int queueCapacity = 20;
 
         @PluginElement("SslConfiguration")
         private SslConfiguration sslConfiguration;
 
         @PluginElement("PoolConfiguration")
-        private LoggingJedisPoolConfiguration poolConfiguration;
+        private LoggingJedisPoolConfiguration poolConfiguration = LoggingJedisPoolConfiguration.defaultConfiguration();
 
         @SuppressWarnings("resource")
         @Override
         public RedisAppender build() {
-            return new RedisAppender(getName(), getLayout(), getFilter(), isIgnoreExceptions(), getRedisManager());
-        }
-
-        public Charset getCharset() {
-            if (getLayout() instanceof AbstractStringLayout) {
-                return ((AbstractStringLayout) getLayout()).getCharset();
-            } else {
-                return Charset.defaultCharset();
-            }
+            return new RedisAppender(
+                    getName(),
+                    getLayout(),
+                    getFilter(),
+                    isImmediateFlush(),
+                    isIgnoreExceptions(),
+                    getQueueCapacity(),
+                    getRedisManager()
+            );
         }
 
         String[] getKeys() {
@@ -89,6 +103,14 @@ public final class RedisAppender extends AbstractAppender {
 
         String getHost() {
             return host;
+        }
+
+        int getQueueCapacity() {
+            return queueCapacity;
+        }
+
+        boolean isImmediateFlush() {
+            return immediateFlush;
         }
 
         SslConfiguration getSslConfiguration() {
@@ -123,12 +145,23 @@ public final class RedisAppender extends AbstractAppender {
             return asBuilder();
         }
 
+        public B setQueueCapacity(final int queueCapacity) {
+            this.queueCapacity = queueCapacity;
+            return asBuilder();
+        }
+
         public B setPoolConfiguration(final LoggingJedisPoolConfiguration poolConfiguration) {
             this.poolConfiguration = poolConfiguration;
             return asBuilder();
         }
+
         public B setSslConfiguration(final SslConfiguration ssl) {
             this.sslConfiguration = ssl;
+            return asBuilder();
+        }
+
+        public B setImmediateFlush(final boolean immediateFlush) {
+            this.immediateFlush = immediateFlush;
             return asBuilder();
         }
 
@@ -154,28 +187,33 @@ public final class RedisAppender extends AbstractAppender {
         return new Builder<B>().asBuilder();
     }
 
-    private final RedisManager manager;
-
     @Override
     public void append(final LogEvent event) {
-        if (event.getLoggerName() != null && event.getLoggerName().startsWith("org.apache.redis")) {
-            LOGGER.warn("Recursive logging from [{}] for appender [{}].", event.getLoggerName(), getName());
-        } else {
-            try {
-                tryAppend(event);
-            } catch (final Exception e) {
-                error("Unable to write to Redis in appender [" + getName() + "]", event, e);
-            }
-        }
-    }
-
-    private void tryAppend(final LogEvent event) {
         final Layout<? extends Serializable> layout = getLayout();
-        if (layout instanceof StringLayout) {
-            manager.send(((StringLayout) layout).toSerializable(event));
+        if (event.getLoggerName() != null && AbstractLogger.getRecursionDepth() > 1) {
+            LOGGER.warn("Recursive logging from [{}] for appender [{}].", event.getLoggerName(), getName());
+        } else if (layout instanceof StringLayout) {
+            logQueue.add(((StringLayout)layout).toSerializable(event));
+            if (shouldFlushLogQueue(event.isEndOfBatch())) {
+                try {
+                    tryFlushQueue();
+                } catch (final Exception e) {
+                    error("Unable to write to Redis in appender [" + getName() + "]", event, e);
+                }
+            }
         } else {
             throw new AppenderLoggingException("The Redis appender only supports StringLayouts.");
         }
+    }
+
+    private boolean shouldFlushLogQueue(boolean endOfBatch) {
+        return immediateFlush || endOfBatch || logQueue.remainingCapacity() == 0;
+    }
+
+    private void tryFlushQueue() {
+        Set<String> logSet = new HashSet<>();
+        logQueue.drainTo(logSet);
+        manager.sendBulk(logSet);
     }
 
     @Override
@@ -188,6 +226,9 @@ public final class RedisAppender extends AbstractAppender {
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
+        if (logQueue.size() > 0) {
+            tryFlushQueue();
+        }
         boolean stopped = super.stop(timeout, timeUnit, false);
         stopped &= manager.stop(timeout, timeUnit);
         setStopped();

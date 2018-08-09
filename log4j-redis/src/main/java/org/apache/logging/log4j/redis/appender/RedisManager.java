@@ -1,5 +1,6 @@
 package org.apache.logging.log4j.redis.appender;
 
+import com.sun.tools.javac.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
@@ -10,6 +11,8 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 class RedisManager extends AbstractManager {
@@ -53,13 +56,29 @@ class RedisManager extends AbstractManager {
         jedisPool = createPool(host, port, sslConfiguration);
     }
 
-    public void send(String value) {
+    public void sendBulk(Collection<String> values) {
         try (Jedis jedis = jedisPool.getResource()){
-            for (String key: keys) {
-                jedis.rpush(key, value);
+            for (String value: values) {
+                send(value, jedis);
             }
         } catch (JedisConnectionException e) {
             LOGGER.error("Unable to connect to redis. Please ensure that it's running on {}:{}", host, port, e);
+        }
+    }
+
+    public void send(String value) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            try {
+                send(value, jedis);
+            } catch (JedisConnectionException e) {
+                LOGGER.error("Unable to connect to redis. Please ensure that it's running on {}:{}", host, port, e);
+            }
+        }
+    }
+
+    public void send(String value, Jedis jedis) {
+        for (String key: keys) {
+            jedis.rpush(key, value);
         }
     }
 

@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import redis.clients.jedis.JedisPool;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
@@ -42,6 +43,7 @@ public final class RedisAppenderTest {
                         .setKeys(DESTINATION_KEY)
                         .setHost(HOST)
                         .setPort(PORT)
+                        .setImmediateFlush(true)
                         .withLayout(PatternLayout.createDefaultLayout())
                         .build();
         logEvent = createLogEvent();
@@ -69,7 +71,7 @@ public final class RedisAppenderTest {
     @Test
     public void testAppendLogEvent() {
         appender.append(logEvent);
-        Mockito.verify(manager, Mockito.times(1)).send(MESSAGE + "\n");
+        Mockito.verify(manager, Mockito.times(1)).sendBulk(Collections.singleton(MESSAGE + "\n"));
     }
 
     private Log4jLogEvent createLogEvent() {

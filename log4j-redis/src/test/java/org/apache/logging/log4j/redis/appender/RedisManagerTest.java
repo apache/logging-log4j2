@@ -8,7 +8,6 @@ import org.mockito.Mockito;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -57,7 +56,7 @@ public class RedisManagerTest {
 
     private class TestRedisManager extends RedisManager {
 
-        TestRedisManager(LoggerContext loggerContext, String name, String[] keys, String host, int port, Charset charset) {
+        TestRedisManager(LoggerContext loggerContext, String name, String[] keys, String host, int port) {
             super(loggerContext, name, keys, host, port, null, null);
         }
 
@@ -75,8 +74,7 @@ public class RedisManagerTest {
                     getName(),
                     getKeys(),
                     getHost(),
-                    getPort(),
-                    getCharset()
+                    getPort()
             );
         }
     }
