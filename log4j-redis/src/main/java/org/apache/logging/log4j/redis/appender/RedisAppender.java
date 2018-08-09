@@ -80,9 +80,6 @@ public final class RedisAppender extends AbstractAppender {
         @PluginAttribute(value = "maxRetries")
         private int maxRetries = 3;
 
-        @PluginAttribute(value = "msBetweenRetries")
-        private long msBetweenRetries = 5000L;
-
         @PluginElement("SslConfiguration")
         private SslConfiguration sslConfiguration;
 
@@ -123,10 +120,6 @@ public final class RedisAppender extends AbstractAppender {
             return maxRetries;
         }
 
-        public long getMsBetweenRetries() {
-            return msBetweenRetries;
-        }
-
         SslConfiguration getSslConfiguration() {
             return sslConfiguration;
         }
@@ -164,10 +157,6 @@ public final class RedisAppender extends AbstractAppender {
             return asBuilder();
         }
 
-        public void setMsBetweenRetries(long msBetweenRetries) {
-            this.msBetweenRetries = msBetweenRetries;
-        }
-
         public B setQueueCapacity(final int queueCapacity) {
             this.queueCapacity = queueCapacity;
             return asBuilder();
@@ -196,7 +185,6 @@ public final class RedisAppender extends AbstractAppender {
                     getHost(),
                     getPort(),
                     getMaxRetries(),
-                    getMsBetweenRetries(),
                     getSslConfiguration(),
                     getPoolConfiguration()
             );

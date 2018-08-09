@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.exceptions.JedisDataException;
 
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -70,10 +71,24 @@ public class RedisManagerTest {
         Mockito.verify(mockJedis, Mockito.times(KEYS.length)).rpush(anyString(), eq("value2"));
     }
 
+    @Test
+    public void testRetriesUntilSuccess() {
+        manager = new ManagerTestRedisAppenderBuilder()
+                .setHost(HOST)
+                .setPort(PORT)
+                .setKeys(KEYS)
+                .setMaxRetries(3)
+                .getRedisManager();
+
+        when(mockJedis.rpush(anyString(), anyString())).thenThrow(new JedisDataException("value"));
+        manager.send("value1", mockJedis);
+        Mockito.verify(mockJedis, Mockito.times(KEYS.length * 3)).rpush(anyString(), eq("value1"));
+    }
+
     private class TestRedisManager extends RedisManager {
 
         TestRedisManager(LoggerContext loggerContext, String name, String[] keys, String host, int port) {
-            super(loggerContext, name, keys, host, port, 3, 5000L, null, null);
+            super(loggerContext, name, keys, host, port, 3, null, null);
         }
 
         @Override

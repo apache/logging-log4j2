@@ -9,7 +9,6 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
@@ -21,18 +20,15 @@ class RedisManager extends AbstractManager {
     private final int port;
     private final SslConfiguration sslConfiguration;
     private final JedisPoolConfig poolConfiguration;
-    private final long msBetweenRetries;
     private JedisPool jedisPool;
 
     RedisManager(LoggerContext loggerContext, String name, String[] keys, String host, int port, int maxRetries,
-                 long msBetweenRetries, SslConfiguration sslConfiguration,
-                 LoggingJedisPoolConfiguration poolConfiguration) {
+                 SslConfiguration sslConfiguration, LoggingJedisPoolConfiguration poolConfiguration) {
         super(loggerContext, name);
         this.keys = keys;
         this.host = host;
         this.port = port;
         this.maxRetriesOnSend = maxRetries;
-        this.msBetweenRetries = msBetweenRetries;
         this.sslConfiguration = sslConfiguration;
         if (poolConfiguration == null) {
             this.poolConfiguration = LoggingJedisPoolConfiguration.defaultConfiguration();
@@ -91,12 +87,6 @@ class RedisManager extends AbstractManager {
                     break;
                 } catch (Exception e) {
                     LOGGER.warn("Failed to send value to redis. Retrying...", e);
-                    try {
-                        wait(msBetweenRetries);
-                    } catch (InterruptedException ex) {
-                        LOGGER.info("Redis Appender interrupted during wait for retry. Aborting.", ex);
-                        return;
-                    }
                 }
             }
             if (retryCount >= maxRetriesOnSend) {
