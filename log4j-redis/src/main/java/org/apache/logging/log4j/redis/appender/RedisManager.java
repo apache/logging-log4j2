@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 class RedisManager extends AbstractManager {
 
-    private final int maxRetriesOnSend;
     private final String[] keys;
     private final String host;
     private final int port;
@@ -22,13 +21,12 @@ class RedisManager extends AbstractManager {
     private final JedisPoolConfig poolConfiguration;
     private JedisPool jedisPool;
 
-    RedisManager(LoggerContext loggerContext, String name, String[] keys, String host, int port, int maxRetries,
+    RedisManager(LoggerContext loggerContext, String name, String[] keys, String host, int port,
                  SslConfiguration sslConfiguration, LoggingJedisPoolConfiguration poolConfiguration) {
         super(loggerContext, name);
         this.keys = keys;
         this.host = host;
         this.port = port;
-        this.maxRetriesOnSend = maxRetries;
         this.sslConfiguration = sslConfiguration;
         if (poolConfiguration == null) {
             this.poolConfiguration = LoggingJedisPoolConfiguration.defaultConfiguration();
@@ -80,18 +78,7 @@ class RedisManager extends AbstractManager {
 
     public void send(String value, Jedis jedis) {
         for (String key: keys) {
-            int retryCount = 0;
-            while (retryCount++ < maxRetriesOnSend) {
-                try {
-                    jedis.rpush(key, value);
-                    break;
-                } catch (Exception e) {
-                    LOGGER.warn("Failed to send value to redis. Retrying...", e);
-                }
-            }
-            if (retryCount >= maxRetriesOnSend) {
-                LOGGER.error("Unable to send a log event to Redis after {} tries.", maxRetriesOnSend);
-            }
+            jedis.rpush(key, value);
         }
     }
 
