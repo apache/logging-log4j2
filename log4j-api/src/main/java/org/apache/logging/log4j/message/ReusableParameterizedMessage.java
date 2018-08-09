@@ -124,15 +124,18 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         this.messagePattern = messagePattern;
         this.argCount = argCount;
 
-        int usedParams = count(messagePattern, null);
-        if (usedParams < argCount && paramArray[argCount - 1] instanceof Throwable) {
-            this.throwable = (Throwable) paramArray[argCount - 1];
-        } else {
-            this.throwable = null;
+        if (argCount > 0 && paramArray[argCount - 1] instanceof Throwable) {
+            int usedParams = count(messagePattern, null);
+            if (usedParams < argCount) {
+                // paramArray[argCount - 1] is definitely an instance of Throwable
+                this.throwable = (Throwable) paramArray[argCount - 1];
+            } else {
+                this.throwable = null;
+            }
         }
     }
 
-    private static int count(final String messagePattern, final int[] indices) {
+    static int count(final String messagePattern, final int[] indices) {
         if (indices == null) {
             // if indices is null, we are counting only and don't care about
             // retaining position information for fast substitution
@@ -358,29 +361,5 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         return formatter;
     }
 
-    private static final MessageContentFormatter formatter = new MessageContentFormatter() {
-        private final ThreadLocal<int[]> indices = new ThreadLocal<>();
-
-        private int computeIndices(String messagePattern) {
-            int[] result = indices.get();
-            if (result == null) {
-                result = new int[256];
-                indices.set(result);
-            }
-            return ReusableParameterizedMessage.count(messagePattern, result);
-        }
-
-        @Override
-        public void formatTo(String formatString, Object[] parameters, int parameterCount, StringBuilder buffer) {
-            int placeholderCount = computeIndices(formatString);
-            int usedCount = Math.min(placeholderCount, parameterCount);
-            int[] computedIndices = indices.get();
-
-            if (computedIndices[0] < 0) {
-                ParameterFormatter.formatMessage(buffer, formatString, parameters, parameterCount);
-            } else {
-                ParameterFormatter.formatMessage2(buffer, formatString, parameters, usedCount, computedIndices);
-            }
-        }
-    };
+    private static final MessageContentFormatter formatter = new ReusableParameterizedMessageContentFormatter();
 }
