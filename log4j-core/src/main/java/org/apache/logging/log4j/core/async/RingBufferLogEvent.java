@@ -45,7 +45,7 @@ import com.lmax.disruptor.EventFactory;
  * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
  * the life of the RingBuffer.
  */
-public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequence, ParameterVisitable {
+public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequence, ParameterVisitable, MessageContentFormatterProvider {
 
     /** The {@code EventFactory} for {@code RingBufferLogEvent}s. */
     public static final EventFactory<RingBufferLogEvent> FACTORY = new Factory();
@@ -130,11 +130,24 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         return createMemento();
     }
 
+    @Override
+    public MessageContentFormatter getMessageContentFormatter() {
+        // avoids re-formatting when another RingBufferLogEvent is initialized from
+        // this one, but formatting work has already been completed
+        if (messageText != null && messageText.length() > 0) {
+            return null;
+        }
+        return messageContentFormatter;
+    }
+
     private void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
             final ReusableMessage reusable = (ReusableMessage) msg;
             if (Constants.FORMAT_MESSAGES_IN_BACKGROUND && msg instanceof MessageContentFormatterProvider) {
                 messageContentFormatter = ((MessageContentFormatterProvider) msg).getMessageContentFormatter();
+                if (messageContentFormatter == null) {
+                    reusable.formatTo(getMessageTextForWriting());
+                }
             } else {
                 reusable.formatTo(getMessageTextForWriting());
             }

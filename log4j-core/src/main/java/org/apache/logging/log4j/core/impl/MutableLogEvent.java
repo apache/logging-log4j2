@@ -42,7 +42,7 @@ import org.apache.logging.log4j.util.Strings;
  * Mutable implementation of the {@code LogEvent} interface.
  * @since 2.6
  */
-public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisitable {
+public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisitable, MessageContentFormatterProvider {
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
 
     private int threadPriority;
@@ -211,11 +211,24 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return message;
     }
 
+    @Override
+    public MessageContentFormatter getMessageContentFormatter() {
+        // avoids re-formatting when another MutableLogEvent is initialized from
+        // this one, but formatting work has already been completed
+        if (messageText != null && messageText.length() > 0) {
+            return null;
+        }
+        return messageContentFormatter;
+    }
+
     public void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
             final ReusableMessage reusable = (ReusableMessage) msg;
             if (Constants.FORMAT_MESSAGES_IN_BACKGROUND && msg instanceof MessageContentFormatterProvider) {
                 this.messageContentFormatter = ((MessageContentFormatterProvider) msg).getMessageContentFormatter();
+                if (messageContentFormatter == null) {
+                    reusable.formatTo(getMessageTextForWriting());
+                }
             } else {
                 reusable.formatTo(getMessageTextForWriting());
             }
