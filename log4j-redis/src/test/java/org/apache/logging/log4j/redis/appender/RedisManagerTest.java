@@ -8,9 +8,11 @@ import org.mockito.Mockito;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 public class RedisManagerTest {
@@ -42,16 +44,26 @@ public class RedisManagerTest {
     }
 
     @Test
-    public void verifySendsBytesToAllKeys() {
+    public void testSendsValuesToAllKeys() {
         manager.send("value");
-        Mockito.verify(mockJedis, Mockito.times(KEYS.length)).rpush(anyString(), anyString());
         Mockito.verify(mockJedisPool).getResource();
+        Mockito.verify(mockJedis, Mockito.times(KEYS.length)).rpush(anyString(), anyString());
+        for (String k: KEYS) {
+            Mockito.verify(mockJedis, Mockito.times(1)).rpush(eq(k), anyString());
+        }
     }
 
     @Test
-    public void verifyReleasePoolResources() {
+    public void testReleasePoolResources() {
         manager.stop(100, TimeUnit.HOURS);
         Mockito.verify(mockJedisPool).destroy();
+    }
+
+    @Test
+    public void testSendsAllValuesInBulk() {
+        manager.sendBulk(Arrays.asList("value1", "value2"));
+        Mockito.verify(mockJedis, Mockito.times(KEYS.length)).rpush(anyString(), eq("value1"));
+        Mockito.verify(mockJedis, Mockito.times(KEYS.length)).rpush(anyString(), eq("value2"));
     }
 
     private class TestRedisManager extends RedisManager {

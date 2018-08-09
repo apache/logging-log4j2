@@ -242,6 +242,7 @@ public final class RedisAppender extends AbstractAppender {
             ", host=" + manager.getHost() +
             ", port=" + manager.getPort() +
             ", keys=" + manager.getKeysAsString() +
+            ", immediateFlush=" + this.immediateFlush +
             '}';
     }
 }

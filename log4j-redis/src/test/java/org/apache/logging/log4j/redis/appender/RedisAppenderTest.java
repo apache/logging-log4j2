@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -74,13 +75,80 @@ public final class RedisAppenderTest {
         Mockito.verify(manager, Mockito.times(1)).sendBulk(Collections.singleton(MESSAGE + "\n"));
     }
 
+    @Test
+    public void testQueuesLogEvents() {
+        appender = new AppenderTestRedisAppenderBuilder()
+                .withName("RedisAppender")
+                .setKeys(DESTINATION_KEY)
+                .setHost(HOST)
+                .setPort(PORT)
+                .setQueueCapacity(2)
+                .setImmediateFlush(false)
+                .withLayout(PatternLayout.newBuilder().withPattern("%m").build())
+                .build();
+
+        appender.append(logEvent);
+        Mockito.verify(manager, Mockito.times(0)).sendBulk(Collections.singleton(anyString()));
+    }
+
+    @Test
+    public void testFlushesQueueAtCapacity() {
+        appender = new AppenderTestRedisAppenderBuilder()
+                .withName("RedisAppender")
+                .setKeys(DESTINATION_KEY)
+                .setHost(HOST)
+                .setPort(PORT)
+                .setQueueCapacity(1)
+                .setImmediateFlush(false)
+                .withLayout(PatternLayout.newBuilder().withPattern("%m").build())
+                .build();
+
+        appender.append(logEvent);
+        Mockito.verify(manager, Mockito.times(1)).sendBulk(Collections.singleton(MESSAGE));
+    }
+
+    @Test
+    public void testFlushesQueueAtEndOfBatch() {
+        appender = new AppenderTestRedisAppenderBuilder()
+                .withName("RedisAppender")
+                .setKeys(DESTINATION_KEY)
+                .setHost(HOST)
+                .setPort(PORT)
+                .setImmediateFlush(false)
+                .withLayout(PatternLayout.newBuilder().withPattern("%m").build())
+                .build();
+        logEvent = createPartialLogEvent().setEndOfBatch(true).build();
+
+        appender.append(logEvent);
+        Mockito.verify(manager, Mockito.times(1)).sendBulk(Collections.singleton(MESSAGE));
+    }
+
+    @Test
+    public void testFlushesQueueOnAppenderStop() {
+        appender = new AppenderTestRedisAppenderBuilder()
+                .withName("RedisAppender")
+                .setKeys(DESTINATION_KEY)
+                .setHost(HOST)
+                .setPort(PORT)
+                .setImmediateFlush(false)
+                .withLayout(PatternLayout.newBuilder().withPattern("%m").build())
+                .build();
+        appender.append(logEvent);
+        Mockito.verify(manager, Mockito.times(0)).sendBulk(Collections.singleton(MESSAGE));
+        appender.stop(100, TimeUnit.DAYS);
+        Mockito.verify(manager, Mockito.times(1)).sendBulk(Collections.singleton(MESSAGE));
+    }
+
     private Log4jLogEvent createLogEvent() {
+        return createPartialLogEvent().build();
+    }
+
+    private Log4jLogEvent.Builder createPartialLogEvent() {
         return Log4jLogEvent.newBuilder()
                 .setLoggerName(RedisAppenderTest.class.getName())
                 .setLoggerFqcn(RedisAppenderTest.class.getName())
                 .setLevel(Level.INFO)
-                .setMessage(new SimpleMessage(MESSAGE))
-                .build();
+                .setMessage(new SimpleMessage(MESSAGE));
     }
 
     private class AppenderTestRedisAppenderBuilder extends RedisAppender.Builder<AppenderTestRedisAppenderBuilder> {
