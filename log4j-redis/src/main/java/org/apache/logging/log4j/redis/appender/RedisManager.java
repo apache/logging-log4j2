@@ -39,7 +39,7 @@ class RedisManager extends AbstractManager {
         if (sslConfiguration != null) {
             return new JedisPool(
                     poolConfiguration,
-                    URI.create(host + ":" + String.valueOf(port)),
+                    URI.create(host + ":" + port),
                     sslConfiguration.getSslSocketFactory(),
                     sslConfiguration.getSslContext().getSupportedSSLParameters(),
                     null
