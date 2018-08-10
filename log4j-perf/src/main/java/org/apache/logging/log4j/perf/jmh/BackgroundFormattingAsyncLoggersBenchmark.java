@@ -130,7 +130,7 @@ public class BackgroundFormattingAsyncLoggersBenchmark {
 
         @Override
         public String toString() {
-            return "[ComplextToString content=" + chooseContent() + "]";
+            return "[ComplexToString content=" + chooseContent() + "]";
         }
     }
 
