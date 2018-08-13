@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.security.CodeSource;
@@ -83,11 +84,11 @@ public class ThrowableProxy implements Serializable {
 
     private static final long serialVersionUID = -2752771578252251910L;
 
-    private final ThrowableProxy causeProxy;
+    private ThrowableProxy causeProxy;
 
     private int commonElementCount;
 
-    private final ExtendedStackTraceElement[] extendedStackTrace;
+    private ExtendedStackTraceElement[] extendedStackTrace;
 
     private final String localizedMessage;
 
@@ -95,9 +96,11 @@ public class ThrowableProxy implements Serializable {
 
     private final String name;
 
-    private final ThrowableProxy[] suppressedProxies;
+    private ThrowableProxy[] suppressedProxies;
 
     private final transient Throwable throwable;
+
+    private transient InitializationData initializationData;
 
     /**
      * For JSON and XML IO via Jackson.
@@ -119,7 +122,13 @@ public class ThrowableProxy implements Serializable {
      * @param throwable The Throwable to wrap, must not be null.
      */
     public ThrowableProxy(final Throwable throwable) {
-        this(throwable, null);
+        this.throwable = throwable;
+        this.name = throwable.getClass().getName();
+        this.message = throwable.getMessage();
+        this.localizedMessage = throwable.getLocalizedMessage();
+        final Map<String, CacheEntry> map = new HashMap<>();
+        final Stack<Class<?>> stack = StackLocatorUtil.getCurrentStackTrace();
+        initializationData = new InitializationData(stack, map);
     }
 
     /**
@@ -128,19 +137,20 @@ public class ThrowableProxy implements Serializable {
      * @param throwable The Throwable to wrap, must not be null.
      * @param visited   The set of visited suppressed exceptions.
      */
-    private ThrowableProxy(final Throwable throwable, final Set<Throwable> visited) {
+    private ThrowableProxy(final Throwable throwable, final Set<Throwable> visited, ClassLoader contextClassLoader) {
         this.throwable = throwable;
         this.name = throwable.getClass().getName();
         this.message = throwable.getMessage();
         this.localizedMessage = throwable.getLocalizedMessage();
         final Map<String, CacheEntry> map = new HashMap<>();
         final Stack<Class<?>> stack = StackLocatorUtil.getCurrentStackTrace();
-        this.extendedStackTrace = this.toExtendedStackTrace(stack, map, null, throwable.getStackTrace());
+        this.extendedStackTrace = this.toExtendedStackTrace(stack, map, null, throwable.getStackTrace(),
+                contextClassLoader);
         final Throwable throwableCause = throwable.getCause();
         final Set<Throwable> causeVisited = new HashSet<>(1);
         this.causeProxy = throwableCause == null ? null : new ThrowableProxy(throwable, stack, map, throwableCause,
-            visited, causeVisited);
-        this.suppressedProxies = this.toSuppressedProxies(throwable, visited);
+                visited, causeVisited, contextClassLoader);
+        this.suppressedProxies = this.toSuppressedProxies(throwable, visited, contextClassLoader);
     }
 
     /**
@@ -155,17 +165,45 @@ public class ThrowableProxy implements Serializable {
      */
     private ThrowableProxy(final Throwable parent, final Stack<Class<?>> stack, final Map<String, CacheEntry> map,
                            final Throwable cause, final Set<Throwable> suppressedVisited,
-                           final Set<Throwable> causeVisited) {
+                           final Set<Throwable> causeVisited, ClassLoader contextClassLoader) {
         causeVisited.add(cause);
         this.throwable = cause;
         this.name = cause.getClass().getName();
         this.message = this.throwable.getMessage();
         this.localizedMessage = this.throwable.getLocalizedMessage();
-        this.extendedStackTrace = this.toExtendedStackTrace(stack, map, parent.getStackTrace(), cause.getStackTrace());
+        this.extendedStackTrace = this.toExtendedStackTrace(stack, map, parent.getStackTrace(), cause.getStackTrace(),
+                contextClassLoader);
         final Throwable causeCause = cause.getCause();
         this.causeProxy = causeCause == null || causeVisited.contains(causeCause) ? null : new ThrowableProxy(parent,
-            stack, map, causeCause, suppressedVisited, causeVisited);
-        this.suppressedProxies = this.toSuppressedProxies(cause, suppressedVisited);
+            stack, map, causeCause, suppressedVisited, causeVisited, contextClassLoader);
+        this.suppressedProxies = this.toSuppressedProxies(cause, suppressedVisited, contextClassLoader);
+    }
+
+    private void initialize() {
+        InitializationData data = initializationData;
+        if (data != null) {
+            initializationData = null;
+            this.extendedStackTrace = this.toExtendedStackTrace(data.stack, data.map, null,
+                    throwable.getStackTrace(), data.contextClassLoader);
+            final Throwable throwableCause = throwable.getCause();
+            this.causeProxy = throwableCause == null ? null : new ThrowableProxy(throwable, data.stack, data.map,
+                    throwableCause, null, new HashSet<>(1), data.contextClassLoader);
+            this.suppressedProxies = this.toSuppressedProxies(throwable, null, data.contextClassLoader);
+        }
+    }
+
+    private static final class InitializationData {
+        private final Stack<Class<?>> stack;
+        private final Map<String, CacheEntry> map;
+        private final ClassLoader contextClassLoader;
+
+        InitializationData(final Stack<Class<?>> stack, final Map<String, CacheEntry> map) {
+            this.stack = stack;
+            this.map = map;
+            this.contextClassLoader = LoaderUtil.isIgnoreTccl() ?
+                    null :
+                    LoaderUtil.getThreadContextClassLoader();
+        }
     }
 
     @Override
@@ -180,14 +218,14 @@ public class ThrowableProxy implements Serializable {
             return false;
         }
         final ThrowableProxy other = (ThrowableProxy) obj;
-        if (this.causeProxy == null) {
-            if (other.causeProxy != null) {
+        if (this.getCauseProxy() == null) {
+            if (other.getCauseProxy() != null) {
                 return false;
             }
-        } else if (!this.causeProxy.equals(other.causeProxy)) {
+        } else if (!this.getCauseProxy().equals(other.getCauseProxy())) {
             return false;
         }
-        if (this.commonElementCount != other.commonElementCount) {
+        if (this.getCommonElementCount() != other.getCommonElementCount()) {
             return false;
         }
         if (this.name == null) {
@@ -197,10 +235,10 @@ public class ThrowableProxy implements Serializable {
         } else if (!this.name.equals(other.name)) {
             return false;
         }
-        if (!Arrays.equals(this.extendedStackTrace, other.extendedStackTrace)) {
+        if (!Arrays.equals(this.getExtendedStackTrace(), other.getExtendedStackTrace())) {
             return false;
         }
-        if (!Arrays.equals(this.suppressedProxies, other.suppressedProxies)) {
+        if (!Arrays.equals(this.getSuppressedProxies(), other.getSuppressedProxies())) {
             return false;
         }
         return true;
@@ -229,6 +267,7 @@ public class ThrowableProxy implements Serializable {
     }
 
     void renderOn(final StringBuilder output, final TextRenderer textRenderer) {
+        initialize();
         final String msg = this.message;
         textRenderer.render(this.name, output, "Name");
         if (msg != null) {
@@ -373,6 +412,7 @@ public class ThrowableProxy implements Serializable {
     }
 
     public ThrowableProxy getCauseProxy() {
+        initialize();
         return this.causeProxy;
     }
 
@@ -420,6 +460,7 @@ public class ThrowableProxy implements Serializable {
      */
     public String getCauseStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         final StringBuilder sb = new StringBuilder();
+        initialize();
         if (this.causeProxy != null) {
             this.formatWrapper(sb, this.causeProxy, ignorePackages, textRenderer, suffix, lineSeparator);
             sb.append(WRAPPED_BY_LABEL);
@@ -440,6 +481,7 @@ public class ThrowableProxy implements Serializable {
      * @return The number of elements omitted from the stack trace.
      */
     public int getCommonElementCount() {
+        initialize();
         return this.commonElementCount;
     }
 
@@ -449,6 +491,7 @@ public class ThrowableProxy implements Serializable {
      * @return The stack trace including packaging information.
      */
     public ExtendedStackTraceElement[] getExtendedStackTrace() {
+        initialize();
         return this.extendedStackTrace;
     }
 
@@ -519,6 +562,7 @@ public class ThrowableProxy implements Serializable {
      * @param lineSeparator The end-of-line separator.
      */
     public void formatExtendedStackTraceTo(final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+        initialize();
         textRenderer.render(name, sb, "Name");
         textRenderer.render(": ", sb, "NameMessageSeparator");
         textRenderer.render(this.message, sb, "Message");
@@ -557,6 +601,7 @@ public class ThrowableProxy implements Serializable {
      * @return proxies for suppressed exceptions.
      */
     public ThrowableProxy[] getSuppressedProxies() {
+        initialize();
         return this.suppressedProxies;
     }
 
@@ -589,6 +634,7 @@ public class ThrowableProxy implements Serializable {
 
     @Override
     public int hashCode() {
+        initialize();
         final int prime = 31;
         int result = 1;
         result = prime * result + (this.causeProxy == null ? 0 : this.causeProxy.hashCode());
@@ -618,7 +664,9 @@ public class ThrowableProxy implements Serializable {
      * @param className  The name of the Class.
      * @return The Class object for the Class or null if it could not be located.
      */
-    private Class<?> loadClass(final ClassLoader lastLoader, final String className) {
+    private Class<?> loadClass(final ClassLoader lastLoader,
+                               final ClassLoader contextClassLoader,
+                               final String className) {
         // XXX: this is overly complicated
         Class<?> clazz;
         if (lastLoader != null) {
@@ -632,13 +680,19 @@ public class ThrowableProxy implements Serializable {
             }
         }
         try {
-            clazz = LoaderUtil.loadClass(className);
+            if (contextClassLoader != null) {
+                try {
+                    return contextClassLoader.loadClass(className);
+                } catch (final Throwable ignored) {
+                    // Ignore exception.
+                }
+            }
+            return Class.forName(className);
         } catch (final ClassNotFoundException | NoClassDefFoundError e) {
             return loadClass(className);
         } catch (final SecurityException e) {
             return null;
         }
-        return clazz;
     }
 
     private Class<?> loadClass(final String className) {
@@ -652,7 +706,6 @@ public class ThrowableProxy implements Serializable {
     /**
      * Construct the CacheEntry from the Class's information.
      *
-     * @param stackTraceElement The stack trace element
      * @param callerClass       The Class.
      * @param exact             True if the class was obtained via Reflection.getCallerClass.
      * @return The CacheEntry.
@@ -707,7 +760,9 @@ public class ThrowableProxy implements Serializable {
      */
     ExtendedStackTraceElement[] toExtendedStackTrace(final Stack<Class<?>> stack, final Map<String, CacheEntry> map,
                                                      final StackTraceElement[] rootTrace,
-                                                     final StackTraceElement[] stackTrace) {
+                                                     final StackTraceElement[] stackTrace,
+                                                     final ClassLoader contextClassLoader) {
+        initialize();
         int stackLength;
         if (rootTrace != null) {
             int rootIndex = rootTrace.length - 1;
@@ -747,7 +802,7 @@ public class ThrowableProxy implements Serializable {
                         lastLoader = entry.loader;
                     }
                 } else {
-                    final CacheEntry entry = this.toCacheEntry(this.loadClass(lastLoader, className), false);
+                    final CacheEntry entry = this.toCacheEntry(this.loadClass(lastLoader, contextClassLoader, className), false);
                     extClassInfo = entry.element;
                     map.put(className, entry);
                     if (entry.loader != null) {
@@ -766,7 +821,8 @@ public class ThrowableProxy implements Serializable {
         return msg != null ? this.name + ": " + msg : this.name;
     }
 
-    private ThrowableProxy[] toSuppressedProxies(final Throwable thrown, Set<Throwable> suppressedVisited) {
+    private ThrowableProxy[] toSuppressedProxies(final Throwable thrown, Set<Throwable> suppressedVisited,
+                                                 final ClassLoader contextClassLoader) {
         try {
             final Throwable[] suppressed = thrown.getSuppressed();
             if (suppressed == null || suppressed.length == 0) {
@@ -779,7 +835,7 @@ public class ThrowableProxy implements Serializable {
             for (int i = 0; i < suppressed.length; i++) {
                 final Throwable candidate = suppressed[i];
                 if (suppressedVisited.add(candidate)) {
-                    proxies.add(new ThrowableProxy(candidate, suppressedVisited));
+                    proxies.add(new ThrowableProxy(candidate, suppressedVisited, contextClassLoader));
                 }
             }
             return proxies.toArray(new ThrowableProxy[proxies.size()]);
@@ -787,5 +843,11 @@ public class ThrowableProxy implements Serializable {
             StatusLogger.getLogger().error(e);
         }
         return null;
+    }
+
+    // Must be initialized prior to serialization
+    private void writeObject(final java.io.ObjectOutputStream s) throws IOException {
+        initialize();
+        s.defaultWriteObject();
     }
 }
