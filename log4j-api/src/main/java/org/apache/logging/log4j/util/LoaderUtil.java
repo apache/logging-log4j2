@@ -258,7 +258,7 @@ public final class LoaderUtil {
         return newCheckedInstanceOf(className, clazz);
     }
 
-    private static boolean isIgnoreTccl() {
+    public static boolean isIgnoreTccl() {
         // we need to lazily initialize this, but concurrent access is not an issue
         if (ignoreTCCL == null) {
             final String ignoreTccl = PropertiesUtil.getProperties().getStringProperty(IGNORE_TCCL_PROPERTY, null);
