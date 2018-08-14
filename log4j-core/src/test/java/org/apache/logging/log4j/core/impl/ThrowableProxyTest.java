@@ -367,7 +367,7 @@ public class ThrowableProxyTest {
         final Throwable throwable = new IllegalStateException("This is a test");
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
         final ExtendedStackTraceElement[] callerPackageData = proxy.toExtendedStackTrace(stack, map, null,
-                throwable.getStackTrace());
+                throwable.getStackTrace(), null);
         assertNotNull("No package data returned", callerPackageData);
     }
 
@@ -389,7 +389,7 @@ public class ThrowableProxyTest {
         final Throwable throwable = (Throwable) in.readObject();
         final ThrowableProxy subject = new ThrowableProxy(throwable);
 
-        subject.toExtendedStackTrace(stack, map, null, throwable.getStackTrace());
+        subject.toExtendedStackTrace(stack, map, null, throwable.getStackTrace(), null);
     }
 
     /**
