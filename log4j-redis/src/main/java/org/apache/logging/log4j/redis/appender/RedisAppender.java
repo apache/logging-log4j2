@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
@@ -61,20 +61,22 @@ public final class RedisAppender extends AbstractAppender {
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<RedisAppender> {
 
-        @PluginAttribute("keys")
-        private String[] keys;
+        private final String KEY_SEPARATOR = ",";
 
-        @PluginAttribute(value = "host")
+        @PluginBuilderAttribute("host")
         @Required(message = "No Redis hostname provided")
         private String host;
 
-        @PluginAttribute(value = "port")
+        @PluginBuilderAttribute("keys")
+        private String keys = "";
+
+        @PluginBuilderAttribute("port")
         private int port = 6379;
 
-        @PluginAttribute(value = "immediateFlush")
+        @PluginBuilderAttribute("immediateFlush")
         private boolean immediateFlush = true;
 
-        @PluginAttribute(value = "queueCapacity")
+        @PluginBuilderAttribute("queueCapacity")
         private int queueCapacity = 20;
 
         @PluginElement("SslConfiguration")
@@ -97,7 +99,7 @@ public final class RedisAppender extends AbstractAppender {
             );
         }
 
-        String[] getKeys() {
+        String getKeys() {
             return keys;
         }
 
@@ -125,12 +127,7 @@ public final class RedisAppender extends AbstractAppender {
             return port;
         }
 
-        public B setKeys(final String key) {
-            this.keys = new String[]{key};
-            return asBuilder();
-        }
-
-        public B setKeys(final String[] keys) {
+        public B setKeys(final String keys) {
             this.keys = keys;
             return asBuilder();
         }
@@ -169,7 +166,7 @@ public final class RedisAppender extends AbstractAppender {
             return new RedisManager(
                     getConfiguration().getLoggerContext(),
                     getName(),
-                    getKeys(),
+                    getKeys().split(KEY_SEPARATOR),
                     getHost(),
                     getPort(),
                     getSslConfiguration(),
