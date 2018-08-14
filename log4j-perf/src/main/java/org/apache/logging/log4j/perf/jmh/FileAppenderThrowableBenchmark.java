@@ -34,6 +34,10 @@ import org.openjdk.jmh.annotations.Warmup;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -51,15 +55,92 @@ import java.util.logging.Level;
 @Measurement(iterations = 3, time = 3)
 public class FileAppenderThrowableBenchmark {
 
-    private static final Throwable THROWABLE = getThrowable();
+    private static final Throwable THROWABLE = getSimpleThrowable();
+    private static final Throwable COMPLEX_THROWABLE = getComplexThrowable();
 
-    private static Throwable getThrowable() {
+    private static Throwable getSimpleThrowable() {
         return new IllegalStateException("Test Throwable");
+    }
+
+    interface ThrowableHelper {
+        void action();
+    }
+
+    // Used to create a deeper stack with many different classes
+    // This makes the ThrowableProxy Map<String, CacheEntry> cache
+    // perform more closely to real applications.
+    interface TestIface0 extends ThrowableHelper {}
+    interface TestIface1 extends ThrowableHelper {}
+    interface TestIface2 extends ThrowableHelper {}
+    interface TestIface3 extends ThrowableHelper {}
+    interface TestIface4 extends ThrowableHelper {}
+    interface TestIface5 extends ThrowableHelper {}
+    interface TestIface6 extends ThrowableHelper {}
+    interface TestIface7 extends ThrowableHelper {}
+    interface TestIface8 extends ThrowableHelper {}
+    interface TestIface9 extends ThrowableHelper {}
+    interface TestIface10 extends ThrowableHelper {}
+    interface TestIface11 extends ThrowableHelper {}
+    interface TestIface12 extends ThrowableHelper {}
+    interface TestIface13 extends ThrowableHelper {}
+    interface TestIface14 extends ThrowableHelper {}
+    interface TestIface15 extends ThrowableHelper {}
+    interface TestIface16 extends ThrowableHelper {}
+    interface TestIface17 extends ThrowableHelper {}
+    interface TestIface18 extends ThrowableHelper {}
+    interface TestIface19 extends ThrowableHelper {}
+    interface TestIface20 extends ThrowableHelper {}
+    interface TestIface21 extends ThrowableHelper {}
+    interface TestIface22 extends ThrowableHelper {}
+    interface TestIface23 extends ThrowableHelper {}
+    interface TestIface24 extends ThrowableHelper {}
+    interface TestIface25 extends ThrowableHelper {}
+    interface TestIface26 extends ThrowableHelper {}
+    interface TestIface27 extends ThrowableHelper {}
+    interface TestIface28 extends ThrowableHelper {}
+    interface TestIface29 extends ThrowableHelper {}
+    interface TestIface30 extends ThrowableHelper {}
+
+    private static Throwable getComplexThrowable() {
+        ThrowableHelper helper = new ThrowableHelper() {
+            @Override
+            public void action() {
+                throw new IllegalStateException("Test Throwable");
+            }
+        };
+        try {
+            for (int i = 0; i < 31; i++) {
+                final ThrowableHelper delegate = helper;
+                helper = (ThrowableHelper) Proxy.newProxyInstance(
+                        FileAppenderThrowableBenchmark.class.getClassLoader(),
+                        new Class<?>[]{Class.forName(FileAppenderThrowableBenchmark.class.getName() + "$TestIface" + (i % 31))},
+                        new InvocationHandler() {
+                            @Override
+                            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                                try {
+                                    return method.invoke(delegate, args);
+                                } catch (InvocationTargetException e) {
+                                    throw e.getCause();
+                                }
+                            }
+                        });
+            }
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Failed to create stack", e);
+        }
+        try {
+            helper.action();
+        } catch (IllegalStateException e) {
+            return e;
+        }
+        throw new IllegalStateException("Failed to create throwable");
     }
 
     private FileHandler julFileHandler;
     Logger log4j2ExtendedThrowable;
+    Logger log4j2ExtendedThrowableAsync;
     Logger log4j2SimpleThrowable;
+    Logger log4j2SimpleThrowableAsync;
     org.slf4j.Logger slf4jLogger;
     org.apache.log4j.Logger log4j1Logger;
     java.util.logging.Logger julLogger;
@@ -73,7 +154,9 @@ public class FileAppenderThrowableBenchmark {
         System.setProperty("logback.configurationFile", "logback-perf-file-throwable.xml");
 
         log4j2ExtendedThrowable = LogManager.getLogger("RAFExtendedException");
+        log4j2ExtendedThrowableAsync = LogManager.getLogger("async.RAFExtendedException");
         log4j2SimpleThrowable = LogManager.getLogger("RAFSimpleException");
+        log4j2SimpleThrowableAsync = LogManager.getLogger("async.RAFSimpleException");
         slf4jLogger = LoggerFactory.getLogger(getClass());
         log4j1Logger = org.apache.log4j.Logger.getLogger(getClass());
 
@@ -116,8 +199,29 @@ public class FileAppenderThrowableBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void log4j2SimpleThrowable() {
+    public void complexLog4j1() {
+        log4j1Logger.error("Caught an exception", COMPLEX_THROWABLE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void log4j2Throwable() {
         log4j2SimpleThrowable.error("Caught an exception", THROWABLE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void complexLog4j2Throwable() {
+        log4j2SimpleThrowable.error("Caught an exception", COMPLEX_THROWABLE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void complexLog4j2ThrowableAsync() {
+        log4j2SimpleThrowableAsync.error("Caught an exception", COMPLEX_THROWABLE);
     }
 
     @BenchmarkMode(Mode.Throughput)
@@ -130,8 +234,29 @@ public class FileAppenderThrowableBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
+    public void complexLog4j2ExtendedThrowable() {
+        log4j2ExtendedThrowable.error("Caught an exception", COMPLEX_THROWABLE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void complexLog4j2ExtendedThrowableAsync() {
+        log4j2ExtendedThrowableAsync.error("Caught an exception", COMPLEX_THROWABLE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
     public void logbackFile() {
         slf4jLogger.error("Caught an exception", THROWABLE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void complexLogbackFile() {
+        slf4jLogger.error("Caught an exception", COMPLEX_THROWABLE);
     }
 
     @BenchmarkMode(Mode.Throughput)
