@@ -2287,11 +2287,19 @@ https://redis.io/commands/rpush[RPUSH] command.
 |=======================================================================
 |Parameter Name |Type |Description
 
+|name |String |The name of the Appender. Required.
+
+|layout |Layout |The Layout to use to format the LogEvent. Required,
+there is no default. _New since 2.9, in previous versions <PatternLayout
+pattern="%m"/> was default._
+
 |filter |Filter |A Filter to determine if the event should be handled by
 this Appender. More than one Filter may be used by using a
 CompositeFilter.
 
 |host |String |The hostname on which Redis is running.
+
+|keys |String |The keys of the queue to which each log message should be sent, separated by commas (e.g. "key1,key2,key3").
 
 |ignoreExceptions |boolean |The default is `true`, causing exceptions
 encountered while appending events to be internally logged and then
@@ -2299,17 +2307,14 @@ ignored. When set to `false` exceptions will be propagated to the
 caller, instead. You must set this to `false` when wrapping this
 Appender in a link:#FailoverAppender[FailoverAppender].
 
-|keys |String[] |The keys of the queue to which each log message should be sent.
+|immediateFlush | boolean | Whether to immediately send logs to redis rather than sending at the end of a batch.
 
-|layout |Layout |The Layout to use to format the LogEvent. Required,
-there is no default. _New since 2.9, in previous versions <PatternLayout
-pattern="%m"/> was default._
-
-|name |String |The name of the Appender. Required.
+|queueCapacity | int | The maximum number of logs to hold in memory before sending to Redis.
 
 |port |int |The port on which Redis is running.
 
-|ssl |boolean |Whether or not to use ssl when connecting to Redis (default false).
+|SslConfiguration |SslConfiguration |Contains the configuration for the KeyStore and
+TrustStore. See link:#SSL[SSL].
 
 |=======================================================================
 
@@ -2320,9 +2325,9 @@ Here is a sample RedisAppender configuration snippet:
 <?xml version="1.0" encoding="UTF-8"?>
   ...
   <Appenders>
-    <Redis name"RedisAppend" host="localhost" port=6379 ssl=true>
+    <Redis name"RedisAppend" host="localhost" port=6379 keys="key1,key2">
       <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+        <Pattern>%m</Pattern>
       </PatternLayout>
     </Redis>
     <Async name="Async">

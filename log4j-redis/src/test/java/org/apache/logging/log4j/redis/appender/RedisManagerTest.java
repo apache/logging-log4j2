@@ -22,12 +22,12 @@ public class RedisManagerTest {
     Jedis mockJedis;
     RedisManager manager;
 
-    String[] KEYS = {"abc", "def"};
+    String KEYS = "abc,def";
     private String HOST = "localhost";
     private int PORT = 6379;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         initMocks();
         manager = new ManagerTestRedisAppenderBuilder()
                 .setHost(HOST)
@@ -48,8 +48,8 @@ public class RedisManagerTest {
     public void testSendsValuesToAllKeys() {
         manager.send("value");
         Mockito.verify(mockJedisPool).getResource();
-        Mockito.verify(mockJedis, Mockito.times(KEYS.length)).rpush(anyString(), anyString());
-        for (String k: KEYS) {
+        Mockito.verify(mockJedis, Mockito.times(KEYS.split(",").length)).rpush(anyString(), anyString());
+        for (String k: KEYS.split(",")) {
             Mockito.verify(mockJedis, Mockito.times(1)).rpush(eq(k), anyString());
         }
     }
@@ -66,14 +66,14 @@ public class RedisManagerTest {
         q.add("value1");
         q.add("value2");
         manager.sendBulk(q);
-        Mockito.verify(mockJedis, Mockito.times(KEYS.length)).rpush(anyString(), eq("value1"));
-        Mockito.verify(mockJedis, Mockito.times(KEYS.length)).rpush(anyString(), eq("value2"));
+        Mockito.verify(mockJedis, Mockito.times(KEYS.split(",").length)).rpush(anyString(), eq("value1"));
+        Mockito.verify(mockJedis, Mockito.times(KEYS.split(",").length)).rpush(anyString(), eq("value2"));
     }
 
     private class TestRedisManager extends RedisManager {
 
-        TestRedisManager(LoggerContext loggerContext, String name, String[] keys, String host, int port) {
-            super(loggerContext, name, keys, host, port, null, null);
+        TestRedisManager(LoggerContext loggerContext, String name, String keys, String host, int port) {
+            super(loggerContext, name, keys.split(","), host, port, null, null);
         }
 
         @Override
