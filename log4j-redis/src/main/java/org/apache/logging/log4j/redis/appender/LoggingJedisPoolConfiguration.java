@@ -34,7 +34,7 @@ public class LoggingJedisPoolConfiguration extends JedisPoolConfig {
         super();
     }
 
-    public static LoggingJedisPoolConfiguration defaultConfiguration() {
+    static LoggingJedisPoolConfiguration defaultConfiguration() {
         return LoggingJedisPoolConfiguration.newBuilder().build();
     }
 

@@ -69,7 +69,7 @@ public final class RedisAppender extends AbstractAppender {
         private String host;
 
         @PluginBuilderAttribute("keys")
-        private String keys = "";
+        private String keys = "logEvents";
 
         @PluginBuilderAttribute("port")
         private int port = 6379;
