@@ -206,15 +206,8 @@ public final class RedisAppender extends AbstractAppender {
                 } catch (final Exception e) {
                     error("Unable to write to Redis in appender [" + getName() + "]", event, e);
                 }
-                if (!successfulOffer) {
-                    successfulOffer = logQueue.offer(serializedEvent);
-                    if (!successfulOffer) {
-                        throw new LoggingException(
-                                "Unable to add elements to the RedisAppender queue after attempting to clear space."
-                                        + " This could occur if your Redis host is no longer running. Consider setting "
-                                        + "a larger queueCapacity in your configuration to prevent data losses."
-                        );
-                    }
+                while (!(logQueue.offer(serializedEvent))) {
+                    tryFlushQueue();
                 }
             }
         } else {
