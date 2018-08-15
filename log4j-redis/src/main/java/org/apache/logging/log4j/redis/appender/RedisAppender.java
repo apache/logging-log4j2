@@ -35,7 +35,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Sends log events to a Redis Queue. All logs are appended to Redis lists via the RPUSH command.
+ * Sends log events to a Redis Queue. All logs are appended to Redis lists via the RPUSH command at keys defined
+ * in the configuration.
  */
 @Plugin(name = "Redis", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RedisAppender extends AbstractAppender {
