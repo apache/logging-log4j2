@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.redis.appender;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -25,12 +26,16 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import redis.clients.jedis.JedisPool;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 /**
@@ -104,7 +109,7 @@ public final class RedisAppenderTest {
     }
 
     @Test
-    public void testFlushesQueueAtCapacity() {
+    public void testAttemptsSendWhenQueueReachesCapacity() {
         appender = new AppenderTestRedisAppenderBuilder()
                 .withName("RedisAppender")
                 .setKeys(DESTINATION_KEY)
@@ -115,6 +120,25 @@ public final class RedisAppenderTest {
                 .withLayout(PatternLayout.newBuilder().withPattern("%m").build())
                 .build();
 
+        appender.append(logEvent);
+        appender.append(logEvent);
+        appender.append(logEvent);
+        Mockito.verify(manager, Mockito.times(2)).sendBulk(anyList());
+    }
+
+    @Test
+    public void testFlushesQueueAtExceededCapacity() {
+        appender = new AppenderTestRedisAppenderBuilder()
+                .withName("RedisAppender")
+                .setKeys(DESTINATION_KEY)
+                .setHost(HOST)
+                .setPort(PORT)
+                .setQueueCapacity(1)
+                .setImmediateFlush(false)
+                .withLayout(PatternLayout.newBuilder().withPattern("%m").build())
+                .build();
+
+        appender.append(logEvent);
         appender.append(logEvent);
         Mockito.verify(manager, Mockito.times(1)).sendBulk(any());
     }

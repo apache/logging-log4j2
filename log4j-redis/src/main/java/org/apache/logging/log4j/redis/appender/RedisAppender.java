@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.redis.appender;
 
+import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.*;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
@@ -30,6 +31,8 @@ import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -48,16 +51,14 @@ public final class RedisAppender extends AbstractAppender {
     private static final int DEFAULT_APPENDER_QUEUE_CAPACITY = 20;
 
     private final RedisManager manager;
-    private final LinkedBlockingQueue<String> logQueue;
     private final boolean immediateFlush;
-    private final int queueCapacity;
+    private final LinkedBlockingQueue<String> logQueue;
 
     private RedisAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
                           final boolean ignoreExceptions, boolean immediateFlush, final int queueCapacity, final RedisManager manager) {
         super(name, filter, layout, ignoreExceptions);
         this.manager = Objects.requireNonNull(manager, "Redis Manager");
         this.immediateFlush = immediateFlush;
-        this.queueCapacity = queueCapacity;
         this.logQueue = new LinkedBlockingQueue<>(queueCapacity);
     }
 
@@ -197,12 +198,23 @@ public final class RedisAppender extends AbstractAppender {
         if (event.getLoggerName() != null && AbstractLogger.getRecursionDepth() > 1) {
             LOGGER.warn("Recursive logging from [{}] for appender [{}].", event.getLoggerName(), getName());
         } else if (layout instanceof StringLayout) {
-            logQueue.add(((StringLayout)layout).toSerializable(event));
-            if (shouldFlushLogQueue(event.isEndOfBatch())) {
+            String serializedEvent = ((StringLayout)layout).toSerializable(event);
+            boolean successfulOffer = logQueue.offer(serializedEvent);
+            if (shouldFlushLogQueue(event.isEndOfBatch(), successfulOffer)) {
                 try {
                     tryFlushQueue();
                 } catch (final Exception e) {
                     error("Unable to write to Redis in appender [" + getName() + "]", event, e);
+                }
+                if (!successfulOffer) {
+                    successfulOffer = logQueue.offer(serializedEvent);
+                    if (!successfulOffer) {
+                        throw new LoggingException(
+                                "Unable to add elements to the RedisAppender queue after attempting to clear space."
+                                        + " This could occur if your Redis host is no longer running. Consider setting "
+                                        + "a larger queueCapacity in your configuration to prevent data losses."
+                        );
+                    }
                 }
             }
         } else {
@@ -210,12 +222,14 @@ public final class RedisAppender extends AbstractAppender {
         }
     }
 
-    private boolean shouldFlushLogQueue(boolean endOfBatch) {
-        return immediateFlush || endOfBatch || logQueue.size() >= queueCapacity;
+    private boolean shouldFlushLogQueue(boolean endOfBatch, boolean successfulOffer) {
+        return immediateFlush || endOfBatch || !successfulOffer;
     }
 
     private void tryFlushQueue() {
-        manager.sendBulk(logQueue);
+        List<String> logEvents = new ArrayList<>();
+        logQueue.drainTo(logEvents);
+        manager.sendBulk(logEvents);
     }
 
     @Override

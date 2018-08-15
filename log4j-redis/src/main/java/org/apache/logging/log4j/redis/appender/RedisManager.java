@@ -26,7 +26,10 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -75,12 +78,10 @@ class RedisManager extends AbstractManager {
         jedisPool = createPool(host, port, sslConfiguration);
     }
 
-    public void sendBulk(Queue<String> values) {
-        try (Jedis jedis = jedisPool.getResource()){
-            String event = values.poll();
-            while (event != null) {
-                send(event, jedis);
-                event = values.poll();
+    public void sendBulk(List<String> logEvents) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            if (!logEvents.isEmpty()) {
+                send(jedis, logEvents.toArray(new String[0]));
             }
         } catch (JedisConnectionException e) {
             LOGGER.error("Unable to connect to redis. Please ensure that it's running on {}:{}", host, port, e);
@@ -90,14 +91,14 @@ class RedisManager extends AbstractManager {
     public void send(String value) {
         try (Jedis jedis = jedisPool.getResource()) {
             try {
-                send(value, jedis);
+                send(jedis, value);
             } catch (JedisConnectionException e) {
                 LOGGER.error("Unable to connect to redis. Please ensure that it's running on {}:{}", host, port, e);
             }
         }
     }
 
-    public void send(String value, Jedis jedis) {
+    private void send(Jedis jedis, String... value) {
         for (String key: keys) {
             jedis.rpush(key, value);
         }

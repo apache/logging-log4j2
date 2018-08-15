@@ -25,7 +25,8 @@ import org.mockito.Mockito;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -77,12 +78,11 @@ public class RedisManagerTest {
 
     @Test
     public void testSendsAllValuesInBulk() {
-        Queue<String> q = new LinkedBlockingQueue<>();
-        q.add("value1");
-        q.add("value2");
-        manager.sendBulk(q);
-        Mockito.verify(mockJedis, Mockito.times(KEYS.split(",").length)).rpush(anyString(), eq("value1"));
-        Mockito.verify(mockJedis, Mockito.times(KEYS.split(",").length)).rpush(anyString(), eq("value2"));
+        List<String> logs = new ArrayList<>();
+        logs.add("value1");
+        logs.add("value2");
+        manager.sendBulk(logs);
+        Mockito.verify(mockJedis, Mockito.times(KEYS.split(",").length)).rpush(anyString(), eq("value1"), eq("value2"));
     }
 
     private class TestRedisManager extends RedisManager {
