@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.redis.appender;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -26,16 +25,13 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.mockito.stubbing.Answer;
 import redis.clients.jedis.JedisPool;
 
-import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 /**
