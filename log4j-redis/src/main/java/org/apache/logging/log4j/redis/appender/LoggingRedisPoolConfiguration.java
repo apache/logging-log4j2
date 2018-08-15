@@ -19,7 +19,7 @@ package org.apache.logging.log4j.redis.appender;
 
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -27,51 +27,51 @@ import redis.clients.jedis.JedisPoolConfig;
  * Plugin configuration for {@link redis.clients.jedis.JedisPool} objects, allowing end users to set pool configuration
  * if desired. If not set, will default to JedisPool defaults.
  */
-@Plugin(name = "PoolConfiguration", category = Core.CATEGORY_NAME, printObject = true)
-public class LoggingJedisPoolConfiguration extends JedisPoolConfig {
+@Plugin(name = "RedisPoolConfiguration", category = Core.CATEGORY_NAME, printObject = true)
+class LoggingRedisPoolConfiguration extends JedisPoolConfig {
 
-    private LoggingJedisPoolConfiguration() {
+    private LoggingRedisPoolConfiguration() {
         super();
     }
 
-    static LoggingJedisPoolConfiguration defaultConfiguration() {
-        return LoggingJedisPoolConfiguration.newBuilder().build();
+    static LoggingRedisPoolConfiguration defaultConfiguration() {
+        return LoggingRedisPoolConfiguration.newBuilder().build();
     }
 
     /**
-     * Creates a LoggingJedisPoolConfiguration from standard pool parameters.
+     * Creates a LoggingRedisPoolConfiguration from standard pool parameters.
      */
     @PluginBuilderFactory
     public static Builder newBuilder() {
-        return new LoggingJedisPoolConfiguration.Builder();
+        return new LoggingRedisPoolConfiguration.Builder();
     }
 
-    private static class Builder implements org.apache.logging.log4j.core.util.Builder<LoggingJedisPoolConfiguration> {
+    private static class Builder implements org.apache.logging.log4j.core.util.Builder<LoggingRedisPoolConfiguration> {
 
-        @PluginAttribute(value = "minIdle", defaultInt = 1800000)
+        @PluginBuilderAttribute("minIdle")
         private int minIdle = JedisPoolConfig.DEFAULT_MIN_IDLE;
 
-        @PluginAttribute(value = "maxIdle")
+        @PluginBuilderAttribute("maxIdle")
         private int maxIdle = JedisPoolConfig.DEFAULT_MAX_IDLE;
 
-        @PluginAttribute(value = "testOnBorrow")
+        @PluginBuilderAttribute("testOnBorrow")
         private boolean testOnBorrow = JedisPoolConfig.DEFAULT_TEST_ON_BORROW;
 
-        @PluginAttribute(value = "testOnReturn")
+        @PluginBuilderAttribute("testOnReturn")
         boolean testOnReturn = JedisPoolConfig.DEFAULT_TEST_ON_RETURN;
 
-        @PluginAttribute(value = "testWhileIdle")
+        @PluginBuilderAttribute("testWhileIdle")
         boolean testWhileIdle = JedisPoolConfig.DEFAULT_TEST_WHILE_IDLE;
 
-        @PluginAttribute(value = "testsPerEvictionRun")
+        @PluginBuilderAttribute("testsPerEvictionRun")
         int testsPerEvictionRun = JedisPoolConfig.DEFAULT_NUM_TESTS_PER_EVICTION_RUN;
 
-        @PluginAttribute(value = "timeBetweenEvictionRunsMillis")
+        @PluginBuilderAttribute("timeBetweenEvictionRunsMillis")
         long timeBetweenEvicationRunsMillis = JedisPoolConfig.DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
 
         @Override
-        public LoggingJedisPoolConfiguration build() {
-            LoggingJedisPoolConfiguration poolConfig = new LoggingJedisPoolConfiguration();
+        public LoggingRedisPoolConfiguration build() {
+            LoggingRedisPoolConfiguration poolConfig = new LoggingRedisPoolConfiguration();
             poolConfig.setMaxIdle(maxIdle);
             poolConfig.setMinIdle(minIdle);
             poolConfig.setTestOnBorrow(testOnBorrow);

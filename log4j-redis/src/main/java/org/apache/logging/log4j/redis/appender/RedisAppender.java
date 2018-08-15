@@ -35,11 +35,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Sends log events to a Redis Queue. All logs are appended to Redis lists via the RPUSH command at keys defined
+ * Sends log events to a Redis key as a List. All logs are appended to Redis lists via the RPUSH command at keys defined
  * in the configuration.
  */
 @Plugin(name = "Redis", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RedisAppender extends AbstractAppender {
+
+    // The default port here is the default port for Redis generally.
+    // For more details, see the full configuration: http://download.redis.io/redis-stable/redis.conf
+    private static final int DEFAULT_REDIS_PORT = 6379;
+    private static final String DEFAULT_REDIS_KEYS = "log-events";
+    private static final int DEFAULT_APPENDER_QUEUE_CAPACITY = 20;
 
     private final RedisManager manager;
     private final LinkedBlockingQueue<String> logQueue;
@@ -69,22 +75,22 @@ public final class RedisAppender extends AbstractAppender {
         private String host;
 
         @PluginBuilderAttribute("keys")
-        private String keys = "logEvents";
+        private String keys = DEFAULT_REDIS_KEYS;
 
         @PluginBuilderAttribute("port")
-        private int port = 6379;
+        private int port = DEFAULT_REDIS_PORT;
 
         @PluginBuilderAttribute("immediateFlush")
         private boolean immediateFlush = true;
 
         @PluginBuilderAttribute("queueCapacity")
-        private int queueCapacity = 20;
+        private int queueCapacity = DEFAULT_APPENDER_QUEUE_CAPACITY;
 
         @PluginElement("SslConfiguration")
         private SslConfiguration sslConfiguration;
 
-        @PluginElement("PoolConfiguration")
-        private LoggingJedisPoolConfiguration poolConfiguration = LoggingJedisPoolConfiguration.defaultConfiguration();
+        @PluginElement("RedisPoolConfiguration")
+        private LoggingRedisPoolConfiguration poolConfiguration = LoggingRedisPoolConfiguration.defaultConfiguration();
 
         @SuppressWarnings("resource")
         @Override
@@ -120,7 +126,7 @@ public final class RedisAppender extends AbstractAppender {
             return sslConfiguration;
         }
 
-        LoggingJedisPoolConfiguration getPoolConfiguration() {
+        LoggingRedisPoolConfiguration getPoolConfiguration() {
             return poolConfiguration;
         }
 
@@ -148,7 +154,7 @@ public final class RedisAppender extends AbstractAppender {
             return asBuilder();
         }
 
-        public B setPoolConfiguration(final LoggingJedisPoolConfiguration poolConfiguration) {
+        public B setPoolConfiguration(final LoggingRedisPoolConfiguration poolConfiguration) {
             this.poolConfiguration = poolConfiguration;
             return asBuilder();
         }

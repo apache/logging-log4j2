@@ -2301,7 +2301,7 @@ CompositeFilter.
 
 |port |int |The port on which Redis is running. Default: 6379.
 
-|keys |String |The keys of the queue to which each log message should be sent, separated by commas (e.g. "key1,key2,key3"). Default: "logEvents".
+|keys |String |The keys of the queue to which each log message should be sent, separated by commas (e.g. "key-one,key-two,key-three"). Default: "logEvents".
 
 |ignoreExceptions |boolean |The default is `true`, causing exceptions
 encountered while appending events to be internally logged and then
@@ -2316,6 +2316,8 @@ Appender in a link:#FailoverAppender[FailoverAppender].
 |SslConfiguration |SslConfiguration |Contains the configuration for the KeyStore and
 TrustStore. See link:#SSL[SSL].
 
+|RedisPoolConfiguration |LoggingRedisPoolConfiguration |Granular configuration of the resource pool for the Redis
+client connection. Available parameters include maxIdle, minIdle, testOnBorrow, testOnReturn, testWhileIdle, numTestsPerEvictionRun, and timeBetweenEvictionRunsMillis.
 |=======================================================================
 
 Here is a sample RedisAppender configuration snippet in XML:
@@ -2325,7 +2327,7 @@ Here is a sample RedisAppender configuration snippet in XML:
 <?xml version="1.0" encoding="UTF-8"?>
   ...
   <Appenders>
-    <Redis name"RedisAppend" host="localhost" port=6379 keys="key1,key2" immediateFlush=false>
+    <Redis name"RedisAppend" host="localhost" port=6379 keys="key-one,key-two" immediateFlush=false>
       <PatternLayout>
         <Pattern>%m</Pattern>
       </PatternLayout>
@@ -2344,7 +2346,7 @@ Configuration:
       name: RedisAppend
       host: localhost
       port: 6379
-      Keys: key1,key2
+      Keys: key-one,key-two
       PatternLayout:
         pattern: "%m"
 ----

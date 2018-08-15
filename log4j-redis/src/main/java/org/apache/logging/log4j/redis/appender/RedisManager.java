@@ -43,14 +43,14 @@ class RedisManager extends AbstractManager {
     private JedisPool jedisPool;
 
     RedisManager(LoggerContext loggerContext, String name, String[] keys, String host, int port,
-                 SslConfiguration sslConfiguration, LoggingJedisPoolConfiguration poolConfiguration) {
+                 SslConfiguration sslConfiguration, LoggingRedisPoolConfiguration poolConfiguration) {
         super(loggerContext, name);
         this.keys = keys;
         this.host = host;
         this.port = port;
         this.sslConfiguration = sslConfiguration;
         if (poolConfiguration == null) {
-            this.poolConfiguration = LoggingJedisPoolConfiguration.defaultConfiguration();
+            this.poolConfiguration = LoggingRedisPoolConfiguration.defaultConfiguration();
         } else {
             this.poolConfiguration = poolConfiguration;
         }
