@@ -199,24 +199,19 @@ public final class RedisAppender extends AbstractAppender {
             LOGGER.warn("Recursive logging from [{}] for appender [{}].", event.getLoggerName(), getName());
         } else if (layout instanceof StringLayout) {
             String serializedEvent = ((StringLayout)layout).toSerializable(event);
-            boolean successfulOffer = logQueue.offer(serializedEvent);
-            if (shouldFlushLogQueue(event.isEndOfBatch(), successfulOffer)) {
-                try {
-                    tryFlushQueue();
-                } catch (final Exception e) {
-                    error("Unable to write to Redis in appender [" + getName() + "]", event, e);
-                }
-                while (!(logQueue.offer(serializedEvent))) {
-                    tryFlushQueue();
-                }
+            while (!logQueue.offer(serializedEvent)) {
+                tryFlushQueue();
+            }
+            if (shouldFlushLogQueue(event.isEndOfBatch())) {
+                tryFlushQueue();
             }
         } else {
             throw new AppenderLoggingException("The Redis appender only supports StringLayouts.");
         }
     }
 
-    private boolean shouldFlushLogQueue(boolean endOfBatch, boolean successfulOffer) {
-        return immediateFlush || endOfBatch || !successfulOffer;
+    private boolean shouldFlushLogQueue(boolean endOfBatch) {
+        return immediateFlush || endOfBatch;
     }
 
     private void tryFlushQueue() {
