@@ -45,7 +45,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 /**
- * Unit tests {@link MapMessage}s for JdbcAppender using a {@link DataSource} configuration.
+ * Unit tests {@link ColumnMapping}s for JdbcAppender using a pattern for formatting.
  */
 public class JdbcAppenderColumnMappingPatternTest {
 
