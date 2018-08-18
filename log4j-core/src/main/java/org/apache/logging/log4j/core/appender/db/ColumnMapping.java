@@ -79,7 +79,7 @@ public class ColumnMapping {
                 layout = PatternLayout.newBuilder()
                     .withPattern(pattern)
                     .withConfiguration(configuration)
-                    .withAlwaysWriteExceptions(false);
+                    .withAlwaysWriteExceptions(false)
                     .build();
             }
             if (!(layout == null
