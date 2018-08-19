@@ -36,7 +36,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.junit.JndiRule;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.MapMessage;
 import org.h2.util.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;
