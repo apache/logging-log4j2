@@ -78,11 +78,12 @@ Java Level | Log4j Level
 
 # Log4j JDK Logging Bridge
 
-The LogManager is not always useable because you have to set a JVM wide effective system property
-- e.g. in web servers this is not always possible.
+The LogManager is not always useable because you have to set a JVM wide effective system
+property - e.g. in web servers this is not possible if you are not the administrator.
 
-The [`Log4jBridgeHandler`](apidocs/org/apache/logging/log4j/jul/Log4jBridgeHandler.html) is a (less performant)
+The [`Log4jBridgeHandler`](apidocs/org/apache/logging/log4j/jul/Log4jBridgeHandler.html) is an
 alternative that can be declaratively used via `logging.properties`.
+It is less performant than the LogManager but still okay to use.
 
 ## Usage
 
@@ -93,7 +94,7 @@ and JUL logs go to log4j2.
 In a webapp on Tomcat (and maybe other servers, too), you may simply create a
 `WEB-INF/classes/logging.properties` file with above content.
 The bridge and the log levels defined in this file are only valid for your webapp and
-does NOT have any impact on the other webapps on the same Tomcat instance.
+do NOT have any impact on the other webapps on the same Tomcat instance.
 
 Alternatively you may call `Log4jBridgeHandler.install()` inside your webapps initialization,
 e.g. inside `ServletContextListener` static-class-init. or `contextInitialized()`.
