@@ -24,37 +24,44 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 
 /**
- * Bridge from JUL to log4j2.
+ * Bridge from JUL to log4j2.<br>
  * This is an alternative to log4j.jul.LogManager (running as complete JUL replacement),
- * especially useful for webapps running on a container for which the LogManager can or
- * should not be used.
+ * especially useful for webapps running on a container for which the LogManager cannot or
+ * should not be used.<br><br>
  *
- * Installation/usage:
- * - programmatically by calling install() method,
- *    e.g. inside ServletContextListener static-class-init. or contextInitialized()
- * - declaratively inside JUL's logging.properties:
- *    handlers = org.apache.logging.log4j.jul.Log4jBridgeHandler
- *    (note: in a webapp running on Tomcat, you may create a WEB-INF/classes/logging.properties
+ * Installation/usage:<ul>
+ * <li> declaratively inside JUL's logging.properties:<br>
+ *    <code>handlers = org.apache.logging.log4j.jul.Log4jBridgeHandler</code><br>
+ *    (note: in a webapp running on Tomcat, you may create a <code>WEB-INF/classes/logging.properties</code>
  *     file to configure JUL for this webapp only)
- *
- * Configuration (in logging.properties):
- * - Log4jBridgeHandler.suffixToAppend
+ * <li> programmatically by calling install() method,
+ *    e.g. inside ServletContextListener static-class-init. or contextInitialized()
+ * </ul>
+ * Configuration (in JUL's <code>logging.properties</code>):<ul>
+ * <li> Log4jBridgeHandler.suffixToAppend<br>
  *        String, suffix to append to JUL logger names, to easily recognize bridged log messages.
  *        A dot "." is automatically prepended, so configuration for the basis logger is used
  *        Example:  suffixToAppend = _JUL
- * - Log4jBridgeHandler.propagateLevels  boolean, "true" to automatically propagate log4j log levels to JUL.
- * - Log4jBridgeHandler.sysoutDebug  boolean
+ * <li> Log4jBridgeHandler.propagateLevels   (this is TODO!) boolean, "true" to automatically propagate log4j log levels to JUL.
+ * <li> Log4jBridgeHandler.sysoutDebug   boolean, perform some (developer) debug output to sysout
+ * </ul>
  *
- * Restrictions:
- * - Manually given source/location info in JUL (e.g. entering(), exiting(), throwing(), logp(), logrb() )
+ * Restrictions:<ul>
+ * <li> Manually given source/location info in JUL (e.g. entering(), exiting(), throwing(), logp(), logrb() )
  *    will NOT be considered, i.e. gets lost in log4j logging.
- *
- * TODO: performance note; log level propagation
+ * <li> Log levels of JUL have to be manually adjusted according to log4j log levels (until "propagateLevels" is implemented).
+ *      I.e. logging.properties and log4j2.xml have some redundancies.
+ * <li> Only JUL log events that are allowed according to the JUL log level get to this handler and thus to log4j.
+ *      If you set <code>.level = SEVERE</code> only error logs will be seen by this handler and thus log4j
+ *      - even if the corresponding log4j log level is ALL.<br>
+ *      On the other side, you should NOT set <code>.level = FINER  or  FINEST</code> if the log4j level is higher.
+ *      In this case a lot of JUL log events would be generated, sent via this bridge to log4j and thrown away by the latter.
+ * </ul>
  *
  * @author Thies Wellpott (twapache@online.de)
  * @author authors of original org.slf4j.bridge.SLF4JBridgeHandler (ideas and some basis from there)
- * @author authors of original ch.qos.logback.classic.jul.LevelChangePropagator (ideas and some basis from there)
  */
+// TODO: @author authors of original ch.qos.logback.classic.jul.LevelChangePropagator (ideas and some basis from there)
 public class Log4jBridgeHandler extends java.util.logging.Handler {
     private static final org.apache.logging.log4j.Logger SLOGGER = StatusLogger.getLogger();
 
@@ -119,7 +126,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler {
         installAsLevelPropagator = Boolean.parseBoolean(julLogMgr.getProperty(className + ".propagateLevels"));
         // TODO really do install
         if (installAsLevelPropagator) {
-        	SLOGGER.warn("Log4jBridgeHandler.propagateLevels is currently NOT implemented. Call Log4jBridgeHandler.initJulLogLevels() !");
+        	SLOGGER.warn("Log4jBridgeHandler.propagateLevels is currently NOT implemented."); // Call Log4jBridgeHandler.initJulLogLevels() !");
         }
 
         SLOGGER.debug("Log4jBridgeHandler init. with: suffix='{}', lP={}",
