@@ -30,14 +30,14 @@ import java.util.Set;
 import java.util.Stack;
 
 /**
- * {@link ThrowableProxyInitializationUtils} provides utilities required to initialize a new {@link ThrowableProxy}
+ * {@link ThrowableProxyHelper} provides utilities required to initialize a new {@link ThrowableProxy}
  * instance.
  */
-class ThrowableProxyInitializationUtils {
+class ThrowableProxyHelper {
 
     static final ThrowableProxy[] EMPTY_THROWABLE_PROXY_ARRAY = new ThrowableProxy[0];
 
-    private ThrowableProxyInitializationUtils() {
+    private ThrowableProxyHelper() {
         // Utility Class
     }
 
@@ -111,7 +111,7 @@ class ThrowableProxyInitializationUtils {
                         lastLoader = entry.loader;
                     }
                 } else {
-                    final CacheEntry entry = toCacheEntry(ThrowableProxyInitializationUtils.loadClass(lastLoader, className), false);
+                    final CacheEntry entry = toCacheEntry(ThrowableProxyHelper.loadClass(lastLoader, className), false);
                     extClassInfo = entry.element;
                     map.put(className, entry);
                     if (entry.loader != null) {
@@ -226,7 +226,7 @@ class ThrowableProxyInitializationUtils {
 
     private static Class<?> loadClass(final String className) {
         try {
-            return Loader.loadClass(className, ThrowableProxyInitializationUtils.class.getClassLoader());
+            return Loader.loadClass(className, ThrowableProxyHelper.class.getClassLoader());
         } catch (final ClassNotFoundException | NoClassDefFoundError | SecurityException e) {
             return null;
         }

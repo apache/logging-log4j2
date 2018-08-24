@@ -22,17 +22,17 @@ import org.apache.logging.log4j.util.Strings;
 import java.util.List;
 
 /**
- * {@link ThrowableProxyRenderUtils} is an internal utility providing the code to render a {@link ThrowableProxy}
+ * {@link ThrowableProxyRenderer} is an internal utility providing the code to render a {@link ThrowableProxy}
  * to a {@link StringBuilder}.
  */
-class ThrowableProxyRenderUtils {
+class ThrowableProxyRenderer {
 
     private static final String TAB = "\t";
     private static final String CAUSED_BY_LABEL = "Caused by: ";
     private static final String SUPPRESSED_LABEL = "Suppressed: ";
     private static final String WRAPPED_BY_LABEL = "Wrapped by: ";
 
-    private ThrowableProxyRenderUtils() {
+    private ThrowableProxyRenderer() {
         // Utility Class
     }
 
@@ -197,12 +197,12 @@ class ThrowableProxyRenderUtils {
         if (causeProxy != null) {
             formatWrapper(sb, causeProxy, ignorePackages, textRenderer, suffix, lineSeparator);
             sb.append(WRAPPED_BY_LABEL);
-            ThrowableProxyRenderUtils.renderSuffix(suffix, sb, textRenderer);
+            ThrowableProxyRenderer.renderSuffix(suffix, sb, textRenderer);
         }
         renderOn(src, sb, textRenderer);
-        ThrowableProxyRenderUtils.renderSuffix(suffix, sb, textRenderer);
+        ThrowableProxyRenderer.renderSuffix(suffix, sb, textRenderer);
         textRenderer.render(lineSeparator, sb, "Text");
-        ThrowableProxyRenderUtils.formatElements(sb, Strings.EMPTY, 0, src.getStackTrace(), src.getExtendedStackTrace(),
+        ThrowableProxyRenderer.formatElements(sb, Strings.EMPTY, 0, src.getStackTrace(), src.getExtendedStackTrace(),
                 ignorePackages, textRenderer, suffix, lineSeparator);
     }
 

@@ -81,7 +81,7 @@ public class ThrowableProxy implements Serializable {
         this.causeProxy = null;
         this.message = null;
         this.localizedMessage = null;
-        this.suppressedProxies = ThrowableProxyInitializationUtils.EMPTY_THROWABLE_PROXY_ARRAY;
+        this.suppressedProxies = ThrowableProxyHelper.EMPTY_THROWABLE_PROXY_ARRAY;
     }
 
     /**
@@ -104,14 +104,14 @@ public class ThrowableProxy implements Serializable {
         this.name = throwable.getClass().getName();
         this.message = throwable.getMessage();
         this.localizedMessage = throwable.getLocalizedMessage();
-        final Map<String, ThrowableProxyInitializationUtils.CacheEntry> map = new HashMap<>();
+        final Map<String, ThrowableProxyHelper.CacheEntry> map = new HashMap<>();
         final Stack<Class<?>> stack = StackLocatorUtil.getCurrentStackTrace();
-        this.extendedStackTrace = ThrowableProxyInitializationUtils.toExtendedStackTrace(this, stack, map, null, throwable.getStackTrace());
+        this.extendedStackTrace = ThrowableProxyHelper.toExtendedStackTrace(this, stack, map, null, throwable.getStackTrace());
         final Throwable throwableCause = throwable.getCause();
         final Set<Throwable> causeVisited = new HashSet<>(1);
         this.causeProxy = throwableCause == null ? null : new ThrowableProxy(throwable, stack, map, throwableCause,
             visited, causeVisited);
-        this.suppressedProxies = ThrowableProxyInitializationUtils.toSuppressedProxies(throwable, visited);
+        this.suppressedProxies = ThrowableProxyHelper.toSuppressedProxies(throwable, visited);
     }
 
     /**
@@ -125,7 +125,7 @@ public class ThrowableProxy implements Serializable {
      * @param causeVisited      TODO
      */
     private ThrowableProxy(final Throwable parent, final Stack<Class<?>> stack,
-                           final Map<String, ThrowableProxyInitializationUtils.CacheEntry> map,
+                           final Map<String, ThrowableProxyHelper.CacheEntry> map,
                            final Throwable cause, final Set<Throwable> suppressedVisited,
                            final Set<Throwable> causeVisited) {
         causeVisited.add(cause);
@@ -133,11 +133,11 @@ public class ThrowableProxy implements Serializable {
         this.name = cause.getClass().getName();
         this.message = this.throwable.getMessage();
         this.localizedMessage = this.throwable.getLocalizedMessage();
-        this.extendedStackTrace = ThrowableProxyInitializationUtils.toExtendedStackTrace(this, stack, map, parent.getStackTrace(), cause.getStackTrace());
+        this.extendedStackTrace = ThrowableProxyHelper.toExtendedStackTrace(this, stack, map, parent.getStackTrace(), cause.getStackTrace());
         final Throwable causeCause = cause.getCause();
         this.causeProxy = causeCause == null || causeVisited.contains(causeCause) ? null : new ThrowableProxy(parent,
             stack, map, causeCause, suppressedVisited, causeVisited);
-        this.suppressedProxies = ThrowableProxyInitializationUtils.toSuppressedProxies(cause, suppressedVisited);
+        this.suppressedProxies = ThrowableProxyHelper.toSuppressedProxies(cause, suppressedVisited);
     }
 
     @Override
@@ -226,7 +226,7 @@ public class ThrowableProxy implements Serializable {
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages,
                               final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
-        ThrowableProxyRenderUtils.formatWrapper(sb,  cause, ignorePackages, textRenderer, suffix, lineSeparator);
+        ThrowableProxyRenderer.formatWrapper(sb,  cause, ignorePackages, textRenderer, suffix, lineSeparator);
     }
 
     public ThrowableProxy getCauseProxy() {
@@ -277,7 +277,7 @@ public class ThrowableProxy implements Serializable {
      */
     public String getCauseStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         final StringBuilder sb = new StringBuilder();
-        ThrowableProxyRenderUtils.formatCauseStackTrace(this, sb, ignorePackages, textRenderer, suffix, lineSeparator);
+        ThrowableProxyRenderer.formatCauseStackTrace(this, sb, ignorePackages, textRenderer, suffix, lineSeparator);
         return sb.toString();
     }
 
@@ -378,7 +378,7 @@ public class ThrowableProxy implements Serializable {
      * @param lineSeparator The end-of-line separator.
      */
     public void formatExtendedStackTraceTo(final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
-        ThrowableProxyRenderUtils.formatExtendedStackTraceTo(this, sb, ignorePackages, textRenderer, suffix, lineSeparator);
+        ThrowableProxyRenderer.formatExtendedStackTraceTo(this, sb, ignorePackages, textRenderer, suffix, lineSeparator);
     }
 
     public String getLocalizedMessage() {
