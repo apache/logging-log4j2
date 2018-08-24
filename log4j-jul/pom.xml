@@ -114,14 +114,14 @@
                   <goals>
                       <goal>test</goal>
                   </goals>
-                  <excludes>
-                      <exclude>${log4j.skip.test1}</exclude>
-                      <exclude>${log4j.skip.test2}</exclude>
-                      <exclude>Log4jBridgeHandlerTest.java</exclude>
-                  </excludes>
+                  <configuration>
+                      <excludes>
+                          <exclude>${log4j.skip.test1}</exclude>
+                          <exclude>${log4j.skip.test2}</exclude>
+                          <exclude>Log4jBridgeHandlerTest.java</exclude>
+                      </excludes>
+                  </configuration>
               </execution>
-          </executions>
-          <executions>
               <execution>
                   <!-- this test needs some special configuration, thus its own run -->
                   <id>bridgeHandler-test</id>
@@ -129,10 +129,10 @@
                   <goals>
                       <goal>test</goal>
                   </goals>
-                  <includes>
-                      <include>Log4jBridgeHandlerTest.java</include>
-                  </includes>
                   <configuration>
+                      <includes>
+                          <include>Log4jBridgeHandlerTest.java</include>
+                      </includes>
                       <systemPropertyVariables>
                           <java.util.logging.config.file>src/test/resources/logging-test.properties</java.util.logging.config.file>
                           <log4j2.configurationFile>log4j2-julBridge-test.xml</log4j2.configurationFile>
