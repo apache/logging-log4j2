@@ -44,8 +44,8 @@ import org.junit.Test;
  *   + <Root level="TRACE">
  *   + <Appenders> <Console> with target="SYSTEM_ERR", follow="true",
  *      <PatternLayout> "log4j2:  %d{HH:mm:ss.SSS} %5level - [%thread][%logger: %class/%method/%line]  -  %message%n"
- *
- * @author Thies Wellpott (twapache@online.de)
+ * This test needs to capture syserr because it uses java.util.logging.ConsoleHandler.
+ * Also, it performs some outputs to console (sysout and syserr); see also field OUTPUT_CAPTURED.
  */
 @FixMethodOrder(org.junit.runners.MethodSorters.NAME_ASCENDING)		// is nicer for manually checking console output
 public class Log4jBridgeHandlerTest {

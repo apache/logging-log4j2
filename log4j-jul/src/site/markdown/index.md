@@ -16,6 +16,11 @@
     limitations under the License.
 -->
 
+There are two possibilities:
+- Logging Adapter as complete replacement (preferred, but requires JVM start option)
+- Bridge Handler, transfering JDK output to log4j, e.g. useful for webapps
+
+
 # Log4j JDK Logging Adapter
 
 The JDK Logging Adapter is a custom implementation of
@@ -76,14 +81,21 @@ Java Level | Log4j Level
 [`ALL`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#ALL) | `ALL`
 
 
-# Log4j JDK Logging Bridge
+# Log4j JDK Logging Bridge Handler
 
 The LogManager is not always useable because you have to set a JVM wide effective system
 property - e.g. in web servers this is not possible if you are not the administrator.
 
 The [`Log4jBridgeHandler`](apidocs/org/apache/logging/log4j/jul/Log4jBridgeHandler.html) is an
 alternative that can be declaratively used via `logging.properties`.
-It is less performant than the LogManager but still okay to use.
+
+It is less performant than the LogManager but still okay to use: the LogManager replaces the JDK
+implementation, so your logging code (using JDK syntax) effectively directly uses log4j.
+When using the BridgeHandler the original JDK implementation along with its configuration
+(e.g. log levels) is still fully working but the log events are "written" via this handler to log4j
+as if you would have called log4j.Logger.debug() etc.; it is like a FileHandler but instead of
+writing to a file, it "writes" to log4j Loggers - thus there is some overhead compared to using
+LogManager.
 
 ## Usage
 
@@ -99,4 +111,8 @@ do NOT have any impact on the other webapps on the same Tomcat instance.
 Alternatively you may call `Log4jBridgeHandler.install()` inside your webapps initialization,
 e.g. inside `ServletContextListener` static-class-init. or `contextInitialized()`.
 
-Please, read the [JavaDoc](apidocs/org/apache/logging/log4j/jul/Log4jBridgeHandler.html) for configuration and limitations!
+**Important:** Currently, you have to manually adjust JDK and log4j logging levels, i.e. `logging.properties`
+must contain the redundant logger level configuration as log4j, but for the really used JDK loggers only.
+
+Please, read the [JavaDoc](apidocs/org/apache/logging/log4j/jul/Log4jBridgeHandler.html) for detailed
+configuration and limitation information!
