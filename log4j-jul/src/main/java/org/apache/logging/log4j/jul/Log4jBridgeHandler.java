@@ -30,21 +30,28 @@ import org.apache.logging.log4j.status.StatusLogger;
  * should not be used.<br><br>
  *
  * Installation/usage:<ul>
- * <li> declaratively inside JUL's logging.properties:<br>
+ * <li> Declaratively inside JUL's <code>logging.properties</code>:<br>
  *    <code>handlers = org.apache.logging.log4j.jul.Log4jBridgeHandler</code><br>
- *    (note: in a webapp running on Tomcat, you may create a <code>WEB-INF/classes/logging.properties</code>
- *     file to configure JUL for this webapp only)
- * <li> programmatically by calling install() method,
+ *    (Note: in a webapp running on Tomcat, you may create a <code>WEB-INF/classes/logging.properties</code>
+ *     file to configure JUL for this webapp only: configured handlers and log levels affect your webapp only!
+ *     This file is then the <i>complete</i> JUL configuration, so JUL's defaults (e.g. log level INFO) apply
+ *     for stuff not explicitly defined therein.)
+ * <li> Programmatically by calling <code>install()</code> method,
  *    e.g. inside ServletContextListener static-class-init. or contextInitialized()
  * </ul>
  * Configuration (in JUL's <code>logging.properties</code>):<ul>
- * <li> Log4jBridgeHandler.suffixToAppend<br>
+ * <li> Log4jBridgeHandler.<code>suffixToAppend</code><br>
  *        String, suffix to append to JUL logger names, to easily recognize bridged log messages.
- *        A dot "." is automatically prepended, so configuration for the basis logger is used
- *        Example:  suffixToAppend = _JUL
- * <li> Log4jBridgeHandler.propagateLevels   (this is TODO!) boolean, "true" to automatically propagate log4j log levels to JUL.
- * <li> Log4jBridgeHandler.sysoutDebug   boolean, perform some (developer) debug output to sysout
+ *        A dot "." is automatically prepended, so configuration for the basis logger is used<br>
+ *        Example:  <code>Log4jBridgeHandler.suffixToAppend = _JUL</code><br>
+ *        Useful, for example, if you use JSF because it logs exceptions and throws them afterwards;
+ *        you can easily recognize the duplicates with this (or concentrate on the non-JUL-logs).
+ * <li> Log4jBridgeHandler.<code>propagateLevels</code>   (this is TODO, but usage is possible without this!) boolean, "true" to automatically propagate log4j log levels to JUL.
+ * <li> Log4jBridgeHandler.<code>sysoutDebug</code>   boolean, perform some (developer) debug output to sysout
  * </ul>
+ *
+ * Log levels are translated with {@link LevelTranslator}, see also
+ * <a href="https://logging.apache.org/log4j/2.x/log4j-jul/index.html#Default_Level_Conversions">log4j doc</a>.<br><br>
  *
  * Restrictions:<ul>
  * <li> Manually given source/location info in JUL (e.g. entering(), exiting(), throwing(), logp(), logrb() )
@@ -55,13 +62,12 @@ import org.apache.logging.log4j.status.StatusLogger;
  *      If you set <code>.level = SEVERE</code> only error logs will be seen by this handler and thus log4j
  *      - even if the corresponding log4j log level is ALL.<br>
  *      On the other side, you should NOT set <code>.level = FINER  or  FINEST</code> if the log4j level is higher.
- *      In this case a lot of JUL log events would be generated, sent via this bridge to log4j and thrown away by the latter.
+ *      In this case a lot of JUL log events would be generated, sent via this bridge to log4j and thrown away by the latter.<br>
+ *      Note: JUL's default log level (i.e. none specified in logger.properties) is INFO.
  * </ul>
  *
- * @author Thies Wellpott (twapache@online.de)
- * @author authors of original org.slf4j.bridge.SLF4JBridgeHandler (ideas and some basis from there)
+ * (Credits: idea and concept originate from org.slf4j.bridge.SLF4JBridgeHandler)
  */
-// TODO: @author authors of original ch.qos.logback.classic.jul.LevelChangePropagator (ideas and some basis from there)
 public class Log4jBridgeHandler extends java.util.logging.Handler {
     private static final org.apache.logging.log4j.Logger SLOGGER = StatusLogger.getLogger();
 
@@ -107,7 +113,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler {
      */
     public Log4jBridgeHandler() {
         final java.util.logging.LogManager julLogMgr = java.util.logging.LogManager.getLogManager();
-        String className = this.getClass().getName();
+        final String className = this.getClass().getName();
         debugOutput = Boolean.parseBoolean(julLogMgr.getProperty(className + ".sysoutDebug"));
         if (debugOutput) {
             new Exception("DIAGNOSTIC ONLY (sysout):  Log4jBridgeHandler instance created (" + this + ")")
@@ -153,9 +159,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler {
         String msg = julFormatter.formatMessage(record);		// use JUL's implementation to get real msg
         /* log4j allows nulls:
         if (msg == null) {
-            // this is a check to avoid calling the underlying logging system
-            // with a null message. While it is legitimate to invoke JUL with
-            // a null message, other logging frameworks do not support this.
+            // JUL allows nulls, but other log system may not
             msg = "<null log msg>";
         } */
         org.apache.logging.log4j.Level log4jLevel = LevelTranslator.toLevel(record.getLevel());
