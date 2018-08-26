@@ -99,20 +99,21 @@ LogManager.
 
 ## Usage
 
-The JUL configuration file `logging.properties` needs the line
-`handlers = org.apache.logging.log4j.jul.Log4jBridgeHandler`
-and JUL logs go to log4j2.
+The JUL configuration file `logging.properties` needs the line<br>
+`handlers = org.apache.logging.log4j.jul.Log4jBridgeHandler`<br>
+and JUL logs go to log4j2. Additionally, you typically want to use to following:<br>
+`org.apache.logging.log4j.jul.Log4jBridgeHandler.propagateLevels = true`
 
 In a webapp on Tomcat (and maybe other servers, too), you may simply create a
 `WEB-INF/classes/logging.properties` file with above content.
 The bridge and the log levels defined in this file are only valid for your webapp and
-do NOT have any impact on the other webapps on the same Tomcat instance.
+do *not* have any impact on the other webapps on the same Tomcat instance.
 
-Alternatively you may call `Log4jBridgeHandler.install()` inside your webapps initialization,
-e.g. inside `ServletContextListener` static-class-init. or `contextInitialized()`.
+Alternatively you may call `Log4jBridgeHandler.install()` inside your webapp's initialization code,
+e.g. inside `ServletContextListener` or a `ServletFilter` static-class-init. or `contextInitialized()`.
 
-**Important:** Currently, you have to manually adjust JDK and log4j logging levels, i.e. `logging.properties`
-must contain the redundant logger level configuration as log4j, but for the really used JDK loggers only.
+**Important:** Log levels of JDK should match the ones of log4j. You may do this manually or use the
+automatic level propagation via `Log4jBridgeHandler.propagateLevels = true`.
 
 Please, read the [JavaDoc](apidocs/org/apache/logging/log4j/jul/Log4jBridgeHandler.html) for detailed
 configuration and limitation information!
