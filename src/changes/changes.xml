@@ -52,6 +52,9 @@
       <action issue="LOG4J2-2418" dev="ggregory" type="fix" due-to="Jonas Rutishauser">
         NullPointerException when closing never used RollingRandomAccessFileAppender.
       </action>
+      <action issue="LOG4J2-2422" dev="ggregory" type="fix" due-to="rswart, Gary Gregory">
+        Handle some unchecked exceptions while loading plugins.
+      </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
       <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">
