@@ -184,8 +184,8 @@ public class PluginRegistry {
                     ++pluginCount;
                 } catch (final ClassNotFoundException e) {
                     LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", className, e);
-                } catch (final VerifyError e) {
-                    LOGGER.info("Plugin [{}] could not be loaded due to verification error.", className, e);
+                } catch (final LinkageError e) {
+                    LOGGER.info("Plugin [{}] could not be loaded due to linkage error.", className, e);
                 }
             }
         }
