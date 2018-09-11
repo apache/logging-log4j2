@@ -55,6 +55,9 @@
       <action issue="LOG4J2-2422" dev="ggregory" type="fix" due-to="rswart, Gary Gregory">
         Handle some unchecked exceptions while loading plugins.
       </action>
+      <action issue="LOG4J2-2441" dev="ckozak" type="fix">
+        Setting a null ErrorHandler on AbstractAppender is not allowed and will no-op as expected.
+      </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
       <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">
