@@ -84,7 +84,7 @@ public abstract class AbstractWriterAppender<M extends WriterManager> extends Ab
                 }
             }
         } catch (final AppenderLoggingException ex) {
-            error("Unable to write " + manager.getName() + " for appender " + getName() + ": " + ex);
+            error("Unable to write " + manager.getName() + " for appender " + getName(), event, ex);
             throw ex;
         } finally {
             readLock.unlock();
