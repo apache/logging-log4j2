@@ -160,7 +160,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
         try {
             tryAppend(event);
         } catch (final AppenderLoggingException ex) {
-            error("Unable to write to stream " + manager.getName() + " for appender " + getName() + ": " + ex);
+            error("Unable to write to stream " + manager.getName() + " for appender " + getName(), event, ex);
             throw ex;
         }
     }
