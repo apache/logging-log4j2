@@ -97,6 +97,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         strLookupMap.put("main", MainMapLookup.MAIN_SINGLETON);
         strLookupMap.put("marker", new MarkerLookup());
         strLookupMap.put("java", new JavaLookup());
+        strLookupMap.put("base64", new Base64StrLookup());
         // JNDI
         try {
             // [LOG4J2-703] We might be on Android
