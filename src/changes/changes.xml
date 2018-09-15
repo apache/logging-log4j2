@@ -61,6 +61,9 @@
       <action issue="LOG4J2-2444" dev="ckozak" type="fix">
         ErrorHandler is invoked with a LogEvent and Throwable when possible, where previously only a string was used.
       </action>
+      <action issue="LOG4J2-2447" dev="ggregory" type="update">
+        Let the NullAppender default its name to "null".
+      </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
       <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">

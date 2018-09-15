@@ -24,26 +24,28 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * An Appender that ignores log events. Use for compatibility with version 1.2 and handy for composing a {@link ScriptAppenderSelector}.
+ * An Appender that ignores log events. Use for compatibility with version 1.2
+ * and handy for composing a {@link ScriptAppenderSelector}.
  */
 @Plugin(name = NullAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class NullAppender extends AbstractAppender {
 
-    public static final String PLUGIN_NAME = "Null";
+	public static final String PLUGIN_NAME = "Null";
 
-    @PluginFactory
-    public static NullAppender createAppender(@PluginAttribute("name") final String name) {
-        return new NullAppender(name);
-    }
+	@PluginFactory
+	public static NullAppender createAppender(
+			@PluginAttribute(value = "smtpPort", defaultString = "null") final String name) {
+		return new NullAppender(name);
+	}
 
-    private NullAppender(final String name) {
-        super(name, null, null);
-        // Do nothing
-    }
+	private NullAppender(final String name) {
+		super(name, null, null);
+		// Do nothing
+	}
 
-    @Override
-    public void append(final LogEvent event) {
-        // Do nothing
-    }
+	@Override
+	public void append(final LogEvent event) {
+		// Do nothing
+	}
 
 }
