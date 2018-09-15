@@ -251,6 +251,9 @@
       <action issue="LOG4J2-2444" dev="ckozak" type="fix">
         ErrorHandler is invoked with a LogEvent and Throwable when possible, where previously only a string was used.
       </action>
+      <action issue="LOG4J2-2447" dev="ggregory" type="update">
+        Let the NullAppender default its name to "null".
+      </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
       <action issue="LOG4J2-2391" dev="ckozak" type="update">
@@ -285,6 +288,9 @@
       </action>
       <action issue="LOG4J2-2446" dev="ggregory" type="add">
         Add a Base64 string lookup.
+      </action>
+      <action issue="LOG4J2-2447" dev="ggregory" type="update">
+        Let the NullAppender default its name to "null".
       </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
