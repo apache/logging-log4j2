@@ -61,30 +61,33 @@ public class ScriptAppenderSelector extends AbstractAppender {
         private AbstractScript script;
 
         @Override
-        public Appender build() {
-            if (name == null) {
-                LOGGER.error("Name missing.");
-                return null;
-            }
-            if (script == null) {
-                LOGGER.error("Script missing for ScriptAppenderSelector appender {}", name);
-                return null;
-            }
-            if (appenderSet == null) {
-                LOGGER.error("AppenderSet missing for ScriptAppenderSelector appender {}", name);
-                return null;
-            }
-            if (configuration == null) {
-                LOGGER.error("Configuration missing for ScriptAppenderSelector appender {}", name);
-                return null;
-            }
-            final ScriptManager scriptManager = configuration.getScriptManager();
-            scriptManager.addScript(script);
-            final Bindings bindings = scriptManager.createBindings(script);
-            final Object object = scriptManager.execute(script.getName(), bindings);
-            final String appenderName = Objects.toString(object, null);
-            return appenderSet.createAppender(appenderName, name);
-        }
+		public Appender build() {
+			if (name == null) {
+				LOGGER.error("Name missing.");
+				return null;
+			}
+			if (script == null) {
+				LOGGER.error("Script missing for ScriptAppenderSelector appender {}", name);
+				return null;
+			}
+			if (appenderSet == null) {
+				LOGGER.error("AppenderSet missing for ScriptAppenderSelector appender {}", name);
+				return null;
+			}
+			if (configuration == null) {
+				LOGGER.error("Configuration missing for ScriptAppenderSelector appender {}", name);
+				return null;
+			}
+			final ScriptManager scriptManager = configuration.getScriptManager();
+			scriptManager.addScript(script);
+			final Bindings bindings = scriptManager.createBindings(script);
+			LOGGER.debug("ScriptAppenderSelector appender '{}' executing {} '{}': {}", name, script.getLanguage(),
+					script.getName(), script.getScriptText());
+			final Object object = scriptManager.execute(script.getName(), bindings);
+			final String appenderName = Objects.toString(object, null);
+			LOGGER.debug("ScriptAppenderSelector appender '{}' selected '{}'", name, appenderName);
+			return appenderSet.createAppender(appenderName, name);
+		}
 
         public AppenderSet getAppenderSet() {
             return appenderSet;
