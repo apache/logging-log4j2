@@ -114,13 +114,13 @@ public class AppenderSet {
         this.nodeMap = appenders;
     }
 
-    public Appender createAppender(final String appenderName, final String actualName) {
-        final Node node = nodeMap.get(appenderName);
+    public Appender createAppender(final String actualAppenderName, final String sourceAppenderName) {
+        final Node node = nodeMap.get(actualAppenderName);
         if (node == null) {
-            LOGGER.error("No node named {} in {}", appenderName, this);
+            LOGGER.error("No node named {} in {}", actualAppenderName, this);
             return null;
         }
-        node.getAttributes().put("name", actualName);
+        node.getAttributes().put("name", sourceAppenderName);
         if (node.getType().getElementName().equals(Appender.ELEMENT_TYPE)) {
             final Node appNode = new Node(node);
             configuration.createConfiguration(appNode, null);
@@ -132,7 +132,7 @@ public class AppenderSet {
             LOGGER.error("Unable to create Appender of type " + node.getName());
             return null;
         }
-        LOGGER.error("No Appender was configured for name {} " + appenderName);
+        LOGGER.error("No Appender was configured for name {} " + actualAppenderName);
         return null;
     }
 }
