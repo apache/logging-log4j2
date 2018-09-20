@@ -1057,6 +1057,19 @@ that are built in to Logj4 are:
 |===
 |Prefix |Context
 
+              <tr>
+                <td>base64</td>
+                <td>
+                  Base64 encoded data. The format is <code>${dollar}{base64:Base64_encoded_data}</code>.
+                  For example:
+                  <code>${dollar}{base64:SGVsbG8gV29ybGQhCg==}</code> yields <code>Hello World!</code>.
+                </td>
+              </tr>
+
+|base64
+|Base64 encoded data. The format is `${base64:Base64_encoded_data}`.
+For example: `${base64:SGVsbG8gV29ybGQhCg==}` yields `Hello World!`.
+
 |bundle
 |Resource bundle. The format is `${bundle:BundleName:BundleKey}`.
 The bundle name follows package naming conventions, for example:
