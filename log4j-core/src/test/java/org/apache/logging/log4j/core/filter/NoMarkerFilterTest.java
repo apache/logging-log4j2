@@ -40,7 +40,6 @@ public class NoMarkerFilterTest {
         assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, null, (Object) null, (Throwable) null));
         filter.stop();
         LogEvent event = Log4jLogEvent.newBuilder() //
-//                .setMarker(grandChild) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
