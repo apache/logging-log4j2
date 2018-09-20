@@ -1001,6 +1001,14 @@ rootLogger.appenderRef.stdout.ref = STDOUT
                 <th>Context</th>
               </tr>
               <tr>
+                <td>base64</td>
+                <td>
+                  Base64 encoded data. The format is <code>${dollar}{base64:Base64_encoded_data}</code>.
+                  For example:
+                  <code>${dollar}{base64:SGVsbG8gV29ybGQhCg==}</code> yields <code>Hello World!</code>.
+                </td>
+              </tr>
+              <tr>
                 <td>bundle</td>
                 <td>
                   Resource bundle. The format is <code>${dollar}{bundle:BundleName:BundleKey}</code>.
