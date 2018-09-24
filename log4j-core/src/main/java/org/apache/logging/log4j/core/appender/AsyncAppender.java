@@ -50,7 +50,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Log4jThread;
-import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
 /**
@@ -163,8 +162,8 @@ public final class AsyncAppender extends AbstractAppender {
             if (blocking) {
                 if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
                     // If queue is full AND we are in a recursive call, call appender directly to prevent deadlock
-                    final Message message = AsyncQueueFullMessageUtil.transform(logEvent.getMessage());
-                    logMessageInCurrentThread(new Log4jLogEvent.Builder(logEvent).setMessage(message).build());
+                    AsyncQueueFullMessageUtil.logWarningToStatusLogger();
+                    logMessageInCurrentThread(logEvent);
                 } else {
                     // delegate to the event router (which may discard, enqueue and block, or log in current thread)
                     final EventRoute route = asyncQueueFullPolicy.getRoute(thread.getId(), memento.getLevel());
@@ -524,5 +523,15 @@ public final class AsyncAppender extends AbstractAppender {
 
     public int getQueueRemainingCapacity() {
         return queue.remainingCapacity();
+    }
+
+    /**
+     * Returns the number of elements in the queue.
+     * 
+     * @return the number of elements in the queue. 
+     * @since 2.11.1
+     */
+    public int getQueueSize() {
+        return queue.size();
     }
 }

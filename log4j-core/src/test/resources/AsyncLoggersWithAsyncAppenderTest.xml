@@ -2,7 +2,7 @@
 <Configuration status="ERROR">
   <Appenders>
     <List name="List">
-      <PatternLayout pattern="%c %m"/>
+      <PatternLayout pattern="%c %testformat - %testparameters - %m"/>
     </List>
     <Async name="Async" includeLocation="true" error-ref="STDOUT">
       <AppenderRef ref="List"/>

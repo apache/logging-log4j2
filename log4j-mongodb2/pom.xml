@@ -89,6 +89,14 @@
           </instructions>
         </configuration>
       </plugin>
+      <!-- workaround flaky "Operation not permitted" failures when running tests in parallel -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <reporting>

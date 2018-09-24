@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
@@ -114,6 +115,10 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      * @return a {@code StringBuilder}
      */
     protected static StringBuilder getStringBuilder() {
+        if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-2368
+            // Recursive logging may clobber the cached StringBuilder.
+            return new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
+        }
         StringBuilder result = threadLocal.get();
         if (result == null) {
             result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);

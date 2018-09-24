@@ -44,6 +44,7 @@ public final class LoaderUtil {
      * @since 2.1
      */
     public static final String IGNORE_TCCL_PROPERTY = "log4j.ignoreTCL";
+    public static final String FORCE_TCL_ONLY_PROPERTY = "log4j.forceTCLOnly";
 
     private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();
 
@@ -52,6 +53,8 @@ public final class LoaderUtil {
     private static Boolean ignoreTCCL;
 
     private static final boolean GET_CLASS_LOADER_DISABLED;
+
+    protected static Boolean forceTcclOnly;
 
     private static final PrivilegedAction<ClassLoader> TCCL_GETTER = new ThreadContextClassLoaderGetter();
 
@@ -109,21 +112,25 @@ public final class LoaderUtil {
         List<ClassLoader> classLoaders = new ArrayList<>();
         ClassLoader tcl = getThreadContextClassLoader();
         classLoaders.add(tcl);
-        ClassLoader current = LoaderUtil.class.getClassLoader();
-        if (current != tcl) {
-            classLoaders.add(current);
-            ClassLoader parent = current.getParent();
+        if (!isForceTccl()) {
+            // Some implementations may use null to represent the bootstrap class loader.
+            ClassLoader current = LoaderUtil.class.getClassLoader();
+            if (current != null && current != tcl) {
+                classLoaders.add(current);
+                ClassLoader parent = current.getParent();
+                while (parent != null && !classLoaders.contains(parent)) {
+                    classLoaders.add(parent);
+                }
+            }
+            ClassLoader parent = tcl == null ? null : tcl.getParent();
             while (parent != null && !classLoaders.contains(parent)) {
                 classLoaders.add(parent);
+                parent = parent.getParent();
             }
-        }
-        ClassLoader parent = tcl.getParent();
-        while (parent != null && !classLoaders.contains(parent)) {
-            classLoaders.add(parent);
-            parent = parent.getParent();
-        }
-        if (!classLoaders.contains(ClassLoader.getSystemClassLoader())) {
-            classLoaders.add(ClassLoader.getSystemClassLoader());
+            ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+            if (!classLoaders.contains(systemClassLoader)) {
+                classLoaders.add(systemClassLoader);
+            }
         }
         return classLoaders.toArray(new ClassLoader[classLoaders.size()]);
     }
@@ -260,6 +267,25 @@ public final class LoaderUtil {
         return ignoreTCCL;
     }
 
+    private static boolean isForceTccl() {
+        if (forceTcclOnly == null) {
+            // PropertiesUtil.getProperties() uses that code path so don't use that!
+            try {
+                forceTcclOnly = System.getSecurityManager() == null ?
+                    Boolean.getBoolean(FORCE_TCL_ONLY_PROPERTY) :
+                    AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                        @Override
+                        public Boolean run() {
+                            return Boolean.getBoolean(FORCE_TCL_ONLY_PROPERTY);
+                        }
+                    });
+            } catch (final SecurityException se) {
+                forceTcclOnly = false;
+            }
+        }
+        return forceTcclOnly;
+    }
+
     /**
      * Finds classpath {@linkplain URL resources}.
      *
@@ -279,9 +305,9 @@ public final class LoaderUtil {
     static Collection<UrlResource> findUrlResources(final String resource) {
         // @formatter:off
         final ClassLoader[] candidates = {
-                getThreadContextClassLoader(), 
-                LoaderUtil.class.getClassLoader(),
-                GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader()};
+                getThreadContextClassLoader(),
+                isForceTccl() ? null : LoaderUtil.class.getClassLoader(),
+                isForceTccl() || GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader()};
         // @formatter:on
         final Collection<UrlResource> resources = new LinkedHashSet<>();
         for (final ClassLoader cl : candidates) {

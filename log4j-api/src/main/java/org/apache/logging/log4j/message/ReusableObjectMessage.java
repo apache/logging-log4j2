@@ -24,7 +24,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableObjectMessage implements ReusableMessage, ParameterVisitable {
+public class ReusableObjectMessage implements ReusableMessage, ParameterVisitable, Clearable {
     private static final long serialVersionUID = 6922476812535519960L;
 
     private transient Object obj;
@@ -94,22 +94,31 @@ public class ReusableObjectMessage implements ReusableMessage, ParameterVisitabl
     }
 
     /**
-     * This message does not have any parameters, so this method returns the specified array.
+     * This message has exactly one parameter (the object), so returns it as the first parameter in the array.
      * @param emptyReplacement the parameter array to return
      * @return the specified array
      */
     @Override
     public Object[] swapParameters(final Object[] emptyReplacement) {
+        // it's unlikely that emptyReplacement is of length 0, but if it is,
+        // go ahead and allocate the memory now;
+        // this saves an allocation in the future when this buffer is re-used
+        if (emptyReplacement.length == 0) {
+            Object[] params = new Object[10]; // Default reusable parameter buffer size
+            params[0] = obj;
+            return params;
+        }
+        emptyReplacement[0] = obj;
         return emptyReplacement;
     }
 
     /**
-     * This message does not have any parameters so this method always returns zero.
-     * @return 0 (zero)
+     * This message has exactly one parameter (the object), so always returns one.
+     * @return 1
      */
     @Override
     public short getParameterCount() {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -120,5 +129,10 @@ public class ReusableObjectMessage implements ReusableMessage, ParameterVisitabl
     @Override
     public Message memento() {
         return new ObjectMessage(obj);
+    }
+
+    @Override
+    public void clear() {
+        obj = null;
     }
 }

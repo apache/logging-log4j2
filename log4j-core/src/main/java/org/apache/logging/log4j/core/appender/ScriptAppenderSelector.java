@@ -81,10 +81,12 @@ public class ScriptAppenderSelector extends AbstractAppender {
             final ScriptManager scriptManager = configuration.getScriptManager();
             scriptManager.addScript(script);
             final Bindings bindings = scriptManager.createBindings(script);
+            LOGGER.debug("ScriptAppenderSelector '{}' executing {} '{}': {}", name, script.getLanguage(),
+                    script.getName(), script.getScriptText());
             final Object object = scriptManager.execute(script.getName(), bindings);
-            final String appenderName = Objects.toString(object, null);
-            final Appender appender = appenderSet.createAppender(appenderName, name);
-            return appender;
+            final String actualAppenderName = Objects.toString(object, null);
+            LOGGER.debug("ScriptAppenderSelector '{}' selected '{}'", name, actualAppenderName);
+            return appenderSet.createAppender(actualAppenderName, name);
         }
 
         public AppenderSet getAppenderSet() {

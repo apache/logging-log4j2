@@ -138,6 +138,52 @@ public class MutableLogEventTest {
         assertEquals("format", "msg in a {}", mutable.getFormat());
         assertEquals("formatted", "msg in a bottle", mutable.getFormattedMessage());
         assertEquals("parameters", new String[] {"bottle"}, mutable.getParameters());
+        Message memento = mutable.memento();
+        assertEquals("format", "msg in a {}", memento.getFormat());
+        assertEquals("formatted", "msg in a bottle", memento.getFormattedMessage());
+        assertEquals("parameters", new String[] {"bottle"}, memento.getParameters());
+
+        Message eventMementoMessage = mutable.createMemento().getMessage();
+        assertEquals("format", "msg in a {}", eventMementoMessage.getFormat());
+        assertEquals("formatted", "msg in a bottle", eventMementoMessage.getFormattedMessage());
+        assertEquals("parameters", new String[] {"bottle"}, eventMementoMessage.getParameters());
+
+        Message log4JLogEventMessage = new Log4jLogEvent.Builder(mutable).build().getMessage();
+        assertEquals("format", "msg in a {}", log4JLogEventMessage.getFormat());
+        assertEquals("formatted", "msg in a bottle", log4JLogEventMessage.getFormattedMessage());
+        assertEquals("parameters", new String[] {"bottle"}, log4JLogEventMessage.getParameters());
+    }
+
+    @Test
+    public void testInitFromReusableObjectCopiesParameter() {
+        Object param = new Object();
+        Message message = ReusableMessageFactory.INSTANCE.newMessage(param);
+        final Log4jLogEvent source = Log4jLogEvent.newBuilder()
+                .setContextData(CONTEXT_DATA)
+                .setContextStack(STACK)
+                .setEndOfBatch(true)
+                .setIncludeLocation(true)
+                .setLevel(Level.FATAL)
+                .setLoggerFqcn("a.b.c.d.e")
+                .setLoggerName("my name is Logger")
+                .setMarker(MarkerManager.getMarker("on your marks"))
+                .setMessage(message)
+                .setNanoTime(1234567)
+                .setSource(new StackTraceElement("myclass", "mymethod", "myfile", 123))
+                .setThreadId(100).setThreadName("threadname")
+                .setThreadPriority(10)
+                .setThrown(new RuntimeException("run"))
+                .setTimeMillis(987654321)
+                .build();
+        final MutableLogEvent mutable = new MutableLogEvent();
+        mutable.initFrom(source);
+        assertNull("format", mutable.getFormat());
+        assertEquals("formatted", param.toString(), mutable.getFormattedMessage());
+        assertEquals("parameters", new Object[] {param}, mutable.getParameters());
+        Message memento = mutable.memento();
+        assertNull("format", memento.getFormat());
+        assertEquals("formatted", param.toString(), memento.getFormattedMessage());
+        assertEquals("parameters", new Object[] {param}, memento.getParameters());
     }
 
     @Test

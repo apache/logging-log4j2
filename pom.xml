@@ -95,7 +95,7 @@
       <id>mattsicker</id>
       <name>Matt Sicker</name>
       <email>mattsicker@apache.org</email>
-      <organization>Independent Consultant</organization>
+      <organization>CloudBees</organization>
       <roles>
         <role>PMC Chair</role>
       </roles>
@@ -119,6 +119,15 @@
         <role>PMC Member</role>
       </roles>
       <timezone>Europe/Stockholm</timezone>
+    </developer>
+    <developer>
+      <id>ckozak</id>
+      <name>Carter Kozak</name>
+      <email>ckozak@apache.org</email>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>America/New York</timezone>
     </developer>
   </developers>
   <!-- Contributors -->
@@ -181,30 +190,30 @@
     <slf4jVersion>1.7.25</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.9.4</jackson2Version>
+    <jackson2Version>2.9.6</jackson2Version>
     <springVersion>3.2.18.RELEASE</springVersion>
     <flumeVersion>1.8.0</flumeVersion>
-    <disruptorVersion>3.3.8</disruptorVersion>
-    <conversantDisruptorVersion>1.2.11</conversantDisruptorVersion>
+    <disruptorVersion>3.4.2</disruptorVersion>
+    <conversantDisruptorVersion>1.2.13</conversantDisruptorVersion>
     <mongodb2.version>2.14.3</mongodb2.version>
-    <mongodb3.version>3.6.3</mongodb3.version>
+    <mongodb3.version>3.8.0</mongodb3.version>
     <compiler.plugin.version>3.7.0</compiler.plugin.version>
-    <pmd.plugin.version>3.8</pmd.plugin.version>
-    <spotbugs.plugin.version>3.1.0-RC7</spotbugs.plugin.version>
-    <spotbugs.version>3.1.1</spotbugs.version>
+    <pmd.plugin.version>3.10.0</pmd.plugin.version>
+    <spotbugs.plugin.version>3.1.5</spotbugs.plugin.version>
+    <spotbugs.version>3.1.6</spotbugs.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
-    <javadoc.plugin.version>3.0.0</javadoc.plugin.version>
+    <javadoc.plugin.version>3.0.1</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
     <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
-    <surefire.plugin.version>2.20.1</surefire.plugin.version>
-    <failsafe.plugin.version>2.20.1</failsafe.plugin.version>
+    <surefire.plugin.version>2.21.0</surefire.plugin.version>
+    <failsafe.plugin.version>2.21.0</failsafe.plugin.version>
     <checkstyle.plugin.version>3.0.0</checkstyle.plugin.version>
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
     <rat.plugin.version>0.12</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
     <cobertura.plugin.version>2.7</cobertura.plugin.version>
-    <jacoco.plugin.version>0.8.0</jacoco.plugin.version>
+    <jacoco.plugin.version>0.8.1</jacoco.plugin.version>
     <release.plugin.version>2.5.3</release.plugin.version>
     <scm.plugin.version>1.9.5</scm.plugin.version>
     <jxr.plugin.version>2.5</jxr.plugin.version>
@@ -214,6 +223,9 @@
     <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
     <!-- See https://maven.apache.org/plugins/maven-site-plugin/migrate.html -->
     <velocity.plugin.version>1.5</velocity.plugin.version>
+    <asciidoc.plugin.version>1.5.6</asciidoc.plugin.version>
+    <errorprone.version>2.3.0</errorprone.version>
+    <plexus.errorprone.version>2.8.4</plexus.errorprone.version>
     <remote.resources.plugin.version>1.5</remote.resources.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -223,7 +235,7 @@
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <javax.persistence>2.2.0</javax.persistence>
     <osgi.api.version>6.0.0</osgi.api.version>
-    <activemq.version>5.15.3</activemq.version>
+    <activemq.version>5.15.4</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
@@ -284,7 +296,7 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
-        <version>3.5.2</version>
+        <version>3.5.4</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -352,6 +364,17 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j18-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jcl</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -404,7 +427,7 @@
       <dependency>
         <groupId>org.fusesource.jansi</groupId>
         <artifactId>jansi</artifactId>
-        <version>1.17</version>
+        <version>1.17.1</version>
         <optional>true</optional>
       </dependency>
       <dependency>
@@ -604,7 +627,7 @@
       <dependency>
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
-        <version>1.0.0</version>
+        <version>1.1.1</version>
       </dependency>
       <dependency>
         <groupId>org.zeromq</groupId>
@@ -704,17 +727,17 @@
       <dependency>
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
-        <version>2.4.0</version>
+        <version>2.4.1</version>
       </dependency>
       <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>1.4.196</version>
+        <version>1.4.197</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
         <artifactId>org.eclipse.persistence.jpa</artifactId>
-        <version>2.7.1</version>
+        <version>2.7.2</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
@@ -755,19 +778,19 @@
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit</artifactId>
-        <version>1.28.2</version>
+        <version>1.31.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
-        <version>2.5.1</version>
+        <version>2.6.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-matchers</artifactId>
-        <version>2.5.1</version>
+        <version>2.6.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -781,13 +804,13 @@
         <groupId>com.github.tomakehurst</groupId>
         <artifactId>wiremock</artifactId>
         <scope>test</scope>
-        <version>2.15.0</version>
+        <version>2.18.0</version>
       </dependency>
       <!-- Used for compressing to formats other than zip and gz -->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.16.1</version>
+        <version>1.17</version>
       </dependency>
       <dependency>
         <groupId>org.tukaani</groupId>
@@ -819,14 +842,19 @@
       </dependency>
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-all</artifactId>
-        <version>2.4.13</version>
+        <artifactId>groovy-jsr223</artifactId>
+        <version>2.5.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-dateutil</artifactId>
+        <version>2.5.2</version>
       </dependency>
       <dependency>
         <!-- Testing MongoDB -->
         <groupId>de.flapdoodle.embed</groupId>
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <version>2.0.3</version>
+        <version>2.1.1</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -903,7 +931,21 @@
               <Xmaxwarns>10000</Xmaxwarns>
               <Xlint />
             </compilerArguments>
+            <compilerId>javac-with-errorprone</compilerId>
+            <forceJavacCompilerUse>true</forceJavacCompilerUse>
           </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.plexus</groupId>
+              <artifactId>plexus-compiler-javac-errorprone</artifactId>
+              <version>${plexus.errorprone.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_core</artifactId>
+              <version>${errorprone.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -989,7 +1031,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
+          <version>3.1.0</version>
           <executions>
             <execution>
               <id>default-jar</id>
@@ -1025,7 +1067,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -1060,8 +1102,8 @@
           <systemPropertyVariables>
             <java.awt.headless>true</java.awt.headless>
           </systemPropertyVariables>
-          <forkCount>2C</forkCount>
-          <reuseForks>true</reuseForks>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
           <excludes>
             <exclude>${log4j.skip.test1}</exclude>
             <exclude>${log4j.skip.test2}</exclude>
@@ -1103,7 +1145,12 @@
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-ssh</artifactId>
-            <version>3.0.0</version>
+            <version>3.1.0</version>
+          </dependency>
+          <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctor-maven-plugin</artifactId>
+            <version>${asciidoc.plugin.version}</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -1117,6 +1164,14 @@
           </moduleExcludes>
           <templateDirectory>${log4jParentDir}/src/site</templateDirectory>
           <template>site.vm</template>
+          <asciidoc>
+            <attributes>
+              <!-- copy any site properties wanted in asciidoc files -->
+              <Log4jReleaseVersion>${Log4jReleaseVersion}</Log4jReleaseVersion>
+              <Log4jReleaseManager>${Log4jReleaseManager}</Log4jReleaseManager>
+              <Log4jReleaseKey>${Log4jReleaseKey}</Log4jReleaseKey>
+            </attributes>
+          </asciidoc>
         </configuration>
       </plugin>
       <!-- <plugin>
@@ -1187,6 +1242,8 @@
             <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
             <exclude>src/site/resources/js/jquery.js</exclude>
             <exclude>src/site/resources/js/jquery.min.js</exclude>
+            <!-- highlight.js is BSD3-licensed -->
+            <exclude>src/site/resources/js/highlight.pack.js</exclude>
             <!-- Generated files -->
             <exclude>log4j-distribution/target/**/*</exclude>
             <exclude>log4j-distribution/.project</exclude>
@@ -1213,6 +1270,7 @@
               The Apache Logging Services Project creates and maintains open-source software related to the logging of
               application behavior and released at no charge to the public.
             </charter>
+            <pmc>https://logging.apache.org</pmc>
           </asfExtOptions>
         </configuration>
         <executions>
@@ -1311,6 +1369,8 @@
             <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
             <exclude>src/site/resources/js/jquery.js</exclude>
             <exclude>src/site/resources/js/jquery.min.js</exclude>
+            <!-- highlight.js is BSD3-licensed -->
+            <exclude>src/site/resources/js/highlight.pack.js</exclude>
             <!-- Generated files -->
             <exclude>log4j-distribution/target/**/*</exclude>
             <exclude>log4j-distribution/.project</exclude>
@@ -1344,6 +1404,7 @@
     <module>log4j-core-its</module>
     <module>log4j-1.2-api</module>
     <module>log4j-slf4j-impl</module>
+    <module>log4j-slf4j18-impl</module>
     <module>log4j-to-slf4j</module>
     <module>log4j-jcl</module>
     <module>log4j-csv</module>
@@ -1478,6 +1539,8 @@
                 <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
                 <exclude>src/site/resources/js/jquery.js</exclude>
                 <exclude>src/site/resources/js/jquery.min.js</exclude>
+                <!-- highlight.js is BSD3-licensed -->
+                <exclude>src/site/resources/js/highlight.pack.js</exclude>
                 <!-- Generated files -->
                 <exclude>log4j-distribution/target/**/*</exclude>
                 <exclude>log4j-distribution/.project</exclude>

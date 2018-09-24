@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Profiler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -109,7 +110,8 @@ public class PerformanceComparison {
         System.out.println("###############################################");
     }
 
-    //@Test
+    @Test
+    @Ignore
     public void testRawPerformance() throws Exception {
         final OutputStream os = new FileOutputStream("target/testos.log", true);
         final long result1 = writeToStream(COUNT, os);

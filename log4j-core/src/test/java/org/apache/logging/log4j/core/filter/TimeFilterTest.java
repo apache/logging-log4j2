@@ -58,10 +58,11 @@ public class TimeFilterTest {
 
     @Test
     public void testTime() {
-        final TimeFilter filter = TimeFilter.createFilter("02:00:00", "03:00:00", "America/LosAngeles", null, null);
+        // https://garygregory.wordpress.com/2013/06/18/what-are-the-java-timezone-ids/
+        final TimeFilter filter = TimeFilter.createFilter("02:00:00", "03:00:00", "America/Los_Angeles", null, null);
         filter.start();
         assertTrue(filter.isStarted());
-        final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("America/LosAngeles"));
+        final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
         cal.set(Calendar.HOUR_OF_DAY, 2);
         CLOCKTIME = cal.getTimeInMillis();
         LogEvent event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();

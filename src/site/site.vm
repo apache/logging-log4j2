@@ -450,10 +450,12 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=${outputEncoding}" />
 		<title>$title - $project.name</title>
 		<link rel="stylesheet" href="$relativePath/css/bootstrap.min.css" type="text/css" />
+		<link rel="stylesheet" href="$relativePath/css/github.css" type="text/css" />
 		<link rel="stylesheet" href="$relativePath/css/site.css" type="text/css" />
 		<script type="text/javascript" src="$relativePath/js/jquery.min.js"></script>
 		<script type="text/javascript" src="$relativePath/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="$relativePath/js/prettify.min.js"></script>
+		<script type="text/javascript" src="$relativePath/js/highlight.pack.js"></script>
+		<script type="text/javascript">hljs.initHighlightingOnLoad();</script>
 		<script type="text/javascript" src="$relativePath/js/site.js"></script>
 #foreach( $author in $authors )
 			<meta name="author" content="$author" />
@@ -471,10 +473,14 @@
 		#googleAnalytics( $decoration.googleAnalyticsAccountId )
 	</head>
 	<body class="composite">
-		<a href="https://logging.apache.org/">
-			<img class="logo-left" src="$relativePath/images/ls-logo.jpg" alt="Apache logging services logo" />
-		</a>
-		<img class="logo-right" src="$relativePath/images/logo.png" alt="Apache log4j logo" />
+        <a  href="http://www.apache.org/events/current-event.html">
+          <img class=logo-left src="http://www.apache.org/events/current-event-234x60.png"/>
+        </a>
+        <img class="logo-right" src="$relativePath/images/logo.png" alt="Apache log4j logo" />
+        <a href="https://logging.apache.org/">
+          <img class="logo-center" src="$relativePath/images/ls-logo.jpg" alt="Apache logging services logo" />
+        </a>
+
 		<div class="clear"></div>
 
 		<div class="navbar">

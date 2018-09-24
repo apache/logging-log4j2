@@ -21,7 +21,7 @@
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.4.0 http://maven.apache.org/xsd/decoration-1.4.0.xsd">
   <body>
     <links>
-      <item name="Logging Wiki" href="https://wiki.apache.org/logging"/>
+      <item name="Logging Wiki" href="https://cwiki.apache.org/confluence/display/LOGGING/Log4j"/>
       <item name="Apache" href="https://www.apache.org/"/>
       <item name="Logging Services" href="https://logging.apache.org/"/>
       <item name="Sonar" href="https://analysis.apache.org/dashboard/index/org.apache.logging.log4j:log4j"/>
@@ -106,6 +106,11 @@
         <item name="Status Messages" href="/manual/configuration.html#StatusMessages"/>
         <item name="Unit Testing in Maven" href="/manual/configuration.html#UnitTestingInMaven"/>
         <item name="System Properties" href="/manual/configuration.html#SystemProperties"/>
+      </item>
+
+      <item name="Usage" href="/manual/usage.html" collapse="true">
+        <item name="Static vs non-Static Loggers"/>
+        <item name="Logger Name vs Class Name"/>
       </item>
 
       <item name="Web Applications and JSPs" href="/manual/webapp.html" collapse="true">
@@ -285,14 +290,14 @@
       <item name="Log4j Web Application Support" href="log4j-web/index.html"/>
       <item name="Log4j Application Server Integration" href="log4j-appserver/index.html"/>
       <item name="Log4j CouchDB appender" href="log4j-couchdb/index.html"/>
-      <item name="Log4j MongoDB appender" href="log4j-mongodb/index.html"/>
+      <item name="Log4j MongoDB2 appender" href="log4j-mongodb2/index.html"/>
+      <item name="Log4j MongoDB3 appender" href="log4j-mongodb3/index.html"/>
       <item name="Log4j Cassandra appender" href="log4j-cassandra/index.html"/>
       <item name="Log4j IO Streams" href="log4j-iostreams/index.html"/>
       <item name="Log4j Liquibase Binding" href="log4j-liquibase/index.html"/>
     </menu>
 
     <menu name="Project Information" img="icon-info-sign">
-      <item name="Dependencies" href="/dependencies.html" />
       <item name="Dependency Convergence" href="/dependency-convergence.html" />
       <item name="Dependency Management" href="/dependency-management.html" />
       <item name="Project Team" href="/team-list.html" />
@@ -306,7 +311,6 @@
     <menu name="Project Reports" img="icon-cog">
       <item name="Changes Report" href="/changes-report.html" />
       <item name="JIRA Report" href="/jira-report.html" />
-      <item name="Surefire Report" href="/surefire-report.html" />
       <item name="RAT Report" href="/rat-report.html" />
     </menu>
   </body>

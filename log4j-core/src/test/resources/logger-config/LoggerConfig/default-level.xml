@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Null name="null"/>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.foo" />
+        <Root>
+            <AppenderRef ref="null" />
+        </Root>
+    </Loggers>
+</Configuration>

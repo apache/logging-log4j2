@@ -53,20 +53,23 @@ public class MockTlsSyslogServer extends MockSyslogServer {
     public void shutdown() {
         this.shutdown = true;
         try {
-            try {
-                this.serverSocket.close();
-            }
-            catch (final Exception e) {
-                e.printStackTrace();
+            if (serverSocket != null) {
+                try {
+                    this.serverSocket.close();
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                }
             }
             this.interrupt();
         } catch (final Exception e) {
             e.printStackTrace();
         }
-        try {
-            thread.join(100);
-        } catch (InterruptedException ie) {
-            System.out.println("Shutdown of TLS server thread failed.");
+        if (thread != null) {
+            try {
+                thread.join(100);
+            } catch (InterruptedException ie) {
+                System.out.println("Shutdown of TLS server thread failed.");
+            }
         }
     }
 

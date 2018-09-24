@@ -56,6 +56,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.base.Preconditions;
@@ -194,8 +195,9 @@ public class FlumeEmbeddedAppenderTest {
                 " Received: " + body, body.endsWith(expected));
         }
     }
-    /* Flume 1.4.0 does not support interceptors on the embedded agent
-    @Test      */
+    /* Flume 1.4.0 does not support interceptors on the embedded agent */
+    @Test
+    @Ignore
     public void testHeaderAddedByInterceptor() {
 
         final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
@@ -207,7 +209,8 @@ public class FlumeEmbeddedAppenderTest {
         Assert.assertEquals("local", environmentHeader);
     }
 
-    /* @Test */
+    @Test
+    @Ignore
     public void testPerformance() throws Exception {
         final long start = System.currentTimeMillis();
         final int count = 10000;

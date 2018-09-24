@@ -100,8 +100,12 @@ public final class ProviderUtil {
         }
     }
 
-    protected static void loadProviders(final ClassLoader cl) {
-        final ServiceLoader<Provider> serviceLoader = ServiceLoader.load(Provider.class, cl);
+    /**
+     * 
+     * @param classLoader null can be used to mark the bootstrap class loader.
+     */
+    protected static void loadProviders(final ClassLoader classLoader) {
+        final ServiceLoader<Provider> serviceLoader = ServiceLoader.load(Provider.class, classLoader);
         for (final Provider provider : serviceLoader) {
             if (validVersion(provider.getVersions()) && !PROVIDERS.contains(provider)) {
                 PROVIDERS.add(provider);

@@ -16,14 +16,18 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -32,6 +36,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.*;
 
 /**
@@ -89,10 +94,14 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFull
 
         final Stack<String> actual = transform(blockingAppender.logEvents);
         assertEquals("Logging in toString() #0", actual.pop());
+        List<StatusData> statusDataList = StatusLogger.getLogger().getStatusData();
         assertEquals("Jumped the queue: queue full",
-                "Logging in toString() #128 (Log4j2 logged this message out of order " +
-                        "to prevent deadlock caused by domain objects logging from their toString " +
-                        "method when the async queue is full - LOG4J2-2031)", actual.pop());
+                "Logging in toString() #128", actual.pop());
+        StatusData mostRecentStatusData = statusDataList.get(statusDataList.size() - 1);
+        assertEquals("Expected warn level status message", Level.WARN, mostRecentStatusData.getLevel());
+        assertThat(mostRecentStatusData.getFormattedStatus(), containsString(
+                "Log4j2 logged an event out of order to prevent deadlock caused by domain " +
+                        "objects logging from their toString method when the async queue is full"));
 
         for (int i = 1; i < 128; i++) {
             assertEquals("First batch", "Logging in toString() #" + i, actual.pop());
