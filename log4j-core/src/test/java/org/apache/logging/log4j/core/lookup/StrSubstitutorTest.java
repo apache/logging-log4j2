@@ -91,10 +91,13 @@ public class StrSubstitutorTest {
           ThreadContext.put(TESTKEY, TESTVAL);
         }
 
-        String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
+        String value = subst.replace("${sys:BadKey:-${sys:TestKey}}");
         assertEquals("TestValue", value);
 
-        value = subst.replace("${sys:--TestKey:-${ctx:--TestKey}}");
+        value = subst.replace("${sys:BadKey:-${sys:-TestKey}}");
+        assertEquals("TestValue", value);
+
+        value = subst.replace("${ctx:BadKey:-${ctx:--TestKey}}");
         assertEquals("TestValue", value);
     }
 
