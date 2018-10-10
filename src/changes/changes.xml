@@ -64,6 +64,9 @@
       <action issue="LOG4J2-2447" dev="ggregory" type="update">
         Let the NullAppender default its name to "null".
       </action>
+      <action issue="LOG4J2-2468" dev="ggregory" type="update">
+        Update Jackson from 2.9.6 to 2.9.7.
+      </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
       <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">
