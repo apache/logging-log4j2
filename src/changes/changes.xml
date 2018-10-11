@@ -272,6 +272,9 @@
       <action issue="LOG4J2-2473" dev="ggregory" type="update">
         Update org.eclipse.persistence:javax.persistence from 2.2.0 to 2.2.1.
       </action>
+      <action issue="LOG4J2-2475" dev="ckozak" type="update">
+        Optimize resetting reusable messages when the reusable parameter array is mostly empty.
+      </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
       <action issue="LOG4J2-2391" dev="ckozak" type="update">
@@ -324,6 +327,9 @@
       </action>
       <action issue="LOG4J2-2472" dev="ggregory" type="update">
         Update mongo-java-driver 3 from 3.8.0 to 3.8.2.
+      </action>
+      <action issue="LOG4J2-2475" dev="ckozak" type="update">
+        Optimize resetting reusable messages when the reusable parameter array is mostly empty.
       </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
