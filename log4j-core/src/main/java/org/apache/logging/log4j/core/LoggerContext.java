@@ -662,17 +662,20 @@ public class LoggerContext extends AbstractLifeCycle
      * @param reconfigurable The Configuration that can be reconfigured.
      */
     @Override
-    public synchronized void onChange(final Reconfigurable reconfigurable) {
-        LOGGER.debug("Reconfiguration started for context {} ({})", contextName, this);
-        initApiModule();
-        final Configuration newConfig = reconfigurable.reconfigure();
-        if (newConfig != null) {
-            setConfiguration(newConfig);
-            LOGGER.debug("Reconfiguration completed for {} ({})", contextName, this);
-        } else {
-            LOGGER.debug("Reconfiguration failed for {} ({})", contextName, this);
-        }
-    }
+	public synchronized void onChange(final Reconfigurable reconfigurable) {
+		final long startMillis = System.currentTimeMillis();
+		LOGGER.debug("Reconfiguration started for context {} ({})", contextName, this);
+		initApiModule();
+		final Configuration newConfig = reconfigurable.reconfigure();
+		if (newConfig != null) {
+			setConfiguration(newConfig);
+			LOGGER.debug("Reconfiguration completed for {} ({}) in {} milliseconds.", contextName, this,
+					System.currentTimeMillis() - startMillis);
+		} else {
+			LOGGER.debug("Reconfiguration failed for {} ({}) in {} milliseconds.", contextName, this,
+					System.currentTimeMillis() - startMillis);
+		}
+	}
 
     private void initApiModule() {        
         ThreadContextMapFactory.init(); // Or make public and call ThreadContext.init() which calls ThreadContextMapFactory.init().
