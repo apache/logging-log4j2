@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -81,13 +82,16 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void startupInternal() throws Exception {
-        this.connection = this.connectionSource.getConnection();
-        final DatabaseMetaData metaData = this.connection.getMetaData();
-        this.isBatchSupported = metaData.supportsBatchUpdates();
-        logger().debug("Closing Connection {}", this.connection);
-        Closer.closeSilently(this.connection);
-    }
+	protected void startupInternal() throws Exception {
+		this.connection = this.connectionSource.getConnection();
+		try {
+			final DatabaseMetaData metaData = this.connection.getMetaData();
+			this.isBatchSupported = metaData.supportsBatchUpdates();
+		} finally {
+			logger().debug("Closing Connection {}", this.connection);
+			Closer.closeSilently(this.connection);
+		}
+	}
 
     @Override
     protected boolean shutdownInternal() {
@@ -216,7 +220,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             if (this.connection != null && !this.connection.isClosed()) {
                 if (this.isBatchSupported) {
                     logger().debug("Executing batch PreparedStatement {}", this.statement);
-                    this.statement.executeBatch();
+                    int[] result = this.statement.executeBatch();
+                    logger().debug("Batch result: {}", Arrays.toString(result));
                 }
                 logger().debug("Committing Connection {}", this.connection);
                 this.connection.commit();
@@ -370,8 +375,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 if (Strings.isNotEmpty(mapping.getLiteralValue())) {
                     logger().trace("Adding INSERT VALUES literal for ColumnMapping[{}]: {}={} ", i, mappingName, mapping.getLiteralValue());
                     sb.append(mapping.getLiteralValue());
-                }
-                if (Strings.isNotEmpty(mapping.getParameter())) {
+                } else if (Strings.isNotEmpty(mapping.getParameter())) {
                     logger().trace("Adding INSERT VALUES parameter for ColumnMapping[{}]: {}={} ", i, mappingName, mapping.getParameter());
                     sb.append(mapping.getParameter());
                     columnMappings.add(mapping);

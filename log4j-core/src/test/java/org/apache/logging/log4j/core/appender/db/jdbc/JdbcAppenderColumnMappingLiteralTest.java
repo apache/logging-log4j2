@@ -36,21 +36,21 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-public class JdbcAppenderColumnMappingPatternTest {
+public class JdbcAppenderColumnMappingLiteralTest {
 
 	@Rule
 	public final RuleChain rules;
 	private final JdbcRule jdbcRule;
 
-	public JdbcAppenderColumnMappingPatternTest() {
-		this(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
+	public JdbcAppenderColumnMappingLiteralTest() {
+		this(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_TMPDIR,
 				"CREATE TABLE dsMappingLogEntry (id INTEGER IDENTITY, level VARCHAR(10), logger VARCHAR(255), message VARCHAR(1024), exception CLOB)",
 				"DROP TABLE dsMappingLogEntry"));
 	}
 
-	protected JdbcAppenderColumnMappingPatternTest(final JdbcRule jdbcRule) {
+	protected JdbcAppenderColumnMappingLiteralTest(final JdbcRule jdbcRule) {
 		this.rules = RuleChainFactory.create(jdbcRule, new LoggerContextRule(
-				"org/apache/logging/log4j/core/appender/db/jdbc/log4j2-dm-column-mapping-pattern.xml"));
+				"org/apache/logging/log4j/core/appender/db/jdbc/log4j2-dm-column-mapping-literal.xml"));
 		this.jdbcRule = jdbcRule;
 	}
 
@@ -75,8 +75,7 @@ public class JdbcAppenderColumnMappingPatternTest {
 
 				assertEquals("The level column is not correct (1).", "FATAL", resultSet.getNString("level"));
 				assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
-				assertEquals("The message column is not correct (1).", "Error from data source 02.",
-						resultSet.getString("message"));
+				assertEquals("The message column is not correct (1).", "Hello World!", resultSet.getString("message"));
 				assertEquals("The exception column is not correct (1).", stackTrace,
 						IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
 

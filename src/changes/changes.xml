@@ -79,8 +79,11 @@
       <action issue="LOG4J2-2472" dev="ggregory" type="update">
         Update mongo-java-driver 3 from 3.8.0 to 3.8.2.
       </action>
-      <action issue="LOG4J2-2472" dev="ggregory" type="fix">
+      <action issue="LOG4J2-2413" dev="ggregory" type="fix" due-to="Andres Luuk, Gary Gregory">
         Exceptions are added to all columns when a JDBC Appender's ColumnMapping uses a Pattern.
+      </action>
+      <action issue="LOG4J2-2466" dev="ggregory" type="fix" due-to="Paolo Bonanomi, Gary Gregory">
+        ColumnMapping literal not working.
       </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">

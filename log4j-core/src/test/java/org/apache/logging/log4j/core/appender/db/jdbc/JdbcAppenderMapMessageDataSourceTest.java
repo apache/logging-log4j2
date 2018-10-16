@@ -54,7 +54,7 @@ public class JdbcAppenderMapMessageDataSourceTest {
     private final JdbcRule jdbcRule;
 
     public JdbcAppenderMapMessageDataSourceTest() {
-        this(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE,
+        this(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
         // @formatter:off
                 "CREATE TABLE dsLogEntry (Id INTEGER IDENTITY, ColumnA VARCHAR(255), ColumnB VARCHAR(255))",
                 "DROP TABLE dsLogEntry"));

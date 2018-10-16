@@ -36,7 +36,7 @@ public class PoolingDriverConnectionSourceTest {
         };
         // @formatter:off
         final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING)
+            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
             .setProperties(properties)
             .build();
         openAndClose(source);
@@ -52,7 +52,7 @@ public class PoolingDriverConnectionSourceTest {
         };
         // @formatter:off
         final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING)
+            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
             .setProperties(properties)
             .setPoolName("MyPoolName")
             .build();
@@ -63,7 +63,7 @@ public class PoolingDriverConnectionSourceTest {
     public void testH2UserAndPassword() throws SQLException {
         // @formatter:off
         final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING)
+            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
             .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
             .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
             .build();
@@ -84,7 +84,7 @@ public class PoolingDriverConnectionSourceTest {
     public void testH2UserPasswordAndPoolName() throws SQLException {
         // @formatter:off
         final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING)
+            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
             .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
             .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
             .setPoolName("MyPoolName")

@@ -23,7 +23,7 @@ import org.apache.logging.log4j.junit.JdbcRule;
  */
 public class JdbcAppenderH2DataSourceTest extends AbstractJdbcAppenderDataSourceTest {
     public JdbcAppenderH2DataSourceTest() {
-        super(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE,
+        super(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
                 "CREATE TABLE dsLogEntry ("
                         + "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), "
                         + "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB, anotherDate TIMESTAMP" + ")",
