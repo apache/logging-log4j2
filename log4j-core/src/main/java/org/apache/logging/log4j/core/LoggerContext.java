@@ -490,14 +490,15 @@ public class LoggerContext extends AbstractLifeCycle
         return loggerRegistry.hasLogger(name, messageFactoryClass);
     }
 
-    /**
-     * Returns the current Configuration. The Configuration will be replaced when a reconfigure occurs.
-     *
-     * @return The Configuration.
-     */
-    public Configuration getConfiguration() {
-        return configuration;
-    }
+	/**
+	 * Returns the current Configuration. The Configuration will be replaced when a reconfigure occurs.
+	 *
+	 * @return The current Configuration, never {@code null}, but may be
+	 * {@link org.apache.logging.log4j.core.config.NullConfiguration}.
+	 */
+	public Configuration getConfiguration() {
+		return configuration;
+	}
 
     /**
      * Adds a Filter to the Configuration. Filters that are added through the API will be lost when a reconfigure
