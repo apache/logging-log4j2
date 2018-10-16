@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.junit;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
 
@@ -53,17 +54,13 @@ public class JdbcRule implements TestRule {
 		this.dropTableStatement = dropTableStatement;
 	}
 
-	public ConnectionSource getConnectionSource() {
-		return connectionSource;
-	}
-
 	@Override
 	public org.junit.runners.model.Statement apply(final org.junit.runners.model.Statement base,
 			final Description description) {
 		return new org.junit.runners.model.Statement() {
 			@Override
 			public void evaluate() throws Throwable {
-				try (final Connection connection = connectionSource.getConnection();
+				try (final Connection connection = getConnection();
 						final Statement statement = connection.createStatement()) {
 					try {
 						if (StringUtils.isNotEmpty(createTableStatement)) {
@@ -78,6 +75,15 @@ public class JdbcRule implements TestRule {
 					}
 				}
 			}
+
 		};
+	}
+
+	public Connection getConnection() throws SQLException {
+		return connectionSource.getConnection();
+	}
+
+	public ConnectionSource getConnectionSource() {
+		return connectionSource;
 	}
 }
