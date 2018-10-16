@@ -39,6 +39,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
  * Represents the source for the logging configuration.
  */
 public class ConfigurationSource {
+
     /**
      * ConfigurationSource to use with Configurations that do not require a "real" configuration source.
      */
