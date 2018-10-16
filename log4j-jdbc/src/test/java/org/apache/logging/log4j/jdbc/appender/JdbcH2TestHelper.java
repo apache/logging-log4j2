@@ -25,6 +25,9 @@ import org.apache.logging.log4j.jdbc.appender.ConnectionSource;
 
 public class JdbcH2TestHelper {
 
+    /**
+     * A JDBC connection string for an H2 in-memory database.
+     */
     public static final String CONNECTION_STRING = "jdbc:h2:mem:Log4j";
     public static final String USER_NAME = "sa";
     public static final String PASSWORD = "";
