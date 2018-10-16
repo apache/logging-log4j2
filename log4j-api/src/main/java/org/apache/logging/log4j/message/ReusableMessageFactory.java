@@ -107,7 +107,36 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
      */
     @Override
     public Message newMessage(final String message, final Object... params) {
-        return getParameterized().set(message, params);
+        if (params == null) {
+            return newMessage(message);
+        }
+        switch (params.length) {
+            case 0:
+                return newMessage(message);
+            case 1:
+                return newMessage(message, params[0]);
+            case 2:
+                return newMessage(message, params[0], params[1]);
+            case 3:
+                return newMessage(message, params[0], params[1], params[2]);
+            case 4:
+                return newMessage(message, params[0], params[1], params[2], params[3]);
+            case 5:
+                return newMessage(message, params[0], params[1], params[2], params[3], params[4]);
+            case 6:
+                return newMessage(message, params[0], params[1], params[2], params[3], params[4], params[5]);
+            case 7:
+                return newMessage(message, params[0], params[1], params[2], params[3], params[4], params[5], params[6]);
+            case 8:
+                return newMessage(message, params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7]);
+            case 9:
+                return newMessage(message, params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8]);
+            case 10:
+                return newMessage(message, params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9]);
+            default:
+                // Create a non-reusable message to avoid mutating the input array
+                return new ParameterizedMessage(message, params);
+        }
     }
 
     @Override
