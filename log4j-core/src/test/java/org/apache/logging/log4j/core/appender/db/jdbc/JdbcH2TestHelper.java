@@ -22,6 +22,9 @@ import java.sql.SQLException;
 
 public class JdbcH2TestHelper {
 
+	/**
+	 * A JDBC connection string for an H2 in-memory database.
+	 */
     static final String CONNECTION_STRING = "jdbc:h2:mem:Log4j";
     static final String USER_NAME = "sa";
     static final String PASSWORD = "";
