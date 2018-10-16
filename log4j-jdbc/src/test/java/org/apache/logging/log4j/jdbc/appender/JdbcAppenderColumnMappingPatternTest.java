@@ -42,7 +42,7 @@ public class JdbcAppenderColumnMappingPatternTest {
 	private final JdbcRule jdbcRule;
 
 	public JdbcAppenderColumnMappingPatternTest() {
-		this(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE,
+		this(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
 				"CREATE TABLE dsMappingLogEntry (id INTEGER IDENTITY, level VARCHAR(10), logger VARCHAR(255), message VARCHAR(1024), exception CLOB)",
 				"DROP TABLE dsMappingLogEntry"));
 	}

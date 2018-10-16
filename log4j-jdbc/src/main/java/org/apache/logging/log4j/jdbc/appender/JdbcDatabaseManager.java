@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -71,8 +72,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     private boolean isBatchSupported;
 
     private JdbcDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
-                                final String sqlStatement, final List<ColumnConfig> columnConfigs,
-                                final List<ColumnMapping> columnMappings) {
+            final String sqlStatement, final List<ColumnConfig> columnConfigs,
+            final List<ColumnMapping> columnMappings) {
         super(name, bufferSize);
         this.connectionSource = connectionSource;
         this.sqlStatement = sqlStatement;
@@ -83,10 +84,13 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     @Override
     protected void startupInternal() throws Exception {
         this.connection = this.connectionSource.getConnection();
-        final DatabaseMetaData metaData = this.connection.getMetaData();
-        this.isBatchSupported = metaData.supportsBatchUpdates();
-        logger().debug("Closing Connection {}", this.connection);
-        Closer.closeSilently(this.connection);
+        try {
+            final DatabaseMetaData metaData = this.connection.getMetaData();
+            this.isBatchSupported = metaData.supportsBatchUpdates();
+        } finally {
+            logger().debug("Closing Connection {}", this.connection);
+            Closer.closeSilently(this.connection);
+        }
     }
 
     @Override
@@ -118,7 +122,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     protected void writeInternal(final LogEvent event) {
         writeInternal(event, null);
     }
-    
+
     private void setFields(final MapMessage<?, ?> mapMessage) throws SQLException {
         final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
         final String simpleName = statement.getClass().getName();
@@ -202,8 +206,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                         "No records inserted in database table for log event in JDBC manager.");
             }
         } catch (final SQLException e) {
-            throw new AppenderLoggingException("Failed to insert record for log event in JDBC manager: " +
-                    e.getMessage(), e);
+            throw new AppenderLoggingException(
+                    "Failed to insert record for log event in JDBC manager: " + e.getMessage(), e);
         } finally {
             Closer.closeSilently(reader);
         }
@@ -216,7 +220,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             if (this.connection != null && !this.connection.isClosed()) {
                 if (this.isBatchSupported) {
                     logger().debug("Executing batch PreparedStatement {}", this.statement);
-                    this.statement.executeBatch();
+                    int[] result = this.statement.executeBatch();
+                    logger().debug("Batch result: {}", Arrays.toString(result));
                 }
                 logger().debug("Committing Connection {}", this.connection);
                 this.connection.commit();
@@ -250,69 +255,82 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     /**
      * Creates a JDBC manager for use within the {@link JdbcAppender}, or returns a suitable one if it already exists.
      *
-     * @param name The name of the manager, which should include connection details and hashed passwords where possible.
-     * @param bufferSize The size of the log event buffer.
-     * @param connectionSource The source for connections to the database.
-     * @param tableName The name of the database table to insert log events into.
-     * @param columnConfigs Configuration information about the log table columns.
+     * @param name
+     *            The name of the manager, which should include connection details and hashed passwords where possible.
+     * @param bufferSize
+     *            The size of the log event buffer.
+     * @param connectionSource
+     *            The source for connections to the database.
+     * @param tableName
+     *            The name of the database table to insert log events into.
+     * @param columnConfigs
+     *            Configuration information about the log table columns.
      * @return a new or existing JDBC manager as applicable.
-     * @deprecated use {@link #getManager(String, int, Layout, ConnectionSource, String, ColumnConfig[], ColumnMapping[])}
+     * @deprecated use
+     *             {@link #getManager(String, int, Layout, ConnectionSource, String, ColumnConfig[], ColumnMapping[])}
      */
     @Deprecated
     public static JdbcDatabaseManager getJDBCDatabaseManager(final String name, final int bufferSize,
-                                                             final ConnectionSource connectionSource,
-                                                             final String tableName,
-                                                             final ColumnConfig[] columnConfigs) {
+            final ConnectionSource connectionSource, final String tableName, final ColumnConfig[] columnConfigs) {
 
         return getManager(name,
-            new FactoryData(bufferSize, null, connectionSource, tableName, columnConfigs, new ColumnMapping[0]),
-            getFactory());
+                new FactoryData(bufferSize, null, connectionSource, tableName, columnConfigs, new ColumnMapping[0]),
+                getFactory());
     }
 
     /**
      * Creates a JDBC manager for use within the {@link JdbcAppender}, or returns a suitable one if it already exists.
      *
-     * @param name The name of the manager, which should include connection details and hashed passwords where possible.
-     * @param bufferSize The size of the log event buffer.
-     * @param connectionSource The source for connections to the database.
-     * @param tableName The name of the database table to insert log events into.
-     * @param columnConfigs Configuration information about the log table columns.
-     * @param columnMappings column mapping configuration (including type conversion).
+     * @param name
+     *            The name of the manager, which should include connection details and hashed passwords where possible.
+     * @param bufferSize
+     *            The size of the log event buffer.
+     * @param connectionSource
+     *            The source for connections to the database.
+     * @param tableName
+     *            The name of the database table to insert log events into.
+     * @param columnConfigs
+     *            Configuration information about the log table columns.
+     * @param columnMappings
+     *            column mapping configuration (including type conversion).
      * @return a new or existing JDBC manager as applicable.
-     * @deprecated use {@link #getManager(String, int, Layout, ConnectionSource, String, ColumnConfig[], ColumnMapping[])}
+     * @deprecated use
+     *             {@link #getManager(String, int, Layout, ConnectionSource, String, ColumnConfig[], ColumnMapping[])}
      */
     @Deprecated
-    public static JdbcDatabaseManager getManager(final String name,
-                                                 final int bufferSize,
-                                                 final ConnectionSource connectionSource,
-                                                 final String tableName,
-                                                 final ColumnConfig[] columnConfigs,
-                                                 final ColumnMapping[] columnMappings) {
-        return getManager(name, new FactoryData(bufferSize, null, connectionSource, tableName, columnConfigs, columnMappings),
-            getFactory());
+    public static JdbcDatabaseManager getManager(final String name, final int bufferSize,
+            final ConnectionSource connectionSource, final String tableName, final ColumnConfig[] columnConfigs,
+            final ColumnMapping[] columnMappings) {
+        return getManager(name,
+                new FactoryData(bufferSize, null, connectionSource, tableName, columnConfigs, columnMappings),
+                getFactory());
     }
 
     /**
      * Creates a JDBC manager for use within the {@link JdbcAppender}, or returns a suitable one if it already exists.
      *
-     * @param name The name of the manager, which should include connection details and hashed passwords where possible.
-     * @param bufferSize The size of the log event buffer.
-     * @param layout The Appender-level layout
-     * @param connectionSource The source for connections to the database.
-     * @param tableName The name of the database table to insert log events into.
-     * @param columnConfigs Configuration information about the log table columns.
-     * @param columnMappings column mapping configuration (including type conversion).
+     * @param name
+     *            The name of the manager, which should include connection details and hashed passwords where possible.
+     * @param bufferSize
+     *            The size of the log event buffer.
+     * @param layout
+     *            The Appender-level layout
+     * @param connectionSource
+     *            The source for connections to the database.
+     * @param tableName
+     *            The name of the database table to insert log events into.
+     * @param columnConfigs
+     *            Configuration information about the log table columns.
+     * @param columnMappings
+     *            column mapping configuration (including type conversion).
      * @return a new or existing JDBC manager as applicable.
      */
-    public static JdbcDatabaseManager getManager(final String name,
-                                                 final int bufferSize,
-                                                 final Layout<? extends Serializable> layout,
-                                                 final ConnectionSource connectionSource,
-                                                 final String tableName,
-                                                 final ColumnConfig[] columnConfigs,
-                                                 final ColumnMapping[] columnMappings) {
-        return getManager(name, new FactoryData(bufferSize, layout, connectionSource, tableName, columnConfigs, columnMappings),
-            getFactory());
+    public static JdbcDatabaseManager getManager(final String name, final int bufferSize,
+            final Layout<? extends Serializable> layout, final ConnectionSource connectionSource,
+            final String tableName, final ColumnConfig[] columnConfigs, final ColumnMapping[] columnMappings) {
+        return getManager(name,
+                new FactoryData(bufferSize, layout, connectionSource, tableName, columnConfigs, columnMappings),
+                getFactory());
     }
 
     private static JdbcDatabaseManagerFactory getFactory() {
@@ -343,7 +361,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * Creates managers.
      */
     private static final class JdbcDatabaseManagerFactory implements ManagerFactory<JdbcDatabaseManager, FactoryData> {
-        
+
         private static final char PARAMETER_MARKER = '?';
 
         @Override
@@ -353,7 +371,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             // both mappings follow the same exact pattern for the prepared statement
             int i = 1;
             for (final ColumnMapping mapping : data.columnMappings) {
-                final  String mappingName = mapping.getName();
+                final String mappingName = mapping.getName();
                 logger().trace("Adding INSERT ColumnMapping[{}]: {}={} ", i++, mappingName, mapping);
                 sb.append(mappingName).append(',');
             }
@@ -368,15 +386,17 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             for (final ColumnMapping mapping : data.columnMappings) {
                 final String mappingName = mapping.getName();
                 if (Strings.isNotEmpty(mapping.getLiteralValue())) {
-                    logger().trace("Adding INSERT VALUES literal for ColumnMapping[{}]: {}={} ", i, mappingName, mapping.getLiteralValue());
+                    logger().trace("Adding INSERT VALUES literal for ColumnMapping[{}]: {}={} ", i, mappingName,
+                            mapping.getLiteralValue());
                     sb.append(mapping.getLiteralValue());
-                }
-                if (Strings.isNotEmpty(mapping.getParameter())) {
-                    logger().trace("Adding INSERT VALUES parameter for ColumnMapping[{}]: {}={} ", i, mappingName, mapping.getParameter());
+                } else if (Strings.isNotEmpty(mapping.getParameter())) {
+                    logger().trace("Adding INSERT VALUES parameter for ColumnMapping[{}]: {}={} ", i, mappingName,
+                            mapping.getParameter());
                     sb.append(mapping.getParameter());
                     columnMappings.add(mapping);
                 } else {
-                    logger().trace("Adding INSERT VALUES parameter marker for ColumnMapping[{}]: {}={} ", i, mappingName, PARAMETER_MARKER);
+                    logger().trace("Adding INSERT VALUES parameter marker for ColumnMapping[{}]: {}={} ", i,
+                            mappingName, PARAMETER_MARKER);
                     sb.append(PARAMETER_MARKER);
                     columnMappings.add(mapping);
                 }
@@ -398,7 +418,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             final String sqlStatement = sb.toString();
 
             return new JdbcDatabaseManager(name, data.getBufferSize(), data.connectionSource, sqlStatement,
-                columnConfigs, columnMappings);
+                    columnConfigs, columnMappings);
         }
     }
 
