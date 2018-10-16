@@ -278,6 +278,9 @@
       <action issue="LOG4J2-2466" dev="ggregory" type="fix" due-to="Paolo Bonanomi, Gary Gregory">
         ColumnMapping literal not working.
       </action>
+      <action issue="LOG4J2-2478" dev="ckozak" type="fix" due-to="Diego Elias Costa">
+        AbstractStringLayoutStringEncodingBenchmark returns the computed variables on each benchmark to avoid DCE.
+      </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
       <action issue="LOG4J2-2391" dev="ckozak" type="update">
@@ -336,6 +339,9 @@
       </action>
       <action issue="LOG4J2-2466" dev="ggregory" type="fix" due-to="Paolo Bonanomi, Gary Gregory">
         ColumnMapping literal not working.
+      </action>
+      <action issue="LOG4J2-2478" dev="ckozak" type="fix" due-to="Diego Elias Costa">
+        AbstractStringLayoutStringEncodingBenchmark returns the computed variables on each benchmark to avoid DCE.
       </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
