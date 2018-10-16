@@ -135,8 +135,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
             reusable.formatTo(getMessageTextForWriting());
             messageFormat = reusable.getFormat();
             if (parameters != null) {
-                parameters = reusable.swapParameters(parameters);
+                // Must read the parameter count first, swapParameters mutates the target message
                 parameterCount = reusable.getParameterCount();
+                parameters = reusable.swapParameters(parameters);
             }
         } else {
             this.message = InternalAsyncUtil.makeMessageImmutable(msg);
@@ -271,6 +272,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     public Object[] swapParameters(final Object[] emptyReplacement) {
         final Object[] result = this.parameters;
         this.parameters = emptyReplacement;
+        this.parameterCount = 0;
         return result;
     }
 
@@ -421,7 +423,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
 
         if (parameters != null) {
-            for (int i = 0; i < parameters.length; i++) {
+            for (int i = 0; i < parameterCount; i++) {
                 parameters[i] = null;
             }
         }

@@ -148,7 +148,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
 
         if (parameters != null) {
-            for (int i = 0; i < parameters.length; i++) {
+            for (int i = 0; i < parameterCount; i++) {
                 parameters[i] = null;
             }
         }
@@ -215,8 +215,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
             reusable.formatTo(getMessageTextForWriting());
             this.messageFormat = msg.getFormat();
             if (parameters != null) {
-                parameters = reusable.swapParameters(parameters);
+                // Must read the parameter count first, swapParameters mutates the target message
                 parameterCount = reusable.getParameterCount();
+                parameters = reusable.swapParameters(parameters);
             }
         } else {
             this.message = InternalAsyncUtil.makeMessageImmutable(msg);
@@ -292,6 +293,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     public Object[] swapParameters(final Object[] emptyReplacement) {
         final Object[] result = this.parameters;
         this.parameters = emptyReplacement;
+        this.parameterCount = 0;
         return result;
     }
 
