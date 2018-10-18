@@ -86,7 +86,7 @@ public class LockingReliabilityStrategy implements ReliabilityStrategy {
         LoggerConfig result = this.loggerConfig;
         if (!beforeLogEvent()) {
             result = next.get();
-            return result.getReliabilityStrategy().getActiveLoggerConfig(next);
+            return result == this.loggerConfig ? result : result.getReliabilityStrategy().getActiveLoggerConfig(next);
         }
         return result;
     }
