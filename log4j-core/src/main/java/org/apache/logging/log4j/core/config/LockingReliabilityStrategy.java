@@ -41,7 +41,7 @@ public class LockingReliabilityStrategy implements ReliabilityStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
      * java.lang.String, java.lang.String, org.apache.logging.log4j.Marker, org.apache.logging.log4j.Level,
      * org.apache.logging.log4j.message.Message, java.lang.Throwable)
@@ -60,7 +60,7 @@ public class LockingReliabilityStrategy implements ReliabilityStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
      * org.apache.logging.log4j.core.LogEvent)
      */
@@ -76,7 +76,7 @@ public class LockingReliabilityStrategy implements ReliabilityStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.logging.log4j.core.config.ReliabilityStrategy#beforeLogEvent(org.apache.logging.log4j.core.config.
      * LoggerConfig, org.apache.logging.log4j.util.Supplier)
@@ -86,7 +86,7 @@ public class LockingReliabilityStrategy implements ReliabilityStrategy {
         LoggerConfig result = this.loggerConfig;
         if (!beforeLogEvent()) {
             result = next.get();
-            return result.getReliabilityStrategy().getActiveLoggerConfig(next);
+            return result == this.loggerConfig ? result : result.getReliabilityStrategy().getActiveLoggerConfig(next);
         }
         return result;
     }
@@ -107,7 +107,7 @@ public class LockingReliabilityStrategy implements ReliabilityStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#beforeStopAppenders()
      */
     @Override
@@ -122,7 +122,7 @@ public class LockingReliabilityStrategy implements ReliabilityStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.logging.log4j.core.config.ReliabilityStrategy#beforeStopConfiguration(org.apache.logging.log4j.core
      * .config.Configuration)
