@@ -94,8 +94,7 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
         LoggerConfig result = this.loggerConfig;
         if (!beforeLogEvent()) {
             result = next.get();
-            //return result == this.loggerConfig ? result : result.getReliabilityStrategy().getActiveLoggerConfig(next);
-            return result.getReliabilityStrategy().getActiveLoggerConfig(next);
+            return result == this.loggerConfig ? result : result.getReliabilityStrategy().getActiveLoggerConfig(next);
         }
         return result;
     }
