@@ -91,6 +91,9 @@
       <action issue="LOG4J2-2134" dev="ggregory" type="fix" due-to="David del Amo Mateos, Gary Gregory">
       	StackOverflowError at AwaitCompletionReliabilityStrategy.
       </action>
+      <action issue="LOG4J2-2481" dev="ggregory" type="fix">
+      	Avoid NullPointerExceptions in org.apache.logging.log4j.core.config.AbstractConfiguration for null arguments.
+      </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
       <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">

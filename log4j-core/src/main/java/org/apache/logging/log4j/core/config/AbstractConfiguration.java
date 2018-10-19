@@ -646,7 +646,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Appender> T getAppender(final String appenderName) {
-        return (T) appenders.get(appenderName);
+        return appenderName != null ? (T) appenders.get(appenderName) : null;
     }
 
     /**
@@ -666,7 +666,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public void addAppender(final Appender appender) {
-        appenders.putIfAbsent(appender.getName(), appender);
+        if (appender != null) {
+            appenders.putIfAbsent(appender.getName(), appender);
+        }
     }
 
     @Override
@@ -707,6 +709,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public synchronized void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger,
             final Appender appender) {
+        if (appender == null || logger == null) {
+            return;
+        }
         final String loggerName = logger.getName();
         appenders.putIfAbsent(appender.getName(), appender);
         final LoggerConfig lc = getLoggerConfig(loggerName);
@@ -782,7 +787,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         for (final LoggerConfig logger : loggerConfigs.values()) {
             logger.removeAppender(appenderName);
         }
-        final Appender app = appenders.remove(appenderName);
+        final Appender app = appenderName != null ? appenders.remove(appenderName) : null;
 
         if (app != null) {
             app.stop();
