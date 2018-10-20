@@ -304,15 +304,18 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             this.fileGroup = fileGroup;
         }
 
-        public TriggeringPolicy getTriggeringPolicy()
-        {
+        public String getPattern() {
+            return pattern;
+        }
+
+        public TriggeringPolicy getTriggeringPolicy() {
             return this.policy;
         }
 
-        public RolloverStrategy getRolloverStrategy()
-        {
+        public RolloverStrategy getRolloverStrategy() {
             return this.strategy;
         }
+
     }
 
     @Override
@@ -320,5 +323,6 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         final FactoryData factoryData = (FactoryData) data;
         setRolloverStrategy(factoryData.getRolloverStrategy());
         setTriggeringPolicy(factoryData.getTriggeringPolicy());
+        setPatternProcessor(new PatternProcessor(factoryData.getPattern(), getPatternProcessor()));
     }
 }
