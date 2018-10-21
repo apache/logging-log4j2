@@ -23,6 +23,7 @@ import java.net.URL;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Load resources (or images) from various sources.
@@ -238,8 +239,8 @@ public final class Loader {
     public static Class<?> loadClass(final String className, final ClassLoader loader)
             throws ClassNotFoundException {
         return loader != null ? loader.loadClass(className) : null;
-    }    
-    
+    }
+
     /**
      * Load a Class in the {@code java.*} namespace by name. Useful for peculiar scenarios typically involving
      * Google App Engine.
@@ -268,13 +269,20 @@ public final class Loader {
      * @throws NoSuchMethodException if there isn't a no-args constructor on the class
      * @throws InvocationTargetException if there was an exception whilst constructing the class
      */
-    public static Object newInstanceOf(final String className)
-            throws ClassNotFoundException,
-                   IllegalAccessException,
-                   InstantiationException,
-                   NoSuchMethodException,
-                   InvocationTargetException {
-        return LoaderUtil.newInstanceOf(className);
+    @SuppressWarnings("unchecked")
+    public static <T> T newInstanceOf(final String className)
+        throws ClassNotFoundException,
+        IllegalAccessException,
+        InstantiationException,
+        NoSuchMethodException,
+        InvocationTargetException {
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClassLoader());
+            return LoaderUtil.newInstanceOf(className);
+        } finally {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+        }
     }
 
     /**
@@ -292,12 +300,45 @@ public final class Loader {
      * @throws ClassCastException if the constructed object isn't type compatible with {@code T}
      */
     public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz)
-            throws ClassNotFoundException,
-                   NoSuchMethodException,
-                   IllegalAccessException,
-                   InvocationTargetException,
-                   InstantiationException {
-        return LoaderUtil.newCheckedInstanceOf(className, clazz);
+        throws ClassNotFoundException,
+        NoSuchMethodException,
+        IllegalAccessException,
+        InvocationTargetException,
+        InstantiationException {
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClassLoader());
+            return LoaderUtil.newCheckedInstanceOf(className, clazz);
+        } finally {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+        }
+    }
+
+    /**
+     * Loads and instantiates a class given by a property name.
+     *
+     * @param propertyName The property name to look up a class name for.
+     * @param clazz        The class to cast it to.
+     * @param <T>          The type to cast it to.
+     * @return new instance of the class given in the property or {@code null} if the property was unset.
+     * @throws ClassNotFoundException    if the class isn't available to the usual ClassLoaders
+     * @throws IllegalAccessException    if the class can't be instantiated through a public constructor
+     * @throws InstantiationException    if there was an exception whilst instantiating the class
+     * @throws NoSuchMethodException     if there isn't a no-args constructor on the class
+     * @throws InvocationTargetException if there was an exception whilst constructing the class
+     * @throws ClassCastException        if the constructed object isn't type compatible with {@code T}
+     */
+    public static <T> T newCheckedInstanceOfProperty(final String propertyName, final Class<T> clazz)
+        throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
+        IllegalAccessException {
+        final String className = PropertiesUtil.getProperties().getStringProperty(propertyName);
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClassLoader());
+            return LoaderUtil.newCheckedInstanceOfProperty(propertyName, clazz);
+        } finally {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+        }
     }
 
     /**
@@ -307,11 +348,35 @@ public final class Loader {
      * @return {@code true} if the class could be found or {@code false} otherwise.
      */
     public static boolean isClassAvailable(final String className) {
-        return LoaderUtil.isClassAvailable(className);
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClassLoader());
+            return LoaderUtil.isClassAvailable(className);
+        } finally {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+        }
     }
 
     public static boolean isJansiAvailable() {
         return isClassAvailable("org.fusesource.jansi.AnsiRenderer");
     }
 
+    /**
+     * Loads a class by name. This method respects the {@link #IGNORE_TCCL_PROPERTY} Log4j property. If this property is
+     * specified and set to anything besides {@code false}, then the default ClassLoader will be used.
+     *
+     * @param className The class name.
+     * @return the Class for the given name.
+     * @throws ClassNotFoundException if the specified class name could not be found
+     */
+    public static Class<?> loadClass(final String className) throws ClassNotFoundException {
+
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClassLoader());
+            return LoaderUtil.loadClass(className);
+        } finally {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+        }
+    }
 }

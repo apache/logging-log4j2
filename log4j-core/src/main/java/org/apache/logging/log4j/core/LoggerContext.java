@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -50,7 +51,6 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 
@@ -65,7 +65,7 @@ public class LoggerContext extends AbstractLifeCycle
     static {
         try {
             // LOG4J2-1642 preload ExecutorServices as it is used in shutdown hook
-            LoaderUtil.loadClass(ExecutorServices.class.getName());
+            Loader.loadClass(ExecutorServices.class.getName());
         } catch (final Exception e) {
             LOGGER.error("Failed to preload ExecutorServices class.", e);
         }
@@ -678,7 +678,7 @@ public class LoggerContext extends AbstractLifeCycle
 		}
 	}
 
-    private void initApiModule() {        
+    private void initApiModule() {
         ThreadContextMapFactory.init(); // Or make public and call ThreadContext.init() which calls ThreadContextMapFactory.init().
     }
 
