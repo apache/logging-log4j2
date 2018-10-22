@@ -279,9 +279,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
                 threadLocalMutableInstant.set(result);
             }
             return result;
-        } else {
-            return new MutableInstant();
         }
+        return new MutableInstant();
     }
 
     public void format(final Instant instant, final StringBuilder output) {
