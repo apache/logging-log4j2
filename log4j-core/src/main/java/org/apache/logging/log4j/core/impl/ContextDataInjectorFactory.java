@@ -19,11 +19,11 @@ package org.apache.logging.log4j.core.impl;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
@@ -67,7 +67,7 @@ public class ContextDataInjectorFactory {
             return createDefaultInjector();
         }
         try {
-            final Class<? extends ContextDataInjector> cls = LoaderUtil.loadClass(className).asSubclass(
+            final Class<? extends ContextDataInjector> cls = Loader.loadClass(className).asSubclass(
                     ContextDataInjector.class);
             return cls.newInstance();
         } catch (final Exception dynamicFailed) {

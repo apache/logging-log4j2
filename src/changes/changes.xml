@@ -97,6 +97,9 @@
       <action issue="LOG4J2-2457" dev="ggregory" type="fix" due-to="Heiko Schwanke, Gary Gregory">
       	RollingRandomAccessFileManager ignores new file patterns from programmatic reconfiguration.
       </action>
+      <action issue="LOG4J2-2482" dev="ggregory" type="fix" due-to="Rob Gansevles">
+        BasicContextSelector cannot be used in a OSGI application.
+      </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
       <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">

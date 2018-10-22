@@ -23,12 +23,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import com.lmax.disruptor.*;
+import com.lmax.disruptor.BlockingWaitStrategy;
+import com.lmax.disruptor.BusySpinWaitStrategy;
+import com.lmax.disruptor.ExceptionHandler;
+import com.lmax.disruptor.SleepingWaitStrategy;
+import com.lmax.disruptor.TimeoutBlockingWaitStrategy;
+import com.lmax.disruptor.WaitStrategy;
+import com.lmax.disruptor.YieldingWaitStrategy;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -101,7 +107,7 @@ final class DisruptorUtil {
         try {
             @SuppressWarnings("unchecked")
             final Class<? extends ExceptionHandler<RingBufferLogEvent>> klass =
-                (Class<? extends ExceptionHandler<RingBufferLogEvent>>) LoaderUtil.loadClass(cls);
+                (Class<? extends ExceptionHandler<RingBufferLogEvent>>) Loader.loadClass(cls);
             return klass.newInstance();
         } catch (final Exception ignored) {
             LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: error creating {}: ", cls, ignored);
@@ -117,7 +123,7 @@ final class DisruptorUtil {
         try {
             @SuppressWarnings("unchecked")
             final Class<? extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>> klass =
-                    (Class<? extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>>) LoaderUtil.loadClass(cls);
+                    (Class<? extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>>) Loader.loadClass(cls);
             return klass.newInstance();
         } catch (final Exception ignored) {
             LOGGER.debug("Invalid AsyncLoggerConfig.ExceptionHandler value: error creating {}: ", cls, ignored);

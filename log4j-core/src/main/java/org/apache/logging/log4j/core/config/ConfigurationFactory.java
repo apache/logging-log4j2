@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -173,7 +174,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     private static void addFactory(final Collection<ConfigurationFactory> list, final String factoryClass) {
         try {
-            addFactory(list, LoaderUtil.loadClass(factoryClass).asSubclass(ConfigurationFactory.class));
+            addFactory(list, Loader.loadClass(factoryClass).asSubclass(ConfigurationFactory.class));
         } catch (final Exception ex) {
             LOGGER.error("Unable to load class {}", factoryClass, ex);
         }

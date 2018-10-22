@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -81,7 +81,7 @@ public class AsyncQueueFullPolicyFactory {
 
     private static AsyncQueueFullPolicy createCustomRouter(final String router) {
         try {
-            final Class<? extends AsyncQueueFullPolicy> cls = LoaderUtil.loadClass(router).asSubclass(AsyncQueueFullPolicy.class);
+            final Class<? extends AsyncQueueFullPolicy> cls = Loader.loadClass(router).asSubclass(AsyncQueueFullPolicy.class);
             LOGGER.debug("Creating custom AsyncQueueFullPolicy '{}'", router);
             return cls.newInstance();
         } catch (final Exception ex) {

@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.DefaultShutdownCallbackRegistry;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -95,7 +96,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
 
     private static ContextSelector createContextSelector() {
         try {
-            final ContextSelector selector = LoaderUtil.newCheckedInstanceOfProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+            final ContextSelector selector = Loader.newCheckedInstanceOfProperty(Constants.LOG4J_CONTEXT_SELECTOR,
                 ContextSelector.class);
             if (selector != null) {
                 return selector;
@@ -108,7 +109,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
 
     private static ShutdownCallbackRegistry createShutdownCallbackRegistry() {
         try {
-            final ShutdownCallbackRegistry registry = LoaderUtil.newCheckedInstanceOfProperty(
+            final ShutdownCallbackRegistry registry = Loader.newCheckedInstanceOfProperty(
                 ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY, ShutdownCallbackRegistry.class
             );
             if (registry != null) {
