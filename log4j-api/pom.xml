@@ -222,9 +222,6 @@
             <Export-Package>org.apache.logging.log4j.*</Export-Package>
             <Import-Package>
               sun.reflect;resolution:=optional,
-              org.apache.logging.log4j.core.osgi;resolution:=optional,
-              org.apache.logging.log4j.core.util;resolution:=optional,
-              org.apache.logging.log4j.core.async;resolution:=optional,
               *
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>

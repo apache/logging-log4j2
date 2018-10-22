@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.FileWatcher;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -68,7 +69,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
         final String mergeStrategyClassName = PropertiesUtil.getProperties().getStringProperty(MERGE_STRATEGY_PROPERTY,
                 DefaultMergeStrategy.class.getName());
         try {
-            mergeStrategy = LoaderUtil.newInstanceOf(mergeStrategyClassName);
+            mergeStrategy = Loader.newInstanceOf(mergeStrategyClassName);
         } catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException | InvocationTargetException |
                 InstantiationException ex) {
             mergeStrategy = new DefaultMergeStrategy();

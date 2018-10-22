@@ -197,7 +197,7 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
      * Tests LOG4J2-920.
      */
     @Test
-    public void testMissingImportOfCoreOsgiPackage() throws BundleException, ReflectiveOperationException {
+    public void testLoadingOfConfigurableCoreClasses() throws BundleException, ReflectiveOperationException {
 
         final Bundle api = getApiBundle();
         final Bundle core = getCoreBundle();
@@ -214,10 +214,9 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
 
         setupStream(api, bakStream);
 
-        final boolean result = baos.toString().contains(
-            "ERROR StatusLogger Unable to create context org.apache.logging.log4j.core.osgi.BundleContextSelector");
-        Assert.assertFalse(
-            "org.apache.logging.log4j.core.osgi;resolution:=optional is missing in Import-Package in the POM", result);
+        // org.apache.logging.log4j.core.osgi.BundleContextSelector cannot be found by org.apache.logging.log4j.api
+        final boolean result = baos.toString().contains("BundleContextSelector cannot be found");
+        Assert.assertFalse("Core class BundleContextSelector cannot be loaded in OSGI setup", result);
 
         stop(api, core, dummy);
         uninstall(api, core, dummy);

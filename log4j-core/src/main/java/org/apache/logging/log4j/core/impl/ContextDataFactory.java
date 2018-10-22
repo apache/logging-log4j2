@@ -24,8 +24,8 @@ import java.util.Map.Entry;
 
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.util.IndexedStringMap;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -65,7 +65,7 @@ public class ContextDataFactory {
             return null;
         }
         try {
-            return LoaderUtil.loadClass(className).asSubclass(IndexedStringMap.class);
+            return Loader.loadClass(className).asSubclass(IndexedStringMap.class);
         } catch (final Exception any) {
             return null;
         }
