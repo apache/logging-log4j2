@@ -216,7 +216,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         // if we get here, options is a non-null array with at least one element (first of which non-null)
         Objects.requireNonNull(options);
         if (options.length == 0) {
-            throw new IllegalArgumentException("options array must have at least one element");
+            throw new IllegalArgumentException("Options array must have at least one element");
         }
         Objects.requireNonNull(options[0]);
         final String patternOption = options[0];
