@@ -4,12 +4,17 @@ Configuration:
 
   Appenders:
     List:
-      name: List
-      PatternLayout:
-        pattern: '%sn'
+      - name: List
+        PatternLayout:
+          pattern: '%sn'
+
+      - name: Padded
+        PatternLayout:
+          pattern: '%03sn'
 
   Loggers:
     Root:
       level: INFO
       AppenderRef:
-        ref: List
+        - ref: List
+        - ref: Padded
