@@ -2546,7 +2546,10 @@ file. The format of the pattern is dependent on the RolloverPolicy that
 is used. The DefaultRolloverPolicy will accept both a date/time pattern
 compatible with
 https://download.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`]
-and/or a %i which represents an integer counter. The pattern also
+and/or a %i which represents an integer counter. The integer counter
+allows specifying a padding, like %3i for space-padding the counter to
+3 digits or (usually more useful) %03i for zero-padding the counter to
+3 digits. The pattern also
 supports interpolation at runtime so any of the Lookups (such as the
 link:./lookups.html#DateLookup[DateLookup]) can be included in the
 pattern.
