@@ -399,7 +399,7 @@ advertise individual FileAppender or SocketAppender configurations. The
 only Advertiser plugin provided is "multicastdns".
 
 |dest
-|Either "err", which will send output to stderr, or a file path or URL.
+|Either "err" for stderr, "out" for stdout, a file path, or a URL.
 
 |monitorInterval
 |The minimum amount of time, in seconds, that must
