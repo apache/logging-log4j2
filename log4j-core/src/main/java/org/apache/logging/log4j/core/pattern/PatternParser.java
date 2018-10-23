@@ -396,9 +396,15 @@ public final class PatternParser {
                 currentLiteral.append(c);
 
                 switch (c) {
+                case '0':
+                    // a '0' directly after the % sign indicates zero-padding
+                    formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
+                            formattingInfo.getMaxLength(), formattingInfo.isLeftTruncate(), true);
+                    break;
+
                 case '-':
                     formattingInfo = new FormattingInfo(true, formattingInfo.getMinLength(),
-                            formattingInfo.getMaxLength(), formattingInfo.isLeftTruncate());
+                            formattingInfo.getMaxLength(), formattingInfo.isLeftTruncate(), formattingInfo.isZeroPad());
                     break;
 
                 case '.':
@@ -409,7 +415,7 @@ public final class PatternParser {
 
                     if (c >= '0' && c <= '9') {
                         formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(), c - '0',
-                                formattingInfo.getMaxLength(), formattingInfo.isLeftTruncate());
+                                formattingInfo.getMaxLength(), formattingInfo.isLeftTruncate(), formattingInfo.isZeroPad());
                         state = ParserState.MIN_STATE;
                     } else {
                         i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo, converterRules,
@@ -430,7 +436,7 @@ public final class PatternParser {
                 if (c >= '0' && c <= '9') {
                     // Multiply the existing value and add the value of the number just encountered.
                     formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(), formattingInfo.getMinLength()
-                            * DECIMAL + c - '0', formattingInfo.getMaxLength(), formattingInfo.isLeftTruncate());
+                            * DECIMAL + c - '0', formattingInfo.getMaxLength(), formattingInfo.isLeftTruncate(), formattingInfo.isZeroPad());
                 } else if (c == '.') {
                     state = ParserState.DOT_STATE;
                 } else {
@@ -448,14 +454,14 @@ public final class PatternParser {
                 switch (c) {
                 case '-':
                     formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
-                            formattingInfo.getMaxLength(),false);
+                            formattingInfo.getMaxLength(),false, formattingInfo.isZeroPad());
                     break;
 
                 default:
 
 	                if (c >= '0' && c <= '9') {
 	                    formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
-	                            c - '0', formattingInfo.isLeftTruncate());
+	                            c - '0', formattingInfo.isLeftTruncate(), formattingInfo.isZeroPad());
 	                    state = ParserState.MAX_STATE;
 	                } else {
 	                    LOGGER.error("Error occurred in position " + i + ".\n Was expecting digit, instead got char \"" + c
@@ -473,7 +479,7 @@ public final class PatternParser {
                 if (c >= '0' && c <= '9') {
                     // Multiply the existing value and add the value of the number just encountered.
                     formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
-                            formattingInfo.getMaxLength() * DECIMAL + c - '0', formattingInfo.isLeftTruncate());
+                            formattingInfo.getMaxLength() * DECIMAL + c - '0', formattingInfo.isLeftTruncate(), formattingInfo.isZeroPad());
                 } else {
                     i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo, converterRules,
                             patternConverters, formattingInfos, disableAnsi, noConsoleNoAnsi, convertBackslashes);
