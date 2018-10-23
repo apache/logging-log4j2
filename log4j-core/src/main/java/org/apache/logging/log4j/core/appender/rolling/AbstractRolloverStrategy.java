@@ -46,6 +46,8 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
+    public static final Pattern PATTERN_COUNTER= Pattern.compile(".*%((?<ZEROPAD>0)?(?<PADDING>\\d+))?i.*");
+
     protected final StrSubstitutor strSubstitutor;
 
     protected AbstractRolloverStrategy(final StrSubstitutor strSubstitutor) {
@@ -105,7 +107,7 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         } else {
             parent.mkdirs();
         }
-        if (!logfilePattern.contains("%i")) {
+        if (!PATTERN_COUNTER.matcher(logfilePattern).matches()) {
             return eligibleFiles;
         }
         final Path dir = parent.toPath();
