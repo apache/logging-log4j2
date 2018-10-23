@@ -117,6 +117,10 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         }
     }
 
+    public String getSqlStatement() {
+        return sqlStatement;
+    }
+
     @Deprecated
     @Override
     protected void writeInternal(final LogEvent event) {
