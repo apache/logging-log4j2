@@ -164,7 +164,7 @@ public class FileManager extends OutputStreamManager {
      * @param bufferSize buffer size for buffered IO
      * @param filePermissions File permissions
      * @param fileOwner File owner
-     * @param fileOwner File group
+     * @param fileGroup File group
      * @param configuration The configuration.
      * @return A FileManager for the File.
      */
