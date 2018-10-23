@@ -384,7 +384,7 @@ public class Bar {
               </tr>
               <tr>
                 <td>dest</td>
-                <td>Either "err", which will send output to stderr, or a file path or URL.</td>
+                <td>Either "err" for stderr, "out" for stdout, a file path, or a URL.</td>
               </tr>
 
               <tr>
