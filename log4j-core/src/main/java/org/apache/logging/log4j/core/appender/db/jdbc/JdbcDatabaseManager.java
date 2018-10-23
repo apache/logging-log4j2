@@ -116,7 +116,11 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                     "Cannot write logging event or flush buffer; JDBC manager cannot connect to the database.", e);
         }
     }
-
+    
+    public String getSqlStatement() {
+        return sqlStatement;
+    }
+    
     @Deprecated
     @Override
     protected void writeInternal(final LogEvent event) {
