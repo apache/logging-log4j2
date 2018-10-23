@@ -1509,7 +1509,8 @@ minimum width is reached. The default is to pad on the left (right
 justify) but you can specify right padding with the left justification
 flag. The padding character is space. If the data item is larger than
 the minimum field width, the field is expanded to accommodate the data.
-The value is never truncated.
+The value is never truncated. To use zeros as the padding character prepend
+the _minimum field width_ with a zero.
 
 This behavior can be changed using the _maximum field width_ modifier
 which is designated by a period followed by a decimal constant. If the
