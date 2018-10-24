@@ -165,7 +165,8 @@ public final class HighlightConverter extends LogEventPatternConverter implement
             } else {
                 final Level level = Level.toLevel(key, null);
                 if (level == null) {
-                    LOGGER.error("Unknown level name: {}; use one of {}", key, Arrays.toString(Level.values()));
+                    LOGGER.info("Creating level for unknown level name {} with intValue {}", key, Integer.MAX_VALUE);
+                    levelStyles.put(Level.forName(key, Integer.MAX_VALUE), value);
                 } else {
                     levelStyles.put(level, value);
                 }
