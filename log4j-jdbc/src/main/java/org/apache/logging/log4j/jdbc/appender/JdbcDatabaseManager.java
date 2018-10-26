@@ -45,7 +45,6 @@ import org.apache.logging.log4j.jdbc.convert.DateTypeConverter;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
@@ -54,10 +53,6 @@ import org.apache.logging.log4j.util.Strings;
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JDBC.
  */
 public final class JdbcDatabaseManager extends AbstractDatabaseManager {
-
-    private static StatusLogger logger() {
-        return StatusLogger.getLogger();
-    }
 
     private static final JdbcDatabaseManagerFactory INSTANCE = new JdbcDatabaseManagerFactory();
 
