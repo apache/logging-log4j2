@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Manager that allows database appenders to have their configuration reloaded without losing events.
@@ -241,10 +240,6 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
             final String name, final T data, final ManagerFactory<M, T> factory
     ) {
         return AbstractManager.getManager(name, factory, data);
-    }
-
-    protected static StatusLogger logger() {
-        return StatusLogger.getLogger();
     }
 
     /**

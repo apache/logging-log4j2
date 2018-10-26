@@ -33,7 +33,6 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.naming.NamingException;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
@@ -129,7 +128,7 @@ public class JmsManager extends AbstractManager {
             try {
                 return new JmsManager(name, data);
             } catch (final Exception e) {
-                LOGGER.error("Error creating JmsManager using JmsManagerConfiguration [{}]", data, e);
+                logger().error("Error creating JmsManager using JmsManagerConfiguration [{}]", data, e);
                 return null;
             }
         }
@@ -175,7 +174,7 @@ public class JmsManager extends AbstractManager {
                 reconnector = null;
                 shutdown = true;
             }
-            LOGGER.debug("Connection reestablished to {}", configuration);
+            logger().debug("Connection reestablished to {}", configuration);
         }
 
         @Override
@@ -185,7 +184,7 @@ public class JmsManager extends AbstractManager {
                     sleep(configuration.getReconnectIntervalMillis());
                     reconnect();
                 } catch (final InterruptedException | JMSException | NamingException e) {
-                    LOGGER.debug("Cannot reestablish JMS connection to {}: {}", configuration, e.getLocalizedMessage(),
+                    logger().debug("Cannot reestablish JMS connection to {}: {}", configuration, e.getLocalizedMessage(),
                             e);
                 } finally {
                     latch.countDown();
@@ -198,8 +197,6 @@ public class JmsManager extends AbstractManager {
         }
 
     }
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     static final JmsManagerFactory FACTORY = new JmsManagerFactory();
 
@@ -460,7 +457,7 @@ public class JmsManager extends AbstractManager {
                         closeJndiManager();
                         reconnector.reconnect();
                     } catch (NamingException | JMSException reconnEx) {
-                        LOGGER.debug("Cannot reestablish JMS connection to {}: {}; starting reconnector thread {}",
+                        logger().debug("Cannot reestablish JMS connection to {}: {}; starting reconnector thread {}",
                                 configuration, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
                         reconnector.start();
                         throw new AppenderLoggingException(
