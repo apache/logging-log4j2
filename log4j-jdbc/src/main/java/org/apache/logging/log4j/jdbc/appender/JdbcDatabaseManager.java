@@ -154,6 +154,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                         "Cannot write logging event; JDBC manager not connected to the database.");
             }
 
+            // Clear in case there are leftovers.
+            statement.clearParameters();
             if (serializable instanceof MapMessage) {
                 setFields((MapMessage<?, ?>) serializable);
             }
@@ -213,6 +215,12 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             throw new AppenderLoggingException(
                     "Failed to insert record for log event in JDBC manager: " + e.getMessage(), e);
         } finally {
+            // Release ASAP
+            try {
+                statement.clearParameters();
+            } catch (SQLException e) {
+                // Ignore
+            }
             Closer.closeSilently(reader);
         }
     }
