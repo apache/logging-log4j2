@@ -103,6 +103,9 @@
       <action issue="LOG4J2-2476" dev="ggregory" type="fix" due-to="Al Bundy">
         org.apache.log4j.SimpleLayout and ConsoleAppender missing in log4j-1.2-api.
       </action>
+      <action issue="LOG4J2-2489" dev="ggregory" type="update">
+        JDBC Appender should release parameter resources ASAP
+      </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
       <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">
