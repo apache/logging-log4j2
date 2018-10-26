@@ -164,6 +164,10 @@ public abstract class AbstractManager implements AutoCloseable {
                         manager.getName() + "'");
     }
 
+    protected static StatusLogger logger() {
+        return StatusLogger.getLogger();
+    }
+
     /**
      * May be overridden by managers to perform processing while the manager is being released and the
      * lock is held. A timeout is passed for implementors to use as they see fit.
