@@ -35,7 +35,6 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 
 /**
@@ -60,9 +59,6 @@ public final class KafkaAppender extends AbstractAppender {
         @PluginAttribute(value = "syncSend", defaultBoolean = true)
         private boolean syncSend;
 
-        @PluginElement("Properties") 
-        private Property[] properties;
-
         @SuppressWarnings("resource")
         @Override
         public KafkaAppender build() {
@@ -84,10 +80,6 @@ public final class KafkaAppender extends AbstractAppender {
             return syncSend;
         }
 
-        public Property[] getProperties() {
-            return properties;
-        }
-
         public B setTopic(final String topic) {
             this.topic = topic;
             return asBuilder();
@@ -95,11 +87,6 @@ public final class KafkaAppender extends AbstractAppender {
 
         public B setSyncSend(final boolean syncSend) {
             this.syncSend = syncSend;
-            return asBuilder();
-        }
-
-        public B setProperties(final Property[] properties) {
-            this.properties = properties;
             return asBuilder();
         }
     }

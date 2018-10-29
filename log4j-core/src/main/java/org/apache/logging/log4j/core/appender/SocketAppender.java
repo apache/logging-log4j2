@@ -317,10 +317,9 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
 
         // @formatter:off
         return newBuilder()
-            .withAdvertise(advertise)
-            .setConfiguration(configuration)
-            .withConnectTimeoutMillis(connectTimeoutMillis)
-            .withFilter(filter)
+        .withAdvertise(advertise)
+        .setConfiguration(configuration)
+        .withConnectTimeoutMillis(connectTimeoutMillis).setFilter(filter)
             .withHost(host)
             .withIgnoreExceptions(ignoreExceptions)
             .withImmediateFail(immediateFail)
