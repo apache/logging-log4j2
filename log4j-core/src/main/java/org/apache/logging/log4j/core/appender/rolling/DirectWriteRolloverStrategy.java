@@ -35,12 +35,10 @@ import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Integers;
 
@@ -197,36 +195,6 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
     }
 
     /**
-     * Creates the DirectWriteRolloverStrategy.
-     *
-     * @param maxFiles The maximum number of files that match the date portion of the pattern to keep.
-     * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
-     * @param customActions custom actions to perform asynchronously after rollover
-     * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
-     * @param config The Configuration.
-     * @return A DirectWriteRolloverStrategy.
-     * @deprecated Since 2.9 Usage of Builder API is preferable
-     */
-    @Deprecated
-    @PluginFactory
-    public static DirectWriteRolloverStrategy createStrategy(
-            // @formatter:off
-            @PluginAttribute("maxFiles") final String maxFiles,
-            @PluginAttribute("compressionLevel") final String compressionLevelStr,
-            @PluginElement("Actions") final Action[] customActions,
-            @PluginAttribute(value = "stopCustomActionsOnError", defaultBoolean = true)
-                    final boolean stopCustomActionsOnError,
-            @PluginConfiguration final Configuration config) {
-            return newBuilder().setMaxFiles(maxFiles)
-                    .setCompressionLevelStr(compressionLevelStr)
-                    .setCustomActions(customActions)
-                    .setStopCustomActionsOnError(stopCustomActionsOnError)
-                    .setConfig(config)
-                    .build();
-            // @formatter:on
-    }
-
-    /**
      * Index for most recent log file.
      */
     private final int maxFiles;
@@ -236,21 +204,6 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
     private volatile String currentFileName;
     private int nextIndex = -1;
     private final PatternProcessor tempCompressedFilePattern;
-
-    /**
-     * Constructs a new instance.
-     *
-     * @param maxFiles The maximum number of files that match the date portion of the pattern to keep.
-     * @param customActions custom actions to perform asynchronously after rollover
-     * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
-     * @deprecated Since 2.9 Added tempCompressedFilePatternString parameter
-     */
-    @Deprecated
-    protected DirectWriteRolloverStrategy(final int maxFiles, final int compressionLevel,
-                                          final StrSubstitutor strSubstitutor, final Action[] customActions,
-                                          final boolean stopCustomActionsOnError) {
-        this(maxFiles, compressionLevel, strSubstitutor, customActions, stopCustomActionsOnError, null);
-    }
 
     /**
      * Constructs a new instance.

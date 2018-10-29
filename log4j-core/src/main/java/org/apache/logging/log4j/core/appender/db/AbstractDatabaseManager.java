@@ -139,16 +139,6 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * from {@link #write(LogEvent, Serializable)} if buffering is off, or from {@link #flush()} if the buffer has reached its limit.
      *
      * @param event The event to write to the database.
-     * @deprecated Use {@link #writeInternal(LogEvent, Serializable)}.
-     */
-    @Deprecated
-    protected abstract void writeInternal(LogEvent event);
-
-    /**
-     * Performs the actual writing of the event in an implementation-specific way. This method is called immediately
-     * from {@link #write(LogEvent, Serializable)} if buffering is off, or from {@link #flush()} if the buffer has reached its limit.
-     *
-     * @param event The event to write to the database.
      */
     protected abstract void writeInternal(LogEvent event, Serializable serializable);
 
@@ -179,17 +169,6 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
                 this.buffer.clear();
             }
         }
-    }
-
-    /**
-     * This method manages buffering and writing of events.
-     *
-     * @param event The event to write to the database.
-     * @deprecated since 2.11.0 Use {@link #write(LogEvent, Serializable)}.
-     */
-    @Deprecated
-    public final synchronized void write(final LogEvent event) {
-        write(event, null);
     }
 
     /**

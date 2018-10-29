@@ -135,23 +135,6 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         return false;
     }
 
-    /**
-     * Creates a TimeBasedTriggeringPolicy.
-     * @param interval The interval between rollovers.
-     * @param modulate If true the time will be rounded to occur on a boundary aligned with the increment.
-     * @return a TimeBasedTriggeringPolicy.
-     * @deprecated Use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static TimeBasedTriggeringPolicy createPolicy(
-            @PluginAttribute("interval") final String interval,
-            @PluginAttribute("modulate") final String modulate) {
-        return newBuilder()
-                .setInterval(Integers.parseInt(interval, 1))
-                .setModulate(Boolean.parseBoolean(modulate))
-                .build();
-    }
-    
     @PluginBuilderFactory
     public static TimeBasedTriggeringPolicy.Builder newBuilder() {
         return new Builder();

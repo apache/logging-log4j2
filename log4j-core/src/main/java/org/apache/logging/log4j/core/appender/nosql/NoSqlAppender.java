@@ -107,54 +107,6 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
         }
     }
 
-    /**
-     * Factory method for creating a NoSQL appender within the plugin manager.
-     *
-     * @param name
-     *            The name of the appender.
-     * @param ignore
-     *            If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
-     *            are propagated to the caller.
-     * @param filter
-     *            The filter, if any, to use.
-     * @param bufferSize
-     *            If an integer greater than 0, this causes the appender to buffer log events and flush whenever the
-     *            buffer reaches this size.
-     * @param provider
-     *            The NoSQL provider that provides connections to the chosen NoSQL database.
-     * @return a new NoSQL appender.
-     * @deprecated since 2.11.0; use {@link Builder}.
-     */
-    @SuppressWarnings("resource")
-    @Deprecated
-    public static NoSqlAppender createAppender(
-    // @formatter:off
-            final String name,
-            final String ignore, 
-            final Filter filter,
-            final String bufferSize,
-            final NoSqlProvider<?> provider) {
-    // @formatter:on
-        if (provider == null) {
-            LOGGER.error("NoSQL provider not specified for appender [{}].", name);
-            return null;
-        }
-
-        final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-
-        final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSizeInt + ", provider="
-                + provider + " }";
-
-        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName, bufferSizeInt,
-                provider);
-        if (manager == null) {
-            return null;
-        }
-
-        return new NoSqlAppender(name, filter, null, ignoreExceptions, manager);
-    }
-
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();

@@ -91,43 +91,6 @@ public class TcpSocketManager extends AbstractSocketManager {
      *            The Layout.
      * @param bufferSize
      *            The buffer size.
-     * @deprecated Use
-     *             {@link TcpSocketManager#TcpSocketManager(String, OutputStream, Socket, InetAddress, String, int, int, int, boolean, Layout, int, SocketOptions)}.
-     */
-    @Deprecated
-    public TcpSocketManager(final String name, final OutputStream os, final Socket socket,
-            final InetAddress inetAddress, final String host, final int port, final int connectTimeoutMillis,
-            final int reconnectionDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
-            final int bufferSize) {
-        this(name, os, socket, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail,
-                layout, bufferSize, null);
-    }
-
-    /**
-     * Constructs.
-     * 
-     * @param name
-     *            The unique name of this connection.
-     * @param os
-     *            The OutputStream.
-     * @param socket
-     *            The Socket.
-     * @param inetAddress
-     *            The Internet address of the host.
-     * @param host
-     *            The name of the host.
-     * @param port
-     *            The port number on the host.
-     * @param connectTimeoutMillis
-     *            the connect timeout in milliseconds.
-     * @param reconnectionDelayMillis
-     *            Reconnection interval.
-     * @param immediateFail
-     *            True if the write should fail if no socket is immediately available.
-     * @param layout
-     *            The Layout.
-     * @param bufferSize
-     *            The buffer size.
      */
     public TcpSocketManager(final String name, final OutputStream os, final Socket socket,
             final InetAddress inetAddress, final String host, final int port, final int connectTimeoutMillis,
@@ -144,30 +107,6 @@ public class TcpSocketManager extends AbstractSocketManager {
             this.reconnector.start();
         }
         this.socketOptions = socketOptions;
-    }
-
-    /**
-     * Obtains a TcpSocketManager.
-     * 
-     * @param host
-     *            The host to connect to.
-     * @param port
-     *            The port on the host.
-     * @param connectTimeoutMillis
-     *            the connect timeout in milliseconds
-     * @param reconnectDelayMillis
-     *            The interval to pause between retries.
-     * @param bufferSize
-     *            The buffer size.
-     * @return A TcpSocketManager.
-     * @deprecated Use {@link #getSocketManager(String, int, int, int, boolean, Layout, int, SocketOptions)}.
-     */
-    @Deprecated
-    public static TcpSocketManager getSocketManager(final String host, final int port, final int connectTimeoutMillis,
-            final int reconnectDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
-            final int bufferSize) {
-        return getSocketManager(host, port, connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout,
-                bufferSize, null);
     }
 
     /**

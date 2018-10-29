@@ -80,47 +80,6 @@ public class RollingFileManager extends FileManager {
     private static final AtomicReferenceFieldUpdater<RollingFileManager, PatternProcessor> patternProcessorUpdater =
             AtomicReferenceFieldUpdater.newUpdater(RollingFileManager.class, PatternProcessor.class, "patternProcessor");
 
-    @Deprecated
-    protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
-            final boolean append, final long size, final long time, final TriggeringPolicy triggeringPolicy,
-            final RolloverStrategy rolloverStrategy, final String advertiseURI,
-            final Layout<? extends Serializable> layout, final int bufferSize, final boolean writeHeader) {
-        this(fileName, pattern, os, append, size, time, triggeringPolicy, rolloverStrategy, advertiseURI, layout,
-                writeHeader, ByteBuffer.wrap(new byte[Constants.ENCODER_BYTE_BUFFER_SIZE]));
-    }
-
-    @Deprecated
-    protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
-            final boolean append, final long size, final long time, final TriggeringPolicy triggeringPolicy,
-            final RolloverStrategy rolloverStrategy, final String advertiseURI,
-            final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer buffer) {
-        super(fileName, os, append, false, advertiseURI, layout, writeHeader, buffer);
-        this.size = size;
-        this.initialTime = time;
-        this.triggeringPolicy = triggeringPolicy;
-        this.rolloverStrategy = rolloverStrategy;
-        this.patternProcessor = new PatternProcessor(pattern);
-        this.patternProcessor.setPrevFileTime(time);
-        this.fileName = fileName;
-        this.fileExtension = FileExtension.lookupForFile(pattern);
-    }
-
-    @Deprecated
-    protected RollingFileManager(final LoggerContext loggerContext, final String fileName, final String pattern, final OutputStream os,
-            final boolean append, final boolean createOnDemand, final long size, final long time,
-            final TriggeringPolicy triggeringPolicy, final RolloverStrategy rolloverStrategy,
-            final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer buffer) {
-        super(loggerContext, fileName, os, append, false, createOnDemand, advertiseURI, layout, writeHeader, buffer);
-        this.size = size;
-        this.initialTime = time;
-        this.triggeringPolicy = triggeringPolicy;
-        this.rolloverStrategy = rolloverStrategy;
-        this.patternProcessor = new PatternProcessor(pattern);
-        this.patternProcessor.setPrevFileTime(time);
-        this.fileName = fileName;
-        this.fileExtension = FileExtension.lookupForFile(pattern);
-    }
-
     /**
      * @since 2.9
      */

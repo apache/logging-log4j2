@@ -302,40 +302,6 @@ public final class RoutingAppender extends AbstractAppender {
         }
     }
 
-    /**
-     * Creates a RoutingAppender.
-     * @param name The name of the Appender.
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
-     *               they are propagated to the caller.
-     * @param routes The routing definitions.
-     * @param config The Configuration (automatically added by the Configuration).
-     * @param rewritePolicy A RewritePolicy, if any.
-     * @param filter A Filter to restrict events processed by the Appender or null.
-     * @return The RoutingAppender
-     * @deprecated Since 2.7; use {@link #newBuilder()}
-     */
-    @Deprecated
-    public static RoutingAppender createAppender(
-            final String name,
-            final String ignore,
-            final Routes routes,
-            final Configuration config,
-            final RewritePolicy rewritePolicy,
-            final PurgePolicy purgePolicy,
-            final Filter filter) {
-
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        if (name == null) {
-            LOGGER.error("No name provided for RoutingAppender");
-            return null;
-        }
-        if (routes == null) {
-            LOGGER.error("No routes defined for RoutingAppender");
-            return null;
-        }
-        return new RoutingAppender(name, filter, ignoreExceptions, routes, rewritePolicy, config, purgePolicy, null);
-    }
-
     public Route getDefaultRoute() {
         return defaultRoute;
     }

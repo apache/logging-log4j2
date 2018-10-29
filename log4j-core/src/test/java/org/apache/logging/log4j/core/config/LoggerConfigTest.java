@@ -46,7 +46,6 @@ public class LoggerConfigTest {
     @Test
     public void testPropertiesWithoutSubstitution() {
         assertNull("null propertiesList", createForProperties(null).getPropertyList());
-        assertNull("null property Map", createForProperties(null).getProperties());
 
         final Property[] all = new Property[] {
                 Property.createProperty("key1", "value1"),

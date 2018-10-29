@@ -40,7 +40,7 @@ import org.junit.Test;
 /**
  * Tests {@link OnStartupTriggeringPolicy}.
  */
-//@Ignore
+// @Ignore
 public class OnStartupTriggeringPolicyTest {
 
     private static final String TARGET_FOLDER = "target/rollOnStartup";
@@ -74,11 +74,11 @@ public class OnStartupTriggeringPolicyTest {
         Assert.assertTrue(target.toFile().setLastModified(timeStamp));
         final PatternLayout layout = PatternLayout.newBuilder().setPattern("%msg").setConfiguration(configuration)
                 .build();
-        final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
-                configuration);
+        final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder().setCompressionLevelStr("0")
+                .setStopCustomActionsOnError(true).setConfig(configuration).build();
         final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy(1);
-        try (final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
-                policy, strategy, null, layout, 8192, true, false, null, null, null, configuration)) {
+        try (final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true,
+                false, policy, strategy, null, layout, 8192, true, false, null, null, null, configuration)) {
             manager.initialize();
             final String files = Arrays.toString(new File(TARGET_FOLDER).listFiles());
             assertTrue(target.toString() + ", files = " + files, Files.exists(target));

@@ -99,13 +99,26 @@ public class JiraLog4j2_2134Test {
 		final Configuration config = ctx.getConfiguration();
 		PatternLayout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, null, config, null,
 				null, false, false, null, null);
-		Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true", "false",
-				"false", "4000", layout, null, "false", null, config);
+		// @formatter:off
+		Appender appender = FileAppender.newBuilder()
+		        .setFileName("target/test.log")
+		        .setAppend(false)
+		        .setLocking(false)
+		        .setName("File")
+		        .setImmediateFlush(true)
+		        .setIgnoreExceptions(false)
+		        .setBufferedIo(false)
+		        .setBufferSize(4000)
+		        .setLayout(layout)
+		        .setAdvertise(false)
+		        .setConfiguration(config)
+		        .build();
+        // @formatter:on
 		appender.start();
 		config.addAppender(appender);
 		AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
 		AppenderRef[] refs = new AppenderRef[] { ref };
-		LoggerConfig loggerConfig = LoggerConfig.createLogger("false", Level.INFO, "testlog4j2refresh", "true", refs,
+		LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, "testlog4j2refresh", "true", refs,
 				null, config, null);
 		loggerConfig.addAppender(appender, null, null);
 		config.addLogger("testlog4j2refresh", loggerConfig);

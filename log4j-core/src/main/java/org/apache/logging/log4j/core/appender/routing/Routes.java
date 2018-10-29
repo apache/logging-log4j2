@@ -119,24 +119,6 @@ public final class Routes {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    /**
-     * Creates the Routes.
-     * @param pattern The pattern.
-     * @param routes An array of Route elements.
-     * @return The Routes container.
-     * @deprecated since 2.7; use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static Routes createRoutes(
-            final String pattern,
-            final Route... routes) {
-        if (routes == null || routes.length == 0) {
-            LOGGER.error("No routes configured");
-            return null;
-        }
-        return new Routes(null, null, pattern, routes);
-    }
-
     @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();

@@ -47,16 +47,6 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     private RandomAccessFile randomAccessFile;
     private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<>();
 
-    @Deprecated
-    public RollingRandomAccessFileManager(final LoggerContext loggerContext, final RandomAccessFile raf,
-            final String fileName, final String pattern, final OutputStream os, final boolean append,
-            final boolean immediateFlush, final int bufferSize, final long size, final long time,
-            final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
-            final Layout<? extends Serializable> layout, final boolean writeHeader) {
-        this(loggerContext, raf, fileName, pattern, os, append, immediateFlush, bufferSize, size, time, policy, strategy, advertiseURI,
-               layout, null, null, null, writeHeader);
-    }
-
     /**
      * @since 2.8.3
      */

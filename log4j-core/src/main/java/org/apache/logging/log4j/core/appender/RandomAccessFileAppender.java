@@ -176,65 +176,6 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         return getManager().getBufferSize();
     }
 
-    // difference from standard File Appender:
-    // locking is not supported and buffering cannot be switched off
-    /**
-     * Create a File Appender.
-     *
-     * @param fileName The name and path of the file.
-     * @param append "True" if the file should be appended to, "false" if it
-     *            should be overwritten. The default is "true".
-     * @param name The name of the Appender.
-     * @param immediateFlush "true" if the contents should be flushed on every
-     *            write, "false" otherwise. The default is "true".
-     * @param bufferSizeStr The buffer size, defaults to {@value RandomAccessFileManager#DEFAULT_BUFFER_SIZE}.
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
-     *               they are propagated to the caller.
-     * @param layout The layout to use to format the event. If no layout is
-     *            provided the default PatternLayout will be used.
-     * @param filter The filter, if any, to use.
-     * @param advertise "true" if the appender configuration should be
-     *            advertised, "false" otherwise.
-     * @param advertiseURI The advertised URI which can be used to retrieve the
-     *            file contents.
-     * @param configuration The Configuration.
-     * @return The FileAppender.
-     * @deprecated Use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static <B extends Builder<B>> RandomAccessFileAppender createAppender(
-            final String fileName,
-            final String append,
-            final String name,
-            final String immediateFlush,
-            final String bufferSizeStr,
-            final String ignore,
-            final Layout<? extends Serializable> layout,
-            final Filter filter,
-            final String advertise,
-            final String advertiseURI,
-            final Configuration configuration) {
-
-        final boolean isAppend = Booleans.parseBoolean(append, true);
-        final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final boolean isAdvertise = Boolean.parseBoolean(advertise);
-        final int bufferSize = Integers.parseInt(bufferSizeStr, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
-
-        return RandomAccessFileAppender.<B>newBuilder()
-        .setAdvertise(isAdvertise)
-        .setAdvertiseURI(advertiseURI)
-        .setAppend(isAppend)
-        .setBufferSize(bufferSize)
-        .setConfiguration(configuration)
-        .setFileName(fileName).setFilter(filter)
-            .setIgnoreExceptions(ignoreExceptions)
-            .setImmediateFlush(isFlush)
-            .setLayout(layout)
-            .setName(name)
-            .build();
-    }
-    
     /**
      * Creates a builder for a RandomAccessFileAppender.
      * @return a builder for a RandomAccessFileAppender.

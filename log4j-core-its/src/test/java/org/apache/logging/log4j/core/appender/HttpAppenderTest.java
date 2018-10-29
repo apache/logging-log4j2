@@ -187,8 +187,8 @@ public class HttpAppenderTest {
             .setConfiguration(ctx.getConfiguration())
             .setUrl(new URL("https://localhost:" + wireMockRule.httpsPort() + "/test/log4j/"))
             .setSslConfiguration(SslConfiguration.createSSLConfiguration(null,
-                KeyStoreConfiguration.createKeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(), TestConstants.KEYSTORE_TYPE, null),
-                TrustStoreConfiguration.createKeyStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD(), TestConstants.TRUSTSTORE_TYPE, null)))
+                KeyStoreConfiguration.createKeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(), null, null, TestConstants.KEYSTORE_TYPE, null),
+                TrustStoreConfiguration.createKeyStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD(), null ,null, TestConstants.TRUSTSTORE_TYPE, null)))
             .setVerifyHostname(false)
             .build();
         appender.append(createLogEvent());

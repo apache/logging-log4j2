@@ -61,56 +61,6 @@ public class FileManager extends OutputStreamManager {
     private final boolean attributeViewEnabled;
 
     /**
-     * @deprecated
-     */
-    @Deprecated
-    protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
-            final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize,
-            final boolean writeHeader) {
-        this(fileName, os, append, locking, advertiseURI, layout, writeHeader, ByteBuffer.wrap(new byte[bufferSize]));
-    }
-
-    /**
-     * @deprecated
-     * @since 2.6
-     */
-    @Deprecated
-    protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
-            final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader,
-            final ByteBuffer buffer) {
-        super(os, fileName, layout, writeHeader, buffer);
-        this.isAppend = append;
-        this.createOnDemand = false;
-        this.isLocking = locking;
-        this.advertiseURI = advertiseURI;
-        this.bufferSize = buffer.capacity();
-        this.filePermissions = null;
-        this.fileOwner = null;
-        this.fileGroup = null;
-        this.attributeViewEnabled = false;
-    }
-
-    /**
-     * @deprecated
-     * @since 2.7
-     */
-    @Deprecated
-    protected FileManager(final LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,
-            final boolean createOnDemand, final String advertiseURI, final Layout<? extends Serializable> layout,
-            final boolean writeHeader, final ByteBuffer buffer) {
-        super(loggerContext, os, fileName, createOnDemand, layout, writeHeader, buffer);
-        this.isAppend = append;
-        this.createOnDemand = createOnDemand;
-        this.isLocking = locking;
-        this.advertiseURI = advertiseURI;
-        this.bufferSize = buffer.capacity();
-        this.filePermissions = null;
-        this.fileOwner = null;
-        this.fileGroup = null;
-        this.attributeViewEnabled = false;
-    }
-
-    /**
      * @since 2.9
      */
     protected FileManager(final LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,

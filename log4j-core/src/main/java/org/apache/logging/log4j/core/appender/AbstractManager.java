@@ -196,15 +196,6 @@ public abstract class AbstractManager implements AutoCloseable {
     }
 
     /**
-     * Called to signify that this Manager is no longer required by an Appender.
-     * @deprecated In 2.7, use {@link #close()}.
-     */
-    @Deprecated
-    public void release() {
-        close();
-    }
-
-    /**
      * Returns the name of the Manager.
      * @return The name of the Manager.
      */

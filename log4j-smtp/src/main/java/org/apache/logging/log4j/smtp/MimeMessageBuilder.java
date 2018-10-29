@@ -78,14 +78,6 @@ public class MimeMessageBuilder implements Builder<MimeMessage> {
         return this;
     }
 
-    /**
-     * @deprecated Use {@link #build()}.
-     */
-    @Deprecated
-    public MimeMessage getMimeMessage() {
-        return build();
-    }
-
     @Override
     public MimeMessage build() {
         return message;

@@ -116,12 +116,6 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         return sqlStatement;
     }
 
-    @Deprecated
-    @Override
-    protected void writeInternal(final LogEvent event) {
-        writeInternal(event, null);
-    }
-
     private void setFields(final MapMessage<?, ?> mapMessage) throws SQLException {
         final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
         final String simpleName = statement.getClass().getName();
@@ -257,60 +251,6 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             }
         }
         return closed;
-    }
-
-    /**
-     * Creates a JDBC manager for use within the {@link JdbcAppender}, or returns a suitable one if it already exists.
-     *
-     * @param name
-     *            The name of the manager, which should include connection details and hashed passwords where possible.
-     * @param bufferSize
-     *            The size of the log event buffer.
-     * @param connectionSource
-     *            The source for connections to the database.
-     * @param tableName
-     *            The name of the database table to insert log events into.
-     * @param columnConfigs
-     *            Configuration information about the log table columns.
-     * @return a new or existing JDBC manager as applicable.
-     * @deprecated use
-     *             {@link #getManager(String, int, Layout, ConnectionSource, String, ColumnConfig[], ColumnMapping[])}
-     */
-    @Deprecated
-    public static JdbcDatabaseManager getJDBCDatabaseManager(final String name, final int bufferSize,
-            final ConnectionSource connectionSource, final String tableName, final ColumnConfig[] columnConfigs) {
-
-        return getManager(name,
-                new FactoryData(bufferSize, null, connectionSource, tableName, columnConfigs, new ColumnMapping[0]),
-                getFactory());
-    }
-
-    /**
-     * Creates a JDBC manager for use within the {@link JdbcAppender}, or returns a suitable one if it already exists.
-     *
-     * @param name
-     *            The name of the manager, which should include connection details and hashed passwords where possible.
-     * @param bufferSize
-     *            The size of the log event buffer.
-     * @param connectionSource
-     *            The source for connections to the database.
-     * @param tableName
-     *            The name of the database table to insert log events into.
-     * @param columnConfigs
-     *            Configuration information about the log table columns.
-     * @param columnMappings
-     *            column mapping configuration (including type conversion).
-     * @return a new or existing JDBC manager as applicable.
-     * @deprecated use
-     *             {@link #getManager(String, int, Layout, ConnectionSource, String, ColumnConfig[], ColumnMapping[])}
-     */
-    @Deprecated
-    public static JdbcDatabaseManager getManager(final String name, final int bufferSize,
-            final ConnectionSource connectionSource, final String tableName, final ColumnConfig[] columnConfigs,
-            final ColumnMapping[] columnMappings) {
-        return getManager(name,
-                new FactoryData(bufferSize, null, connectionSource, tableName, columnConfigs, columnMappings),
-                getFactory());
     }
 
     /**

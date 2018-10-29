@@ -188,65 +188,6 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
         return getManager().getRegionLength();
     }
 
-    /**
-     * Create a Memory Mapped File Appender.
-     *
-     * @param fileName The name and path of the file.
-     * @param append "True" if the file should be appended to, "false" if it should be overwritten. The default is
-     *            "true".
-     * @param name The name of the Appender.
-     * @param immediateFlush "true" if the contents should be flushed on every write, "false" otherwise. The default is
-     *            "false".
-     * @param regionLengthStr The buffer size, defaults to {@value MemoryMappedFileManager#DEFAULT_REGION_LENGTH}.
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
-     *            are propagated to the caller.
-     * @param layout The layout to use to format the event. If no layout is provided the default PatternLayout will be
-     *            used.
-     * @param filter The filter, if any, to use.
-     * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
-     * @param advertiseURI The advertised URI which can be used to retrieve the file contents.
-     * @param config The Configuration.
-     * @return The FileAppender.
-     * @deprecated Use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static <B extends Builder<B>> MemoryMappedFileAppender createAppender(
-            // @formatter:off
-            final String fileName, //
-            final String append, //
-            final String name, //
-            final String immediateFlush, //
-            final String regionLengthStr, //
-            final String ignore, //
-            final Layout<? extends Serializable> layout, //
-            final Filter filter, //
-            final String advertise, //
-            final String advertiseURI, //
-            final Configuration config) {
-            // @formatter:on
-
-        final boolean isAppend = Booleans.parseBoolean(append, true);
-        final boolean isImmediateFlush = Booleans.parseBoolean(immediateFlush, false);
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final boolean isAdvertise = Boolean.parseBoolean(advertise);
-        final int regionLength = Integers.parseInt(regionLengthStr, MemoryMappedFileManager.DEFAULT_REGION_LENGTH);
-
-        // @formatter:off
-        return MemoryMappedFileAppender.<B>newBuilder()
-        .setAdvertise(isAdvertise)
-        .setAdvertiseURI(advertiseURI)
-        .setAppend(isAppend)
-        .setConfiguration(config)
-        .setFileName(fileName).setFilter(filter)
-            .setIgnoreExceptions(ignoreExceptions)
-            .setImmediateFlush(isImmediateFlush)
-            .setLayout(layout)
-            .setName(name)
-            .setRegionLength(regionLength)
-            .build();
-        // @formatter:on
-    }
-
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();

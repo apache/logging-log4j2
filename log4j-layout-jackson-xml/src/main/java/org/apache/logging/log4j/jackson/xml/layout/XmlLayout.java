@@ -102,44 +102,9 @@ public final class XmlLayout extends AbstractJacksonLayout {
         return new XmlLayout(null, false, false, false, false, StandardCharsets.UTF_8, true, false, false, null);
     }
 
-    /**
-     * Creates an XML Layout.
-     *
-     * @param locationInfo
-     *            If "true", includes the location information in the generated XML.
-     * @param properties
-     *            If "true", includes the thread context map in the generated XML.
-     * @param complete
-     *            If "true", includes the XML header and footer, defaults to "false".
-     * @param compact
-     *            If "true", does not use end-of-lines and indentation, defaults to "false".
-     * @param charset
-     *            The character set to use, if {@code null}, uses "UTF-8".
-     * @param includeStacktrace
-     *            If "true", includes the stacktrace of any Throwable in the generated XML, defaults to "true".
-     * @return An XML Layout.
-     *
-     * @deprecated Use {@link #newBuilder()} instead
-     */
-    @Deprecated
-    public static XmlLayout createLayout(final boolean locationInfo, final boolean properties, final boolean complete,
-            final boolean compact, final Charset charset, final boolean includeStacktrace) {
-        return new XmlLayout(null, locationInfo, properties, complete, compact, charset, includeStacktrace, false,
-                false, null);
-    }
-
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
-    }
-
-    /**
-     * @deprecated Use {@link #newBuilder()} instead
-     */
-    @Deprecated
-    protected XmlLayout(final boolean locationInfo, final boolean properties, final boolean complete,
-            final boolean compact, final Charset charset, final boolean includeStacktrace) {
-        this(null, locationInfo, properties, complete, compact, charset, includeStacktrace, false, false, null);
     }
 
     private XmlLayout(final Configuration config, final boolean locationInfo, final boolean properties,

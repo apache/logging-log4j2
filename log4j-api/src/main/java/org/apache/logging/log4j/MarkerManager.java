@@ -69,38 +69,6 @@ public final class MarkerManager {
     }
 
     /**
-     * Retrieves or creates a Marker with the specified parent. The parent must have been previously created.
-     *
-     * @param name The name of the Marker.
-     * @param parent The name of the parent Marker.
-     * @return The Marker with the specified name.
-     * @throws IllegalArgumentException if the parent Marker does not exist.
-     * @deprecated Use the Marker add or set methods to add parent Markers. Will be removed by final GA release.
-     */
-    @Deprecated
-    public static Marker getMarker(final String name, final String parent) {
-        final Marker parentMarker = MARKERS.get(parent);
-        if (parentMarker == null) {
-            throw new IllegalArgumentException("Parent Marker " + parent + " has not been defined");
-        }
-        return getMarker(name, parentMarker);
-    }
-
-    /**
-     * Retrieves or creates a Marker with the specified parent.
-     *
-     * @param name The name of the Marker.
-     * @param parent The parent Marker.
-     * @return The Marker with the specified name.
-     * @throws IllegalArgumentException if any argument is {@code null}
-     * @deprecated Use the Marker add or set methods to add parent Markers. Will be removed by final GA release.
-     */
-    @Deprecated
-    public static Marker getMarker(final String name, final Marker parent) {
-        return getMarker(name).addParents(parent);
-    }
-
-    /**
      * <em>Consider this class private, it is only public to satisfy Jackson for XML and JSON IO.</em>
      * <p>
      * The actual Marker implementation.

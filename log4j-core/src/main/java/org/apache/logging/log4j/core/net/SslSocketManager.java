@@ -39,31 +39,6 @@ public class SslSocketManager extends TcpSocketManager {
     private final SslConfiguration sslConfig;
 
     /**
-    *
-    *
-    * @param name          The unique name of this connection.
-    * @param os            The OutputStream.
-    * @param sock          The Socket.
-    * @param inetAddress          The Internet address of the host.
-    * @param host          The name of the host.
-    * @param port          The port number on the host.
-    * @param connectTimeoutMillis the connect timeout in milliseconds.
-    * @param reconnectionDelayMillis         Reconnection interval.
-    * @param immediateFail
-    * @param layout        The Layout.
-    * @param bufferSize The buffer size.
-    * @deprecated Use {@link #SslSocketManager(String, OutputStream, Socket, SslConfiguration, InetAddress, String, int, int, int, boolean, Layout, int, SocketOptions)}.
-    */
-   @Deprecated
-   public SslSocketManager(final String name, final OutputStream os, final Socket sock,
-           final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
-           final int connectTimeoutMillis, final int reconnectionDelayMillis, final boolean immediateFail,
-           final Layout<? extends Serializable> layout, final int bufferSize) {
-       super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail, layout, bufferSize, null);
-       this.sslConfig = sslConfig;
-   }
-
-   /**
    *
    *
    * @param name          The unique name of this connection.
@@ -104,16 +79,6 @@ public class SslSocketManager extends TcpSocketManager {
                     + reconnectDelayMillis + ", immediateFail=" + immediateFail + ", layout=" + layout + ", bufferSize="
                     + bufferSize + ", socketOptions=" + socketOptions + "]";
         }
-    }
-
-    /**
-     * @deprecated Use {@link SslSocketManager#getSocketManager(SslConfiguration, String, int, int, int, boolean, Layout, int, SocketOptions)}.
-     */
-    @Deprecated
-    public static SslSocketManager getSocketManager(final SslConfiguration sslConfig, final String host, final int port,
-            final int connectTimeoutMillis, final int reconnectDelayMillis, final boolean immediateFail,
-            final Layout<? extends Serializable> layout, final int bufferSize) {
-        return getSocketManager(sslConfig, host, port, connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, null);
     }
 
     public static SslSocketManager getSocketManager(final SslConfiguration sslConfig, final String host, int port,

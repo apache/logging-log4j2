@@ -305,6 +305,9 @@
       <action issue="LOG4J2-2492" dev="ggregory" type="update">
         Update builder methods from the "with" prefix to the "set" prefix.
       </action>
+      <action issue="LOG4J2-2493" dev="ggregory" type="update">
+        Remove deprecated code.
+      </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
       <action issue="LOG4J2-2391" dev="ckozak" type="update">

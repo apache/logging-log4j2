@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -318,34 +317,6 @@ public class LoggerConfig extends AbstractFilterable {
     }
 
     /**
-     * Returns an unmodifiable map with the configuration properties, or {@code null} if this {@code LoggerConfig} does
-     * not have any configuration properties.
-     * <p>
-     * For each {@code Property} key in the map, the value is {@code true} if the property value has a variable that
-     * needs to be substituted.
-     *
-     * @return an unmodifiable map with the configuration properties, or {@code null}
-     * @see Configuration#getStrSubstitutor()
-     * @see StrSubstitutor
-     * @deprecated use {@link #getPropertyList()} instead
-     */
-    // LOG4J2-157
-    @Deprecated
-    public Map<Property, Boolean> getProperties() {
-        if (properties == null) {
-            return null;
-        }
-        if (propertiesMap == null) { // lazily initialize: only used by user custom code, not by Log4j any more
-            final Map<Property, Boolean> result = new HashMap<>(properties.size() * 2);
-            for (int i = 0; i < properties.size(); i++) {
-                result.put(properties.get(i), Boolean.valueOf(properties.get(i).isValueNeedsLookup()));
-            }
-            propertiesMap = Collections.unmodifiableMap(result);
-        }
-        return propertiesMap;
-    }
-
-    /**
      * Returns an unmodifiable list with the configuration properties, or {@code null} if this {@code LoggerConfig} does
      * not have any configuration properties.
      * <p>
@@ -473,44 +444,6 @@ public class LoggerConfig extends AbstractFilterable {
     /**
      * Factory method to create a LoggerConfig.
      *
-     * @param additivity True if additive, false otherwise.
-     * @param level The Level to be associated with the Logger.
-     * @param loggerName The name of the Logger.
-     * @param includeLocation whether location should be passed downstream
-     * @param refs An array of Appender names.
-     * @param properties Properties to pass to the Logger.
-     * @param config The Configuration.
-     * @param filter A Filter.
-     * @return A new LoggerConfig.
-     * @deprecated Deprecated in 2.7; use {@link #createLogger(boolean, Level, String, String, AppenderRef[], Property[], Configuration, Filter)}
-     */
-    @Deprecated
-    public static LoggerConfig createLogger(final String additivity,
-            // @formatter:off
-            final Level level,
-            @PluginAttribute("name") final String loggerName,
-            final String includeLocation,
-            final AppenderRef[] refs,
-            final Property[] properties,
-            @PluginConfiguration final Configuration config,
-            final Filter filter) {
-            // @formatter:on
-        if (loggerName == null) {
-            LOGGER.error("Loggers cannot be configured without a name");
-            return null;
-        }
-
-        final List<AppenderRef> appenderRefs = Arrays.asList(refs);
-        final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
-        final boolean additive = Booleans.parseBoolean(additivity, true);
-
-        return new LoggerConfig(name, appenderRefs, filter, level, additive, properties, config,
-                includeLocation(includeLocation, config));
-    }
-
-    /**
-     * Factory method to create a LoggerConfig.
-     *
      * @param additivity true if additive, false otherwise.
      * @param level The Level to be associated with the Logger.
      * @param loggerName The name of the Logger.
@@ -538,14 +471,6 @@ public class LoggerConfig extends AbstractFilterable {
         final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
         return new LoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
             includeLocation(includeLocation, config));
-    }
-
-    /**
-     * @deprecated Please use {@link #includeLocation(String, Configuration)}
-     */
-    @Deprecated
-    protected static boolean includeLocation(final String includeLocationConfigValue) {
-        return includeLocation(includeLocationConfigValue, null);
     }
 
     // Note: for asynchronous loggers, includeLocation default is FALSE,

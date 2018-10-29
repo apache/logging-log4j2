@@ -107,26 +107,4 @@ public class ServletAppender extends AbstractAppender {
         }
     }
 
-    /**
-     * Creates a Servlet Appender.
-     * @param layout The layout to use (required). Must extend {@link AbstractStringLayout}.
-     * @param filter The Filter or null.
-     * @param name The name of the Appender (required).
-     * @param ignoreExceptions If {@code true} (default) exceptions encountered when appending events are logged;
-     *                         otherwise they are propagated to the caller.
-     * @return The ServletAppender.
-     * @deprecated Use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static ServletAppender createAppender(final Layout<? extends Serializable> layout, final Filter filter,
-            final String name, final boolean ignoreExceptions) {
-        // @formatter:off
-    	return newBuilder().setFilter(filter)
-    			.setIgnoreExceptions(ignoreExceptions)
-    			.setLayout(layout)
-    			.setName(name)
-    			.build();
-    	// @formatter:on
-    }
-
 }

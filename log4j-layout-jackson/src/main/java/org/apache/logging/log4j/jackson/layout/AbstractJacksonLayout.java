@@ -283,21 +283,6 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     protected final ResolvableKeyValuePair[] additionalFields;
 
-    @Deprecated
-    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
-            final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
-            final Serializer footerSerializer) {
-        this(config, objectWriter, charset, compact, complete, eventEol, headerSerializer, footerSerializer, false);
-    }
-
-    @Deprecated
-    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
-            final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
-            final Serializer footerSerializer, final boolean includeNullDelimiter) {
-        this(config, objectWriter, charset, compact, complete, eventEol, headerSerializer, footerSerializer,
-                includeNullDelimiter, null);
-    }
-
     protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
             final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
             final Serializer footerSerializer, final boolean includeNullDelimiter,

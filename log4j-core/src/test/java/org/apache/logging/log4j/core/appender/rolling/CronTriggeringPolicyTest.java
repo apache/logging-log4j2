@@ -29,12 +29,12 @@ import org.junit.Test;
 public class CronTriggeringPolicyTest {
 
     private static final String CRON_EXPRESSION = "0 0 0 * * ?";
-    
+
     private NullConfiguration configuration;
 
-     // TODO Need a CleanRegexFiles("testcmd.\\.log\\..*");
-     //@Rule
-     //public CleanFiles cleanFiles = new CleanFiles("testcmd1.log", "testcmd2.log", "testcmd3.log");
+    // TODO Need a CleanRegexFiles("testcmd.\\.log\\..*");
+    // @Rule
+    // public CleanFiles cleanFiles = new CleanFiles("testcmd1.log", "testcmd2.log", "testcmd3.log");
 
     @Before
     public void before() {
@@ -46,7 +46,8 @@ public class CronTriggeringPolicyTest {
     }
 
     private DefaultRolloverStrategy createStrategy() {
-        return DefaultRolloverStrategy.createStrategy("7", "1", "max", null, null, false, configuration);
+        return DefaultRolloverStrategy.newBuilder().setMax("7").setMin("1").setFileIndex("max")
+                .setStopCustomActionsOnError(false).setConfig(configuration).build();
     }
 
     private void testBuilder() {
@@ -98,7 +99,6 @@ public class CronTriggeringPolicyTest {
         // @formatter:on
     }
 
-    
     /**
      * Tests LOG4J2-1474 CronTriggeringPolicy raise exception and fail to rollover log file when evaluateOnStartup is
      * true.

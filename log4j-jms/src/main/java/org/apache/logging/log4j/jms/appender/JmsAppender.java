@@ -183,18 +183,6 @@ public class JmsAppender extends AbstractAppender {
             return this;
         }
 
-        /**
-         * Sets the Password.
-         * @param password The new password.
-         * @deprecated Use setPassword(char[])
-         * @return the Builder.
-         */
-        @Deprecated
-        public Builder setPassword(final String password) {
-            this.password = password == null ? null : password.toCharArray();
-            return this;
-        }
-
         public Builder setProviderUrl(final String providerUrl) {
             this.providerUrl = providerUrl;
             return this;
@@ -217,18 +205,6 @@ public class JmsAppender extends AbstractAppender {
 
         public Builder setUrlPkgPrefixes(final String urlPkgPrefixes) {
             this.urlPkgPrefixes = urlPkgPrefixes;
-            return this;
-        }
-
-        /**
-         * Sets the user name.
-         * @param username The user's name.
-         * @deprecated Use {@link #setUserName(String)}.
-         * @return the Builder.
-         */
-        @Deprecated
-        public Builder setUsername(final String username) {
-            this.userName = username;
             return this;
         }
 

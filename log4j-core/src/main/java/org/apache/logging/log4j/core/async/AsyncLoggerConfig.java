@@ -196,52 +196,6 @@ public class AsyncLoggerConfig extends LoggerConfig {
      * Factory method to create a LoggerConfig.
      *
      * @param additivity True if additive, false otherwise.
-     * @param levelName The Level to be associated with the Logger.
-     * @param loggerName The name of the Logger.
-     * @param includeLocation "true" if location should be passed downstream
-     * @param refs An array of Appender names.
-     * @param properties Properties to pass to the Logger.
-     * @param config The Configuration.
-     * @param filter A Filter.
-     * @return A new LoggerConfig.
-     * @deprecated use {@link #createLogger(boolean, Level, String, String, AppenderRef[], Property[], Configuration, Filter)}
-     */
-    @Deprecated
-    public static LoggerConfig createLogger(
-            final String additivity,
-            final String levelName,
-            final String loggerName,
-            final String includeLocation,
-            final AppenderRef[] refs,
-            final Property[] properties,
-            final Configuration config,
-            final Filter filter) {
-        if (loggerName == null) {
-            LOGGER.error("Loggers cannot be configured without a name");
-            return null;
-        }
-
-        final List<AppenderRef> appenderRefs = Arrays.asList(refs);
-        Level level;
-        try {
-            level = Level.toLevel(levelName, Level.ERROR);
-        } catch (final Exception ex) {
-            LOGGER.error(
-                    "Invalid Log level specified: {}. Defaulting to Error",
-                    levelName);
-            level = Level.ERROR;
-        }
-        final String name = loggerName.equals(LoggerConfig.ROOT) ? Strings.EMPTY : loggerName;
-        final boolean additive = Booleans.parseBoolean(additivity, true);
-
-        return new AsyncLoggerConfig(name, appenderRefs, filter, level,
-                additive, properties, config, includeLocation(includeLocation));
-    }
-
-    /**
-     * Factory method to create a LoggerConfig.
-     *
-     * @param additivity True if additive, false otherwise.
      * @param level The Level to be associated with the Logger.
      * @param loggerName The name of the Logger.
      * @param includeLocation "true" if location should be passed downstream
@@ -277,32 +231,6 @@ public class AsyncLoggerConfig extends LoggerConfig {
      */
     @Plugin(name = "asyncRoot", category = Core.CATEGORY_NAME, printObject = true)
     public static class RootLogger extends LoggerConfig {
-
-        /**
-         * @deprecated use {@link #createLogger(String, Level, String, AppenderRef[], Property[], Configuration, Filter)}
-         */
-        @Deprecated
-        public static LoggerConfig createLogger(
-                final String additivity,
-                final String levelName,
-                final String includeLocation,
-                final AppenderRef[] refs,
-                final Property[] properties,
-                final Configuration config,
-                final Filter filter) {
-            final List<AppenderRef> appenderRefs = Arrays.asList(refs);
-            Level level = null;
-            try {
-                level = Level.toLevel(levelName, Level.ERROR);
-            } catch (final Exception ex) {
-                LOGGER.error("Invalid Log level specified: {}. Defaulting to Error", levelName);
-                level = Level.ERROR;
-            }
-            final boolean additive = Booleans.parseBoolean(additivity, true);
-            return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME,
-                    appenderRefs, filter, level, additive, properties, config,
-                    AsyncLoggerConfig.includeLocation(includeLocation));
-        }
 
         /**
          * @since 3.0

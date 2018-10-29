@@ -198,22 +198,6 @@ public final class SyslogLayout extends AbstractStringLayout {
     }
 
     /**
-     * Creates a SyslogLayout.
-     * 
-     * @param facility The Facility is used to try to classify the message.
-     * @param includeNewLine If true a newline will be appended to the result.
-     * @param escapeNL Pattern to use for replacing newlines.
-     * @param charset The character set.
-     * @return A SyslogLayout.
-     * @deprecated Use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static SyslogLayout createLayout(final Facility facility, final boolean includeNewLine,
-                                            final String escapeNL, final Charset charset) {
-        return new SyslogLayout(facility, includeNewLine, escapeNL, charset);
-    }
-
-    /**
      * Gets the facility.
      * 
      * @return the facility

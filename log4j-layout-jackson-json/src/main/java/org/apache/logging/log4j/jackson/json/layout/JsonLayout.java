@@ -170,75 +170,9 @@ public final class JsonLayout extends AbstractJacksonLayout {
                 DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, null, false);
     }
 
-    /**
-     * Creates a JSON Layout.
-     * @param config
-     *           The plugin configuration.
-     * @param locationInfo
-     *            If "true", includes the location information in the generated JSON.
-     * @param properties
-     *            If "true", includes the thread context map in the generated JSON.
-     * @param propertiesAsList
-     *            If true, the thread context map is included as a list of map entry objects, where each entry has
-     *            a "key" attribute (whose value is the key) and a "value" attribute (whose value is the value).
-     *            Defaults to false, in which case the thread context map is included as a simple map of key-value
-     *            pairs.
-     * @param complete
-     *            If "true", includes the JSON header and footer, and comma between records.
-     * @param compact
-     *            If "true", does not use end-of-lines and indentation, defaults to "false".
-     * @param eventEol
-     *            If "true", forces an EOL after each log event (even if compact is "true"), defaults to "false". This
-     *            allows one even per line, even in compact mode.
-     * @param headerPattern
-     *            The header pattern, defaults to {@code "["} if null.
-     * @param footerPattern
-     *            The header pattern, defaults to {@code "]"} if null.
-     * @param charset
-     *            The character set to use, if {@code null}, uses "UTF-8".
-     * @param includeStacktrace
-     *            If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
-     * @return A JSON Layout.
-     *
-     * @deprecated Use {@link #newBuilder()} instead
-     */
-    @Deprecated
-    public static JsonLayout createLayout(
-            final Configuration config,
-            final boolean locationInfo,
-            final boolean properties,
-            final boolean propertiesAsList,
-            final boolean complete,
-            final boolean compact,
-            final boolean eventEol,
-            final String headerPattern,
-            final String footerPattern,
-            final Charset charset,
-            final boolean includeStacktrace) {
-        final boolean encodeThreadContextAsList = properties && propertiesAsList;
-        return new JsonLayout(config, locationInfo, properties, encodeThreadContextAsList, complete, compact, eventEol,
-                headerPattern, footerPattern, charset, includeStacktrace, false, false, null, false);
-    }
-
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
-    }
-
-    /**
-     * @deprecated Use {@link #newBuilder()} instead
-     */
-    @Deprecated
-    protected JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
-            final boolean encodeThreadContextAsList,
-            final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
-            final String footerPattern, final Charset charset, final boolean includeStacktrace) {
-        super(config, new JsonJacksonFactory(encodeThreadContextAsList, includeStacktrace, false, false).newWriter(
-                locationInfo, properties, compact),
-                charset, compact, complete, eventEol,
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
-                false, null);
     }
 
     private JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,

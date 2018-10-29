@@ -114,20 +114,6 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     /**
      * Constructs a layout with an optional header and footer.
      *
-     * @param header
-     *            The header to include when the stream is opened. May be null.
-     * @param footer
-     *            The footer to add when the stream is closed. May be null.
-     * @deprecated Use {@link #AbstractLayout(Configuration, byte[], byte[])}
-     */
-    @Deprecated
-    public AbstractLayout(final byte[] header, final byte[] footer) {
-        this(null, header, footer);
-    }
-
-    /**
-     * Constructs a layout with an optional header and footer.
-     *
      * @param configuration
      *            The configuration
      * @param header

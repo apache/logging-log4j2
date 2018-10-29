@@ -57,16 +57,6 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
     }
 
     /**
-     * @deprecated Use {@link #TrustStoreConfiguration(String, PasswordProvider, String, String)} instead
-     */
-    @Deprecated
-    public TrustStoreConfiguration(final String location, final String password, final String keyStoreType,
-            final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
-        this(location, new MemoryPasswordProvider(password == null ? null : password.toCharArray()), keyStoreType,
-                trustManagerFactoryAlgorithm);
-    }
-
-    /**
      * Creates a KeyStoreConfiguration.
      *
      * @param location
@@ -110,44 +100,6 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
         } catch (Exception ex) {
             throw new StoreConfigurationException("Could not configure TrustStore", ex);
         }
-    }
-
-    /**
-     * @deprecated Use {@link #createKeyStoreConfiguration(String, char[], String, String, String, String)}
-     */
-    @Deprecated
-    public static TrustStoreConfiguration createKeyStoreConfiguration(
-            // @formatter:off
-            final String location,
-            final char[] password,
-            final String keyStoreType,
-            final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
-        // @formatter:on
-        return createKeyStoreConfiguration(location, password, null, null, keyStoreType, trustManagerFactoryAlgorithm);
-    }
-
-    /**
-     * Creates a KeyStoreConfiguration.
-     *
-     * @param location The location of the KeyStore, a file path, URL or resource.
-     * @param password The password to access the KeyStore.
-     * @param keyStoreType The KeyStore type, null defaults to {@code "JKS"}.
-     * @param trustManagerFactoryAlgorithm The standard name of the requested trust management algorithm. See the Java
-     * Secure Socket Extension Reference Guide for information these names.
-     * @return a new TrustStoreConfiguration
-     * @throws StoreConfigurationException Thrown if this instance cannot load the KeyStore.
-     * @deprecated Use createKeyStoreConfiguration(String, char[], String, String)
-     */
-    @Deprecated
-    public static TrustStoreConfiguration createKeyStoreConfiguration(
-            // @formatter:off
-            final String location,
-            final String password,
-            final String keyStoreType,
-            final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
-            // @formatter:on
-        return createKeyStoreConfiguration(location, (password == null ? null : password.toCharArray()),
-                null, null, keyStoreType, trustManagerFactoryAlgorithm);
     }
 
     public TrustManagerFactory initTrustManagerFactory() throws NoSuchAlgorithmException, KeyStoreException {
