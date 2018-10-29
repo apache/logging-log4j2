@@ -60,9 +60,6 @@ public final class KafkaAppender extends AbstractAppender {
         @PluginAttribute(value = "syncSend", defaultBoolean = true)
         private boolean syncSend;
 
-        @PluginElement("Properties") 
-        private Property[] properties;
-
         @SuppressWarnings("resource")
         @Override
         public KafkaAppender build() {
@@ -72,7 +69,7 @@ public final class KafkaAppender extends AbstractAppender {
                 return null;
             }
             final KafkaManager kafkaManager =
-                    new KafkaManager(getConfiguration().getLoggerContext(), getName(), topic, syncSend, properties, key);
+                    new KafkaManager(getConfiguration().getLoggerContext(), getName(), topic, syncSend, getProperties(), key);
             return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), kafkaManager);
         }
 
@@ -82,10 +79,6 @@ public final class KafkaAppender extends AbstractAppender {
 
         public boolean isSyncSend() {
             return syncSend;
-        }
-
-        public Property[] getProperties() {
-            return properties;
         }
 
         public B setTopic(final String topic) {
@@ -98,10 +91,6 @@ public final class KafkaAppender extends AbstractAppender {
             return asBuilder();
         }
 
-        public B setProperties(final Property[] properties) {
-            this.properties = properties;
-            return asBuilder();
-        }
     }
     
     @Deprecated

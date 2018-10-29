@@ -86,13 +86,12 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
         return JdbcAppender.<B>newBuilder()
-            .setBufferSize(bufferSizeInt)
-            .setColumnConfigs(columnConfigs)
-            .setConnectionSource(connectionSource)
-            .setTableName(tableName)
-            .withName(name)
-            .withIgnoreExceptions(ignoreExceptions)
-            .withFilter(filter)
+        .setBufferSize(bufferSizeInt)
+        .setColumnConfigs(columnConfigs)
+        .setConnectionSource(connectionSource)
+        .setTableName(tableName)
+        .withName(name)
+        .withIgnoreExceptions(ignoreExceptions).setFilter(filter)
             .build();
     }
 

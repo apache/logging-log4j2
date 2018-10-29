@@ -233,12 +233,11 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
 
         // @formatter:off
         return MemoryMappedFileAppender.<B>newBuilder()
-            .setAdvertise(isAdvertise)
-            .setAdvertiseURI(advertiseURI)
-            .setAppend(isAppend)
-            .setConfiguration(config)
-            .setFileName(fileName)
-            .withFilter(filter)
+        .setAdvertise(isAdvertise)
+        .setAdvertiseURI(advertiseURI)
+        .setAppend(isAppend)
+        .setConfiguration(config)
+        .setFileName(fileName).setFilter(filter)
             .withIgnoreExceptions(ignoreExceptions)
             .withImmediateFlush(isImmediateFlush)
             .withLayout(layout)

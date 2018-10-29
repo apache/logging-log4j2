@@ -121,8 +121,7 @@ public class ServletAppender extends AbstractAppender {
     public static ServletAppender createAppender(final Layout<? extends Serializable> layout, final Filter filter,
             final String name, final boolean ignoreExceptions) {
         // @formatter:off
-    	return newBuilder()
-    			.withFilter(filter)
+    	return newBuilder().setFilter(filter)
     			.withIgnoreExceptions(ignoreExceptions)
     			.withLayout(layout)
     			.withName(name)
