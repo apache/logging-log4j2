@@ -114,7 +114,6 @@ public class Log4jLogEventTest {
         assertEquals(evt.getLevel(), evt2.getLevel());
         assertEquals(evt.getLoggerName(), evt2.getLoggerName());
         assertEquals(evt.getMarker(), evt2.getMarker());
-        assertEquals(evt.getContextMap(), evt2.getContextMap());
         assertEquals(evt.getContextData(), evt2.getContextData());
         assertEquals(evt.getContextStack(), evt2.getContextStack());
         assertEquals(evt.getMessage(), evt2.getMessage());
@@ -144,7 +143,6 @@ public class Log4jLogEventTest {
         assertEquals(evt.getLevel(), evt2.getLevel());
         assertEquals(evt.getLoggerName(), evt2.getLoggerName());
         assertEquals(evt.getMarker(), evt2.getMarker());
-        assertEquals(evt.getContextMap(), evt2.getContextMap());
         assertEquals(evt.getContextData(), evt2.getContextData());
         assertEquals(evt.getContextStack(), evt2.getContextStack());
         assertEquals(evt.getMessage(), evt2.getMessage());

@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.Collections;
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -50,14 +47,6 @@ public abstract class AbstractLogEvent implements LogEvent {
     @Override
     public ReadOnlyStringMap getContextData() {
         return null;
-    }
-
-    /**
-     * Returns {@link Collections#emptyMap()}.
-     */
-    @Override
-    public Map<String, String> getContextMap() {
-        return Collections.emptyMap();
     }
 
     @Override

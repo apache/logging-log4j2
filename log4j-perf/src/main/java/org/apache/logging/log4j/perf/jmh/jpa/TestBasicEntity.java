@@ -57,10 +57,4 @@ public class TestBasicEntity extends BasicLogEventEntity {
         this.id = id;
     }
 
-    @Override
-    @Convert(converter = ContextMapJsonAttributeConverter.class)
-    @Column(name = "contextMapJson")
-    public Map<String, String> getContextMap() {
-        return super.getContextMap();
-    }
 }

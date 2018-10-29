@@ -224,7 +224,6 @@ public class MutableLogEventTest {
         mutable.setThrown(new Exception());
         mutable.setTimeMillis(56789);
 
-        assertNotNull("context map", mutable.getContextMap());
         assertNotNull("context stack", mutable.getContextStack());
         assertTrue("end of batch", mutable.isEndOfBatch());
         assertTrue("incl loc", mutable.isIncludeLocation());
@@ -296,7 +295,6 @@ public class MutableLogEventTest {
         assertEquals(evt.getLoggerName(), evt2.getLoggerName());
         assertEquals(evt.getMarker(), evt2.getMarker());
         assertEquals(evt.getContextData(), evt2.getContextData());
-        assertEquals(evt.getContextMap(), evt2.getContextMap());
         assertEquals(evt.getContextStack(), evt2.getContextStack());
         assertEquals(evt.getMessage(), evt2.getMessage());
         assertNotNull(evt2.getSource());
@@ -341,7 +339,6 @@ public class MutableLogEventTest {
         assertEquals(evt.getLoggerName(), evt2.getLoggerName());
         assertEquals(evt.getMarker(), evt2.getMarker());
         assertEquals(evt.getContextData(), evt2.getContextData());
-        assertEquals(evt.getContextMap(), evt2.getContextMap());
         assertEquals(evt.getContextStack(), evt2.getContextStack());
         assertEquals(evt.getMessage(), evt2.getMessage());
         assertNotNull(evt2.getSource());

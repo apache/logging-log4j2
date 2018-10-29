@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -49,10 +47,6 @@ abstract class LogEventWithContextListMixIn implements LogEvent {
 //    @JsonIgnore
     @Override
     public abstract ReadOnlyStringMap getContextData();
-
-    @Override
-    @JsonIgnore
-    public abstract Map<String, String> getContextMap();
 
     @JsonProperty(JsonConstants.ELT_CONTEXT_STACK)
     @Override

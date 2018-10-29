@@ -545,14 +545,6 @@ public class Log4jLogEvent implements LogEvent {
     public ReadOnlyStringMap getContextData() {
         return contextData;
     }
-    /**
-     * Returns the immutable copy of the ThreadContext Map.
-     * @return The context Map.
-     */
-    @Override
-    public Map<String, String> getContextMap() {
-        return contextData.toMap();
-    }
 
     /**
      * Returns an immutable copy of the ThreadContext stack.

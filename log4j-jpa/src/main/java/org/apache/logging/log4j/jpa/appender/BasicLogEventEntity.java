@@ -227,20 +227,6 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
     }
 
     /**
-     * Gets the context map. Annotated with {@code @Convert(converter = ContextMapAttributeConverter.class)}.
-     *
-     * @return the context map.
-     * @see ContextMapAttributeConverter
-     * @see org.apache.logging.log4j.jpa.converter.ContextMapJsonAttributeConverter
-     */
-    @SuppressWarnings("deprecation")
-    @Override
-    @Convert(converter = ContextMapAttributeConverter.class)
-    public Map<String, String> getContextMap() {
-        return this.getWrappedEvent().getContextMap();
-    }
-
-    /**
      * Gets the context stack. Annotated with {@code @Convert(converter = ContextStackAttributeConverter.class)}.
      *
      * @return the context stack.

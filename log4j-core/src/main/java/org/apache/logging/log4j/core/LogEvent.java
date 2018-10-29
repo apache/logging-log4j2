@@ -36,16 +36,10 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
  * {@link org.apache.logging.log4j.Level} that the message was logged at. If a
  * {@link org.apache.logging.log4j.Marker} was used, then it is included here. The contents of the
  * {@link org.apache.logging.log4j.ThreadContext} at the time of the log call are provided via
- * {@link #getContextMap()} and {@link #getContextStack()}. If a {@link java.lang.Throwable} was included in the log
+ * {@link #getContextData()} and {@link #getContextStack()}. If a {@link java.lang.Throwable} was included in the log
  * call, then it is provided via {@link #getThrown()}. When this class is serialized, the attached Throwable will
  * be wrapped into a {@link org.apache.logging.log4j.core.impl.ThrowableProxy} so that it may be safely serialized
  * and deserialized properly without causing problems if the exception class is not available on the other end.
- * <p>
- * Since version 2.7, {@link #getContextMap()} is deprecated in favor of {@link #getContextData()}, which
- * can carry both {@code ThreadContext} data as well as other context data supplied by the
- * {@linkplain org.apache.logging.log4j.core.impl.ContextDataInjectorFactory configured}
- * {@link ContextDataInjector}.
- * </p>
  */
 public interface LogEvent extends Serializable {
 
@@ -55,15 +49,6 @@ public interface LogEvent extends Serializable {
      * @return an immutable version of this log event
      */
     LogEvent toImmutable();
-
-    /**
-     * Gets the context map (also know as Mapped Diagnostic Context or MDC).
-     *
-     * @return The context map, never {@code null}.
-     * @deprecated use {@link #getContextData()} instead
-     */
-    @Deprecated
-    Map<String, String> getContextMap();
 
     /**
      * Returns the {@code ReadOnlyStringMap} object holding context data key-value pairs.

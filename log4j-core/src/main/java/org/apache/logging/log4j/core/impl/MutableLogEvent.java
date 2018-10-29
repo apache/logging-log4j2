@@ -378,11 +378,6 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return contextData;
     }
 
-    @Override
-    public Map<String, String> getContextMap() {
-        return contextData.toMap();
-    }
-
     public void setContextData(final StringMap mutableContextData) {
         this.contextData = mutableContextData;
     }
