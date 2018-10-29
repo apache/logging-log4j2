@@ -143,34 +143,6 @@ public final class PatternLayout extends AbstractStringLayout {
     }
 
     /**
-     * Deprecated, use {@link #newSerializerBuilder()} instead.
-     *
-     * @param configuration
-     * @param replace
-     * @param pattern
-     * @param defaultPattern
-     * @param patternSelector
-     * @param alwaysWriteExceptions
-     * @param noConsoleNoAnsi
-     * @return a new Serializer.
-     * @deprecated Use {@link #newSerializerBuilder()} instead.
-     */
-    @Deprecated
-    public static Serializer createSerializer(final Configuration configuration, final RegexReplacement replace,
-            final String pattern, final String defaultPattern, final PatternSelector patternSelector,
-            final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi) {
-        final SerializerBuilder builder = newSerializerBuilder();
-        builder.setAlwaysWriteExceptions(alwaysWriteExceptions);
-        builder.setConfiguration(configuration);
-        builder.setDefaultPattern(defaultPattern);
-        builder.setNoConsoleNoAnsi(noConsoleNoAnsi);
-        builder.setPattern(pattern);
-        builder.setPatternSelector(patternSelector);
-        builder.setReplace(replace);
-        return builder.build();
-    }
-
-    /**
      * Gets the conversion pattern.
      *
      * @return the conversion pattern.
@@ -254,56 +226,6 @@ public final class PatternLayout extends AbstractStringLayout {
     @Override
     public String toString() {
         return patternSelector == null ? conversionPattern : patternSelector.toString();
-    }
-
-    /**
-     * Creates a pattern layout.
-     *
-     * @param pattern
-     *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
-     * @param patternSelector
-     *        Allows different patterns to be used based on some selection criteria.
-     * @param config
-     *        The Configuration. Some Converters require access to the Interpolator.
-     * @param replace
-     *        A Regex replacement String.
-     * @param charset
-     *        The character set. The platform default is used if not specified.
-     * @param alwaysWriteExceptions
-     *        If {@code "true"} (default) exceptions are always written even if the pattern contains no exception tokens.
-     * @param noConsoleNoAnsi
-     *        If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
-     * @param headerPattern
-     *        The footer to place at the top of the document, once.
-     * @param footerPattern
-     *        The footer to place at the bottom of the document, once.
-     * @return The PatternLayout.
-     * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.
-     */
-    @PluginFactory
-    @Deprecated
-    public static PatternLayout createLayout(
-            @PluginAttribute(value = "pattern", defaultString = DEFAULT_CONVERSION_PATTERN) final String pattern,
-            @PluginElement("PatternSelector") final PatternSelector patternSelector,
-            @PluginConfiguration final Configuration config,
-            @PluginElement("Replace") final RegexReplacement replace,
-            // LOG4J2-783 use platform default by default, so do not specify defaultString for charset
-            @PluginAttribute(value = "charset") final Charset charset,
-            @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
-            @PluginAttribute(value = "noConsoleNoAnsi") final boolean noConsoleNoAnsi,
-            @PluginAttribute("header") final String headerPattern,
-            @PluginAttribute("footer") final String footerPattern) {
-        return newBuilder()
-            .setPattern(pattern)
-            .setPatternSelector(patternSelector)
-            .setConfiguration(config)
-            .setRegexReplacement(replace)
-            .setCharset(charset)
-            .setAlwaysWriteExceptions(alwaysWriteExceptions)
-            .setNoConsoleNoAnsi(noConsoleNoAnsi)
-            .setHeader(headerPattern)
-            .setFooter(footerPattern)
-            .build();
     }
 
     private static class PatternSerializer implements Serializer, Serializer2 {

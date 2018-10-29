@@ -98,17 +98,6 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
         return new ObjectArrayIterator<>(filters);
     }
 
-    /**
-     * Gets a new list over the internal filter array.
-     *
-     * @return a new list over the internal filter array
-     * @deprecated Use {@link #getFiltersArray()}
-     */
-    @Deprecated
-    public List<Filter> getFilters() {
-        return Arrays.asList(filters);
-    }
-
     public Filter[] getFiltersArray() {
         return filters;
     }

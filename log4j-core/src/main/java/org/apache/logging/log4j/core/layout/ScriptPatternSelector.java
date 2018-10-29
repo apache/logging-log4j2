@@ -145,11 +145,7 @@ public class ScriptPatternSelector implements PatternSelector {
     private final Configuration configuration;
 
 
-    /**
-     * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.
-     */
-    @Deprecated
-    public ScriptPatternSelector(final AbstractScript script, final PatternMatch[] properties, final String defaultPattern,
+    private ScriptPatternSelector(final AbstractScript script, final PatternMatch[] properties, final String defaultPattern,
                                  final boolean alwaysWriteExceptions, final boolean disableAnsi,
                                  final boolean noConsoleNoAnsi, final Configuration config) {
         this.script = script;
@@ -200,36 +196,6 @@ public class ScriptPatternSelector implements PatternSelector {
     @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    /**
-     * Deprecated, use {@link #newBuilder()} instead.
-     * 
-     * @param script
-     * @param properties
-     * @param defaultPattern
-     * @param alwaysWriteExceptions
-     * @param noConsoleNoAnsi
-     * @param configuration
-     * @return a new ScriptPatternSelector
-     * @deprecated Use {@link #newBuilder()} instead.
-     */
-    @Deprecated
-    public static ScriptPatternSelector createSelector(
-            final AbstractScript script,
-            final PatternMatch[] properties,
-            final String defaultPattern,
-            final boolean alwaysWriteExceptions,
-            final boolean noConsoleNoAnsi,
-            final Configuration configuration) {
-        final Builder builder = newBuilder();
-        builder.setScript(script);
-        builder.setProperties(properties);
-        builder.setDefaultPattern(defaultPattern);
-        builder.setAlwaysWriteExceptions(alwaysWriteExceptions);
-        builder.setNoConsoleNoAnsi(noConsoleNoAnsi);
-        builder.setConfiguration(configuration);
-        return builder.build();
     }
 
     @Override

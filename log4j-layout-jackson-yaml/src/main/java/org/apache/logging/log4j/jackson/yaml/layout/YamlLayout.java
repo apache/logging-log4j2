@@ -111,35 +111,6 @@ public final class YamlLayout extends AbstractJacksonLayout {
                 DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, null);
     }
 
-    /**
-     * Creates a YAML Layout.
-     *
-     * @param config
-     *            The plugin configuration.
-     * @param locationInfo
-     *            If "true", includes the location information in the generated YAML.
-     * @param properties
-     *            If "true", includes the thread context map in the generated YAML.
-     * @param headerPattern
-     *            The header pattern, defaults to {@code ""} if null.
-     * @param footerPattern
-     *            The header pattern, defaults to {@code ""} if null.
-     * @param charset
-     *            The character set to use, if {@code null}, uses "UTF-8".
-     * @param includeStacktrace
-     *            If "true", includes the stacktrace of any Throwable in the generated YAML, defaults to "true".
-     * @return A YAML Layout.
-     *
-     * @deprecated Use {@link #newBuilder()} instead
-     */
-    @Deprecated
-    public static AbstractJacksonLayout createLayout(final Configuration config, final boolean locationInfo,
-            final boolean properties, final String headerPattern, final String footerPattern, final Charset charset,
-            final boolean includeStacktrace) {
-        return new YamlLayout(config, locationInfo, properties, false, false, true, headerPattern, footerPattern,
-                charset, includeStacktrace, false, false, null);
-    }
-
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();

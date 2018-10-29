@@ -187,61 +187,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
     
     private static final int DEFAULT_BUFFER_SIZE = 8192;
     
-    /**
-     * Create a File Appender.
-     * @param fileName The name and path of the file.
-     * @param append "True" if the file should be appended to, "false" if it should be overwritten.
-     * The default is "true".
-     * @param locking "True" if the file should be locked. The default is "false".
-     * @param name The name of the Appender.
-     * @param immediateFlush "true" if the contents should be flushed on every write, "false" otherwise. The default
-     * is "true".
-     * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
-     *               they are propagated to the caller.
-     * @param bufferedIo "true" if I/O should be buffered, "false" otherwise. The default is "true".
-     * @param bufferSizeStr buffer size for buffered IO (default is 8192).
-     * @param layout The layout to use to format the event. If no layout is provided the default PatternLayout
-     * will be used.
-     * @param filter The filter, if any, to use.
-     * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
-     * @param advertiseUri The advertised URI which can be used to retrieve the file contents.
-     * @param config The Configuration
-     * @return The FileAppender.
-     * @deprecated Use {@link #newBuilder()}
-     */
-    @Deprecated
-    public static <B extends Builder<B>> FileAppender createAppender(
-            // @formatter:off
-            final String fileName,
-            final String append,
-            final String locking,
-            final String name,
-            final String immediateFlush,
-            final String ignoreExceptions,
-            final String bufferedIo,
-            final String bufferSizeStr,
-            final Layout<? extends Serializable> layout,
-            final Filter filter,
-            final String advertise,
-            final String advertiseUri,
-            final Configuration config) {
-        return FileAppender.<B>newBuilder()
-            .setAdvertise(Boolean.parseBoolean(advertise))
-            .setAdvertiseUri(advertiseUri)
-            .setAppend(Booleans.parseBoolean(append, true))
-            .setBufferedIo(Booleans.parseBoolean(bufferedIo, true))
-            .setBufferSize(Integers.parseInt(bufferSizeStr, DEFAULT_BUFFER_SIZE))
-            .setConfiguration(config)
-            .setFileName(fileName).setFilter(filter)
-            .setIgnoreExceptions(Booleans.parseBoolean(ignoreExceptions, true))
-            .setImmediateFlush(Booleans.parseBoolean(immediateFlush, true))
-            .setLayout(layout)
-            .setLocking(Boolean.parseBoolean(locking))
-            .setName(name)
-            .build();
-        // @formatter:on
-    }
-    
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();

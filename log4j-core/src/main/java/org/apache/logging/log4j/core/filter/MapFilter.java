@@ -212,19 +212,6 @@ public class MapFilter extends AbstractFilter {
         return isAnd;
     }
 
-    /** @deprecated  use {@link #getStringMap()} instead */
-    @Deprecated
-    protected Map<String, List<String>> getMap() {
-        final Map<String, List<String>> result = new HashMap<>(map.size());
-        map.forEach(new BiConsumer<String, List<String>>() {
-            @Override
-            public void accept(final String key, final List<String> value) {
-                result.put(key, value);
-            }
-        });
-        return result;
-    }
-
     /**
      * Returns the IndexedStringMap with {@code List<String>} values that this MapFilter was constructed with.
      * @return the IndexedStringMap with {@code List<String>} values to match against

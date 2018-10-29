@@ -41,7 +41,15 @@ public class PatternSelectorTest {
     public void testPatternSelector() throws Exception {
         final PatternMatch[] patterns = new PatternMatch[1];
         patterns[0] = new PatternMatch("FLOW", "%d %-5p [%t]: ====== %C{1}.%M:%L %m ======%n");
-        final PatternSelector selector = MarkerPatternSelector.createSelector(patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
+        // @formatter:off
+        final PatternSelector selector = MarkerPatternSelector.newBuilder()
+                .setProperties(patterns)
+                .setDefaultPattern("%d %-5p [%t]: %m%n")
+                .setAlwaysWriteExceptions(true)
+                .setNoConsoleNoAnsi(true)
+                .setConfiguration(ctx.getConfiguration())
+                .build();
+        // @formatter:on
         final PatternLayout layout = PatternLayout.newBuilder().setPatternSelector(selector)
                 .setConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //

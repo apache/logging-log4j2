@@ -66,37 +66,6 @@ public class MapLookup implements StrLookup {
         return new HashMap<>(initialCapacity);
     }
 
-    /**
-     * An application's {@code public static main(String[])} method calls this method to make its main arguments
-     * available for lookup with the prefix {@code main}.
-     * <p>
-     * The map provides two kinds of access: First by index, starting at {@code "0"}, {@code "1"} and so on. For
-     * example, the command line {@code --file path/file.txt -x 2} can be accessed from a configuration file with:
-     * </p>
-     * <ul>
-     * <li>{@code "main:0"} = {@code "--file"}</li>
-     * <li>{@code "main:1"} = {@code "path/file.txt"}</li>
-     * <li>{@code "main:2"} = {@code "-x"}</li>
-     * <li>{@code "main:3"} = {@code "2"}</li>
-     * </ul>
-     * <p>
-     * Second using the argument at position n as the key to access the value at n+1.
-     * </p>
-     * <ul>
-     * <li>{@code "main:--file"} = {@code "path/file.txt"}</li>
-     * <li>{@code "main:-x"} = {@code "2"}</li>
-     * </ul>
-     *
-     * @param args
-     *        An application's {@code public static main(String[])} arguments.
-     * @since 2.1
-     * @deprecated As of 2.4, use {@link MainMapLookup#setMainArguments(String[])}
-     */
-    @Deprecated
-    public static void setMainArguments(final String... args) {
-        MainMapLookup.setMainArguments(args);
-    }
-
     static Map<String, String> toMap(final List<String> args) {
         if (args == null) {
             return null;

@@ -97,8 +97,17 @@ public class JiraLog4j2_2134Test {
 		Logger log = LogManager.getLogger(this.getClass());
 		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 		final Configuration config = ctx.getConfiguration();
-		PatternLayout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, null, config, null,
-				null, false, false, null, null);
+		PatternLayout layout = PatternLayout.newBuilder()
+		        .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+		        .setPatternSelector(null)
+		        .setConfiguration(config)
+		        .setRegexReplacement(null)
+		        .setCharset(null)
+		        .setAlwaysWriteExceptions(false)
+		        .setNoConsoleNoAnsi(false)
+		        .setHeader(null)
+		        .setFooter(null)
+		        .build();
 		// @formatter:off
 		Appender appender = FileAppender.newBuilder()
 		        .setFileName("target/test.log")

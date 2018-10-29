@@ -55,7 +55,7 @@ public class MapLookupTest {
 
     @Test
     public void testMainMap() {
-        MapLookup.setMainArguments(new String[] {
+        MainMapLookup.setMainArguments(new String[] {
                 "--file",
                 "foo.txt" });
         final MapLookup lookup = MainMapLookup.MAIN_SINGLETON;
