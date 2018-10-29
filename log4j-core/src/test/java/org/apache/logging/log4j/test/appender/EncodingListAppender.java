@@ -16,20 +16,20 @@
  */
 package org.apache.logging.log4j.test.appender;
 
+import java.io.Serializable;
+import java.nio.ByteBuffer;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
-import org.apache.logging.log4j.core.layout.SerializedLayout;
-
-import java.io.Serializable;
-import java.nio.ByteBuffer;
 
 /**
- * This appender is primarily used for testing. Use in a real environment is discouraged as the
- * List could eventually grow to cause an OutOfMemoryError.
+ * This appender is primarily used for testing. Use in a real environment is discouraged as the List could eventually
+ * grow to cause an OutOfMemoryError.
  *
- * This appender will use {@link Layout#encode(Object, ByteBufferDestination)} (and not {@link Layout#toByteArray(LogEvent)}).
+ * This appender will use {@link Layout#encode(Object, ByteBufferDestination)} (and not
+ * {@link Layout#toByteArray(LogEvent)}).
  */
 public class EncodingListAppender extends ListAppender {
 
@@ -37,12 +37,14 @@ public class EncodingListAppender extends ListAppender {
         super(name);
     }
 
-    public EncodingListAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout, final boolean newline, final boolean raw) {
+    public EncodingListAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+            final boolean newline, final boolean raw) {
         super(name, filter, layout, newline, raw);
     }
 
     private class Destination implements ByteBufferDestination {
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4096]);
+
         @Override
         public ByteBuffer getByteBuffer() {
             return byteBuffer;
@@ -69,14 +71,6 @@ public class EncodingListAppender extends ListAppender {
         final Layout<? extends Serializable> layout = getLayout();
         if (layout == null) {
             events.add(event);
-        } else if (layout instanceof SerializedLayout) {
-            final Destination content = new Destination();
-            content.byteBuffer.put(layout.getHeader());
-            layout.encode(event, content);
-            content.getByteBuffer().flip();
-            final byte[] record = new byte[content.getByteBuffer().remaining()];
-            content.getByteBuffer().get(record);
-            data.add(record);
         } else {
             final Destination content = new Destination();
             layout.encode(event, content);

@@ -329,10 +329,6 @@ public class JmsManager extends AbstractManager {
      * message will be serialized to a String.
      * </p>
      * <p>
-     * When using a layout such as {@link org.apache.logging.log4j.core.layout.SerializedLayout}, the LogEvent message
-     * will be serialized as a Java object.
-     * </p>
-     * <p>
      * When using a layout such as {@link org.apache.logging.log4j.core.layout.MessageLayout} and the LogEvent message
      * is a Log4j MapMessage, the message will be serialized as a JMS MapMessage.
      * </p>

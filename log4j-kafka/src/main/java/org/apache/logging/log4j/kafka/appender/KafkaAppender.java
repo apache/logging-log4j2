@@ -29,13 +29,10 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.layout.SerializedLayout;
 
 /**
  * Sends log events to an Apache Kafka topic.
@@ -45,17 +42,19 @@ public final class KafkaAppender extends AbstractAppender {
 
     /**
      * Builds KafkaAppender instances.
-     * @param <B> The type to build
+     * 
+     * @param <B>
+     *            The type to build
      */
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<KafkaAppender> {
 
-        @PluginAttribute("topic") 
+        @PluginAttribute("topic")
         private String topic;
 
         @PluginAttribute("key")
         private String key;
-        
+
         @PluginAttribute(value = "syncSend", defaultBoolean = true)
         private boolean syncSend;
 
@@ -67,8 +66,8 @@ public final class KafkaAppender extends AbstractAppender {
                 AbstractLifeCycle.LOGGER.error("No layout provided for KafkaAppender");
                 return null;
             }
-            final KafkaManager kafkaManager =
-                    new KafkaManager(getConfiguration().getLoggerContext(), getName(), topic, syncSend, properties, key);
+            final KafkaManager kafkaManager = new KafkaManager(getConfiguration().getLoggerContext(), getName(), topic,
+                    syncSend, properties, key);
             return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), kafkaManager);
         }
 
@@ -90,9 +89,10 @@ public final class KafkaAppender extends AbstractAppender {
             return asBuilder();
         }
     }
-    
+
     /**
      * Creates a builder for a KafkaAppender.
+     * 
      * @return a builder for a KafkaAppender.
      */
     @PluginBuilderFactory
@@ -124,15 +124,7 @@ public final class KafkaAppender extends AbstractAppender {
     private void tryAppend(final LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
         final Layout<? extends Serializable> layout = getLayout();
         byte[] data;
-        if (layout instanceof SerializedLayout) {
-            final byte[] header = layout.getHeader();
-            final byte[] body = layout.toByteArray(event);
-            data = new byte[header.length + body.length];
-            System.arraycopy(header, 0, data, 0, header.length);
-            System.arraycopy(body, 0, data, header.length, body.length);
-        } else {
-            data = layout.toByteArray(event);
-        }
+        data = layout.toByteArray(event);
         manager.send(data);
     }
 
@@ -153,10 +145,6 @@ public final class KafkaAppender extends AbstractAppender {
 
     @Override
     public String toString() {
-        return "KafkaAppender{" +
-            "name=" + getName() +
-            ", state=" + getState() +
-            ", topic=" + manager.getTopic() +
-            '}';
+        return "KafkaAppender{" + "name=" + getName() + ", state=" + getState() + ", topic=" + manager.getTopic() + '}';
     }
 }
