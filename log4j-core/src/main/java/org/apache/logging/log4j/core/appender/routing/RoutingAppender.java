@@ -102,22 +102,22 @@ public final class RoutingAppender extends AbstractAppender {
             return purgePolicy;
         }
 
-        public B withRoutes(@SuppressWarnings("hiding") final Routes routes) {
+        public B setRoutes(@SuppressWarnings("hiding") final Routes routes) {
             this.routes = routes;
             return asBuilder();
         }
 
-        public B withDefaultRouteScript(@SuppressWarnings("hiding") final AbstractScript defaultRouteScript) {
+        public B setDefaultRouteScript(@SuppressWarnings("hiding") final AbstractScript defaultRouteScript) {
             this.defaultRouteScript = defaultRouteScript;
             return asBuilder();
         }
 
-        public B withRewritePolicy(@SuppressWarnings("hiding") final RewritePolicy rewritePolicy) {
+        public B setRewritePolicy(@SuppressWarnings("hiding") final RewritePolicy rewritePolicy) {
             this.rewritePolicy = rewritePolicy;
             return asBuilder();
         }
 
-        public void withPurgePolicy(@SuppressWarnings("hiding") final PurgePolicy purgePolicy) {
+        public void setPurgePolicy(@SuppressWarnings("hiding") final PurgePolicy purgePolicy) {
             this.purgePolicy = purgePolicy;
         }
 

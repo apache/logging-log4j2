@@ -388,32 +388,32 @@ public final class HtmlLayout extends AbstractStringLayout {
         private Builder() {
         }
 
-        public Builder withLocationInfo(final boolean locationInfo) {
+        public Builder setLocationInfo(final boolean locationInfo) {
             this.locationInfo = locationInfo;
             return this;
         }
 
-        public Builder withTitle(final String title) {
+        public Builder setTitle(final String title) {
             this.title = title;
             return this;
         }
 
-        public Builder withContentType(final String contentType) {
+        public Builder setContentType(final String contentType) {
             this.contentType = contentType;
             return this;
         }
 
-        public Builder withCharset(final Charset charset) {
+        public Builder setCharset(final Charset charset) {
             this.charset = charset;
             return this;
         }
 
-        public Builder withFontSize(final FontSize fontSize) {
+        public Builder setFontSize(final FontSize fontSize) {
             this.fontSize = fontSize;
             return this;
         }
 
-        public Builder withFontName(final String fontName) {
+        public Builder setFontName(final String fontName) {
             this.fontName = fontName;
             return this;
         }

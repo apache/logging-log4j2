@@ -40,12 +40,12 @@ public class JiraLog4j2_2134Test {
 		final Configuration config = ctx.getConfiguration();
 		PatternLayout layout = PatternLayout.newBuilder()
 		// @formatter:off
-				.withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
-				.withConfiguration(config)
+				.setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+				.setConfiguration(config)
 				.build();
 		// @formatter:on
-		Appender appender = FileAppender.newBuilder().withFileName("target/test.log").withLayout(layout)
-				.setConfiguration(config).withBufferSize(4000).withName("File").build();
+		Appender appender = FileAppender.newBuilder().setFileName("target/test.log").setLayout(layout)
+				.setConfiguration(config).setBufferSize(4000).setName("File").build();
 		// appender.start();
 		config.addAppender(appender);
 		AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);

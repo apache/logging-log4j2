@@ -176,13 +176,13 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
                 configuration.setName(name);
             }
             if (level != null) {
-                configuration.getStatusConfiguration().withStatus(level);
+                configuration.getStatusConfiguration().setStatus(level);
             }
             if (verbosity != null) {
-                configuration.getStatusConfiguration().withVerbosity(verbosity);
+                configuration.getStatusConfiguration().setVerbosity(verbosity);
             }
             if (destination != null) {
-                configuration.getStatusConfiguration().withDestination(destination);
+                configuration.getStatusConfiguration().setDestination(destination);
             }
             if (packages != null) {
                 configuration.setPluginPackages(packages);

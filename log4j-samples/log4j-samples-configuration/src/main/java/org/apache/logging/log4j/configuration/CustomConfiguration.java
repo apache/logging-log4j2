@@ -63,8 +63,8 @@ public class CustomConfiguration extends AbstractConfiguration {
 
         setName(CONFIG_NAME);
         final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
-                .withPattern(DEFAULT_PATTERN)
-                .withConfiguration(this)
+                .setPattern(DEFAULT_PATTERN)
+                .setConfiguration(this)
                 .build();
         final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(layout);
         appender.start();

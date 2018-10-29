@@ -50,8 +50,8 @@ public class ValidatingPluginWithTypedBuilderTest {
         // @formatter:off
         final ValidatingPluginWithTypedBuilder validatingPlugin = (ValidatingPluginWithTypedBuilder) 
                 new PluginBuilder(plugin).
-                withConfiguration(new NullConfiguration()).
-                withConfigurationNode(node).build();
+                setConfiguration(new NullConfiguration()).
+                setConfigurationNode(node).build();
         // @formatter:on
         assertNull(validatingPlugin);
     }
@@ -62,8 +62,8 @@ public class ValidatingPluginWithTypedBuilderTest {
         // @formatter:off
         final ValidatingPluginWithTypedBuilder validatingPlugin = (ValidatingPluginWithTypedBuilder) 
                 new PluginBuilder(plugin).
-                withConfiguration(new NullConfiguration()).
-                withConfigurationNode(node).build();
+                setConfiguration(new NullConfiguration()).
+                setConfigurationNode(node).build();
         // @formatter:on
         assertNotNull(validatingPlugin);
         assertEquals("foo", validatingPlugin.getName());

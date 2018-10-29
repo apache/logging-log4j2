@@ -302,6 +302,9 @@
       <action issue="LOG4J2-2491" dev="ggregory" type="update">
         Allow all Appenders to optionally carry a Property array.
       </action>
+      <action issue="LOG4J2-2492" dev="ggregory" type="update">
+        Update builder methods from the "with" prefix to the "set" prefix.
+      </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
       <action issue="LOG4J2-2391" dev="ckozak" type="update">

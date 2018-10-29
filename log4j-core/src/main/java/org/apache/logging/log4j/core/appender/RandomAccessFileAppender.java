@@ -225,13 +225,13 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         .setAdvertise(isAdvertise)
         .setAdvertiseURI(advertiseURI)
         .setAppend(isAppend)
-        .withBufferSize(bufferSize)
+        .setBufferSize(bufferSize)
         .setConfiguration(configuration)
         .setFileName(fileName).setFilter(filter)
-            .withIgnoreExceptions(ignoreExceptions)
-            .withImmediateFlush(isFlush)
-            .withLayout(layout)
-            .withName(name)
+            .setIgnoreExceptions(ignoreExceptions)
+            .setImmediateFlush(isFlush)
+            .setLayout(layout)
+            .setName(name)
             .build();
     }
     

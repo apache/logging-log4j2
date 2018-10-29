@@ -90,8 +90,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         .setColumnConfigs(columnConfigs)
         .setConnectionSource(connectionSource)
         .setTableName(tableName)
-        .withName(name)
-        .withIgnoreExceptions(ignoreExceptions).setFilter(filter)
+        .setName(name)
+        .setIgnoreExceptions(ignoreExceptions).setFilter(filter)
             .build();
     }
 

@@ -129,47 +129,47 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             return immediateFail;
         }
 
-        public B withAdvertise(final boolean advertise) {
+        public B setAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
-        public B withConnectTimeoutMillis(final int connectTimeoutMillis) {
+        public B setConnectTimeoutMillis(final int connectTimeoutMillis) {
             this.connectTimeoutMillis = connectTimeoutMillis;
             return asBuilder();
         }
 
-        public B withHost(final String host) {
+        public B setHost(final String host) {
             this.host = host;
             return asBuilder();
         }
 
-        public B withImmediateFail(final boolean immediateFail) {
+        public B setImmediateFail(final boolean immediateFail) {
             this.immediateFail = immediateFail;
             return asBuilder();
         }
 
-        public B withPort(final int port) {
+        public B setPort(final int port) {
             this.port = port;
             return asBuilder();
         }
 
-        public B withProtocol(final Protocol protocol) {
+        public B setProtocol(final Protocol protocol) {
             this.protocol = protocol;
             return asBuilder();
         }
 
-        public B withReconnectDelayMillis(final int reconnectDelayMillis) {
+        public B setReconnectDelayMillis(final int reconnectDelayMillis) {
             this.reconnectDelayMillis = reconnectDelayMillis;
             return asBuilder();
         }
 
-        public B withSocketOptions(final SocketOptions socketOptions) {
+        public B setSocketOptions(final SocketOptions socketOptions) {
             this.socketOptions = socketOptions;
             return asBuilder();
         }
 
-        public B withSslConfiguration(final SslConfiguration sslConfiguration) {
+        public B setSslConfiguration(final SslConfiguration sslConfiguration) {
             this.sslConfiguration = sslConfiguration;
             return asBuilder();
         }
@@ -317,18 +317,18 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
 
         // @formatter:off
         return newBuilder()
-        .withAdvertise(advertise)
+        .setAdvertise(advertise)
         .setConfiguration(configuration)
-        .withConnectTimeoutMillis(connectTimeoutMillis).setFilter(filter)
-            .withHost(host)
-            .withIgnoreExceptions(ignoreExceptions)
-            .withImmediateFail(immediateFail)
-            .withLayout(layout)
-            .withName(name)
-            .withPort(port)
-            .withProtocol(protocol)
-            .withReconnectDelayMillis(reconnectDelayMillis)
-            .withSslConfiguration(sslConfig)
+        .setConnectTimeoutMillis(connectTimeoutMillis).setFilter(filter)
+            .setHost(host)
+            .setIgnoreExceptions(ignoreExceptions)
+            .setImmediateFail(immediateFail)
+            .setLayout(layout)
+            .setName(name)
+            .setPort(port)
+            .setProtocol(protocol)
+            .setReconnectDelayMillis(reconnectDelayMillis)
+            .setSslConfiguration(sslConfig)
             .build();
         // @formatter:on
     }

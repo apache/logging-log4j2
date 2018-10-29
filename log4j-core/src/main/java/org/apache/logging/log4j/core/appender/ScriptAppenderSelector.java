@@ -105,22 +105,22 @@ public class ScriptAppenderSelector extends AbstractAppender {
             return script;
         }
 
-        public Builder withAppenderNodeSet(@SuppressWarnings("hiding") final AppenderSet appenderSet) {
+        public Builder setAppenderNodeSet(@SuppressWarnings("hiding") final AppenderSet appenderSet) {
             this.appenderSet = appenderSet;
             return this;
         }
 
-        public Builder withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+        public Builder setConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
 
-        public Builder withName(@SuppressWarnings("hiding") final String name) {
+        public Builder setName(@SuppressWarnings("hiding") final String name) {
             this.name = name;
             return this;
         }
 
-        public Builder withScript(@SuppressWarnings("hiding") final AbstractScript script) {
+        public Builder setScript(@SuppressWarnings("hiding") final AbstractScript script) {
             this.script = script;
             return this;
         }

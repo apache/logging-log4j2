@@ -138,47 +138,47 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             return fileGroup;
         }
 
-        public B withAdvertise(final boolean advertise) {
+        public B setAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
-        public B withAdvertiseUri(final String advertiseUri) {
+        public B setAdvertiseUri(final String advertiseUri) {
             this.advertiseUri = advertiseUri;
             return asBuilder();
         }
 
-        public B withAppend(final boolean append) {
+        public B setAppend(final boolean append) {
             this.append = append;
             return asBuilder();
         }
 
-        public B withFileName(final String fileName) {
+        public B setFileName(final String fileName) {
             this.fileName = fileName;
             return asBuilder();
         }
 
-        public B withCreateOnDemand(final boolean createOnDemand) {
+        public B setCreateOnDemand(final boolean createOnDemand) {
             this.createOnDemand = createOnDemand;
             return asBuilder();
         }
 
-        public B withLocking(final boolean locking) {
+        public B setLocking(final boolean locking) {
             this.locking = locking;
             return asBuilder();
         }
 
-        public B withFilePermissions(final String filePermissions) {
+        public B setFilePermissions(final String filePermissions) {
             this.filePermissions = filePermissions;
             return asBuilder();
         }
 
-        public B withFileOwner(final String fileOwner) {
+        public B setFileOwner(final String fileOwner) {
             this.fileOwner = fileOwner;
             return asBuilder();
         }
 
-        public B withFileGroup(final String fileGroup) {
+        public B setFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
             return asBuilder();
         }
@@ -226,18 +226,18 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             final String advertiseUri,
             final Configuration config) {
         return FileAppender.<B>newBuilder()
-        .withAdvertise(Boolean.parseBoolean(advertise))
-        .withAdvertiseUri(advertiseUri)
-        .withAppend(Booleans.parseBoolean(append, true))
-        .withBufferedIo(Booleans.parseBoolean(bufferedIo, true))
-        .withBufferSize(Integers.parseInt(bufferSizeStr, DEFAULT_BUFFER_SIZE))
+        .setAdvertise(Boolean.parseBoolean(advertise))
+        .setAdvertiseUri(advertiseUri)
+        .setAppend(Booleans.parseBoolean(append, true))
+        .setBufferedIo(Booleans.parseBoolean(bufferedIo, true))
+        .setBufferSize(Integers.parseInt(bufferSizeStr, DEFAULT_BUFFER_SIZE))
         .setConfiguration(config)
-        .withFileName(fileName).setFilter(filter)
-            .withIgnoreExceptions(Booleans.parseBoolean(ignoreExceptions, true))
-            .withImmediateFlush(Booleans.parseBoolean(immediateFlush, true))
-            .withLayout(layout)
-            .withLocking(Boolean.parseBoolean(locking))
-            .withName(name)
+        .setFileName(fileName).setFilter(filter)
+            .setIgnoreExceptions(Booleans.parseBoolean(ignoreExceptions, true))
+            .setImmediateFlush(Booleans.parseBoolean(immediateFlush, true))
+            .setLayout(layout)
+            .setLocking(Boolean.parseBoolean(locking))
+            .setName(name)
             .build();
         // @formatter:on
     }

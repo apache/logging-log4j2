@@ -72,7 +72,7 @@ public class OnStartupTriggeringPolicyTest {
         assertEquals(copied, size);
 
         Assert.assertTrue(target.toFile().setLastModified(timeStamp));
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%msg").withConfiguration(configuration)
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("%msg").setConfiguration(configuration)
                 .build();
         final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
                 configuration);

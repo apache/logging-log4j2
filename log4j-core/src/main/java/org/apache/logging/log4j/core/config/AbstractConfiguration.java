@@ -582,8 +582,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // LOG4J2-1176 facilitate memory leak investigation
         setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
         final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
-                .withPattern(DefaultConfiguration.DEFAULT_PATTERN)
-                .withConfiguration(this)
+                .setPattern(DefaultConfiguration.DEFAULT_PATTERN)
+                .setConfiguration(this)
                 .build();
         final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(layout);
         appender.start();
@@ -961,7 +961,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
         }
 
-        return new PluginBuilder(type).withConfiguration(this).withConfigurationNode(node).forLogEvent(event).build();
+        return new PluginBuilder(type).setConfiguration(this).setConfigurationNode(node).forLogEvent(event).build();
     }
 
     private static Map<String, ?> createPluginMap(final Node node) {

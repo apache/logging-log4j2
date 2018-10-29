@@ -95,22 +95,22 @@ public final class Routes {
             return routes;
         }
 
-        public Builder withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+        public Builder setConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
 
-        public Builder withPattern(@SuppressWarnings("hiding") final String pattern) {
+        public Builder setPattern(@SuppressWarnings("hiding") final String pattern) {
             this.pattern = pattern;
             return this;
         }
 
-        public Builder withPatternScript(@SuppressWarnings("hiding") final AbstractScript patternScript) {
+        public Builder setPatternScript(@SuppressWarnings("hiding") final AbstractScript patternScript) {
             this.patternScript = patternScript;
             return this;
         }
 
-        public Builder withRoutes(@SuppressWarnings("hiding") final Route[] routes) {
+        public Builder setRoutes(@SuppressWarnings("hiding") final Route... routes) {
             this.routes = routes;
             return this;
         }

@@ -52,11 +52,11 @@ public class CronTriggeringPolicyTest {
     private void testBuilder() {
         // @formatter:off
         final RollingFileAppender raf = RollingFileAppender.newBuilder()
-            .withName("test1")
-            .withFileName("target/testcmd1.log")
-            .withFilePattern("target/testcmd1.log.%d{yyyy-MM-dd}")
-            .withPolicy(createPolicy())
-            .withStrategy(createStrategy())
+            .setName("test1")
+            .setFileName("target/testcmd1.log")
+            .setFilePattern("target/testcmd1.log.%d{yyyy-MM-dd}")
+            .setPolicy(createPolicy())
+            .setStrategy(createStrategy())
             .setConfiguration(configuration)
             .build();
         // @formatter:on
@@ -88,11 +88,11 @@ public class CronTriggeringPolicyTest {
     public void testRollingRandomAccessFileAppender() {
         // @formatter:off
         RollingRandomAccessFileAppender.newBuilder()
-            .withName("test2")
-            .withFileName("target/testcmd2.log")
-            .withFilePattern("target/testcmd2.log.%d{yyyy-MM-dd}")
-            .withPolicy(createPolicy())
-            .withStrategy(createStrategy())
+            .setName("test2")
+            .setFileName("target/testcmd2.log")
+            .setFilePattern("target/testcmd2.log.%d{yyyy-MM-dd}")
+            .setPolicy(createPolicy())
+            .setStrategy(createStrategy())
             .setConfiguration(configuration)
             .build();
         // @formatter:on

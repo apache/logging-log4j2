@@ -47,8 +47,8 @@ public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
     @Test
     public void testNullDefaultValue() throws Exception {
         final PluginWithGenericSubclassFoo1Builder validatingPlugin = (PluginWithGenericSubclassFoo1Builder) new PluginBuilder(plugin)
-            .withConfiguration(new NullConfiguration())
-            .withConfigurationNode(node)
+            .setConfiguration(new NullConfiguration())
+            .setConfigurationNode(node)
             .build();
         assertNull(validatingPlugin);
     }
@@ -58,8 +58,8 @@ public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
         node.getAttributes().put("thing", "thing1");
         node.getAttributes().put("foo1", "foo1");
         final PluginWithGenericSubclassFoo1Builder validatingPlugin = (PluginWithGenericSubclassFoo1Builder) new PluginBuilder(plugin)
-            .withConfiguration(new NullConfiguration())
-            .withConfigurationNode(node)
+            .setConfiguration(new NullConfiguration())
+            .setConfigurationNode(node)
             .build();
         assertNotNull(validatingPlugin);
         assertEquals("thing1", validatingPlugin.getThing());

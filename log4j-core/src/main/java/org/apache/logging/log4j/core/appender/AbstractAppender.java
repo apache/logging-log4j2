@@ -72,17 +72,17 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return layout;
         }
 
-        public B withName(final String name) {
+        public B setName(final String name) {
             this.name = name;
             return asBuilder();
         }
 
-        public B withIgnoreExceptions(final boolean ignoreExceptions) {
+        public B setIgnoreExceptions(final boolean ignoreExceptions) {
             this.ignoreExceptions = ignoreExceptions;
             return asBuilder();
         }
 
-        public B withLayout(final Layout<? extends Serializable> layout) {
+        public B setLayout(final Layout<? extends Serializable> layout) {
             this.layout = layout;
             return asBuilder();
         }
@@ -96,18 +96,9 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         
         public Layout<? extends Serializable> getOrCreateLayout(final Charset charset) {
             if (layout == null) {
-                return PatternLayout.newBuilder().withCharset(charset).build();
+                return PatternLayout.newBuilder().setCharset(charset).build();
             }
             return layout;
-        }
-
-        /**
-         * @deprecated Use {@link #setConfiguration(Configuration)}
-         */
-        @Deprecated
-        public B withConfiguration(final Configuration configuration) {
-            this.configuration = configuration;
-            return asBuilder();
         }
 
         public B setConfiguration(final Configuration configuration) {

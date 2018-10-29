@@ -76,18 +76,18 @@ public class CustomConfigurationTest {
             }
         }
         final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
-            .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
-            .withConfiguration(config)
+            .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+            .setConfiguration(config)
             .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(LOG_FILE)
-            .withAppend(false)
-            .withName("File")
-            .withIgnoreExceptions(false)
-            .withBufferSize(4000)
-            .withBufferedIo(false)
-            .withLayout(layout)
+            .setFileName(LOG_FILE)
+            .setAppend(false)
+            .setName("File")
+            .setIgnoreExceptions(false)
+            .setBufferSize(4000)
+            .setBufferedIo(false)
+            .setLayout(layout)
             .build();
         // @formatter:on
         appender.start();

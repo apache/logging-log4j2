@@ -68,22 +68,22 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 }
             }
             processAttributes(rootNode, root);
-            final StatusConfiguration statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES)
-                    .withStatus(getDefaultStatus());
+            final StatusConfiguration statusConfig = new StatusConfiguration().setVerboseClasses(VERBOSE_CLASSES)
+                    .setStatus(getDefaultStatus());
             for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
                 final String key = entry.getKey();
                 final String value = getStrSubstitutor().replace(entry.getValue());
                 // TODO: this duplicates a lot of the XmlConfiguration constructor
                 if ("status".equalsIgnoreCase(key)) {
-                    statusConfig.withStatus(value);
+                    statusConfig.setStatus(value);
                 } else if ("dest".equalsIgnoreCase(key)) {
-                    statusConfig.withDestination(value);
+                    statusConfig.setDestination(value);
                 } else if ("shutdownHook".equalsIgnoreCase(key)) {
                     isShutdownHookEnabled = !"disable".equalsIgnoreCase(value);
                 } else if ("shutdownTimeout".equalsIgnoreCase(key)) {
                     shutdownTimeoutMillis = Long.parseLong(value);
                 } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
-                    statusConfig.withVerbosity(value);
+                    statusConfig.setVerbosity(value);
                 } else if ("packages".equalsIgnoreCase(key)) {
                     pluginPackages.addAll(Arrays.asList(value.split(Patterns.COMMA_SEPARATOR)));
                 } else if ("name".equalsIgnoreCase(key)) {

@@ -40,7 +40,7 @@ public class ConsoleAppenderBuilderTest {
      */
     @Test
     public void testDefaultLayoutDefaultCharset() {
-        final ConsoleAppender appender = ConsoleAppender.newBuilder().withName("test").build();
+        final ConsoleAppender appender = ConsoleAppender.newBuilder().setName("test").build();
         final PatternLayout layout = (PatternLayout) appender.getLayout();
         final String charsetName = System.getProperty("sun.stdout.encoding");
         final String expectedName = charsetName != null ? charsetName : Charset.defaultCharset().name();
@@ -52,7 +52,7 @@ public class ConsoleAppenderBuilderTest {
      */
     @Test
     public void testSetNullErrorHandlerIsNotAllowed() {
-        final ConsoleAppender appender = ConsoleAppender.newBuilder().withName("test").build();
+        final ConsoleAppender appender = ConsoleAppender.newBuilder().setName("test").build();
         ErrorHandler handler = appender.getHandler();
         Assert.assertNotNull(handler);
         // This could likely be allowed to throw, but we're just testing that

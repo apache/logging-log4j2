@@ -122,9 +122,9 @@ public class ServletAppender extends AbstractAppender {
             final String name, final boolean ignoreExceptions) {
         // @formatter:off
     	return newBuilder().setFilter(filter)
-    			.withIgnoreExceptions(ignoreExceptions)
-    			.withLayout(layout)
-    			.withName(name)
+    			.setIgnoreExceptions(ignoreExceptions)
+    			.setLayout(layout)
+    			.setName(name)
     			.build();
     	// @formatter:on
     }

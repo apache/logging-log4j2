@@ -42,8 +42,8 @@ public class PatternSelectorTest {
         final PatternMatch[] patterns = new PatternMatch[1];
         patterns[0] = new PatternMatch("FLOW", "%d %-5p [%t]: ====== %C{1}.%M:%L %m ======%n");
         final PatternSelector selector = MarkerPatternSelector.createSelector(patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
-        final PatternLayout layout = PatternLayout.newBuilder().withPatternSelector(selector)
-                .withConfiguration(ctx.getConfiguration()).build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPatternSelector(selector)
+                .setConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.layout.PatternSelectorTest$FauxLogger")
                 .setMarker(MarkerManager.getMarker("FLOW"))

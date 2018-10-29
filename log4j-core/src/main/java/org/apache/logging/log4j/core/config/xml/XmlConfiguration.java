@@ -108,21 +108,21 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             }
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
-            final StatusConfiguration statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES)
-                    .withStatus(getDefaultStatus());
+            final StatusConfiguration statusConfig = new StatusConfiguration().setVerboseClasses(VERBOSE_CLASSES)
+                    .setStatus(getDefaultStatus());
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
                 final String key = entry.getKey();
                 final String value = getStrSubstitutor().replace(entry.getValue());
                 if ("status".equalsIgnoreCase(key)) {
-                    statusConfig.withStatus(value);
+                    statusConfig.setStatus(value);
                 } else if ("dest".equalsIgnoreCase(key)) {
-                    statusConfig.withDestination(value);
+                    statusConfig.setDestination(value);
                 } else if ("shutdownHook".equalsIgnoreCase(key)) {
                     isShutdownHookEnabled = !"disable".equalsIgnoreCase(value);
                 } else if ("shutdownTimeout".equalsIgnoreCase(key)) {
                     shutdownTimeoutMillis = Long.parseLong(value);
                 } else if ("verbose".equalsIgnoreCase(key)) {
-                    statusConfig.withVerbosity(value);
+                    statusConfig.setVerbosity(value);
                 } else if ("packages".equalsIgnoreCase(key)) {
                     pluginPackages.addAll(Arrays.asList(value.split(Patterns.COMMA_SEPARATOR)));
                 } else if ("name".equalsIgnoreCase(key)) {

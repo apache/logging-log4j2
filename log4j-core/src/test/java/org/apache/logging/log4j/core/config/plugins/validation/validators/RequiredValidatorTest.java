@@ -45,8 +45,8 @@ public class RequiredValidatorTest {
     @Test
     public void testNullDefaultValue() throws Exception {
         final ValidatingPlugin validatingPlugin = (ValidatingPlugin) new PluginBuilder(plugin)
-            .withConfiguration(new NullConfiguration())
-            .withConfigurationNode(node)
+            .setConfiguration(new NullConfiguration())
+            .setConfigurationNode(node)
             .build();
         assertNull(validatingPlugin);
     }
@@ -55,8 +55,8 @@ public class RequiredValidatorTest {
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("name", "foo");
         final ValidatingPlugin validatingPlugin = (ValidatingPlugin) new PluginBuilder(plugin)
-            .withConfiguration(new NullConfiguration())
-            .withConfigurationNode(node)
+            .setConfiguration(new NullConfiguration())
+            .setConfigurationNode(node)
             .build();
         assertNotNull(validatingPlugin);
         assertEquals("foo", validatingPlugin.getName());

@@ -62,8 +62,8 @@ public class ValidPortValidatorTest {
 
     private HostAndPort buildPlugin() {
         return (HostAndPort) new PluginBuilder(plugin)
-            .withConfiguration(new NullConfiguration())
-            .withConfigurationNode(node)
+            .setConfiguration(new NullConfiguration())
+            .setConfigurationNode(node)
             .build();
     }
 

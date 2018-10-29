@@ -67,14 +67,6 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
             return asBuilder();
         }
 
-        /**
-         * @deprecated Use {@link #setFilter(Filter)}.
-         */
-        @Deprecated
-        public B withFilter(final Filter filter) {
-            return setFilter(filter);
-        }
-
     }
 
     /**

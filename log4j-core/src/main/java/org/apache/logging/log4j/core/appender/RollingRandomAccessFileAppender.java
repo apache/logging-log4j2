@@ -54,9 +54,9 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
 
         public Builder() {
             super();
-            withBufferSize(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
-            withIgnoreExceptions(true);
-            withImmediateFlush(true);
+            setBufferSize(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
+            setIgnoreExceptions(true);
+            setImmediateFlush(true);
         }
 
         @PluginBuilderAttribute("fileName")
@@ -100,13 +100,13 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             if (strategy == null) {
                 if (fileName != null) {
                     strategy = DefaultRolloverStrategy.newBuilder()
-                            .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
-                            .withConfig(getConfiguration())
+                            .setCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                            .setConfig(getConfiguration())
                             .build();
                 } else {
                     strategy = DirectWriteRolloverStrategy.newBuilder()
-                            .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
-                            .withConfig(getConfiguration())
+                            .setCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                            .setConfig(getConfiguration())
                             .build();
                 }
             } else if (fileName == null && !(strategy instanceof DirectFileRolloverStrategy)) {
@@ -142,52 +142,52 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
                     isIgnoreExceptions(), immediateFlush, bufferSize, advertise ? getConfiguration().getAdvertiser() : null);
         }
 
-        public B withFileName(final String fileName) {
+        public B setFileName(final String fileName) {
             this.fileName = fileName;
             return asBuilder();
         }
 
-        public B withFilePattern(final String filePattern) {
+        public B setFilePattern(final String filePattern) {
             this.filePattern = filePattern;
             return asBuilder();
         }
 
-        public B withAppend(final boolean append) {
+        public B setAppend(final boolean append) {
             this.append = append;
             return asBuilder();
         }
 
-        public B withPolicy(final TriggeringPolicy policy) {
+        public B setPolicy(final TriggeringPolicy policy) {
             this.policy = policy;
             return asBuilder();
         }
 
-        public B withStrategy(final RolloverStrategy strategy) {
+        public B setStrategy(final RolloverStrategy strategy) {
             this.strategy = strategy;
             return asBuilder();
         }
 
-        public B withAdvertise(final boolean advertise) {
+        public B setAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
-        public B withAdvertiseURI(final String advertiseURI) {
+        public B setAdvertiseURI(final String advertiseURI) {
             this.advertiseURI = advertiseURI;
             return asBuilder();
         }
 
-        public B withFilePermissions(final String filePermissions) {
+        public B setFilePermissions(final String filePermissions) {
             this.filePermissions = filePermissions;
             return asBuilder();
         }
 
-        public B withFileOwner(final String fileOwner) {
+        public B setFileOwner(final String fileOwner) {
             this.fileOwner = fileOwner;
             return asBuilder();
         }
 
-        public B withFileGroup(final String fileGroup) {
+        public B setFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
             return asBuilder();
         }
@@ -328,19 +328,19 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         final int bufferSize = Integers.parseInt(bufferSizeStr, RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
         return RollingRandomAccessFileAppender.<B>newBuilder()
-           .withAdvertise(isAdvertise)
-           .withAdvertiseURI(advertiseURI)
-           .withAppend(isAppend)
-           .withBufferSize(bufferSize)
+           .setAdvertise(isAdvertise)
+           .setAdvertiseURI(advertiseURI)
+           .setAppend(isAppend)
+           .setBufferSize(bufferSize)
            .setConfiguration(configuration)
-           .withFileName(fileName)
-           .withFilePattern(filePattern).setFilter(filter)
-           .withIgnoreExceptions(isIgnoreExceptions)
-           .withImmediateFlush(isImmediateFlush)
-           .withLayout(layout)
-           .withName(name)
-           .withPolicy(policy)
-           .withStrategy(strategy)
+           .setFileName(fileName)
+           .setFilePattern(filePattern).setFilter(filter)
+           .setIgnoreExceptions(isIgnoreExceptions)
+           .setImmediateFlush(isImmediateFlush)
+           .setLayout(layout)
+           .setName(name)
+           .setPolicy(policy)
+           .setStrategy(strategy)
            .build();
     }
     

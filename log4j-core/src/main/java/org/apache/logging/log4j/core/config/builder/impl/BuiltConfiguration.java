@@ -56,7 +56,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
 
     public BuiltConfiguration(final LoggerContext loggerContext, final ConfigurationSource source, final Component rootComponent) {
         super(loggerContext, source);
-        statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES).withStatus(getDefaultStatus());
+        statusConfig = new StatusConfiguration().setVerboseClasses(VERBOSE_CLASSES).setStatus(getDefaultStatus());
         for (final Component component : rootComponent.getComponents()) {
             switch (component.getPluginType()) {
                 case "Scripts": {

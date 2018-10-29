@@ -82,12 +82,12 @@ public class AppenderSet {
             return configuration;
         }
 
-        public Builder withNode(@SuppressWarnings("hiding") final Node node) {
+        public Builder setNode(@SuppressWarnings("hiding") final Node node) {
             this.node = node;
             return this;
         }
 
-        public Builder withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+        public Builder setConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }

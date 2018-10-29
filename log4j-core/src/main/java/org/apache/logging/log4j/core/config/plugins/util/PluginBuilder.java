@@ -78,7 +78,7 @@ public class PluginBuilder implements Builder<Object> {
      * @param configuration the configuration to use.
      * @return {@code this}
      */
-    public PluginBuilder withConfiguration(final Configuration configuration) {
+    public PluginBuilder setConfiguration(final Configuration configuration) {
         this.configuration = configuration;
         return this;
     }
@@ -89,7 +89,7 @@ public class PluginBuilder implements Builder<Object> {
      * @param node the plugin configuration node to use.
      * @return {@code this}
      */
-    public PluginBuilder withConfigurationNode(final Node node) {
+    public PluginBuilder setConfigurationNode(final Node node) {
         this.node = node;
         return this;
     }

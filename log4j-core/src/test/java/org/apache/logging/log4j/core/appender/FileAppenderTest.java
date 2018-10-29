@@ -93,14 +93,14 @@ public class FileAppenderTest {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(FILE_NAME)
-            .withName("test")
-            .withImmediateFlush(false)
-            .withIgnoreExceptions(false)
-            .withBufferedIo(false)
-            .withBufferSize(1)
-            .withLayout(layout)
-            .withCreateOnDemand(createOnDemand)
+            .setFileName(FILE_NAME)
+            .setName("test")
+            .setImmediateFlush(false)
+            .setIgnoreExceptions(false)
+            .setBufferedIo(false)
+            .setBufferSize(1)
+            .setLayout(layout)
+            .setCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on
         Assert.assertEquals(createOnDemand, appender.getManager().isCreateOnDemand());
@@ -115,7 +115,7 @@ public class FileAppenderTest {
     }
 
     private static PatternLayout createPatternLayout() {
-        return PatternLayout.newBuilder().withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+        return PatternLayout.newBuilder().setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .build();
     }
 
@@ -124,14 +124,14 @@ public class FileAppenderTest {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(FILE_NAME)
-            .withName("test")
-            .withImmediateFlush(false)
-            .withIgnoreExceptions(false)
-            .withBufferedIo(false)
-            .withBufferSize(1)
-            .withLayout(layout)
-            .withCreateOnDemand(createOnDemand)
+            .setFileName(FILE_NAME)
+            .setName("test")
+            .setImmediateFlush(false)
+            .setIgnoreExceptions(false)
+            .setBufferedIo(false)
+            .setBufferSize(1)
+            .setLayout(layout)
+            .setCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on
         try {
@@ -233,14 +233,14 @@ public class FileAppenderTest {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(FILE_NAME)
-            .withName("test")
-            .withImmediateFlush(false)
-            .withIgnoreExceptions(false)
-            .withLocking(locking)
-            .withBufferedIo(false)
-            .withLayout(layout)
-            .withCreateOnDemand(createOnDemand)
+            .setFileName(FILE_NAME)
+            .setName("test")
+            .setImmediateFlush(false)
+            .setIgnoreExceptions(false)
+            .setLocking(locking)
+            .setBufferedIo(false)
+            .setLayout(layout)
+            .setCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on
         Assert.assertEquals(createOnDemand, appender.getManager().isCreateOnDemand());
