@@ -75,7 +75,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     private FlumeAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
             final boolean ignoreExceptions, final String includes, final String excludes, final String required,
             final String mdcPrefix, final String eventPrefix, final boolean compress, final FlumeEventFactory factory,
-            final AbstractFlumeManager manager, final Property[] properties) {
+            final AbstractFlumeManager manager, Property[] properties) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
         this.mdcIncludes = includes;

@@ -34,17 +34,17 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * A Comma-Separated Value (CSV) layout to log event parameters.
- * The event message is currently ignored.
- *
+ * The event message is currently ignored. 
+ * 
  * <p>
  * Best used with:
  * </p>
  * <p>
  * {@code logger.debug(new ObjectArrayMessage(1, 2, "Bob"));}
  * </p>
- *
+ * 
  * Depends on Apache Commons CSV 1.4.
- *
+ * 
  * @since 2.4
  */
 @Plugin(name = "CsvParameterLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
@@ -70,7 +70,7 @@ public class CsvParameterLayout extends AbstractCsvLayout {
             @PluginAttribute("nullString") final String nullString,
             @PluginAttribute("recordSeparator") final String recordSeparator,
             @PluginAttribute(value = "charset", defaultString = DEFAULT_CHARSET) final Charset charset,
-            @PluginAttribute("header") final String header,
+            @PluginAttribute("header") final String header, 
             @PluginAttribute("footer") final String footer)
             // @formatter:on
     {

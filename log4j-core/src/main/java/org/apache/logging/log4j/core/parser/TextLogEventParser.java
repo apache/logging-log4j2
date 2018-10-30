@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.LogEvent;
  * Parses the output from a text based layout into instances of {@link LogEvent}.
  */
 public interface TextLogEventParser extends LogEventParser {
-
+    
     /**
      * Parses a String, which is expected to contain exactly one log event.
      *

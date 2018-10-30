@@ -36,7 +36,7 @@ import org.junit.Test;
  * integration tests (classes that end in "IT" instead of "Test" and
  * "TestCase".)
  * </p>
- *
+ * 
  * @see PropertyFilePropertySource
  * @see SecurityManager
  * @see System#setSecurityManager(SecurityManager)
@@ -48,7 +48,7 @@ public class PropertyFilePropertySourceSecurityManagerIT {
 	public static void beforeClass() {
 		Assert.assertTrue(TEST_FIXTURE_PATH, Files.exists(Paths.get(TEST_FIXTURE_PATH)));
 	}
-
+	
 	@Rule
 	public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
 
@@ -72,7 +72,7 @@ public class PropertyFilePropertySourceSecurityManagerIT {
 	 * Makes sure we do not blow up with exception below due to a security manager
 	 * rejecting environment variable access in
 	 * {@link SystemPropertiesPropertySource}.
-	 *
+	 * 
 	 * <pre>
 	 * </pre>
 	 */

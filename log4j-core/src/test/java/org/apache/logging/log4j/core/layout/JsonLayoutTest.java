@@ -391,7 +391,7 @@ public class JsonLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setIncludeStacktrace(true)
                 .build();
-        final Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
+        Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
         try {
             final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
                     .setLoggerName("a.B")
@@ -400,7 +400,7 @@ public class JsonLayoutTest {
                     .setMessage(message)
                     .setThreadName("threadName")
                     .setTimeMillis(1).build();
-            final MutableLogEvent mutableLogEvent = new MutableLogEvent();
+            MutableLogEvent mutableLogEvent = new MutableLogEvent();
             mutableLogEvent.initFrom(expected);
             final String str = layout.toSerializable(mutableLogEvent);
             final String expectedMessage = "Testing " + TestObj.TO_STRING_VALUE;
@@ -426,9 +426,9 @@ public class JsonLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setIncludeStacktrace(true)
                 .build();
-        final Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
+        Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
         try {
-            final RingBufferLogEvent ringBufferEvent = new RingBufferLogEvent();
+            RingBufferLogEvent ringBufferEvent = new RingBufferLogEvent();
             ringBufferEvent.setValues(
                     null, "a.B", null, "f.q.c.n", Level.DEBUG, message,
                     null, new SortedArrayStringMap(), ThreadContext.EMPTY_STACK, 1L,
@@ -499,19 +499,19 @@ public class JsonLayoutTest {
         // @formatter:off
         return layout.toSerializable(expected);
     }
-
+    
     @Test
     public void testObjectMessageAsJsonString() {
     		final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, false);
 		assertTrue(str, str.contains("\"message\":\"" + this.getClass().getCanonicalName() + "$TestClass@"));
     }
-
+    
     @Test
     public void testObjectMessageAsJsonObject() {
     		final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, true);
     		assertTrue(str, str.contains("\"message\":{\"value\":1234}"));
     }
-
+    
     private String prepareJSONForObjectMessageAsJsonObjectTests(final int value, final boolean objectMessageAsJsonObject) {
     	final TestClass testClass = new TestClass();
 		testClass.setValue(value);
@@ -551,11 +551,11 @@ public class JsonLayoutTest {
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
         assertFalse(str.endsWith("\0"));
     }
-
+    
     private String toPropertySeparator(final boolean compact) {
         return compact ? ":" : " : ";
     }
-
+    
 	private static class TestClass {
 		private int value;
 
@@ -563,7 +563,7 @@ public class JsonLayoutTest {
 			return value;
 		}
 
-		public void setValue(final int value) {
+		public void setValue(int value) {
 			this.value = value;
 		}
 	}

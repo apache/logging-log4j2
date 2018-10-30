@@ -83,7 +83,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         this.type = type;
         this.maxLength = maxLength;
     }
-
+    
     /**
      * Creates a StructuredDataMessage using an ID (max 32 characters), message, type (max 32 characters), and an
      * initial map of structured data to include.
@@ -253,7 +253,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     @Override
-    public void formatTo(final String[] formats, final StringBuilder buffer) {
+    public void formatTo(String[] formats, StringBuilder buffer) {
         asString(getFormat(formats), null, buffer);
     }
 
@@ -355,7 +355,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         }
     }
 
-    private void asXml(final StructuredDataId structuredDataId, final StringBuilder sb) {
+    private void asXml(StructuredDataId structuredDataId, StringBuilder sb) {
         sb.append("<StructuredData>\n");
         sb.append("<type>").append(type).append("</type>\n");
         sb.append("<id>").append(structuredDataId).append("</id>\n");
@@ -386,7 +386,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         return asString(getFormat(formats), null);
     }
 
-    private Format getFormat(final String[] formats) {
+    private Format getFormat(String[] formats) {
         if (formats != null && formats.length > 0) {
             for (int i = 0; i < formats.length; i++) {
                 final String format = formats[i];
@@ -468,7 +468,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     protected void validate(final String key, final char value) {
         validateKey(key);
     }
-
+    
     /**
      * @since 2.9
      */
@@ -476,7 +476,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     protected void validate(final String key, final double value) {
         validateKey(key);
     }
-
+    
     /**
      * @since 2.9
      */

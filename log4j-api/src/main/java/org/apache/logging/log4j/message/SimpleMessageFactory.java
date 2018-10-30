@@ -29,12 +29,12 @@ package org.apache.logging.log4j.message;
  * <p>
  * This class is immutable.
  * </p>
- *
+ * 
  * <h4>Note to implementors</h4>
  * <p>
  * This class implements all {@link MessageFactory2} methods.
  * </p>
- *
+ * 
  * @since 2.5
  */
 public final class SimpleMessageFactory extends AbstractMessageFactory {

@@ -130,7 +130,7 @@ public final class Histogram
         // do a classic binary search to find the high value
         while (low < high)
         {
-            final int mid = low + ((high - low) >> 1);
+            int mid = low + ((high - low) >> 1);
             if (upperBounds[mid] < value)
             {
                 low = mid + 1;
@@ -287,10 +287,10 @@ public final class Histogram
         {
             if (0L != counts[i])
             {
-                final long upperBound = Math.min(upperBounds[i], maxValue);
-                final long midPoint = lowerBound + ((upperBound - lowerBound) / 2L);
+                long upperBound = Math.min(upperBounds[i], maxValue);
+                long midPoint = lowerBound + ((upperBound - lowerBound) / 2L);
 
-                final BigDecimal intervalTotal = new BigDecimal(midPoint).multiply(new BigDecimal(counts[i]));
+                BigDecimal intervalTotal = new BigDecimal(midPoint).multiply(new BigDecimal(counts[i]));
                 total = total.add(intervalTotal);
             }
 
@@ -360,7 +360,7 @@ public final class Histogram
     @Override
     public String toString()
     {
-        final StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
         sb.append("Histogram{");
 

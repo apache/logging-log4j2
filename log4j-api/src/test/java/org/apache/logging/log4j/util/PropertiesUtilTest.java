@@ -79,25 +79,25 @@ public class PropertiesUtilTest {
         assertEquals(StandardCharsets.US_ASCII, pu.getCharsetProperty("e.1"));
         assertEquals(Charset.defaultCharset(), pu.getCharsetProperty("e.2"));
     }
-
+    
     @Test
     public void testGetMappedProperty_sun_stdout_encoding() {
         final PropertiesUtil pu = new PropertiesUtil(System.getProperties());
-        final Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
+        Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
         assertEquals(expected, pu.getCharsetProperty("sun.stdout.encoding"));
     }
 
     @Test
     public void testGetMappedProperty_sun_stderr_encoding() {
         final PropertiesUtil pu = new PropertiesUtil(System.getProperties());
-        final Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
+        Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
         assertEquals(expected, pu.getCharsetProperty("sun.err.encoding"));
     }
 
     @Test
     public void testNonStringSystemProperties() {
-        final Object key1 = "1";
-        final Object key2 = new Object();
+        Object key1 = "1";
+        Object key2 = new Object();
         System.getProperties().put(key1, new Object());
         System.getProperties().put(key2, "value-2");
         try {

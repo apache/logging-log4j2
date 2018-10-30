@@ -67,7 +67,7 @@ public class MockTlsSyslogServer extends MockSyslogServer {
         if (thread != null) {
             try {
                 thread.join(100);
-            } catch (final InterruptedException ie) {
+            } catch (InterruptedException ie) {
                 System.out.println("Shutdown of TLS server thread failed.");
             }
         }

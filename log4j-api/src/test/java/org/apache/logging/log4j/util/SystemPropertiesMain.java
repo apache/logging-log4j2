@@ -28,20 +28,19 @@ public class SystemPropertiesMain {
 
     /**
      * Prints system properties to the console.
-     *
+     * 
      * @param args
      *            unused
      */
-    public static void main(final String[] args) {
+    public static void main(String[] args) {
         @SuppressWarnings("unchecked")
-        final
         Enumeration<String> keyEnum = (Enumeration<String>) System.getProperties().propertyNames();
-        final List<String> list = new ArrayList<>();
+        List<String> list = new ArrayList<>();
         while (keyEnum.hasMoreElements()) {
             list.add(keyEnum.nextElement());
         }
         Collections.sort(list);
-        for (final String key : list) {
+        for (String key : list) {
             System.out.println(key + " = " + System.getProperty(key));
         }
     }

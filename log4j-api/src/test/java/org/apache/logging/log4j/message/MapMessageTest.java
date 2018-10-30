@@ -231,7 +231,7 @@ public class MapMessageTest {
         }
 
         @Override
-        public void formatTo(final StringBuilder buffer) {
+        public void formatTo(StringBuilder buffer) {
             buffer.append("formatTo");
         }
     }

@@ -276,7 +276,7 @@ public final class Loader {
         InstantiationException,
         NoSuchMethodException,
         InvocationTargetException {
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClassLoader());
             return LoaderUtil.newInstanceOf(className);
@@ -305,7 +305,7 @@ public final class Loader {
         IllegalAccessException,
         InvocationTargetException,
         InstantiationException {
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClassLoader());
             return LoaderUtil.newCheckedInstanceOf(className, clazz);
@@ -332,7 +332,7 @@ public final class Loader {
         throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
         IllegalAccessException {
         final String className = PropertiesUtil.getProperties().getStringProperty(propertyName);
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClassLoader());
             return LoaderUtil.newCheckedInstanceOfProperty(propertyName, clazz);
@@ -348,7 +348,7 @@ public final class Loader {
      * @return {@code true} if the class could be found or {@code false} otherwise.
      */
     public static boolean isClassAvailable(final String className) {
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClassLoader());
             return LoaderUtil.isClassAvailable(className);
@@ -371,7 +371,7 @@ public final class Loader {
      */
     public static Class<?> loadClass(final String className) throws ClassNotFoundException {
 
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClassLoader());
             return LoaderUtil.loadClass(className);

@@ -168,7 +168,7 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
     }
 
     @Override
-    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+    public boolean stop(long timeout, TimeUnit timeUnit) {
         try {
             final PoolingDriver driver = getPoolingDriver();
             if (driver != null) {
@@ -176,7 +176,7 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
                 driver.closePool(poolName);
             }
             return true;
-        } catch (final Exception e) {
+        } catch (Exception e) {
             getLogger().error("Exception stopping connection source for '{}' → '{}'", getConnectionString(),
                     getActualConnectionString(), e);
             return false;

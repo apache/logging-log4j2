@@ -195,7 +195,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         }
 
     }
-
+    
     private final String fileName;
     private final String filePattern;
     private final Object advertisement;
@@ -342,7 +342,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
            .withStrategy(strategy)
            .build();
     }
-
+    
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();

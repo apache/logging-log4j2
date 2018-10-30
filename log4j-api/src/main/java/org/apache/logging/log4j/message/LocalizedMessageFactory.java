@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 /**
  * Creates {@link FormattedMessage} instances for {@link MessageFactory2} methods (and {@link MessageFactory} by
  * extension.)
- *
+ * 
  * <h4>Note to implementors</h4>
  * <p>
  * This class does <em>not</em> implement any {@link MessageFactory2} methods and lets the superclass funnel those calls
@@ -73,7 +73,7 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
         }
         return new LocalizedMessage(resourceBundle, key);
     }
-
+    
     /**
      * Creates {@link LocalizedMessage} instances.
      *

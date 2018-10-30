@@ -303,7 +303,7 @@ public final class BurstFilter extends AbstractFilter {
 
         /**
          * Sets the logging level to use.
-         * @param level the logging level to use.
+         * @param level the logging level to use. 
          * @return this
          */
         public Builder setLevel(final Level level) {
@@ -313,7 +313,7 @@ public final class BurstFilter extends AbstractFilter {
 
         /**
          * Sets the average number of events per second to allow.
-         * @param rate the average number of events per second to allow. This must be a positive number.
+         * @param rate the average number of events per second to allow. This must be a positive number. 
          * @return this
          */
         public Builder setRate(final float rate) {

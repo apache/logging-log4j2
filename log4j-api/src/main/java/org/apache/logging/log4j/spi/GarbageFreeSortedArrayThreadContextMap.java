@@ -53,7 +53,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
 
     protected final ThreadLocal<StringMap> localMap;
-
+    
     private static volatile int initialCapacity;
     private static volatile boolean inheritableMap;
 
@@ -66,7 +66,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
         initialCapacity = properties.getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY);
         inheritableMap = properties.getBooleanProperty(INHERITABLE_MAP);
     }
-
+    
     static {
         init();
     }

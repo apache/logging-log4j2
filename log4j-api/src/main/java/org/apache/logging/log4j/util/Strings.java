@@ -22,7 +22,7 @@ import java.util.Objects;
 
 /**
  * <em>Consider this class private.</em>
- *
+ * 
  * @see <a href="http://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>
  */
 public final class Strings {
@@ -31,7 +31,7 @@ public final class Strings {
      * The empty string.
      */
     public static final String EMPTY = "";
-
+    
     /**
      * OS-dependent line separator, defaults to {@code "\n"} if the system property {@code ""line.separator"} cannot be
      * read.
@@ -45,7 +45,7 @@ public final class Strings {
 
     /**
      * Returns a double quoted string.
-     *
+     * 
      * @param str a String
      * @return {@code "str"}
      */
@@ -129,7 +129,7 @@ public final class Strings {
 
     /**
      * Returns a quoted string.
-     *
+     * 
      * @param str a String
      * @return {@code 'str'}
      */
@@ -146,7 +146,7 @@ public final class Strings {
     public String toRootUpperCase(final String str) {
         return str.toUpperCase(Locale.ROOT);
     }
-
+    
     /**
      * <p>
      * Removes control characters (char &lt;= 32) from both ends of this String returning {@code null} if the String is

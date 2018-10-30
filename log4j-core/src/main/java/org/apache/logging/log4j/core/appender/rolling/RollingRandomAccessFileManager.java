@@ -130,8 +130,8 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
         try {
             if (randomAccessFile == null) {
-                final String fileName = getFileName();
-                final File file = new File(fileName);
+                String fileName = getFileName();
+                File file = new File(fileName);
                 FileUtils.makeParentDirs(file);
                 createFileAfterRollover(fileName);
             }
@@ -148,7 +148,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         createFileAfterRollover(getFileName());
     }
 
-    private void createFileAfterRollover(final String fileName) throws IOException {
+    private void createFileAfterRollover(String fileName) throws IOException {
         this.randomAccessFile = new RandomAccessFile(fileName, "rw");
         if (isAppend()) {
             randomAccessFile.seek(randomAccessFile.length());

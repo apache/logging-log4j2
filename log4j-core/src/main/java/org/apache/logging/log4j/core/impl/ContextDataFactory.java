@@ -117,7 +117,7 @@ public class ContextDataFactory {
 
     public static StringMap createContextData(final Map<String, String> context) {
         final StringMap contextData = createContextData(context.size());
-        for (final Entry<String, String> entry : context.entrySet()) {
+        for (Entry<String, String> entry : context.entrySet()) {
             contextData.putValue(entry.getKey(), entry.getValue());
         }
         return contextData;

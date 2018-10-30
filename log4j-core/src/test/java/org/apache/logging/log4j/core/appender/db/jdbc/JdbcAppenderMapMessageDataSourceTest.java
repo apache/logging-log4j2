@@ -97,7 +97,7 @@ public class JdbcAppenderMapMessageDataSourceTest {
             writer.close();
 
             final Logger logger = LogManager.getLogger(this.getClass().getName() + ".testDataSourceConfig");
-            final MapMessage mapMessage = new MapMessage();
+            MapMessage mapMessage = new MapMessage();
             mapMessage.with("Id", 1);
             mapMessage.with("ColumnA", "ValueA");
             mapMessage.with("ColumnB", "ValueB");

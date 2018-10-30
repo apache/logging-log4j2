@@ -276,7 +276,7 @@ public final class PatternParser {
             final int begin = i; // position of first real char
             int depth = 1; // already inside one level
             while (depth > 0 && i < pattern.length()) {
-                final char c = pattern.charAt(i);
+                char c = pattern.charAt(i);
                 if (c == '{') {
                     depth++;
                 } else if (c == '}') {

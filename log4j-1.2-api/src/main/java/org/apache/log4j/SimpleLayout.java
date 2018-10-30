@@ -29,7 +29,7 @@ public class SimpleLayout extends Layout
    * {@inheritDoc}
    */
   @Override
-  public String format(final LoggingEvent theEvent)
+  public String format(LoggingEvent theEvent)
   {
     return Strings.EMPTY;
   }

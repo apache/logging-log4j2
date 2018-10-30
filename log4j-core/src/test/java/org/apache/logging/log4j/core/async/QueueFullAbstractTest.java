@@ -40,7 +40,7 @@ public abstract class QueueFullAbstractTest {
     protected BlockingAppender blockingAppender;
     protected Unlocker unlocker;
 
-    protected static void TRACE(final Object msg) {
+    protected static void TRACE(Object msg) {
         if (TRACE) {
             System.out.println(msg);
         }
@@ -48,7 +48,7 @@ public abstract class QueueFullAbstractTest {
 
     class Unlocker extends Thread {
         final CountDownLatch countDownLatch;
-        Unlocker(final CountDownLatch countDownLatch) {
+        Unlocker(CountDownLatch countDownLatch) {
             this.countDownLatch = countDownLatch;
         }
         @Override
@@ -57,7 +57,7 @@ public abstract class QueueFullAbstractTest {
                 countDownLatch.await();
                 TRACE("Unlocker activated. Sleeping 500 millis before taking action...");
                 Thread.sleep(500);
-            } catch (final InterruptedException e) {
+            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
             TRACE("Unlocker signalling BlockingAppender to proceed...");
@@ -66,9 +66,9 @@ public abstract class QueueFullAbstractTest {
     }
 
     class DomainObject {
-        private final Logger innerLogger = LogManager.getLogger(DomainObject.class);
+        private Logger innerLogger = LogManager.getLogger(DomainObject.class);
         final int count;
-        DomainObject(final int loggingCount) {
+        DomainObject(int loggingCount) {
             this.count = loggingCount;
         }
 
@@ -86,34 +86,34 @@ public abstract class QueueFullAbstractTest {
 
     static Stack transform(final List<LogEvent> logEvents) {
         final List<String> filtered = new ArrayList<>(logEvents.size());
-        for (final LogEvent event : logEvents) {
+        for (LogEvent event : logEvents) {
             filtered.add(event.getMessage().getFormattedMessage());
         }
         Collections.reverse(filtered);
-        final Stack<String> result = new Stack<>();
+        Stack<String> result = new Stack<>();
         result.addAll(filtered);
         return result;
     }
 
-    static long asyncRemainingCapacity(final Logger logger) {
+    static long asyncRemainingCapacity(Logger logger) {
         if (logger instanceof AsyncLogger) {
             try {
-                final Field f = field(AsyncLogger.class, "loggerDisruptor");
+                Field f = field(AsyncLogger.class, "loggerDisruptor");
                 return ((AsyncLoggerDisruptor) f.get(logger)).getDisruptor().getRingBuffer().remainingCapacity();
-            } catch (final Exception ex) {
+            } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         } else {
-            final LoggerConfig loggerConfig = ((org.apache.logging.log4j.core.Logger) logger).get();
+            LoggerConfig loggerConfig = ((org.apache.logging.log4j.core.Logger) logger).get();
             if (loggerConfig instanceof AsyncLoggerConfig) {
                 try {
-                    final Object delegate = field(AsyncLoggerConfig.class, "delegate").get(loggerConfig);
+                    Object delegate = field(AsyncLoggerConfig.class, "delegate").get(loggerConfig);
                     return ((Disruptor) field(AsyncLoggerConfigDisruptor.class, "disruptor").get(delegate)).getRingBuffer().remainingCapacity();
-                } catch (final Exception ex) {
+                } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
             } else {
-                final Appender async = loggerConfig.getAppenders().get("async");
+                Appender async = loggerConfig.getAppenders().get("async");
                 if (async instanceof AsyncAppender) {
                     return ((AsyncAppender) async).getQueueCapacity();
                 }
@@ -121,8 +121,8 @@ public abstract class QueueFullAbstractTest {
         }
         throw new IllegalStateException("Neither Async Loggers nor AsyncAppender are configured");
     }
-    private static Field field(final Class<?> c, final String name) throws NoSuchFieldException {
-        final Field f = c.getDeclaredField(name);
+    private static Field field(Class<?> c, String name) throws NoSuchFieldException {
+        Field f = c.getDeclaredField(name);
         f.setAccessible(true);
         return f;
     }

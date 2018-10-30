@@ -76,8 +76,8 @@ public class NestedLoggingFromThrowableMessageTest {
         CoreLoggerContexts.stopLoggerContext(false, file1);
         CoreLoggerContexts.stopLoggerContext(false, file2);
 
-        final Set<String> lines1 = readUniqueLines(file1);
-        final Set<String> lines2 = readUniqueLines(file2);
+        Set<String> lines1 = readUniqueLines(file1);
+        Set<String> lines2 = readUniqueLines(file2);
 
         assertEquals("Expected the same data from both appenders", lines1, lines2);
         assertEquals(2, lines1.size());
@@ -85,9 +85,9 @@ public class NestedLoggingFromThrowableMessageTest {
         assertTrue(lines1.contains("ERROR NestedLoggingFromThrowableMessageTest Test message"));
     }
 
-    private static Set<String> readUniqueLines(final File input) throws IOException {
-        final Set<String> lines = new HashSet<>();
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input)));
+    private static Set<String> readUniqueLines(File input) throws IOException {
+        Set<String> lines = new HashSet<>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input)));
         try {
             String line;
             while ((line = reader.readLine()) != null) {

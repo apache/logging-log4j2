@@ -551,9 +551,9 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         private boolean useAnsiEscapeCodes() {
-            final PropertiesUtil propertiesUtil = PropertiesUtil.getProperties();
-            final boolean isPlatformSupportsAnsi = !propertiesUtil.isOsWindows();
-            final boolean isJansiRequested = !propertiesUtil.getBooleanProperty("log4j.skipJansi", true);
+            PropertiesUtil propertiesUtil = PropertiesUtil.getProperties();
+            boolean isPlatformSupportsAnsi = !propertiesUtil.isOsWindows();
+            boolean isJansiRequested = !propertiesUtil.getBooleanProperty("log4j.skipJansi", true);
             return isPlatformSupportsAnsi || isJansiRequested;
         }
 

@@ -96,7 +96,7 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
         }
         try {
             // @formatter:off
-            final PasswordProvider provider = passwordFile != null
+            PasswordProvider provider = passwordFile != null
                     ? new FilePasswordProvider(passwordFile)
                     : passwordEnvironmentVariable != null
                             ? new EnvironmentPasswordProvider(passwordEnvironmentVariable)
@@ -107,7 +107,7 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
                 Arrays.fill(password, '\0');
             }
             return new TrustStoreConfiguration(location, provider, keyStoreType, trustManagerFactoryAlgorithm);
-        } catch (final Exception ex) {
+        } catch (Exception ex) {
             throw new StoreConfigurationException("Could not configure TrustStore", ex);
         }
     }

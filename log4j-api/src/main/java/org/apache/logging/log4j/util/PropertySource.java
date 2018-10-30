@@ -93,7 +93,7 @@ public interface PropertySource {
             if (CACHE.containsKey(value)) {
                 return CACHE.get(value);
             }
-            final List<CharSequence> tokens = new ArrayList<>();
+            List<CharSequence> tokens = new ArrayList<>();
             final Matcher matcher = PROPERTY_TOKENIZER.matcher(value);
             while (matcher.find()) {
                 tokens.add(matcher.group(1).toLowerCase());

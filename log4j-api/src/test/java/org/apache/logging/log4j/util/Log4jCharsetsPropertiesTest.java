@@ -31,13 +31,13 @@ public class Log4jCharsetsPropertiesTest {
      */
     @Test
     public void testLoadAll() {
-        final ResourceBundle resourceBundle = PropertiesUtil.getCharsetsResourceBundle();
-        final Enumeration<String> keys = resourceBundle.getKeys();
+        ResourceBundle resourceBundle = PropertiesUtil.getCharsetsResourceBundle();
+        Enumeration<String> keys = resourceBundle.getKeys();
         while (keys.hasMoreElements()) {
-            final String key = keys.nextElement();
+            String key = keys.nextElement();
             Assert.assertFalse(String.format("The Charset %s is available and should not be mapped", key),
                     Charset.isSupported(key));
-            final String value = resourceBundle.getString(key);
+            String value = resourceBundle.getString(key);
             Assert.assertTrue(String.format("The Charset %s is is not available and is mapped from %s", value, key),
                     Charset.isSupported(value));
         }

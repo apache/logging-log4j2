@@ -65,14 +65,14 @@ class FilePasswordProvider implements PasswordProvider {
         byte[] bytes = null;
         try {
             bytes = Files.readAllBytes(passwordPath);
-            final ByteBuffer bb = ByteBuffer.wrap(bytes);
-            final CharBuffer decoded = Charset.defaultCharset().decode(bb);
-            final char[] result = new char[decoded.limit()];
+            ByteBuffer bb = ByteBuffer.wrap(bytes);
+            CharBuffer decoded = Charset.defaultCharset().decode(bb);
+            char[] result = new char[decoded.limit()];
             decoded.get(result, 0, result.length);
             decoded.rewind();
             decoded.put(new char[result.length]); // erase decoded CharBuffer
             return result;
-        } catch (final IOException e) {
+        } catch (IOException e) {
             throw new IllegalStateException("Could not read password from " + passwordPath + ": " + e, e);
         } finally {
             if (bytes != null) {

@@ -34,7 +34,7 @@ public class SystemPropertiesPropertySourceTest {
 
 	/**
 	 * Tests avoiding a ConcurrentModificationException. For example:
-	 *
+	 * 
 	 * <pre>
 	 * java.util.ConcurrentModificationException
 	 *  at java.util.Hashtable$Enumerator.next(Hashtable.java:1167)
@@ -44,9 +44,9 @@ public class SystemPropertiesPropertySourceTest {
 	 */
 	@Test
 	public void testMultiThreadedAccess() throws InterruptedException, ExecutionException {
-		final ExecutorService threadPool = Executors.newSingleThreadExecutor();
+		ExecutorService threadPool = Executors.newSingleThreadExecutor();
 		try {
-			final Future<?> future = threadPool.submit(new Runnable() {
+			Future<?> future = threadPool.submit(new Runnable() {
 
 				@Override
 				public void run() {

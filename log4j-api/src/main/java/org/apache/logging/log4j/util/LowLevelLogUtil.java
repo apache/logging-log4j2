@@ -35,7 +35,7 @@ final class LowLevelLogUtil {
 
     /**
      * Logs the given message.
-     *
+     * 
      * @param message the message to log
      * @since 2.9.2
      */

@@ -26,7 +26,7 @@ import java.nio.file.Path;
  * <p>
  * For example:
  * </p>
- *
+ * 
  * <pre>
  * &#64;Rule
  * public CleanFiles files = new CleanFiles("path/to/file.txt");

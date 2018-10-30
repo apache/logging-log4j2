@@ -96,7 +96,7 @@ public class CompositeConfigurationTest {
                         appendersMap.size());
                 assertTrue(appendersMap.get("STDOUT") instanceof ConsoleAppender);
 
-                final Filter loggerFilter = config.getLogger("cat1").getFilter();
+                Filter loggerFilter = config.getLogger("cat1").getFilter();
                 assertTrue(loggerFilter instanceof RegexFilter);
                 assertEquals(loggerFilter.getOnMatch(), Filter.Result.DENY);
 

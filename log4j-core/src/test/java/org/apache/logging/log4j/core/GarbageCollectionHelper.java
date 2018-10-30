@@ -40,7 +40,7 @@ final class GarbageCollectionHelper implements Closeable, Runnable {
                     try {
                         // 1mb of heap
                         sink.write(new byte[1024 * 1024]);
-                    } catch (final IOException ignored) {
+                    } catch (IOException ignored) {
                     }
                     // May no-op depending on the jvm configuration
                     System.gc();
@@ -64,7 +64,7 @@ final class GarbageCollectionHelper implements Closeable, Runnable {
         try {
             assertTrue("GarbageCollectionHelper did not shut down cleanly",
                     latch.await(10, TimeUnit.SECONDS));
-        } catch (final InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

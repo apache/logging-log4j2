@@ -52,7 +52,7 @@ public final class IfFileName implements PathCondition {
     /**
      * Constructs a FileNameFilter filter. If both a regular expression and a glob pattern are specified the glob
      * pattern is used and the regular expression is ignored.
-     *
+     * 
      * @param glob the baseDir-relative path pattern of the files to delete (may contain '*' and '?' wildcarts)
      * @param regex the regular expression that matches the baseDir-relative path of the file(s) to delete
      * @param nestedConditions nested conditions to evaluate if this condition accepts a path
@@ -80,7 +80,7 @@ public final class IfFileName implements PathCondition {
      * {@code syntax:pattern} where syntax is one of "glob" or "regex" and the pattern is either a {@linkplain Pattern
      * regular expression} or a simplified pattern expression described under "glob" in
      * {@link FileSystem#getPathMatcher(String)}.
-     *
+     * 
      * @return relative path of the file(s) to delete (may contain regular expression or wildcarts)
      */
     public String getSyntaxAndPattern() {
@@ -93,7 +93,7 @@ public final class IfFileName implements PathCondition {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#accept(java.nio.file.Path,
      * java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
      */
@@ -112,7 +112,7 @@ public final class IfFileName implements PathCondition {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#beforeFileTreeWalk()
      */
     @Override
@@ -125,7 +125,7 @@ public final class IfFileName implements PathCondition {
      * {@linkplain FileSystem#getPathMatcher(String) glob pattern} or the regular expression matches the relative path.
      * If both a regular expression and a glob pattern are specified the glob pattern is used and the regular expression
      * is ignored.
-     *
+     * 
      * @param glob the baseDir-relative path pattern of the files to delete (may contain '*' and '?' wildcarts)
      * @param regex the regular expression that matches the baseDir-relative path of the file(s) to delete
      * @param nestedConditions nested conditions to evaluate if this condition accepts a path
@@ -133,10 +133,10 @@ public final class IfFileName implements PathCondition {
      * @see FileSystem#getPathMatcher(String)
      */
     @PluginFactory
-    public static IfFileName createNameCondition(
+    public static IfFileName createNameCondition( 
             // @formatter:off
-            @PluginAttribute("glob") final String glob,
-            @PluginAttribute("regex") final String regex,
+            @PluginAttribute("glob") final String glob, 
+            @PluginAttribute("regex") final String regex, 
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {
             // @formatter:on
         return new IfFileName(glob, regex, nestedConditions);

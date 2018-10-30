@@ -36,7 +36,7 @@ import org.junit.Test;
 public class MdcPatternConverterTest {
 
     @Rule
-    public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule();
+    public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule(); 
 
     @Before
     public void setup() {

@@ -53,8 +53,8 @@ public class MutableLogEventWithReusableParamMsgTest {
         evt.setMessage(msg);
         evt.clear();
 
-        final Message mementoMessage = evt.memento();
-        final Message mementoMessageSecondInvocation = evt.memento();
+        Message mementoMessage = evt.memento();
+        Message mementoMessageSecondInvocation = evt.memento();
         // MutableLogEvent.memento should be cached
         assertThat(mementoMessage, sameInstance(mementoMessageSecondInvocation));
     }

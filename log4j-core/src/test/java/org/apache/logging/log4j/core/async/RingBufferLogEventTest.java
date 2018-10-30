@@ -58,7 +58,7 @@ public class RingBufferLogEventTest {
         final LogEvent logEvent = new RingBufferLogEvent();
         Assert.assertNotSame(logEvent, logEvent.toImmutable());
     }
-
+    
     @Test
     public void testGetLevelReturnsOffIfNullLevelSet() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
@@ -192,8 +192,8 @@ public class RingBufferLogEventTest {
         final Marker marker = MarkerManager.getMarker("marked man");
         final String fqcn = "f.q.c.n";
         final Level level = Level.TRACE;
-        final ReusableMessageFactory factory = new ReusableMessageFactory();
-        final Message message = factory.newMessage("Hello {}!", "World");
+        ReusableMessageFactory factory = new ReusableMessageFactory();
+        Message message = factory.newMessage("Hello {}!", "World");
         try {
             final Throwable t = new InternalError("not a real error");
             final ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
@@ -221,8 +221,8 @@ public class RingBufferLogEventTest {
         final Marker marker = MarkerManager.getMarker("marked man");
         final String fqcn = "f.q.c.n";
         final Level level = Level.TRACE;
-        final ReusableMessageFactory factory = new ReusableMessageFactory();
-        final Message message = factory.newMessage("Hello {}!", "World");
+        ReusableMessageFactory factory = new ReusableMessageFactory();
+        Message message = factory.newMessage("Hello {}!", "World");
         try {
             final Throwable t = new InternalError("not a real error");
             final ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
@@ -255,7 +255,7 @@ public class RingBufferLogEventTest {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
         evt.forEachParameter(new ParameterConsumer<Void>() {
             @Override
-            public void accept(final Object parameter, final int parameterIndex, final Void state) {
+            public void accept(Object parameter, int parameterIndex, Void state) {
                 fail("Should not have been called");
             }
         }, null);

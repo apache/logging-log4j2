@@ -42,7 +42,7 @@ public class MockUdpSyslogServer extends MockSyslogServer {
             thread.interrupt();
             try {
                 thread.join(100);
-            } catch (final InterruptedException ie) {
+            } catch (InterruptedException ie) {
                 System.out.println("Shutdown of Log4j UDP server thread failed.");
             }
         }

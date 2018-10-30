@@ -252,7 +252,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         }
     }
 
-    String getLevelStyle(final Level level) {
+    String getLevelStyle(Level level) {
         return levelStyles.get(level);
     }
 

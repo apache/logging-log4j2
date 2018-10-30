@@ -126,7 +126,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
         }
 
         @Override
-        public B setAdditionalFields(final KeyValuePair[] additionalFields) {
+        public B setAdditionalFields(KeyValuePair[] additionalFields) {
             this.additionalFields = additionalFields;
             return asBuilder();
         }

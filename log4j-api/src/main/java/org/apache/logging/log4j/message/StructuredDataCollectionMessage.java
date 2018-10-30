@@ -29,9 +29,9 @@ public class StructuredDataCollectionMessage implements StringBuilderFormattable
         MessageCollectionMessage<StructuredDataMessage> {
     private static final long serialVersionUID = 5725337076388822924L;
 
-    private final List<StructuredDataMessage> structuredDataMessageList;
+    private List<StructuredDataMessage> structuredDataMessageList;
 
-    public StructuredDataCollectionMessage(final List<StructuredDataMessage> messages) {
+    public StructuredDataCollectionMessage(List<StructuredDataMessage> messages) {
         this.structuredDataMessageList = messages;
     }
 
@@ -42,15 +42,15 @@ public class StructuredDataCollectionMessage implements StringBuilderFormattable
 
     @Override
     public String getFormattedMessage() {
-        final StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         formatTo(sb);
         return sb.toString();
     }
 
     @Override
     public String getFormat() {
-        final StringBuilder sb = new StringBuilder();
-        for (final StructuredDataMessage msg : structuredDataMessageList) {
+        StringBuilder sb = new StringBuilder();
+        for (StructuredDataMessage msg : structuredDataMessageList) {
             if (msg.getFormat() != null) {
                 if (sb.length() > 0) {
                     sb.append(", ");
@@ -62,27 +62,27 @@ public class StructuredDataCollectionMessage implements StringBuilderFormattable
     }
 
     @Override
-    public void formatTo(final StringBuilder buffer) {
-        for (final StructuredDataMessage msg : structuredDataMessageList) {
+    public void formatTo(StringBuilder buffer) {
+        for (StructuredDataMessage msg : structuredDataMessageList) {
             msg.formatTo(buffer);
         }
     }
 
     @Override
     public Object[] getParameters() {
-        final List<Object[]> objectList = new ArrayList<>();
+        List<Object[]> objectList = new ArrayList<>();
         int count = 0;
-        for (final StructuredDataMessage msg : structuredDataMessageList) {
-            final Object[] objects = msg.getParameters();
+        for (StructuredDataMessage msg : structuredDataMessageList) {
+            Object[] objects = msg.getParameters();
             if (objects != null) {
                 objectList.add(objects);
                 count += objects.length;
             }
         }
-        final Object[] objects = new Object[count];
+        Object[] objects = new Object[count];
         int index = 0;
-        for (final Object[] objs : objectList) {
-           for (final Object obj : objs) {
+        for (Object[] objs : objectList) {
+           for (Object obj : objs) {
                objects[index++] = obj;
            }
         }
@@ -91,8 +91,8 @@ public class StructuredDataCollectionMessage implements StringBuilderFormattable
 
     @Override
     public Throwable getThrowable() {
-        for (final StructuredDataMessage msg : structuredDataMessageList) {
-            final Throwable t = msg.getThrowable();
+        for (StructuredDataMessage msg : structuredDataMessageList) {
+            Throwable t = msg.getThrowable();
             if (t != null) {
                 return t;
             }

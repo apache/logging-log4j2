@@ -150,8 +150,8 @@ public class DatePatternConverterTest {
         }
     }
 
-    private String precisePattern(final String pattern, final int precision) {
-        final String seconds = pattern.substring(0, pattern.indexOf("SSS"));
+    private String precisePattern(final String pattern, int precision) {
+        String seconds = pattern.substring(0, pattern.indexOf("SSS"));
         return seconds + "nnnnnnnnn".substring(0, precision);
     }
 
@@ -162,7 +162,7 @@ public class DatePatternConverterTest {
         final StringBuilder milli = new StringBuilder();
         final LogEvent event = new MyLogEvent();
 
-        for (final String timeZone : new String[]{"PDT", null}) { // Pacific Daylight Time=UTC-8:00
+        for (String timeZone : new String[]{"PDT", null}) { // Pacific Daylight Time=UTC-8:00
             for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
                 for (int i = 1; i <= 9; i++) {
                     if (format.getPattern().endsWith("n")) {
@@ -178,7 +178,7 @@ public class DatePatternConverterTest {
                     final String[] milliOptions = {format.getPattern(), timeZone};
                     DatePatternConverter.newInstance(milliOptions).format(event, milli);
                     milli.setLength(milli.length() - 3); // truncate millis
-                    final String expected = milli.append("987123456".substring(0, i)).toString();
+                    String expected = milli.append("987123456".substring(0, i)).toString();
 
                     assertEquals(expected, precise.toString());
                     //System.out.println(preciseOptions[0] + ": " + precise);
@@ -208,7 +208,7 @@ public class DatePatternConverterTest {
                 final String[] milliOptions = {format.getPattern()};
                 DatePatternConverter.newInstance(milliOptions).format(event, milli);
                 milli.setLength(milli.length() - 3); // truncate millis
-                final String expected = milli.append("987123456").toString();
+                String expected = milli.append("987123456").toString();
 
                 assertEquals(expected, precise.toString());
                 //System.out.println(preciseOptions[0] + ": " + precise);
@@ -228,7 +228,7 @@ public class DatePatternConverterTest {
 
         @Override
         public Instant getInstant() {
-            final MutableInstant result = new MutableInstant();
+            MutableInstant result = new MutableInstant();
             result.initFromEpochMilli(getTimeMillis(), 123456);
             return result;
         }

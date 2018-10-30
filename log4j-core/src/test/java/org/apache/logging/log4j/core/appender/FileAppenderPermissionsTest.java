@@ -130,7 +130,7 @@ public class FileAppenderPermissionsTest {
         }
         assertFalse("Appender did not stop", appender.isStarted());
     }
-
+    
     @Test
     public void testFileUserGroupAPI() throws Exception {
         final File file = new File(DIR, "AppenderTest-" + (1000 + fileIndex) + ".log");

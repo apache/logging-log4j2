@@ -24,11 +24,11 @@ public class CharsetForNameMain {
     /**
      * Checks that the given Charset names can be loaded.
      */
-    public static void main(final String[] args) {
-        for (final String value : args) {
+    public static void main(String[] args) {
+        for (String value : args) {
             final String charsetName = value.trim();
             if (Charset.isSupported(charsetName)) {
-                final Charset cs = Charset.forName(charsetName);
+                Charset cs = Charset.forName(charsetName);
                 System.out.println(String.format("%s -> %s  aliases: %s", charsetName, cs.name(), cs.aliases()));
             } else {
                 System.err.println("Not supported:" + charsetName);

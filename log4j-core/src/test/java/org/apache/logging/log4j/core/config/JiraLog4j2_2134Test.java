@@ -38,23 +38,23 @@ public class JiraLog4j2_2134Test {
 
 	@Test
 	public void testRefresh() {
-		final Logger log = LogManager.getLogger(this.getClass());
+		Logger log = LogManager.getLogger(this.getClass());
 		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 		final Configuration config = ctx.getConfiguration();
-		final PatternLayout layout = PatternLayout.newBuilder()
+		PatternLayout layout = PatternLayout.newBuilder()
 		// @formatter:off
 				.withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
 				.withConfiguration(config)
 				.build();
         final Layout<? extends Serializable> layout1 = layout;
 		// @formatter:on
-		final Appender appender = FileAppender.newBuilder().withFileName("target/test.log").setLayout(layout1)
+		Appender appender = FileAppender.newBuilder().withFileName("target/test.log").setLayout(layout1)
         .setConfiguration(config).withBufferSize(4000).setName("File").build();
 		// appender.start();
 		config.addAppender(appender);
-		final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
-		final AppenderRef[] refs = new AppenderRef[] { ref };
-		final LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, "testlog4j2refresh", "true", refs,
+		AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
+		AppenderRef[] refs = new AppenderRef[] { ref };
+		LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, "testlog4j2refresh", "true", refs,
 				null, config, null);
 		loggerConfig.addAppender(appender, null, null);
 		config.addLogger("testlog4j2refresh", loggerConfig);
@@ -66,7 +66,7 @@ public class JiraLog4j2_2134Test {
 
 	@Test
 	public void testRefreshMinimalCodeStart() {
-		final Logger log = LogManager.getLogger(this.getClass());
+		Logger log = LogManager.getLogger(this.getClass());
 		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 		final Configuration config = ctx.getConfiguration();
 		ctx.start(config);
@@ -76,7 +76,7 @@ public class JiraLog4j2_2134Test {
 
 	@Test
 	public void testRefreshMinimalCodeStopStart() {
-		final Logger log = LogManager.getLogger(this.getClass());
+		Logger log = LogManager.getLogger(this.getClass());
 		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 		ctx.stop();
 		ctx.start();
@@ -86,7 +86,7 @@ public class JiraLog4j2_2134Test {
 
 	@Test
 	public void testRefreshMinimalCodeStopStartConfig() {
-		final Logger log = LogManager.getLogger(this.getClass());
+		Logger log = LogManager.getLogger(this.getClass());
 		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 		final Configuration config = ctx.getConfiguration();
 		ctx.stop();
@@ -98,18 +98,18 @@ public class JiraLog4j2_2134Test {
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testRefreshDeprecatedApis() {
-		final Logger log = LogManager.getLogger(this.getClass());
+		Logger log = LogManager.getLogger(this.getClass());
 		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 		final Configuration config = ctx.getConfiguration();
-		final PatternLayout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, null, config, null,
+		PatternLayout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, null, config, null,
 				null, false, false, null, null);
-		final Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true", "false",
+		Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true", "false",
 				"false", "4000", layout, null, "false", null, config);
 		appender.start();
 		config.addAppender(appender);
-		final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
-		final AppenderRef[] refs = new AppenderRef[] { ref };
-		final LoggerConfig loggerConfig = LoggerConfig.createLogger("false", Level.INFO, "testlog4j2refresh", "true", refs,
+		AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
+		AppenderRef[] refs = new AppenderRef[] { ref };
+		LoggerConfig loggerConfig = LoggerConfig.createLogger("false", Level.INFO, "testlog4j2refresh", "true", refs,
 				null, config, null);
 		loggerConfig.addAppender(appender, null, null);
 		config.addLogger("testlog4j2refresh", loggerConfig);

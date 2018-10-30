@@ -45,7 +45,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
 
     private int threadPriority;
     private long threadId;
-    private final MutableInstant instant = new MutableInstant();
+    private MutableInstant instant = new MutableInstant();
     private long nanoTime;
     private short parameterCount;
     private boolean includeLocation;
@@ -256,7 +256,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     }
 
     @Override
-    public <S> void forEachParameter(final ParameterConsumer<S> action, final S state) {
+    public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
         if (parameters != null) {
             for (short i = 0; i < parameterCount; i++) {
                 action.accept(parameters[i], i, state);

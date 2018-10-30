@@ -32,7 +32,7 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
     private static final String PACKAGE = "org.slf4j";
     private final Log4jMarkerFactory markerFactory;
 
-    public Log4jLoggerFactory(final Log4jMarkerFactory markerFactory) {
+    public Log4jLoggerFactory(Log4jMarkerFactory markerFactory) {
         this.markerFactory = markerFactory;
     }
 

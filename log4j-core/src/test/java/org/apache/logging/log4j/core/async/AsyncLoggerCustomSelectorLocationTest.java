@@ -88,12 +88,12 @@ public class AsyncLoggerCustomSelectorLocationTest {
     public static final class CustomAsyncContextSelector implements ContextSelector {
         private static final LoggerContext CONTEXT = new AsyncLoggerContext("AsyncDefault");
         @Override
-        public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+        public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
             return CONTEXT;
         }
 
         @Override
-        public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
+        public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext, URI configLocation) {
             return CONTEXT;
         }
 
@@ -103,7 +103,7 @@ public class AsyncLoggerCustomSelectorLocationTest {
         }
 
         @Override
-        public void removeContext(final LoggerContext context) {
+        public void removeContext(LoggerContext context) {
             // does not remove anything
         }
     }

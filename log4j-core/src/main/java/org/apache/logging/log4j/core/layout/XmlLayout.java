@@ -146,7 +146,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * <li>Key: "dtd" Value: "log4j-events.dtd"</li>
      * <li>Key: "version" Value: "2.0"</li>
      * </ul>
-     *
+     * 
      * @return Map of content format keys supporting XmlLayout
      */
     @Override

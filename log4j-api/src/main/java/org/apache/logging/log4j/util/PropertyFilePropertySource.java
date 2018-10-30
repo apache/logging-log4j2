@@ -37,7 +37,7 @@ public class PropertyFilePropertySource extends PropertiesPropertySource {
         for (final URL url : LoaderUtil.findResources(fileName)) {
             try (final InputStream in = url.openStream()) {
                 props.load(in);
-            } catch (final IOException e) {
+            } catch (IOException e) {
                 LowLevelLogUtil.logException("Unable to read " + url, e);
             }
         }

@@ -63,7 +63,7 @@ public class MutableLogEventTest {
         try {
             Class.forName("java.io.ObjectInputFilter");
             useObjectInputStream = true;
-        } catch (final ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex) {
             // Ignore the exception
         }
     }
@@ -116,7 +116,7 @@ public class MutableLogEventTest {
 
     @Test
     public void testInitFromReusableCopiesFormatString() {
-        final Message message = ReusableMessageFactory.INSTANCE.newMessage("msg in a {}", "bottle");
+        Message message = ReusableMessageFactory.INSTANCE.newMessage("msg in a {}", "bottle");
         final Log4jLogEvent source = Log4jLogEvent.newBuilder() //
                 .setContextData(CONTEXT_DATA) //
                 .setContextStack(STACK) //
@@ -138,17 +138,17 @@ public class MutableLogEventTest {
         assertEquals("format", "msg in a {}", mutable.getFormat());
         assertEquals("formatted", "msg in a bottle", mutable.getFormattedMessage());
         assertEquals("parameters", new String[] {"bottle"}, mutable.getParameters());
-        final Message memento = mutable.memento();
+        Message memento = mutable.memento();
         assertEquals("format", "msg in a {}", memento.getFormat());
         assertEquals("formatted", "msg in a bottle", memento.getFormattedMessage());
         assertEquals("parameters", new String[] {"bottle"}, memento.getParameters());
 
-        final Message eventMementoMessage = mutable.createMemento().getMessage();
+        Message eventMementoMessage = mutable.createMemento().getMessage();
         assertEquals("format", "msg in a {}", eventMementoMessage.getFormat());
         assertEquals("formatted", "msg in a bottle", eventMementoMessage.getFormattedMessage());
         assertEquals("parameters", new String[] {"bottle"}, eventMementoMessage.getParameters());
 
-        final Message log4JLogEventMessage = new Log4jLogEvent.Builder(mutable).build().getMessage();
+        Message log4JLogEventMessage = new Log4jLogEvent.Builder(mutable).build().getMessage();
         assertEquals("format", "msg in a {}", log4JLogEventMessage.getFormat());
         assertEquals("formatted", "msg in a bottle", log4JLogEventMessage.getFormattedMessage());
         assertEquals("parameters", new String[] {"bottle"}, log4JLogEventMessage.getParameters());
@@ -156,8 +156,8 @@ public class MutableLogEventTest {
 
     @Test
     public void testInitFromReusableObjectCopiesParameter() {
-        final Object param = new Object();
-        final Message message = ReusableMessageFactory.INSTANCE.newMessage(param);
+        Object param = new Object();
+        Message message = ReusableMessageFactory.INSTANCE.newMessage(param);
         final Log4jLogEvent source = Log4jLogEvent.newBuilder()
                 .setContextData(CONTEXT_DATA)
                 .setContextStack(STACK)
@@ -180,7 +180,7 @@ public class MutableLogEventTest {
         assertNull("format", mutable.getFormat());
         assertEquals("formatted", param.toString(), mutable.getFormattedMessage());
         assertEquals("parameters", new Object[] {param}, mutable.getParameters());
-        final Message memento = mutable.memento();
+        Message memento = mutable.memento();
         assertNull("format", memento.getFormat());
         assertEquals("formatted", param.toString(), memento.getFormattedMessage());
         assertEquals("parameters", new Object[] {param}, memento.getParameters());

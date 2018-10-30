@@ -57,7 +57,7 @@ public class AsyncLoggerConfigWithAsyncEnabledTest {
         assertTrue("Deleted old file before test", !file.exists() || file.delete());
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
-        final String format = "Additive logging: {} for the price of {}!";
+        String format = "Additive logging: {} for the price of {}!";
         log.info(format, 2, 1);
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
@@ -67,7 +67,7 @@ public class AsyncLoggerConfigWithAsyncEnabledTest {
         reader.close();
         file.delete();
 
-        final String expected = "Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!";
+        String expected = "Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!";
         assertThat(line1, containsString(expected));
         assertThat(line2, containsString(expected));
     }

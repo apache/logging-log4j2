@@ -147,8 +147,8 @@ public final class ColumnConfig {
 
         /**
          * The configuration object.
-         *
-         * @return this.
+         * 
+         * @return this. 
          */
         public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
@@ -157,8 +157,8 @@ public final class ColumnConfig {
 
         /**
          * The name of the database column as it exists within the database table.
-         *
-         * @return this.
+         * 
+         * @return this. 
          */
         public Builder setName(final String name) {
             this.name = name;
@@ -168,8 +168,8 @@ public final class ColumnConfig {
         /**
          * The {@link PatternLayout} pattern to insert in this column. Mutually exclusive with
          * {@code literal!=null} and {@code eventTimestamp=true}
-         *
-         * @return this.
+         * 
+         * @return this. 
          */
         public Builder setPattern(final String pattern) {
             this.pattern = pattern;
@@ -179,8 +179,8 @@ public final class ColumnConfig {
         /**
          * The literal value to insert into the column as-is without any quoting or escaping. Mutually exclusive with
          * {@code pattern!=null} and {@code eventTimestamp=true}.
-         *
-         * @return this.
+         * 
+         * @return this. 
          */
         public Builder setLiteral(final String literal) {
             this.literal = literal;
@@ -190,8 +190,8 @@ public final class ColumnConfig {
         /**
          * If {@code "true"}, indicates that this column is a date-time column in which the event timestamp should be
          * inserted. Mutually exclusive with {@code pattern!=null} and {@code literal!=null}.
-         *
-         * @return this.
+         * 
+         * @return this. 
          */
         public Builder setEventTimestamp(final boolean eventTimestamp) {
             isEventTimestamp = eventTimestamp;
@@ -200,8 +200,8 @@ public final class ColumnConfig {
 
         /**
          * If {@code "true"}, indicates that the column is a Unicode String.
-         *
-         * @return this.
+         * 
+         * @return this. 
          */
         public Builder setUnicode(final boolean unicode) {
             isUnicode = unicode;
@@ -210,8 +210,8 @@ public final class ColumnConfig {
 
         /**
          * If {@code "true"}, indicates that the column is a character LOB (CLOB).
-         *
-         * @return this.
+         * 
+         * @return this. 
          */
         public Builder setClob(final boolean clob) {
             isClob = clob;

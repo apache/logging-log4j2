@@ -442,7 +442,7 @@ public class LoggerConfig extends AbstractFilterable {
         return reliabilityStrategy;
     }
 
-    private void processLogEvent(final LogEvent event, final LoggerConfigPredicate predicate) {
+    private void processLogEvent(final LogEvent event, LoggerConfigPredicate predicate) {
         event.setIncludeLocation(isIncludeLocation());
         if (predicate.allow(this)) {
             callAppenders(event);
@@ -598,19 +598,19 @@ public class LoggerConfig extends AbstractFilterable {
     protected enum LoggerConfigPredicate {
         ALL() {
             @Override
-            boolean allow(final LoggerConfig config) {
+            boolean allow(LoggerConfig config) {
                 return true;
             }
         },
         ASYNCHRONOUS_ONLY() {
             @Override
-            boolean allow(final LoggerConfig config) {
+            boolean allow(LoggerConfig config) {
                 return config instanceof AsyncLoggerConfig;
             }
         },
         SYNCHRONOUS_ONLY() {
             @Override
-            boolean allow(final LoggerConfig config) {
+            boolean allow(LoggerConfig config) {
                 return !ASYNCHRONOUS_ONLY.allow(config);
             }
         };

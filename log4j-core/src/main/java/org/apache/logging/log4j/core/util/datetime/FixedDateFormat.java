@@ -539,11 +539,11 @@ public class FixedDateFormat {
             1, // 5
     };
 
-    private void formatNanoOfMillisecond(final int nanoOfMillisecond, final char[] buffer, int pos) {
+    private void formatNanoOfMillisecond(int nanoOfMillisecond, final char[] buffer, int pos) {
         int temp;
         int remain = nanoOfMillisecond;
         for (int i = 0; i < secondFractionDigits - FixedFormat.MILLI_FRACTION_DIGITS; i++) {
-            final int divisor = TABLE[i];
+            int divisor = TABLE[i];
             temp = remain / divisor;
             buffer[pos++] = ((char) (temp + '0'));
             remain -= divisor * temp; // equivalent of remain % 10

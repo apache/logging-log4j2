@@ -30,7 +30,7 @@ import org.junit.Test;
  * integration tests (classes that end in "IT" instead of "Test" and
  * "TestCase".)
  * </p>
- *
+ * 
  * @see EnvironmentPropertySource
  * @see SecurityManager
  * @see System#setSecurityManager(SecurityManager)
@@ -56,7 +56,7 @@ public class EnvironmentPropertySourceSecurityManagerIT {
 	/**
 	 * Makes sure we do not blow up with exception below due to a security manager
 	 * rejecting environment variable access in {@link EnvironmentPropertySource}.
-	 *
+	 * 
 	 * <pre>
 	 * java.lang.NoClassDefFoundError: Could not initialize class org.apache.logging.log4j.util.PropertiesUtil
 	 *     at org.apache.logging.log4j.status.StatusLogger.<clinit>(StatusLogger.java:78)

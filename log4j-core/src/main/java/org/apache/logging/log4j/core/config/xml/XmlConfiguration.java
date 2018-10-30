@@ -182,7 +182,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
 
     /**
      * Creates a new DocumentBuilder suitable for parsing a configuration file.
-     *
+     * 
      * @param xIncludeAware enabled XInclude
      * @return a new DocumentBuilder
      * @throws ParserConfigurationException
@@ -206,7 +206,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         setFeature(factory, "http://xml.org/sax/features/external-parameter-entities", false);
         setFeature(factory, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
     }
-
+    
     private static void setFeature(final DocumentBuilderFactory factory, final String featureName, final boolean value) {
         try {
             factory.setFeature(featureName, value);

@@ -64,7 +64,7 @@ public class BlockingAppender extends AbstractAppender {
         // block until the test class tells us to continue
         try {
             countDownLatch.await();
-        } catch (final InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

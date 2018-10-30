@@ -28,7 +28,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Provides an abstract base class to use for implementing LoggerAdapter.
- *
+ * 
  * @param <L> the Logger class to adapt
  * @since 2.1
  */

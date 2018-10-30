@@ -94,10 +94,10 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFull
 
         final Stack<String> actual = transform(blockingAppender.logEvents);
         assertEquals("Logging in toString() #0", actual.pop());
-        final List<StatusData> statusDataList = StatusLogger.getLogger().getStatusData();
+        List<StatusData> statusDataList = StatusLogger.getLogger().getStatusData();
         assertEquals("Jumped the queue: queue full",
                 "Logging in toString() #128", actual.pop());
-        final StatusData mostRecentStatusData = statusDataList.get(statusDataList.size() - 1);
+        StatusData mostRecentStatusData = statusDataList.get(statusDataList.size() - 1);
         assertEquals("Expected warn level status message", Level.WARN, mostRecentStatusData.getLevel());
         assertThat(mostRecentStatusData.getFormattedStatus(), containsString(
                 "Log4j2 logged an event out of order to prevent deadlock caused by domain " +

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.message;
 /**
  * Creates {@link FormattedMessage} instances for {@link MessageFactory2} methods (and {@link MessageFactory} by
  * extension.)
- *
+ * 
  * <h4>Note to implementors</h4>
  * <p>
  * This class implements all {@link MessageFactory2} methods.

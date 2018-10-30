@@ -391,7 +391,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
         if (isStructured) {
             if (message instanceof MessageCollectionMessage) {
-                for (final StructuredDataMessage data : ((StructuredDataCollectionMessage)message)) {
+                for (StructuredDataMessage data : ((StructuredDataCollectionMessage)message)) {
                     addStructuredData(sdElements, data);
                 }
             } else {

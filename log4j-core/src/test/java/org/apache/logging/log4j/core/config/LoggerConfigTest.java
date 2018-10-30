@@ -79,7 +79,7 @@ public class LoggerConfigTest {
         };
         final LoggerConfig loggerConfig = createForProperties(all);
         final List<Property> list = loggerConfig.getPropertyList();
-        assertEquals("map and list contents equal", new HashSet<>(list),
+        assertEquals("map and list contents equal", new HashSet<>(list), 
         		     new HashSet<>(loggerConfig.getPropertyList()));
 
         final Object[] actualListHolder = new Object[1];

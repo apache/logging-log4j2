@@ -41,7 +41,7 @@ public class HangingAppender extends AbstractAppender {
     private final long shutdownDelay;
 
     public HangingAppender(final String name, final long delay, final long startupDelay, final long shutdownDelay,
-            final Property[] properties) {
+            Property[] properties) {
         super(name, null, null, true, Property.EMPTY_ARRAY);
         this.delay = delay;
         this.startupDelay = startupDelay;

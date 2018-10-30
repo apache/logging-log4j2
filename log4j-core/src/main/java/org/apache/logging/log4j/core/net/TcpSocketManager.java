@@ -68,7 +68,7 @@ public class TcpSocketManager extends AbstractSocketManager {
 
     /**
      * Constructs.
-     *
+     * 
      * @param name
      *            The unique name of this connection.
      * @param os
@@ -105,7 +105,7 @@ public class TcpSocketManager extends AbstractSocketManager {
 
     /**
      * Constructs.
-     *
+     * 
      * @param name
      *            The unique name of this connection.
      * @param os
@@ -148,7 +148,7 @@ public class TcpSocketManager extends AbstractSocketManager {
 
     /**
      * Obtains a TcpSocketManager.
-     *
+     * 
      * @param host
      *            The host to connect to.
      * @param port
@@ -172,7 +172,7 @@ public class TcpSocketManager extends AbstractSocketManager {
 
     /**
      * Obtains a TcpSocketManager.
-     *
+     * 
      * @param host
      *            The host to connect to.
      * @param port
@@ -221,7 +221,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                     reconnector = createReconnector();
                     try {
                         reconnector.reconnect();
-                    } catch (final IOException reconnEx) {
+                    } catch (IOException reconnEx) {
                         LOGGER.debug("Cannot reestablish socket connection to {}: {}; starting reconnector thread {}",
                                 config, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
                         reconnector.start();
@@ -230,7 +230,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                     }
                     try {
                         writeAndFlush(bytes, offset, length, immediateFlush);
-                    } catch (final IOException e) {
+                    } catch (IOException e) {
                         throw new AppenderLoggingException(
                                 String.format("Error writing to %s after reestablishing connection for %s", getName(),
                                         config),
@@ -282,7 +282,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      * <li>Key: "protocol" Value: "tcp"</li>
      * <li>Key: "direction" Value: "out"</li>
      * </ul>
-     *
+     * 
      * @return Map of content format keys supporting TcpSocketManager
      */
     @Override
@@ -422,7 +422,7 @@ public class TcpSocketManager extends AbstractSocketManager {
 
     /**
      * Factory to create a TcpSocketManager.
-     *
+     * 
      * @param <M>
      *            The manager type.
      * @param <T>
@@ -460,7 +460,7 @@ public class TcpSocketManager extends AbstractSocketManager {
         }
 
         @SuppressWarnings("unchecked")
-        M createManager(final String name, final OutputStream os, final Socket socket, final InetAddress inetAddress, final T data) {
+        M createManager(final String name, OutputStream os, Socket socket, InetAddress inetAddress, final T data) {
             return (M) new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
                     data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout,
                     data.bufferSize, data.socketOptions);

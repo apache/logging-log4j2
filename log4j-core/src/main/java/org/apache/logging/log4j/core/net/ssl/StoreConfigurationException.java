@@ -30,7 +30,7 @@ public class StoreConfigurationException extends Exception {
         super(message);
     }
 
-    public StoreConfigurationException(final String message, final Exception e) {
+    public StoreConfigurationException(String message, Exception e) {
         super(message, e);
     }
 }

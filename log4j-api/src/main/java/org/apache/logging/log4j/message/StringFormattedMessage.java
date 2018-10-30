@@ -28,7 +28,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Handles messages that consist of a format string conforming to {@link java.util.Formatter}.
- *
+ * 
  * <h4>Note to implementors</h4>
  * <p>
  * This class implements the unrolled args API even though StringFormattedMessage does not. This leaves the room for
@@ -49,10 +49,10 @@ public class StringFormattedMessage implements Message {
     private transient String formattedMessage;
     private transient Throwable throwable;
     private final Locale locale;
-
+    
    /**
     * Constructs a message.
-    *
+    * 
     * @param locale the locale for this message format
     * @param messagePattern the pattern for this message format
     * @param arguments The objects to format
@@ -69,7 +69,7 @@ public class StringFormattedMessage implements Message {
 
     /**
      * Constructs a message.
-     *
+     * 
      * @param messagePattern the pattern for this message format
      * @param arguments The objects to format
      * @since 2.6

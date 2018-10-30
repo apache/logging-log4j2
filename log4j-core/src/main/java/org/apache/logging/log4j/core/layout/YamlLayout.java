@@ -157,7 +157,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
 
     /**
      * Creates a YAML Layout.
-     *
+     * 
      * @param config
      *            The plugin configuration.
      * @param locationInfo

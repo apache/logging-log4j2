@@ -57,7 +57,7 @@ public class RollingAppenderDirectWriteWithReconfigureTest {
 
         @SuppressWarnings("resource") // managed by the rule.
         final LoggerContext context = loggerContextRule.getLoggerContext();
-        final Configuration config = context.getConfiguration();
+        Configuration config = context.getConfiguration();
         context.setConfigLocation(new URI(CONFIG));
         context.reconfigure();
         logger.debug("Force a rollover");

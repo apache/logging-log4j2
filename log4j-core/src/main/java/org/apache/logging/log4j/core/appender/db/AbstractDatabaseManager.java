@@ -272,7 +272,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
 
         /**
          * Gets the layout.
-         *
+         * 
          * @return the layout.
          */
         public Layout<? extends Serializable> getLayout() {

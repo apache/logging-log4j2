@@ -16,13 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.Layouts;
+import org.apache.logging.log4j.core.filter.TimeFilterTest;
 import org.apache.logging.log4j.core.impl.Log4jLogEventTest;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.CoreContextSelectors;
@@ -84,9 +87,9 @@ public class JsonCompleteFileAppenderTest {
         logger.error(logMsg, new IllegalArgumentException("badarg"));
         this.loggerContextRule.getLoggerContext().stop(); // stops async thread
 
-        final List<String> lines = Files.readAllLines(logFile.toPath(), Charset.forName("UTF8"));
+        List<String> lines = Files.readAllLines(logFile.toPath(), Charset.forName("UTF8"));
 
-        final String[] expected = {
+        String[] expected = {
                 "[", // equals
                 "{", // equals
                 "  \"thread\" : \"main\",", //
@@ -101,7 +104,7 @@ public class JsonCompleteFileAppenderTest {
                 "  },", //
         };
         for (int i = 0; i < expected.length; i++) {
-            final String line = lines.get(i);
+            String line = lines.get(i);
             assertTrue("line " + i + " incorrect: [" + line + "], does not contain: [" + expected[i] + ']', line.contains(expected[i]));
         }
         final String location = "testFlushAtEndOfBatch";

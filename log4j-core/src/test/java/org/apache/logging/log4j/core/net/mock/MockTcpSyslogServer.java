@@ -46,7 +46,7 @@ public class MockTcpSyslogServer extends MockSyslogServer {
             thread.interrupt();
             try {
                 thread.join(100);
-            } catch (final InterruptedException ie) {
+            } catch (InterruptedException ie) {
                 System.out.println("Shutdown of TCP server thread failed.");
             }
         }
@@ -76,7 +76,7 @@ public class MockTcpSyslogServer extends MockSyslogServer {
                             System.out.println("Message too long");
                         }
                     }
-                } catch (final BindException be) {
+                } catch (BindException be) {
                     be.printStackTrace();
                 } finally {
                     if (socket != null) {

@@ -56,7 +56,7 @@ public class MarkerTest {
         existing.setParents(parent);
         assertTrue(existing.hasParents());
     }
-
+    
     @Test
     public void testMarker() {
         final Marker parent = MarkerManager.getMarker("PARENT");

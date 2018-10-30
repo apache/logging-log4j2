@@ -32,7 +32,7 @@ import org.junit.Test;
  * integration tests (classes that end in "IT" instead of "Test" and
  * "TestCase".)
  * </p>
- *
+ * 
  * @see SystemPropertiesPropertySource
  * @see SecurityManager
  * @see System#setSecurityManager(SecurityManager)
@@ -60,7 +60,7 @@ public class SystemPropertiesPropertySourceSecurityManagerIT {
 	 * Makes sure we do not blow up with exception below due to a security manager
 	 * rejecting environment variable access in
 	 * {@link SystemPropertiesPropertySource}.
-	 *
+	 * 
 	 * <pre>
 	 * java.lang.ExceptionInInitializerError
 	 * 	at org.apache.logging.log4j.util.SystemPropertiesPropertySourceSecurityManagerTest.test(SystemPropertiesPropertySourceSecurityManagerTest.java:64)

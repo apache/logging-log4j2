@@ -65,7 +65,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      * <li>Removed deprecated "delayMillis", use "reconnectionDelayMillis".</li>
      * <li>Removed deprecated "reconnectionDelay", use "reconnectionDelayMillis".</li>
      * </ul>
-     *
+     * 
      * @param <B>
      *            The type to build.
      */
@@ -94,10 +94,10 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         @PluginBuilderAttribute
         @PluginAliases({ "reconnectDelay", "reconnectionDelay", "delayMillis", "reconnectionDelayMillis" })
         private int reconnectDelayMillis;
-
+        
         @PluginElement("SocketOptions")
         private SocketOptions socketOptions;
-
+        
         @PluginElement("SslConfiguration")
         @PluginAliases({ "SslConfig" })
         private SslConfiguration sslConfiguration;
@@ -184,13 +184,13 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         }
 
     }
-
+    
     /**
      * Builds a SocketAppender.
-     * <ul>
+     * <ul> 
      * <li>Removed deprecated "delayMillis", use "reconnectionDelayMillis".</li>
      * <li>Removed deprecated "reconnectionDelay", use "reconnectionDelayMillis".</li>
-     * </ul>
+     * </ul> 
      */
     public static class Builder extends AbstractBuilder<Builder>
             implements org.apache.logging.log4j.core.util.Builder<SocketAppender> {
@@ -226,7 +226,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
                     getPropertyArray());
         }
     }
-
+    
     @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();
@@ -341,7 +341,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             .build();
         // @formatter:on
     }
-
+    
     /**
      * Creates a socket appender.
      *

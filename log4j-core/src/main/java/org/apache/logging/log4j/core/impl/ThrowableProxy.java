@@ -298,7 +298,7 @@ public class ThrowableProxy implements Serializable {
      *
      * @param value New value of commonElementCount.
      */
-    void setCommonElementCount(final int value) {
+    void setCommonElementCount(int value) {
         this.commonElementCount = value;
     }
 
