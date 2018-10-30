@@ -26,12 +26,12 @@
     <JMSQueue name="JmsQueueAppender"
               factoryBindingName="jms/queues"
               queueBindingName="jms/queue">
-      <SerializedLayout/>
+      <PatternLayout pattern="%m"/>
     </JMSQueue>
     <JMSTopic name="JmsTopicAppender"
               factoryBindingName="jms/topics"
               topicBindingName="jms/topic">
-      <SerializedLayout/>
+      <PatternLayout pattern="%m"/>
     </JMSTopic>
   </Appenders>
   <Loggers>
