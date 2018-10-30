@@ -22,6 +22,11 @@
          destinationBindingName="jms/destination">
       <PatternLayout pattern="%m"/>
     </JMS>
+    <JMS name="JmsAppender-MessageLayout"
+         factoryBindingName="jms/connectionFactory"
+         destinationBindingName="jms/destination-ml">
+      <MessageLayout />
+    </JMS>
     <!-- backwards compatibility tests -->
     <JMSQueue name="JmsQueueAppender"
               factoryBindingName="jms/queues"

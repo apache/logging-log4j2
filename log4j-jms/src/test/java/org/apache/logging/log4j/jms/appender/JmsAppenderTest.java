@@ -20,7 +20,6 @@ package org.apache.logging.log4j.jms.appender;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -34,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
+import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.junit.JndiRule;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Before;
 import org.junit.Rule;
@@ -59,6 +60,7 @@ public class JmsAppenderTest {
     private static final String QUEUE_FACTORY_NAME = "jms/queues";
     private static final String TOPIC_FACTORY_NAME = "jms/topics";
     private static final String DESTINATION_NAME = "jms/destination";
+    private static final String DESTINATION_NAME_ML = "jms/destination-ml";
     private static final String QUEUE_NAME = "jms/queue";
     private static final String TOPIC_NAME = "jms/topic";
     private static final String LOG_MESSAGE = "Hello, world!";
@@ -67,9 +69,12 @@ public class JmsAppenderTest {
     private final Connection connection = mock(Connection.class);
     private final Session session = mock(Session.class);
     private final Destination destination = mock(Destination.class);
+    private final Destination destinationMl = mock(Destination.class);
     private final MessageProducer messageProducer = mock(MessageProducer.class);
+    private final MessageProducer messageProducerMl = mock(MessageProducer.class);
     private final TextMessage textMessage = mock(TextMessage.class);
     private final ObjectMessage objectMessage = mock(ObjectMessage.class);
+    private final MapMessage mapMessage = mock(MapMessage.class);
 
     private final JndiRule jndiRule = new JndiRule(createBindings());
     private final LoggerContextRule ctx = new LoggerContextRule("JmsAppenderTest.xml");
@@ -77,10 +82,23 @@ public class JmsAppenderTest {
     @Rule
     public RuleChain rules = RuleChain.outerRule(jndiRule).around(ctx);
 
+    public JmsAppenderTest() throws Exception {
+        // this needs to set up before LoggerContextRule
+        given(connectionFactory.createConnection()).willReturn(connection);
+        given(connectionFactory.createConnection(anyString(), anyString())).willThrow(IllegalArgumentException.class);
+        given(connection.createSession(eq(false), eq(Session.AUTO_ACKNOWLEDGE))).willReturn(session);
+        given(session.createProducer(eq(destination))).willReturn(messageProducer);
+        given(session.createProducer(eq(destinationMl))).willReturn(messageProducerMl);
+        given(session.createTextMessage(anyString())).willReturn(textMessage);
+        given(session.createObjectMessage(isA(Serializable.class))).willReturn(objectMessage);
+        given(session.createMapMessage()).willReturn(mapMessage);
+    }
+
     private Map<String, Object> createBindings() {
         final ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
         map.put(CONNECTION_FACTORY_NAME, connectionFactory);
         map.put(DESTINATION_NAME, destination);
+        map.put(DESTINATION_NAME_ML, destinationMl);
         map.put(QUEUE_FACTORY_NAME, connectionFactory);
         map.put(QUEUE_NAME, destination);
         map.put(TOPIC_FACTORY_NAME, connectionFactory);
@@ -88,20 +106,30 @@ public class JmsAppenderTest {
         return map;
     }
 
-    public JmsAppenderTest() throws Exception {
-        // this needs to set up before LoggerContextRule
-        given(connectionFactory.createConnection()).willReturn(connection);
-        given(connectionFactory.createConnection(anyString(), anyString())).willThrow(IllegalArgumentException.class);
-        given(connection.createSession(eq(false), eq(Session.AUTO_ACKNOWLEDGE))).willReturn(session);
-        given(session.createProducer(eq(destination))).willReturn(messageProducer);
-        given(session.createTextMessage(anyString())).willReturn(textMessage);
-        given(session.createObjectMessage(isA(Serializable.class))).willReturn(objectMessage);
+    private  Log4jLogEvent createLogEvent() {
+        return createLogEvent(new SimpleMessage(LOG_MESSAGE));
+    }
+
+    private Log4jLogEvent createLogEvent(final Message message) {
+        // @formatter:off
+        return Log4jLogEvent.newBuilder()
+            .setLoggerName(JmsAppenderTest.class.getName())
+            .setLoggerFqcn(JmsAppenderTest.class.getName())
+            .setLevel(Level.INFO)
+            .setMessage(message)
+            .build();
+        // @formatter:on
+    }
+
+    private Log4jLogEvent createMapMessageLogEvent() {
+        org.apache.logging.log4j.message.MapMessage<?, String> mapMessage = new org.apache.logging.log4j.message.MapMessage<>();
+        return createLogEvent(mapMessage.with("testMesage", LOG_MESSAGE));
     }
 
     @Before
     public void setUp() throws Exception {
-        // we have 3 appenders all connecting to the same ConnectionFactory
-        then(connection).should(times(3)).start();
+        // we have 4 appenders all connecting to the same ConnectionFactory
+        then(connection).should(times(4)).start();
     }
 
     @Test
@@ -112,6 +140,19 @@ public class JmsAppenderTest {
         then(session).should().createTextMessage(eq(LOG_MESSAGE));
         then(textMessage).should().setJMSTimestamp(anyLong());
         then(messageProducer).should().send(textMessage);
+        appender.stop();
+        then(session).should().close();
+        then(connection).should().close();
+    }
+
+    @Test
+    public void testAppendToQueueWithMessageLayout() throws Exception {
+        final JmsAppender appender = (JmsAppender) ctx.getRequiredAppender("JmsAppender-MessageLayout");
+        final LogEvent event = createMapMessageLogEvent();
+        appender.append(event);
+        then(session).should().createMapMessage();
+        then(mapMessage).should().setJMSTimestamp(anyLong());
+        then(messageProducerMl).should().send(mapMessage);
         appender.stop();
         then(session).should().close();
         then(connection).should().close();
@@ -141,15 +182,6 @@ public class JmsAppenderTest {
         appender.stop();
         then(session).should().close();
         then(connection).should().close();
-    }
-
-    private static Log4jLogEvent createLogEvent() {
-        return Log4jLogEvent.newBuilder()
-            .setLoggerName(JmsAppenderTest.class.getName())
-            .setLoggerFqcn(JmsAppenderTest.class.getName())
-            .setLevel(Level.INFO)
-            .setMessage(new SimpleMessage(LOG_MESSAGE))
-            .build();
     }
 
 }
