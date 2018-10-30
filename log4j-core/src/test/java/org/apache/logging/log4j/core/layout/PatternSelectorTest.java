@@ -59,7 +59,7 @@ public class PatternSelectorTest {
                 .setIncludeLocation(true)
                 .setMessage(new SimpleMessage("entry")).build();
         final String result1 = new FauxLogger().formatEvent(event1, layout);
-        final String expectSuffix1 = String.format("====== PatternSelectorTest.testPatternSelector:53 entry ======%n");
+        final String expectSuffix1 = String.format("====== PatternSelectorTest.testPatternSelector:61 entry ======%n");
         assertTrue("Unexpected result: " + result1, result1.endsWith(expectSuffix1));
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
