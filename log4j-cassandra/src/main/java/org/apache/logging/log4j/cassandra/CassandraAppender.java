@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.appender.db.ColumnMapping;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -40,8 +41,8 @@ import org.apache.logging.log4j.core.util.Clock;
 public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager> {
 
     private CassandraAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-                              final CassandraManager manager) {
-        super(name, filter, ignoreExceptions, manager);
+                              final Property[] properties, final CassandraManager manager) {
+        super(name, filter, null, ignoreExceptions, properties, manager);
     }
 
     @PluginBuilderFactory
@@ -177,7 +178,7 @@ public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager
             final CassandraManager manager = CassandraManager.getManager(getName(), contactPoints, columns, useTls,
                 clusterName, keyspace, table, username, password, useClockForTimestampGenerator, bufferSize, batched,
                 batchType);
-            return new CassandraAppender(getName(), getFilter(), isIgnoreExceptions(), manager);
+            return new CassandraAppender(getName(), getFilter(), isIgnoreExceptions(), null, manager);
         }
 
     }

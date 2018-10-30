@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.appender.rolling.RollingFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -152,7 +153,8 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             manager.initialize();
 
             return new RollingFileAppender(getName(), layout, getFilter(), manager, fileName, filePattern,
-                    isIgnoreExceptions(), isImmediateFlush(), advertise ? getConfiguration().getAdvertiser() : null);
+                    isIgnoreExceptions(), isImmediateFlush(), advertise ? getConfiguration().getAdvertiser() : null,
+                    getPropertyArray());
         }
 
         public String getAdvertiseUri() {
@@ -274,8 +276,9 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
     private RollingFileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final RollingFileManager manager, final String fileName, final String filePattern,
-            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {
-        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
+            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser,
+            final Property[] properties) {
+        super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.put("contentType", layout.getContentType());
@@ -385,13 +388,10 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         .withBufferSize(bufferSize)
         .setConfiguration(config)
         .withFileName(fileName)
-        .withFilePattern(filePattern).setFilter(filter)
-                .withIgnoreExceptions(Booleans.parseBoolean(ignore, true))
-                .withImmediateFlush(Booleans.parseBoolean(immediateFlush, true))
-                .withLayout(layout)
+        .withFilePattern(filePattern).setFilter(filter).setIgnoreExceptions(Booleans.parseBoolean(ignore, true))
+                .withImmediateFlush(Booleans.parseBoolean(immediateFlush, true)).setLayout(layout)
                 .withCreateOnDemand(false)
-                .withLocking(false)
-                .withName(name)
+                .withLocking(false).setName(name)
                 .withPolicy(policy)
                 .withStrategy(strategy)
                 .build();

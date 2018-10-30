@@ -29,8 +29,11 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AbstractManager;
+import org.apache.logging.log4j.core.appender.HttpAppender;
+import org.apache.logging.log4j.core.appender.HttpAppender.Builder;
 import org.apache.logging.log4j.core.appender.mom.JmsManager.JmsManagerConfiguration;
 import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -47,13 +50,10 @@ import org.apache.logging.log4j.core.net.JndiManager;
 @PluginAliases({ "JMSQueue", "JMSTopic" })
 public class JmsAppender extends AbstractAppender {
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<JmsAppender> {
+    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<JmsAppender> {
 
         public static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 5000;
-
-        @PluginBuilderAttribute
-        @Required(message = "A name for the JmsAppender must be specified")
-        private String name;
 
         @PluginBuilderAttribute
         private String factoryName;
@@ -85,16 +85,7 @@ public class JmsAppender extends AbstractAppender {
         @PluginBuilderAttribute(sensitive = true)
         private char[] password;
 
-        @PluginElement("Layout")
-        private Layout<? extends Serializable> layout;
-
-        @PluginElement("Filter")
-        private Filter filter;
-
         private long reconnectIntervalMillis = DEFAULT_RECONNECT_INTERVAL_MILLIS;
-
-        @PluginBuilderAttribute
-        private boolean ignoreExceptions = true;
 
         @PluginBuilderAttribute
         private boolean immediateFail;
@@ -115,20 +106,22 @@ public class JmsAppender extends AbstractAppender {
                         securityPrincipalName, securityCredentials, null);
                 configuration = new JmsManagerConfiguration(jndiProperties, factoryBindingName, destinationBindingName,
                         userName, password, false, reconnectIntervalMillis);
-                actualJmsManager = AbstractManager.getManager(name, JmsManager.FACTORY, configuration);
+                actualJmsManager = AbstractManager.getManager(getName(), JmsManager.FACTORY, configuration);
             }
             if (actualJmsManager == null) {
                 // JmsManagerFactory has already logged an ERROR.
                 return null;
             }
+            Layout<? extends Serializable> layout = getLayout();
             if (layout == null) {
                 LOGGER.error("No layout provided for JmsAppender");
                 return null;
             }
             try {
-                return new JmsAppender(name, filter, layout, ignoreExceptions, actualJmsManager);
+                return new JmsAppender(getName(), getFilter(), layout, isIgnoreExceptions(), getPropertyArray(),
+                        actualJmsManager);
             } catch (final JMSException e) {
-                //  Never happens since the ctor no longer actually throws a JMSException.
+                // Never happens since the ctor no longer actually throws a JMSException.
                 throw new IllegalStateException(e);
             }
         }
@@ -148,16 +141,6 @@ public class JmsAppender extends AbstractAppender {
             return this;
         }
 
-        public Builder setFilter(final Filter filter) {
-            this.filter = filter;
-            return this;
-        }
-
-        public Builder setIgnoreExceptions(final boolean ignoreExceptions) {
-            this.ignoreExceptions = ignoreExceptions;
-            return this;
-        }
-
         public Builder setImmediateFail(final boolean immediateFail) {
             this.immediateFail = immediateFail;
             return this;
@@ -165,16 +148,6 @@ public class JmsAppender extends AbstractAppender {
 
         public Builder setJmsManager(final JmsManager jmsManager) {
             this.jmsManager = jmsManager;
-            return this;
-        }
-
-        public Builder setLayout(final Layout<? extends Serializable> layout) {
-            this.layout = layout;
-            return this;
-        }
-
-        public Builder setName(final String name) {
-            this.name = name;
             return this;
         }
 
@@ -236,12 +209,12 @@ public class JmsAppender extends AbstractAppender {
          */
         @Override
         public String toString() {
-            return "Builder [name=" + name + ", factoryName=" + factoryName + ", providerUrl=" + providerUrl
+            return "Builder [name=" + getName() + ", factoryName=" + factoryName + ", providerUrl=" + providerUrl
                     + ", urlPkgPrefixes=" + urlPkgPrefixes + ", securityPrincipalName=" + securityPrincipalName
                     + ", securityCredentials=" + securityCredentials + ", factoryBindingName=" + factoryBindingName
                     + ", destinationBindingName=" + destinationBindingName + ", username=" + userName + ", layout="
-                    + layout + ", filter=" + filter + ", ignoreExceptions=" + ignoreExceptions + ", jmsManager="
-                    + jmsManager + "]";
+                    + getLayout() + ", filter=" + getFilter() + ", ignoreExceptions=" + isIgnoreExceptions()
+                    + ", jmsManager=" + jmsManager + "]";
         }
 
     }
@@ -255,12 +228,23 @@ public class JmsAppender extends AbstractAppender {
 
     /**
      *
-     * @throws JMSException
-     *             not thrown as of 2.9 but retained in the signature for compatibility, will be removed in 3.0
+     * @throws JMSException not thrown as of 2.9 but retained in the signature for compatibility, will be removed in 3.0
      */
     protected JmsAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions, final Property[] properties, final JmsManager manager) throws JMSException {
+        super(name, filter, layout, ignoreExceptions, properties);
+        this.manager = manager;
+    }
+
+    /**
+     *
+     * @throws JMSException not thrown as of 2.9 but retained in the signature for compatibility, will be removed in 3.0
+     * @deprecated
+     */
+    @Deprecated
+    protected JmsAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
             final boolean ignoreExceptions, final JmsManager manager) throws JMSException {
-        super(name, filter, layout, ignoreExceptions);
+        super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
         this.manager = manager;
     }
 

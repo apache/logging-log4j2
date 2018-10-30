@@ -26,8 +26,7 @@ public class RollingFileAppenderLayoutTest {
     @Test
     public void testDefaultLayout() throws Exception {
         // @formatter:off
-        Assert.assertNotNull(RollingFileAppender.newBuilder()
-                .withName(RollingFileAppenderLayoutTest.class.getName())
+        Assert.assertNotNull(RollingFileAppender.newBuilder().setName(RollingFileAppenderLayoutTest.class.getName())
                 .setConfiguration(new DefaultConfiguration())
                 .withFileName("log.txt")
                 .withFilePattern("FilePattern")

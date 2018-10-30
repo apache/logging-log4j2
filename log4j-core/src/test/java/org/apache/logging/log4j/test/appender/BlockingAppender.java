@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -34,7 +35,7 @@ public class BlockingAppender extends AbstractAppender {
     public volatile boolean running = true;
 
     private BlockingAppender(final String name) {
-        super(name, null, null, false);
+        super(name, null, null, false, Property.EMPTY_ARRAY);
     }
 
     @Override

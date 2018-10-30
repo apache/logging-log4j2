@@ -73,10 +73,10 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     }
 
     private FlumeAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-                          final boolean ignoreExceptions, final String includes, final String excludes,
-                          final String required, final String mdcPrefix, final String eventPrefix,
-                          final boolean compress, final FlumeEventFactory factory, final AbstractFlumeManager manager) {
-        super(name, filter, layout, ignoreExceptions);
+            final boolean ignoreExceptions, final String includes, final String excludes, final String required,
+            final String mdcPrefix, final String eventPrefix, final boolean compress, final FlumeEventFactory factory,
+            final AbstractFlumeManager manager, Property[] properties) {
+        super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
         this.mdcIncludes = includes;
         this.mdcExcludes = excludes;
@@ -264,7 +264,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         }
 
         return new FlumeAppender(name, filter, layout,  ignoreExceptions, includes,
-            excludes, required, mdcPrefix, eventPrefix, compress, factory, manager);
+            excludes, required, mdcPrefix, eventPrefix, compress, factory, manager, null);
     }
 
     private static Agent[] getAgents(Agent[] agents, final String hosts) {

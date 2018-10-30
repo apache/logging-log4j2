@@ -116,11 +116,9 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
     protected Builder newSyslogAppenderBuilder(final String protocol, final String format, final boolean newLine) {
         // @formatter:off
         return SyslogAppender.newSyslogAppenderBuilder()
-                .withPort(PORTNUM)
-                .withProtocol(EnglishEnums.valueOf(Protocol.class, protocol))
-                .withReconnectDelayMillis(-1)
-                .withName("TestApp")
-                .withIgnoreExceptions(false)
+        .withPort(PORTNUM)
+        .withProtocol(EnglishEnums.valueOf(Protocol.class, protocol))
+        .withReconnectDelayMillis(-1).setName("TestApp").setIgnoreExceptions(false)
                 .setId("Audit")
                 .setEnterpriseNumber(18060)
                 .setMdcId("RequestContext")

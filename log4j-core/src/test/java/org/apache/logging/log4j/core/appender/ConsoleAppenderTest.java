@@ -92,8 +92,7 @@ public class ConsoleAppenderTest {
         try {
             systemSetter.systemSet(psMock);
             final Layout<String> layout = PatternLayout.newBuilder().withAlwaysWriteExceptions(true).build();
-            final ConsoleAppender app = ConsoleAppender.newBuilder().withLayout(layout).setTarget(targetName)
-                    .withName("Console").withIgnoreExceptions(false).build();
+            final ConsoleAppender app = ConsoleAppender.newBuilder().setLayout(layout).setTarget(targetName).setName("Console").setIgnoreExceptions(false).build();
             app.start();
             assertTrue("Appender did not start", app.isStarted());
 
@@ -125,8 +124,7 @@ public class ConsoleAppenderTest {
     }
 
     private void testFollowSystemPrintStream(final PrintStream ps, final Target target, final SystemSetter systemSetter) {
-        final ConsoleAppender app = ConsoleAppender.newBuilder().setTarget(target).setFollow(true)
-                .withIgnoreExceptions(false).withName("test").build();
+        final ConsoleAppender app = ConsoleAppender.newBuilder().setTarget(target).setFollow(true).setIgnoreExceptions(false).setName("test").build();
         Assert.assertEquals(target, app.getTarget());
         app.start();
         try {

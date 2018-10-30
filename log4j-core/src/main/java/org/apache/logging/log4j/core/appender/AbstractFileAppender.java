@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.net.Advertiser;
@@ -159,9 +160,9 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
 
     private AbstractFileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final M manager, final String filename, final boolean ignoreExceptions,
-            final boolean immediateFlush, final Advertiser advertiser) {
+            final boolean immediateFlush, final Advertiser advertiser, final Property[] properties) {
 
-        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
+        super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());

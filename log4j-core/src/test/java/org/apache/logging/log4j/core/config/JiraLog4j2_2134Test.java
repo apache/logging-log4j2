@@ -17,10 +17,13 @@
 
 package org.apache.logging.log4j.core.config;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -43,9 +46,10 @@ public class JiraLog4j2_2134Test {
 				.withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
 				.withConfiguration(config)
 				.build();
+        final Layout<? extends Serializable> layout1 = layout;
 		// @formatter:on
-		Appender appender = FileAppender.newBuilder().withFileName("target/test.log").withLayout(layout)
-				.setConfiguration(config).withBufferSize(4000).withName("File").build();
+		Appender appender = FileAppender.newBuilder().withFileName("target/test.log").setLayout(layout1)
+        .setConfiguration(config).withBufferSize(4000).setName("File").build();
 		// appender.start();
 		config.addAppender(appender);
 		AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);

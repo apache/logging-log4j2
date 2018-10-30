@@ -65,7 +65,7 @@
     </Logger>
 
     <Logger name="org.apache.logging.log4j.hosttest" level="debug" additivity="false">
-      <!-- User appender-ref alias to prove it works -->
+      <!-- Use appender-ref alias to prove it works -->
       <appender-ref ref="HostTest"/>
     </Logger>
 

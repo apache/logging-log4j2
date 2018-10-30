@@ -69,8 +69,8 @@ public final class JeroMqAppender extends AbstractAppender {
             final long maxMsgSize, final long rcvHwm, final long receiveBufferSize, final int receiveTimeOut,
             final long reconnectIVL, final long reconnectIVLMax, final long sendBufferSize, final int sendTimeOut,
             final long sndHWM, final int tcpKeepAlive, final long tcpKeepAliveCount, final long tcpKeepAliveIdle,
-            final long tcpKeepAliveInterval, final boolean xpubVerbose) {
-        super(name, filter, layout, ignoreExceptions);
+            final long tcpKeepAliveInterval, final boolean xpubVerbose, final Property[] properties) {
+        super(name, filter, layout, ignoreExceptions, properties);
         this.manager = JeroMqManager.getJeroMqManager(name, affinity, backlog, delayAttachOnConnect, identity, ipv4Only,
             linger, maxMsgSize, rcvHwm, receiveBufferSize, receiveTimeOut, reconnectIVL, reconnectIVLMax,
             sendBufferSize, sendTimeOut, sndHWM, tcpKeepAlive, tcpKeepAliveCount, tcpKeepAliveIdle,
@@ -134,7 +134,7 @@ public final class JeroMqAppender extends AbstractAppender {
         return new JeroMqAppender(name, filter, layout, ignoreExceptions, endpoints, affinity, backlog,
                 delayAttachOnConnect, identity, ipv4Only, linger, maxMsgSize, rcvHwm, receiveBufferSize,
                 receiveTimeOut, reconnectIVL, reconnectIVLMax, sendBufferSize, sendTimeOut, sndHwm, tcpKeepAlive,
-                tcpKeepAliveCount, tcpKeepAliveIdle, tcpKeepAliveInterval, xpubVerbose);
+                tcpKeepAliveCount, tcpKeepAliveIdle, tcpKeepAliveInterval, xpubVerbose, null);
     }
 
     @Override

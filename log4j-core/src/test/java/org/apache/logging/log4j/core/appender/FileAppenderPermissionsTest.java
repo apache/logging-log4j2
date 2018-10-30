@@ -92,13 +92,10 @@ public class FileAppenderPermissionsTest {
                 .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(file.getAbsolutePath())
-            .withName("test")
-            .withImmediateFlush(false)
-            .withIgnoreExceptions(false)
+        .withFileName(file.getAbsolutePath()).setName("test")
+            .withImmediateFlush(false).setIgnoreExceptions(false)
             .withBufferedIo(false)
-            .withBufferSize(1)
-            .withLayout(layout)
+            .withBufferSize(1).setLayout(layout)
             .withCreateOnDemand(createOnDemand)
             .withFilePermissions(filePermissions)
             .build();
@@ -147,13 +144,10 @@ public class FileAppenderPermissionsTest {
                 .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(file.getAbsolutePath())
-            .withName("test")
-            .withImmediateFlush(true)
-            .withIgnoreExceptions(false)
+        .withFileName(file.getAbsolutePath()).setName("test")
+            .withImmediateFlush(true).setIgnoreExceptions(false)
             .withBufferedIo(false)
-            .withBufferSize(1)
-            .withLayout(layout)
+            .withBufferSize(1).setLayout(layout)
             .withFilePermissions(filePermissions)
             .withFileOwner(user)
             .withFileGroup(group)

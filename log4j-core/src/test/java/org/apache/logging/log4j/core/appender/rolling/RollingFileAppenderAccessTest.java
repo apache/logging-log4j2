@@ -40,9 +40,8 @@ public class RollingFileAppenderAccessTest {
             file.deleteOnExit();
             // @formatter:off
             final RollingFileAppender appender = RollingFileAppender.newBuilder()
-                    .withFileName(file.getCanonicalPath())
-                    .withFilePattern("FilePattern")
-                    .withName("Name")
+            .withFileName(file.getCanonicalPath())
+            .withFilePattern("FilePattern").setName("Name")
                     .withPolicy(OnStartupTriggeringPolicy.createPolicy(1))
                     .setConfiguration(config)
                     .build();

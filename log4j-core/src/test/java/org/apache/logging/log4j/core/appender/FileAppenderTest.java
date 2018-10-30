@@ -93,13 +93,10 @@ public class FileAppenderTest {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(FILE_NAME)
-            .withName("test")
-            .withImmediateFlush(false)
-            .withIgnoreExceptions(false)
+        .withFileName(FILE_NAME).setName("test")
+            .withImmediateFlush(false).setIgnoreExceptions(false)
             .withBufferedIo(false)
-            .withBufferSize(1)
-            .withLayout(layout)
+            .withBufferSize(1).setLayout(layout)
             .withCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on
@@ -124,13 +121,10 @@ public class FileAppenderTest {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(FILE_NAME)
-            .withName("test")
-            .withImmediateFlush(false)
-            .withIgnoreExceptions(false)
+        .withFileName(FILE_NAME).setName("test")
+            .withImmediateFlush(false).setIgnoreExceptions(false)
             .withBufferedIo(false)
-            .withBufferSize(1)
-            .withLayout(layout)
+            .withBufferSize(1).setLayout(layout)
             .withCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on
@@ -233,13 +227,10 @@ public class FileAppenderTest {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(FILE_NAME)
-            .withName("test")
-            .withImmediateFlush(false)
-            .withIgnoreExceptions(false)
+        .withFileName(FILE_NAME).setName("test")
+            .withImmediateFlush(false).setIgnoreExceptions(false)
             .withLocking(locking)
-            .withBufferedIo(false)
-            .withLayout(layout)
+            .withBufferedIo(false).setLayout(layout)
             .withCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on

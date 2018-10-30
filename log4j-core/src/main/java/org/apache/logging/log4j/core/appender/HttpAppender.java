@@ -72,9 +72,11 @@ public final class HttpAppender extends AbstractAppender {
 
         @Override
         public HttpAppender build() {
-            final HttpManager httpManager = new HttpURLConnectionManager(getConfiguration(), getConfiguration().getLoggerContext(),
-                getName(), url, method, connectTimeoutMillis, readTimeoutMillis, headers, sslConfiguration, verifyHostname);
-            return new HttpAppender(getName(), getLayout(), getFilter(), isIgnoreExceptions(), httpManager);
+            final HttpManager httpManager = new HttpURLConnectionManager(getConfiguration(),
+                    getConfiguration().getLoggerContext(), getName(), url, method, connectTimeoutMillis,
+                    readTimeoutMillis, headers, sslConfiguration, verifyHostname);
+            return new HttpAppender(getName(), getLayout(), getFilter(), isIgnoreExceptions(), httpManager,
+                    getPropertyArray());
         }
 
         public URL getUrl() {
@@ -152,8 +154,8 @@ public final class HttpAppender extends AbstractAppender {
     private final HttpManager manager;
 
     private HttpAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-                         final boolean ignoreExceptions, final HttpManager manager) {
-        super(name, filter, layout, ignoreExceptions);
+            final boolean ignoreExceptions, final HttpManager manager, final Property[] properties) {
+        super(name, filter, layout, ignoreExceptions, properties);
         Objects.requireNonNull(layout, "layout");
         this.manager = Objects.requireNonNull(manager, "manager");
     }

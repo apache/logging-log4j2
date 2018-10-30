@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -124,7 +125,7 @@ public class SyslogAppender extends SocketAppender {
                             .setEscapeNL(escapeNL)
                             .setCharset(charsetName)
                             .build();
-                        // @formatter:off
+                        // @formatter:on
             }
             final String name = getName();
             if (name == null) {
@@ -135,7 +136,7 @@ public class SyslogAppender extends SocketAppender {
                     sslConfiguration, getReconnectDelayMillis(), getImmediateFail(), layout, Constants.ENCODER_BYTE_BUFFER_SIZE, null);
 
             return new SyslogAppender(name, layout, getFilter(), isIgnoreExceptions(), isImmediateFlush(), manager,
-                    getAdvertise() ? configuration.getAdvertiser() : null);
+                    getAdvertise() ? configuration.getAdvertiser() : null, null);
         }
 
         public Facility getFacility() {
@@ -305,9 +306,19 @@ public class SyslogAppender extends SocketAppender {
 
     protected SyslogAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
                              final boolean ignoreExceptions, final boolean immediateFlush,
-                             final AbstractSocketManager manager, final Advertiser advertiser) {
-        super(name, layout, filter, manager, ignoreExceptions, immediateFlush, advertiser);
+                             final AbstractSocketManager manager, final Advertiser advertiser, Property[] properties) {
+        super(name, layout, filter, manager, ignoreExceptions, immediateFlush, advertiser, properties);
+    }
 
+    /**
+     * @deprecated Use
+     * {@link #SyslogAppender(String, Layout, Filter, boolean, boolean, AbstractSocketManager, Advertiser, Property[])}.
+     */
+    @Deprecated
+    protected SyslogAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
+            final boolean ignoreExceptions, final boolean immediateFlush, final AbstractSocketManager manager,
+            final Advertiser advertiser) {
+        super(name, layout, filter, manager, ignoreExceptions, immediateFlush, advertiser, Property.EMPTY_ARRAY);
     }
 
     /**
@@ -393,10 +404,8 @@ public class SyslogAppender extends SocketAppender {
         .withSslConfiguration(sslConfiguration)
         .withConnectTimeoutMillis(connectTimeoutMillis)
         .withReconnectDelayMillis(reconnectDelayMillis)
-        .withImmediateFail(immediateFail)
-        .withName(appName)
-        .withImmediateFlush(immediateFlush)
-        .withIgnoreExceptions(ignoreExceptions).setFilter(filter)
+        .withImmediateFail(immediateFail).setName(appName)
+        .withImmediateFlush(immediateFlush).setIgnoreExceptions(ignoreExceptions).setFilter(filter)
                 .setConfiguration(configuration)
                 .withAdvertise(advertise)
                 .setFacility(facility)

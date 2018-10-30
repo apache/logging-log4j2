@@ -122,8 +122,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
     private ConcurrentMap<String, LoggerConfig> loggerConfigs = new ConcurrentHashMap<>();
     private List<CustomLevelConfig> customLevels = Collections.emptyList();
-    private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<>();
-    private final StrLookup tempLookup = new Interpolator(properties);
+    private final ConcurrentMap<String, String> propertyMap = new ConcurrentHashMap<>();
+    private final StrLookup tempLookup = new Interpolator(propertyMap);
     private final StrSubstitutor subst = new StrSubstitutor(tempLookup);
     private LoggerConfig root = new LoggerConfig();
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
@@ -142,7 +142,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // The loggerContext is null for the NullConfiguration class.
         // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
-        componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
+        componentMap.put(Configuration.CONTEXT_PROPERTIES, propertyMap);
         pluginManager = new PluginManager(Node.CATEGORY);
         rootNode = new Node();
         setState(State.INITIALIZING);
@@ -161,7 +161,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     @Override
     public Map<String, String> getProperties() {
-        return properties;
+        return propertyMap;
     }
 
     @Override

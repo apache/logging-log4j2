@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
@@ -47,8 +48,8 @@ public final class RewriteAppender extends AbstractAppender {
 
     private RewriteAppender(final String name, final Filter filter, final boolean ignoreExceptions,
                             final AppenderRef[] appenderRefs, final RewritePolicy rewritePolicy,
-                            final Configuration config) {
-        super(name, filter, null, ignoreExceptions);
+                            final Configuration config, final Property[] properties) {
+        super(name, filter, null, ignoreExceptions, properties);
         this.config = config;
         this.rewritePolicy = rewritePolicy;
         this.appenderRefs = appenderRefs;
@@ -113,6 +114,6 @@ public final class RewriteAppender extends AbstractAppender {
             LOGGER.error("No appender references defined for RewriteAppender");
             return null;
         }
-        return new RewriteAppender(name, filter, ignoreExceptions, appenderRefs, rewritePolicy, config);
+        return new RewriteAppender(name, filter, ignoreExceptions, appenderRefs, rewritePolicy, config, null);
     }
 }

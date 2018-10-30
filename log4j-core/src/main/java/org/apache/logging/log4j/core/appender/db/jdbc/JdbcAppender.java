@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.appender.db.ColumnMapping;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -55,8 +56,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
     private final String description;
 
     private JdbcAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions, final JdbcDatabaseManager manager) {
-        super(name, filter, layout, ignoreExceptions, manager);
+            final boolean ignoreExceptions, final Property[] properties, final JdbcDatabaseManager manager) {
+        super(name, filter, layout, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
 
@@ -89,9 +90,7 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         .setBufferSize(bufferSizeInt)
         .setColumnConfigs(columnConfigs)
         .setConnectionSource(connectionSource)
-        .setTableName(tableName)
-        .withName(name)
-        .withIgnoreExceptions(ignoreExceptions).setFilter(filter)
+        .setTableName(tableName).setName(name).setIgnoreExceptions(ignoreExceptions).setFilter(filter)
             .build();
     }
 
@@ -180,7 +179,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
             if (manager == null) {
                 return null;
             }
-            return new JdbcAppender(getName(), getFilter(), getLayout(), isIgnoreExceptions(), manager);
+            return new JdbcAppender(getName(), getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(),
+                    manager);
         }
 
     }

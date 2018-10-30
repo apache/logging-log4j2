@@ -20,6 +20,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -90,8 +91,9 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     private ConsoleAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final OutputStreamManager manager, final boolean ignoreExceptions, final Target target) {
-        super(name, layout, filter, ignoreExceptions, true, manager);
+            final OutputStreamManager manager, final boolean ignoreExceptions, final Target target,
+            Property[] properties) {
+        super(name, layout, filter, ignoreExceptions, true, properties, manager);
         this.target = target;
     }
 
@@ -125,7 +127,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         final boolean isFollow = Boolean.parseBoolean(follow);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final Target target = targetStr == null ? DEFAULT_TARGET : Target.valueOf(targetStr);
-        return new ConsoleAppender(name, layout, filter, getManager(target, isFollow, false, layout), ignoreExceptions, target);
+        return new ConsoleAppender(name, layout, filter, getManager(target, isFollow, false, layout), ignoreExceptions, target, null);
     }
 
     /**
@@ -166,13 +168,13 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             LOGGER.error("Cannot use both follow and direct on ConsoleAppender");
             return null;
         }
-        return new ConsoleAppender(name, layout, filter, getManager(target, follow, direct, layout), ignoreExceptions, target);
+        return new ConsoleAppender(name, layout, filter, getManager(target, follow, direct, layout), ignoreExceptions, target, null);
     }
 
     public static ConsoleAppender createDefaultAppenderForLayout(final Layout<? extends Serializable> layout) {
         // this method cannot use the builder class without introducing an infinite loop due to DefaultConfiguration
         return new ConsoleAppender("DefaultConsole-" + COUNT.incrementAndGet(), layout, null,
-                getDefaultManager(DEFAULT_TARGET, false, false, layout), true, DEFAULT_TARGET);
+                getDefaultManager(DEFAULT_TARGET, false, false, layout), true, DEFAULT_TARGET, null);
     }
 
     @PluginBuilderFactory
@@ -219,7 +221,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             }
             final Layout<? extends Serializable> layout = getOrCreateLayout(target.getDefaultCharset());
             return new ConsoleAppender(getName(), layout, getFilter(), getManager(target, follow, direct, layout),
-                    isIgnoreExceptions(), target);
+                    isIgnoreExceptions(), target, getPropertyArray());
         }
     }
 

@@ -51,8 +51,7 @@ public class CronTriggeringPolicyTest {
 
     private void testBuilder() {
         // @formatter:off
-        final RollingFileAppender raf = RollingFileAppender.newBuilder()
-            .withName("test1")
+        final RollingFileAppender raf = RollingFileAppender.newBuilder().setName("test1")
             .withFileName("target/testcmd1.log")
             .withFilePattern("target/testcmd1.log.%d{yyyy-MM-dd}")
             .withPolicy(createPolicy())
@@ -87,8 +86,7 @@ public class CronTriggeringPolicyTest {
     @Test
     public void testRollingRandomAccessFileAppender() {
         // @formatter:off
-        RollingRandomAccessFileAppender.newBuilder()
-            .withName("test2")
+        RollingRandomAccessFileAppender.newBuilder().setName("test2")
             .withFileName("target/testcmd2.log")
             .withFilePattern("target/testcmd2.log.%d{yyyy-MM-dd}")
             .withPolicy(createPolicy())

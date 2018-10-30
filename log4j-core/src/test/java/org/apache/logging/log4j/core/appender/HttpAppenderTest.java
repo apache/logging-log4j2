@@ -29,10 +29,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.JsonLayout;
@@ -162,9 +164,7 @@ public class HttpAppenderTest {
         wireMockRule.stubFor(post(urlEqualTo("/test/log4j/"))
             .willReturn(SUCCESS_RESPONSE));
 
-        final Appender appender = HttpAppender.newBuilder()
-            .withName("Http")
-            .withLayout(JsonLayout.createDefaultLayout())
+        final Appender appender = HttpAppender.newBuilder().setName("Http").setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
             .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
             .build();
@@ -181,9 +181,7 @@ public class HttpAppenderTest {
         wireMockRule.stubFor(post(urlEqualTo("/test/log4j/"))
             .willReturn(SUCCESS_RESPONSE));
 
-        final Appender appender = HttpAppender.newBuilder()
-            .withName("Http")
-            .withLayout(JsonLayout.createDefaultLayout())
+        final Appender appender = HttpAppender.newBuilder().setName("Http").setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
             .setUrl(new URL("https://localhost:" + wireMockRule.httpsPort() + "/test/log4j/"))
             .setSslConfiguration(SslConfiguration.createSSLConfiguration(null,
@@ -204,9 +202,7 @@ public class HttpAppenderTest {
         wireMockRule.stubFor(put(urlEqualTo("/test/log4j/1234"))
             .willReturn(SUCCESS_RESPONSE));
 
-        final Appender appender = HttpAppender.newBuilder()
-            .withName("Http")
-            .withLayout(JsonLayout.createDefaultLayout())
+        final Appender appender = HttpAppender.newBuilder().setName("Http").setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
             .setMethod("PUT")
             .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/1234"))
@@ -224,9 +220,7 @@ public class HttpAppenderTest {
         wireMockRule.stubFor(post(urlEqualTo("/test/log4j/"))
             .willReturn(SUCCESS_RESPONSE));
 
-        final Appender appender = HttpAppender.newBuilder()
-            .withName("Http")
-            .withLayout(JsonLayout.createDefaultLayout())
+        final Appender appender = HttpAppender.newBuilder().setName("Http").setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
             .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
             .setHeaders(new Property[] {
@@ -268,9 +262,7 @@ public class HttpAppenderTest {
 
         error = null;
 
-        final Appender appender = HttpAppender.newBuilder()
-            .withName("Http")
-            .withLayout(JsonLayout.createDefaultLayout())
+        final Appender appender = HttpAppender.newBuilder().setName("Http").setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
             .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
             .build();
@@ -291,11 +283,8 @@ public class HttpAppenderTest {
         wireMockRule.stubFor(post(urlEqualTo("/test/log4j/"))
             .willReturn(FAILURE_RESPONSE));
 
-        final Appender appender = HttpAppender.newBuilder()
-            .withName("Http")
-            .withLayout(JsonLayout.createDefaultLayout())
-            .setConfiguration(ctx.getConfiguration())
-            .withIgnoreExceptions(false)
+        final Appender appender = HttpAppender.newBuilder().setName("Http").setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
+        .setConfiguration(ctx.getConfiguration()).setIgnoreExceptions(false)
             .setUrl(new URL("http://localhost:" + wireMockRule.port() + "/test/log4j/"))
             .build();
         appender.append(createLogEvent());
@@ -303,11 +292,8 @@ public class HttpAppenderTest {
 
     @Test(expected = AppenderLoggingException.class)
     public void testAppendConnectError() throws Exception {
-        final Appender appender = HttpAppender.newBuilder()
-            .withName("Http")
-            .withLayout(JsonLayout.createDefaultLayout())
-            .setConfiguration(ctx.getConfiguration())
-            .withIgnoreExceptions(false)
+        final Appender appender = HttpAppender.newBuilder().setName("Http").setLayout((Layout<? extends Serializable>) JsonLayout.createDefaultLayout())
+        .setConfiguration(ctx.getConfiguration()).setIgnoreExceptions(false)
             .setUrl(new URL("http://localhost:"+(wireMockRule.port()+1)+"/test/log4j/"))
             .build();
         appender.append(createLogEvent());

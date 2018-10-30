@@ -17,6 +17,9 @@
 
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.Facility;
@@ -31,7 +34,7 @@ public class SyslogAppenderCustomLayoutTest extends SyslogAppenderTest {
     @Override
     protected Builder newSyslogAppenderBuilder(final String protocol, final String format, final boolean newLine) {
         final Builder builder = super.newSyslogAppenderBuilder(protocol, format, newLine);
-        builder.withLayout(SyslogLayout.newBuilder().setFacility(Facility.LOCAL3).setIncludeNewLine(true).build());
+        builder.setLayout((Layout<? extends Serializable>) SyslogLayout.newBuilder().setFacility(Facility.LOCAL3).setIncludeNewLine(true).build());
         return builder;
     }
 

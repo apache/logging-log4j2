@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -99,7 +100,8 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             }
 
             return new FileAppender(getName(), layout, getFilter(), manager, fileName, isIgnoreExceptions(),
-                    !bufferedIo || isImmediateFlush(), advertise ? getConfiguration().getAdvertiser() : null);
+                    !bufferedIo || isImmediateFlush(), advertise ? getConfiguration().getAdvertiser() : null,
+                    getPropertyArray());
         }
 
         public String getAdvertiseUri() {
@@ -232,12 +234,9 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
         .withBufferedIo(Booleans.parseBoolean(bufferedIo, true))
         .withBufferSize(Integers.parseInt(bufferSizeStr, DEFAULT_BUFFER_SIZE))
         .setConfiguration(config)
-        .withFileName(fileName).setFilter(filter)
-            .withIgnoreExceptions(Booleans.parseBoolean(ignoreExceptions, true))
-            .withImmediateFlush(Booleans.parseBoolean(immediateFlush, true))
-            .withLayout(layout)
-            .withLocking(Boolean.parseBoolean(locking))
-            .withName(name)
+        .withFileName(fileName).setFilter(filter).setIgnoreExceptions(Booleans.parseBoolean(ignoreExceptions, true))
+            .withImmediateFlush(Booleans.parseBoolean(immediateFlush, true)).setLayout(layout)
+            .withLocking(Boolean.parseBoolean(locking)).setName(name)
             .build();
         // @formatter:on
     }
@@ -255,9 +254,9 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
     private FileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final FileManager manager, final String filename, final boolean ignoreExceptions,
-            final boolean immediateFlush, final Advertiser advertiser) {
+            final boolean immediateFlush, final Advertiser advertiser, Property[] properties) {
 
-        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
+        super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());

@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -132,8 +133,9 @@ public class ScriptAppenderSelector extends AbstractAppender {
         return new Builder();
     }
 
-    private ScriptAppenderSelector(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
-        super(name, filter, layout);
+    private ScriptAppenderSelector(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+            final Property[] properties) {
+        super(name, filter, layout, true, Property.EMPTY_ARRAY);
     }
 
     @Override

@@ -81,13 +81,10 @@ public class CustomConfigurationTest {
             .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(LOG_FILE)
-            .withAppend(false)
-            .withName("File")
-            .withIgnoreExceptions(false)
+        .withFileName(LOG_FILE)
+        .withAppend(false).setName("File").setIgnoreExceptions(false)
             .withBufferSize(4000)
-            .withBufferedIo(false)
-            .withLayout(layout)
+            .withBufferedIo(false).setLayout(layout)
             .build();
         // @formatter:on
         appender.start();

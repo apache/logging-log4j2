@@ -35,7 +35,6 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 
 /**
@@ -68,9 +67,10 @@ public final class KafkaAppender extends AbstractAppender {
                 AbstractLifeCycle.LOGGER.error("No layout provided for KafkaAppender");
                 return null;
             }
-            final KafkaManager kafkaManager =
-                    new KafkaManager(getConfiguration().getLoggerContext(), getName(), topic, syncSend, getProperties(), key);
-            return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), kafkaManager);
+            final KafkaManager kafkaManager = new KafkaManager(getConfiguration().getLoggerContext(), getName(), topic,
+                    syncSend, getPropertyArray(), key);
+            return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), kafkaManager,
+                    getPropertyArray());
         }
 
         public String getTopic() {
@@ -110,7 +110,7 @@ public final class KafkaAppender extends AbstractAppender {
         }
         final KafkaManager kafkaManager =
                 new KafkaManager(configuration.getLoggerContext(), name, topic, true, properties, key);
-        return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager);
+        return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager, null);
     }
 
     /**
@@ -125,8 +125,8 @@ public final class KafkaAppender extends AbstractAppender {
     private final KafkaManager manager;
 
     private KafkaAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final boolean ignoreExceptions, final KafkaManager manager) {
-        super(name, filter, layout, ignoreExceptions);
+            final boolean ignoreExceptions, final KafkaManager manager, final Property[] properties) {
+        super(name, filter, layout, ignoreExceptions, properties);
         this.manager = Objects.requireNonNull(manager, "manager");
     }
 

@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileMan
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -55,7 +56,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         public Builder() {
             super();
             withBufferSize(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
-            withIgnoreExceptions(true);
+            setIgnoreExceptions(true);
             withImmediateFlush(true);
         }
 
@@ -138,8 +139,9 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
 
             manager.initialize();
 
-            return new RollingRandomAccessFileAppender(name, layout,getFilter(), manager, fileName, filePattern,
-                    isIgnoreExceptions(), immediateFlush, bufferSize, advertise ? getConfiguration().getAdvertiser() : null);
+            return new RollingRandomAccessFileAppender(name, layout, getFilter(), manager, fileName, filePattern,
+                    isIgnoreExceptions(), immediateFlush, bufferSize,
+                    advertise ? getConfiguration().getAdvertiser() : null, getPropertyArray());
         }
 
         public B withFileName(final String fileName) {
@@ -201,9 +203,9 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
 
     private RollingRandomAccessFileAppender(final String name, final Layout<? extends Serializable> layout,
             final Filter filter, final RollingRandomAccessFileManager manager, final String fileName,
-            final String filePattern, final boolean ignoreExceptions,
-            final boolean immediateFlush, final int bufferSize, final Advertiser advertiser) {
-        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
+            final String filePattern, final boolean ignoreExceptions, final boolean immediateFlush,
+            final int bufferSize, final Advertiser advertiser, final Property[] properties) {
+        super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.put("contentType", layout.getContentType());
@@ -334,11 +336,8 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
            .withBufferSize(bufferSize)
            .setConfiguration(configuration)
            .withFileName(fileName)
-           .withFilePattern(filePattern).setFilter(filter)
-           .withIgnoreExceptions(isIgnoreExceptions)
-           .withImmediateFlush(isImmediateFlush)
-           .withLayout(layout)
-           .withName(name)
+           .withFilePattern(filePattern).setFilter(filter).setIgnoreExceptions(isIgnoreExceptions)
+           .withImmediateFlush(isImmediateFlush).setLayout(layout).setName(name)
            .withPolicy(policy)
            .withStrategy(strategy)
            .build();

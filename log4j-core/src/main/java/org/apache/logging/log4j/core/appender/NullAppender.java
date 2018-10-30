@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -39,8 +40,7 @@ public class NullAppender extends AbstractAppender {
 	}
 
 	private NullAppender(final String name) {
-		super(name, null, null);
-		// Do nothing
+		super(name, null, null, true, Property.EMPTY_ARRAY);
 	}
 
 	@Override

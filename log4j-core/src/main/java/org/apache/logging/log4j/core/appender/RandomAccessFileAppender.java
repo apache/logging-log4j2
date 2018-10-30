@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -82,7 +83,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             }
 
             return new RandomAccessFileAppender(name, layout, getFilter(), manager, fileName, isIgnoreExceptions(),
-                    immediateFlush, advertise ? getConfiguration().getAdvertiser() : null);
+                    immediateFlush, advertise ? getConfiguration().getAdvertiser() : null, getPropertyArray());
         }
 
         public B setFileName(final String fileName) {
@@ -113,9 +114,10 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
 
     private RandomAccessFileAppender(final String name, final Layout<? extends Serializable> layout,
             final Filter filter, final RandomAccessFileManager manager, final String filename,
-            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {
+            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser, 
+            final Property[] properties) {
 
-        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
+        super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(
                     layout.getContentFormat());
@@ -227,11 +229,8 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         .setAppend(isAppend)
         .withBufferSize(bufferSize)
         .setConfiguration(configuration)
-        .setFileName(fileName).setFilter(filter)
-            .withIgnoreExceptions(ignoreExceptions)
-            .withImmediateFlush(isFlush)
-            .withLayout(layout)
-            .withName(name)
+        .setFileName(fileName).setFilter(filter).setIgnoreExceptions(ignoreExceptions)
+            .withImmediateFlush(isFlush).setLayout(layout).setName(name)
             .build();
     }
     

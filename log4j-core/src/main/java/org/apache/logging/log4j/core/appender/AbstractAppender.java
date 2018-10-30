@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -60,31 +61,16 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         @PluginConfiguration
         private Configuration configuration;
 
-        public String getName() {
-            return name;
-        }
-
-        public boolean isIgnoreExceptions() {
-            return ignoreExceptions;
+        public Configuration getConfiguration() {
+            return configuration;
         }
 
         public Layout<? extends Serializable> getLayout() {
             return layout;
         }
 
-        public B withName(final String name) {
-            this.name = name;
-            return asBuilder();
-        }
-
-        public B withIgnoreExceptions(final boolean ignoreExceptions) {
-            this.ignoreExceptions = ignoreExceptions;
-            return asBuilder();
-        }
-
-        public B withLayout(final Layout<? extends Serializable> layout) {
-            this.layout = layout;
-            return asBuilder();
+        public String getName() {
+            return name;
         }
 
         public Layout<? extends Serializable> getOrCreateLayout() {
@@ -93,7 +79,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             }
             return layout;
         }
-        
+
         public Layout<? extends Serializable> getOrCreateLayout(final Charset charset) {
             if (layout == null) {
                 return PatternLayout.newBuilder().withCharset(charset).build();
@@ -101,6 +87,30 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return layout;
         }
 
+        public boolean isIgnoreExceptions() {
+            return ignoreExceptions;
+        }
+
+        public B setConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return asBuilder();
+        }
+
+        public B setIgnoreExceptions(final boolean ignoreExceptions) {
+            this.ignoreExceptions = ignoreExceptions;
+            return asBuilder();
+        }
+
+        public B setLayout(final Layout<? extends Serializable> layout) {
+            this.layout = layout;
+            return asBuilder();
+        }
+
+        public B setName(final String name) {
+            this.name = name;
+            return asBuilder();
+        }
+        
         /**
          * @deprecated Use {@link #setConfiguration(Configuration)}
          */
@@ -110,20 +120,44 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return asBuilder();
         }
 
-        public B setConfiguration(final Configuration configuration) {
-            this.configuration = configuration;
-            return asBuilder();
+        /**
+         * @deprecated use {@link #setIgnoreExceptions(boolean)}.
+         */
+        @Deprecated
+        public B withIgnoreExceptions(final boolean ignoreExceptions) {
+            return setIgnoreExceptions(ignoreExceptions);
         }
 
-        public Configuration getConfiguration() {
-            return configuration;
+        /**
+         * @deprecated use {@link #setLayout(Layout)}.
+         */
+        @Deprecated
+        public B withLayout(final Layout<? extends Serializable> layout) {
+            return setLayout(layout);
+        }
+
+        /**
+         * @deprecated use {@link #setName(String)}.
+         */
+        @Deprecated
+        public B withName(final String name) {
+            return setName(name);
         }
         
     }
     
+    public static int parseInt(final String s, final int defaultValue) {
+        try {
+            return Integers.parseInt(s, defaultValue);
+        } catch (final NumberFormatException e) {
+            LOGGER.error("Could not parse \"{}\" as an integer,  using default value {}: {}", s, defaultValue, e);
+            return defaultValue;
+        }
+    }
     private final String name;
     private final boolean ignoreExceptions;
     private final Layout<? extends Serializable> layout;
+
     private ErrorHandler handler = new DefaultErrorHandler(this);
 
     /**
@@ -132,9 +166,11 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      * @param name The Appender name.
      * @param filter The Filter to associate with the Appender.
      * @param layout The layout to use to format the event.
+     * @deprecated Use {@link #AbstractAppender(String, Filter, Layout, boolean, Property[])}.
      */
+    @Deprecated
     protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
-        this(name, filter, layout, true);
+        this(name, filter, layout, true, Property.EMPTY_ARRAY);
     }
 
     /**
@@ -145,22 +181,30 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      * @param layout The layout to use to format the event.
      * @param ignoreExceptions If true, exceptions will be logged and suppressed. If false errors will be logged and
      *            then passed to the application.
+     * @deprecated Use {@link #AbstractAppender(String, Filter, Layout, boolean, Property[])}
      */
+    @Deprecated
     protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
             final boolean ignoreExceptions) {
-        super(filter);
+        this(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param name The Appender name.
+     * @param filter The Filter to associate with the Appender.
+     * @param layout The layout to use to format the event.
+     * @param ignoreExceptions If true, exceptions will be logged and suppressed. If false errors will be logged and
+     *            then passed to the application.
+     * @since 2.11.2
+     */
+    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions, final Property[] properties) {
+        super(filter, properties);
         this.name = Objects.requireNonNull(name, "name");
         this.layout = layout;
         this.ignoreExceptions = ignoreExceptions;
-    }
-
-    public static int parseInt(final String s, final int defaultValue) {
-        try {
-            return Integers.parseInt(s, defaultValue);
-        } catch (final NumberFormatException e) {
-            LOGGER.error("Could not parse \"{}\" as an integer,  using default value {}: {}", s, defaultValue, e);
-            return defaultValue;
-        }
     }
 
     /**

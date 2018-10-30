@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -32,7 +33,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 public class AlwaysFailAppender extends AbstractAppender {
 
     private AlwaysFailAppender(final String name) {
-        super(name, null, null, false);
+        super(name, null, null, false, Property.EMPTY_ARRAY);
     }
 
     @Override

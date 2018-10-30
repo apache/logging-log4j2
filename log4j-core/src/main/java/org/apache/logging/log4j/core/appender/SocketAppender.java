@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -221,7 +222,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
                     getConnectTimeoutMillis(), getSslConfiguration(), getReconnectDelayMillis(), getImmediateFail(), layout, getBufferSize(), getSocketOptions());
 
             return new SocketAppender(name, layout, getFilter(), manager, isIgnoreExceptions(),
-                    !bufferedIo || immediateFlush, getAdvertise() ? getConfiguration().getAdvertiser() : null);
+                    !bufferedIo || immediateFlush, getAdvertise() ? getConfiguration().getAdvertiser() : null,
+                    getPropertyArray());
         }
     }
     
@@ -235,8 +237,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
 
     protected SocketAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final AbstractSocketManager manager, final boolean ignoreExceptions, final boolean immediateFlush,
-            final Advertiser advertiser) {
-        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
+            final Advertiser advertiser, final Property[] properties) {
+        super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());
@@ -247,6 +249,16 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             this.advertisement = null;
         }
         this.advertiser = advertiser;
+    }
+
+    /**
+     * @deprecated {@link #SocketAppender(String, Layout, Filter, AbstractSocketManager, boolean, boolean, Advertiser, Property[])}.
+     */
+    @Deprecated
+    protected SocketAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
+            final AbstractSocketManager manager, final boolean ignoreExceptions, final boolean immediateFlush,
+            final Advertiser advertiser) {
+        this(name, layout, filter, manager, ignoreExceptions, immediateFlush, advertiser, Property.EMPTY_ARRAY);
     }
 
     @Override
@@ -320,11 +332,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         .withAdvertise(advertise)
         .setConfiguration(configuration)
         .withConnectTimeoutMillis(connectTimeoutMillis).setFilter(filter)
-            .withHost(host)
-            .withIgnoreExceptions(ignoreExceptions)
-            .withImmediateFail(immediateFail)
-            .withLayout(layout)
-            .withName(name)
+            .withHost(host).setIgnoreExceptions(ignoreExceptions)
+            .withImmediateFail(immediateFail).setLayout(layout).setName(name)
             .withPort(port)
             .withProtocol(protocol)
             .withReconnectDelayMillis(reconnectDelayMillis)

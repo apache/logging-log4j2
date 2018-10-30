@@ -23,6 +23,8 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.appender.MemoryMappedFileAppender.Builder;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -41,7 +43,8 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
     /**
      * Builds OutputStreamAppender instances.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<OutputStreamAppender> {
+    public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<OutputStreamAppender> {
 
         private Filter filter;
 
@@ -49,47 +52,28 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
         private boolean ignoreExceptions = true;
 
-        private Layout<? extends Serializable> layout = PatternLayout.createDefaultLayout();
-
-        private String name;
-
         private OutputStream target;
 
         @Override
         public OutputStreamAppender build() {
-            return new OutputStreamAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions);
+            final Layout<? extends Serializable> layout = getLayout();
+            final Layout<? extends Serializable> actualLayout = layout == null ? PatternLayout.createDefaultLayout()
+                    : layout;
+            return new OutputStreamAppender(getName(), actualLayout, filter, getManager(target, follow, actualLayout),
+                    ignoreExceptions, getPropertyArray());
         }
 
-        public Builder setFilter(final Filter aFilter) {
-            this.filter = aFilter;
-            return this;
-        }
-
-        public Builder setFollow(final boolean shouldFollow) {
+        public B setFollow(final boolean shouldFollow) {
             this.follow = shouldFollow;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setIgnoreExceptions(final boolean shouldIgnoreExceptions) {
-            this.ignoreExceptions = shouldIgnoreExceptions;
-            return this;
-        }
-
-        public Builder setLayout(final Layout<? extends Serializable> aLayout) {
-            this.layout = aLayout;
-            return this;
-        }
-
-        public Builder setName(final String aName) {
-            this.name = aName;
-            return this;
-        }
-
-        public Builder setTarget(final OutputStream aTarget) {
+        public B setTarget(final OutputStream aTarget) {
             this.target = aTarget;
-            return this;
+            return asBuilder();
         }
     }
+    
     /**
      * Holds data to pass to factory method.
      */
@@ -167,7 +151,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
         if (layout == null) {
             layout = PatternLayout.createDefaultLayout();
         }
-        return new OutputStreamAppender(name, layout, filter, getManager(target, follow, layout), ignore);
+        return new OutputStreamAppender(name, layout, filter, getManager(target, follow, layout), ignore, null);
     }
 
     private static OutputStreamManager getManager(final OutputStream target, final boolean follow,
@@ -184,8 +168,8 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
     }
 
     private OutputStreamAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final OutputStreamManager manager, final boolean ignoreExceptions) {
-        super(name, layout, filter, ignoreExceptions, true, manager);
+            final OutputStreamManager manager, final boolean ignoreExceptions, final Property[] properties) {
+        super(name, layout, filter, ignoreExceptions, true, properties, manager);
     }
 
 }

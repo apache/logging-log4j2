@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -92,7 +93,7 @@ public class ServletAppender extends AbstractAppender {
     
     private ServletAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final ServletContext servletContext, final boolean ignoreExceptions, final boolean logThrowables) {
-        super(name, filter, layout, ignoreExceptions);
+        super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
         this.servletContext = servletContext;
         this.logThrowables = logThrowables;
     }
@@ -121,10 +122,7 @@ public class ServletAppender extends AbstractAppender {
     public static ServletAppender createAppender(final Layout<? extends Serializable> layout, final Filter filter,
             final String name, final boolean ignoreExceptions) {
         // @formatter:off
-    	return newBuilder().setFilter(filter)
-    			.withIgnoreExceptions(ignoreExceptions)
-    			.withLayout(layout)
-    			.withName(name)
+    	return newBuilder().setFilter(filter).setIgnoreExceptions(ignoreExceptions).setLayout(layout).setName(name)
     			.build();
     	// @formatter:on
     }

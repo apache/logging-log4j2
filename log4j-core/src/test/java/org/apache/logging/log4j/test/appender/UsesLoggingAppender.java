@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -38,7 +39,7 @@ public final class UsesLoggingAppender extends AbstractAppender {
     private final SomethingThatUsesLogging thing;
 
     private UsesLoggingAppender(final String name, final Filter filter, final Layout<?> layout, final boolean ignoreExceptions) {
-        super(name, filter, layout, ignoreExceptions);
+        super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
         thing = new SomethingThatUsesLogging();
     }
 

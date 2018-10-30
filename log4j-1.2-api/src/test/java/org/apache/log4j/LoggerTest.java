@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
@@ -507,7 +508,7 @@ public class LoggerTest {
         int counter;
 
         CountingAppender() {
-            super("Counter", null, null);
+            super("Counter", null, null, true, Property.EMPTY_ARRAY);
             counter = 0;
         }
 

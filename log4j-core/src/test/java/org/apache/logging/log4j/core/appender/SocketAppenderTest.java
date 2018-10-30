@@ -24,6 +24,7 @@ import static org.junit.Assert.fail;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
@@ -41,6 +42,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -126,13 +128,11 @@ public class SocketAppenderTest {
             throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-                .withHost("localhost")
-                .withPort(tcpTestServer.getLocalPort())
-                .withReconnectDelayMillis(-1)
-                .withName("test")
+        .withHost("localhost")
+        .withPort(tcpTestServer.getLocalPort())
+        .withReconnectDelayMillis(-1).setName("test")
                 .withImmediateFail(false)
-                .withBufferSize(bufferSize)
-                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .withBufferSize(bufferSize).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -175,11 +175,9 @@ public class SocketAppenderTest {
     public void testDefaultProtocol() throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-                .withPort(tcpServer.getLocalPort())
-                .withReconnectDelayMillis(-1)
-                .withName("test")
-                .withImmediateFail(false)
-                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
+        .withPort(tcpServer.getLocalPort())
+        .withReconnectDelayMillis(-1).setName("test")
+                .withImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         assertNotNull(appender);
@@ -196,12 +194,10 @@ public class SocketAppenderTest {
 
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-                .withProtocol(Protocol.UDP)
-                .withPort(tcpServer.getLocalPort())
-                .withReconnectDelayMillis(-1)
-                .withName("test")
-                .withImmediateFail(false)
-                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
+        .withProtocol(Protocol.UDP)
+        .withPort(tcpServer.getLocalPort())
+        .withReconnectDelayMillis(-1).setName("test")
+                .withImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -222,12 +218,10 @@ public class SocketAppenderTest {
 
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-                .withHost("localhost")
-                .withPort(DYN_PORT)
-                .withReconnectDelayMillis(100)
-                .withName("test")
-                .withImmediateFail(false)
-                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
+        .withHost("localhost")
+        .withPort(DYN_PORT)
+        .withReconnectDelayMillis(100).setName("test")
+                .withImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -253,13 +247,10 @@ public class SocketAppenderTest {
     public void testTcpAppenderNoWait() throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-                .withHost("localhost")
-                .withPort(ERROR_PORT)
-                .withReconnectDelayMillis(100)
-                .withName("test")
-                .withImmediateFail(false)
-                .withIgnoreExceptions(false)
-                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
+        .withHost("localhost")
+        .withPort(ERROR_PORT)
+        .withReconnectDelayMillis(100).setName("test")
+                .withImmediateFail(false).setIgnoreExceptions(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();

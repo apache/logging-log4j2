@@ -41,8 +41,10 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
         @PluginElement("Filter")
         private Filter filter;
 
+        // We are calling this attribute propertyArray because we use the more generic "properties" in several places
+        // with different types: Array, Map and List.
         @PluginElement("Properties")
-        private Property[] properties;
+        private Property[] propertyArray;
 
         @SuppressWarnings("unchecked")
         public B asBuilder() {
@@ -53,8 +55,8 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
             return filter;
         }
 
-        public Property[] getProperties() {
-            return properties;
+        public Property[] getPropertyArray() {
+            return propertyArray;
         }
 
         public B setFilter(final Filter filter) {
@@ -62,12 +64,16 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
             return asBuilder();
         }
 
-        public B setProperties(Property[] properties) {
-            this.properties = properties;
+        public B setPropertyArray(Property[] properties) {
+            this.propertyArray = properties;
             return asBuilder();
         }
 
         /**
+         * Sets the filter.
+         * 
+         * @param filter The filter
+         * @return this
          * @deprecated Use {@link #setFilter(Filter)}.
          */
         @Deprecated
@@ -81,12 +87,24 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      * May be null.
      */
     private volatile Filter filter;
+    
+    @PluginElement("Properties")
+    private final Property[] propertyArray;
 
     protected AbstractFilterable() {
+        this(null, Property.EMPTY_ARRAY);
     }
 
     protected AbstractFilterable(final Filter filter) {
+        this(filter, Property.EMPTY_ARRAY);
+    }
+
+    /**
+     * @since 2.11.2
+     */
+    protected AbstractFilterable(final Filter filter, final Property[] propertyArray) {
         this.filter = filter;
+        this.propertyArray = propertyArray == null ? Property.EMPTY_ARRAY : propertyArray;
     }
 
     /**
@@ -201,6 +219,10 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
             this.setStopped();
         }
         return stopped;
+    }
+
+    public Property[] getPropertyArray() {
+        return propertyArray;
     }
 
 }

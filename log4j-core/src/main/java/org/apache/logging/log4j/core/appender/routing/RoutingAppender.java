@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.appender.rewrite.RewritePolicy;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -83,7 +84,7 @@ public final class RoutingAppender extends AbstractAppender {
                 return null;
             }
             return new RoutingAppender(name, getFilter(), isIgnoreExceptions(), routes, rewritePolicy,
-                    getConfiguration(), purgePolicy, defaultRouteScript);
+                    getConfiguration(), purgePolicy, defaultRouteScript, getPropertyArray());
         }
 
         public Routes getRoutes() {
@@ -141,8 +142,8 @@ public final class RoutingAppender extends AbstractAppender {
 
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
             final RewritePolicy rewritePolicy, final Configuration configuration, final PurgePolicy purgePolicy,
-            final AbstractScript defaultRouteScript) {
-        super(name, filter, null, ignoreExceptions);
+            final AbstractScript defaultRouteScript, final Property[] properties) {
+        super(name, filter, null, ignoreExceptions, properties);
         this.routes = routes;
         this.configuration = configuration;
         this.rewritePolicy = rewritePolicy;
@@ -333,7 +334,7 @@ public final class RoutingAppender extends AbstractAppender {
             LOGGER.error("No routes defined for RoutingAppender");
             return null;
         }
-        return new RoutingAppender(name, filter, ignoreExceptions, routes, rewritePolicy, config, purgePolicy, null);
+        return new RoutingAppender(name, filter, ignoreExceptions, routes, rewritePolicy, config, purgePolicy, null, null);
     }
 
     public Route getDefaultRoute() {
