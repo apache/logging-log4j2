@@ -46,17 +46,17 @@ public final class SyslogLayout extends AbstractStringLayout {
     /**
      * Builds a SyslogLayout.
      * <p>The main arguments are</p>
-     * <ul> 
+     * <ul>
      * <li>facility: The Facility is used to try to classify the message.</li>
      * <li>includeNewLine: If true a newline will be appended to the result.</li>
      * <li>escapeNL: Pattern to use for replacing newlines.</li>
      * <li>charset: The character set.</li>
-     * </ul> 
+     * </ul>
      * @param <B> the builder type
      */
     public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<SyslogLayout> {
-        
+
         public Builder() {
             super();
             setCharset(StandardCharsets.UTF_8);
@@ -104,7 +104,7 @@ public final class SyslogLayout extends AbstractStringLayout {
         }
 
     }
-    
+
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
@@ -123,7 +123,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      * Date format used if header = true.
      */
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH);
-    
+
     /**
      * Host name used to identify messages from this appender.
      */
@@ -184,7 +184,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      * <li>Key: "formatType" Value: "logfilepatternreceiver" (format uses the keywords supported by
      * LogFilePatternReceiver)</li>
      * </ul>
-     * 
+     *
      * @return Map of content format keys supporting SyslogLayout
      */
     @Override
@@ -199,7 +199,7 @@ public final class SyslogLayout extends AbstractStringLayout {
 
     /**
      * Creates a SyslogLayout.
-     * 
+     *
      * @param facility The Facility is used to try to classify the message.
      * @param includeNewLine If true a newline will be appended to the result.
      * @param escapeNL Pattern to use for replacing newlines.
@@ -215,7 +215,7 @@ public final class SyslogLayout extends AbstractStringLayout {
 
     /**
      * Gets the facility.
-     * 
+     *
      * @return the facility
      */
     public Facility getFacility() {

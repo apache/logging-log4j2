@@ -41,7 +41,7 @@ public class RollingAppenderUncompressedTest {
     private static final String DIR = "target/rolling4";
 
     private final Logger logger = LogManager.getLogger(RollingAppenderUncompressedTest.class.getName());
-    
+
     @ClassRule
     public static CleanFolders rule = new CleanFolders(CONFIG);
 

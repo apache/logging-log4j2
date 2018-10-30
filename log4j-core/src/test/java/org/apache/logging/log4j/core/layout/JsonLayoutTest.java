@@ -499,19 +499,19 @@ public class JsonLayoutTest {
         // @formatter:off
         return layout.toSerializable(expected);
     }
-    
+
     @Test
     public void testObjectMessageAsJsonString() {
     		final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, false);
 		assertTrue(str, str.contains("\"message\":\"" + this.getClass().getCanonicalName() + "$TestClass@"));
     }
-    
+
     @Test
     public void testObjectMessageAsJsonObject() {
     		final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, true);
     		assertTrue(str, str.contains("\"message\":{\"value\":1234}"));
     }
-    
+
     private String prepareJSONForObjectMessageAsJsonObjectTests(final int value, final boolean objectMessageAsJsonObject) {
     	final TestClass testClass = new TestClass();
 		testClass.setValue(value);
@@ -551,11 +551,11 @@ public class JsonLayoutTest {
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
         assertFalse(str.endsWith("\0"));
     }
-    
+
     private String toPropertySeparator(final boolean compact) {
         return compact ? ":" : " : ";
     }
-    
+
 	private static class TestClass {
 		private int value;
 

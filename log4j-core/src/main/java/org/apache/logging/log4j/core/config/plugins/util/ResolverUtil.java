@@ -112,7 +112,7 @@ public class ResolverUtil {
 
     /**
      * Returns the matching resources.
-     * 
+     *
      * @return A Set of URIs that match the criteria.
      */
     public Set<URI> getResources() {
@@ -432,7 +432,7 @@ public class ResolverUtil {
         /**
          * Will be called repeatedly with candidate classes. Must return True if a class is to be included in the
          * results, false otherwise.
-         * 
+         *
          * @param type
          *        The Class to match against.
          * @return true if the Class matches.
@@ -441,7 +441,7 @@ public class ResolverUtil {
 
         /**
          * Test for a resource.
-         * 
+         *
          * @param resource
          *        The URI to the resource.
          * @return true if the resource matches.

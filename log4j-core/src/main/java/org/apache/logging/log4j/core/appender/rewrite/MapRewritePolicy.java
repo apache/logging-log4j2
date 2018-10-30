@@ -37,7 +37,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "MapRewritePolicy", category = Core.CATEGORY_NAME, elementType = "rewritePolicy", printObject = true)
 public final class MapRewritePolicy implements RewritePolicy {
-    
+
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
@@ -90,12 +90,12 @@ public final class MapRewritePolicy implements RewritePolicy {
      * keys should be updated.
      */
     public enum Mode {
-        
+
         /**
          * Keys should be added.
          */
         Add,
-        
+
         /**
          * Keys should be updated.
          */

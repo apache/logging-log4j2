@@ -44,7 +44,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Here is an example of an <code>env-entry</code>:
  * </p>
  * <blockquote>
- * 
+ *
  * <pre>
  * &lt;env-entry&gt;
  *   &lt;description&gt;JNDI logging context name for this app&lt;/description&gt;
@@ -53,7 +53,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *   &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
  * &lt;/env-entry&gt;
  * </pre>
- * 
+ *
  * </blockquote>
  *
  * <p>
@@ -66,7 +66,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * (ContextJNDISelector) will use this resource to automatically configure the log4j repository.
  * </p>
  ** <blockquote>
- * 
+ *
  * <pre>
  * &lt;env-entry&gt;
  *   &lt;description&gt;URL for configuring log4j context&lt;/description&gt;
@@ -75,7 +75,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *   &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
  * &lt;/env-entry&gt;
  * </pre>
- * 
+ *
  * </blockquote>
  *
  * <p>

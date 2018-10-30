@@ -140,7 +140,7 @@ public final class CommonsCompressAction extends AbstractAction {
 
     @Override
     public String toString() {
-        return CommonsCompressAction.class.getSimpleName() + '[' + source + " to " + destination 
+        return CommonsCompressAction.class.getSimpleName() + '[' + source + " to " + destination
                 + ", deleteSource=" + deleteSource + ']';
     }
 

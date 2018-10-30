@@ -41,7 +41,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, Runnable {
 
     private final long timeToLive;
-    private final long checkInterval;    
+    private final long checkInterval;
     private final ConcurrentMap<String, Long> appendersUsage = new ConcurrentHashMap<>();
     private RoutingAppender routingAppender;
     private final ConfigurationScheduler scheduler;
@@ -123,7 +123,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
      * Create the PurgePolicy
      *
      * @param timeToLive    the number of increments of timeUnit before the Appender should be purged.
-     * @param checkInterval when all appenders purged, the number of increments of timeUnit to check if any appenders appeared  
+     * @param checkInterval when all appenders purged, the number of increments of timeUnit to check if any appenders appeared
      * @param timeUnit      the unit of time the timeToLive and the checkInterval is expressed in.
      * @return The Routes container.
      */
@@ -155,7 +155,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
             LOGGER.error("timeToLive must be positive. timeToLive set to 0");
             ttl = 0;
         }
-        
+
         long ci;
         if (checkInterval == null) {
             ci = ttl;

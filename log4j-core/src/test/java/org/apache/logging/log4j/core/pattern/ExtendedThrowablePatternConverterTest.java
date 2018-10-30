@@ -159,7 +159,7 @@ public class ExtendedThrowablePatternConverterTest {
         final String expected = sw.toString(); //.replaceAll("\r", Strings.EMPTY);
         assertEquals(expected, result);
     }
-    
+
     @Test
     public void testFiltersAndSeparator() {
         final ExtendedThrowablePatternConverter exConverter = ExtendedThrowablePatternConverter.newInstance(null,

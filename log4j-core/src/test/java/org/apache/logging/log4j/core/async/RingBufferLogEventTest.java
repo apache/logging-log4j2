@@ -58,7 +58,7 @@ public class RingBufferLogEventTest {
         final LogEvent logEvent = new RingBufferLogEvent();
         Assert.assertNotSame(logEvent, logEvent.toImmutable());
     }
-    
+
     @Test
     public void testGetLevelReturnsOffIfNullLevelSet() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();

@@ -29,7 +29,7 @@ import org.junit.Test;
 
 /**
  * Tests {@link MarkerLookup}.
- * 
+ *
  * @since 2.4
  */
 public class MarkerLookupTest {

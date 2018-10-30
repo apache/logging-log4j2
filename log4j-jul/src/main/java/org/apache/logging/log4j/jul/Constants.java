@@ -29,7 +29,7 @@ public final class Constants {
      * {@code log4j-core}.
      */
     public static final String LOGGER_ADAPTOR_PROPERTY = "log4j.jul.LoggerAdapter";
-    
+
     /**
      * The Log4j property to set to a custom implementation of {@link org.apache.logging.log4j.jul.LevelConverter}. The specified class must have
      * a default constructor.

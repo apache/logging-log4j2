@@ -121,7 +121,7 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
         /**
          * The connections source from which database connections should be retrieved.
-         * 
+         *
          * @return this
          */
         public B setConnectionSource(final ConnectionSource connectionSource) {
@@ -132,7 +132,7 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         /**
          * If an integer greater than 0, this causes the appender to buffer log events and flush whenever the buffer
          * reaches this size.
-         * 
+         *
          * @return this
          */
         public B setBufferSize(final int bufferSize) {
@@ -142,7 +142,7 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
         /**
          * The name of the database table to insert log events into.
-         * 
+         *
          * @return this
          */
         public B setTableName(final String tableName) {
@@ -152,7 +152,7 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
         /**
          * Information about the columns that log event data should be inserted into and how to insert that data.
-         * 
+         *
          * @return this
          */
         public B setColumnConfigs(final ColumnConfig... columnConfigs) {

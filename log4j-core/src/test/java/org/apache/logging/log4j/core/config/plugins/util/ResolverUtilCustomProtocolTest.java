@@ -47,7 +47,7 @@ public class ResolverUtilCustomProtocolTest {
 
     @Rule
     public RuleChain chain = RuleChain.outerRule(new CleanFolders(ResolverUtilTest.WORK_DIR));
-    
+
     static class NoopURLStreamHandlerFactory implements URLStreamHandlerFactory {
 
         @Override

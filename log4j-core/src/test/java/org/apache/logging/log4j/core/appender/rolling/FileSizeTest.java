@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 public class FileSizeTest {
 
     private final static long EXPECTED = 10 * 1024;
-    
+
     @Test
     public void testFileSize() throws Exception {
         long value = FileSize.parse("10KB", 0);

@@ -45,7 +45,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
 
     /**
      * Builds RandomAccessFileAppender instances.
-     * 
+     *
      * @param <B>
      *            The type to build
      */
@@ -118,7 +118,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
         }
 
     }
-    
+
     private static final int BIT_POSITION_1GB = 30; // 2^30 ~= 1GB
     private static final int MAX_REGION_LENGTH = 1 << BIT_POSITION_1GB;
     private static final int MIN_REGION_LENGTH = 256;

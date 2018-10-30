@@ -71,7 +71,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
 
         /**
          * Sets the filter.
-         * 
+         *
          * @param filter The filter
          * @return this
          * @deprecated Use {@link #setFilter(Filter)}.
@@ -87,7 +87,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      * May be null.
      */
     private volatile Filter filter;
-    
+
     @PluginElement("Properties")
     private final Property[] propertyArray;
 

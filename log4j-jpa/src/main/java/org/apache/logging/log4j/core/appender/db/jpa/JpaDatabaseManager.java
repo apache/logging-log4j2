@@ -89,7 +89,7 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
     protected void writeInternal(final LogEvent event) {
         writeInternal(event, null);
     }
-    
+
     @Override
     protected void writeInternal(final LogEvent event, final Serializable serializable) {
         if (!this.isRunning() || this.entityManagerFactory == null || this.entityManager == null

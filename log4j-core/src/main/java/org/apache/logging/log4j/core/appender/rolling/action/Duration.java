@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * <p>
  * Similarly to the {@code java.time.Duration} class, this class does not support year or month sections in the format.
  * This implementation does not support fractions or negative values.
- * 
+ *
  * @see #parse(CharSequence)
  */
 public class Duration implements Serializable, Comparable<Duration> {
@@ -101,7 +101,7 @@ public class Duration implements Serializable, Comparable<Duration> {
      * positive symbol. The number of days, hours, minutes and seconds must parse to a {@code long}.
      * <p>
      * Examples:
-     * 
+     *
      * <pre>
      *    "PT20S" -- parses as "20 seconds"
      *    "PT15M"     -- parses as "15 minutes" (where a minute is 60 seconds)
@@ -205,14 +205,14 @@ public class Duration implements Serializable, Comparable<Duration> {
      * all positive.
      * <p>
      * Examples:
-     * 
+     *
      * <pre>
      *    "20 seconds"                     -- "PT20S
      *    "15 minutes" (15 * 60 seconds)   -- "PT15M"
      *    "10 hours" (10 * 3600 seconds)   -- "PT10H"
      *    "2 days" (2 * 86400 seconds)     -- "P2D"
      * </pre>
-     * 
+     *
      * @return an ISO-8601 representation of this duration, not null
      */
     @Override
@@ -247,7 +247,7 @@ public class Duration implements Serializable, Comparable<Duration> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     @Override

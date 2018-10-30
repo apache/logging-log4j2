@@ -51,7 +51,7 @@ public class RoutesScriptAppenderTest {
     @Parameterized.Parameters(name = "{0} {1}")
     public static Object[][] getParameters() {
         // @formatter:off
-        return new Object[][] { 
+        return new Object[][] {
             { "log4j-routing-routes-script-groovy.xml", false },
             { "log4j-routing-routes-script-javascript.xml", false },
             { "log4j-routing-script-staticvars-javascript.xml", true },
@@ -64,7 +64,7 @@ public class RoutesScriptAppenderTest {
     public final LoggerContextRule loggerContextRule;
 
     private final boolean expectBindingEntries;
-    
+
     public RoutesScriptAppenderTest(final String configLocation, final boolean expectBindingEntries) {
         this.loggerContextRule = new LoggerContextRule(configLocation);
         this.expectBindingEntries = expectBindingEntries;

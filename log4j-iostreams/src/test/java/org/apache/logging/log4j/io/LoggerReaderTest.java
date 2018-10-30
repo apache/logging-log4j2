@@ -39,7 +39,7 @@ public class LoggerReaderTest extends AbstractStreamTest {
             .setLevel(LEVEL)
             .buildReader();
     }
-    
+
     @Before
     public void createStream() {
         this.wrapped = new StringReader(FIRST + "\r\n" + LAST);

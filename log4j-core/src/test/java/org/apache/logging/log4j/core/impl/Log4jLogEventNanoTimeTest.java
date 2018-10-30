@@ -62,7 +62,7 @@ public class Log4jLogEventNanoTimeTest {
         Log4jLogEvent.setNanoClock(new DummyNanoClock(DUMMYNANOTIME));
         log.info("Use dummy nano clock");
         assertTrue("using SystemNanoClock", Log4jLogEvent.getNanoClock() instanceof DummyNanoClock);
-        
+
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
         String line1;
@@ -82,7 +82,7 @@ public class Log4jLogEventNanoTimeTest {
         assertEquals(line1Parts[0], line1Parts[1]);
         final long loggedNanoTime = Long.parseLong(line1Parts[0]);
         assertTrue("used system nano time", loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1));
-        
+
         final String[] line2Parts = line2.split(" AND ");
         assertEquals("Use dummy nano clock", line2Parts[2]);
         assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[0]);

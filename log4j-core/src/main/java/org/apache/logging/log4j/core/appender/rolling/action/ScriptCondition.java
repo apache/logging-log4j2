@@ -38,7 +38,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * A condition of the {@link DeleteAction} where a user-provided script selects the files to delete from a provided
  * list. The specified script may be a {@link Script}, a {@link ScriptFile} or a {@link ScriptRef}.
- * 
+ *
  * @see #createCondition(AbstractScript, Configuration)
  */
 @Plugin(name = "ScriptCondition", category = Core.CATEGORY_NAME, printObject = true)
@@ -50,7 +50,7 @@ public class ScriptCondition {
 
     /**
      * Constructs a new ScriptCondition.
-     * 
+     *
      * @param script the script that can select files to delete
      * @param configuration configuration containing the StrSubstitutor passed to the script
      */
@@ -64,7 +64,7 @@ public class ScriptCondition {
 
     /**
      * Executes the script
-     * 
+     *
      * @param baseDir
      * @param candidates
      * @return
@@ -84,7 +84,7 @@ public class ScriptCondition {
 
     /**
      * Creates the ScriptCondition.
-     * 
+     *
      * @param script The script to run. This may be a {@link Script}, a {@link ScriptFile} or a {@link ScriptRef}. The
      *            script must return a {@code List<PathWithAttributes>}. When the script is executed, it is provided the
      *            following bindings:

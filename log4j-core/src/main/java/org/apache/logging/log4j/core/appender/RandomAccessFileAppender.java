@@ -43,7 +43,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
 
     /**
      * Builds RandomAccessFileAppender instances.
-     * 
+     *
      * @param <B>
      *            The type to build
      */
@@ -107,14 +107,14 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         }
 
     }
-    
+
     private final String fileName;
     private Object advertisement;
     private final Advertiser advertiser;
 
     private RandomAccessFileAppender(final String name, final Layout<? extends Serializable> layout,
             final Filter filter, final RandomAccessFileManager manager, final String filename,
-            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser, 
+            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser,
             final Property[] properties) {
 
         super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
@@ -233,7 +233,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             .withImmediateFlush(isFlush).setLayout(layout).setName(name)
             .build();
     }
-    
+
     /**
      * Creates a builder for a RandomAccessFileAppender.
      * @return a builder for a RandomAccessFileAppender.

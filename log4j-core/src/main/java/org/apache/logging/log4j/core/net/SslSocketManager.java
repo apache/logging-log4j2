@@ -164,7 +164,7 @@ public class SslSocketManager extends TcpSocketManager {
                     data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout, data.bufferSize,
                     data.socketOptions);
         }
-        
+
         @Override
         Socket createSocket(final SslFactoryData data) throws IOException {
             return SslSocketManager.createSocket(data.host, data.port, data.connectTimeoutMillis, data.sslConfiguration,

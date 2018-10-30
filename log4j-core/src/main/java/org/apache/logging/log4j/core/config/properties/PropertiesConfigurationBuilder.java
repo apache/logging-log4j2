@@ -184,9 +184,9 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         if (props.size() > 0) {
             builder.add(createRootLogger(props));
         }
-        
+
         builder.setLoggerContext(loggerContext);
-        
+
         return builder.build(false);
     }
 

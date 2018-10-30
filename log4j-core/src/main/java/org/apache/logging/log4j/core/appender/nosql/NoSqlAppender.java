@@ -38,7 +38,7 @@ import org.apache.logging.log4j.core.util.Booleans;
  * For examples on how to write your own NoSQL provider, see the simple source code for the MongoDB and CouchDB
  * providers.
  * </p>
- * 
+ *
  * @see NoSqlObject
  * @see NoSqlConnection
  * @see NoSqlProvider
@@ -48,7 +48,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
 
     /**
      * Builds ConsoleAppender instances.
-     * 
+     *
      * @param <B>
      *            The type to build
      */
@@ -84,7 +84,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
 
         /**
          * Sets the buffer size.
-         * 
+         *
          * @param bufferSize
          *            If an integer greater than 0, this causes the appender to buffer log events and flush whenever the
          *            buffer reaches this size.
@@ -97,7 +97,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
 
         /**
          * Sets the provider.
-         * 
+         *
          * @param provider
          *            The NoSQL provider that provides connections to the chosen NoSQL database.
          * @return this
@@ -131,7 +131,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
     public static NoSqlAppender createAppender(
     // @formatter:off
             final String name,
-            final String ignore, 
+            final String ignore,
             final Filter filter,
             final String bufferSize,
             final NoSqlProvider<?> provider) {

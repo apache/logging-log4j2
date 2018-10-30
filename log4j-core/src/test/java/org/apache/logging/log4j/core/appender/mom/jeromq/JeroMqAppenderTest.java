@@ -41,7 +41,7 @@ public class JeroMqAppenderTest {
     private static final String APPENDER_NAME = "JeroMQAppender";
 
     private static final int DEFAULT_TIMEOUT_MILLIS = 60000;
-    
+
     @ClassRule
     public static LoggerContextRule ctx = new LoggerContextRule("JeroMqAppenderTest.xml");
 

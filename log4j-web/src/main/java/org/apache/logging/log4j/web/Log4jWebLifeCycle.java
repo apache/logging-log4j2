@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.LifeCycle;
  * access to them.
  */
 interface Log4jWebLifeCycle extends Log4jWebSupport, LifeCycle {
-    
+
     /**
      * Starts up Log4j in the web application. Calls {@link #setLoggerContext()} after initialization is complete.
      *

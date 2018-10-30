@@ -56,5 +56,5 @@ public class LevelRangeFilterTest {
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null));
     }
-    
+
 }

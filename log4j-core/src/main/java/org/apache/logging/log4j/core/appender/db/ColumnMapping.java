@@ -106,8 +106,8 @@ public class ColumnMapping {
         /**
          * Layout of value to write to database (before type conversion). Not applicable if {@link #setType(Class)} is
          * a {@link ReadOnlyStringMap}, {@link ThreadContextMap}, or {@link ThreadContextStack}.
-         * 
-         * @return this. 
+         *
+         * @return this.
          */
         public Builder setLayout(final StringLayout layout) {
             this.layout = layout;
@@ -117,8 +117,8 @@ public class ColumnMapping {
         /**
          * Literal value to use for populating a column. This is generally useful for functions, stored procedures,
          * etc. No escaping will be done on this value.
-         * 
-         * @return this. 
+         *
+         * @return this.
          */
         public Builder setLiteral(final String literal) {
             this.literal = literal;
@@ -127,8 +127,8 @@ public class ColumnMapping {
 
         /**
          * Column name.
-         * 
-         * @return this. 
+         *
+         * @return this.
          */
         public Builder setName(final String name) {
             this.name = name;
@@ -138,8 +138,8 @@ public class ColumnMapping {
         /**
          * Parameter value to use for populating a column, MUST contain a single parameter marker '?'. This is generally useful for functions, stored procedures,
          * etc. No escaping will be done on this value.
-         * 
-         * @return this. 
+         *
+         * @return this.
          */
         public Builder setParameter(final String parameter) {
             this.parameter= parameter;
@@ -149,8 +149,8 @@ public class ColumnMapping {
         /**
          * Pattern to use as a {@link PatternLayout}. Convenient shorthand for {@link #setLayout(StringLayout)} with a
          * PatternLayout.
-         * 
-         * @return this. 
+         *
+         * @return this.
          */
         public Builder setPattern(final String pattern) {
             this.pattern = pattern;
@@ -160,7 +160,7 @@ public class ColumnMapping {
         /**
          * Source name. Useful when combined with a {@link org.apache.logging.log4j.message.MapMessage} depending on the
          * appender.
-         * 
+         *
          * @return this.
          */
         public Builder setSource(final String source) {
@@ -172,8 +172,8 @@ public class ColumnMapping {
          * Class to convert value to before storing in database. If the type is compatible with {@link ThreadContextMap} or
          * {@link ReadOnlyStringMap}, then the MDC will be used. If the type is compatible with {@link ThreadContextStack},
          * then the NDC will be used. If the type is compatible with {@link Date}, then the event timestamp will be used.
-         * 
-         * @return this. 
+         *
+         * @return this.
          */
         public Builder setType(final Class<?> type) {
             this.type = type;
@@ -192,7 +192,7 @@ public class ColumnMapping {
     public static Builder newBuilder() {
         return new Builder();
     }
-    
+
     private final StringLayout layout;
     private final String literalValue;
     private final String name;

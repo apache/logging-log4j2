@@ -23,9 +23,9 @@ import org.apache.logging.log4j.core.config.Configurator;
 /**
  * Tests {@link org.apache.logging.log4j.core.lookup.MainMapLookup#MAIN_SINGLETON} from the command line, not a real
  * JUnit test.
- * 
+ *
  * From an IDE or CLI: --file foo.txt
- * 
+ *
  * @since 2.4
  */
 public class MainInputArgumentsLookupTest {

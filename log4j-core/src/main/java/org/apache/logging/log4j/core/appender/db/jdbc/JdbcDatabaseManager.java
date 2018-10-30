@@ -78,7 +78,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * Creates managers.
      */
     private static final class JdbcDatabaseManagerFactory implements ManagerFactory<JdbcDatabaseManager, FactoryData> {
-        
+
         private static final char PARAMETER_MARKER = '?';
 
         @Override
@@ -215,11 +215,11 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     private final String sqlStatement;
 
     private Connection connection;
-    
+
     private PreparedStatement statement;
-    
+
     private boolean isBatchSupported;
-    
+
     private JdbcDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
                                 final String sqlStatement, final List<ColumnConfig> columnConfigs,
                                 final List<ColumnMapping> columnMappings) {

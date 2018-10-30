@@ -27,8 +27,8 @@ import org.junit.Test;
 public class RollingFileAppenderReconfigureUndefinedSystemPropertyTest {
 
     @Rule
-    public final LoggerContextRule loggerContextRule = new LoggerContextRule("src/test/rolling-file-appender-reconfigure.original.xml");  
-    
+    public final LoggerContextRule loggerContextRule = new LoggerContextRule("src/test/rolling-file-appender-reconfigure.original.xml");
+
     @Test
     public void testReconfigure() {
         loggerContextRule.reconfigure();

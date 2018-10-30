@@ -76,7 +76,7 @@ abstract class ExtendedStackTraceElementMixIn implements Serializable {
     @JsonProperty("method")
     @JacksonXmlProperty(localName = "method", isAttribute = true)
     public abstract String getMethodName();
-    
+
     @JsonIgnore
     abstract StackTraceElement getStackTraceElement();
 

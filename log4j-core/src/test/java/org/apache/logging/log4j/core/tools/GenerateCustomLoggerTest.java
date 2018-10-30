@@ -47,7 +47,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class GenerateCustomLoggerTest {
-    
+
     @BeforeClass
     public static void beforeClass() {
         System.setProperty("log4j2.loggerContextFactory", "org.apache.logging.log4j.TestLoggerContextFactory");

@@ -27,7 +27,7 @@ public class RuleChainFactory {
 
     /**
      * Creates a {@link RuleChain} where the rules are evaluated in the order you pass in.
-     * 
+     *
      * @param testRules
      *            test rules to evaluate
      * @return a new rule chain.

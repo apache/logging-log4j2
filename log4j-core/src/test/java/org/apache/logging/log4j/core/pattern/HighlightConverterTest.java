@@ -53,7 +53,7 @@ public class HighlightConverterTest {
         converter.format(event, buffer);
         assertEquals("\u001B[32mINFO : message in a bottle\u001B[m", buffer.toString());
     }
-    
+
     @Test
     public void testLevelNamesBad() {
         final String colorName = "red";

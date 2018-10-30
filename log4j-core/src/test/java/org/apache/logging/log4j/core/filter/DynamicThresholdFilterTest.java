@@ -45,8 +45,8 @@ import org.junit.Test;
 public class DynamicThresholdFilterTest {
 
     @Rule
-    public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule(); 
-    
+    public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule();
+
     @After
     public void cleanup() {
         final LoggerContext ctx = LoggerContext.getContext(false);
@@ -88,11 +88,11 @@ public class DynamicThresholdFilterTest {
         filter.start();
         assertTrue(filter.isStarted());
         final Object [] replacements = {"one", "two", "three"};
-        assertSame(Filter.Result.ACCEPT, filter.filter(null, Level.DEBUG, null, "some test message", replacements)); 
-        assertSame(Filter.Result.ACCEPT, filter.filter(null, Level.DEBUG, null, "some test message", "one", "two", "three")); 
+        assertSame(Filter.Result.ACCEPT, filter.filter(null, Level.DEBUG, null, "some test message", replacements));
+        assertSame(Filter.Result.ACCEPT, filter.filter(null, Level.DEBUG, null, "some test message", "one", "two", "three"));
         ThreadContext.clearMap();
     }
-    
+
     @Test
     public void testConfig() {
         try (final LoggerContext ctx = Configurator.initialize("Test1",

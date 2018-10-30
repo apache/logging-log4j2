@@ -46,7 +46,7 @@ public class RegexReplacementTest {
     public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     @Rule
-    public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule(); 
+    public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule();
 
     @Before
     public void setUp() throws Exception {

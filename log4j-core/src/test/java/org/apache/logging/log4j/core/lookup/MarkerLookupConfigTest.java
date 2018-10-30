@@ -31,7 +31,7 @@ import org.junit.Test;
 
 /**
  * Tests {@link MarkerLookup} with a configuration file.
- * 
+ *
  * @since 2.4
  */
 public class MarkerLookupConfigTest {

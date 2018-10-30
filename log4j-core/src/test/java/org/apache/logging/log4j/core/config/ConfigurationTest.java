@@ -111,13 +111,13 @@ public class ConfigurationTest {
         final Configuration config = this.ctx.getConfiguration();
         assertEquals(config.getRootLogger(), config.getLoggerConfig(Strings.EMPTY));
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void testGetLoggerConfigNull() throws Exception {
         final Configuration config = this.ctx.getConfiguration();
         assertEquals(config.getRootLogger(), config.getLoggerConfig(null));
     }
-    
+
     @Test
     public void testLogger() throws Exception {
         final Logger logger = this.ctx.getLogger(LOGGER_NAME);

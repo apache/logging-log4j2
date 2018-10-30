@@ -275,7 +275,7 @@ public class ConfigurationSource {
         if (is == null) {
             return null;
         }
-    
+
         if (FileUtils.isFile(url)) {
             try {
                 return new ConfigurationSource(is, FileUtils.fileFromUri(url.toURI()));

@@ -39,7 +39,7 @@ import org.junit.Test;
 
 /**
  * Unit tests {@link org.apache.commons.lang3.time.FastDateParser}.
- * 
+ *
  * Copied from Apache Commons Lang 3 on 2016-11-16.
  */
 public class FastDateParserTest {
@@ -343,7 +343,7 @@ public class FastDateParserTest {
             }
         }
     }
-    
+
     @Test
     public void testJpLocales() {
 
@@ -421,7 +421,7 @@ public class FastDateParserTest {
         testSdfAndFdp("''yyyyMMdd'A''B'HHmmssSSS''", "'20030210A'B153320989'", false); // OK
         testSdfAndFdp("''''yyyyMMdd'A''B'HHmmssSSS''", "''20030210A'B153320989'", false); // OK
         testSdfAndFdp("'$\\Ed'" ,"$\\Ed", false); // OK
-        
+
         // quoted charaters are case sensitive
         testSdfAndFdp("'QED'", "QED", false);
         testSdfAndFdp("'QED'", "qed", true);
@@ -429,7 +429,7 @@ public class FastDateParserTest {
         testSdfAndFdp("yyyy-MM-dd 'QED'", "2003-02-10 QED", false);
         testSdfAndFdp("yyyy-MM-dd 'QED'", "2003-02-10 qed", true);
     }
-    
+
     @Test
     public void testLANG_832() throws Exception {
         testSdfAndFdp("'d'd" ,"d3", false); // OK
@@ -593,19 +593,19 @@ public class FastDateParserTest {
         final DateParser parser= getInstance(yMdHmsSZ, REYKJAVIK);
         assertEquals(REYKJAVIK, parser.getTimeZone());
     }
-    
+
     @Test
     public void testLang996() throws ParseException {
         final Calendar expected = Calendar.getInstance(NEW_YORK, Locale.US);
         expected.clear();
         expected.set(2014, Calendar.MAY, 14);
 
-        final DateParser fdp = getInstance("ddMMMyyyy", NEW_YORK, Locale.US);        
+        final DateParser fdp = getInstance("ddMMMyyyy", NEW_YORK, Locale.US);
         assertEquals(expected.getTime(), fdp.parse("14may2014"));
         assertEquals(expected.getTime(), fdp.parse("14MAY2014"));
         assertEquals(expected.getTime(), fdp.parse("14May2014"));
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void test1806Argument() {
         getInstance("XXXX");
@@ -624,8 +624,8 @@ public class FastDateParserTest {
     }
 
     private static enum Expected1806 {
-        India(INDIA, "+05", "+0530", "+05:30", true), 
-        Greenwich(GMT, "Z", "Z", "Z", false), 
+        India(INDIA, "+05", "+0530", "+05:30", true),
+        Greenwich(GMT, "Z", "Z", "Z", false),
         NewYork(NEW_YORK, "-05", "-0500", "-05:00", false);
 
         private Expected1806(final TimeZone zone, final String one, final String two, final String three, final boolean hasHalfHourOffset) {
@@ -642,17 +642,17 @@ public class FastDateParserTest {
         final String three;
         final long offset;
     }
-    
+
     @Test
     public void test1806() throws ParseException {
         final String formatStub = "yyyy-MM-dd'T'HH:mm:ss.SSS";
         final String dateStub = "2001-02-04T12:08:56.235";
-        
+
         for (final Expected1806 trial : Expected1806.values()) {
             final Calendar cal = initializeCalendar(trial.zone);
 
             final String message = trial.zone.getDisplayName()+";";
-            
+
             DateParser parser = getInstance(formatStub+"X", trial.zone);
             assertEquals(message+trial.one, cal.getTime().getTime(), parser.parse(dateStub+trial.one).getTime()-trial.offset);
 

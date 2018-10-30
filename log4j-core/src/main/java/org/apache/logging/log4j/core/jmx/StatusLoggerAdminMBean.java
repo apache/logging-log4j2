@@ -68,7 +68,7 @@ public interface StatusLoggerAdminMBean {
      * @return the ObjectName of this StatusLogger MBean
      */
     ObjectName getObjectName();
-    
+
     /**
      * Returns a list with the most recent {@code StatusData} objects in the
      * status history. The list has up to 200 entries by default but the length

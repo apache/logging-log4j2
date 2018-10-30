@@ -38,7 +38,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String SIMPLE_NAME = "Log4j2 " + ConfigurationScheduler.class.getSimpleName();
     private static final int MAX_SCHEDULED_ITEMS = 5;
-    
+
     private ScheduledExecutorService executorService;
     private int scheduledItems = 0;
     private final String name;

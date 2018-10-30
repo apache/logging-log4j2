@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 
 /**
  * Rewrites log event levels for a given logger name.
- * 
+ *
  * @since 2.4
  */
 @Plugin(name = "LoggerNameLevelRewritePolicy", category = Core.CATEGORY_NAME, elementType = "rewritePolicy", printObject = true)
@@ -40,7 +40,7 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
 
     /**
      * Creates a policy to rewrite levels for a given logger name.
-     * 
+     *
      * @param loggerNamePrefix
      *        The logger name prefix for events to rewrite; all event logger names that start with this string will be
      *        rewritten.

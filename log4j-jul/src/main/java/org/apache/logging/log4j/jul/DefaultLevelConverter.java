@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Level;
  * <p>
  * Since 2.4, supports custom JUL levels by mapping them to their closest mapped neighbour.
  * </p>
- * 
+ *
  * @since 2.1
  */
 public class DefaultLevelConverter implements LevelConverter {

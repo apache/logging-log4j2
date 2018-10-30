@@ -26,7 +26,7 @@ public abstract class AbstractScript {
 
     protected static final Logger LOGGER = StatusLogger.getLogger();
     protected static final String DEFAULT_LANGUAGE = "JavaScript";
-    
+
     private final String language;
     private final String scriptText;
     private final String name;

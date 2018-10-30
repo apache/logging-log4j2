@@ -75,7 +75,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * <li>Key: "protocol" Value: "udp"</li>
      * <li>Key: "direction" Value: "out"</li>
      * </ul>
-     * 
+     *
      * @return Map of content format keys supporting DatagramSocketManager
      */
     @Override
@@ -94,7 +94,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
         private final int port;
         private final Layout<? extends Serializable> layout;
         private final int bufferSize;
-        
+
         public FactoryData(final String host, final int port, final Layout<? extends Serializable> layout, final int bufferSize) {
             this.host = host;
             this.port = port;

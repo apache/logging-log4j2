@@ -43,12 +43,12 @@ import org.apache.logging.log4j.util.Strings;
 
 /**
  * File posix attribute view action.
- * 
+ *
  * Allow to define file permissions, user and group for log files on posix supported OS.
  */
 @Plugin(name = "PosixViewAttribute", category = Core.CATEGORY_NAME, printObject = true)
 public class PosixViewAttributeAction extends AbstractPathAction {
-    
+
     /**
      * File permissions.
      */
@@ -86,7 +86,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
 
         @PluginConfiguration
         private Configuration configuration;
-        
+
         private StrSubstitutor subst;
 
         @PluginBuilderAttribute
@@ -183,7 +183,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
 
         /**
          * Define max folder depth to search for eligible files to apply posix attribute view.
-         * @param maxDepth Max search depth 
+         * @param maxDepth Max search depth
          * @return This builder
          */
         public Builder withMaxDepth(final int maxDepth) {
@@ -275,10 +275,10 @@ public class PosixViewAttributeAction extends AbstractPathAction {
     public Set<PosixFilePermission> getFilePermissions() {
         return filePermissions;
     }
-    
+
     /**
      * Returns file owner if defined and the OS supports owner file attribute view,
-     * null otherwise. 
+     * null otherwise.
      * @return File owner
      * @see FileOwnerAttributeView
      */
@@ -288,7 +288,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
 
     /**
      * Returns file group if defined and the OS supports posix/group file attribute view,
-     * null otherwise. 
+     * null otherwise.
      * @return File group
      * @see PosixFileAttributeView
      */

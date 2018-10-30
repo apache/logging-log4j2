@@ -90,10 +90,10 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<DefaultRolloverStrategy> {
         @PluginBuilderAttribute("max")
         private String max;
-        
+
         @PluginBuilderAttribute("min")
         private String min;
-        
+
         @PluginBuilderAttribute("fileIndex")
         private String fileIndex;
 
@@ -260,7 +260,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
 
         /**
          * Defines configuration.
-         * 
+         *
          * @param config The Configuration.
          * @return This builder for chaining convenience
          */

@@ -59,7 +59,7 @@ public class SerializedLayoutTest {
     static boolean useObjectInputStream = false;
 
     @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     @BeforeClass
     public static void setupClass() {

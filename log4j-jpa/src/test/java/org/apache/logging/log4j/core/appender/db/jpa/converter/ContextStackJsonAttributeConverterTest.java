@@ -36,7 +36,7 @@ public class ContextStackJsonAttributeConverterTest {
     private ContextStackJsonAttributeConverter converter;
 
     @Rule
-    public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule(); 
+    public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule();
 
     @Before
     public void setUp() {

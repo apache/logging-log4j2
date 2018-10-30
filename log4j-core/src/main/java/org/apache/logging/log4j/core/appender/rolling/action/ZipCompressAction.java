@@ -132,7 +132,7 @@ public final class ZipCompressAction extends AbstractAction {
 
     @Override
     public String toString() {
-        return ZipCompressAction.class.getSimpleName() + '[' + source + " to " + destination 
+        return ZipCompressAction.class.getSimpleName() + '[' + source + " to " + destination
                 + ", level=" + level + ", deleteSource=" + deleteSource + ']';
     }
 

@@ -38,7 +38,7 @@ public class DefaultReliabilityStrategy implements ReliabilityStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
      * java.lang.String, java.lang.String, org.apache.logging.log4j.Marker, org.apache.logging.log4j.Level,
      * org.apache.logging.log4j.message.Message, java.lang.Throwable)
@@ -51,7 +51,7 @@ public class DefaultReliabilityStrategy implements ReliabilityStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
      * org.apache.logging.log4j.core.LogEvent)
      */
@@ -62,7 +62,7 @@ public class DefaultReliabilityStrategy implements ReliabilityStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.logging.log4j.core.config.ReliabilityStrategy#beforeLogEvent(org.apache.logging.log4j.core.config.
      * LoggerConfig, org.apache.logging.log4j.util.Supplier)
@@ -74,7 +74,7 @@ public class DefaultReliabilityStrategy implements ReliabilityStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#afterLogEvent()
      */
     @Override
@@ -84,7 +84,7 @@ public class DefaultReliabilityStrategy implements ReliabilityStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#beforeStopAppenders()
      */
     @Override
@@ -94,7 +94,7 @@ public class DefaultReliabilityStrategy implements ReliabilityStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.logging.log4j.core.config.ReliabilityStrategy#beforeStopConfiguration(org.apache.logging.log4j.core
      * .config.Configuration)

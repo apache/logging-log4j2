@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * Work in progress, saved for future experimentation.
- * 
+ *
  * TODO The goal is to use the Sun debugger API to find the main arg values on the stack.
  */
 public class MainInputArgumentsMapLookup extends MapLookup {

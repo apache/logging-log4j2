@@ -26,7 +26,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * <p>
  * <em>Consider this class private.</em>
  * </p>
- * 
+ *
  * @see StackTraceElement
  */
 @JsonIgnoreProperties("nativeMethod")
@@ -34,9 +34,9 @@ abstract class StackTraceElementMixIn {
     @JsonCreator
     StackTraceElementMixIn(
             // @formatter:off
-            @JsonProperty("class") final String declaringClass, 
+            @JsonProperty("class") final String declaringClass,
             @JsonProperty("method") final String methodName,
-            @JsonProperty("file") final String fileName, 
+            @JsonProperty("file") final String fileName,
             @JsonProperty("line") final int lineNumber)
             // @formatter:on
     {

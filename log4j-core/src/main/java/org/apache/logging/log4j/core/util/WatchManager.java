@@ -32,7 +32,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Manages {@link FileWatcher}s.
- * 
+ *
  * @see FileWatcher
  * @see ConfigurationScheduler
  */
@@ -55,7 +55,7 @@ public class WatchManager extends AbstractLifeCycle {
      * This allows you to start, stop, reset and start again a manager, without triggering file modified events if the a
      * watched file has changed during the period of time when the manager was stopped.
      * </p>
-     * 
+     *
      * @since 2.11.0
      */
     public void reset() {
@@ -72,7 +72,7 @@ public class WatchManager extends AbstractLifeCycle {
      * This allows you to start, stop, reset and start again a manager, without triggering file modified events if the
      * given watched file has changed during the period of time when the manager was stopped.
      * </p>
-     * 
+     *
      * @param file
      *            the file for the monitor to reset.
      * @since 2.11.0
@@ -108,7 +108,7 @@ public class WatchManager extends AbstractLifeCycle {
 
     /**
      * Gets how often this manager checks for file modifications.
-     * 
+     *
      * @return how often, in seconds, this manager checks for file modifications.
      */
     public int getIntervalSeconds() {
@@ -134,7 +134,7 @@ public class WatchManager extends AbstractLifeCycle {
 
     /**
      * Unwatches the given file.
-     * 
+     *
      * @param file
      *            the file to stop watching.
      * @since 2.11.0
@@ -146,7 +146,7 @@ public class WatchManager extends AbstractLifeCycle {
 
     /**
      * Watches the given file.
-     * 
+     *
      * @param file
      *            the file to watch.
      * @param watcher
@@ -171,7 +171,7 @@ public class WatchManager extends AbstractLifeCycle {
     private String millisToString(final long millis) {
         return new Date(millis).toString();
     }
-    
+
     private final class WatchRunnable implements Runnable {
 
         // Use a hard class reference here in case a refactoring changes the class name.

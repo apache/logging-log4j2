@@ -41,7 +41,7 @@ public class DeletingVisitor extends SimpleFileVisitor<Path> {
 
     /**
      * Constructs a new DeletingVisitor.
-     * 
+     *
      * @param basePath used to relativize paths
      * @param pathConditions objects that need to confirm whether a file can be deleted
      * @param testMode if true, files are not deleted but instead a message is printed to the <a
@@ -77,7 +77,7 @@ public class DeletingVisitor extends SimpleFileVisitor<Path> {
 
     /**
      * Deletes the specified file.
-     * 
+     *
      * @param file the file to delete
      * @throws IOException if a problem occurred deleting the file
      */
@@ -88,7 +88,7 @@ public class DeletingVisitor extends SimpleFileVisitor<Path> {
 
     /**
      * Returns {@code true} if files are not deleted even when all conditions accept a path, {@code false} otherwise.
-     * 
+     *
      * @return {@code true} if files are not deleted even when all conditions accept a path, {@code false} otherwise
      */
     public boolean isTestMode() {

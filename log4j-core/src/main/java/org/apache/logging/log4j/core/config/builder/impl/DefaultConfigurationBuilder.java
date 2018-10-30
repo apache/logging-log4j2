@@ -58,7 +58,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     private static final String INDENT = "  ";
     private static final String EOL = System.lineSeparator();
-    
+
     private final Component root = new Component();
     private Component loggers;
     private Component appenders;

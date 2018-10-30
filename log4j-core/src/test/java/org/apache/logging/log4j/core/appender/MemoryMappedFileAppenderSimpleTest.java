@@ -35,7 +35,7 @@ import static org.junit.Assert.*;
  * Tests that logged strings appear in the file,
  * that the default file size is used if not specified
  * and that the file is shrunk to its actual usage when done.
- * 
+ *
  * @since 2.1
  */
 public class MemoryMappedFileAppenderSimpleTest {
@@ -54,13 +54,13 @@ public class MemoryMappedFileAppenderSimpleTest {
             assertTrue(f.delete());
         }
         assertTrue(!f.exists());
-        
+
         final Logger log = LogManager.getLogger();
         try {
             log.warn("Test log1");
             assertTrue(f.exists());
             assertEquals("initial length", MemoryMappedFileManager.DEFAULT_REGION_LENGTH, f.length());
-            
+
             log.warn("Test log2");
             assertEquals("not grown", MemoryMappedFileManager.DEFAULT_REGION_LENGTH, f.length());
         } finally {
@@ -68,7 +68,7 @@ public class MemoryMappedFileAppenderSimpleTest {
         }
         final int LINESEP = System.lineSeparator().length();
         assertEquals("Shrunk to actual used size", 186 + 2 * LINESEP, f.length());
-        
+
         String line1, line2, line3;
         try (final BufferedReader reader = new BufferedReader(new FileReader(LOGFILE))) {
             line1 = reader.readLine();

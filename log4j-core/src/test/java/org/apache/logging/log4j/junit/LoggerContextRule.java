@@ -48,7 +48,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
     public static LoggerContextRule createShutdownTimeoutLoggerContextRule(final String config) {
         return new LoggerContextRule(config, 10, TimeUnit.SECONDS);
     }
-    
+
     private static final String SYS_PROP_KEY_CLASS_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#ClassName";
     private static final String SYS_PROP_KEY_DISPLAY_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#DisplayName";
     private final String configLocation;
@@ -278,7 +278,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
     public void reconfigure() {
         loggerContext.reconfigure();
     }
-    
+
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();

@@ -35,7 +35,7 @@ import static org.junit.Assert.*;
 /**
  * Tests that logged strings appear in the file, that the initial file size is the specified specified region length,
  * that the file is extended by region length when necessary, and that the file is shrunk to its actual usage when done.
- * 
+ *
  * @since 2.1
  */
 public class MemoryMappedFileAppenderRemapTest {
@@ -65,7 +65,7 @@ public class MemoryMappedFileAppenderRemapTest {
 
             log.warn(new String(text));
             assertEquals("grown", 256 * 2, f.length());
-            
+
             log.warn(new String(text));
             assertEquals("grown again", 256 * 3, f.length());
         } finally {

@@ -44,7 +44,7 @@ public class AsyncLoggerConfigAutoFlushTest {
     public void testFlushAtEndOfBatch() throws Exception {
         final File file = new File("target", "AsyncLoggerConfigAutoFlushTest.log");
         assertTrue("Deleted old file before test", !file.exists() || file.delete());
-        
+
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Message flushed with immediate flush=false";
         log.info(msg);

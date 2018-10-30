@@ -34,9 +34,9 @@ import org.fusesource.jansi.AnsiRenderer.Code;
 
 /**
  * Renders an input as ANSI escaped output.
- * 
+ *
  * Uses the JAnsi rendering syntax as the default to render a message into an ANSI escaped string.
- * 
+ *
  * The default syntax for embedded ANSI codes is:
  *
  * <pre>
@@ -54,28 +54,28 @@ import org.fusesource.jansi.AnsiRenderer.Code;
  * <pre>
  *   &#64;|bold,red Warning!|@
  * </pre>
- * 
+ *
  * You can also define custom style names in the configuration with the syntax:
- * 
+ *
  * <pre>
  * %message{ansi}{StyleName=value(,value)*( StyleName=value(,value)*)*}%n
  * </pre>
- * 
+ *
  * For example:
- * 
+ *
  * <pre>
  * %message{ansi}{WarningStyle=red,bold KeyStyle=white ValueStyle=blue}%n
  * </pre>
- * 
+ *
  * The call site can look like this:
- * 
+ *
  * <pre>
  * logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());
  * </pre>
- * 
+ *
  * Note: This class originally copied and then heavily modified code from JAnsi's AnsiRenderer (which is licensed as
  * Apache 2.0.)
- * 
+ *
  * @see AnsiRenderer
  */
 public final class JAnsiTextRenderer implements TextRenderer {
@@ -254,7 +254,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
 
     /**
      * Renders the given text with the given names which can be ANSI code names or Log4j style names.
-     * 
+     *
      * @param text
      *            The text to render
      * @param names

@@ -74,7 +74,7 @@ public class PatternParserTest2 {
 
     /**
      * Format file name.
-     * 
+     *
      * @param buf string buffer to which formatted file name is appended, may not be null.
      * @param objects objects to be evaluated in formatting, may not be null.
      */

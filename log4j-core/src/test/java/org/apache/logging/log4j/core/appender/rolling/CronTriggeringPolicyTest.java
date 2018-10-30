@@ -29,7 +29,7 @@ import org.junit.Test;
 public class CronTriggeringPolicyTest {
 
     private static final String CRON_EXPRESSION = "0 0 0 * * ?";
-    
+
     private NullConfiguration configuration;
 
      // TODO Need a CleanRegexFiles("testcmd.\\.log\\..*");
@@ -96,7 +96,7 @@ public class CronTriggeringPolicyTest {
         // @formatter:on
     }
 
-    
+
     /**
      * Tests LOG4J2-1474 CronTriggeringPolicy raise exception and fail to rollover log file when evaluateOnStartup is
      * true.

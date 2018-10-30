@@ -45,9 +45,9 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static org.junit.Assert.assertEquals;
 
 public class GelfLayoutTest {
-    
+
     static ConfigurationFactory configFactory = new BasicConfigurationFactory();
-    
+
     private static final String HOSTNAME = "TheHost";
     private static final String KEY1 = "Key1";
     private static final String KEY2 = "Key2";
@@ -61,7 +61,7 @@ public class GelfLayoutTest {
     private static final String VALUE1 = "Value1";
 
     @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     @AfterClass
     public static void cleanupClass() {

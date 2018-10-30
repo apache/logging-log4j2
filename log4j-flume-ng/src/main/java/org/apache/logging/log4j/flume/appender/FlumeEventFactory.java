@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.LogEvent;
  * Factory to create Flume events.
  */
 public interface FlumeEventFactory {
-    
+
     /**
      * Creates a Flume event.
      * @param event The Log4j LogEvent.

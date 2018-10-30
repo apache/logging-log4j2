@@ -76,7 +76,7 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
         /**
          * Builds instances.
-         * 
+         *
          * @param writer
          *            The OutputStream.
          * @param type
@@ -95,7 +95,7 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
         /**
          * Creates a WriterManager.
-         * 
+         *
          * @param name
          *            The name of the entity to manage.
          * @param data
@@ -112,7 +112,7 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
     /**
      * Creates a WriterAppender.
-     * 
+     *
      * @param layout
      *            The layout to use or null to get the default layout.
      * @param filter

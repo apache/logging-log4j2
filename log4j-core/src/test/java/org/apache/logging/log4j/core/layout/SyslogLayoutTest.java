@@ -55,7 +55,7 @@ public class SyslogLayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
     @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     @BeforeClass
     public static void setupClass() {

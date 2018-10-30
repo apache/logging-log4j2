@@ -56,10 +56,10 @@ public class AsyncLoggerThreadContextTest {
         final File file = new File("target", "AsyncLoggerTest.log");
         // System.out.println(f.getAbsolutePath());
         file.delete();
-        
+
         ThreadContext.push("stackvalue");
         ThreadContext.put("KEY", "mapvalue");
-        
+
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Async logger msg";
         log.info(msg, new InternalError("this is not a real error"));

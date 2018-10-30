@@ -45,7 +45,7 @@ public class LoggerInputStreamTest extends AbstractStreamTest {
         this.read = new ByteArrayOutputStream();
         this.in = createInputStream();
     }
-    
+
     @Test
     public void testClose_HasRemainingData() throws IOException {
         final byte[] bytes = new byte[1024];
