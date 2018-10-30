@@ -22,11 +22,6 @@
       <Property name="bootstrap.servers">localhost:9092</Property>
       <Property name="timeout.ms">1000</Property>
     </Kafka>
-    <Kafka name="KafkaAppenderWithSerializedLayout" topic="kafka-topic">
-      <SerializedLayout/>
-      <Property name="bootstrap.servers">localhost:9092</Property>
-      <Property name="timeout.ms">1000</Property>
-    </Kafka>
     <Kafka name="AsyncKafkaAppender" topic="kafka-topic">
       <PatternLayout pattern="%m"/>
       <Property name="bootstrap.servers">localhost:9092</Property>
@@ -46,7 +41,6 @@
   <Loggers>
     <Root level="info">
       <AppenderRef ref="KafkaAppenderWithLayout"/>
-      <AppenderRef ref="KafkaAppenderWithSerializedLayout"/>
       <AppenderRef ref="AsyncKafkaAppender"/>
       <AppenderRef ref="KafkaAppenderWithKey"/>
     </Root>
