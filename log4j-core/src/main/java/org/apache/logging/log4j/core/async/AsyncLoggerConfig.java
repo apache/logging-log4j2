@@ -86,6 +86,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
         delegate.setLogEventFactory(getLogEventFactory());
     }
 
+    @Override
     protected void log(final LogEvent event, final LoggerConfigPredicate predicate) {
         // See LOG4J2-2301
         if (predicate == LoggerConfigPredicate.ALL &&

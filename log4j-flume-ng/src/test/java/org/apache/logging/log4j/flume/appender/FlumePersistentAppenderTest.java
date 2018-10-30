@@ -351,7 +351,8 @@ public class FlumePersistentAppenderTest {
 	public void testLogInterrupted() {
 		final ExecutorService executor = Executors.newSingleThreadExecutor();
 		executor.execute(new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				executor.shutdownNow();
 				final Logger logger = LogManager.getLogger("EventLogger");
 				final Marker marker = MarkerManager.getMarker("EVENT");
