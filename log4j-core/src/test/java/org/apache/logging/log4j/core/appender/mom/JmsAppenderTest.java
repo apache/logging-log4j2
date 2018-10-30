@@ -128,7 +128,7 @@ public class JmsAppenderTest {
 
     @Before
     public void setUp() throws Exception {
-        // we have 3 appenders all connecting to the same ConnectionFactory
+        // we have 4 appenders all connecting to the same ConnectionFactory
         then(connection).should(times(4)).start();
     }
 
