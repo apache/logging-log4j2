@@ -47,6 +47,7 @@ import org.apache.logging.log4j.junit.JndiRule;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -122,7 +123,7 @@ public class JmsAppenderTest {
     }
 
     private Log4jLogEvent createMapMessageLogEvent() {
-        org.apache.logging.log4j.message.MapMessage<?, String> mapMessage = new org.apache.logging.log4j.message.MapMessage<>();
+        final StringMapMessage mapMessage = new StringMapMessage();
         return createLogEvent(mapMessage.with("testMesage", LOG_MESSAGE));
     }
 
