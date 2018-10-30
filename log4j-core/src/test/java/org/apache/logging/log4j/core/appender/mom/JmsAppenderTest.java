@@ -123,7 +123,7 @@ public class JmsAppenderTest {
     }
 
     private Log4jLogEvent createMapMessageLogEvent() {
-        StringMapMessage mapMessage = new StringMapMessage();
+        final StringMapMessage mapMessage = new StringMapMessage();
         return createLogEvent(mapMessage.with("testMesage", LOG_MESSAGE));
     }
 
