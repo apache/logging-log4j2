@@ -54,236 +54,6 @@ import org.apache.logging.log4j.util.Strings;
  */
 public final class JdbcDatabaseManager extends AbstractDatabaseManager {
 
-    private static final JdbcDatabaseManagerFactory INSTANCE = new JdbcDatabaseManagerFactory();
-
-    // NOTE: prepared statements are prepared in this order: column mappings, then column configs
-    private final List<ColumnMapping> columnMappings;
-    private final List<ColumnConfig> columnConfigs;
-    private final ConnectionSource connectionSource;
-    private final String sqlStatement;
-
-    private Connection connection;
-    private PreparedStatement statement;
-    private boolean isBatchSupported;
-
-    private JdbcDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
-            final String sqlStatement, final List<ColumnConfig> columnConfigs,
-            final List<ColumnMapping> columnMappings) {
-        super(name, bufferSize);
-        this.connectionSource = connectionSource;
-        this.sqlStatement = sqlStatement;
-        this.columnConfigs = columnConfigs;
-        this.columnMappings = columnMappings;
-    }
-
-    @Override
-    protected void startupInternal() throws Exception {
-        this.connection = this.connectionSource.getConnection();
-        try {
-            final DatabaseMetaData metaData = this.connection.getMetaData();
-            this.isBatchSupported = metaData.supportsBatchUpdates();
-        } finally {
-            logger().debug("Closing Connection {}", this.connection);
-            Closer.closeSilently(this.connection);
-        }
-    }
-
-    @Override
-    protected boolean shutdownInternal() {
-        if (this.connection != null || this.statement != null) {
-            return this.commitAndClose();
-        }
-        if (connectionSource != null) {
-            connectionSource.stop();
-        }
-        return true;
-    }
-
-    @Override
-    protected void connectAndStart() {
-        try {
-            this.connection = this.connectionSource.getConnection();
-            this.connection.setAutoCommit(false);
-            logger().debug("Preparing SQL: {}", this.sqlStatement);
-            this.statement = this.connection.prepareStatement(this.sqlStatement);
-        } catch (final SQLException e) {
-            throw new AppenderLoggingException(
-                    "Cannot write logging event or flush buffer; JDBC manager cannot connect to the database.", e);
-        }
-    }
-
-    public String getSqlStatement() {
-        return sqlStatement;
-    }
-
-    private void setFields(final MapMessage<?, ?> mapMessage) throws SQLException {
-        final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
-        final String simpleName = statement.getClass().getName();
-        int i = 1; // JDBC indices start at 1
-        for (final ColumnMapping mapping : this.columnMappings) {
-            final String source = mapping.getSource();
-            final String key = Strings.isEmpty(source) ? mapping.getName() : source;
-            final Object value = map.getValue(key);
-            if (logger().isTraceEnabled()) {
-                final String valueStr = value instanceof String ? "\"" + value + "\"" : Objects.toString(value, null);
-                logger().trace("{} setObject({}, {}) for key '{}' and mapping '{}'", simpleName, i, valueStr, key,
-                        mapping.getName());
-            }
-            statement.setObject(i++, value);
-        }
-    }
-
-    @Override
-    protected void writeInternal(final LogEvent event, final Serializable serializable) {
-        StringReader reader = null;
-        try {
-            if (!this.isRunning() || this.connection == null || this.connection.isClosed() || this.statement == null
-                    || this.statement.isClosed()) {
-                throw new AppenderLoggingException(
-                        "Cannot write logging event; JDBC manager not connected to the database.");
-            }
-
-            // Clear in case there are leftovers.
-            statement.clearParameters();
-            if (serializable instanceof MapMessage) {
-                setFields((MapMessage<?, ?>) serializable);
-            }
-            int i = 1; // JDBC indices start at 1
-            for (final ColumnMapping mapping : this.columnMappings) {
-                if (ThreadContextMap.class.isAssignableFrom(mapping.getType())
-                        || ReadOnlyStringMap.class.isAssignableFrom(mapping.getType())) {
-                    this.statement.setObject(i++, event.getContextData().toMap());
-                } else if (ThreadContextStack.class.isAssignableFrom(mapping.getType())) {
-                    this.statement.setObject(i++, event.getContextStack().asList());
-                } else if (Date.class.isAssignableFrom(mapping.getType())) {
-                    this.statement.setObject(i++, DateTypeConverter.fromMillis(event.getTimeMillis(),
-                            mapping.getType().asSubclass(Date.class)));
-                } else {
-                    StringLayout layout = mapping.getLayout();
-                    if (layout != null) {
-                        if (Clob.class.isAssignableFrom(mapping.getType())) {
-                            this.statement.setClob(i++, new StringReader(layout.toSerializable(event)));
-                        } else if (NClob.class.isAssignableFrom(mapping.getType())) {
-                            this.statement.setNClob(i++, new StringReader(layout.toSerializable(event)));
-                        } else {
-                            final Object value = TypeConverters.convert(layout.toSerializable(event), mapping.getType(),
-                                    null);
-                            if (value == null) {
-                                this.statement.setNull(i++, Types.NULL);
-                            } else {
-                                this.statement.setObject(i++, value);
-                            }
-                        }
-                    }
-                }
-            }
-            for (final ColumnConfig column : this.columnConfigs) {
-                if (column.isEventTimestamp()) {
-                    this.statement.setTimestamp(i++, new Timestamp(event.getTimeMillis()));
-                } else if (column.isClob()) {
-                    reader = new StringReader(column.getLayout().toSerializable(event));
-                    if (column.isUnicode()) {
-                        this.statement.setNClob(i++, reader);
-                    } else {
-                        this.statement.setClob(i++, reader);
-                    }
-                } else if (column.isUnicode()) {
-                    this.statement.setNString(i++, column.getLayout().toSerializable(event));
-                } else {
-                    this.statement.setString(i++, column.getLayout().toSerializable(event));
-                }
-            }
-
-            if (this.isBatchSupported) {
-                this.statement.addBatch();
-            } else if (this.statement.executeUpdate() == 0) {
-                throw new AppenderLoggingException(
-                        "No records inserted in database table for log event in JDBC manager.");
-            }
-        } catch (final SQLException e) {
-            throw new AppenderLoggingException(
-                    "Failed to insert record for log event in JDBC manager: " + e.getMessage(), e);
-        } finally {
-            // Release ASAP
-            try {
-                statement.clearParameters();
-            } catch (SQLException e) {
-                // Ignore
-            }
-            Closer.closeSilently(reader);
-        }
-    }
-
-    @Override
-    protected boolean commitAndClose() {
-        boolean closed = true;
-        try {
-            if (this.connection != null && !this.connection.isClosed()) {
-                if (this.isBatchSupported) {
-                    logger().debug("Executing batch PreparedStatement {}", this.statement);
-                    int[] result = this.statement.executeBatch();
-                    logger().debug("Batch result: {}", Arrays.toString(result));
-                }
-                logger().debug("Committing Connection {}", this.connection);
-                this.connection.commit();
-            }
-        } catch (final SQLException e) {
-            throw new AppenderLoggingException("Failed to commit transaction logging event or flushing buffer.", e);
-        } finally {
-            try {
-                logger().debug("Closing PreparedStatement {}", this.statement);
-                Closer.close(this.statement);
-            } catch (final Exception e) {
-                logWarn("Failed to close SQL statement logging event or flushing buffer", e);
-                closed = false;
-            } finally {
-                this.statement = null;
-            }
-
-            try {
-                logger().debug("Closing Connection {}", this.connection);
-                Closer.close(this.connection);
-            } catch (final Exception e) {
-                logWarn("Failed to close database connection logging event or flushing buffer", e);
-                closed = false;
-            } finally {
-                this.connection = null;
-            }
-        }
-        return closed;
-    }
-
-    /**
-     * Creates a JDBC manager for use within the {@link JdbcAppender}, or returns a suitable one if it already exists.
-     *
-     * @param name
-     *            The name of the manager, which should include connection details and hashed passwords where possible.
-     * @param bufferSize
-     *            The size of the log event buffer.
-     * @param layout
-     *            The Appender-level layout
-     * @param connectionSource
-     *            The source for connections to the database.
-     * @param tableName
-     *            The name of the database table to insert log events into.
-     * @param columnConfigs
-     *            Configuration information about the log table columns.
-     * @param columnMappings
-     *            column mapping configuration (including type conversion).
-     * @return a new or existing JDBC manager as applicable.
-     */
-    public static JdbcDatabaseManager getManager(final String name, final int bufferSize,
-            final Layout<? extends Serializable> layout, final ConnectionSource connectionSource,
-            final String tableName, final ColumnConfig[] columnConfigs, final ColumnMapping[] columnMappings) {
-        return getManager(name,
-                new FactoryData(bufferSize, layout, connectionSource, tableName, columnConfigs, columnMappings),
-                getFactory());
-    }
-
-    private static JdbcDatabaseManagerFactory getFactory() {
-        return INSTANCE;
-    }
-
     /**
      * Encapsulates data that {@link JdbcDatabaseManagerFactory} uses to create managers.
      */
@@ -366,6 +136,240 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
 
             return new JdbcDatabaseManager(name, data.getBufferSize(), data.connectionSource, sqlStatement,
                     columnConfigs, columnMappings);
+        }
+    }
+    private static final JdbcDatabaseManagerFactory INSTANCE = new JdbcDatabaseManagerFactory();
+    private static JdbcDatabaseManagerFactory getFactory() {
+        return INSTANCE;
+    }
+    /**
+     * Creates a JDBC manager for use within the {@link JdbcAppender}, or returns a suitable one if it already exists.
+     *
+     * @param name
+     *            The name of the manager, which should include connection details and hashed passwords where possible.
+     * @param bufferSize
+     *            The size of the log event buffer.
+     * @param layout
+     *            The Appender-level layout
+     * @param connectionSource
+     *            The source for connections to the database.
+     * @param tableName
+     *            The name of the database table to insert log events into.
+     * @param columnConfigs
+     *            Configuration information about the log table columns.
+     * @param columnMappings
+     *            column mapping configuration (including type conversion).
+     * @return a new or existing JDBC manager as applicable.
+     */
+    public static JdbcDatabaseManager getManager(final String name, final int bufferSize,
+            final Layout<? extends Serializable> layout, final ConnectionSource connectionSource,
+            final String tableName, final ColumnConfig[] columnConfigs, final ColumnMapping[] columnMappings) {
+        return getManager(name,
+                new FactoryData(bufferSize, layout, connectionSource, tableName, columnConfigs, columnMappings),
+                getFactory());
+    }
+
+    // NOTE: prepared statements are prepared in this order: column mappings, then column configs
+    private final List<ColumnMapping> columnMappings;
+    private final List<ColumnConfig> columnConfigs;
+    private final ConnectionSource connectionSource;
+
+    private final String sqlStatement;
+
+    private Connection connection;
+
+    private PreparedStatement statement;
+
+    private boolean isBatchSupported;
+
+    private JdbcDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
+            final String sqlStatement, final List<ColumnConfig> columnConfigs,
+            final List<ColumnMapping> columnMappings) {
+        super(name, bufferSize);
+        this.connectionSource = connectionSource;
+        this.sqlStatement = sqlStatement;
+        this.columnConfigs = columnConfigs;
+        this.columnMappings = columnMappings;
+    }
+
+    @Override
+    protected boolean commitAndClose() {
+        boolean closed = true;
+        try {
+            if (this.connection != null && !this.connection.isClosed()) {
+                if (this.isBatchSupported) {
+                    logger().debug("Executing batch PreparedStatement {}", this.statement);
+                    int[] result = this.statement.executeBatch();
+                    logger().debug("Batch result: {}", Arrays.toString(result));
+                }
+                logger().debug("Committing Connection {}", this.connection);
+                this.connection.commit();
+            }
+        } catch (final SQLException e) {
+            throw new AppenderLoggingException("Failed to commit transaction logging event or flushing buffer.", e);
+        } finally {
+            try {
+                logger().debug("Closing PreparedStatement {}", this.statement);
+                Closer.close(this.statement);
+            } catch (final Exception e) {
+                logWarn("Failed to close SQL statement logging event or flushing buffer", e);
+                closed = false;
+            } finally {
+                this.statement = null;
+            }
+
+            try {
+                logger().debug("Closing Connection {}", this.connection);
+                Closer.close(this.connection);
+            } catch (final Exception e) {
+                logWarn("Failed to close database connection logging event or flushing buffer", e);
+                closed = false;
+            } finally {
+                this.connection = null;
+            }
+        }
+        return closed;
+    }
+
+    @Override
+    protected void connectAndStart() {
+        try {
+            this.connection = this.connectionSource.getConnection();
+            this.connection.setAutoCommit(false);
+            logger().debug("Preparing SQL: {}", this.sqlStatement);
+            this.statement = this.connection.prepareStatement(this.sqlStatement);
+        } catch (final SQLException e) {
+            throw new AppenderLoggingException(
+                    "Cannot write logging event or flush buffer; JDBC manager cannot connect to the database.", e);
+        }
+    }
+
+    public ConnectionSource getConnectionSource() {
+        return connectionSource;
+    }
+
+    public String getSqlStatement() {
+        return sqlStatement;
+    }
+
+    private void setFields(final MapMessage<?, ?> mapMessage) throws SQLException {
+        final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
+        final String simpleName = statement.getClass().getName();
+        int i = 1; // JDBC indices start at 1
+        for (final ColumnMapping mapping : this.columnMappings) {
+            final String source = mapping.getSource();
+            final String key = Strings.isEmpty(source) ? mapping.getName() : source;
+            final Object value = map.getValue(key);
+            if (logger().isTraceEnabled()) {
+                final String valueStr = value instanceof String ? "\"" + value + "\"" : Objects.toString(value, null);
+                logger().trace("{} setObject({}, {}) for key '{}' and mapping '{}'", simpleName, i, valueStr, key,
+                        mapping.getName());
+            }
+            statement.setObject(i++, value);
+        }
+    }
+
+    @Override
+    protected boolean shutdownInternal() {
+        if (this.connection != null || this.statement != null) {
+            return this.commitAndClose();
+        }
+        if (connectionSource != null) {
+            connectionSource.stop();
+        }
+        return true;
+    }
+
+    @Override
+    protected void startupInternal() throws Exception {
+        this.connection = this.connectionSource.getConnection();
+        try {
+            final DatabaseMetaData metaData = this.connection.getMetaData();
+            this.isBatchSupported = metaData.supportsBatchUpdates();
+        } finally {
+            logger().debug("Closing Connection {}", this.connection);
+            Closer.closeSilently(this.connection);
+        }
+    }
+
+    @Override
+    protected void writeInternal(final LogEvent event, final Serializable serializable) {
+        StringReader reader = null;
+        try {
+            if (!this.isRunning() || this.connection == null || this.connection.isClosed() || this.statement == null
+                    || this.statement.isClosed()) {
+                throw new AppenderLoggingException(
+                        "Cannot write logging event; JDBC manager not connected to the database.");
+            }
+
+            // Clear in case there are leftovers.
+            statement.clearParameters();
+            if (serializable instanceof MapMessage) {
+                setFields((MapMessage<?, ?>) serializable);
+            }
+            int i = 1; // JDBC indices start at 1
+            for (final ColumnMapping mapping : this.columnMappings) {
+                if (ThreadContextMap.class.isAssignableFrom(mapping.getType())
+                        || ReadOnlyStringMap.class.isAssignableFrom(mapping.getType())) {
+                    this.statement.setObject(i++, event.getContextData().toMap());
+                } else if (ThreadContextStack.class.isAssignableFrom(mapping.getType())) {
+                    this.statement.setObject(i++, event.getContextStack().asList());
+                } else if (Date.class.isAssignableFrom(mapping.getType())) {
+                    this.statement.setObject(i++, DateTypeConverter.fromMillis(event.getTimeMillis(),
+                            mapping.getType().asSubclass(Date.class)));
+                } else {
+                    StringLayout layout = mapping.getLayout();
+                    if (layout != null) {
+                        if (Clob.class.isAssignableFrom(mapping.getType())) {
+                            this.statement.setClob(i++, new StringReader(layout.toSerializable(event)));
+                        } else if (NClob.class.isAssignableFrom(mapping.getType())) {
+                            this.statement.setNClob(i++, new StringReader(layout.toSerializable(event)));
+                        } else {
+                            final Object value = TypeConverters.convert(layout.toSerializable(event), mapping.getType(),
+                                    null);
+                            if (value == null) {
+                                this.statement.setNull(i++, Types.NULL);
+                            } else {
+                                this.statement.setObject(i++, value);
+                            }
+                        }
+                    }
+                }
+            }
+            for (final ColumnConfig column : this.columnConfigs) {
+                if (column.isEventTimestamp()) {
+                    this.statement.setTimestamp(i++, new Timestamp(event.getTimeMillis()));
+                } else if (column.isClob()) {
+                    reader = new StringReader(column.getLayout().toSerializable(event));
+                    if (column.isUnicode()) {
+                        this.statement.setNClob(i++, reader);
+                    } else {
+                        this.statement.setClob(i++, reader);
+                    }
+                } else if (column.isUnicode()) {
+                    this.statement.setNString(i++, column.getLayout().toSerializable(event));
+                } else {
+                    this.statement.setString(i++, column.getLayout().toSerializable(event));
+                }
+            }
+
+            if (this.isBatchSupported) {
+                this.statement.addBatch();
+            } else if (this.statement.executeUpdate() == 0) {
+                throw new AppenderLoggingException(
+                        "No records inserted in database table for log event in JDBC manager.");
+            }
+        } catch (final SQLException e) {
+            throw new AppenderLoggingException(
+                    "Failed to insert record for log event in JDBC manager: " + e.getMessage(), e);
+        } finally {
+            // Release ASAP
+            try {
+                statement.clearParameters();
+            } catch (SQLException e) {
+                // Ignore
+            }
+            Closer.closeSilently(reader);
         }
     }
 
