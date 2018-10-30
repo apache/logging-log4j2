@@ -18,8 +18,6 @@ package org.apache.logging.log4j.core.appender.nosql;
 
 import java.io.Serializable;
 
-import javax.jms.JMSException;
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -74,7 +72,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     protected void writeInternal(final LogEvent event) {
         writeInternal(event, null);
     }
-    
+
     @Override
     protected void writeInternal(final LogEvent event, final Serializable serializable) {
         if (!this.isRunning() || this.connection == null || this.connection.isClosed()) {

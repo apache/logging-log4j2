@@ -349,7 +349,7 @@ public class LogManager {
      * @return a LoggerContext.
      */
     protected static LoggerContext getContext(final String fqcn, final ClassLoader loader,
-                                              final boolean currentContext, URI configLocation, String name) {
+                                              final boolean currentContext, final URI configLocation, final String name) {
         try {
             return factory.getContext(fqcn, loader, null, currentContext, configLocation, name);
         } catch (final IllegalStateException ex) {
@@ -406,7 +406,7 @@ public class LogManager {
     }
 
     private static String toLoggerName(final Class<?> cls) {
-        String canonicalName = cls.getCanonicalName();
+        final String canonicalName = cls.getCanonicalName();
         return canonicalName != null ? canonicalName : cls.getName();
     }
 

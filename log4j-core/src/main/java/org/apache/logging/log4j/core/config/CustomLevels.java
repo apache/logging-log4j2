@@ -40,7 +40,7 @@ public final class CustomLevels {
 
     /**
      * Create a CustomLevels object to contain all the CustomLevelConfigs.
-     * 
+     *
      * @param customLevels An array of CustomLevelConfigs.
      * @return A CustomLevels object.
      */

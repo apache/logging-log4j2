@@ -58,7 +58,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     private static final String INDENT = "  ";
     private static final String EOL = System.lineSeparator();
-    
+
     private final Component root = new Component();
     private Component loggers;
     private Component appenders;
@@ -356,12 +356,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public LoggerComponentBuilder newAsyncLogger(String name) {
+    public LoggerComponentBuilder newAsyncLogger(final String name) {
         return new DefaultLoggerComponentBuilder(this, name, null, "AsyncLogger");
     }
 
     @Override
-    public LoggerComponentBuilder newAsyncLogger(String name, boolean includeLocation) {
+    public LoggerComponentBuilder newAsyncLogger(final String name, final boolean includeLocation) {
         return new DefaultLoggerComponentBuilder(this, name, null, "AsyncLogger", includeLocation);
     }
 
@@ -391,7 +391,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public RootLoggerComponentBuilder newAsyncRootLogger(boolean includeLocation) {
+    public RootLoggerComponentBuilder newAsyncRootLogger(final boolean includeLocation) {
         return new DefaultRootLoggerComponentBuilder(this, null, "AsyncRoot", includeLocation);
     }
 
@@ -464,12 +464,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public LoggerComponentBuilder newLogger(String name) {
+    public LoggerComponentBuilder newLogger(final String name) {
         return new DefaultLoggerComponentBuilder(this, name, null);
     }
 
     @Override
-    public LoggerComponentBuilder newLogger(String name, boolean includeLocation) {
+    public LoggerComponentBuilder newLogger(final String name, final boolean includeLocation) {
         return new DefaultLoggerComponentBuilder(this, name, null, includeLocation);
     }
 
@@ -499,7 +499,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public RootLoggerComponentBuilder newRootLogger(boolean includeLocation) {
+    public RootLoggerComponentBuilder newRootLogger(final boolean includeLocation) {
         return new DefaultRootLoggerComponentBuilder(this, null, includeLocation);
     }
 

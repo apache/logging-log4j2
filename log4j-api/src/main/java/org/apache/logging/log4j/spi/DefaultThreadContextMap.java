@@ -44,7 +44,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     private final ThreadLocal<Map<String, String>> localMap;
 
     private static boolean inheritableMap;
-    
+
     static {
         init();
     }
@@ -69,7 +69,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     static void init() {
         inheritableMap = PropertiesUtil.getProperties().getBooleanProperty(INHERITABLE_MAP);
     }
-    
+
     public DefaultThreadContextMap() {
         this(true);
     }
@@ -154,6 +154,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         for (final Map.Entry<String, String> entry : map.entrySet()) {
             //BiConsumer should be able to handle values of any type V. In our case the values are of type String.
             @SuppressWarnings("unchecked")
+            final
             V value = (V) entry.getValue();
             action.accept(entry.getKey(), value);
         }
@@ -168,6 +169,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         for (final Map.Entry<String, String> entry : map.entrySet()) {
             //TriConsumer should be able to handle values of any type V. In our case the values are of type String.
             @SuppressWarnings("unchecked")
+            final
             V value = (V) entry.getValue();
             action.accept(entry.getKey(), value, state);
         }

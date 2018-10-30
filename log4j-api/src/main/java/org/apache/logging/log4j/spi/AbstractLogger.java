@@ -2141,7 +2141,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         getRecursionDepthHolder()[0]++;
     }
     private static void decrementRecursionDepth() {
-        int[] depth = getRecursionDepthHolder();
+        final int[] depth = getRecursionDepthHolder();
         depth[0]--;
         if (depth[0] < 0) {
             throw new IllegalStateException("Recursion depth became negative: " + depth[0]);

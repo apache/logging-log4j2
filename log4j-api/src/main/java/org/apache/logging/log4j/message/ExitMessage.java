@@ -18,7 +18,7 @@ package org.apache.logging.log4j.message;
 
 /**
  * Exit flow messages
- * 
+ *
  * @since 2.6
  */
 public interface ExitMessage extends FlowMessage {

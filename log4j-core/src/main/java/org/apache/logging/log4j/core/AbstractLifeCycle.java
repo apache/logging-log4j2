@@ -39,7 +39,7 @@ public class AbstractLifeCycle implements LifeCycle2 {
 
     /**
      * Gets the status logger.
-     * 
+     *
      * @return the status logger.
      */
     protected static org.apache.logging.log4j.Logger getStatusLogger() {

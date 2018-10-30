@@ -64,14 +64,14 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
             return asBuilder();
         }
 
-        public B setPropertyArray(Property[] properties) {
+        public B setPropertyArray(final Property[] properties) {
             this.propertyArray = properties;
             return asBuilder();
         }
 
         /**
          * Sets the filter.
-         * 
+         *
          * @param filter The filter
          * @return this
          * @deprecated Use {@link #setFilter(Filter)}.
@@ -87,7 +87,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      * May be null.
      */
     private volatile Filter filter;
-    
+
     @PluginElement("Properties")
     private final Property[] propertyArray;
 

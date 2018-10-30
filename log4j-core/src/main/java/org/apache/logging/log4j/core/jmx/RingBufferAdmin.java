@@ -34,28 +34,28 @@ public class RingBufferAdmin implements RingBufferAdminMBean {
         return new RingBufferAdmin(ringBuffer, name);
     }
 
-    public static RingBufferAdmin forAsyncLoggerConfig(final RingBuffer<?> ringBuffer, 
+    public static RingBufferAdmin forAsyncLoggerConfig(final RingBuffer<?> ringBuffer,
             final String contextName, final String configName) {
         final String ctxName = Server.escape(contextName);
         final String cfgName = Server.escape(configName);
         final String name = String.format(PATTERN_ASYNC_LOGGER_CONFIG, ctxName, cfgName);
         return new RingBufferAdmin(ringBuffer, name);
     }
-    
+
     protected RingBufferAdmin(final RingBuffer<?> ringBuffer, final String mbeanName) {
-        this.ringBuffer = ringBuffer;        
+        this.ringBuffer = ringBuffer;
         try {
             objectName = new ObjectName(mbeanName);
         } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
     }
-    
+
     @Override
     public long getBufferSize() {
         return ringBuffer == null ? 0 : ringBuffer.getBufferSize();
     }
-    
+
     @Override
     public long getRemainingCapacity() {
         return ringBuffer == null ? 0 : ringBuffer.remainingCapacity();

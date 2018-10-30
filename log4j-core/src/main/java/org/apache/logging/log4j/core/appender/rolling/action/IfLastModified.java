@@ -61,7 +61,7 @@ public final class IfLastModified implements PathCondition {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#accept(java.nio.file.Path,
      * java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
      */
@@ -82,7 +82,7 @@ public final class IfLastModified implements PathCondition {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#beforeFileTreeWalk()
      */
     @Override
@@ -92,15 +92,15 @@ public final class IfLastModified implements PathCondition {
 
     /**
      * Create an IfLastModified condition.
-     * 
+     *
      * @param age The path age that is accepted by this condition. Must be a valid Duration.
      * @param nestedConditions nested conditions to evaluate if this condition accepts a path
      * @return An IfLastModified condition.
      */
     @PluginFactory
-    public static IfLastModified createAgeCondition( 
+    public static IfLastModified createAgeCondition(
             // @formatter:off
-            @PluginAttribute("age") final Duration age, 
+            @PluginAttribute("age") final Duration age,
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {
             // @formatter:on
         return new IfLastModified(age, nestedConditions);

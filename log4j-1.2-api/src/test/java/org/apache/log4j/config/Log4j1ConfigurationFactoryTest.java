@@ -174,7 +174,7 @@ public class Log4j1ConfigurationFactoryTest {
         } finally {
 			try {
 				Files.deleteIfExists(tempFilePath);
-			} catch (FileSystemException e) {
+			} catch (final FileSystemException e) {
 				e.printStackTrace();
 			}
         }

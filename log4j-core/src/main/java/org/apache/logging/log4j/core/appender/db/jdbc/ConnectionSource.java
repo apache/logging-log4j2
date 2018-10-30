@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.LifeCycle;
  * connection sources meet your needs, you can simply create your own connection source.
  */
 public interface ConnectionSource extends LifeCycle {
-    
+
     /**
      * This should return a new connection every time it is called.
      *

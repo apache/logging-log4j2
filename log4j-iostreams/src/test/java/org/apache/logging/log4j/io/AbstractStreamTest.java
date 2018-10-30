@@ -33,7 +33,7 @@ public abstract class AbstractStreamTest {
     protected static ExtendedLogger getExtendedLogger() {
         return ctx.getLogger("UnitTestLogger");
     }
-    
+
     protected final static String NEWLINE = System.lineSeparator();
     protected final static Level LEVEL = Level.ERROR;
     protected final static String FIRST = "first";

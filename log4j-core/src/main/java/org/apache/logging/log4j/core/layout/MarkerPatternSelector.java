@@ -47,16 +47,16 @@ public class MarkerPatternSelector implements PatternSelector {
 
         @PluginElement("PatternMatch")
         private PatternMatch[] properties;
-        
+
         @PluginBuilderAttribute("defaultPattern")
         private String defaultPattern;
-        
-        @PluginBuilderAttribute(value = "alwaysWriteExceptions") 
+
+        @PluginBuilderAttribute(value = "alwaysWriteExceptions")
         private boolean alwaysWriteExceptions = true;
-        
+
         @PluginBuilderAttribute(value = "disableAnsi")
         private boolean disableAnsi;
-        
+
         @PluginBuilderAttribute(value = "noConsoleNoAnsi")
         private boolean noConsoleNoAnsi;
 
@@ -107,7 +107,7 @@ public class MarkerPatternSelector implements PatternSelector {
         }
 
     }
-    
+
     private final Map<String, PatternFormatter[]> formatterMap = new HashMap<>();
 
     private final Map<String, String> patternMap = new HashMap<>();

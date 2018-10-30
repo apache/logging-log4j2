@@ -39,15 +39,15 @@ public class KafkaAppenderCloseTimeoutTest {
         public void close() {
             try {
                 Thread.sleep(3000);
-            } catch (InterruptedException ignore) {
+            } catch (final InterruptedException ignore) {
             }
         }
 
         @Override
-        public void close(long timeout, TimeUnit timeUnit) {
+        public void close(final long timeout, final TimeUnit timeUnit) {
             try {
                 Thread.sleep(timeUnit.toMillis(timeout));
-            } catch (InterruptedException ignore) {
+            } catch (final InterruptedException ignore) {
             }
         }
     };

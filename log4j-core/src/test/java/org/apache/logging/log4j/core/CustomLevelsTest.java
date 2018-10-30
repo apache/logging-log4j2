@@ -36,10 +36,10 @@ import org.junit.Test;
 public class CustomLevelsTest {
 
     private static final String CONFIG = "log4j-customLevels.xml";
-    
+
     @ClassRule
     public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-    
+
     private ListAppender listAppender;
     private Level diagLevel;
     private Level noticeLevel;

@@ -45,7 +45,7 @@ public class ConsoleAppender extends AppenderSkeleton
    * {@inheritDoc}
    */
   @Override
-  protected void append(LoggingEvent theEvent)
+  protected void append(final LoggingEvent theEvent)
   {
   }
 

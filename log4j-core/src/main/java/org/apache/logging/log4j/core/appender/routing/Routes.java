@@ -47,12 +47,12 @@ public final class Routes {
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<Routes>  {
 
-        @PluginConfiguration 
+        @PluginConfiguration
         private Configuration configuration;
 
-        @PluginAttribute("pattern") 
+        @PluginAttribute("pattern")
         private String pattern;
-        
+
         @PluginElement("Script")
         private AbstractScript patternScript;
 
@@ -114,7 +114,7 @@ public final class Routes {
             this.routes = routes;
             return this;
         }
-        
+
     }
 
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -141,16 +141,16 @@ public final class Routes {
     public static Builder newBuilder() {
         return new Builder();
     }
-    
+
     private final Configuration configuration;
-    
+
     private final String pattern;
 
     private final AbstractScript patternScript;
-    
+
     // TODO Why not make this a Map or add a Map.
     private final Route[] routes;
-    
+
     private Routes(final Configuration configuration, final AbstractScript patternScript, final String pattern, final Route... routes) {
         this.configuration = configuration;
         this.patternScript = patternScript;

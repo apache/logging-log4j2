@@ -73,7 +73,7 @@ public enum StandardLevel {
 
     /**
      * Returns the integer value of the Level.
-     * 
+     *
      * @return the integer value of the Level.
      */
     public int intLevel() {
@@ -82,7 +82,7 @@ public enum StandardLevel {
 
     /**
      * Method to convert custom Levels into a StandardLevel for conversion to other systems.
-     * 
+     *
      * @param intLevel The integer value of the Level.
      * @return The StandardLevel.
      */

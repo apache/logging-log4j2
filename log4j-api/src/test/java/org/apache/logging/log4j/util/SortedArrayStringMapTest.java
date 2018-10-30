@@ -48,7 +48,7 @@ public class SortedArrayStringMapTest {
     }
 
     public void testConstructorAllowsZeroCapacity() throws Exception {
-        SortedArrayStringMap sortedArrayStringMap = new SortedArrayStringMap(0);
+        final SortedArrayStringMap sortedArrayStringMap = new SortedArrayStringMap(0);
         assertEquals(0, sortedArrayStringMap.size());
     }
 

@@ -22,7 +22,7 @@ import org.junit.Test;
 
 /**
  * Tests {@link DefaultLevelConverter} for custom JUL levels.
- * 
+ *
  * @since 2.4
  */
 public class DefaultLevelConverterCustomJulLevelsTest {

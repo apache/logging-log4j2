@@ -35,7 +35,7 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
 
     /**
      * Builds FileAppender instances.
-     * 
+     *
      * @param <B>
      *            The type to build
      */
@@ -151,7 +151,7 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
         }
 
     }
-    
+
     private final String fileName;
 
     private final Advertiser advertiser;

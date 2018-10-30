@@ -92,7 +92,7 @@ public class CassandraManager extends AbstractDatabaseManager {
     protected void writeInternal(final LogEvent event) {
         writeInternal(event, null);
     }
-    
+
     @Override
     protected void writeInternal(final LogEvent event, final Serializable serializable) {
         for (int i = 0; i < columnMappings.size(); i++) {

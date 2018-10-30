@@ -172,7 +172,7 @@ public class TimeFormatBenchmark {
 
         // Do subtract to get remainder instead of doing % 10
         buffer[pos++] = ((char) (hour - 10 * temp + '0'));
-        buffer[pos++] = ((char) ':');
+        buffer[pos++] = (':');
 
         // Minute
         // 13/128 is nearly the same as /10 for values up to 65
@@ -181,14 +181,14 @@ public class TimeFormatBenchmark {
 
         // Do subtract to get remainder instead of doing % 10
         buffer[pos++] = ((char) (minute - 10 * temp + '0'));
-        buffer[pos++] = ((char) ':');
+        buffer[pos++] = (':');
 
         // Second
         // 13/128 is nearly the same as /10 for values up to 65
         temp = (second * 13) >> 7;
         buffer[pos++] = ((char) (temp + '0'));
         buffer[pos++] = ((char) (second - 10 * temp + '0'));
-        buffer[pos++] = ((char) '.');
+        buffer[pos++] = ('.');
 
         // Millisecond
         // 41/4096 is nearly the same as /100
@@ -227,7 +227,7 @@ public class TimeFormatBenchmark {
 
         // Do subtract to get remainder instead of doing % 10
         buffer.append((char) (hours - 10 * temp + '0'));
-        buffer.append((char) ':');
+        buffer.append(':');
 
         // Minute
         temp = minutes / 10;
@@ -235,13 +235,13 @@ public class TimeFormatBenchmark {
 
         // Do subtract to get remainder instead of doing % 10
         buffer.append((char) (minutes - 10 * temp + '0'));
-        buffer.append((char) ':');
+        buffer.append(':');
 
         // Second
         temp = seconds / 10;
         buffer.append((char) (temp + '0'));
         buffer.append((char) (seconds - 10 * temp + '0'));
-        buffer.append((char) '.');
+        buffer.append('.');
 
         // Millisecond
         temp = ms / 100;
@@ -279,7 +279,7 @@ public class TimeFormatBenchmark {
 
         // Do subtract to get remainder instead of doing % 10
         buffer[pos++] = ((char) (hours - 10 * temp + '0'));
-        buffer[pos++] = ((char) ':');
+        buffer[pos++] = (':');
 
         // Minute
         temp = minutes / 10;
@@ -287,13 +287,13 @@ public class TimeFormatBenchmark {
 
         // Do subtract to get remainder instead of doing % 10
         buffer[pos++] = ((char) (minutes - 10 * temp + '0'));
-        buffer[pos++] = ((char) ':');
+        buffer[pos++] = (':');
 
         // Second
         temp = seconds / 10;
         buffer[pos++] = ((char) (temp + '0'));
         buffer[pos++] = ((char) (seconds - 10 * temp + '0'));
-        buffer[pos++] = ((char) '.');
+        buffer[pos++] = ('.');
 
         // Millisecond
         temp = ms / 100;

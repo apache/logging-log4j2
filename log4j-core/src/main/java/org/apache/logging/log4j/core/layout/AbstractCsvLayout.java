@@ -24,9 +24,9 @@ import org.apache.logging.log4j.core.config.Configuration;
 
 /**
  * A superclass for Comma-Separated Value (CSV) layouts.
- * 
+ *
  * Depends on Apache Commons CSV 1.2.
- * 
+ *
  * @since 2.4
  */
 public abstract class AbstractCsvLayout extends AbstractStringLayout {
@@ -67,7 +67,7 @@ public abstract class AbstractCsvLayout extends AbstractStringLayout {
 
     protected AbstractCsvLayout(final Configuration config, final Charset charset, final CSVFormat csvFormat,
             final String header, final String footer) {
-        super(config, charset, 
+        super(config, charset,
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(header).build(),
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footer).build());
         this.format = csvFormat;

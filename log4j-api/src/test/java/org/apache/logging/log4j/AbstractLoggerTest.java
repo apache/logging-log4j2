@@ -922,8 +922,8 @@ public class AbstractLoggerTest {
                 throw new IllegalStateException("Oops!");
             }
         }, "Message Format"));
-        List<StatusData> statusDatalist = StatusLogger.getLogger().getStatusData();
-        StatusData mostRecent = statusDatalist.get(statusDatalist.size() - 1);
+        final List<StatusData> statusDatalist = StatusLogger.getLogger().getStatusData();
+        final StatusData mostRecent = statusDatalist.get(statusDatalist.size() - 1);
         assertEquals(Level.WARN, mostRecent.getLevel());
         assertThat(mostRecent.getFormattedStatus(), containsString(
                 "org.apache.logging.log4j.spi.AbstractLogger caught " +
@@ -939,8 +939,8 @@ public class AbstractLoggerTest {
                 throw new IllegalStateException("Oops!");
             }
         }, null /* format */));
-        List<StatusData> statusDatalist = StatusLogger.getLogger().getStatusData();
-        StatusData mostRecent = statusDatalist.get(statusDatalist.size() - 1);
+        final List<StatusData> statusDatalist = StatusLogger.getLogger().getStatusData();
+        final StatusData mostRecent = statusDatalist.get(statusDatalist.size() - 1);
         assertEquals(Level.WARN, mostRecent.getLevel());
         assertThat(mostRecent.getFormattedStatus(), containsString(
                 "org.apache.logging.log4j.spi.AbstractLogger caught " +
@@ -950,7 +950,7 @@ public class AbstractLoggerTest {
     private static final class TestMessage implements Message {
         private final FormattedMessageSupplier formattedMessageSupplier;
         private final String format;
-        TestMessage(FormattedMessageSupplier formattedMessageSupplier, String format) {
+        TestMessage(final FormattedMessageSupplier formattedMessageSupplier, final String format) {
             this.formattedMessageSupplier = formattedMessageSupplier;
             this.format = format;
         }
@@ -1320,7 +1320,7 @@ public class AbstractLoggerTest {
 
     private static class ThrowableMessage implements Message {
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
         private final Throwable throwable;

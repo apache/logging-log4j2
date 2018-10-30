@@ -42,7 +42,7 @@ import org.junit.experimental.categories.Category;
 public abstract class Log4j2_1482_Test {
 
 	static final String CONFIG_LOCATION = "log4j2-1482.xml";
-	
+
 	static final String FOLDER = "target/log4j2-1482";
 
 	private static final int LOOP_COUNT = 10;

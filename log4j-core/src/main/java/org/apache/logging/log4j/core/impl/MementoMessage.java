@@ -36,7 +36,7 @@ public final class MementoMessage implements Message, StringBuilderFormattable {
     private final String format;
     private final Object[] parameters;
 
-    public MementoMessage(String formattedMessage, String format, Object[] parameters) {
+    public MementoMessage(final String formattedMessage, final String format, final Object[] parameters) {
         this.formattedMessage = formattedMessage;
         this.format = format;
         this.parameters = parameters;
@@ -68,7 +68,7 @@ public final class MementoMessage implements Message, StringBuilderFormattable {
     }
 
     @Override
-    public void formatTo(StringBuilder buffer) {
+    public void formatTo(final StringBuilder buffer) {
         buffer.append(formattedMessage);
     }
 

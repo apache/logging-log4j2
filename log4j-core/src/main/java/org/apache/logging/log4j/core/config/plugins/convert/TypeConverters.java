@@ -91,7 +91,7 @@ public final class TypeConverters {
 
     /**
      * Converts a {@link String} into a {@code byte[]}.
-     * 
+     *
      * The supported formats are:
      * <ul>
      * <li>0x0123456789ABCDEF</li>
@@ -394,7 +394,7 @@ public final class TypeConverters {
      * Converts a String to a given class if a TypeConverter is available for that class. Falls back to the provided
      * default value if the conversion is unsuccessful. However, if the default value is <em>also</em> invalid, then
      * {@code null} is returned (along with a nasty status log message).
-     * 
+     *
      * @param s
      *        the string to convert
      * @param clazz

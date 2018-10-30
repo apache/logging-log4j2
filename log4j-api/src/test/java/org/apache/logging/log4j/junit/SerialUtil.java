@@ -46,7 +46,7 @@ public class SerialUtil {
             throw new IllegalStateException("Could not serialize", ex);
         }
     }
-    
+
     /**
      * Deserialize an object from the specified byte array and returns the result.
      * @param data byte array representing the serialized object

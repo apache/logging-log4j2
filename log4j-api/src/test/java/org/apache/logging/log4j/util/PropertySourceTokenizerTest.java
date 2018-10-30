@@ -60,7 +60,7 @@ public class PropertySourceTokenizerTest {
 
     @Test
     public void testTokenize() throws Exception {
-        List<CharSequence> tokens = PropertySource.Util.tokenize(value);
+        final List<CharSequence> tokens = PropertySource.Util.tokenize(value);
         assertEquals(expectedTokens, tokens);
     }
 }

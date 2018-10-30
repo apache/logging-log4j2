@@ -50,7 +50,7 @@ public class EventParameterMemoryLeakTest {
         assertTrue("Deleted old file before test", !file.exists() || file.delete());
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
-        CountDownLatch latch = new CountDownLatch(1);
+        final CountDownLatch latch = new CountDownLatch(1);
         Object parameter = new ParameterObject("paramValue", latch);
         log.info("Message with parameter {}", parameter);
         log.info(parameter);
@@ -71,7 +71,7 @@ public class EventParameterMemoryLeakTest {
         assertThat(line3, containsString("paramValue"));
         assertThat(line4, containsString("paramValue"));
         assertNull("Expected only three lines", line5);
-        GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
+        final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
         gcHelper.run();
         try {
             assertTrue("Parameter should have been garbage collected", latch.await(30, TimeUnit.SECONDS));
@@ -83,7 +83,7 @@ public class EventParameterMemoryLeakTest {
     private static final class ParameterObject {
         private final String value;
         private final CountDownLatch latch;
-        ParameterObject(String value, CountDownLatch latch) {
+        ParameterObject(final String value, final CountDownLatch latch) {
             this.value = value;
             this.latch = latch;
         }
@@ -103,7 +103,7 @@ public class EventParameterMemoryLeakTest {
     private static final class ObjectThrowable extends RuntimeException {
         private final Object object;
 
-        ObjectThrowable(Object object) {
+        ObjectThrowable(final Object object) {
             super(String.valueOf(object));
             this.object = object;
         }

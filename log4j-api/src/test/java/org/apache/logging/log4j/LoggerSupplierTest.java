@@ -219,14 +219,14 @@ public class LoggerSupplierTest {
         assertThat("Missing entry data", results.get(0), containsString("Title of ..."));
         assertThat("Missing entry data", results.get(0), containsString(getClass().getName()));
     }
-    
+
     @Before
     public void setup() {
         results.clear();
         defaultLocale = Locale.getDefault(Locale.Category.FORMAT);
         Locale.setDefault(Locale.Category.FORMAT, java.util.Locale.US);
     }
-    
+
     @After
     public void tearDown() {
         Locale.setDefault(Locale.Category.FORMAT, defaultLocale);

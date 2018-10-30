@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Creates {@link Log4jThread}s.
- * 
+ *
  * @since 2.7
  */
 public class Log4jThreadFactory implements ThreadFactory {
@@ -31,7 +31,7 @@ public class Log4jThreadFactory implements ThreadFactory {
 
     /**
      * Creates a new daemon thread factory.
-     * 
+     *
      * @param threadFactoryName
      *            The thread factory name.
      * @return a new daemon thread factory.
@@ -64,7 +64,7 @@ public class Log4jThreadFactory implements ThreadFactory {
 
     /**
      * Constructs an initialized thread factory.
-     * 
+     *
      * @param threadFactoryName
      *            The thread factory name.
      * @param daemon

@@ -23,7 +23,7 @@ import org.junit.Test;
  * @since 2.4
  */
 public class ObjectArrayMessageTest {
-    
+
     private static final Object[] ARRAY = { "A", "B", "C" };
     private static final ObjectArrayMessage OBJECT_ARRAY_MESSAGE = new ObjectArrayMessage(ARRAY);
 

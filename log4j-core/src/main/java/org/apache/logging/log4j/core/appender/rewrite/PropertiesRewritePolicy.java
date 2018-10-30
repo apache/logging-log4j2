@@ -40,7 +40,7 @@ import org.apache.logging.log4j.util.StringMap;
  */
 @Plugin(name = "PropertiesRewritePolicy", category = Core.CATEGORY_NAME, elementType = "rewritePolicy", printObject = true)
 public final class PropertiesRewritePolicy implements RewritePolicy {
-    
+
     /**
      * Allows subclasses access to the status logger without creating another instance.
      */

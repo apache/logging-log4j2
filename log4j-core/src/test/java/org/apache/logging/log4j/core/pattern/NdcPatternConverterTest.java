@@ -31,7 +31,7 @@ import org.junit.Test;
 public class NdcPatternConverterTest {
 
     @Rule
-    public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule(); 
+    public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule();
 
     @Test
     public void testEmpty() {

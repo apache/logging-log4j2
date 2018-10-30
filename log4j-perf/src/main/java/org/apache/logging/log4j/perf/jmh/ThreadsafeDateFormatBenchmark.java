@@ -67,7 +67,7 @@ public class ThreadsafeDateFormatBenchmark {
     private final FastDateFormat fastDateFormat = FastDateFormat.getInstance("HH:mm:ss.SSS");
     private final FixedDateFormat fixedDateFormat = FixedDateFormat.createIfSupported("HH:mm:ss.SSS");
     private final FormatterFixedReuseBuffer formatFixedReuseBuffer = new FormatterFixedReuseBuffer();
-    
+
     private class CachedTimeFastFormat {
         private final long timestamp;
         private final String formatted;

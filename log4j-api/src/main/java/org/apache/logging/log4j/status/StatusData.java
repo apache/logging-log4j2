@@ -43,7 +43,7 @@ public class StatusData implements Serializable {
 
     /**
      * Creates the StatusData object.
-     * 
+     *
      * @param caller The method that created the event.
      * @param level The logging level.
      * @param msg The message String.
@@ -62,7 +62,7 @@ public class StatusData implements Serializable {
 
     /**
      * Returns the event's timestamp.
-     * 
+     *
      * @return The event's timestamp.
      */
     public long getTimestamp() {
@@ -71,7 +71,7 @@ public class StatusData implements Serializable {
 
     /**
      * Returns the StackTraceElement for the method that created the event.
-     * 
+     *
      * @return The StackTraceElement.
      */
     public StackTraceElement getStackTraceElement() {
@@ -80,7 +80,7 @@ public class StatusData implements Serializable {
 
     /**
      * Returns the logging level for the event.
-     * 
+     *
      * @return The logging level.
      */
     public Level getLevel() {
@@ -89,7 +89,7 @@ public class StatusData implements Serializable {
 
     /**
      * Returns the message associated with the event.
-     * 
+     *
      * @return The message associated with the event.
      */
     public Message getMessage() {
@@ -105,7 +105,7 @@ public class StatusData implements Serializable {
 
     /**
      * Returns the Throwable associated with the event.
-     * 
+     *
      * @return The Throwable associated with the event.
      */
     public Throwable getThrowable() {
@@ -114,7 +114,7 @@ public class StatusData implements Serializable {
 
     /**
      * Formats the StatusData for viewing.
-     * 
+     *
      * @return The formatted status data as a String.
      */
     public String getFormattedStatus() {

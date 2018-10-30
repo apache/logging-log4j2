@@ -59,14 +59,14 @@ public class SerializedLayoutTest {
     static boolean useObjectInputStream = false;
 
     @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     @BeforeClass
     public static void setupClass() {
         try {
             Class.forName("java.io.ObjectInputFilter");
             useObjectInputStream = true;
-        } catch (ClassNotFoundException ex) {
+        } catch (final ClassNotFoundException ex) {
             // Ignore the exception
         }
         ConfigurationFactory.setConfigurationFactory(cf);

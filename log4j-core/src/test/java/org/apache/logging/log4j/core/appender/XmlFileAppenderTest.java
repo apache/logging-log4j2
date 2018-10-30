@@ -16,9 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
@@ -56,10 +54,10 @@ public class XmlFileAppenderTest {
         log.info(logMsg);
         CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
-        List<String> lines = Files.readAllLines(file.toPath(), Charset.forName("UTF8"));
+        final List<String> lines = Files.readAllLines(file.toPath(), Charset.forName("UTF8"));
         file.delete();
 
-        String[] expect = {
+        final String[] expect = {
                 "", // ? unsure why initial empty line...
             "<Event ", //
             "<Instant epochSecond=", //

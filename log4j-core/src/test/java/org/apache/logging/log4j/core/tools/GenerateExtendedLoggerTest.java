@@ -49,7 +49,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class GenerateExtendedLoggerTest {
-    
+
     @BeforeClass
     public static void beforeClass() {
         System.setProperty("log4j2.loggerContextFactory", "org.apache.logging.log4j.TestLoggerContextFactory");
@@ -142,7 +142,7 @@ public class GenerateExtendedLoggerTest {
             final Method method = cls.getDeclaredMethod(name, String.class);
             method.invoke(extendedLogger, "This is message " + n++);
         }
-        
+
         // This logger extends o.a.l.log4j.spi.ExtendedLogger,
         // so all the standard logging methods can be used as well
         final ExtendedLogger logger = (ExtendedLogger) extendedLogger;
@@ -158,7 +158,7 @@ public class GenerateExtendedLoggerTest {
         for (int i = 0; i < lines.size() - 6; i++) {
             assertEquals(" " + levels.get(i).name + " This is message " + i, lines.get(i));
         }
-        
+
         // test that the standard logging methods still work
         int i = lines.size() - 6;
         assertEquals(" TRACE trace message", lines.get(i++));

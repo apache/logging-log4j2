@@ -51,7 +51,7 @@ public class MessageFormatMessage implements Message {
 
     /**
      * Constructs a message.
-     * 
+     *
      * @param locale the locale for this message format
      * @param messagePattern the pattern for this message format
      * @param parameters The objects to format
@@ -69,7 +69,7 @@ public class MessageFormatMessage implements Message {
 
     /**
      * Constructs a message.
-     * 
+     *
      * @param messagePattern the pattern for this message format
      * @param parameters The objects to format
      */

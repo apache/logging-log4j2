@@ -335,7 +335,7 @@ public final class Configurator {
      * rollover thread is done. When this method returns, these tasks' status are undefined, the tasks may be done or
      * not.
      * </p>
-     * 
+     *
      * @param ctx
      *            the logger context to shut down, may be null.
      */

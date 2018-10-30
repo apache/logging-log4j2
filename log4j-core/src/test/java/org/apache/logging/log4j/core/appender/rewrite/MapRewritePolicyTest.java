@@ -52,7 +52,7 @@ public class MapRewritePolicyTest {
     public static void setupClass() {
         stringMap.putValue("test1", "one");
         stringMap.putValue("test2", "two");
-        map = stringMap.toMap(); 
+        map = stringMap.toMap();
         logEvent0 = Log4jLogEvent.newBuilder() //
                 .setLoggerName("test") //
                 .setContextData(stringMap) //

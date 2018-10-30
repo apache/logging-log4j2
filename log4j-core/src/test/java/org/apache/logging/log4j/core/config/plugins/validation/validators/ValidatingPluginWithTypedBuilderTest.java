@@ -48,7 +48,7 @@ public class ValidatingPluginWithTypedBuilderTest {
     @Test
     public void testNullDefaultValue() throws Exception {
         // @formatter:off
-        final ValidatingPluginWithTypedBuilder validatingPlugin = (ValidatingPluginWithTypedBuilder) 
+        final ValidatingPluginWithTypedBuilder validatingPlugin = (ValidatingPluginWithTypedBuilder)
                 new PluginBuilder(plugin).
                 withConfiguration(new NullConfiguration()).
                 withConfigurationNode(node).build();
@@ -60,7 +60,7 @@ public class ValidatingPluginWithTypedBuilderTest {
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("name", "foo");
         // @formatter:off
-        final ValidatingPluginWithTypedBuilder validatingPlugin = (ValidatingPluginWithTypedBuilder) 
+        final ValidatingPluginWithTypedBuilder validatingPlugin = (ValidatingPluginWithTypedBuilder)
                 new PluginBuilder(plugin).
                 withConfiguration(new NullConfiguration()).
                 withConfigurationNode(node).build();

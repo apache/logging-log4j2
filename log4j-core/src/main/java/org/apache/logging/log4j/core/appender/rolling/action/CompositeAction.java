@@ -25,7 +25,7 @@ import java.util.List;
  * A group of Actions to be executed in sequence.
  */
 public class CompositeAction extends AbstractAction {
-    
+
     /**
      * Actions to perform.
      */
@@ -99,7 +99,7 @@ public class CompositeAction extends AbstractAction {
 
         return status;
     }
-    
+
     @Override
     public String toString() {
         return CompositeAction.class.getSimpleName() + Arrays.toString(actions);

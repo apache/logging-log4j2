@@ -23,7 +23,7 @@ public interface TextRenderer {
 
     /**
      * Renders input text to an output.
-     * 
+     *
      * @param input
      *            The input
      * @param output
@@ -35,7 +35,7 @@ public interface TextRenderer {
 
     /**
      * Renders input text to an output.
-     * 
+     *
      * @param input
      *            The input
      * @param output

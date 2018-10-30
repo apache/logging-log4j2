@@ -26,7 +26,7 @@ import org.junit.Test;
 public class LoggerReaderCallerInfoTest extends IoBuilderCallerInfoTesting {
 
     Reader logReader;
-    
+
     @Test
     public void read() throws Exception {
         this.logReader.read();

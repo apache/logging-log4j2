@@ -28,14 +28,14 @@ public class DriverManagerConnectionSourceTest {
 
     @Test
     public void testH2Properties() throws SQLException {
-        Property[] properties = new Property[] {
+        final Property[] properties = new Property[] {
                 // @formatter:off
                 Property.createProperty("username", JdbcH2TestHelper.USER_NAME),
                 Property.createProperty("password", JdbcH2TestHelper.PASSWORD),
                 // @formatter:on
         };
         // @formatter:off
-        DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
+        final DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
             .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
             .setProperties(properties)
             .build();
@@ -48,7 +48,7 @@ public class DriverManagerConnectionSourceTest {
     @Test
     public void testH2UserAndPassword() throws SQLException {
         // @formatter:off
-        DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
+        final DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
             .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
             .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
             .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())

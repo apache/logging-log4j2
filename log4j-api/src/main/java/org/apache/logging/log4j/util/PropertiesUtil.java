@@ -178,9 +178,9 @@ public final class PropertiesUtil {
         if (Charset.isSupported(charsetName)) {
             return Charset.forName(charsetName);
         }
-        ResourceBundle bundle = getCharsetsResourceBundle();
+        final ResourceBundle bundle = getCharsetsResourceBundle();
         if (bundle.containsKey(name)) {
-            String mapped = bundle.getString(name);
+            final String mapped = bundle.getString(name);
             if (Charset.isSupported(mapped)) {
                 return Charset.forName(mapped);
             }

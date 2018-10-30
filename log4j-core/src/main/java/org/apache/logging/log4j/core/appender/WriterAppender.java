@@ -16,15 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Serializable;
 import java.io.Writer;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.StringLayout;
-import org.apache.logging.log4j.core.appender.HttpAppender.Builder;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -50,8 +47,8 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
         @Override
         public WriterAppender build() {
-            StringLayout layout = (StringLayout) getLayout();
-            StringLayout actualLayout = layout != null ? layout : PatternLayout.createDefaultLayout();
+            final StringLayout layout = (StringLayout) getLayout();
+            final StringLayout actualLayout = layout != null ? layout : PatternLayout.createDefaultLayout();
             return new WriterAppender(getName(), actualLayout, getFilter(), getManager(target, follow, actualLayout),
                     isIgnoreExceptions(), getPropertyArray());
         }
@@ -76,7 +73,7 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
         /**
          * Builds instances.
-         * 
+         *
          * @param writer
          *            The OutputStream.
          * @param type
@@ -95,7 +92,7 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
         /**
          * Creates a WriterManager.
-         * 
+         *
          * @param name
          *            The name of the entity to manage.
          * @param data
@@ -112,7 +109,7 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
     /**
      * Creates a WriterAppender.
-     * 
+     *
      * @param layout
      *            The layout to use or null to get the default layout.
      * @param filter

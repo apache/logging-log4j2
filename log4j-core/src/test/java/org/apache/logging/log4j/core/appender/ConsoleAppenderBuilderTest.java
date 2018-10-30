@@ -35,7 +35,7 @@ public class ConsoleAppenderBuilderTest {
 
     /**
      * Tests https://issues.apache.org/jira/browse/LOG4J2-1636
-     * 
+     *
      * Tested with Oracle 7 and 8 and IBM Java 8.
      */
     @Test
@@ -53,7 +53,7 @@ public class ConsoleAppenderBuilderTest {
     @Test
     public void testSetNullErrorHandlerIsNotAllowed() {
         final ConsoleAppender appender = ConsoleAppender.newBuilder().setName("test").build();
-        ErrorHandler handler = appender.getHandler();
+        final ErrorHandler handler = appender.getHandler();
         Assert.assertNotNull(handler);
         // This could likely be allowed to throw, but we're just testing that
         // setting null does not actually set a null handler.

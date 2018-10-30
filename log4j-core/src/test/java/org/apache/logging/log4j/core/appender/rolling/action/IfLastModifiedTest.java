@@ -75,7 +75,7 @@ public class IfLastModifiedTest {
         assertEquals(2, counter.getAcceptCount());
         assertTrue(filter.accept(null, null, attrs));
         assertEquals(3, counter.getAcceptCount());
-        
+
         final long tooYoung = 33 * 1000 - 5;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - tooYoung);
         assertFalse(filter.accept(null, null, attrs));

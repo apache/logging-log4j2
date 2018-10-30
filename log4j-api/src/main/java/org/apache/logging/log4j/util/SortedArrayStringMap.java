@@ -96,7 +96,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
         Method[] methods = ObjectInputStream.class.getMethods();
         Method setMethod = null;
         Method getMethod = null;
-        for (Method method : methods) {
+        for (final Method method : methods) {
             if (method.getName().equals("setObjectInputFilter")) {
                 setMethod = method;
             } else if (method.getName().equals("getObjectInputFilter")) {
@@ -106,16 +106,16 @@ public class SortedArrayStringMap implements IndexedStringMap {
         Method newMethod = null;
         try {
             if (setMethod != null) {
-                Class<?> clazz = Class.forName("org.apache.logging.log4j.util.internal.DefaultObjectInputFilter");
+                final Class<?> clazz = Class.forName("org.apache.logging.log4j.util.internal.DefaultObjectInputFilter");
                 methods = clazz.getMethods();
-                for (Method method : methods) {
+                for (final Method method : methods) {
                     if (method.getName().equals("newInstance") && Modifier.isStatic(method.getModifiers())) {
                         newMethod = method;
                         break;
                     }
                 }
             }
-        } catch (ClassNotFoundException ex) {
+        } catch (final ClassNotFoundException ex) {
             // Ignore the exception
         }
         newObjectInputFilter = newMethod;
@@ -549,7 +549,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
         }
     }
 
-    private static Object unmarshall(final byte[] data, ObjectInputStream inputStream)
+    private static Object unmarshall(final byte[] data, final ObjectInputStream inputStream)
             throws IOException, ClassNotFoundException {
         final ByteArrayInputStream bin = new ByteArrayInputStream(data);
         Collection<String> allowedClasses = null;
@@ -559,8 +559,8 @@ public class SortedArrayStringMap implements IndexedStringMap {
             ois = new FilteredObjectInputStream(bin, allowedClasses);
         } else {
             try {
-                Object obj = getObjectInputFilter.invoke(inputStream);
-                Object filter = newObjectInputFilter.invoke(null, obj);
+                final Object obj = getObjectInputFilter.invoke(inputStream);
+                final Object filter = newObjectInputFilter.invoke(null, obj);
                 ois = new ObjectInputStream(bin);
                 setObjectInputFilter.invoke(ois, filter);
             } catch (IllegalAccessException | InvocationTargetException ex) {

@@ -40,27 +40,27 @@ public abstract class AbstractPluginVisitor<A extends Annotation> implements Plu
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
-     * 
+     *
      */
     protected final Class<A> clazz;
     /**
-     * 
+     *
      */
     protected A annotation;
     /**
-     * 
+     *
      */
     protected String[] aliases;
     /**
-     * 
+     *
      */
     protected Class<?> conversionType;
     /**
-     * 
+     *
      */
     protected StrSubstitutor substitutor;
     /**
-     * 
+     *
      */
     protected Member member;
 

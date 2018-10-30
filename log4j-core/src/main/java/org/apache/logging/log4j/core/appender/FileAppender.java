@@ -45,7 +45,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
     /**
      * Builds FileAppender instances.
-     * 
+     *
      * @param <B>
      *            The type to build
      */
@@ -186,9 +186,9 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
         }
 
     }
-    
+
     private static final int DEFAULT_BUFFER_SIZE = 8192;
-    
+
     /**
      * Create a File Appender.
      * @param fileName The name and path of the file.
@@ -240,12 +240,12 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             .build();
         // @formatter:on
     }
-    
+
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
-    
+
     private final String fileName;
 
     private final Advertiser advertiser;
@@ -254,7 +254,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
     private FileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final FileManager manager, final String filename, final boolean ignoreExceptions,
-            final boolean immediateFlush, final Advertiser advertiser, Property[] properties) {
+            final boolean immediateFlush, final Advertiser advertiser, final Property[] properties) {
 
         super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {

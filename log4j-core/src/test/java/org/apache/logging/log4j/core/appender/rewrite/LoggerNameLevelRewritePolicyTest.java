@@ -26,7 +26,7 @@ import org.junit.Test;
 
 /**
  * Tests {@link LoggerNameLevelRewritePolicy}.
- * 
+ *
  * @since 2.4
  */
 public class LoggerNameLevelRewritePolicyTest {

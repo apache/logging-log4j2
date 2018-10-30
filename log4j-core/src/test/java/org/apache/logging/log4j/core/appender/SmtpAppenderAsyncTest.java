@@ -64,7 +64,7 @@ public class SmtpAppenderAsyncTest {
         testSmtpAppender(ctx.getLogger("async"));
     }
 
-    private void testSmtpAppender(Logger logger) {
+    private void testSmtpAppender(final Logger logger) {
         ThreadContext.put("MDC1", "mdc1");
         logger.error("the message");
         ctx.getLoggerContext().stop();
@@ -78,7 +78,7 @@ public class SmtpAppenderAsyncTest {
         assertEquals("from@example.com", email.getHeaderValue("From"));
         assertEquals("[mdc1]", email.getHeaderValue("Subject"));
 
-        String body = email.getBody();
+        final String body = email.getBody();
         if (!body.contains("Body:[mdc1]")) {
             fail(body);
         }

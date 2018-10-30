@@ -25,7 +25,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class LoggerPrintWriterTest extends AbstractLoggerWriterTest {
-    private PrintWriter print; 
+    private PrintWriter print;
 
     @Override
     protected StringWriter createWriter() {

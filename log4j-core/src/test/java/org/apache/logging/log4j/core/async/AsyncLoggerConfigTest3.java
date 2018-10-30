@@ -53,7 +53,7 @@ public class AsyncLoggerConfigTest3 {
         }
 
         final Message msg = new ParameterizedMessage("{}", map);
-        Log4jLogEvent event = Log4jLogEvent.newBuilder()
+        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
                 .setLevel(Level.WARN)
                 .setLoggerName(getClass().getName())
                 .setMessage(msg)

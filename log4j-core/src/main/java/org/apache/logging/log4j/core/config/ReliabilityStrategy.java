@@ -53,7 +53,7 @@ public interface ReliabilityStrategy {
 
     /**
      * For internal use by the ReliabilityStrategy; returns the LoggerConfig to use.
-     * 
+     *
      * @param next supplies the next LoggerConfig if the strategy's LoggerConfig is no longer active
      * @return the currently active LoggerConfig
      */
@@ -71,7 +71,7 @@ public interface ReliabilityStrategy {
 
     /**
      * Called before the configuration is stopped.
-     * 
+     *
      * @param configuration the configuration that will be stopped
      */
     void beforeStopConfiguration(Configuration configuration);

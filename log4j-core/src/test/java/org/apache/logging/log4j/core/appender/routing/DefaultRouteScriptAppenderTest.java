@@ -45,7 +45,7 @@ public class DefaultRouteScriptAppenderTest {
     @Parameterized.Parameters(name = "{0} {1}")
     public static Object[][] getParameters() {
         // @formatter:off
-        return new Object[][] { 
+        return new Object[][] {
                 { "log4j-routing-default-route-script-groovy.xml", false },
                 { "log4j-routing-default-route-script-javascript.xml", false },
                 { "log4j-routing-script-staticvars-javascript.xml", true },

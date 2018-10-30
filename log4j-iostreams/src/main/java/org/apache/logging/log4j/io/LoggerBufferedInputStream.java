@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * 
+ *
  * @since 2.1
  */
 public class LoggerBufferedInputStream extends BufferedInputStream {
@@ -48,17 +48,17 @@ public class LoggerBufferedInputStream extends BufferedInputStream {
     public void close() throws IOException {
         super.close();
     }
-    
+
     @Override
     public synchronized int read() throws IOException {
         return super.read();
     }
-    
+
     @Override
     public int read(final byte[] b) throws IOException {
         return super.read(b, 0, b.length);
     }
-    
+
     @Override
     public synchronized int read(final byte[] b, final int off, final int len) throws IOException {
         return super.read(b, off, len);

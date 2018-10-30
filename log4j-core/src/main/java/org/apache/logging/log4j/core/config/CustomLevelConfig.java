@@ -42,7 +42,7 @@ public final class CustomLevelConfig {
     /**
      * Creates a CustomLevelConfig object. This also defines the Level object with a call to
      * {@link Level#forName(String, int)}.
-     * 
+     *
      * @param levelName name of the custom level.
      * @param intLevel the intLevel that determines where this level resides relative to the built-in levels
      * @return A CustomLevelConfig object.
@@ -60,7 +60,7 @@ public final class CustomLevelConfig {
 
     /**
      * Returns the custom level name.
-     * 
+     *
      * @return the custom level name
      */
     public String getLevelName() {
@@ -70,7 +70,7 @@ public final class CustomLevelConfig {
     /**
      * Returns the custom level intLevel that determines the strength of the custom level relative to the built-in
      * levels.
-     * 
+     *
      * @return the custom level intLevel
      */
     public int getIntLevel() {

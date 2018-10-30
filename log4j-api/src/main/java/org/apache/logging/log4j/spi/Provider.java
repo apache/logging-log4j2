@@ -189,7 +189,7 @@ public class Provider {
     public URL getUrl() {
         return url;
     }
-    
+
     @Override
     public String toString() {
         final StringBuilder result = new StringBuilder("Provider[");
@@ -220,7 +220,7 @@ public class Provider {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -228,7 +228,7 @@ public class Provider {
             return false;
         }
 
-        Provider provider = (Provider) o;
+        final Provider provider = (Provider) o;
 
         if (priority != null ? !priority.equals(provider.priority) : provider.priority != null) {
             return false;

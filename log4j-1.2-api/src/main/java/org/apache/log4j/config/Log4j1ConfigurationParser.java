@@ -47,7 +47,7 @@ import org.apache.logging.log4j.util.Strings;
  * Experimental parser for Log4j 1.2 properties configuration files.
  *
  * This class is not thread-safe.
- * 
+ *
  * <p>
  * From the Log4j 1.2 Javadocs:
  * </p>

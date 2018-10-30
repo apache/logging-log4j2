@@ -23,7 +23,7 @@ package org.apache.logging.log4j.core.appender.nosql;
  * @param <C> Specifies which implementation of {@link NoSqlConnection} this provider provides.
  */
 public interface NoSqlProvider<C extends NoSqlConnection<?, ? extends NoSqlObject<?>>> {
-    
+
     /**
      * Obtains a connection from this provider. The concept of a connection in this case is not strictly an active
      * duplex UDP or TCP connection to the underlying database. It can be thought of more as a gateway, a path for
@@ -32,7 +32,7 @@ public interface NoSqlProvider<C extends NoSqlConnection<?, ? extends NoSqlObjec
      * Where applicable, this method should return a connection from the connection pool as opposed to opening a
      * brand new connection every time.
      * </p>
-     * 
+     *
      * @return a connection that can be used to create and persist objects to this database.
      * @see NoSqlConnection
      */

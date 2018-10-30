@@ -27,8 +27,8 @@ import org.junit.Test;
 public class RollingFileAppenderReconfigureTest {
 
     @Rule
-    public final LoggerContextRule loggerContextRule = new LoggerContextRule("src/test/rolling-file-appender-reconfigure.xml");  
-    
+    public final LoggerContextRule loggerContextRule = new LoggerContextRule("src/test/rolling-file-appender-reconfigure.xml");
+
     @Test
     public void testReconfigure() {
         loggerContextRule.reconfigure();

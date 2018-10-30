@@ -49,7 +49,7 @@ public class SimplePerfTest {
     public static void setupClass() {
 
 		final Configuration config = LoggerContext.getContext().getConfiguration();
-		
+
 		if (!DefaultConfiguration.DEFAULT_NAME.equals(config.getName())) {
 			System.out.println("Configuration was " + config.getName());
 			LoggerContext.getContext().start(new DefaultConfiguration());

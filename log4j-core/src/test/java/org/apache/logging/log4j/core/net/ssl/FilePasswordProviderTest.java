@@ -31,7 +31,7 @@ public class FilePasswordProviderTest {
         final Path path = Files.createTempFile("testPass", ".txt");
         Files.write(path, PASSWORD.getBytes(Charset.defaultCharset()));
 
-        char[] actual = new FilePasswordProvider(path.toString()).getPassword();
+        final char[] actual = new FilePasswordProvider(path.toString()).getPassword();
         Files.delete(path);
         assertArrayEquals(PASSWORD.toCharArray(), actual);
     }

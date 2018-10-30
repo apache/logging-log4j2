@@ -33,7 +33,7 @@ public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
     /**
      * Returns {@code true} if the user specified this selector as the Log4jContextSelector, to make all loggers
      * asynchronous.
-     * 
+     *
      * @return {@code true} if all loggers are asynchronous, {@code false} otherwise.
      */
     public static boolean isSelected() {

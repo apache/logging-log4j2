@@ -43,7 +43,7 @@ public class ScriptAppenderSelectorTest {
     @Parameterized.Parameters(name = "{0}")
     public static Object[][] getParameters() {
         // @formatter:off
-        return new Object[][] { 
+        return new Object[][] {
             { "log4j-appender-selector-groovy.xml" },
             { "log4j-appender-selector-javascript.xml" },
         };

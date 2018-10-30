@@ -34,7 +34,7 @@ public interface PathCondition {
 
     /**
      * Returns {@code true} if the specified candidate path should be deleted, {@code false} otherwise.
-     * 
+     *
      * @param baseDir the directory from where to start scanning for deletion candidate files
      * @param relativePath the candidate for deletion. This path is relative to the baseDir.
      * @param attrs attributes of the candidate path

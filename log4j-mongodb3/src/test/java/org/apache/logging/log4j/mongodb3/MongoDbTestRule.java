@@ -43,7 +43,7 @@ import de.flapdoodle.embed.process.runtime.Network;
 
 /**
  * A JUnit test rule to manage a MongoDB embedded instance.
- * 
+ *
  * TODO Move this class to Apache Commons Testing.
  */
 public class MongoDbTestRule implements TestRule {
@@ -172,7 +172,7 @@ public class MongoDbTestRule implements TestRule {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("MongoDbTestRule [starter=");
         builder.append(starter);
         builder.append(", portSystemPropertyName=");

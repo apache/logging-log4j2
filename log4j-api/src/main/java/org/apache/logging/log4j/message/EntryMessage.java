@@ -18,7 +18,7 @@ package org.apache.logging.log4j.message;
 
 /**
  * Entry flow messages
- * 
+ *
  * @since 2.6
  */
 public interface EntryMessage extends FlowMessage {

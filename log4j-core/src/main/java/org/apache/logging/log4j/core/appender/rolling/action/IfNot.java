@@ -61,12 +61,12 @@ public final class IfNot implements PathCondition {
 
     /**
      * Create an IfNot PathCondition.
-     * 
+     *
      * @param condition The condition to negate.
      * @return An IfNot PathCondition.
      */
     @PluginFactory
-    public static IfNot createNotCondition( 
+    public static IfNot createNotCondition(
             @PluginElement("PathConditions") final PathCondition condition) {
         return new IfNot(condition);
     }

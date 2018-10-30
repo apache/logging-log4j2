@@ -22,11 +22,11 @@ import javax.naming.NamingException;
 
 /**
  * Helper class for closing JNDI resources.
- * 
+ *
  * This class is separate from {@link Closer} because JNDI is not in Android.
  */
 public final class JndiCloser {
-    
+
     private JndiCloser() {
     }
 

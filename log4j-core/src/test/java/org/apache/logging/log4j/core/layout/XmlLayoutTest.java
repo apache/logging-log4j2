@@ -61,7 +61,7 @@ public class XmlLayoutTest {
     private static final String markerTag = "<Marker name=\"EVENT\"/>";
 
     @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     @AfterClass
     public static void cleanupClass() {

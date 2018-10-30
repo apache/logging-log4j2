@@ -43,7 +43,7 @@ public class FormattedMessage implements Message {
     private final Throwable throwable;
     private Message message;
     private final Locale locale;
-    
+
     /**
      * Constructs with a locale, a pattern and a single parameter.
      * @param locale The locale

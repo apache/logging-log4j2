@@ -79,7 +79,7 @@ public final class NetUtils {
 
     /**
      * Converts a URI string or file path to a URI object.
-     * 
+     *
      * @param path the URI string or path
      * @return the URI object
      */

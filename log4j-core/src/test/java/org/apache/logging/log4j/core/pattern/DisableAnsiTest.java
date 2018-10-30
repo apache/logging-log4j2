@@ -55,5 +55,5 @@ public class DisableAnsiTest {
         assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
         assertTrue("Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0), msgs.get(0).endsWith(EXPECTED));
     }
-    
+
 }

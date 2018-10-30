@@ -246,7 +246,7 @@ public class AbstractDatabaseManagerTest {
         }
 
         @Override
-        protected void writeInternal(LogEvent event, Serializable serializable) {
+        protected void writeInternal(final LogEvent event, final Serializable serializable) {
             // noop
         }
         @Override

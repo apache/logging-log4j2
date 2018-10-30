@@ -132,7 +132,7 @@ public class SocketAppenderTest {
         .withPort(tcpTestServer.getLocalPort())
         .withReconnectDelayMillis(-1).setName("test")
                 .withImmediateFail(false)
-                .withBufferSize(bufferSize).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
+                .withBufferSize(bufferSize).setLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -177,7 +177,7 @@ public class SocketAppenderTest {
         final SocketAppender appender = SocketAppender.newBuilder()
         .withPort(tcpServer.getLocalPort())
         .withReconnectDelayMillis(-1).setName("test")
-                .withImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
+                .withImmediateFail(false).setLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         assertNotNull(appender);
@@ -197,7 +197,7 @@ public class SocketAppenderTest {
         .withProtocol(Protocol.UDP)
         .withPort(tcpServer.getLocalPort())
         .withReconnectDelayMillis(-1).setName("test")
-                .withImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
+                .withImmediateFail(false).setLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -221,7 +221,7 @@ public class SocketAppenderTest {
         .withHost("localhost")
         .withPort(DYN_PORT)
         .withReconnectDelayMillis(100).setName("test")
-                .withImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
+                .withImmediateFail(false).setLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -250,7 +250,7 @@ public class SocketAppenderTest {
         .withHost("localhost")
         .withPort(ERROR_PORT)
         .withReconnectDelayMillis(100).setName("test")
-                .withImmediateFail(false).setIgnoreExceptions(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
+                .withImmediateFail(false).setIgnoreExceptions(false).setLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -294,7 +294,7 @@ public class SocketAppenderTest {
             thread.interrupt();
             try {
                 thread.join(100);
-            } catch (InterruptedException ie) {
+            } catch (final InterruptedException ie) {
                 System.out.println("Unable to stop server");
             }
         }
@@ -361,7 +361,7 @@ public class SocketAppenderTest {
             interrupt();
             try {
                 this.join(100);
-            } catch (InterruptedException ie) {
+            } catch (final InterruptedException ie) {
                 System.out.println("Unable to stop server");
             }
         }

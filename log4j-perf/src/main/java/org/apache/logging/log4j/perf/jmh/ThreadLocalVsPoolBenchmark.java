@@ -177,7 +177,7 @@ public class ThreadLocalVsPoolBenchmark {
 }
 
 /**
- * 
+ *
  */
 abstract class ObjectPool<T> {
     private final Deque<T> pool = new ConcurrentLinkedDeque<>();
@@ -195,7 +195,7 @@ abstract class ObjectPool<T> {
 }
 
 /**
- * 
+ *
  */
 class StringBuilderPool extends ObjectPool<StringBuilder> {
     private final int initialSize;

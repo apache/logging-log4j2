@@ -86,6 +86,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
         delegate.setLogEventFactory(getLogEventFactory());
     }
 
+    @Override
     protected void log(final LogEvent event, final LoggerConfigPredicate predicate) {
         // See LOG4J2-2301
         if (predicate == LoggerConfigPredicate.ALL &&
@@ -120,7 +121,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
         super.callAppenders(event);
     }
 
-    private void logToAsyncDelegate(LogEvent event) {
+    private void logToAsyncDelegate(final LogEvent event) {
         if (!isFiltered(event)) {
             // Passes on the event to a separate thread that will call
             // asyncCallAppenders(LogEvent).

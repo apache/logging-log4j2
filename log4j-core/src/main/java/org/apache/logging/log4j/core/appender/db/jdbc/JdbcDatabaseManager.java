@@ -78,7 +78,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * Creates managers.
      */
     private static final class JdbcDatabaseManagerFactory implements ManagerFactory<JdbcDatabaseManager, FactoryData> {
-        
+
         private static final char PARAMETER_MARKER = '?';
 
         @Override
@@ -215,11 +215,11 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     private final String sqlStatement;
 
     private Connection connection;
-    
+
     private PreparedStatement statement;
-    
+
     private boolean isBatchSupported;
-    
+
     private JdbcDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
                                 final String sqlStatement, final List<ColumnConfig> columnConfigs,
                                 final List<ColumnMapping> columnMappings) {
@@ -237,7 +237,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             if (this.connection != null && !this.connection.isClosed()) {
                 if (this.isBatchSupported) {
                     logger().debug("Executing batch PreparedStatement {}", this.statement);
-                    int[] result = this.statement.executeBatch();
+                    final int[] result = this.statement.executeBatch();
                     logger().debug("Batch result: {}", Arrays.toString(result));
                 }
                 logger().debug("Committing Connection {}", this.connection);
@@ -361,7 +361,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                     this.statement.setObject(i++, DateTypeConverter.fromMillis(event.getTimeMillis(),
                             mapping.getType().asSubclass(Date.class)));
                 } else {
-                    StringLayout layout = mapping.getLayout();
+                    final StringLayout layout = mapping.getLayout();
                     if (layout != null) {
                         if (Clob.class.isAssignableFrom(mapping.getType())) {
                             this.statement.setClob(i++, new StringReader(layout.toSerializable(event)));
@@ -409,7 +409,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             // Release ASAP
             try {
                 statement.clearParameters();
-            } catch (SQLException e) {
+            } catch (final SQLException e) {
                 // Ignore
             }
             Closer.closeSilently(reader);

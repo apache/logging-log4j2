@@ -53,7 +53,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
 
     private static final StringMap EMPTY_CONTEXT_DATA = new SortedArrayStringMap(1);
-    
+
     private static volatile int initialCapacity;
     private static volatile boolean inheritableMap;
 
@@ -66,7 +66,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
         initialCapacity = properties.getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY);
         inheritableMap = properties.getBooleanProperty(INHERITABLE_MAP);
     }
-    
+
     static {
         EMPTY_CONTEXT_DATA.freeze();
         init();
@@ -88,7 +88,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
                     if (parentValue == null) {
                         return null;
                     }
-                    StringMap stringMap = createStringMap(parentValue);
+                    final StringMap stringMap = createStringMap(parentValue);
                     stringMap.freeze();
                     return stringMap;
                 }

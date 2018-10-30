@@ -116,21 +116,21 @@ public class FileAppenderThrowableBenchmark {
                         new Class<?>[]{Class.forName(FileAppenderThrowableBenchmark.class.getName() + "$TestIface" + (i % 31))},
                         new InvocationHandler() {
                             @Override
-                            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                            public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
                                 try {
                                     return method.invoke(delegate, args);
-                                } catch (InvocationTargetException e) {
+                                } catch (final InvocationTargetException e) {
                                     throw e.getCause();
                                 }
                             }
                         });
             }
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             throw new IllegalStateException("Failed to create stack", e);
         }
         try {
             helper.action();
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             return e;
         }
         throw new IllegalStateException("Failed to create throwable");

@@ -62,5 +62,5 @@ public class FileAppenderPermissionsXmlConfigTest {
                     Files.getPosixFilePermissions(Paths.get("target/permissions1/AppenderTest-1.log"))));
     }
 
-    
+
 }
