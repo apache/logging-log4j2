@@ -41,20 +41,20 @@ public class Log4j2_2195_Test {
     @Test
     public void test() {
         logger.info("This is a test.", new Exception("Test exception!"));
-        ListAppender listAppender = loggerContextRule.getListAppender("ListAppender");
+        final ListAppender listAppender = loggerContextRule.getListAppender("ListAppender");
         Assert.assertNotNull(listAppender);
-        List<String> events = listAppender.getMessages();
+        final List<String> events = listAppender.getMessages();
         Assert.assertNotNull(events);
         Assert.assertEquals(1, events.size());
-        String logEvent = events.get(0);
+        final String logEvent = events.get(0);
         Assert.assertNotNull(logEvent);
         Assert.assertFalse("\"org.junit\" should not be here", logEvent.contains("org.junit"));
         Assert.assertFalse("\"org.eclipse\" should not be here", logEvent.contains("org.eclipse"));
         //
-        Layout<? extends Serializable> layout = listAppender.getLayout();
-        PatternLayout pLayout = (PatternLayout) layout;
+        final Layout<? extends Serializable> layout = listAppender.getLayout();
+        final PatternLayout pLayout = (PatternLayout) layout;
         Assert.assertNotNull(pLayout);
-        Serializer eventSerializer = pLayout.getEventSerializer();
+        final Serializer eventSerializer = pLayout.getEventSerializer();
         Assert.assertNotNull(eventSerializer);
         //
         Assert.assertTrue("Missing \"|\"", logEvent.contains("|"));

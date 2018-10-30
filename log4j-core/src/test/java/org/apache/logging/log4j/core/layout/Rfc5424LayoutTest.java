@@ -195,15 +195,15 @@ public class Rfc5424LayoutTest {
             final StructuredDataMessage msg2 = new StructuredDataMessage("Extra@18060", null, "Audit");
             msg2.put("Item1", "Hello");
             msg2.put("Item2", "World");
-            List<StructuredDataMessage> messages = new ArrayList<>();
+            final List<StructuredDataMessage> messages = new ArrayList<>();
             messages.add(msg);
             messages.add(msg2);
             final StructuredDataCollectionMessage collectionMessage = new StructuredDataCollectionMessage(messages);
 
             root.info(MarkerManager.getMarker("EVENT"), collectionMessage);
 
-            List<String> list = appender.getMessages();
-            String result = list.get(0);
+            final List<String> list = appender.getMessages();
+            final String result = list.get(0);
             assertTrue("Expected line to contain " + collectionLine1 + ", Actual " + result,
                     result.contains(collectionLine1));
             assertTrue("Expected line to contain " + collectionLine2 + ", Actual " + result,

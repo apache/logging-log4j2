@@ -391,7 +391,7 @@ public class JsonLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setIncludeStacktrace(true)
                 .build();
-        Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
+        final Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
         try {
             final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
                     .setLoggerName("a.B")
@@ -400,7 +400,7 @@ public class JsonLayoutTest {
                     .setMessage(message)
                     .setThreadName("threadName")
                     .setTimeMillis(1).build();
-            MutableLogEvent mutableLogEvent = new MutableLogEvent();
+            final MutableLogEvent mutableLogEvent = new MutableLogEvent();
             mutableLogEvent.initFrom(expected);
             final String str = layout.toSerializable(mutableLogEvent);
             final String expectedMessage = "Testing " + TestObj.TO_STRING_VALUE;
@@ -426,9 +426,9 @@ public class JsonLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setIncludeStacktrace(true)
                 .build();
-        Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
+        final Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
         try {
-            RingBufferLogEvent ringBufferEvent = new RingBufferLogEvent();
+            final RingBufferLogEvent ringBufferEvent = new RingBufferLogEvent();
             ringBufferEvent.setValues(
                     null, "a.B", null, "f.q.c.n", Level.DEBUG, message,
                     null, new SortedArrayStringMap(), ThreadContext.EMPTY_STACK, 1L,
@@ -563,7 +563,7 @@ public class JsonLayoutTest {
 			return value;
 		}
 
-		public void setValue(int value) {
+		public void setValue(final int value) {
 			this.value = value;
 		}
 	}

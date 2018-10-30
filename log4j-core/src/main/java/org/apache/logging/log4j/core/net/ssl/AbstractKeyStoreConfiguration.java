@@ -70,7 +70,7 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
             }
             try (final InputStream fin = openInputStream(loadLocation)) {
                 final KeyStore ks = KeyStore.getInstance(this.keyStoreType);
-                char[] password = this.getPasswordAsCharArray();
+                final char[] password = this.getPasswordAsCharArray();
                 try {
                     ks.load(fin, password);
                 } finally {

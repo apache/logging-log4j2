@@ -141,7 +141,7 @@ public class XmlCompleteFileAppenderTest {
         logger.info(secondLogMsg);
         CoreLoggerContexts.stopLoggerContext(false, logFile); // stop async thread
 
-        int[] indentations = {
+        final int[] indentations = {
                 0, //"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 0, //"<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">\n"
                 -1, // empty
@@ -156,15 +156,15 @@ public class XmlCompleteFileAppenderTest {
                 2, //"  </Event>\n" +
                 0, //"</Events>\n";
         };
-        List<String> lines1 = Files.readAllLines(logFile.toPath(), Charset.forName("UTF-8"));
+        final List<String> lines1 = Files.readAllLines(logFile.toPath(), Charset.forName("UTF-8"));
 
         assertEquals("number of lines", indentations.length, lines1.size());
         for (int i = 0; i < indentations.length; i++) {
-            String line = lines1.get(i);
+            final String line = lines1.get(i);
             if (line.trim().isEmpty()) {
                 assertEquals(-1, indentations[i]);
             } else {
-                String padding = "        ".substring(0, indentations[i]);
+                final String padding = "        ".substring(0, indentations[i]);
                 assertTrue("Expected " + indentations[i] + " leading spaces but got: " + line, line.startsWith(padding));
             }
         }

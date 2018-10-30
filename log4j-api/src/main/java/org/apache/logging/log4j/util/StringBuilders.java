@@ -189,7 +189,7 @@ public final class StringBuilders {
             }
         }
 
-        int lastChar = toAppendTo.length() - 1;
+        final int lastChar = toAppendTo.length() - 1;
         toAppendTo.setLength(toAppendTo.length() + escapeCount);
         int lastPos = toAppendTo.length() - 1;
 
@@ -238,7 +238,7 @@ public final class StringBuilders {
         }
     }
 
-    private static int escapeAndDecrement(StringBuilder toAppendTo, int lastPos, char c) {
+    private static int escapeAndDecrement(final StringBuilder toAppendTo, int lastPos, final char c) {
         toAppendTo.setCharAt(lastPos--, c);
         toAppendTo.setCharAt(lastPos--, '\\');
         return lastPos;
@@ -262,7 +262,7 @@ public final class StringBuilders {
             }
         }
 
-        int lastChar = toAppendTo.length() - 1;
+        final int lastChar = toAppendTo.length() - 1;
         toAppendTo.setLength(toAppendTo.length() + escapeCount);
         int lastPos = toAppendTo.length() - 1;
 

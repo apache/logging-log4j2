@@ -109,8 +109,8 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
     }
 
     @Override
-    public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
-        Object[] parameters = getParams();
+    public <S> void forEachParameter(final ParameterConsumer<S> action, final S state) {
+        final Object[] parameters = getParams();
         for (short i = 0; i < argCount; i++) {
             action.accept(parameters[i], i, state);
         }

@@ -212,7 +212,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @return The value of the element or null if the key is not present.
      */
     public String get(final String key) {
-        Object result = data.getValue(key);
+        final Object result = data.getValue(key);
         return ParameterFormatter.deepToString(result);
     }
 
@@ -343,7 +343,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
             sb.append("  <Entry key=\"")
                     .append(data.getKeyAt(i))
                     .append("\">");
-            int size = sb.length();
+            final int size = sb.length();
             ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
             StringBuilders.escapeXml(sb, size);
             sb.append("</Entry>\n");
@@ -453,7 +453,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     @Override
-    public void formatTo(String[] formats, StringBuilder buffer) {
+    public void formatTo(final String[] formats, final StringBuilder buffer) {
         format(getFormat(formats), buffer);
     }
 

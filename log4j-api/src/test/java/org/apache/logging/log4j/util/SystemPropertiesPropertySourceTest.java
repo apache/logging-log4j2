@@ -44,9 +44,9 @@ public class SystemPropertiesPropertySourceTest {
 	 */
 	@Test
 	public void testMultiThreadedAccess() throws InterruptedException, ExecutionException {
-		ExecutorService threadPool = Executors.newSingleThreadExecutor();
+		final ExecutorService threadPool = Executors.newSingleThreadExecutor();
 		try {
-			Future<?> future = threadPool.submit(new Runnable() {
+			final Future<?> future = threadPool.submit(new Runnable() {
 
 				@Override
 				public void run() {

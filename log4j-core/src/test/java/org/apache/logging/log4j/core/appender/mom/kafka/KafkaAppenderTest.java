@@ -137,8 +137,8 @@ public class KafkaAppenderTest {
         final ProducerRecord<byte[], byte[]> item = history.get(0);
         assertNotNull(item);
         assertEquals(TOPIC_NAME, item.topic());
-        String msgKey = item.key().toString();
-        byte[] keyValue = "key".getBytes(StandardCharsets.UTF_8);
+        final String msgKey = item.key().toString();
+        final byte[] keyValue = "key".getBytes(StandardCharsets.UTF_8);
         assertArrayEquals(item.key(), keyValue);
         assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
     }
@@ -147,15 +147,15 @@ public class KafkaAppenderTest {
     public void testAppendWithKeyLookup() throws Exception {
         final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithKeyLookup");
         final LogEvent logEvent = createLogEvent();
-        Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        final Date date = new Date();
+        final SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         appender.append(logEvent);
         final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
         assertEquals(1, history.size());
         final ProducerRecord<byte[], byte[]> item = history.get(0);
         assertNotNull(item);
         assertEquals(TOPIC_NAME, item.topic());
-        byte[] keyValue = format.format(date).getBytes(StandardCharsets.UTF_8);
+        final byte[] keyValue = format.format(date).getBytes(StandardCharsets.UTF_8);
         assertArrayEquals(item.key(), keyValue);
         assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
     }

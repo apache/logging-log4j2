@@ -158,7 +158,7 @@ public class SslSocketManager extends TcpSocketManager {
     private static class SslSocketManagerFactory extends TcpSocketManagerFactory<SslSocketManager, SslFactoryData> {
 
         @Override
-        SslSocketManager createManager(final String name, OutputStream os, Socket socket, InetAddress inetAddress,
+        SslSocketManager createManager(final String name, final OutputStream os, final Socket socket, final InetAddress inetAddress,
                 final SslFactoryData data) {
             return new SslSocketManager(name, os, socket, data.sslConfiguration, inetAddress, data.host, data.port,
                     data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout, data.bufferSize,
@@ -172,8 +172,8 @@ public class SslSocketManager extends TcpSocketManager {
         }
     }
 
-    static Socket createSocket(final String host, int port, int connectTimeoutMillis,
-            final SslConfiguration sslConfiguration, SocketOptions socketOptions) throws IOException {
+    static Socket createSocket(final String host, final int port, final int connectTimeoutMillis,
+            final SslConfiguration sslConfiguration, final SocketOptions socketOptions) throws IOException {
         final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfiguration);
         final SSLSocket socket = (SSLSocket) socketFactory.createSocket();
         if (socketOptions != null) {

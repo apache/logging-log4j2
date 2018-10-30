@@ -172,7 +172,7 @@ public class MongoDbTestRule implements TestRule {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("MongoDbTestRule [starter=");
         builder.append(starter);
         builder.append(", portSystemPropertyName=");

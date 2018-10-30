@@ -50,7 +50,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
         private boolean follow = false;
 
-        private boolean ignoreExceptions = true;
+        private final boolean ignoreExceptions = true;
 
         private OutputStream target;
 

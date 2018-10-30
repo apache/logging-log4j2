@@ -66,7 +66,7 @@ public class SerializedLayoutTest {
         try {
             Class.forName("java.io.ObjectInputFilter");
             useObjectInputStream = true;
-        } catch (ClassNotFoundException ex) {
+        } catch (final ClassNotFoundException ex) {
             // Ignore the exception
         }
         ConfigurationFactory.setConfigurationFactory(cf);

@@ -538,7 +538,7 @@ public class LoggerTest {
 
         ThreadContext.put("TestYear", Integer.valueOf(2010).toString());
         logger.debug("Debug message");
-        String testYear = ThreadContext.get("TestYear");
+        final String testYear = ThreadContext.get("TestYear");
         assertNotNull("Test Year is null", testYear);
         assertEquals("Incorrect test year: " + testYear, "2010", testYear);
         ThreadContext.clearMap();

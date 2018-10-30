@@ -63,10 +63,10 @@ public final class ProviderUtil {
     private static volatile ProviderUtil instance;
 
     private ProviderUtil() {
-        for (ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
             try {
                 loadProviders(classLoader);
-            } catch (Throwable ex) {
+            } catch (final Throwable ex) {
                 LOGGER.debug("Unable to retrieve provider from ClassLoader {}", classLoader, ex);
             }
         }

@@ -56,10 +56,10 @@ public class XmlFileAppenderTest {
         log.info(logMsg);
         CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
-        List<String> lines = Files.readAllLines(file.toPath(), Charset.forName("UTF8"));
+        final List<String> lines = Files.readAllLines(file.toPath(), Charset.forName("UTF8"));
         file.delete();
 
-        String[] expect = {
+        final String[] expect = {
                 "", // ? unsure why initial empty line...
             "<Event ", //
             "<Instant epochSecond=", //

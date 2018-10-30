@@ -112,7 +112,7 @@ public class JmsAppender extends AbstractAppender {
                 // JmsManagerFactory has already logged an ERROR.
                 return null;
             }
-            Layout<? extends Serializable> layout = getLayout();
+            final Layout<? extends Serializable> layout = getLayout();
             if (layout == null) {
                 LOGGER.error("No layout provided for JmsAppender");
                 return null;

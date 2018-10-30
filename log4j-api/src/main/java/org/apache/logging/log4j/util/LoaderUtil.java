@@ -106,14 +106,14 @@ public final class LoaderUtil {
     }
 
     public static ClassLoader[] getClassLoaders() {
-        List<ClassLoader> classLoaders = new ArrayList<>();
-        ClassLoader tcl = getThreadContextClassLoader();
+        final List<ClassLoader> classLoaders = new ArrayList<>();
+        final ClassLoader tcl = getThreadContextClassLoader();
         classLoaders.add(tcl);
         // Some implementations may use null to represent the bootstrap class loader.
-        ClassLoader current = LoaderUtil.class.getClassLoader();
+        final ClassLoader current = LoaderUtil.class.getClassLoader();
         if (current != null && current != tcl) {
             classLoaders.add(current);
-            ClassLoader parent = current.getParent();
+            final ClassLoader parent = current.getParent();
             while (parent != null && !classLoaders.contains(parent)) {
                 classLoaders.add(parent);
             }
@@ -123,7 +123,7 @@ public final class LoaderUtil {
             classLoaders.add(parent);
             parent = parent.getParent();
         }
-        ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+        final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
 		if (!classLoaders.contains(systemClassLoader)) {
             classLoaders.add(systemClassLoader);
         }

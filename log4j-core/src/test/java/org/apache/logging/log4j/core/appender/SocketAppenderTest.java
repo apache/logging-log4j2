@@ -294,7 +294,7 @@ public class SocketAppenderTest {
             thread.interrupt();
             try {
                 thread.join(100);
-            } catch (InterruptedException ie) {
+            } catch (final InterruptedException ie) {
                 System.out.println("Unable to stop server");
             }
         }
@@ -361,7 +361,7 @@ public class SocketAppenderTest {
             interrupt();
             try {
                 this.join(100);
-            } catch (InterruptedException ie) {
+            } catch (final InterruptedException ie) {
                 System.out.println("Unable to stop server");
             }
         }

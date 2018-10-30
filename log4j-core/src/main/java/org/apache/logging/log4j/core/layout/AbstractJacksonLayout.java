@@ -177,7 +177,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
          *
          * @return this builder
          */
-        public B setAdditionalFields(KeyValuePair[] additionalFields) {
+        public B setAdditionalFields(final KeyValuePair[] additionalFields) {
             this.additionalFields = additionalFields;
             return asBuilder();
         }
@@ -231,7 +231,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         final ResolvableKeyValuePair[] resolvableFields = new ResolvableKeyValuePair[additionalFields.length];
 
         for (int i = 0; i < additionalFields.length; i++) {
-            ResolvableKeyValuePair resolvable = resolvableFields[i] = new ResolvableKeyValuePair(additionalFields[i]);
+            final ResolvableKeyValuePair resolvable = resolvableFields[i] = new ResolvableKeyValuePair(additionalFields[i]);
 
             // Validate
             if (config == null && resolvable.valueNeedsLookup) {
@@ -271,7 +271,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
     protected Object wrapLogEvent(final LogEvent event) {
         if (additionalFields.length > 0) {
             // Construct map for serialization - note that we are intentionally using original LogEvent
-            Map<String, String> additionalFieldsMap = resolveAdditionalFields(event);
+            final Map<String, String> additionalFieldsMap = resolveAdditionalFields(event);
             // This class combines LogEvent with AdditionalFields during serialization
             return new LogEventWithAdditionalFields(event, additionalFieldsMap);
         } else {
@@ -280,13 +280,13 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         }
     }
 
-    private Map<String, String> resolveAdditionalFields(LogEvent logEvent) {
+    private Map<String, String> resolveAdditionalFields(final LogEvent logEvent) {
         // Note: LinkedHashMap retains order
         final Map<String, String> additionalFieldsMap = new LinkedHashMap<>(additionalFields.length);
         final StrSubstitutor strSubstitutor = configuration.getStrSubstitutor();
 
         // Go over each field
-        for (ResolvableKeyValuePair pair : additionalFields) {
+        for (final ResolvableKeyValuePair pair : additionalFields) {
             if (pair.valueNeedsLookup) {
                 // Resolve value
                 additionalFieldsMap.put(pair.key, strSubstitutor.replace(logEvent, pair.value));
@@ -316,7 +316,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         private final Object logEvent;
         private final Map<String, String> additionalFields;
 
-        public LogEventWithAdditionalFields(Object logEvent, Map<String, String> additionalFields) {
+        public LogEventWithAdditionalFields(final Object logEvent, final Map<String, String> additionalFields) {
             this.logEvent = logEvent;
             this.additionalFields = additionalFields;
         }
@@ -339,7 +339,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         final String value;
         final boolean valueNeedsLookup;
 
-        ResolvableKeyValuePair(KeyValuePair pair) {
+        ResolvableKeyValuePair(final KeyValuePair pair) {
             this.key = pair.getKey();
             this.value = pair.getValue();
             this.valueNeedsLookup = AbstractJacksonLayout.valueNeedsLookup(this.value);

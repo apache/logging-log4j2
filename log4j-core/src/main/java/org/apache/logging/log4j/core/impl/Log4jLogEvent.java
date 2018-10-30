@@ -85,7 +85,7 @@ public class Log4jLogEvent implements LogEvent {
         private String loggerName;
         private Message message;
         private Throwable thrown;
-        private MutableInstant instant = new MutableInstant();
+        private final MutableInstant instant = new MutableInstant();
         private ThrowableProxy thrownProxy;
         private StringMap contextData = createContextData((List<Property>) null);
         private ThreadContext.ContextStack contextStack = ThreadContext.getImmutableStack();
@@ -417,7 +417,7 @@ public class Log4jLogEvent implements LogEvent {
             final String threadName, final int threadPriority, final StackTraceElement source,
             final long timestampMillis, final int nanoOfMillisecond, final long nanoTime) {
         this(loggerName, marker, loggerFQCN, level, message, thrown, thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source, nanoTime);
-        long millis = message instanceof TimestampMessage
+        final long millis = message instanceof TimestampMessage
                 ? ((TimestampMessage) message).getTimestamp()
                 : timestampMillis;
         instant.initFromEpochMilli(millis, nanoOfMillisecond);

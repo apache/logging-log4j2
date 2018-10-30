@@ -56,7 +56,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
     }
 
     @Override
-    public void addFilter(Filter newFilter) {
+    public void addFilter(final Filter newFilter) {
         if(headFilter == null) {
             headFilter = tailFilter = newFilter;
         } else {
@@ -104,7 +104,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
         return threshold;
     }
 
-    public boolean isAsSevereAsThreshold(Priority priority) {
+    public boolean isAsSevereAsThreshold(final Priority priority) {
         return ((threshold == null) || priority.isGreaterOrEqual(threshold));
     }
 
@@ -113,7 +113,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
      * @param event The LoggingEvent.
      */
     @Override
-    public void doAppend(LoggingEvent event) {
+    public void doAppend(final LoggingEvent event) {
     }
 
     /**
@@ -122,54 +122,54 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
      * @since 0.9.0
      */
     @Override
-    public synchronized void setErrorHandler(ErrorHandler eh) {
+    public synchronized void setErrorHandler(final ErrorHandler eh) {
         if (eh != null) {
             this.errorHandler = eh;
         }
     }
 
     @Override
-    public void setLayout(Layout layout) {
+    public void setLayout(final Layout layout) {
         this.layout = layout;
     }
 
     @Override
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
-    public void setThreshold(Priority threshold) {
+    public void setThreshold(final Priority threshold) {
         this.threshold = threshold;
     }
 
     public static class NoOpErrorHandler implements ErrorHandler {
         @Override
-        public void setLogger(Logger logger) {
+        public void setLogger(final Logger logger) {
 
         }
 
         @Override
-        public void error(String message, Exception e, int errorCode) {
+        public void error(final String message, final Exception e, final int errorCode) {
 
         }
 
         @Override
-        public void error(String message) {
+        public void error(final String message) {
 
         }
 
         @Override
-        public void error(String message, Exception e, int errorCode, LoggingEvent event) {
+        public void error(final String message, final Exception e, final int errorCode, final LoggingEvent event) {
 
         }
 
         @Override
-        public void setAppender(Appender appender) {
+        public void setAppender(final Appender appender) {
 
         }
 
         @Override
-        public void setBackupAppender(Appender appender) {
+        public void setBackupAppender(final Appender appender) {
 
         }
     }

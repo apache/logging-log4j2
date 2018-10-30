@@ -221,7 +221,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                     reconnector = createReconnector();
                     try {
                         reconnector.reconnect();
-                    } catch (IOException reconnEx) {
+                    } catch (final IOException reconnEx) {
                         LOGGER.debug("Cannot reestablish socket connection to {}: {}; starting reconnector thread {}",
                                 config, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
                         reconnector.start();
@@ -230,7 +230,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                     }
                     try {
                         writeAndFlush(bytes, offset, length, immediateFlush);
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         throw new AppenderLoggingException(
                                 String.format("Error writing to %s after reestablishing connection for %s", getName(),
                                         config),
@@ -460,7 +460,7 @@ public class TcpSocketManager extends AbstractSocketManager {
         }
 
         @SuppressWarnings("unchecked")
-        M createManager(final String name, OutputStream os, Socket socket, InetAddress inetAddress, final T data) {
+        M createManager(final String name, final OutputStream os, final Socket socket, final InetAddress inetAddress, final T data) {
             return (M) new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
                     data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout,
                     data.bufferSize, data.socketOptions);

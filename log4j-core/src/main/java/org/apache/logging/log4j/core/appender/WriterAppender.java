@@ -50,8 +50,8 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
         @Override
         public WriterAppender build() {
-            StringLayout layout = (StringLayout) getLayout();
-            StringLayout actualLayout = layout != null ? layout : PatternLayout.createDefaultLayout();
+            final StringLayout layout = (StringLayout) getLayout();
+            final StringLayout actualLayout = layout != null ? layout : PatternLayout.createDefaultLayout();
             return new WriterAppender(getName(), actualLayout, getFilter(), getManager(target, follow, actualLayout),
                     isIgnoreExceptions(), getPropertyArray());
         }

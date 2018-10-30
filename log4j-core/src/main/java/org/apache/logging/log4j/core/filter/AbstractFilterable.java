@@ -64,7 +64,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
             return asBuilder();
         }
 
-        public B setPropertyArray(Property[] properties) {
+        public B setPropertyArray(final Property[] properties) {
             this.propertyArray = properties;
             return asBuilder();
         }

@@ -120,7 +120,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
         super.callAppenders(event);
     }
 
-    private void logToAsyncDelegate(LogEvent event) {
+    private void logToAsyncDelegate(final LogEvent event) {
         if (!isFiltered(event)) {
             // Passes on the event to a separate thread that will call
             // asyncCallAppenders(LogEvent).

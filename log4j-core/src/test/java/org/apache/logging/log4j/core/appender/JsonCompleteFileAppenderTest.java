@@ -87,9 +87,9 @@ public class JsonCompleteFileAppenderTest {
         logger.error(logMsg, new IllegalArgumentException("badarg"));
         this.loggerContextRule.getLoggerContext().stop(); // stops async thread
 
-        List<String> lines = Files.readAllLines(logFile.toPath(), Charset.forName("UTF8"));
+        final List<String> lines = Files.readAllLines(logFile.toPath(), Charset.forName("UTF8"));
 
-        String[] expected = {
+        final String[] expected = {
                 "[", // equals
                 "{", // equals
                 "  \"thread\" : \"main\",", //
@@ -104,7 +104,7 @@ public class JsonCompleteFileAppenderTest {
                 "  },", //
         };
         for (int i = 0; i < expected.length; i++) {
-            String line = lines.get(i);
+            final String line = lines.get(i);
             assertTrue("line " + i + " incorrect: [" + line + "], does not contain: [" + expected[i] + ']', line.contains(expected[i]));
         }
         final String location = "testFlushAtEndOfBatch";

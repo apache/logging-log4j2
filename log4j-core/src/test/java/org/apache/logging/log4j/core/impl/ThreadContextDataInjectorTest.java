@@ -78,13 +78,13 @@ public class ThreadContextDataInjectorTest {
     }
 
     private void testContextDataInjector() {
-        ReadOnlyThreadContextMap readOnlythreadContextMap = getThreadContextMap();
+        final ReadOnlyThreadContextMap readOnlythreadContextMap = getThreadContextMap();
         assertThat("thread context map class name",
                    (readOnlythreadContextMap == null) ? null : readOnlythreadContextMap.getClass().getName(),
                    is(equalTo(readOnlythreadContextMapClassName)));
 
-        ContextDataInjector contextDataInjector = createInjector();
-        StringMap stringMap = contextDataInjector.injectContextData(null, new SortedArrayStringMap());
+        final ContextDataInjector contextDataInjector = createInjector();
+        final StringMap stringMap = contextDataInjector.injectContextData(null, new SortedArrayStringMap());
 
         assertThat("thread context map", ThreadContext.getContext(), allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));
         assertThat("context map", stringMap.toMap(), allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));
@@ -106,7 +106,7 @@ public class ThreadContextDataInjectorTest {
         }
     }
 
-    private void prepareThreadContext(boolean isThreadContextMapInheritable) {
+    private void prepareThreadContext(final boolean isThreadContextMapInheritable) {
         System.setProperty("log4j2.isThreadContextMapInheritable", Boolean.toString(isThreadContextMapInheritable));
         PropertiesUtil.getProperties().reload();
         ThreadContextTest.reinitThreadContext();
@@ -130,7 +130,7 @@ public class ThreadContextDataInjectorTest {
                     testContextDataInjector();
                 }
             }).get();
-        } catch (ExecutionException ee) {
+        } catch (final ExecutionException ee) {
             throw ee.getCause();
         }
     }

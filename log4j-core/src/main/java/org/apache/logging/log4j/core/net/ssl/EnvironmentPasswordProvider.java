@@ -49,7 +49,7 @@ class EnvironmentPasswordProvider implements PasswordProvider {
 
     @Override
     public char[] getPassword() {
-        String password = System.getenv(passwordEnvironmentVariable);
+        final String password = System.getenv(passwordEnvironmentVariable);
         return password == null ? null : password.toCharArray();
     }
 }

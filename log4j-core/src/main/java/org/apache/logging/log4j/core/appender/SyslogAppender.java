@@ -306,7 +306,7 @@ public class SyslogAppender extends SocketAppender {
 
     protected SyslogAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
                              final boolean ignoreExceptions, final boolean immediateFlush,
-                             final AbstractSocketManager manager, final Advertiser advertiser, Property[] properties) {
+                             final AbstractSocketManager manager, final Advertiser advertiser, final Property[] properties) {
         super(name, layout, filter, manager, ignoreExceptions, immediateFlush, advertiser, properties);
     }
 
