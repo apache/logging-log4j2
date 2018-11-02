@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -118,17 +119,6 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
     private ErrorHandler handler = new DefaultErrorHandler(this);
 
     /**
-     * Constructor that defaults to suppressing exceptions.
-     * 
-     * @param name The Appender name.
-     * @param filter The Filter to associate with the Appender.
-     * @param layout The layout to use to format the event.
-     */
-    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
-        this(name, filter, layout, true);
-    }
-
-    /**
      * Constructor.
      * 
      * @param name The Appender name.
@@ -136,10 +126,11 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      * @param layout The layout to use to format the event.
      * @param ignoreExceptions If true, exceptions will be logged and suppressed. If false errors will be logged and
      *            then passed to the application.
+     * @param properties Optional properties
      */
     protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions) {
-        super(filter);
+            final boolean ignoreExceptions, final Property[] properties) {
+        super(filter, properties);
         this.name = Objects.requireNonNull(name, "name");
         this.layout = layout;
         this.ignoreExceptions = ignoreExceptions;

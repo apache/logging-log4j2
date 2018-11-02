@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -88,7 +89,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             }
 
             return new MemoryMappedFileAppender(name, layout, getFilter(), manager, fileName, isIgnoreExceptions(), false,
-                    advertise ? getConfiguration().getAdvertiser() : null);
+                    advertise ? getConfiguration().getAdvertiser() : null, getPropertyArray());
         }
 
         public B setFileName(final String fileName) {
@@ -128,8 +129,8 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
 
     private MemoryMappedFileAppender(final String name, final Layout<? extends Serializable> layout,
             final Filter filter, final MemoryMappedFileManager manager, final String filename,
-            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {
-        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
+            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser, Property[] properties) {
+        super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());

@@ -32,6 +32,11 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "property", category = Node.CATEGORY, printObject = true)
 public final class Property {
 
+    /**
+     * @since 2.11.2
+     */
+    public static final Property[] EMPTY_ARRAY = new Property[0];
+
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String name;

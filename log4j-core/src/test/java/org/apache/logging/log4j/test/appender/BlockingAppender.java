@@ -34,7 +34,7 @@ public class BlockingAppender extends AbstractAppender {
     public volatile boolean running = true;
 
     private BlockingAppender(final String name) {
-        super(name, null, null, false);
+        super(name, null, null, false, null);
     }
 
     @Override

@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -94,14 +95,14 @@ public class ListAppender extends AbstractAppender {
     public CountDownLatch countDownLatch = null;
 
     public ListAppender(final String name) {
-        super(name, null, null);
+        super(name, null, null, true, Property.EMPTY_ARRAY);
         newLine = false;
         raw = false;
     }
 
     public ListAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
             final boolean newline, final boolean raw) {
-        super(name, filter, layout);
+        super(name, filter, layout, true, Property.EMPTY_ARRAY);
         this.newLine = newline;
         this.raw = raw;
         if (layout != null) {

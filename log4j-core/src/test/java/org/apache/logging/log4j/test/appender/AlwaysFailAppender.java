@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 public class AlwaysFailAppender extends AbstractAppender {
 
     private AlwaysFailAppender(final String name) {
-        super(name, null, null, false);
+        super(name, null, null, false, null);
     }
 
     @Override

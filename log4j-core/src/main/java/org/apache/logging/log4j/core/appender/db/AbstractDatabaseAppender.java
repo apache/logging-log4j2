@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.config.Property;
 
 /**
  * An abstract Appender for writing events to a database of some type, be it relational or NoSQL. All database appenders
@@ -50,29 +51,15 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      *
      * @param name The appender name.
      * @param filter The filter, if any, to use.
-     * @param ignoreExceptions If {@code true} exceptions encountered when appending events are logged; otherwise
-     *                         they are propagated to the caller.
-     * @param manager The matching {@link AbstractDatabaseManager} implementation.
-     */
-    protected AbstractDatabaseAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-                                       final T manager) {
-        super(name, filter, null, ignoreExceptions);
-        this.manager = manager;
-    }
-
-    /**
-     * Instantiates the base appender.
-     *
-     * @param name The appender name.
-     * @param filter The filter, if any, to use.
      * @param layout The layout to use to format the event.
      * @param ignoreExceptions If {@code true} exceptions encountered when appending events are logged; otherwise
      *                         they are propagated to the caller.
+     * @param properties TODO
      * @param manager The matching {@link AbstractDatabaseManager} implementation.
      */
     protected AbstractDatabaseAppender(final String name, final Filter filter,
-            final Layout<? extends Serializable> layout, final boolean ignoreExceptions, final T manager) {
-        super(name, filter, layout, ignoreExceptions);
+            final Layout<? extends Serializable> layout, final boolean ignoreExceptions, Property[] properties, final T manager) {
+        super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }
 

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.perf.util;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 import org.apache.logging.log4j.core.util.Constants;
@@ -34,7 +35,7 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
     public long checksum;
 
     public DemoAppender(final Layout<?> layout) {
-        super("demo", null, layout);
+        super("demo", null, layout, true, Property.EMPTY_ARRAY);
     }
 
     @Override

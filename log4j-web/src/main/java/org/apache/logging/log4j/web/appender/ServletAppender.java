@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -61,7 +62,8 @@ public class ServletAppender extends AbstractAppender {
 				LOGGER.error("Layout must be a StringLayout to log to ServletContext");
 				return null;
 			}
-			return new ServletAppender(name, layout, getFilter(), servletContext, isIgnoreExceptions(), logThrowables);
+            return new ServletAppender(name, layout, getFilter(), servletContext, isIgnoreExceptions(), logThrowables,
+                    getPropertyArray());
 		}
 
         /**
@@ -91,8 +93,9 @@ public class ServletAppender extends AbstractAppender {
     private final boolean logThrowables;
     
     private ServletAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final ServletContext servletContext, final boolean ignoreExceptions, final boolean logThrowables) {
-        super(name, filter, layout, ignoreExceptions);
+            final ServletContext servletContext, final boolean ignoreExceptions, final boolean logThrowables,
+            Property[] properties) {
+        super(name, filter, layout, ignoreExceptions, properties);
         this.servletContext = servletContext;
         this.logThrowables = logThrowables;
     }

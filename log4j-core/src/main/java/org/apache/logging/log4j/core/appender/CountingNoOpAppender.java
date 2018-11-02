@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -36,7 +37,7 @@ public class CountingNoOpAppender extends AbstractAppender  {
     private final AtomicLong total = new AtomicLong();
 
     public CountingNoOpAppender(final String name, final Layout<?> layout) {
-        super(name, null, layout);
+        super(name, null, layout, true, Property.EMPTY_ARRAY);
     }
 
     public long getCount() {

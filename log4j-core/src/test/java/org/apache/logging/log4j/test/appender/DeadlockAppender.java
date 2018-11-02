@@ -38,7 +38,7 @@ public class DeadlockAppender extends AbstractAppender {
     private WorkerThread thread = null;
 
     private DeadlockAppender(final String name) {
-        super(name, null, null, false);
+        super(name, null, null, false, null);
         thread = new WorkerThread();
     }
 

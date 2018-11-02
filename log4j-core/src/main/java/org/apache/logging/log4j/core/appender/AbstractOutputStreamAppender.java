@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.util.Constants;
 
@@ -93,11 +94,13 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
      *
      * @param name The name of the Appender.
      * @param layout The layout to format the message.
+     * @param properties Optional properties.
      * @param manager The OutputStreamManager.
      */
     protected AbstractOutputStreamAppender(final String name, final Layout<? extends Serializable> layout,
-            final Filter filter, final boolean ignoreExceptions, final boolean immediateFlush, final M manager) {
-        super(name, filter, layout, ignoreExceptions);
+            final Filter filter, final boolean ignoreExceptions, final boolean immediateFlush, Property[] properties,
+            final M manager) {
+        super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
         this.immediateFlush = immediateFlush;
     }

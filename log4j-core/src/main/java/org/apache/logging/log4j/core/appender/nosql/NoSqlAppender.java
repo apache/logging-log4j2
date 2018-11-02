@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -78,7 +79,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
                 return null;
             }
 
-            return new NoSqlAppender(name, getFilter(), getLayout(), isIgnoreExceptions(), manager);
+            return new NoSqlAppender(name, getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(), manager);
         }
 
         /**
@@ -115,8 +116,8 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
     private final String description;
 
     private NoSqlAppender(final String name, final Filter filter, Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions, final NoSqlDatabaseManager<?> manager) {
-        super(name, filter, layout, ignoreExceptions, manager);
+            final boolean ignoreExceptions, Property[] properties, final NoSqlDatabaseManager<?> manager) {
+        super(name, filter, layout, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
 

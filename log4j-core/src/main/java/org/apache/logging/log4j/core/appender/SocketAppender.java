@@ -236,7 +236,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
     protected SocketAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final AbstractSocketManager manager, final boolean ignoreExceptions, final boolean immediateFlush,
             final Advertiser advertiser) {
-        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
+        super(name, layout, filter, ignoreExceptions, immediateFlush, null, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());

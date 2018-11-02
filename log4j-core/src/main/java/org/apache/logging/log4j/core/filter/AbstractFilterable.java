@@ -42,7 +42,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
         private Filter filter;
 
         @PluginElement("Properties")
-        protected Property[] properties;
+        private Property[] propertyArray;
 
         @SuppressWarnings("unchecked")
         public B asBuilder() {
@@ -53,8 +53,8 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
             return filter;
         }
 
-        public Property[] getProperties() {
-            return properties;
+        public Property[] getPropertyArray() {
+            return propertyArray;
         }
 
         public B setFilter(final Filter filter) {
@@ -62,8 +62,8 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
             return asBuilder();
         }
 
-        public B setProperties(final Property[] properties) {
-            this.properties = properties;
+        public B setPropertyArray(final Property[] properties) {
+            this.propertyArray = properties;
             return asBuilder();
         }
 
@@ -73,12 +73,16 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      * May be null.
      */
     private volatile Filter filter;
+    
+    private final Property[] propertyArray;
 
     protected AbstractFilterable() {
+        this(null, null);
     }
 
-    protected AbstractFilterable(final Filter filter) {
+    protected AbstractFilterable(final Filter filter, Property[] propertyArray) {
         this.filter = filter;
+        this.propertyArray = propertyArray == null ? Property.EMPTY_ARRAY : propertyArray;
     }
 
     /**
@@ -107,6 +111,10 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
     @Override
     public Filter getFilter() {
         return filter;
+    }
+
+    public Property[] getPropertyArray() {
+        return propertyArray;
     }
 
     /**

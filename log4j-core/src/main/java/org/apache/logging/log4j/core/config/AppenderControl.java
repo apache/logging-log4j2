@@ -46,7 +46,7 @@ public class AppenderControl extends AbstractFilterable {
      * @param filter the Filter(s) to apply.
      */
     public AppenderControl(final Appender appender, final Level level, final Filter filter) {
-        super(filter);
+        super(filter, null);
         this.appender = appender;
         this.appenderName = appender.getName();
         this.level = level;

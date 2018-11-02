@@ -39,7 +39,7 @@ public class FailOnceAppender extends AbstractAppender {
     private final List<LogEvent> events = new ArrayList<>();
 
     private FailOnceAppender(final String name) {
-        super(name, null, null, false);
+        super(name, null, null, false, null);
     }
 
     @Override

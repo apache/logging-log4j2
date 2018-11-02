@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.StringLayout;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -37,47 +38,23 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
     /**
      * Builds WriterAppender instances.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<WriterAppender> {
-
-        private Filter filter;
+    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<WriterAppender> {
 
         private boolean follow = false;
-
-        private boolean ignoreExceptions = true;
-
-        private StringLayout layout = PatternLayout.createDefaultLayout();
-
-        private String name;
 
         private Writer target;
 
         @Override
         public WriterAppender build() {
-            return new WriterAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions);
-        }
-
-        public Builder setFilter(final Filter aFilter) {
-            this.filter = aFilter;
-            return this;
+            final StringLayout layout = (StringLayout) getLayout();
+            final StringLayout actualLayout = layout != null ? layout : PatternLayout.createDefaultLayout();
+            return new WriterAppender(getName(), actualLayout, getFilter(), getManager(target, follow, actualLayout),
+                    isIgnoreExceptions(), getPropertyArray());
         }
 
         public Builder setFollow(final boolean shouldFollow) {
             this.follow = shouldFollow;
-            return this;
-        }
-
-        public Builder setIgnoreExceptions(final boolean shouldIgnoreExceptions) {
-            this.ignoreExceptions = shouldIgnoreExceptions;
-            return this;
-        }
-
-        public Builder setLayout(final StringLayout aLayout) {
-            this.layout = aLayout;
-            return this;
-        }
-
-        public Builder setName(final String aName) {
-            this.name = aName;
             return this;
         }
 
@@ -160,7 +137,7 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
         if (layout == null) {
             layout = PatternLayout.createDefaultLayout();
         }
-        return new WriterAppender(name, layout, filter, getManager(target, follow, layout), ignore);
+        return new WriterAppender(name, layout, filter, getManager(target, follow, layout), ignore, Property.EMPTY_ARRAY);
     }
 
     private static WriterManager getManager(final Writer target, final boolean follow, final StringLayout layout) {
@@ -176,8 +153,8 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
     }
 
     private WriterAppender(final String name, final StringLayout layout, final Filter filter,
-            final WriterManager manager, final boolean ignoreExceptions) {
-        super(name, layout, filter, ignoreExceptions, true, manager);
+            final WriterManager manager, final boolean ignoreExceptions, Property[] properties) {
+        super(name, layout, filter, ignoreExceptions, true, properties, manager);
     }
 
 }

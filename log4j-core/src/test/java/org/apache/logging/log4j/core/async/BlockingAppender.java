@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -45,7 +46,7 @@ public class BlockingAppender extends AbstractAppender {
     public CountDownLatch countDownLatch = null;
 
     public BlockingAppender(final String name) {
-        super(name, null, null);
+        super(name, null, null, true, Property.EMPTY_ARRAY);
     }
 
     @Override

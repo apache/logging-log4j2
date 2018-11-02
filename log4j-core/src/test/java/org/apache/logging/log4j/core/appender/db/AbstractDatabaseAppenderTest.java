@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Property;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -43,7 +44,7 @@ public class AbstractDatabaseAppenderTest {
     private LocalAbstractDatabaseManager manager;
 
     public void setUp(final String name) {
-        appender = new LocalAbstractDatabaseAppender(name, null, true, manager);
+        appender = new LocalAbstractDatabaseAppender(name, null, true, null, manager);
     }
 
     @Test
@@ -119,8 +120,8 @@ public class AbstractDatabaseAppenderTest {
     private static class LocalAbstractDatabaseAppender extends AbstractDatabaseAppender<LocalAbstractDatabaseManager> {
 
         public LocalAbstractDatabaseAppender(final String name, final Filter filter, final boolean exceptionSuppressed,
-                                             final LocalAbstractDatabaseManager manager) {
-            super(name, filter, exceptionSuppressed, manager);
+                Property[] properties, final LocalAbstractDatabaseManager manager) {
+            super(name, filter, null, exceptionSuppressed, properties, manager);
         }
     }
 }

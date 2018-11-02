@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -67,8 +68,8 @@ public final class KafkaAppender extends AbstractAppender {
                 return null;
             }
             final KafkaManager kafkaManager = new KafkaManager(getConfiguration().getLoggerContext(), getName(), topic,
-                    syncSend, properties, key);
-            return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), kafkaManager);
+                    syncSend, getPropertyArray(), key);
+            return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), getPropertyArray(), kafkaManager);
         }
 
         public String getTopic() {
@@ -103,8 +104,8 @@ public final class KafkaAppender extends AbstractAppender {
     private final KafkaManager manager;
 
     private KafkaAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final boolean ignoreExceptions, final KafkaManager manager) {
-        super(name, filter, layout, ignoreExceptions);
+            final boolean ignoreExceptions, Property[] properties, final KafkaManager manager) {
+        super(name, filter, layout, ignoreExceptions, properties);
         this.manager = Objects.requireNonNull(manager, "manager");
     }
 
