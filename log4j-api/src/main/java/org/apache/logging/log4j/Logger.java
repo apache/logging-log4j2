@@ -1147,28 +1147,6 @@ public interface Logger {
             Object p8, Object p9);
 
     /**
-     * Logs exit from a method. Used for methods that do not return anything.
-     * @deprecated Use {@link #traceExit()} instead which performs the same function.
-     */
-    @Deprecated
-    void exit();
-
-    /**
-     * Logs exiting from a method with the result. This may be coded as:
-     *
-     * <pre>
-     * return LOGGER.exit(myResult);
-     * </pre>
-     *
-     * @param <R> The type of the parameter and object being returned.
-     * @param result The result being returned from the method call.
-     * @return the result.
-     * @deprecated Use {@link #traceExit(Object)} instead which performs the same function.
-     */
-    @Deprecated
-    <R> R exit(R result);
-
-    /**
      * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.
      *
      * @param marker the marker data specific to this log statement

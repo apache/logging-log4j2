@@ -201,12 +201,12 @@ public class ApiLogger extends Logger {
 
     @Override
     public void exiting(final String sourceClass, final String sourceMethod) {
-        logger.exit();
+        logger.traceExit();
     }
 
     @Override
     public void exiting(final String sourceClass, final String sourceMethod, final Object result) {
-        logger.exit(result);
+        logger.traceExit(result);
     }
 
     @Override

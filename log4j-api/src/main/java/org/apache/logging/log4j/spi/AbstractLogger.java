@@ -865,18 +865,6 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         logIfEnabled(FQCN, Level.ERROR, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
-    @Deprecated
-    @Override
-    public void exit() {
-        exit(FQCN, (Object) null);
-    }
-
-    @Deprecated
-    @Override
-    public <R> R exit(final R result) {
-        return exit(FQCN, result);
-    }
-
     /**
      * Logs exiting from a method with the result and location information.
      *
