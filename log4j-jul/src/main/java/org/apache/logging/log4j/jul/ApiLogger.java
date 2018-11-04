@@ -186,7 +186,7 @@ public class ApiLogger extends Logger {
 
     @Override
     public void entering(final String sourceClass, final String sourceMethod) {
-        logger.entry();
+        logger.traceEntry();
     }
 
     @Override
