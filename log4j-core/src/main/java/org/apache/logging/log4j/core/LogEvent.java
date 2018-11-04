@@ -133,14 +133,14 @@ public interface LogEvent extends Serializable {
     long getTimeMillis();
 
     /**
-     * Returns the timestamp when the message was logged.
+     * Returns the Instant when the message was logged.
      * <p>
      * <b>Caution</b>: if this {@code LogEvent} implementation is mutable and reused for multiple consecutive log messages,
      * then the {@code Instant} object returned by this method is also mutable and reused.
      * Client code should not keep a reference to the returned object but make a copy instead.
      * </p>
      *
-     * @return the {@code Instant} holding timestamp details for this log event
+     * @return the {@code Instant} holding Instant details for this log event
      * @since 2.11
      */
     Instant getInstant();
