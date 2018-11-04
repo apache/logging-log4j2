@@ -69,7 +69,7 @@ public final class TimeFilter extends AbstractFilter {
     /**
      * Timezone.
      */
-    private final TimeZone timezone;
+    private final TimeZone timeZone;
 
     private long midnightToday;
     private long midnightTomorrow;
@@ -80,7 +80,7 @@ public final class TimeFilter extends AbstractFilter {
         super(onMatch, onMismatch);
         this.start = start;
         this.end = end;
-        timezone = tz;
+        timeZone = tz;
         initMidnight(start);
     }
 
@@ -89,7 +89,7 @@ public final class TimeFilter extends AbstractFilter {
      * @param now a time in milliseconds since the epoch, used to pinpoint the current date
      */
     void initMidnight(final long now) {
-        final Calendar calendar = Calendar.getInstance(timezone);
+        final Calendar calendar = Calendar.getInstance(timeZone);
         calendar.setTimeInMillis(now);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -213,7 +213,7 @@ public final class TimeFilter extends AbstractFilter {
         final StringBuilder sb = new StringBuilder();
         sb.append("start=").append(start);
         sb.append(", end=").append(end);
-        sb.append(", timezone=").append(timezone.toString());
+        sb.append(", timezone=").append(timeZone.toString());
         return sb.toString();
     }
 
