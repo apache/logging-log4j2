@@ -103,14 +103,6 @@ public class LoggerTest {
     }
 
     @Test
-    public void simpleFlowDepreacted() {
-        logger.entry(CONFIG);
-        logger.exit(0);
-        final List<LogEvent> events = app.getEvents();
-        assertEventCount(events, 2);
-    }
-
-    @Test
     public void throwing() {
         logger.throwing(new IllegalArgumentException("Test Exception"));
         final List<LogEvent> events = app.getEvents();
