@@ -1587,7 +1587,7 @@ public class AwesomeTest {
 
     @Test
     public void testSomeAwesomeFeature() {
-        final LoggerContext ctx = init.getContext();
+        final LoggerContext ctx = init.getLoggerContext();
         final Logger logger = init.getLogger("org.apache.logging.log4j.my.awesome.test.logger");
         final Configuration cfg = init.getConfiguration();
         final ListAppender app = init.getListAppender("List");
