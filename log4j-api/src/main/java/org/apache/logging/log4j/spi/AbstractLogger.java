@@ -518,22 +518,6 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      *
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param format The format String for the parameters.
-     * @param paramSuppliers The parameters to the method.
-     */
-    @Deprecated
-    protected EntryMessage enter(final String fqcn, final String format, final MessageSupplier... paramSuppliers) {
-        EntryMessage entryMsg = null;
-        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = entryMsg(format, paramSuppliers), null);
-        }
-        return entryMsg;
-    }
-
-    /**
-     * Logs entry to a method with location information.
-     *
-     * @param fqcn The fully qualified class name of the <b>caller</b>.
-     * @param format The format String for the parameters.
      * @param params The parameters to the method.
      */
     protected EntryMessage enter(final String fqcn, final String format, final Object... params) {
@@ -542,22 +526,6 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = entryMsg(format, params), null);
         }
         return entryMsg;
-    }
-
-    /**
-     * Logs entry to a method with location information.
-     *
-     * @param fqcn The fully qualified class name of the <b>caller</b>.
-     * @param msgSupplier The Supplier of the Message.
-     */
-    @Deprecated
-    protected EntryMessage enter(final String fqcn, final MessageSupplier msgSupplier) {
-        EntryMessage message = null;
-        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, message = flowMessageFactory.newEntryMessage(
-                    msgSupplier.get()), null);
-        }
-        return message;
     }
 
     /**
@@ -576,17 +544,6 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
                     null);
         }
         return flowMessage;
-    }
-
-    @Deprecated
-    @Override
-    public void entry() {
-        entry(FQCN, (Object[]) null);
-    }
-
-    @Override
-    public void entry(final Object... params) {
-        entry(FQCN, params);
     }
 
     /**

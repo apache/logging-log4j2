@@ -96,7 +96,7 @@ public class LoggerTest {
 
     @Test
     public void simpleFlow() {
-        logger.entry(CONFIG);
+        logger.traceEntry(CONFIG);
         logger.traceExit(0);
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 2);

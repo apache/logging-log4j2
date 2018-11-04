@@ -72,7 +72,7 @@ public class LoggerTest {
 
     @Test
     public void simpleFlow() {
-        logger.entry(CONFIG);
+        logger.traceEntry(CONFIG);
         logger.traceExit(0);
         assertThat(list.strList, hasSize(2));
     }

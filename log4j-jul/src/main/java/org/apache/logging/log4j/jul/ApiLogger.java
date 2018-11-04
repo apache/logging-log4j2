@@ -191,12 +191,12 @@ public class ApiLogger extends Logger {
 
     @Override
     public void entering(final String sourceClass, final String sourceMethod, final Object param1) {
-        logger.entry(param1);
+        logger.traceEntry(null, param1);
     }
 
     @Override
     public void entering(final String sourceClass, final String sourceMethod, final Object[] params) {
-        logger.entry(params);
+        logger.traceEntry(null, params);
     }
 
     @Override

@@ -621,34 +621,6 @@ public interface Logger {
             Object p8, Object p9);
 
     /**
-     * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
-     * logged.
-     * @deprecated Use {@link #traceEntry()} instead which performs the same function.
-     */
-    @Deprecated
-    void entry();
-
-    /**
-     * Logs entry to a method along with its parameters (consider using one of the {@code traceEntry(...)} methods instead.)
-     * <p>
-     * For example:
-     * </p>
-     * <pre>
-     * public void doSomething(String foo, int bar) {
-     *     LOGGER.entry(foo, bar);
-     *     // do something
-     * }
-     * </pre>
-     * <p>
-     * The use of methods such as this are more effective when combined with aspect-oriented programming or other
-     * bytecode manipulation tools. It can be rather tedious (and messy) to use this type of method manually.
-     * </p>
-     *
-     * @param params The parameters to the method.
-     */
-    void entry(Object... params);
-
-    /**
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement
