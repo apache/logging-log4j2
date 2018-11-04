@@ -77,12 +77,12 @@ public final class TimeFilter extends AbstractFilter {
     private long midnightTomorrow;
 
 
-    private TimeFilter(final long start, final long end, final TimeZone tz, final Result onMatch,
+    private TimeFilter(final long start, final long end, final TimeZone timeZone, final Result onMatch,
                        final Result onMismatch) {
         super(onMatch, onMismatch);
         this.start = start;
         this.end = end;
-        timeZone = tz;
+        this.timeZone = timeZone;
         initMidnight(start);
     }
 
