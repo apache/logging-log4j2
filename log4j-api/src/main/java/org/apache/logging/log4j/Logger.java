@@ -645,7 +645,9 @@ public interface Logger {
      * </p>
      *
      * @param params The parameters to the method.
+     * @deprecated Use {@link #traceEntry(String, Object...)} instead which performs the same function.
      */
+    @Deprecated
     void entry(Object... params);
 
     /**
