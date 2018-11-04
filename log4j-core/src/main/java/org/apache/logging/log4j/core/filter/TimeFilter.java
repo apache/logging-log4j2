@@ -62,10 +62,12 @@ public final class TimeFilter extends AbstractFilter {
      * Starting offset from midnight in milliseconds.
      */
     private final long start;
+    
     /**
      * Ending offset from midnight in milliseconds.
      */
     private final long end;
+    
     /**
      * Timezone.
      */
