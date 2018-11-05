@@ -241,7 +241,7 @@
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <mockitoVersion>2.13.0</mockitoVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
-    <javaTargetVersion>1.7</javaTargetVersion>
+    <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />
   </properties>
   <pluginRepositories>
@@ -1601,59 +1601,6 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
               <argLine>-agentpath:"${yourkit.home}/bin/mac/libyjpagent.jnilib"</argLine>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>jdk7</id>
-      <activation>
-        <jdk>1.7</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <argLine>-XX:MaxPermSize=512m</argLine>
-            </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <configuration>
-              <argLine>-XX:MaxPermSize=512m</argLine>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>useJava7</id>
-      <activation>
-        <property>
-          <name>useJava7</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-toolchains-plugin</artifactId>
-            <version>1.1</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>toolchain</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <toolchains>
-                <jdk>
-                  <version>1.7</version>
-                </jdk>
-              </toolchains>
             </configuration>
           </plugin>
         </plugins>
