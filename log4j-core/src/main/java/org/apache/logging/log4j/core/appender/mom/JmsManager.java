@@ -135,7 +135,7 @@ public class JmsManager extends AbstractManager {
     }
 
     /**
-     * Handles reconnecting to a Socket on a Thread.
+     * Handles reconnecting to JMS on a Thread.
      */
     private class Reconnector extends Log4jThread {
 
