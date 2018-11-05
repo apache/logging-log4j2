@@ -51,24 +51,6 @@ import org.apache.logging.log4j.core.util.Assert;
 @Plugin(name = "JDBC", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseManager> {
 
-    private final String description;
-
-    private JdbcAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions, Property[] properties, final JdbcDatabaseManager manager) {
-        super(name, filter, layout, ignoreExceptions, properties, manager);
-        this.description = this.getName() + "{ manager=" + this.getManager() + " }";
-    }
-
-    @Override
-    public String toString() {
-        return this.description;
-    }
-
-    @PluginBuilderFactory
-    public static <B extends Builder<B>> B newBuilder() {
-        return new Builder<B>().asBuilder();
-    }
-
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
         implements org.apache.logging.log4j.core.util.Builder<JdbcAppender> {
 
@@ -89,16 +71,22 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         @PluginElement("ColumnMappings")
         private ColumnMapping[] columnMappings;
 
-        /**
-         * The connections source from which database connections should be retrieved.
-         * 
-         * @param connectionSource The connection source. 
-         * 
-         * @return this
-         */
-        public B setConnectionSource(final ConnectionSource connectionSource) {
-            this.connectionSource = connectionSource;
-            return asBuilder();
+        @SuppressWarnings("resource")
+        @Override
+        public JdbcAppender build() {
+            if (Assert.isEmpty(columnConfigs) && Assert.isEmpty(columnMappings)) {
+                LOGGER.error("Cannot create JdbcAppender without any columns.");
+                return null;
+            }
+            final String managerName = "JdbcManager{name=" + getName() + ", bufferSize=" + bufferSize + ", tableName="
+                    + tableName + ", columnConfigs=" + Arrays.toString(columnConfigs) + ", columnMappings="
+                    + Arrays.toString(columnMappings) + '}';
+            final JdbcDatabaseManager manager = JdbcDatabaseManager.getManager(managerName, bufferSize, getLayout(),
+                    connectionSource, tableName, columnConfigs, columnMappings);
+            if (manager == null) {
+                return null;
+            }
+            return new JdbcAppender(getName(), getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(), manager);
         }
 
         /**
@@ -111,18 +99,6 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
          */
         public B setBufferSize(final int bufferSize) {
             this.bufferSize = bufferSize;
-            return asBuilder();
-        }
-
-        /**
-         * The name of the database table to insert log events into.
-         * 
-         * @param tableName The database table name. 
-         * 
-         * @return this
-         */
-        public B setTableName(final String tableName) {
-            this.tableName = tableName;
             return asBuilder();
         }
 
@@ -143,23 +119,47 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
             return asBuilder();
         }
 
-        @SuppressWarnings("resource")
-        @Override
-        public JdbcAppender build() {
-            if (Assert.isEmpty(columnConfigs) && Assert.isEmpty(columnMappings)) {
-                LOGGER.error("Cannot create JdbcAppender without any columns.");
-                return null;
-            }
-            final String managerName = "JdbcManager{name=" + getName() + ", bufferSize=" + bufferSize + ", tableName="
-                    + tableName + ", columnConfigs=" + Arrays.toString(columnConfigs) + ", columnMappings="
-                    + Arrays.toString(columnMappings) + '}';
-            final JdbcDatabaseManager manager = JdbcDatabaseManager.getManager(managerName, bufferSize, getLayout(),
-                    connectionSource, tableName, columnConfigs, columnMappings);
-            if (manager == null) {
-                return null;
-            }
-            return new JdbcAppender(getName(), getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(), manager);
+        /**
+         * The connections source from which database connections should be retrieved.
+         * 
+         * @param connectionSource The connection source. 
+         * 
+         * @return this
+         */
+        public B setConnectionSource(final ConnectionSource connectionSource) {
+            this.connectionSource = connectionSource;
+            return asBuilder();
         }
 
+        /**
+         * The name of the database table to insert log events into.
+         * 
+         * @param tableName The database table name. 
+         * 
+         * @return this
+         */
+        public B setTableName(final String tableName) {
+            this.tableName = tableName;
+            return asBuilder();
+        }
+
+    }
+
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
+    }
+
+    private final String description;
+
+    private JdbcAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions, Property[] properties, final JdbcDatabaseManager manager) {
+        super(name, filter, layout, ignoreExceptions, properties, manager);
+        this.description = this.getName() + "{ manager=" + this.getManager() + " }";
+    }
+
+    @Override
+    public String toString() {
+        return this.description;
     }
 }
