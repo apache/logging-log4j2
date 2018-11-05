@@ -145,7 +145,7 @@ public class JmsManager extends AbstractManager {
 
         private final Object owner;
 
-        public Reconnector(final Object owner) {
+        private Reconnector(final Object owner) {
             super("JmsManager-Reconnector");
             this.owner = owner;
         }
