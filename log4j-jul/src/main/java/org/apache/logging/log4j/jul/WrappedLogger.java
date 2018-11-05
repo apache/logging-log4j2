@@ -62,16 +62,6 @@ class WrappedLogger extends ExtendedLoggerWrapper {
     }
 
     @Override
-    public void exit() {
-        exit(FQCN, null);
-    }
-
-    @Override
-    public <R> R exit(final R result) {
-        return exit(FQCN, result);
-    }
-
-    @Override
     public <T extends Throwable> T throwing(final T t) {
         return throwing(FQCN, LevelTranslator.toLevel(java.util.logging.Level.FINER), t);
     }
