@@ -85,6 +85,7 @@ public class JmsAppender extends AbstractAppender {
         @PluginBuilderAttribute(sensitive = true)
         private char[] password;
 
+        @PluginBuilderAttribute
         private long reconnectIntervalMillis = DEFAULT_RECONNECT_INTERVAL_MILLIS;
 
         @PluginBuilderAttribute
