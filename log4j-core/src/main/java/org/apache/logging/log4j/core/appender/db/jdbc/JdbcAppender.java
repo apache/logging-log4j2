@@ -53,17 +53,98 @@ import org.apache.logging.log4j.core.util.Booleans;
 @Plugin(name = "JDBC", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseManager> {
 
-    private final String description;
+    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+        implements org.apache.logging.log4j.core.util.Builder<JdbcAppender> {
 
-    private JdbcAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions, final Property[] properties, final JdbcDatabaseManager manager) {
-        super(name, filter, layout, ignoreExceptions, properties, manager);
-        this.description = this.getName() + "{ manager=" + this.getManager() + " }";
-    }
+        @PluginElement("ConnectionSource")
+        @Required(message = "No ConnectionSource provided")
+        private ConnectionSource connectionSource;
 
-    @Override
-    public String toString() {
-        return this.description;
+        @PluginBuilderAttribute
+        private int bufferSize;
+
+        @PluginBuilderAttribute
+        @Required(message = "No table name provided")
+        private String tableName;
+
+        @PluginElement("ColumnConfigs")
+        private ColumnConfig[] columnConfigs;
+
+        @PluginElement("ColumnMappings")
+        private ColumnMapping[] columnMappings;
+
+        @Override
+        public JdbcAppender build() {
+            if (Assert.isEmpty(columnConfigs) && Assert.isEmpty(columnMappings)) {
+                LOGGER.error("Cannot create JdbcAppender without any columns.");
+                return null;
+            }
+            final String managerName = "JdbcManager{name=" + getName() + ", bufferSize=" + bufferSize + ", tableName="
+                    + tableName + ", columnConfigs=" + Arrays.toString(columnConfigs) + ", columnMappings="
+                    + Arrays.toString(columnMappings) + '}';
+            final JdbcDatabaseManager manager = JdbcDatabaseManager.getManager(managerName, bufferSize, getLayout(),
+                    connectionSource, tableName, columnConfigs, columnMappings);
+            if (manager == null) {
+                return null;
+            }
+            return new JdbcAppender(getName(), getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(),
+                    manager);
+        }
+
+        /**
+         * If an integer greater than 0, this causes the appender to buffer log events and flush whenever the buffer
+         * reaches this size.
+         * 
+         * @param bufferSize buffer size. 
+         *
+         * @return this
+         */
+        public B setBufferSize(final int bufferSize) {
+            this.bufferSize = bufferSize;
+            return asBuilder();
+        }
+
+        /**
+         * Information about the columns that log event data should be inserted into and how to insert that data.
+         * 
+         * @param columnConfigs Column configurations. 
+         *
+         * @return this
+         */
+        public B setColumnConfigs(final ColumnConfig... columnConfigs) {
+            this.columnConfigs = columnConfigs;
+            return asBuilder();
+        }
+
+        public B setColumnMappings(final ColumnMapping... columnMappings) {
+            this.columnMappings = columnMappings;
+            return asBuilder();
+        }
+
+        /**
+         * The connections source from which database connections should be retrieved.
+         * 
+         * @param connectionSource The connections source.
+         *
+         * @return this
+         */
+        public B setConnectionSource(final ConnectionSource connectionSource) {
+            this.connectionSource = connectionSource;
+            return asBuilder();
+        }
+
+        /**
+         * The name of the database table to insert log events into.
+         * 
+         * @param tableName The database table name. 
+         *
+         * @return this
+         */
+        public B setTableName(final String tableName) {
+            this.tableName = tableName;
+            return asBuilder();
+        }
+
     }
 
     /**
@@ -99,97 +180,16 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         return new Builder<B>().asBuilder();
     }
 
-    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
-        implements org.apache.logging.log4j.core.util.Builder<JdbcAppender> {
+    private final String description;
 
-        @PluginElement("ConnectionSource")
-        @Required(message = "No ConnectionSource provided")
-        private ConnectionSource connectionSource;
+    private JdbcAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions, final Property[] properties, final JdbcDatabaseManager manager) {
+        super(name, filter, layout, ignoreExceptions, properties, manager);
+        this.description = this.getName() + "{ manager=" + this.getManager() + " }";
+    }
 
-        @PluginBuilderAttribute
-        private int bufferSize;
-
-        @PluginBuilderAttribute
-        @Required(message = "No table name provided")
-        private String tableName;
-
-        @PluginElement("ColumnConfigs")
-        private ColumnConfig[] columnConfigs;
-
-        @PluginElement("ColumnMappings")
-        private ColumnMapping[] columnMappings;
-
-        /**
-         * The connections source from which database connections should be retrieved.
-         * 
-         * @param connectionSource The connections source.
-         *
-         * @return this
-         */
-        public B setConnectionSource(final ConnectionSource connectionSource) {
-            this.connectionSource = connectionSource;
-            return asBuilder();
-        }
-
-        /**
-         * If an integer greater than 0, this causes the appender to buffer log events and flush whenever the buffer
-         * reaches this size.
-         * 
-         * @param bufferSize buffer size. 
-         *
-         * @return this
-         */
-        public B setBufferSize(final int bufferSize) {
-            this.bufferSize = bufferSize;
-            return asBuilder();
-        }
-
-        /**
-         * The name of the database table to insert log events into.
-         * 
-         * @param tableName The database table name. 
-         *
-         * @return this
-         */
-        public B setTableName(final String tableName) {
-            this.tableName = tableName;
-            return asBuilder();
-        }
-
-        /**
-         * Information about the columns that log event data should be inserted into and how to insert that data.
-         * 
-         * @param columnConfigs Column configurations. 
-         *
-         * @return this
-         */
-        public B setColumnConfigs(final ColumnConfig... columnConfigs) {
-            this.columnConfigs = columnConfigs;
-            return asBuilder();
-        }
-
-        public B setColumnMappings(final ColumnMapping... columnMappings) {
-            this.columnMappings = columnMappings;
-            return asBuilder();
-        }
-
-        @Override
-        public JdbcAppender build() {
-            if (Assert.isEmpty(columnConfigs) && Assert.isEmpty(columnMappings)) {
-                LOGGER.error("Cannot create JdbcAppender without any columns.");
-                return null;
-            }
-            final String managerName = "JdbcManager{name=" + getName() + ", bufferSize=" + bufferSize + ", tableName="
-                    + tableName + ", columnConfigs=" + Arrays.toString(columnConfigs) + ", columnMappings="
-                    + Arrays.toString(columnMappings) + '}';
-            final JdbcDatabaseManager manager = JdbcDatabaseManager.getManager(managerName, bufferSize, getLayout(),
-                    connectionSource, tableName, columnConfigs, columnMappings);
-            if (manager == null) {
-                return null;
-            }
-            return new JdbcAppender(getName(), getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(),
-                    manager);
-        }
-
+    @Override
+    public String toString() {
+        return this.description;
     }
 }
