@@ -132,7 +132,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             final String sqlStatement = sb.toString();
 
             return new JdbcDatabaseManager(name, data.getBufferSize(), data.connectionSource, sqlStatement,
-                columnConfigs, columnMappings);
+                    data.tableName, columnConfigs, columnMappings);
         }
     }
     private static final JdbcDatabaseManagerFactory INSTANCE = new JdbcDatabaseManagerFactory();
@@ -155,7 +155,6 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                                                              final ConnectionSource connectionSource,
                                                              final String tableName,
                                                              final ColumnConfig[] columnConfigs) {
-
         return getManager(name,
             new FactoryData(bufferSize, null, connectionSource, tableName, columnConfigs, new ColumnMapping[0]),
             getFactory());
@@ -205,6 +204,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         return getManager(name, new FactoryData(bufferSize, layout, connectionSource, tableName, columnConfigs, columnMappings),
             getFactory());
     }
+
     // NOTE: prepared statements are prepared in this order: column mappings, then column configs
     private final List<ColumnMapping> columnMappings;
 
@@ -220,14 +220,17 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
 
     private boolean isBatchSupported;
 
+    private final String tableName;
+
     private JdbcDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
-                                final String sqlStatement, final List<ColumnConfig> columnConfigs,
-                                final List<ColumnMapping> columnMappings) {
+                                final String sqlStatement, final String tableName,
+                                final List<ColumnConfig> columnConfigs, final List<ColumnMapping> columnMappings) {
         super(name, bufferSize);
         this.connectionSource = connectionSource;
         this.sqlStatement = sqlStatement;
         this.columnConfigs = columnConfigs;
         this.columnMappings = columnMappings;
+        this.tableName = tableName;
     }
 
     @Override
@@ -414,6 +417,9 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             }
             Closer.closeSilently(reader);
         }
+    }
+    public String getTableName() {
+        return tableName;
     }
 
 }
