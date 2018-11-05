@@ -218,8 +218,8 @@ public class JmsManager extends AbstractManager {
      *            fails.
      * @param reconnectIntervalMillis
      *            How to log sleep in milliseconds before trying to reconnect to JMS.
-     * @param jndiManager
-     *            The JndiManager to look up JMS information through.
+     * @param jndiProperties
+     *            JNDI properties.
      * @return The JmsManager as configured.
      */
     public static JmsManager getJmsManager(final String name, final Properties jndiProperties,
