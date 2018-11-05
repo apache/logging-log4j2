@@ -19,7 +19,6 @@ package org.apache.logging.log4j.jdbc.appender;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.util.Arrays;
-import java.util.Objects;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
@@ -36,7 +35,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.util.Assert;
-import org.apache.logging.log4j.core.util.Booleans;
 
 /**
  * This Appender writes logging events to a relational database using standard JDBC mechanisms. It takes a list of
@@ -94,6 +92,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         /**
          * The connections source from which database connections should be retrieved.
          * 
+         * @param connectionSource The connection source. 
+         * 
          * @return this
          */
         public B setConnectionSource(final ConnectionSource connectionSource) {
@@ -105,6 +105,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
          * If an integer greater than 0, this causes the appender to buffer log events and flush whenever the buffer
          * reaches this size.
          * 
+         * @param bufferSize The buffer size.
+         * 
          * @return this
          */
         public B setBufferSize(final int bufferSize) {
@@ -115,6 +117,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         /**
          * The name of the database table to insert log events into.
          * 
+         * @param tableName The database table name. 
+         * 
          * @return this
          */
         public B setTableName(final String tableName) {
@@ -124,6 +128,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
         /**
          * Information about the columns that log event data should be inserted into and how to insert that data.
+         * 
+         * @param columnConfigs The column configuration. 
          * 
          * @return this
          */
@@ -137,6 +143,7 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
             return asBuilder();
         }
 
+        @SuppressWarnings("resource")
         @Override
         public JdbcAppender build() {
             if (Assert.isEmpty(columnConfigs) && Assert.isEmpty(columnMappings)) {

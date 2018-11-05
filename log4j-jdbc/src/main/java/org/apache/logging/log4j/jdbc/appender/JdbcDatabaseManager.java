@@ -135,7 +135,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             final String sqlStatement = sb.toString();
 
             return new JdbcDatabaseManager(name, data.getBufferSize(), data.connectionSource, sqlStatement,
-                    columnConfigs, columnMappings);
+                    data.tableName, columnConfigs, columnMappings);
         }
     }
     private static final JdbcDatabaseManagerFactory INSTANCE = new JdbcDatabaseManagerFactory();
@@ -173,23 +173,21 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     private final List<ColumnMapping> columnMappings;
     private final List<ColumnConfig> columnConfigs;
     private final ConnectionSource connectionSource;
-
     private final String sqlStatement;
-
     private Connection connection;
-
     private PreparedStatement statement;
-
     private boolean isBatchSupported;
+    private final String tableName;
 
     private JdbcDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
-            final String sqlStatement, final List<ColumnConfig> columnConfigs,
-            final List<ColumnMapping> columnMappings) {
+            final String sqlStatement, final String tableName,
+            final List<ColumnConfig> columnConfigs, final List<ColumnMapping> columnMappings) {
         super(name, bufferSize);
         this.connectionSource = connectionSource;
         this.sqlStatement = sqlStatement;
         this.columnConfigs = columnConfigs;
         this.columnMappings = columnMappings;
+        this.tableName = tableName;
     }
 
     @Override
@@ -199,7 +197,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             if (this.connection != null && !this.connection.isClosed()) {
                 if (this.isBatchSupported) {
                     logger().debug("Executing batch PreparedStatement {}", this.statement);
-                    int[] result = this.statement.executeBatch();
+                    final int[] result = this.statement.executeBatch();
                     logger().debug("Batch result: {}", Arrays.toString(result));
                 }
                 logger().debug("Committing Connection {}", this.connection);
@@ -318,7 +316,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                     this.statement.setObject(i++, DateTypeConverter.fromMillis(event.getTimeMillis(),
                             mapping.getType().asSubclass(Date.class)));
                 } else {
-                    StringLayout layout = mapping.getLayout();
+                    final StringLayout layout = mapping.getLayout();
                     if (layout != null) {
                         if (Clob.class.isAssignableFrom(mapping.getType())) {
                             this.statement.setClob(i++, new StringReader(layout.toSerializable(event)));
@@ -366,11 +364,14 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             // Release ASAP
             try {
                 statement.clearParameters();
-            } catch (SQLException e) {
+            } catch (final SQLException e) {
                 // Ignore
             }
             Closer.closeSilently(reader);
         }
+    }
+    public String getTableName() {
+        return tableName;
     }
 
 }
