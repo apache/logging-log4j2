@@ -204,6 +204,7 @@ public class JmsManager extends AbstractManager {
      * Gets a JmsManager using the specified configuration parameters.
      *
      * @param name The name to use for this JmsManager.
+     * @param jndiProperties JNDI properties.
      * @param connectionFactoryName The binding name for the {@link javax.jms.ConnectionFactory}.
      * @param destinationName The binding name for the {@link javax.jms.Destination}.
      * @param userName The userName to connect with or {@code null} for no authentication.
