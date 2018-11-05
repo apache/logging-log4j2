@@ -458,13 +458,13 @@ public class JmsManager extends AbstractManager {
                                 configuration, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
                         reconnector.start();
                         throw new AppenderLoggingException(
-                                String.format("Error sending to %s for %s", getName(), configuration), causeEx);
+                                String.format("JMS exception sending to %s for %s", getName(), configuration), causeEx);
                     }
                     try {
                         createMessageAndSend(event, serializable);
                     } catch (final JMSException e) {
                         throw new AppenderLoggingException(
-                                String.format("Error sending to %s after reestablishing connection for %s", getName(),
+                                String.format("Error sending to %s after reestablishing JMS connection for %s", getName(),
                                         configuration),
                                 causeEx);
                     }
