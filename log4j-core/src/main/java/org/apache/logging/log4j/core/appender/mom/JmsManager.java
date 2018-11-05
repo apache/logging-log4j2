@@ -450,10 +450,10 @@ public class JmsManager extends AbstractManager {
         if (messageProducer == null) {
             if (reconnector != null && !configuration.isImmediateFail()) {
                 reconnector.latch();
-            }
-            if (messageProducer == null) {
-                throw new AppenderLoggingException(
-                        "Error sending to JMS Manager '" + getName() + "': JMS message producer not available");
+                if (messageProducer == null) {
+                    throw new AppenderLoggingException(
+                            "Error sending to JMS Manager '" + getName() + "': JMS message producer not available");
+                }
             }
         }
         synchronized (this) {
@@ -476,8 +476,8 @@ public class JmsManager extends AbstractManager {
                         createMessageAndSend(event, serializable);
                     } catch (final JMSException e) {
                         throw new AppenderLoggingException(
-                                String.format("Error sending to %s after reestablishing JMS connection for %s", getName(),
-                                        configuration),
+                                String.format("Error sending to %s after reestablishing JMS connection for %s",
+                                        getName(), configuration),
                                 causeEx);
                     }
                 }

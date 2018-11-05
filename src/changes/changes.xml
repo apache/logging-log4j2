@@ -112,6 +112,9 @@
       <action issue="LOG4J2-2497" dev="ggregory" type="fix">
         JmsAppender reconnectIntervalMillis cannot be set from a configuration file.
       </action>
+      <action issue="LOG4J2-2499" dev="ggregory" type="fix">
+        JMS Appender may throw a NullPointerException when JMS is not up while the Appender is starting.
+      </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
       <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">
