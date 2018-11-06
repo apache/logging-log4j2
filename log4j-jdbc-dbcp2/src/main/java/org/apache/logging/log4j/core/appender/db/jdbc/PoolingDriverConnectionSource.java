@@ -158,7 +158,7 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
         loadDriver(poolingDriverClassName);
         final PoolingDriver driver = getPoolingDriver();
         if (driver != null) {
-            getLogger().debug("Registering DBCP pool '{}'", poolName);
+            getLogger().debug("Registering DBCP pool '{}' with pooling driver {}: {}", poolName, driver, connectionPool);
             driver.registerPool(poolName, connectionPool);
         }
         //
@@ -172,7 +172,7 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
         try {
             final PoolingDriver driver = getPoolingDriver();
             if (driver != null) {
-                getLogger().debug("Closing DBCP pool '{}'", poolName);
+                getLogger().debug("Driver {} closing DBCP pool '{}'", driver, poolName);
                 driver.closePool(poolName);
             }
             return true;
