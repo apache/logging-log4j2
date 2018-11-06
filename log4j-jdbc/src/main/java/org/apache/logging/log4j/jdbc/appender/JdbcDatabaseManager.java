@@ -281,6 +281,14 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             // Be quiet
         }
         if (!this.isRunning() || connClosed || stmtClosed) {
+            // If anything is closed, close it all down before we reconnect
+            if (!connClosed) {
+                Closer.closeSilently(this.connection);
+            }
+            if (!stmtClosed) {
+                Closer.closeSilently(this.statement);
+            }
+            // Reconnect
             if (reconnector != null && !factoryData.immediateFail) {
                 reconnector.latch();
                 if (connection == null) {
@@ -297,7 +305,16 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
 
     private boolean closeConnection() {
         if (this.connection != null || this.statement != null) {
-            return this.commitAndClose();
+            try {
+                this.commitAndClose();
+                return true;
+            } catch (AppenderLoggingException e) {
+                // Database connection has likely gone stale.
+                final Throwable cause = e.getCause();
+                final Throwable actual = cause == null ? e : cause;
+                logger().debug("{} committing and closing connection: {}", actual, actual.getClass().getSimpleName(),
+                        e.toString(), e);
+            }
         }
         if (factoryData.connectionSource != null) {
             factoryData.connectionSource.stop();
@@ -310,7 +327,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         boolean closed = true;
         try {
             if (this.connection != null && !this.connection.isClosed()) {
-                if (this.isBatchSupported) {
+                if (this.isBatchSupported && this.statement != null) {
                     logger().debug("Executing batch PreparedStatement {}", this.statement);
                     final int[] result = this.statement.executeBatch();
                     logger().debug("Batch result: {}", Arrays.toString(result));
@@ -322,6 +339,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             throw new AppenderLoggingException("Failed to commit transaction logging event or flushing buffer.", e);
         } finally {
             try {
+                // Closing a statement returns it to the pool when using Apache Commons DBCP.
                 logger().debug("Closing PreparedStatement {}", this.statement);
                 Closer.close(this.statement);
             } catch (final Exception e) {
@@ -332,6 +350,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             }
 
             try {
+                // Closing a connection returns it to the pool when using Apache Commons DBCP.
                 logger().debug("Closing Connection {}", this.connection);
                 Closer.close(this.connection);
             } catch (final Exception e) {
@@ -372,14 +391,6 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                         reconnector.start();
                         throw new AppenderLoggingException(
                                 String.format("Error sending to %s for %s", getName(), factoryData), causeEx);
-                    }
-                    try {
-                        connectAndPrepare();
-                    } catch (final SQLException e) {
-                        throw new AppenderLoggingException(
-                                String.format("Error sending to %s after reestablishing JDBC connection for %s",
-                                        getName(), factoryData),
-                                causeEx);
                     }
                 }
             }
@@ -439,7 +450,6 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             final DatabaseMetaData metaData = this.connection.getMetaData();
             this.isBatchSupported = metaData.supportsBatchUpdates();
         } finally {
-            logger().debug("Closing Connection {}", this.connection);
             Closer.closeSilently(this.connection);
         }
     }
