@@ -53,13 +53,16 @@ import org.apache.logging.log4j.core.util.Booleans;
 @Plugin(name = "JDBC", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseManager> {
 
-    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+    public static class Builder<B extends Builder<B>> extends AbstractDatabaseAppender.Builder<B>
         implements org.apache.logging.log4j.core.util.Builder<JdbcAppender> {
 
         @PluginElement("ConnectionSource")
         @Required(message = "No ConnectionSource provided")
         private ConnectionSource connectionSource;
 
+        @PluginBuilderAttribute
+        private boolean immediateFail;
+        
         @PluginBuilderAttribute
         private int bufferSize;
 
@@ -73,6 +76,10 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         @PluginElement("ColumnMappings")
         private ColumnMapping[] columnMappings;
 
+        // TODO Consider moving up to AbstractDatabaseAppender.Builder.
+        @PluginBuilderAttribute
+        private long reconnectIntervalMillis = DEFAULT_RECONNECT_INTERVAL_MILLIS;
+
         @Override
         public JdbcAppender build() {
             if (Assert.isEmpty(columnConfigs) && Assert.isEmpty(columnMappings)) {
@@ -83,12 +90,20 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
                     + tableName + ", columnConfigs=" + Arrays.toString(columnConfigs) + ", columnMappings="
                     + Arrays.toString(columnMappings) + '}';
             final JdbcDatabaseManager manager = JdbcDatabaseManager.getManager(managerName, bufferSize, getLayout(),
-                    connectionSource, tableName, columnConfigs, columnMappings);
+                    connectionSource, tableName, columnConfigs, columnMappings, immediateFail, reconnectIntervalMillis);
             if (manager == null) {
                 return null;
             }
             return new JdbcAppender(getName(), getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(),
                     manager);
+        }
+
+        public long getReconnectIntervalMillis() {
+            return reconnectIntervalMillis;
+        }
+
+        public boolean isImmediateFail() {
+            return immediateFail;
         }
 
         /**
@@ -131,6 +146,14 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         public B setConnectionSource(final ConnectionSource connectionSource) {
             this.connectionSource = connectionSource;
             return asBuilder();
+        }
+
+        public void setImmediateFail(boolean immediateFail) {
+            this.immediateFail = immediateFail;
+        }
+
+        public void setReconnectIntervalMillis(long reconnectIntervalMillis) {
+            this.reconnectIntervalMillis = reconnectIntervalMillis;
         }
 
         /**

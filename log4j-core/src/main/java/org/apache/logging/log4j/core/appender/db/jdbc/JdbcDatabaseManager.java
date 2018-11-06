@@ -31,17 +31,20 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.appender.db.ColumnMapping;
 import org.apache.logging.log4j.core.config.plugins.convert.DateTypeConverter;
 import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
@@ -62,15 +65,29 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         private final String tableName;
         private final ColumnConfig[] columnConfigs;
         private final ColumnMapping[] columnMappings;
+        private final boolean immediateFail;
+        private final boolean retry;
+        private final long reconnectIntervalMillis;
 
         protected FactoryData(final int bufferSize, final Layout<? extends Serializable> layout,
                 final ConnectionSource connectionSource, final String tableName, final ColumnConfig[] columnConfigs,
-                final ColumnMapping[] columnMappings) {
+                final ColumnMapping[] columnMappings, final boolean immediateFail, final long reconnectIntervalMillis) {
             super(bufferSize, layout);
             this.connectionSource = connectionSource;
             this.tableName = tableName;
             this.columnConfigs = columnConfigs;
             this.columnMappings = columnMappings;
+            this.immediateFail = immediateFail;
+            this.retry = reconnectIntervalMillis > 0;
+            this.reconnectIntervalMillis = reconnectIntervalMillis;
+        }
+
+        @Override
+        public String toString() {
+            return String.format(
+                    "FactoryData [connectionSource=%s, tableName=%s, columnConfigs=%s, columnMappings=%s, immediateFail=%s, retry=%s, reconnectIntervalMillis=%,d]",
+                    connectionSource, tableName, Arrays.toString(columnConfigs), Arrays.toString(columnMappings),
+                    immediateFail, retry, reconnectIntervalMillis);
         }
     }
 
@@ -88,7 +105,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             // both mappings follow the same exact pattern for the prepared statement
             int i = 1;
             for (final ColumnMapping mapping : data.columnMappings) {
-                final  String mappingName = mapping.getName();
+                final String mappingName = mapping.getName();
                 logger().trace("Adding INSERT ColumnMapping[{}]: {}={} ", i++, mappingName, mapping);
                 sb.append(mappingName).append(',');
             }
@@ -103,14 +120,17 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             for (final ColumnMapping mapping : data.columnMappings) {
                 final String mappingName = mapping.getName();
                 if (Strings.isNotEmpty(mapping.getLiteralValue())) {
-                    logger().trace("Adding INSERT VALUES literal for ColumnMapping[{}]: {}={} ", i, mappingName, mapping.getLiteralValue());
+                    logger().trace("Adding INSERT VALUES literal for ColumnMapping[{}]: {}={} ", i, mappingName,
+                            mapping.getLiteralValue());
                     sb.append(mapping.getLiteralValue());
                 } else if (Strings.isNotEmpty(mapping.getParameter())) {
-                    logger().trace("Adding INSERT VALUES parameter for ColumnMapping[{}]: {}={} ", i, mappingName, mapping.getParameter());
+                    logger().trace("Adding INSERT VALUES parameter for ColumnMapping[{}]: {}={} ", i, mappingName,
+                            mapping.getParameter());
                     sb.append(mapping.getParameter());
                     columnMappings.add(mapping);
                 } else {
-                    logger().trace("Adding INSERT VALUES parameter marker for ColumnMapping[{}]: {}={} ", i, mappingName, PARAMETER_MARKER);
+                    logger().trace("Adding INSERT VALUES parameter marker for ColumnMapping[{}]: {}={} ", i,
+                            mappingName, PARAMETER_MARKER);
                     sb.append(PARAMETER_MARKER);
                     columnMappings.add(mapping);
                 }
@@ -131,14 +151,68 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             sb.setCharAt(sb.length() - 1, ')');
             final String sqlStatement = sb.toString();
 
-            return new JdbcDatabaseManager(name, data.getBufferSize(), data.connectionSource, sqlStatement,
-                    data.tableName, columnConfigs, columnMappings);
+            return new JdbcDatabaseManager(name, sqlStatement, columnConfigs, data);
         }
     }
+
+    /**
+     * Handles reconnecting to JDBC on a Thread.
+     */
+    private class Reconnector extends Log4jThread {
+
+        private final CountDownLatch latch = new CountDownLatch(1);
+        private volatile boolean shutdown = false;
+        private final Object owner;
+
+        private Reconnector(final Object owner) {
+            super("JdbcDatabaseManager-Reconnector");
+            this.owner = owner;
+        }
+
+        public void latch() {
+            try {
+                latch.await();
+            } catch (final InterruptedException ex) {
+                // Ignore the exception.
+            }
+        }
+
+        void reconnect() throws SQLException {
+            synchronized (owner) {
+                connectAndPrepare();
+                reconnector = null;
+                shutdown = true;
+            }
+            logger().debug("Connection reestablished to {}", factoryData);
+        }
+
+        @Override
+        public void run() {
+            while (!shutdown) {
+                try {
+                    sleep(factoryData.reconnectIntervalMillis);
+                    reconnect();
+                } catch (final InterruptedException | SQLException e) {
+                    logger().debug("Cannot reestablish JDBC connection to {}: {}", factoryData, e.getLocalizedMessage(),
+                            e);
+                } finally {
+                    latch.countDown();
+                }
+            }
+        }
+
+        public void shutdown() {
+            shutdown = true;
+        }
+
+    }
+
     private static final JdbcDatabaseManagerFactory INSTANCE = new JdbcDatabaseManagerFactory();
+
     private static JdbcDatabaseManagerFactory getFactory() {
         return INSTANCE;
     }
+
     /**
      * Creates a JDBC manager for use within the {@link JdbcAppender}, or returns a suitable one if it already exists.
      *
@@ -148,16 +222,16 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * @param tableName The name of the database table to insert log events into.
      * @param columnConfigs Configuration information about the log table columns.
      * @return a new or existing JDBC manager as applicable.
-     * @deprecated use {@link #getManager(String, int, Layout, ConnectionSource, String, ColumnConfig[], ColumnMapping[])}
+     * @deprecated use
+     * {@link #getManager(String, int, Layout, ConnectionSource, String, ColumnConfig[], ColumnMapping[], boolean, long)}
      */
     @Deprecated
     public static JdbcDatabaseManager getJDBCDatabaseManager(final String name, final int bufferSize,
-                                                             final ConnectionSource connectionSource,
-                                                             final String tableName,
-                                                             final ColumnConfig[] columnConfigs) {
-        return getManager(name,
-            new FactoryData(bufferSize, null, connectionSource, tableName, columnConfigs, new ColumnMapping[0]),
-            getFactory());
+            final ConnectionSource connectionSource, final String tableName, final ColumnConfig[] columnConfigs) {
+        return getManager(
+                name, new FactoryData(bufferSize, null, connectionSource, tableName, columnConfigs,
+                        new ColumnMapping[0], false, AbstractDatabaseAppender.DEFAULT_RECONNECT_INTERVAL_MILLIS),
+                getFactory());
     }
 
     /**
@@ -170,18 +244,17 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * @param columnConfigs Configuration information about the log table columns.
      * @param columnMappings column mapping configuration (including type conversion).
      * @return a new or existing JDBC manager as applicable.
-     * @deprecated use {@link #getManager(String, int, Layout, ConnectionSource, String, ColumnConfig[], ColumnMapping[])}
+     * @deprecated use
+     * {@link #getManager(String, int, Layout, ConnectionSource, String, ColumnConfig[], ColumnMapping[], boolean, long)}
      */
     @Deprecated
-    public static JdbcDatabaseManager getManager(final String name,
-                                                 final int bufferSize,
-                                                 final ConnectionSource connectionSource,
-                                                 final String tableName,
-                                                 final ColumnConfig[] columnConfigs,
-                                                 final ColumnMapping[] columnMappings) {
-        return getManager(name, new FactoryData(bufferSize, null, connectionSource, tableName, columnConfigs, columnMappings),
-            getFactory());
+    public static JdbcDatabaseManager getManager(final String name, final int bufferSize,
+            final ConnectionSource connectionSource, final String tableName, final ColumnConfig[] columnConfigs,
+            final ColumnMapping[] columnMappings) {
+        return getManager(name, new FactoryData(bufferSize, null, connectionSource, tableName, columnConfigs,
+                columnMappings, false, AbstractDatabaseAppender.DEFAULT_RECONNECT_INTERVAL_MILLIS), getFactory());
     }
+
     /**
      * Creates a JDBC manager for use within the {@link JdbcAppender}, or returns a suitable one if it already exists.
      *
@@ -194,43 +267,96 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * @param columnMappings column mapping configuration (including type conversion).
      * @return a new or existing JDBC manager as applicable.
      */
-    public static JdbcDatabaseManager getManager(final String name,
-                                                 final int bufferSize,
-                                                 final Layout<? extends Serializable> layout,
-                                                 final ConnectionSource connectionSource,
-                                                 final String tableName,
-                                                 final ColumnConfig[] columnConfigs,
-                                                 final ColumnMapping[] columnMappings) {
-        return getManager(name, new FactoryData(bufferSize, layout, connectionSource, tableName, columnConfigs, columnMappings),
-            getFactory());
+    @Deprecated
+    public static JdbcDatabaseManager getManager(final String name, final int bufferSize,
+            final Layout<? extends Serializable> layout, final ConnectionSource connectionSource,
+            final String tableName, final ColumnConfig[] columnConfigs, final ColumnMapping[] columnMappings) {
+        return getManager(name, new FactoryData(bufferSize, layout, connectionSource, tableName, columnConfigs,
+                columnMappings, false, AbstractDatabaseAppender.DEFAULT_RECONNECT_INTERVAL_MILLIS), getFactory());
+    }
+
+    /**
+     * Creates a JDBC manager for use within the {@link JdbcAppender}, or returns a suitable one if it already exists.
+     *
+     * @param name The name of the manager, which should include connection details and hashed passwords where possible.
+     * @param bufferSize The size of the log event buffer.
+     * @param layout The Appender-level layout
+     * @param connectionSource The source for connections to the database.
+     * @param tableName The name of the database table to insert log events into.
+     * @param columnConfigs Configuration information about the log table columns.
+     * @param columnMappings column mapping configuration (including type conversion).
+     * @param immediateFail Whether or not to fail immediately with a {@link AppenderLoggingException} when connecting
+     * to JDBC fails.
+     * @param reconnectIntervalMillis How often to reconnect to the database when a SQL exception is detected.
+     * @return a new or existing JDBC manager as applicable.
+     */
+    public static JdbcDatabaseManager getManager(final String name, final int bufferSize,
+            final Layout<? extends Serializable> layout, final ConnectionSource connectionSource,
+            final String tableName, final ColumnConfig[] columnConfigs, final ColumnMapping[] columnMappings,
+            final boolean immediateFail, final long reconnectIntervalMillis) {
+        return getManager(name, new FactoryData(bufferSize, layout, connectionSource, tableName, columnConfigs,
+                columnMappings, immediateFail, reconnectIntervalMillis), getFactory());
     }
 
     // NOTE: prepared statements are prepared in this order: column mappings, then column configs
-    private final List<ColumnMapping> columnMappings;
-
     private final List<ColumnConfig> columnConfigs;
-
-    private final ConnectionSource connectionSource;
-
     private final String sqlStatement;
+    private final FactoryData factoryData;
+    private volatile Connection connection;
+    private volatile PreparedStatement statement;
+    private volatile Reconnector reconnector;
+    private volatile boolean isBatchSupported;
 
-    private Connection connection;
-
-    private PreparedStatement statement;
-
-    private boolean isBatchSupported;
-
-    private final String tableName;
-
-    private JdbcDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
-                                final String sqlStatement, final String tableName,
-                                final List<ColumnConfig> columnConfigs, final List<ColumnMapping> columnMappings) {
-        super(name, bufferSize);
-        this.connectionSource = connectionSource;
+    private JdbcDatabaseManager(final String name, final String sqlStatement, final List<ColumnConfig> columnConfigs,
+            final FactoryData factoryData) {
+        super(name, factoryData.getBufferSize());
         this.sqlStatement = sqlStatement;
         this.columnConfigs = columnConfigs;
-        this.columnMappings = columnMappings;
-        this.tableName = tableName;
+        this.factoryData = factoryData;
+        try {
+            connectAndPrepare();
+        } catch (final SQLException e) {
+            this.reconnector = createReconnector();
+            this.reconnector.start();
+        }
+    }
+
+    private void checkConnection() {
+        boolean connClosed = true;
+        try {
+            connClosed = this.connection == null || this.connection.isClosed();
+        } catch (final SQLException e) {
+            // Be quiet
+        }
+        boolean stmtClosed = true;
+        try {
+            stmtClosed = this.statement == null || this.statement.isClosed();
+        } catch (final SQLException e) {
+            // Be quiet
+        }
+        if (!this.isRunning() || connClosed || stmtClosed) {
+            if (reconnector != null && !factoryData.immediateFail) {
+                reconnector.latch();
+                if (connection == null) {
+                    throw new AppenderLoggingException(
+                            "Error writing to JDBC Manager '" + getName() + "': JDBC connection not available.");
+                }
+                if (statement == null) {
+                    throw new AppenderLoggingException(
+                            "Error writing to JDBC Manager '" + getName() + "': JDBC statement not available.");
+                }
+            }
+        }
+    }
+
+    private boolean closeConnection() {
+        if (this.connection != null || this.statement != null) {
+            return this.commitAndClose();
+        }
+        if (factoryData.connectionSource != null) {
+            factoryData.connectionSource.stop();
+        }
+        return true;
     }
 
     @Override
@@ -272,32 +398,72 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         return closed;
     }
 
+    private void connectAndPrepare() throws SQLException {
+        logger().debug("Acquiring JDBC connection from {}", this.getConnectionSource());
+        this.connection = getConnectionSource().getConnection();
+        logger().debug("Acquired JDBC connection {}", this.connection);
+        this.connection.setAutoCommit(false);
+        logger().debug("Preparing SQL {}", this.sqlStatement);
+        this.statement = this.connection.prepareStatement(this.sqlStatement);
+        logger().debug("Prepared SQL {}", this.statement);
+    }
+
     @Override
     protected void connectAndStart() {
-        try {
-            this.connection = this.connectionSource.getConnection();
-            this.connection.setAutoCommit(false);
-            logger().debug("Preparing SQL: {}", this.sqlStatement);
-            this.statement = this.connection.prepareStatement(this.sqlStatement);
-        } catch (final SQLException e) {
-            throw new AppenderLoggingException(
-                    "Cannot write logging event or flush buffer; JDBC manager cannot connect to the database.", e);
+        checkConnection();
+        synchronized (this) {
+            try {
+                connectAndPrepare();
+            } catch (final SQLException causeEx) {
+                if (factoryData.retry && reconnector == null) {
+                    reconnector = createReconnector();
+                    try {
+                        closeConnection();
+                        reconnector.reconnect();
+                    } catch (final SQLException reconnEx) {
+                        logger().debug("Cannot reestablish JDBC connection to {}: {}; starting reconnector thread {}",
+                                factoryData, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
+                        reconnector.start();
+                        throw new AppenderLoggingException(
+                                String.format("Error sending to %s for %s", getName(), factoryData), causeEx);
+                    }
+                    try {
+                        connectAndPrepare();
+                    } catch (final SQLException e) {
+                        throw new AppenderLoggingException(
+                                String.format("Error sending to %s after reestablishing JDBC connection for %s",
+                                        getName(), factoryData),
+                                causeEx);
+                    }
+                }
+            }
         }
     }
 
+    private Reconnector createReconnector() {
+        final Reconnector recon = new Reconnector(this);
+        recon.setDaemon(true);
+        recon.setPriority(Thread.MIN_PRIORITY);
+        return recon;
+    }
+
     public ConnectionSource getConnectionSource() {
-        return connectionSource;
+        return factoryData.connectionSource;
     }
 
     public String getSqlStatement() {
         return sqlStatement;
     }
 
+    public String getTableName() {
+        return factoryData.tableName;
+    }
+
     private void setFields(final MapMessage<?, ?> mapMessage) throws SQLException {
         final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
         final String simpleName = statement.getClass().getName();
         int i = 1; // JDBC indices start at 1
-        for (final ColumnMapping mapping : this.columnMappings) {
+        for (final ColumnMapping mapping : this.factoryData.columnMappings) {
             final String source = mapping.getSource();
             final String key = Strings.isEmpty(source) ? mapping.getName() : source;
             final Object value = map.getValue(key);
@@ -312,26 +478,25 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
 
     @Override
     protected boolean shutdownInternal() {
-        if (this.connection != null || this.statement != null) {
-            return this.commitAndClose();
+        if (reconnector != null) {
+            reconnector.shutdown();
+            reconnector.interrupt();
+            reconnector = null;
         }
-        if (connectionSource != null) {
-            connectionSource.stop();
-        }
-        return true;
+        return closeConnection();
     }
 
     @Override
-	protected void startupInternal() throws Exception {
-		this.connection = this.connectionSource.getConnection();
-		try {
-			final DatabaseMetaData metaData = this.connection.getMetaData();
-			this.isBatchSupported = metaData.supportsBatchUpdates();
-		} finally {
-			logger().debug("Closing Connection {}", this.connection);
-			Closer.closeSilently(this.connection);
-		}
-	}
+    protected void startupInternal() throws Exception {
+        this.connection = getConnectionSource().getConnection();
+        try {
+            final DatabaseMetaData metaData = this.connection.getMetaData();
+            this.isBatchSupported = metaData.supportsBatchUpdates();
+        } finally {
+            logger().debug("Closing Connection {}", this.connection);
+            Closer.closeSilently(this.connection);
+        }
+    }
 
     @Deprecated
     @Override
@@ -354,7 +519,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 setFields((MapMessage<?, ?>) serializable);
             }
             int i = 1; // JDBC indices start at 1
-            for (final ColumnMapping mapping : this.columnMappings) {
+            for (final ColumnMapping mapping : this.factoryData.columnMappings) {
                 if (ThreadContextMap.class.isAssignableFrom(mapping.getType())
                         || ReadOnlyStringMap.class.isAssignableFrom(mapping.getType())) {
                     this.statement.setObject(i++, event.getContextData().toMap());
@@ -406,8 +571,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                         "No records inserted in database table for log event in JDBC manager.");
             }
         } catch (final SQLException e) {
-            throw new AppenderLoggingException("Failed to insert record for log event in JDBC manager: " +
-                    e.getMessage(), e);
+            throw new AppenderLoggingException(
+                    "Failed to insert record for log event in JDBC manager: " + e.getMessage(), e);
         } finally {
             // Release ASAP
             try {
@@ -417,9 +582,6 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             }
             Closer.closeSilently(reader);
         }
-    }
-    public String getTableName() {
-        return tableName;
     }
 
 }
