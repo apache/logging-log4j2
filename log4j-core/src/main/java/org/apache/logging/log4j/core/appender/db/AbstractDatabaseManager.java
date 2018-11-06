@@ -31,11 +31,11 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
  * Manager that allows database appenders to have their configuration reloaded without losing events.
  */
 public abstract class AbstractDatabaseManager extends AbstractManager implements Flushable {
+    
     private final ArrayList<LogEvent> buffer;
     private final int bufferSize;
     private final Layout<? extends Serializable> layout;
-
-    private boolean running = false;
+    private boolean running;
 
     /**
      * Instantiates the base manager.

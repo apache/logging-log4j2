@@ -40,10 +40,15 @@ import org.apache.logging.log4j.core.config.Property;
  */
 public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager> extends AbstractAppender {
 
+    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B> {
+        // empty for now.
+    }
+    
+    public static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 5000;
+
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock readLock = lock.readLock();
     private final Lock writeLock = lock.writeLock();
-
     private T manager;
 
     /**
@@ -61,6 +66,24 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
             final Layout<? extends Serializable> layout, final boolean ignoreExceptions, Property[] properties, final T manager) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
+    }
+
+    @Override
+    public final void append(final LogEvent event) {
+        this.readLock.lock();
+        try {
+            this.getManager().write(event, toSerializable(event));
+        } catch (final LoggingException e) {
+            LOGGER.error("Unable to write to database [{}] for appender [{}].", this.getManager().getName(),
+                    this.getName(), e);
+            throw e;
+        } catch (final Exception e) {
+            LOGGER.error("Unable to write to database [{}] for appender [{}].", this.getManager().getName(),
+                    this.getName(), e);
+            throw new AppenderLoggingException("Unable to write to database in appender: " + e.getMessage(), e);
+        } finally {
+            this.readLock.unlock();
+        }
     }
 
     /**
@@ -83,6 +106,27 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
         return this.manager;
     }
 
+    /**
+     * Replaces the underlying manager in use within this appender. This can be useful for manually changing the way log
+     * events are written to the database without losing buffered or in-progress events. The existing manager is
+     * released only after the new manager has been installed. This method is thread-safe.
+     *
+     * @param manager The new manager to install.
+     */
+    protected final void replaceManager(final T manager) {
+        this.writeLock.lock();
+        try {
+            final T old = this.getManager();
+            if (!manager.isRunning()) {
+                manager.startup();
+            }
+            this.manager = manager;
+            old.close();
+        } finally {
+            this.writeLock.unlock();
+        }
+    }
+
     @Override
     public final void start() {
         if (this.getManager() == null) {
@@ -103,44 +147,5 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
         }
         setStopped();
         return stopped;
-    }
-
-    @Override
-    public final void append(final LogEvent event) {
-        this.readLock.lock();
-        try {
-            this.getManager().write(event, toSerializable(event));
-        } catch (final LoggingException e) {
-            LOGGER.error("Unable to write to database [{}] for appender [{}].", this.getManager().getName(),
-                    this.getName(), e);
-            throw e;
-        } catch (final Exception e) {
-            LOGGER.error("Unable to write to database [{}] for appender [{}].", this.getManager().getName(),
-                    this.getName(), e);
-            throw new AppenderLoggingException("Unable to write to database in appender: " + e.getMessage(), e);
-        } finally {
-            this.readLock.unlock();
-        }
-    }
-
-    /**
-     * Replaces the underlying manager in use within this appender. This can be useful for manually changing the way log
-     * events are written to the database without losing buffered or in-progress events. The existing manager is
-     * released only after the new manager has been installed. This method is thread-safe.
-     *
-     * @param manager The new manager to install.
-     */
-    protected final void replaceManager(final T manager) {
-        this.writeLock.lock();
-        try {
-            final T old = this.getManager();
-            if (!manager.isRunning()) {
-                manager.startup();
-            }
-            this.manager = manager;
-            old.close();
-        } finally {
-            this.writeLock.unlock();
-        }
     }
 }

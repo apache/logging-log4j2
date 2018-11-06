@@ -59,6 +59,9 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         private ConnectionSource connectionSource;
 
         @PluginBuilderAttribute
+        private boolean immediateFail;
+        
+        @PluginBuilderAttribute
         private int bufferSize;
 
         @PluginBuilderAttribute
@@ -71,6 +74,10 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         @PluginElement("ColumnMappings")
         private ColumnMapping[] columnMappings;
 
+        // TODO Consider moving up to AbstractDatabaseAppender.Builder.
+        @PluginBuilderAttribute
+        private long reconnectIntervalMillis = DEFAULT_RECONNECT_INTERVAL_MILLIS;
+
         @SuppressWarnings("resource")
         @Override
         public JdbcAppender build() {
@@ -82,11 +89,12 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
                     + tableName + ", columnConfigs=" + Arrays.toString(columnConfigs) + ", columnMappings="
                     + Arrays.toString(columnMappings) + '}';
             final JdbcDatabaseManager manager = JdbcDatabaseManager.getManager(managerName, bufferSize, getLayout(),
-                    connectionSource, tableName, columnConfigs, columnMappings);
+                    connectionSource, tableName, columnConfigs, columnMappings, immediateFail, reconnectIntervalMillis);
             if (manager == null) {
                 return null;
             }
-            return new JdbcAppender(getName(), getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(), manager);
+            return new JdbcAppender(getName(), getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(),
+                    manager);
         }
 
         /**
@@ -129,6 +137,14 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         public B setConnectionSource(final ConnectionSource connectionSource) {
             this.connectionSource = connectionSource;
             return asBuilder();
+        }
+
+        public void setImmediateFail(boolean immediateFail) {
+            this.immediateFail = immediateFail;
+        }
+
+        public void setReconnectIntervalMillis(long reconnectIntervalMillis) {
+            this.reconnectIntervalMillis = reconnectIntervalMillis;
         }
 
         /**
