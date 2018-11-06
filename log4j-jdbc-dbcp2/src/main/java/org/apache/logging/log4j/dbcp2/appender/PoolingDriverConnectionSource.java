@@ -151,7 +151,7 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
         // any ObjectPool implementation will suffice.
         //
         @SuppressWarnings("resource")
-        // This GenericObjectPool will be closed on shutown
+        // This GenericObjectPool will be closed on shutdown
         final ObjectPool<PoolableConnection> connectionPool = new GenericObjectPool<>(poolableConnectionFactory);
 
         // Set the factory's pool property to the owning pool
