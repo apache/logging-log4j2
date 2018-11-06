@@ -1066,6 +1066,22 @@ CREATE TABLE logs (
                 pattern specified will be converted into the configured type and stored in that column.
               </td>
             </tr>
+            <tr>
+              <td>immediateFail</td>
+              <td>boolean</td>
+              <td>false</td>
+              <td>When set to true, log events will not wait to try to reconnect and will fail immediately if the
+              JDBC resources are not available. New in 2.11.2</td>
+            </tr>
+            <tr>
+              <td>reconnectIntervalMillis</td>
+              <td>long</td>
+              <td>5000</td>
+              <td>If set to a value greater than 0, after an error, the JDBCDatabaseManager will attempt to reconnect to
+                the database after waiting the specified number of milliseconds. If the reconnect fails then
+                an exception will be thrown (which can be caught by the application if <code>ignoreExceptions</code> is
+                set to <code>false</code>). New in 2.11.2.</td>
+            </tr>
           </table>
           <p>When configuring the JDBCAppender, you must specify a <code>ConnectionSource</code> implementation from
             which the Appender gets JDBC connections. You must use exactly one of the following nested elements:</p>
