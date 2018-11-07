@@ -273,7 +273,9 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * @deprecated Use {@link #writeInternal(LogEvent, Serializable)}.
      */
     @Deprecated
-    protected abstract void writeInternal(LogEvent event);
+    protected void writeInternal(LogEvent event) {
+        writeInternal(event, null);
+    }
 
     /**
      * Performs the actual writing of the event in an implementation-specific way. This method is called immediately

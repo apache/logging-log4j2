@@ -239,12 +239,6 @@ public class AbstractDatabaseManagerTest {
             // noop
         }
 
-        @Deprecated
-        @Override
-        protected void writeInternal(final LogEvent event) {
-            // noop
-        }
-
         @Override
         protected void writeInternal(final LogEvent event, final Serializable serializable) {
             // noop

@@ -509,12 +509,6 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         // empty
     }
 
-    @Deprecated
-    @Override
-    protected void writeInternal(final LogEvent event) {
-        writeInternal(event, null);
-    }
-
     @Override
     protected void writeInternal(final LogEvent event, final Serializable serializable) {
         StringReader reader = null;
