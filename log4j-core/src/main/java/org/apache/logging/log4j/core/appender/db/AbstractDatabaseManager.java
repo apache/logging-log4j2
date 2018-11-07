@@ -148,7 +148,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      */
     @Override
     public final synchronized void flush() {
-        if (this.isRunning() && this.buffer.size() > 0) {
+        if (this.isRunning() && isBuffered()) {
             this.connectAndStart();
             try {
                 for (final LogEvent event : this.buffer) {
