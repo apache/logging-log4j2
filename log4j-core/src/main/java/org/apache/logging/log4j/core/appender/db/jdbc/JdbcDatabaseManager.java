@@ -41,6 +41,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.appender.db.ColumnMapping;
+import org.apache.logging.log4j.core.appender.db.DbAppenderLoggingException;
 import org.apache.logging.log4j.core.config.plugins.convert.DateTypeConverter;
 import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.core.util.Closer;
@@ -156,17 +157,15 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     }
 
     /**
-     * Handles reconnecting to JDBC on a Thread.
+     * Handles reconnecting to JDBC once on a Thread.
      */
     private class Reconnector extends Log4jThread {
 
         private final CountDownLatch latch = new CountDownLatch(1);
         private volatile boolean shutdown = false;
-        private final Object owner;
 
-        private Reconnector(final Object owner) {
+        private Reconnector() {
             super("JdbcDatabaseManager-Reconnector");
-            this.owner = owner;
         }
 
         public void latch() {
@@ -178,11 +177,10 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         }
 
         void reconnect() throws SQLException {
-            synchronized (owner) {
-                connectAndPrepare();
-                reconnector = null;
-                shutdown = true;
-            }
+            closeResources(false);
+            connectAndPrepare();
+            reconnector = null;
+            shutdown = true;
             logger().debug("Connection reestablished to {}", factoryData);
         }
 
@@ -313,12 +311,6 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         this.sqlStatement = sqlStatement;
         this.columnConfigs = columnConfigs;
         this.factoryData = factoryData;
-        try {
-            connectAndPrepare();
-        } catch (final SQLException e) {
-            this.reconnector = createReconnector();
-            this.reconnector.start();
-        }
     }
 
     private void checkConnection() {
@@ -336,12 +328,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         }
         if (!this.isRunning() || connClosed || stmtClosed) {
             // If anything is closed, close it all down before we reconnect
-            if (!connClosed) {
-                Closer.closeSilently(this.connection);
-            }
-            if (!stmtClosed) {
-                Closer.closeSilently(this.statement);
-            }
+            closeResources(false);
             // Reconnect
             if (reconnector != null && !factoryData.immediateFail) {
                 reconnector.latch();
@@ -357,7 +344,54 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         }
     }
 
-    private boolean closeConnection() {
+    protected void closeResources(boolean logExceptions) {
+        try {
+            // Closing a statement returns it to the pool when using Apache Commons DBCP.
+            // Closing an already closed statement has no effect.
+            Closer.close(this.statement);
+        } catch (final Exception e) {
+            if (logExceptions) {
+                logWarn("Failed to close SQL statement logging event or flushing buffer", e);
+            }
+        } finally {
+            this.statement = null;
+        }
+
+        try {
+            // Closing a connection returns it to the pool when using Apache Commons DBCP.
+            // Closing an already closed connection has no effect.
+            Closer.close(this.connection);
+        } catch (final Exception e) {
+            if (logExceptions) {
+                logWarn("Failed to close database connection logging event or flushing buffer", e);
+            }
+        } finally {
+            this.connection = null;
+        }
+    }
+
+    @Override
+    protected boolean commitAndClose() {
+        boolean closed = true;
+        try {
+            if (this.connection != null && !this.connection.isClosed()) {
+                if (this.isBatchSupported && this.statement != null) {
+                    logger().debug("Executing batch PreparedStatement {}", this.statement);
+                    final int[] result = this.statement.executeBatch();
+                    logger().debug("Batch result: {}", Arrays.toString(result));
+                }
+                logger().debug("Committing Connection {}", this.connection);
+                this.connection.commit();
+            }
+        } catch (final SQLException e) {
+            throw new DbAppenderLoggingException("Failed to commit transaction logging event or flushing buffer.", e);
+        } finally {
+            closeResources(true);
+        }
+        return closed;
+    }
+
+    private boolean commitAndCloseAll() {
         if (this.connection != null || this.statement != null) {
             try {
                 this.commitAndClose();
@@ -376,49 +410,15 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         return true;
     }
 
-    @Override
-    protected boolean commitAndClose() {
-        boolean closed = true;
-        try {
-            if (this.connection != null && !this.connection.isClosed()) {
-                if (this.isBatchSupported && this.statement != null) {
-                    logger().debug("Executing batch PreparedStatement {}", this.statement);
-                    final int[] result = this.statement.executeBatch();
-                    logger().debug("Batch result: {}", Arrays.toString(result));
-                }
-                logger().debug("Committing Connection {}", this.connection);
-                this.connection.commit();
-            }
-        } catch (final SQLException e) {
-            throw new AppenderLoggingException("Failed to commit transaction logging event or flushing buffer.", e);
-        } finally {
-            try {
-                // Closing a statement returns it to the pool when using Apache Commons DBCP.
-                Closer.close(this.statement);
-            } catch (final Exception e) {
-                logWarn("Failed to close SQL statement logging event or flushing buffer", e);
-                closed = false;
-            } finally {
-                this.statement = null;
-            }
-
-            try {
-                // Closing a connection returns it to the pool when using Apache Commons DBCP.
-                Closer.close(this.connection);
-            } catch (final Exception e) {
-                logWarn("Failed to close database connection logging event or flushing buffer", e);
-                closed = false;
-            } finally {
-                this.connection = null;
-            }
-        }
-        return closed;
-    }
-
     private void connectAndPrepare() throws SQLException {
         logger().debug("Acquiring JDBC connection from {}", this.getConnectionSource());
         this.connection = getConnectionSource().getConnection();
         logger().debug("Acquired JDBC connection {}", this.connection);
+        logger().debug("Getting connection metadata {}", this.connection);
+        final DatabaseMetaData metaData = this.connection.getMetaData();
+        logger().debug("Connection metadata {}", metaData);
+        this.isBatchSupported = metaData.supportsBatchUpdates();
+        logger().debug("Connection supportsBatchUpdates: {}", this.isBatchSupported);
         this.connection.setAutoCommit(false);
         logger().debug("Preparing SQL {}", this.sqlStatement);
         this.statement = this.connection.prepareStatement(this.sqlStatement);
@@ -431,26 +431,14 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         synchronized (this) {
             try {
                 connectAndPrepare();
-            } catch (final SQLException causeEx) {
-                if (factoryData.retry && reconnector == null) {
-                    reconnector = createReconnector();
-                    try {
-                        closeConnection();
-                        reconnector.reconnect();
-                    } catch (final SQLException reconnEx) {
-                        logger().debug("Cannot reestablish JDBC connection to {}: {}; starting reconnector thread {}",
-                                factoryData, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
-                        reconnector.start();
-                        throw new AppenderLoggingException(
-                                String.format("Error sending to %s for %s", getName(), factoryData), causeEx);
-                    }
-                }
+            } catch (final SQLException e) {
+                reconnectOn(e);
             }
         }
     }
 
     private Reconnector createReconnector() {
-        final Reconnector recon = new Reconnector(this);
+        final Reconnector recon = new Reconnector();
         recon.setDaemon(true);
         recon.setPriority(Thread.MIN_PRIORITY);
         return recon;
@@ -466,6 +454,27 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
 
     public String getTableName() {
         return factoryData.tableName;
+    }
+
+    private void reconnectOn(final Exception exception) {
+        if (!factoryData.retry) {
+            throw new AppenderLoggingException("Cannot connect and prepare", exception);
+        }
+        if (reconnector == null) {
+            reconnector = createReconnector();
+            try {
+                reconnector.reconnect();
+            } catch (final SQLException reconnectEx) {
+                logger().debug("Cannot reestablish JDBC connection to {}: {}; starting reconnector thread {}",
+                        factoryData, reconnectEx, reconnector.getName(), reconnectEx);
+                reconnector.start();
+                reconnector.latch();
+                if (connection == null || statement == null) {
+                    throw new AppenderLoggingException(
+                            String.format("Error sending to %s for %s", getName(), factoryData), exception);
+                }
+            }
+        }
     }
 
     private void setFields(final MapMessage<?, ?> mapMessage) throws SQLException {
@@ -492,18 +501,12 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             reconnector.interrupt();
             reconnector = null;
         }
-        return closeConnection();
+        return commitAndCloseAll();
     }
 
     @Override
     protected void startupInternal() throws Exception {
-        this.connection = getConnectionSource().getConnection();
-        try {
-            final DatabaseMetaData metaData = this.connection.getMetaData();
-            this.isBatchSupported = metaData.supportsBatchUpdates();
-        } finally {
-            Closer.closeSilently(this.connection);
-        }
+        // empty
     }
 
     @Deprecated
@@ -579,7 +582,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                         "No records inserted in database table for log event in JDBC manager.");
             }
         } catch (final SQLException e) {
-            throw new AppenderLoggingException(
+            throw new DbAppenderLoggingException(
                     "Failed to insert record for log event in JDBC manager: " + e.getMessage(), e);
         } finally {
             // Release ASAP
@@ -589,6 +592,25 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 // Ignore
             }
             Closer.closeSilently(reader);
+        }
+    }
+
+    @Override
+    protected void writeThrough(final LogEvent event, final Serializable serializable) {
+        this.connectAndStart();
+        try {
+            try {
+                this.writeInternal(event, serializable);
+            } finally {
+                this.commitAndClose();
+            }
+        } catch (DbAppenderLoggingException e) {
+            reconnectOn(e);
+            try {
+                this.writeInternal(event, serializable);
+            } finally {
+                this.commitAndClose();
+            }
         }
     }
 

@@ -32,216 +32,6 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
  */
 public abstract class AbstractDatabaseManager extends AbstractManager implements Flushable {
     
-    private final ArrayList<LogEvent> buffer;
-    private final int bufferSize;
-    private final Layout<? extends Serializable> layout;
-    private boolean running;
-
-    /**
-     * Instantiates the base manager.
-     *
-     * @param name The manager name, which should include any configuration details that one might want to be able to
-     *             reconfigure at runtime, such as database name, username, (hashed) password, etc.
-     * @param bufferSize The size of the log event buffer.
-     */
-    protected AbstractDatabaseManager(final String name, final int bufferSize) {
-        this(name, bufferSize, null);
-    }
-
-    /**
-     * Instantiates the base manager.
-     *
-     * @param name The manager name, which should include any configuration details that one might want to be able to
-     *             reconfigure at runtime, such as database name, username, (hashed) password, etc.
-     * @param layout the Appender-level layout.
-     * @param bufferSize The size of the log event buffer.
-     */
-    protected AbstractDatabaseManager(final String name, final int bufferSize, final Layout<? extends Serializable> layout) {
-        super(null, name);
-        this.bufferSize = bufferSize;
-        this.buffer = new ArrayList<>(bufferSize + 1);
-        this.layout = layout;
-    }
-
-    /**
-     * Implementations should implement this method to perform any proprietary startup operations. This method will
-     * never be called twice on the same instance. It is safe to throw any exceptions from this method. This method
-     * does not necessarily connect to the database, as it is generally unreliable to connect once and use the same
-     * connection for hours.
-     */
-    protected abstract void startupInternal() throws Exception;
-
-    /**
-     * This method is called within the appender when the appender is started. If it has not already been called, it
-     * calls {@link #startupInternal()} and catches any exceptions it might throw.
-     */
-    public final synchronized void startup() {
-        if (!this.isRunning()) {
-            try {
-                this.startupInternal();
-                this.running = true;
-            } catch (final Exception e) {
-                logError("Could not perform database startup operations", e);
-            }
-        }
-    }
-
-    /**
-     * Implementations should implement this method to perform any proprietary disconnection / shutdown operations. This
-     * method will never be called twice on the same instance, and it will only be called <em>after</em>
-     * {@link #startupInternal()}. It is safe to throw any exceptions from this method. This method does not
-     * necessarily disconnect from the database for the same reasons outlined in {@link #startupInternal()}.
-     * @return true if all resources were closed normally, false otherwise.
-     */
-    protected abstract boolean shutdownInternal() throws Exception;
-
-    /**
-     * This method is called from the {@link #close()} method when the appender is stopped or the appender's manager
-     * is replaced. If it has not already been called, it calls {@link #shutdownInternal()} and catches any exceptions
-     * it might throw.
-     * @return true if all resources were closed normally, false otherwise.
-     */
-    public final synchronized boolean shutdown() {
-        boolean closed = true;
-        this.flush();
-        if (this.isRunning()) {
-            try {
-                closed &= this.shutdownInternal();
-            } catch (final Exception e) {
-                logWarn("Caught exception while performing database shutdown operations", e);
-                closed = false;
-            } finally {
-                this.running = false;
-            }
-        }
-        return closed;
-    }
-
-    /**
-     * Indicates whether the manager is currently connected {@link #startup()} has been called and {@link #shutdown()}
-     * has not been called).
-     *
-     * @return {@code true} if the manager is connected.
-     */
-    public final boolean isRunning() {
-        return this.running;
-    }
-
-    /**
-     * Connects to the database and starts a transaction (if applicable). With buffering enabled, this is called when
-     * flushing the buffer begins, before the first call to {@link #writeInternal}. With buffering disabled, this is
-     * called immediately before every invocation of {@link #writeInternal}.
-     */
-    protected abstract void connectAndStart();
-
-    /**
-     * Performs the actual writing of the event in an implementation-specific way. This method is called immediately
-     * from {@link #write(LogEvent, Serializable)} if buffering is off, or from {@link #flush()} if the buffer has reached its limit.
-     *
-     * @param event The event to write to the database.
-     * @deprecated Use {@link #writeInternal(LogEvent, Serializable)}.
-     */
-    @Deprecated
-    protected abstract void writeInternal(LogEvent event);
-
-    /**
-     * Performs the actual writing of the event in an implementation-specific way. This method is called immediately
-     * from {@link #write(LogEvent, Serializable)} if buffering is off, or from {@link #flush()} if the buffer has reached its limit.
-     *
-     * @param event The event to write to the database.
-     */
-    protected abstract void writeInternal(LogEvent event, Serializable serializable);
-
-    /**
-     * Commits any active transaction (if applicable) and disconnects from the database (returns the connection to the
-     * connection pool). With buffering enabled, this is called when flushing the buffer completes, after the last call
-     * to {@link #writeInternal}. With buffering disabled, this is called immediately after every invocation of
-     * {@link #writeInternal}.
-     * @return true if all resources were closed normally, false otherwise.
-     */
-    protected abstract boolean commitAndClose();
-
-    /**
-     * This method is called automatically when the buffer size reaches its maximum or at the beginning of a call to
-     * {@link #shutdown()}. It can also be called manually to flush events to the database.
-     */
-    @Override
-    public final synchronized void flush() {
-        if (this.isRunning() && this.buffer.size() > 0) {
-            this.connectAndStart();
-            try {
-                for (final LogEvent event : this.buffer) {
-                    this.writeInternal(event, layout != null ? layout.toSerializable(event) : null);
-                }
-            } finally {
-                this.commitAndClose();
-                // not sure if this should be done when writing the events failed
-                this.buffer.clear();
-            }
-        }
-    }
-
-    /**
-     * This method manages buffering and writing of events.
-     *
-     * @param event The event to write to the database.
-     * @deprecated since 2.11.0 Use {@link #write(LogEvent, Serializable)}.
-     */
-    @Deprecated
-    public final synchronized void write(final LogEvent event) {
-        write(event, null);
-    }
-
-    /**
-     * This method manages buffering and writing of events.
-     *
-     * @param event The event to write to the database.
-     * @param serializable Serializable event
-     */
-    public final synchronized void write(final LogEvent event, final Serializable serializable) {
-        if (this.bufferSize > 0) {
-            this.buffer.add(event.toImmutable());
-            if (this.buffer.size() >= this.bufferSize || event.isEndOfBatch()) {
-                this.flush();
-            }
-        } else {
-            this.connectAndStart();
-            try {
-                this.writeInternal(event, serializable);
-            } finally {
-                this.commitAndClose();
-            }
-        }
-    }
-
-    @Override
-    public final boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
-        return this.shutdown();
-    }
-
-    @Override
-    public final String toString() {
-        return this.getName();
-    }
-
-    /**
-     * Implementations should define their own getManager method and call this method from that to create or get
-     * existing managers.
-     *
-     * @param name The manager name, which should include any configuration details that one might want to be able to
-     *             reconfigure at runtime, such as database name, username, (hashed) password, etc.
-     * @param data The concrete instance of {@link AbstractFactoryData} appropriate for the given manager.
-     * @param factory A factory instance for creating the appropriate manager.
-     * @param <M> The concrete manager type.
-     * @param <T> The concrete {@link AbstractFactoryData} type.
-     * @return a new or existing manager of the specified type and name.
-     */
-    protected static <M extends AbstractDatabaseManager, T extends AbstractFactoryData> M getManager(
-            final String name, final T data, final ManagerFactory<M, T> factory
-    ) {
-        return AbstractManager.getManager(name, factory, data);
-    }
-
     /**
      * Implementations should extend this class for passing data between the getManager method and the manager factory
      * class.
@@ -277,6 +67,228 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
          */
         public Layout<? extends Serializable> getLayout() {
             return layout;
+        }
+    }
+    /**
+     * Implementations should define their own getManager method and call this method from that to create or get
+     * existing managers.
+     *
+     * @param name The manager name, which should include any configuration details that one might want to be able to
+     *             reconfigure at runtime, such as database name, username, (hashed) password, etc.
+     * @param data The concrete instance of {@link AbstractFactoryData} appropriate for the given manager.
+     * @param factory A factory instance for creating the appropriate manager.
+     * @param <M> The concrete manager type.
+     * @param <T> The concrete {@link AbstractFactoryData} type.
+     * @return a new or existing manager of the specified type and name.
+     */
+    protected static <M extends AbstractDatabaseManager, T extends AbstractFactoryData> M getManager(
+            final String name, final T data, final ManagerFactory<M, T> factory
+    ) {
+        return AbstractManager.getManager(name, factory, data);
+    }
+    private final ArrayList<LogEvent> buffer;
+    private final int bufferSize;
+
+    private final Layout<? extends Serializable> layout;
+
+    private boolean running;
+
+    /**
+     * Instantiates the base manager.
+     *
+     * @param name The manager name, which should include any configuration details that one might want to be able to
+     *             reconfigure at runtime, such as database name, username, (hashed) password, etc.
+     * @param bufferSize The size of the log event buffer.
+     */
+    protected AbstractDatabaseManager(final String name, final int bufferSize) {
+        this(name, bufferSize, null);
+    }
+
+    /**
+     * Instantiates the base manager.
+     *
+     * @param name The manager name, which should include any configuration details that one might want to be able to
+     *             reconfigure at runtime, such as database name, username, (hashed) password, etc.
+     * @param layout the Appender-level layout.
+     * @param bufferSize The size of the log event buffer.
+     */
+    protected AbstractDatabaseManager(final String name, final int bufferSize, final Layout<? extends Serializable> layout) {
+        super(null, name);
+        this.bufferSize = bufferSize;
+        this.buffer = new ArrayList<>(bufferSize + 1);
+        this.layout = layout;
+    }
+
+    protected void buffer(final LogEvent event) {
+        this.buffer.add(event.toImmutable());
+        if (this.buffer.size() >= this.bufferSize || event.isEndOfBatch()) {
+            this.flush();
+        }
+    }
+
+    /**
+     * Commits any active transaction (if applicable) and disconnects from the database (returns the connection to the
+     * connection pool). With buffering enabled, this is called when flushing the buffer completes, after the last call
+     * to {@link #writeInternal}. With buffering disabled, this is called immediately after every invocation of
+     * {@link #writeInternal}.
+     * @return true if all resources were closed normally, false otherwise.
+     */
+    protected abstract boolean commitAndClose();
+
+    /**
+     * Connects to the database and starts a transaction (if applicable). With buffering enabled, this is called when
+     * flushing the buffer begins, before the first call to {@link #writeInternal}. With buffering disabled, this is
+     * called immediately before every invocation of {@link #writeInternal}.
+     */
+    protected abstract void connectAndStart();
+
+    /**
+     * This method is called automatically when the buffer size reaches its maximum or at the beginning of a call to
+     * {@link #shutdown()}. It can also be called manually to flush events to the database.
+     */
+    @Override
+    public final synchronized void flush() {
+        if (this.isRunning() && this.buffer.size() > 0) {
+            this.connectAndStart();
+            try {
+                for (final LogEvent event : this.buffer) {
+                    this.writeInternal(event, layout != null ? layout.toSerializable(event) : null);
+                }
+            } finally {
+                this.commitAndClose();
+                // not sure if this should be done when writing the events failed
+                this.buffer.clear();
+            }
+        }
+    }
+
+    protected boolean isBuffered() {
+        return this.bufferSize > 0;
+    }
+
+    /**
+     * Indicates whether the manager is currently connected {@link #startup()} has been called and {@link #shutdown()}
+     * has not been called).
+     *
+     * @return {@code true} if the manager is connected.
+     */
+    public final boolean isRunning() {
+        return this.running;
+    }
+
+    @Override
+    public final boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+        return this.shutdown();
+    }
+
+    /**
+     * This method is called from the {@link #close()} method when the appender is stopped or the appender's manager
+     * is replaced. If it has not already been called, it calls {@link #shutdownInternal()} and catches any exceptions
+     * it might throw.
+     * @return true if all resources were closed normally, false otherwise.
+     */
+    public final synchronized boolean shutdown() {
+        boolean closed = true;
+        this.flush();
+        if (this.isRunning()) {
+            try {
+                closed &= this.shutdownInternal();
+            } catch (final Exception e) {
+                logWarn("Caught exception while performing database shutdown operations", e);
+                closed = false;
+            } finally {
+                this.running = false;
+            }
+        }
+        return closed;
+    }
+
+    /**
+     * Implementations should implement this method to perform any proprietary disconnection / shutdown operations. This
+     * method will never be called twice on the same instance, and it will only be called <em>after</em>
+     * {@link #startupInternal()}. It is safe to throw any exceptions from this method. This method does not
+     * necessarily disconnect from the database for the same reasons outlined in {@link #startupInternal()}.
+     * @return true if all resources were closed normally, false otherwise.
+     */
+    protected abstract boolean shutdownInternal() throws Exception;
+
+    /**
+     * This method is called within the appender when the appender is started. If it has not already been called, it
+     * calls {@link #startupInternal()} and catches any exceptions it might throw.
+     */
+    public final synchronized void startup() {
+        if (!this.isRunning()) {
+            try {
+                this.startupInternal();
+                this.running = true;
+            } catch (final Exception e) {
+                logError("Could not perform database startup operations", e);
+            }
+        }
+    }
+
+    /**
+     * Implementations should implement this method to perform any proprietary startup operations. This method will
+     * never be called twice on the same instance. It is safe to throw any exceptions from this method. This method
+     * does not necessarily connect to the database, as it is generally unreliable to connect once and use the same
+     * connection for hours.
+     */
+    protected abstract void startupInternal() throws Exception;
+
+    @Override
+    public final String toString() {
+        return this.getName();
+    }
+
+    /**
+     * This method manages buffering and writing of events.
+     *
+     * @param event The event to write to the database.
+     * @deprecated since 2.11.0 Use {@link #write(LogEvent, Serializable)}.
+     */
+    @Deprecated
+    public final synchronized void write(final LogEvent event) {
+        write(event, null);
+    }
+    
+    /**
+     * This method manages buffering and writing of events.
+     *
+     * @param event The event to write to the database.
+     * @param serializable Serializable event
+     */
+    public final synchronized void write(final LogEvent event, final Serializable serializable) {
+        if (isBuffered()) {
+            buffer(event);
+        } else {
+            writeThrough(event, serializable);
+        }
+    }
+
+    /**
+     * Performs the actual writing of the event in an implementation-specific way. This method is called immediately
+     * from {@link #write(LogEvent, Serializable)} if buffering is off, or from {@link #flush()} if the buffer has reached its limit.
+     *
+     * @param event The event to write to the database.
+     * @deprecated Use {@link #writeInternal(LogEvent, Serializable)}.
+     */
+    @Deprecated
+    protected abstract void writeInternal(LogEvent event);
+
+    /**
+     * Performs the actual writing of the event in an implementation-specific way. This method is called immediately
+     * from {@link #write(LogEvent, Serializable)} if buffering is off, or from {@link #flush()} if the buffer has reached its limit.
+     *
+     * @param event The event to write to the database.
+     */
+    protected abstract void writeInternal(LogEvent event, Serializable serializable);
+
+    protected void writeThrough(final LogEvent event, final Serializable serializable) {
+        this.connectAndStart();
+        try {
+            this.writeInternal(event, serializable);
+        } finally {
+            this.commitAndClose();
         }
     }
 }
