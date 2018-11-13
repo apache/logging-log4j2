@@ -1180,16 +1180,16 @@ CREATE TABLE logs (
               <td>This connection source inherits all parameter from the DriverManager connection source.</td>
             </tr>
             <tr>
-              <td>PoolableConnectionFactory</td>
-              <td>PoolableConnectionFactory element</td>
-              <td>Defines a PoolableConnectionFactory.</td>
-            </tr>
-            <tr>
               <td>poolName</td>
               <td>String</td>
               <td>The pool name used to pool JDBC Connections. Defaults to <code>example</code>. You can use the JDBC 
               connection string prefix <code>jdbc:apache:commons:dbcp:</code> followed by the pool name if you want 
               to use a pooled connection elsewhere. For example: <code>jdbc:apache:commons:dbcp:example</code>.</td>
+            </tr>
+            <tr>
+              <td>PoolableConnectionFactory</td>
+              <td>PoolableConnectionFactory element</td>
+              <td>Defines a PoolableConnectionFactory.</td>
             </tr>
           </table>
           <a name="JDBCPoolableConnectionFactory"/>
