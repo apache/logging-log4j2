@@ -71,7 +71,7 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
             this.poolName = poolName;
             return asBuilder();
         }
-        
+
         @Override
         public String toString() {
             return "Builder [poolName=" + poolName + ", connectionString=" + connectionString + ", driverClassName="
@@ -170,7 +170,7 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
     }
 
     @Override
-    public boolean stop(long timeout, TimeUnit timeUnit) {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         try {
             final PoolingDriver driver = getPoolingDriver();
             if (driver != null) {
@@ -178,7 +178,7 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
                 driver.closePool(poolName);
             }
             return true;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             getLogger().error("Exception stopping connection source for '{}' → '{}'", getConnectionString(),
                     getActualConnectionString(), e);
             return false;
