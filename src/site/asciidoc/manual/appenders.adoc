@@ -998,6 +998,31 @@ to `example`. You can use the JDBC connection string prefix
 `jdbc:apache:commons:dbcp:` followed by the pool name if you want to use
 a pooled connection elsewhere. For example:
 `jdbc:apache:commons:dbcp:example`.
+
+|PoolableConnectionFactory |PoolableConnectionFactory element |Defines a PoolableConnectionFactory.
+|=======================================================================
+
+[#JDBCPoolableConnectionFactory]
+.PoolableConnectionFactory Parameters (Apache Commons DBCP)
+[cols=",,",options="header",]
+|=======================================================================
+|Parameter Name |Type |Description
+|autoCommitOnReturn |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|cacheState |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|connectionInitSqls |Strings | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultAutoCommit |Boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultCatalog |String | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultQueryTimeoutSeconds |Integer | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultReadOnly |Boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultTransactionIsolation |int | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|disconnectionSqlCodes |Strings | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|fastFailValidation |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|maxConnLifetimeMillis |long | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|maxOpenPreparedStatements |int | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|poolStatements |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|rollbackOnReturn |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|validationQuery |String | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|validationQueryTimeoutSeconds |int | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
 |=======================================================================
 
 When configuring the JDBCAppender, use the nested `<Column>` elements to

@@ -326,6 +326,9 @@
       <action issue="LOG4J2-2503" dev="ggregory" type="update">
         Update MongoDB driver from 3.8.2 to 3.9.0 for log4j-mongodb3 module.
       </action>
+      <action issue="LOG4J2-2505" dev="ggregory" type="add">
+        Let JDBC PoolingDriverConnectionSource with Apache Commons DBCP configure a PoolableConnectionFactory.
+      </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
       <action issue="LOG4J2-2391" dev="ckozak" type="update">
@@ -423,6 +426,9 @@
       </action>
       <action issue="LOG4J2-2503" dev="ggregory" type="update">
         Update MongoDB driver from 3.8.2 to 3.9.0 for log4j-mongodb3 module.
+      </action>
+      <action issue="LOG4J2-2505" dev="ggregory" type="add">
+        Let JDBC PoolingDriverConnectionSource with Apache Commons DBCP configure a PoolableConnectionFactory.
       </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">

@@ -91,4 +91,19 @@ public class PoolingDriverConnectionSourceTest {
             .build();
         openAndClose(source);
     }
+
+    @Test
+    public void testPoolableConnectionFactoryConfig() throws SQLException {
+        PoolableConnectionFactoryConfig poolableConnectionFactoryConfig = PoolableConnectionFactoryConfig.newBuilder().setMaxConnLifetimeMillis(30000).build();
+        // @formatter:off
+        final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
+            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
+            .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
+            .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
+            .setPoolName("MyPoolName")
+            .setPoolableConnectionFactoryConfig(poolableConnectionFactoryConfig)
+            .build();
+        // @formatter:on
+        openAndClose(source);
+    }
 }
