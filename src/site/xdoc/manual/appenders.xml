@@ -1175,14 +1175,14 @@ CREATE TABLE logs (
               <th>Description</th>
             </tr>
             <tr>
-              <td>PoolableConnectionFactory</td>
-              <td>PoolableConnectionFactory element</td>
-              <td>Defines a PoolableConnectionFactory.</td>
-            </tr>
-            <tr>
               <td>DriverManager parameters</td>
               <td>DriverManager parameters</td>
               <td>This connection source inherits all parameter from the DriverManager connection source.</td>
+            </tr>
+            <tr>
+              <td>PoolableConnectionFactory</td>
+              <td>PoolableConnectionFactory element</td>
+              <td>Defines a PoolableConnectionFactory.</td>
             </tr>
             <tr>
               <td>poolName</td>
