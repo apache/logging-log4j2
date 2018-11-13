@@ -1175,6 +1175,11 @@ CREATE TABLE logs (
               <th>Description</th>
             </tr>
             <tr>
+              <td>PoolableConnectionFactory</td>
+              <td>PoolableConnectionFactory element</td>
+              <td>Defines a PoolableConnectionFactory.</td>
+            </tr>
+            <tr>
               <td>DriverManager parameters</td>
               <td>DriverManager parameters</td>
               <td>This connection source inherits all parameter from the DriverManager connection source.</td>
@@ -1185,6 +1190,95 @@ CREATE TABLE logs (
               <td>The pool name used to pool JDBC Connections. Defaults to <code>example</code>. You can use the JDBC 
               connection string prefix <code>jdbc:apache:commons:dbcp:</code> followed by the pool name if you want 
               to use a pooled connection elsewhere. For example: <code>jdbc:apache:commons:dbcp:example</code>.</td>
+            </tr>
+          </table>
+          <a name="JDBCPoolableConnectionFactory"/>
+          <table>
+            <caption align="top">PoolableConnectionFactory Parameters (Apache Commons DBCP)</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>autoCommitOnReturn</td>
+              <td>boolean</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>cacheState</td>
+              <td>boolean</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>ConnectionInitSqls</td>
+              <td>Strings</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>defaultAutoCommit</td>
+              <td>boolean</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>defaultCatalog</td>
+              <td>String</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>defaultQueryTimeoutSeconds</td>
+              <td>integer</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>defaultReadOnly</td>
+              <td>boolean</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>defaultTransactionIsolation</td>
+              <td>integer</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>disconnectionSqlCodes</td>
+              <td>Strings</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>fastFailValidation</td>
+              <td>boolean</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>maxConnLifetimeMillis</td>
+              <td>long</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>maxOpenPreparedStatements</td>
+              <td>integer</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>poolStatements</td>
+              <td>boolean</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>rollbackOnReturn</td>
+              <td>boolean</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>validationQuery</td>
+              <td>String</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+            </tr>
+            <tr>
+              <td>validationQueryTimeoutSeconds</td>
+              <td>integer</td>
+              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
           </table>
           <p>When configuring the JDBCAppender, use the nested <code>&lt;Column&gt;</code> elements to specify which

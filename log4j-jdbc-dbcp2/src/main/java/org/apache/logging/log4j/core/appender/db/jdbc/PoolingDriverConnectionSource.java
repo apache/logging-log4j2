@@ -31,7 +31,9 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 
 /**
  * A {@link ConnectionSource} that uses a JDBC connection string, a user name, and a password to call
@@ -51,13 +53,18 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
     implements org.apache.logging.log4j.core.util.Builder<PoolingDriverConnectionSource> {
 
         public static final String DEFAULT_POOL_NAME = "example";
+
+        @PluginElement("PoolableConnectionFactoryConfig")
+        private PoolableConnectionFactoryConfig poolableConnectionFactoryConfig;
+
+        @PluginBuilderAttribute
         private String poolName = DEFAULT_POOL_NAME;
 
         @Override
 		public PoolingDriverConnectionSource build() {
 			try {
 				return new PoolingDriverConnectionSource(getDriverClassName(), getConnectionString(), getUserName(),
-						getPassword(), getProperties(), poolName);
+						getPassword(), getProperties(), poolName, poolableConnectionFactoryConfig);
 			} catch (final SQLException e) {
 				getLogger().error("Exception constructing {} to '{}' with {}", PoolingDriverConnectionSource.class,
 						getConnectionString(), this, e);
@@ -65,12 +72,17 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
 			}
 		}
 
-        public B setPoolName(final String poolName) {
+        public B setPoolableConnectionFactoryConfig(final PoolableConnectionFactoryConfig poolableConnectionFactoryConfig) {
+            this.poolableConnectionFactoryConfig = poolableConnectionFactoryConfig;
+            return asBuilder();
+        }
+
+		public B setPoolName(final String poolName) {
             this.poolName = poolName;
             return asBuilder();
         }
 
-		@Override
+        @Override
 		public String toString() {
 			return "Builder [poolName=" + poolName + ", connectionString=" + connectionString + ", driverClassName="
 					+ driverClassName + ", properties=" + Arrays.toString(properties) + ", userName="
@@ -90,12 +102,25 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
 
     private final String poolName;
 
+    /**
+     * @deprecated Use {@link #newPoolingDriverConnectionSourceBuilder()}.
+     */
+    @Deprecated
     public PoolingDriverConnectionSource(final String driverClassName, final String connectionString,
             final char[] userName, final char[] password, final Property[] properties, final String poolName)
             throws SQLException {
         super(driverClassName, connectionString, URL_PREFIX + poolName, userName, password, properties);
         this.poolName = poolName;
-        setupDriver(connectionString);
+        setupDriver(connectionString, null);
+    }
+
+    private PoolingDriverConnectionSource(final String driverClassName, final String connectionString,
+            final char[] userName, final char[] password, final Property[] properties, final String poolName,
+            final PoolableConnectionFactoryConfig poolableConnectionFactoryConfig)
+            throws SQLException {
+        super(driverClassName, connectionString, URL_PREFIX + poolName, userName, password, properties);
+        this.poolName = poolName;
+        setupDriver(connectionString, poolableConnectionFactoryConfig);
     }
 
     @Override
@@ -112,7 +137,8 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
         return driver;
     }
 
-    private void setupDriver(final String connectionString) throws SQLException {
+    private void setupDriver(final String connectionString,
+            final PoolableConnectionFactoryConfig poolableConnectionFactoryConfig) throws SQLException {
         //
         // First, we'll create a ConnectionFactory that the
         // pool will use to create Connections.
@@ -130,7 +156,7 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
             }
             connectionFactory = new DriverManagerConnectionFactory(connectionString, toProperties(properties));
         } else {
-        	connectionFactory = new DriverManagerConnectionFactory(connectionString, toString(userName), toString(password));
+            connectionFactory = new DriverManagerConnectionFactory(connectionString, toString(userName), toString(password));
         }
 
         //
@@ -140,6 +166,9 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
         //
         final PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory(connectionFactory,
                 null);
+        if (poolableConnectionFactoryConfig != null) {
+            poolableConnectionFactoryConfig.init(poolableConnectionFactory);
+        }
 
         //
         // Now we'll need a ObjectPool that serves as the

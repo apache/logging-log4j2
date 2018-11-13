@@ -39,6 +39,7 @@ public class PoolingDriverConnectionSourceTest {
             .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
             .setProperties(properties)
             .build();
+        // @formatter:on
         openAndClose(source);
     }
 
@@ -71,14 +72,14 @@ public class PoolingDriverConnectionSourceTest {
         openAndClose(source);
     }
 
-	private void openAndClose(final PoolingDriverConnectionSource source) throws SQLException {
-		Assert.assertNotNull("PoolingDriverConnectionSource is null", source);
-		try (Connection conn = source.getConnection()) {
+    private void openAndClose(final PoolingDriverConnectionSource source) throws SQLException {
+        Assert.assertNotNull("PoolingDriverConnectionSource is null", source);
+        try (Connection conn = source.getConnection()) {
             Assert.assertFalse(conn.isClosed());
         } finally {
-        	source.stop();
+            source.stop();
         }
-	}
+    }
 
     @Test
     public void testH2UserPasswordAndPoolName() throws SQLException {
@@ -89,7 +90,22 @@ public class PoolingDriverConnectionSourceTest {
             .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
             .setPoolName("MyPoolName")
             .build();
+        // @formatter:on
         openAndClose(source);
     }
 
+    @Test
+    public void testPoolableConnectionFactoryConfig() throws SQLException {
+        PoolableConnectionFactoryConfig poolableConnectionFactoryConfig = PoolableConnectionFactoryConfig.newBuilder().setMaxConnLifetimeMillis(30000).build();
+        // @formatter:off
+        final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
+            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
+            .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
+            .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
+            .setPoolName("MyPoolName")
+            .setPoolableConnectionFactoryConfig(poolableConnectionFactoryConfig)
+            .build();
+        // @formatter:on
+        openAndClose(source);
+    }
 }
