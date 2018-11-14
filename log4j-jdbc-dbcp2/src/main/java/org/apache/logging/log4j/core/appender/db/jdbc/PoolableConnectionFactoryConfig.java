@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import org.apache.commons.dbcp2.PoolableConnectionFactory;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
@@ -27,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Configures an Apache Commons DBCP {@link PoolableConnectionFactory}.
@@ -222,7 +224,7 @@ public class PoolableConnectionFactoryConfig {
         this.cacheState = cacheState;
         this.connectionInitSqls = connectionInitSqls;
         this.defaultAutoCommit = defaultAutoCommit;
-        this.defaultCatalog = defaultCatalog;
+        this.defaultCatalog = Strings.trimToNull(defaultCatalog);
         this.defaultQueryTimeoutSeconds = defaultQueryTimeoutSeconds;
         this.defaultReadOnly = defaultReadOnly;
         this.defaultTransactionIsolation = defaultTransactionIsolation;
@@ -233,7 +235,7 @@ public class PoolableConnectionFactoryConfig {
         this.maxOpenPreparedStatements = maxOpenPreparedStatements;
         this.poolStatements = poolStatements;
         this.rollbackOnReturn = rollbackOnReturn;
-        this.validationQuery = validationQuery;
+        this.validationQuery = Strings.trimToNull(validationQuery);
         this.validationQueryTimeoutSeconds = validationQueryTimeoutSeconds;
     }
 
