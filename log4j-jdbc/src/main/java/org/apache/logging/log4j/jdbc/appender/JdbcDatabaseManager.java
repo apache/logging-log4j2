@@ -482,15 +482,18 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         final String simpleName = statement.getClass().getName();
         int i = 1; // JDBC indices start at 1
         for (final ColumnMapping mapping : this.factoryData.columnMappings) {
-            final String source = mapping.getSource();
-            final String key = Strings.isEmpty(source) ? mapping.getName() : source;
-            final Object value = map.getValue(key);
-            if (logger().isTraceEnabled()) {
-                final String valueStr = value instanceof String ? "\"" + value + "\"" : Objects.toString(value, null);
-                logger().trace("{} setObject({}, {}) for key '{}' and mapping '{}'", simpleName, i, valueStr, key,
-                        mapping.getName());
+            if (mapping.getLiteralValue() == null) {
+                final String source = mapping.getSource();
+                final String key = Strings.isEmpty(source) ? mapping.getName() : source;
+                final Object value = map.getValue(key);
+                if (logger().isTraceEnabled()) {
+                    final String valueStr = value instanceof String ? "\"" + value + "\""
+                            : Objects.toString(value, null);
+                    logger().trace("{} setObject({}, {}) for key '{}' and mapping '{}'", simpleName, i, valueStr, key,
+                            mapping.getName());
+                }
+                statement.setObject(i++, value);
             }
-            statement.setObject(i++, value);
         }
     }
 
