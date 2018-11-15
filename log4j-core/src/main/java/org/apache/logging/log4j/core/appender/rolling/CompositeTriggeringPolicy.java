@@ -85,12 +85,7 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
         setStopping();
         boolean stopped = true;
         for (final TriggeringPolicy triggeringPolicy : triggeringPolicies) {
-            if (triggeringPolicy instanceof LifeCycle2) {
-                stopped &= ((LifeCycle2) triggeringPolicy).stop(timeout, timeUnit);
-            } else if (triggeringPolicy instanceof LifeCycle) {
-                ((LifeCycle) triggeringPolicy).stop();
-                stopped &= true;
-            }
+            stopped &= ((LifeCycle) triggeringPolicy).stop(timeout, timeUnit);
         }
         setStopped();
         return stopped;

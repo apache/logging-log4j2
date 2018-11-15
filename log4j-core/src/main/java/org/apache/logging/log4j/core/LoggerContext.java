@@ -349,11 +349,7 @@ public class LoggerContext extends AbstractLifeCycle
             final Configuration prev = configuration;
             configuration = NULL_CONFIGURATION;
             updateLoggers();
-            if (prev instanceof LifeCycle2) {
-                ((LifeCycle2) prev).stop(timeout, timeUnit);
-            } else {
-                prev.stop();
-            }
+            ((LifeCycle) prev).stop(timeout, timeUnit);
             externalContext = null;
             LogManager.getFactory().removeContext(this);
         } finally {

@@ -28,6 +28,7 @@ import javax.script.Bindings;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
@@ -205,11 +206,7 @@ public final class RoutingAppender extends AbstractAppender {
         for (final Map.Entry<String, AppenderControl> entry : appenders.entrySet()) {
             final Appender appender = entry.getValue().getAppender();
             if (!map.containsKey(appender.getName())) {
-                if (appender instanceof LifeCycle2) {
-                    ((LifeCycle2) appender).stop(timeout, timeUnit);
-                } else {
-                    appender.stop();
-                }
+                ((LifeCycle) appender).stop(timeout, timeUnit);
             }
         }
         setStopped();

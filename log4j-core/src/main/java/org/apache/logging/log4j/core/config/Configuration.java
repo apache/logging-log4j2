@@ -40,7 +40,6 @@ import org.apache.logging.log4j.core.util.WatchManager;
  * </p>
  *
  * @see AbstractConfiguration
- * @see org.apache.logging.log4j.core.LifeCycle2
  */
 public interface Configuration extends Filterable {
 

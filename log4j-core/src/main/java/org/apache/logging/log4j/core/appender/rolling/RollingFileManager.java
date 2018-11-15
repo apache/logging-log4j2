@@ -216,12 +216,7 @@ public class RollingFileManager extends FileManager {
     public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         LOGGER.debug("Shutting down RollingFileManager {}", getName());
         boolean stopped = true;
-        if (triggeringPolicy instanceof LifeCycle2) {
-            stopped &= ((LifeCycle2) triggeringPolicy).stop(timeout, timeUnit);
-        } else if (triggeringPolicy instanceof LifeCycle) {
-            ((LifeCycle) triggeringPolicy).stop();
-            stopped &= true;
-        }
+        stopped &= ((LifeCycle) triggeringPolicy).stop(timeout, timeUnit);
         final boolean status = super.releaseSub(timeout, timeUnit) && stopped;
         asyncExecutor.shutdown();
         try {

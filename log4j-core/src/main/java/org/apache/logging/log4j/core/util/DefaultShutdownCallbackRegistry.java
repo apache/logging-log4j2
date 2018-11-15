@@ -29,7 +29,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.LifeCycle2;
+import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.LifeCycle.State;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -38,7 +39,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * @since 2.1
  */
-public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry, LifeCycle2, Runnable {
+public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry, LifeCycle, Runnable {
     /** Status logger. */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
