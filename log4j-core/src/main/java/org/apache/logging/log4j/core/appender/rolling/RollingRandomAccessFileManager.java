@@ -156,7 +156,9 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         flush();
         if (randomAccessFile != null) {
             try {
-                randomAccessFile.close();
+                if (randomAccessFile != null) {
+                    randomAccessFile.close();
+                }
                 return true;
             } catch (final IOException e) {
                 logError("Unable to close RandomAccessFile", e);
