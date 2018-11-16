@@ -39,6 +39,10 @@
           rollbackOnReturn="true"
           validationQuery=""
           validationQueryTimeoutSeconds="-1">
+          <DisconnectionSqlCodes>
+        	<String>1</String>
+        	<String>2</String>
+          </DisconnectionSqlCodes>
         </PoolableConnectionFactory>
       </PoolingDriver>
       <ColumnMapping name="ColumnA" />

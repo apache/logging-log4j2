@@ -37,90 +37,6 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Plugin(name = "Column", category = Core.CATEGORY_NAME, printObject = true)
 public final class ColumnConfig {
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
-    private final String columnName;
-    private final PatternLayout layout;
-    private final String literalValue;
-    private final boolean eventTimestamp;
-    private final boolean unicode;
-    private final boolean clob;
-
-    private ColumnConfig(final String columnName, final PatternLayout layout, final String literalValue,
-                         final boolean eventDate, final boolean unicode, final boolean clob) {
-        this.columnName = columnName;
-        this.layout = layout;
-        this.literalValue = literalValue;
-        this.eventTimestamp = eventDate;
-        this.unicode = unicode;
-        this.clob = clob;
-    }
-
-    public String getColumnName() {
-        return this.columnName;
-    }
-
-    public PatternLayout getLayout() {
-        return this.layout;
-    }
-
-    public String getLiteralValue() {
-        return this.literalValue;
-    }
-
-    public boolean isEventTimestamp() {
-        return this.eventTimestamp;
-    }
-
-    public boolean isUnicode() {
-        return this.unicode;
-    }
-
-    public boolean isClob() {
-        return this.clob;
-    }
-
-    @Override
-    public String toString() {
-        return "{ name=" + this.columnName + ", layout=" + this.layout + ", literal=" + this.literalValue
-                + ", timestamp=" + this.eventTimestamp + " }";
-    }
-
-    /**
-     * Factory method for creating a column config within the plugin manager.
-     *
-     * @see Builder
-     * @deprecated use {@link #newBuilder()}
-     */
-    @Deprecated
-    public static ColumnConfig createColumnConfig(final Configuration config, final String name, final String pattern,
-                                                  final String literalValue, final String eventTimestamp,
-                                                  final String unicode, final String clob) {
-        if (Strings.isEmpty(name)) {
-            LOGGER.error("The column config is not valid because it does not contain a column name.");
-            return null;
-        }
-
-        final boolean isEventTimestamp = Boolean.parseBoolean(eventTimestamp);
-        final boolean isUnicode = Booleans.parseBoolean(unicode, true);
-        final boolean isClob = Boolean.parseBoolean(clob);
-
-        return newBuilder()
-            .setConfiguration(config)
-            .setName(name)
-            .setPattern(pattern)
-            .setLiteral(literalValue)
-            .setEventTimestamp(isEventTimestamp)
-            .setUnicode(isUnicode)
-            .setClob(isClob)
-            .build();
-    }
-
-    @PluginBuilderFactory
-    public static Builder newBuilder() {
-        return new Builder();
-    }
-
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<ColumnConfig> {
 
         @PluginConfiguration
@@ -144,79 +60,6 @@ public final class ColumnConfig {
 
         @PluginBuilderAttribute
         private boolean isClob;
-
-        /**
-         * The configuration object.
-         *
-         * @return this.
-         */
-        public Builder setConfiguration(final Configuration configuration) {
-            this.configuration = configuration;
-            return this;
-        }
-
-        /**
-         * The name of the database column as it exists within the database table.
-         *
-         * @return this.
-         */
-        public Builder setName(final String name) {
-            this.name = name;
-            return this;
-        }
-
-        /**
-         * The {@link PatternLayout} pattern to insert in this column. Mutually exclusive with
-         * {@code literal!=null} and {@code eventTimestamp=true}
-         *
-         * @return this.
-         */
-        public Builder setPattern(final String pattern) {
-            this.pattern = pattern;
-            return this;
-        }
-
-        /**
-         * The literal value to insert into the column as-is without any quoting or escaping. Mutually exclusive with
-         * {@code pattern!=null} and {@code eventTimestamp=true}.
-         *
-         * @return this.
-         */
-        public Builder setLiteral(final String literal) {
-            this.literal = literal;
-            return this;
-        }
-
-        /**
-         * If {@code "true"}, indicates that this column is a date-time column in which the event timestamp should be
-         * inserted. Mutually exclusive with {@code pattern!=null} and {@code literal!=null}.
-         *
-         * @return this.
-         */
-        public Builder setEventTimestamp(final boolean eventTimestamp) {
-            isEventTimestamp = eventTimestamp;
-            return this;
-        }
-
-        /**
-         * If {@code "true"}, indicates that the column is a Unicode String.
-         *
-         * @return this.
-         */
-        public Builder setUnicode(final boolean unicode) {
-            isUnicode = unicode;
-            return this;
-        }
-
-        /**
-         * If {@code "true"}, indicates that the column is a character LOB (CLOB).
-         *
-         * @return this.
-         */
-        public Builder setClob(final boolean clob) {
-            isClob = clob;
-            return this;
-        }
 
         @Override
         public ColumnConfig build() {
@@ -254,5 +97,168 @@ public final class ColumnConfig {
             LOGGER.error("To configure a column you must specify a pattern or literal or set isEventDate to true.");
             return null;
         }
+
+        /**
+         * If {@code "true"}, indicates that the column is a character LOB (CLOB).
+         *
+         * @return this.
+         */
+        public Builder setClob(final boolean clob) {
+            isClob = clob;
+            return this;
+        }
+
+        /**
+         * The configuration object.
+         *
+         * @return this.
+         */
+        public Builder setConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        /**
+         * If {@code "true"}, indicates that this column is a date-time column in which the event timestamp should be
+         * inserted. Mutually exclusive with {@code pattern!=null} and {@code literal!=null}.
+         *
+         * @return this.
+         */
+        public Builder setEventTimestamp(final boolean eventTimestamp) {
+            isEventTimestamp = eventTimestamp;
+            return this;
+        }
+
+        /**
+         * The literal value to insert into the column as-is without any quoting or escaping. Mutually exclusive with
+         * {@code pattern!=null} and {@code eventTimestamp=true}.
+         *
+         * @return this.
+         */
+        public Builder setLiteral(final String literal) {
+            this.literal = literal;
+            return this;
+        }
+
+        /**
+         * The name of the database column as it exists within the database table.
+         *
+         * @return this.
+         */
+        public Builder setName(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        /**
+         * The {@link PatternLayout} pattern to insert in this column. Mutually exclusive with
+         * {@code literal!=null} and {@code eventTimestamp=true}
+         *
+         * @return this.
+         */
+        public Builder setPattern(final String pattern) {
+            this.pattern = pattern;
+            return this;
+        }
+
+        /**
+         * If {@code "true"}, indicates that the column is a Unicode String.
+         *
+         * @return this.
+         */
+        public Builder setUnicode(final boolean unicode) {
+            isUnicode = unicode;
+            return this;
+        }
+    }
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
+    /**
+     * Factory method for creating a column config within the plugin manager.
+     *
+     * @see Builder
+     * @deprecated use {@link #newBuilder()}
+     */
+    @Deprecated
+    public static ColumnConfig createColumnConfig(final Configuration config, final String name, final String pattern,
+                                                  final String literalValue, final String eventTimestamp,
+                                                  final String unicode, final String clob) {
+        if (Strings.isEmpty(name)) {
+            LOGGER.error("The column config is not valid because it does not contain a column name.");
+            return null;
+        }
+
+        final boolean isEventTimestamp = Boolean.parseBoolean(eventTimestamp);
+        final boolean isUnicode = Booleans.parseBoolean(unicode, true);
+        final boolean isClob = Boolean.parseBoolean(clob);
+
+        return newBuilder()
+            .setConfiguration(config)
+            .setName(name)
+            .setPattern(pattern)
+            .setLiteral(literalValue)
+            .setEventTimestamp(isEventTimestamp)
+            .setUnicode(isUnicode)
+            .setClob(isClob)
+            .build();
+    }
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+    private final String columnName;
+    private final String columnNameKey;
+    private final PatternLayout layout;
+    private final String literalValue;
+
+    private final boolean eventTimestamp;
+
+    private final boolean unicode;
+
+    private final boolean clob;
+
+    private ColumnConfig(final String columnName, final PatternLayout layout, final String literalValue,
+                         final boolean eventDate, final boolean unicode, final boolean clob) {
+        this.columnName = columnName;
+        this.columnNameKey = ColumnMapping.toKey(columnName);
+        this.layout = layout;
+        this.literalValue = literalValue;
+        this.eventTimestamp = eventDate;
+        this.unicode = unicode;
+        this.clob = clob;
+    }
+
+    public String getColumnName() {
+        return this.columnName;
+    }
+
+    public String getColumnNameKey() {
+        return this.columnNameKey;
+    }
+
+    public PatternLayout getLayout() {
+        return this.layout;
+    }
+
+    public String getLiteralValue() {
+        return this.literalValue;
+    }
+
+    public boolean isClob() {
+        return this.clob;
+    }
+
+    public boolean isEventTimestamp() {
+        return this.eventTimestamp;
+    }
+
+    public boolean isUnicode() {
+        return this.unicode;
+    }
+
+    @Override
+    public String toString() {
+        return "{ name=" + this.columnName + ", layout=" + this.layout + ", literal=" + this.literalValue
+                + ", timestamp=" + this.eventTimestamp + " }";
     }
 }

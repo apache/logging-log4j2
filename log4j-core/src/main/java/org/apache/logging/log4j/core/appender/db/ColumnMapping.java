@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.db;
 
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
@@ -188,20 +189,27 @@ public class ColumnMapping {
     }
 
     private static final Logger LOGGER = StatusLogger.getLogger();
+
     @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();
     }
 
+    public static String toKey(final String name) {
+        return name.toUpperCase(Locale.ROOT);
+    }
+
     private final StringLayout layout;
     private final String literalValue;
     private final String name;
+    private final String nameKey;
     private final String parameter;
     private final String source;
     private final Class<?> type;
 
     private ColumnMapping(final String name, final String source, final StringLayout layout, final String literalValue, final String parameter, final Class<?> type) {
         this.name = name;
+        this.nameKey = toKey(name);
         this.source = source;
         this.layout = layout;
         this.literalValue = literalValue;
@@ -219,6 +227,10 @@ public class ColumnMapping {
 
     public String getName() {
         return name;
+    }
+
+    public String getNameKey() {
+        return nameKey;
     }
 
     public String getParameter() {

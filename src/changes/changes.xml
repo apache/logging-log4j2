@@ -130,6 +130,9 @@
       <action issue="LOG4J2-2508" dev="ggregory" type="fix">
       	JDBC Appender fails when using both parameter, source, and literal ColumnMapping elements.
       </action>
+      <action issue="LOG4J2-2509" dev="ggregory" type="add">
+        Allow a JDBC Appender to truncate strings to match a table's metadata column length limit.
+      </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
       <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">

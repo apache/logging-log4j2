@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -23,6 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -33,10 +38,6 @@ import org.h2.util.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Abstract unit test for JdbcAppender using a {@link FactoryMethodConnectionSource} configuration.
@@ -108,6 +109,14 @@ public abstract class AbstractJdbcAppenderFactoryMethodTest {
                 assertFalse("There should not be three rows.", resultSet.next());
             }
         }
+    }
+
+    @Test
+    public void testTruncate() {
+        final Logger logger = LogManager.getLogger(this.getClass().getName() + ".testFactoryMethodConfig");
+        // Some drivers and database will not allow more data than the column defines.
+        // We really need a MySQL databases with a default configuration to test this.
+        logger.debug(StringUtils.repeat('A', 1000));
     }
 
 }

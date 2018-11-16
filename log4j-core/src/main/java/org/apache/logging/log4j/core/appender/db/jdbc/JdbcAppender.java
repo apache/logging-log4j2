@@ -62,7 +62,7 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
         @PluginBuilderAttribute
         private boolean immediateFail;
-        
+
         @PluginBuilderAttribute
         private int bufferSize;
 
@@ -75,6 +75,9 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
         @PluginElement("ColumnMappings")
         private ColumnMapping[] columnMappings;
+
+        @PluginBuilderAttribute
+        private boolean truncateStrings = true;
 
         // TODO Consider moving up to AbstractDatabaseAppender.Builder.
         @PluginBuilderAttribute
@@ -90,7 +93,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
                     + tableName + ", columnConfigs=" + Arrays.toString(columnConfigs) + ", columnMappings="
                     + Arrays.toString(columnMappings) + '}';
             final JdbcDatabaseManager manager = JdbcDatabaseManager.getManager(managerName, bufferSize, getLayout(),
-                    connectionSource, tableName, columnConfigs, columnMappings, immediateFail, reconnectIntervalMillis);
+                    connectionSource, tableName, columnConfigs, columnMappings, immediateFail, reconnectIntervalMillis,
+                    truncateStrings);
             if (manager == null) {
                 return null;
             }
@@ -109,8 +113,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         /**
          * If an integer greater than 0, this causes the appender to buffer log events and flush whenever the buffer
          * reaches this size.
-         * 
-         * @param bufferSize buffer size. 
+         *
+         * @param bufferSize buffer size.
          *
          * @return this
          */
@@ -121,8 +125,8 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
         /**
          * Information about the columns that log event data should be inserted into and how to insert that data.
-         * 
-         * @param columnConfigs Column configurations. 
+         *
+         * @param columnConfigs Column configurations.
          *
          * @return this
          */
@@ -138,7 +142,7 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
         /**
          * The connections source from which database connections should be retrieved.
-         * 
+         *
          * @param connectionSource The connections source.
          *
          * @return this
@@ -148,23 +152,28 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
             return asBuilder();
         }
 
-        public void setImmediateFail(boolean immediateFail) {
+        public void setImmediateFail(final boolean immediateFail) {
             this.immediateFail = immediateFail;
         }
 
-        public void setReconnectIntervalMillis(long reconnectIntervalMillis) {
+        public void setReconnectIntervalMillis(final long reconnectIntervalMillis) {
             this.reconnectIntervalMillis = reconnectIntervalMillis;
         }
 
         /**
          * The name of the database table to insert log events into.
-         * 
-         * @param tableName The database table name. 
+         *
+         * @param tableName The database table name.
          *
          * @return this
          */
         public B setTableName(final String tableName) {
             this.tableName = tableName;
+            return asBuilder();
+        }
+
+        public B setTruncateStrings(final boolean truncateStrings) {
+            this.truncateStrings = truncateStrings;
             return asBuilder();
         }
 
