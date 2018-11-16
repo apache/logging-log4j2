@@ -39,10 +39,6 @@ public final class Strings {
     public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator",
             "\n");
 
-    private Strings() {
-        // empty
-    }
-
     /**
      * Returns a double quoted string.
      * 
@@ -52,7 +48,7 @@ public final class Strings {
     public static String dquote(final String str) {
         return Chars.DQUOTE + str + Chars.DQUOTE;
     }
-
+    
     /**
      * Checks if a String is blank. A blank string is one that is {@code null}, empty, or when trimmed using
      * {@link String#trim()} is empty.
@@ -128,55 +124,6 @@ public final class Strings {
     }
 
     /**
-     * Returns a quoted string.
-     * 
-     * @param str a String
-     * @return {@code 'str'}
-     */
-    public static String quote(final String str) {
-        return Chars.QUOTE + str + Chars.QUOTE;
-    }
-
-    /**
-     * Shorthand for {@code str.toUpperCase(Locale.ROOT);}
-     * @param str The string to upper case.
-     * @return a new string
-     * @see String#toLowerCase(Locale)
-     */
-    public String toRootUpperCase(final String str) {
-        return str.toUpperCase(Locale.ROOT);
-    }
-    
-    /**
-     * <p>
-     * Removes control characters (char &lt;= 32) from both ends of this String returning {@code null} if the String is
-     * empty ("") after the trim or if it is {@code null}.
-     *
-     * <p>
-     * The String is trimmed using {@link String#trim()}. Trim removes start and end characters &lt;= 32.
-     * </p>
-     *
-     * <pre>
-     * Strings.trimToNull(null)          = null
-     * Strings.trimToNull("")            = null
-     * Strings.trimToNull("     ")       = null
-     * Strings.trimToNull("abc")         = "abc"
-     * Strings.trimToNull("    abc    ") = "abc"
-     * </pre>
-     *
-     * <p>
-     * Copied from Apache Commons Lang org.apache.commons.lang3.StringUtils.trimToNull(String)
-     * </p>
-     *
-     * @param str the String to be trimmed, may be null
-     * @return the trimmed String, {@code null} if only chars &lt;= 32, empty or null String input
-     */
-    public static String trimToNull(final String str) {
-        final String ts = str == null ? null : str.trim();
-        return isEmpty(ts) ? null : ts;
-    }
-
-    /**
      * <p>Joins the elements of the provided {@code Iterable} into
      * a single String containing the provided elements.</p>
      *
@@ -234,6 +181,96 @@ public final class Strings {
         }
 
         return buf.toString();
+    }
+
+    /**
+     * <p>Gets the leftmost {@code len} characters of a String.</p>
+     *
+     * <p>If {@code len} characters are not available, or the
+     * String is {@code null}, the String will be returned without
+     * an exception. An empty String is returned if len is negative.</p>
+     *
+     * <pre>
+     * StringUtils.left(null, *)    = null
+     * StringUtils.left(*, -ve)     = ""
+     * StringUtils.left("", *)      = ""
+     * StringUtils.left("abc", 0)   = ""
+     * StringUtils.left("abc", 2)   = "ab"
+     * StringUtils.left("abc", 4)   = "abc"
+     * </pre>
+     *
+     * <p>
+     * Copied from Apache Commons Lang org.apache.commons.lang3.StringUtils.
+     * </p>
+     * 
+     * @param str  the String to get the leftmost characters from, may be null
+     * @param len  the length of the required String
+     * @return the leftmost characters, {@code null} if null String input
+     */
+    public static String left(final String str, final int len) {
+        if (str == null) {
+            return null;
+        }
+        if (len < 0) {
+            return EMPTY;
+        }
+        if (str.length() <= len) {
+            return str;
+        }
+        return str.substring(0, len);
+    }
+
+    /**
+     * Returns a quoted string.
+     * 
+     * @param str a String
+     * @return {@code 'str'}
+     */
+    public static String quote(final String str) {
+        return Chars.QUOTE + str + Chars.QUOTE;
+    }
+    
+    /**
+     * <p>
+     * Removes control characters (char &lt;= 32) from both ends of this String returning {@code null} if the String is
+     * empty ("") after the trim or if it is {@code null}.
+     *
+     * <p>
+     * The String is trimmed using {@link String#trim()}. Trim removes start and end characters &lt;= 32.
+     * </p>
+     *
+     * <pre>
+     * Strings.trimToNull(null)          = null
+     * Strings.trimToNull("")            = null
+     * Strings.trimToNull("     ")       = null
+     * Strings.trimToNull("abc")         = "abc"
+     * Strings.trimToNull("    abc    ") = "abc"
+     * </pre>
+     *
+     * <p>
+     * Copied from Apache Commons Lang org.apache.commons.lang3.StringUtils.trimToNull(String)
+     * </p>
+     *
+     * @param str the String to be trimmed, may be null
+     * @return the trimmed String, {@code null} if only chars &lt;= 32, empty or null String input
+     */
+    public static String trimToNull(final String str) {
+        final String ts = str == null ? null : str.trim();
+        return isEmpty(ts) ? null : ts;
+    }
+
+    private Strings() {
+        // empty
+    }
+
+    /**
+     * Shorthand for {@code str.toUpperCase(Locale.ROOT);}
+     * @param str The string to upper case.
+     * @return a new string
+     * @see String#toLowerCase(Locale)
+     */
+    public String toRootUpperCase(final String str) {
+        return str.toUpperCase(Locale.ROOT);
     }
 
 }
