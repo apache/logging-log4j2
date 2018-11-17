@@ -122,7 +122,7 @@ public class JdbcAppenderMapMessageDataSourceTest {
             final Logger logger = LogManager.getLogger(this.getClass().getName() + ".testFactoryMethodConfig");
             // Some drivers and database will not allow more data than the column defines.
             // We really need a MySQL databases with a default configuration to test this.
-            final MapMessage<?, ?> mapMessage = new MapMessage<>();
+            final MapMessage mapMessage = new MapMessage();
             mapMessage.with("Id", 1);
             mapMessage.with("ColumnA", StringUtils.repeat('A', 1000));
             mapMessage.with("ColumnB", StringUtils.repeat('B', 1000));
