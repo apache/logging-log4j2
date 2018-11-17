@@ -177,8 +177,10 @@ public final class ColumnConfig {
         return new Builder();
     }
     private final String columnName;
+    private final String columnNameKey;
     private final PatternLayout layout;
     private final String literalValue;
+
     private final boolean eventTimestamp;
 
     private final boolean unicode;
@@ -188,6 +190,7 @@ public final class ColumnConfig {
     private ColumnConfig(final String columnName, final PatternLayout layout, final String literalValue,
                          final boolean eventDate, final boolean unicode, final boolean clob) {
         this.columnName = columnName;
+        this.columnNameKey = ColumnMapping.toKey(columnName);
         this.layout = layout;
         this.literalValue = literalValue;
         this.eventTimestamp = eventDate;
@@ -197,6 +200,10 @@ public final class ColumnConfig {
 
     public String getColumnName() {
         return this.columnName;
+    }
+
+    public String getColumnNameKey() {
+        return this.columnNameKey;
     }
 
     public PatternLayout getLayout() {
