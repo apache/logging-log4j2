@@ -173,9 +173,9 @@
     </mailingList>
   </mailingLists>
   <scm>
-    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</connection>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</developerConnection>
-    <url>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</url>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</developerConnection>
+    <url>https://gitbox.apache.org/repos/asf?p=logging-log4j2.git</url>
     <tag>log4j-${Log4jReleaseVersion}</tag>
   </scm>
   <properties>
