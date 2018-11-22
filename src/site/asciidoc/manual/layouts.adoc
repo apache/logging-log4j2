@@ -674,12 +674,7 @@ operation and may impact performance. Use with caution.
 be followed by a set of braces containing a date and time pattern string per
 https://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
 
-The predefined formats are `DEFAULT`, `ABSOLUTE`, `COMPACT`, `DATE`,
-`ISO8601`, and `ISO8601_BASIC`.
-
-You can also use a set of braces containing a time zone id per
-https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[java.util.TimeZone.getTimeZone].
-If no date format specifier is given then the DEFAULT format is used.
+The predefined _named_ formats are:
 
 [cols=",",options="header",]
 !===
@@ -715,6 +710,23 @@ If no date format specifier is given then the DEFAULT format is used.
 !%d{COMPACT}
 !20121102143402781
 
+!%d{UNIX}
+!1351866842
+
+!%d{UNIX_MILLIS}
+!1351866842781
+!===
+
+You can also use a set of braces containing a time zone id per
+https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[java.util.TimeZone.getTimeZone].
+If no date format specifier is given then the DEFAULT format is used.
+
+You can define custom date formats:
+
+[cols=",",options="header",]
+!===
+!Pattern !Example
+
 !%d{HH:mm:ss,SSS}
 !14:34:02,123
 
@@ -729,12 +741,6 @@ If no date format specifier is given then the DEFAULT format is used.
 
 !%d{HH:mm:ss}{GMT+0}
 !18:34:02
-
-!%d{UNIX}
-!1351866842
-
-!%d{UNIX_MILLIS}
-!1351866842781
 !===
 
 %d{UNIX} outputs the UNIX time in seconds. %d{UNIX_MILLIS} outputs the
