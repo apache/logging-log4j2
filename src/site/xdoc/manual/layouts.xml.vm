@@ -720,93 +720,92 @@ WARN  [main]: Message 2</pre>
                   followed by a set of braces containing a date and time pattern string per
                   #javadoc('java/text', 'SimpleDateFormat').
                 </p>
-                <p>The predefined formats are
-                  <code>DEFAULT</code>,
-                  <code>ABSOLUTE</code>,
-                  <code>COMPACT</code>,
-                  <code>DATE</code>,
-                  <code>ISO8601</code>,
-                  and
-                  <code>ISO8601_BASIC</code>.
-                </p>
+                <p>The predefined <em>named</em> formats are:</p>
+                <table>
+                  <tr>
+                    <th>Pattern</th>
+                    <th>Example</th>
+                  </tr>
+                  <tr>
+                    <td>%d{DEFAULT}</td>
+                    <td>2012-11-02 14:34:02,123</td>
+                  </tr>
+                  <tr>
+                    <td>%d{DEFAULT_MICROS}</td>
+                    <td>2012-11-02 14:34:02,123456</td>
+                  </tr>
+                  <tr>
+                    <td>%d{DEFAULT_NANOS}</td>
+                    <td>2012-11-02 14:34:02,123456789</td>
+                  </tr>
+                  <tr>
+                    <td>%d{ISO8601}</td>
+                    <td>2012-11-02T14:34:02,781</td>
+                  </tr>
+                  <tr>
+                    <td>%d{ISO8601_BASIC}</td>
+                    <td>20121102T143402,781</td>
+                  </tr>
+                  <tr>
+                    <td>%d{ABSOLUTE}</td>
+                    <td>14:34:02,781</td>
+                  </tr>
+                  <tr>
+                    <td>%d{ABSOLUTE_MICROS}</td>
+                    <td>14:34:02,123456</td>
+                  </tr>
+                  <tr>
+                    <td>%d{ABSOLUTE_NANOS}</td>
+                    <td>14:34:02,123456789</td>
+                  </tr>
+                  <tr>
+                    <td>%d{DATE}</td>
+                    <td>02 Nov 2012 14:34:02,781</td>
+                  </tr>
+                  <tr>
+                    <td>%d{COMPACT}</td>
+                    <td>20121102143402781</td>
+                  </tr>
+                  <tr>
+                    <td>%d{UNIX}</td>
+                    <td>1351866842</td>
+                  </tr>
+                  <tr>
+                    <td>%d{UNIX_MILLIS}</td>
+                    <td>1351866842781</td>
+                  </tr>
+                </table>                
                 <p>You can also use a set of braces containing a time zone id per
                   <a class="javadoc" href="${javadocRoot}/java/util/TimeZone.html${sharp}getTimeZone(java.lang.String)">
                     java.util.TimeZone.getTimeZone</a>. If no date format specifier is given then the DEFAULT format is used.
-                  <table>
-                    <tr>
-                      <th>Pattern</th>
-                      <th>Example</th>
-                    </tr>
-                    <tr>
-                      <td>%d{DEFAULT}</td>
-                      <td>2012-11-02 14:34:02,123</td>
-                    </tr>
-                    <tr>
-                      <td>%d{DEFAULT_MICROS}</td>
-                      <td>2012-11-02 14:34:02,123456</td>
-                    </tr>
-                    <tr>
-                      <td>%d{DEFAULT_NANOS}</td>
-                      <td>2012-11-02 14:34:02,123456789</td>
-                    </tr>
-                    <tr>
-                      <td>%d{ISO8601}</td>
-                      <td>2012-11-02T14:34:02,781</td>
-                    </tr>
-                    <tr>
-                      <td>%d{ISO8601_BASIC}</td>
-                      <td>20121102T143402,781</td>
-                    </tr>
-                    <tr>
-                      <td>%d{ABSOLUTE}</td>
-                      <td>14:34:02,781</td>
-                    </tr>
-                    <tr>
-                      <td>%d{ABSOLUTE_MICROS}</td>
-                      <td>14:34:02,123456</td>
-                    </tr>
-                    <tr>
-                      <td>%d{ABSOLUTE_NANOS}</td>
-                      <td>14:34:02,123456789</td>
-                    </tr>
-                    <tr>
-                      <td>%d{DATE}</td>
-                      <td>02 Nov 2012 14:34:02,781</td>
-                    </tr>
-                    <tr>
-                      <td>%d{COMPACT}</td>
-                      <td>20121102143402781</td>
-                    </tr>
-                    <tr>
-                      <td>%d{HH:mm:ss,SSS}</td>
-                      <td>14:34:02,123</td>
-                    </tr>
-                    <tr>
-                      <td>%d{HH:mm:ss,nnnn} to %d{HH:mm:ss,nnnnnnnnn}</td>
-                      <td>14:34:02,1234 to 14:34:02,123456789</td>
-                    </tr>
-                    <tr>
-                      <td>%d{dd MMM yyyy HH:mm:ss,SSS}</td>
-                      <td>02 Nov 2012 14:34:02,123</td>
-                    </tr>
-                    <tr>
-                      <td>%d{dd MMM yyyy HH:mm:ss,nnnn} to %d{dd MMM yyyy HH:mm:ss,nnnnnnnnn}</td>
-                      <td>02 Nov 2012 14:34:02,1234 to 02 Nov 2012 14:34:02,123456789</td>
-                    </tr>
-                    <tr>
-                      <td>%d{HH:mm:ss}{GMT+0}</td>
-                      <td>18:34:02</td>
-                    </tr>
-                    <tr>
-                      <td>%d{UNIX}</td>
-                      <td>1351866842</td>
-                    </tr>
-                    <tr>
-                      <td>%d{UNIX_MILLIS}</td>
-                      <td>1351866842781</td>
-                    </tr>
-                  </table>
                 </p>
+                <p>You can define custom date formats:</p>
+                <table>
+                  <tr>
+                    <th>Pattern</th>
+                    <th>Example</th>
+                  </tr>
+                  <tr>
+                    <td>%d{HH:mm:ss,SSS}</td>
+                    <td>14:34:02,123</td>
+                  </tr>
+                  <tr>
+                    <td>%d{HH:mm:ss,nnnn} to %d{HH:mm:ss,nnnnnnnnn}</td>
+                    <td>14:34:02,1234 to 14:34:02,123456789</td>
+                  </tr>
+                  <tr>
+                    <td>%d{dd MMM yyyy HH:mm:ss,SSS}</td>
+                    <td>02 Nov 2012 14:34:02,123</td>
+                  </tr>
+                  <tr>
+                    <td>%d{dd MMM yyyy HH:mm:ss,nnnn} to %d{dd MMM yyyy HH:mm:ss,nnnnnnnnn}</td>
+                    <td>02 Nov 2012 14:34:02,1234 to 02 Nov 2012 14:34:02,123456789</td>
+                  </tr>
+                  <tr>
+                    <td>%d{HH:mm:ss}{GMT+0}</td>
+                    <td>18:34:02</td>
+                  </tr>
+                </table>
                 <p>
                   %d{UNIX} outputs the UNIX time in seconds. %d{UNIX_MILLIS} outputs the UNIX time in milliseconds.
                   The UNIX time is the difference, in seconds for UNIX and in milliseconds for UNIX_MILLIS, between
