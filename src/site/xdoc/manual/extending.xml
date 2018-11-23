@@ -318,7 +318,7 @@ public final class ThresholdFilter extends AbstractFilter {
               new one. This insures that events are not lost while a reconfiguration is taking place without
               requiring that logging pause while the reconfiguration takes place.
             </p>
-            <pre class="prettyprint linenums">
+            <pre class="prettyprint linenums"><![CDATA[
 @Plugin(name = "Stub", category = "Core", elementType = "appender", printObject = true)
 public final class StubAppender extends AbstractOutputStreamAppender<StubManager> {
 
@@ -350,7 +350,7 @@ public final class StubAppender extends AbstractOutputStreamAppender<StubManager
         }
         return new StubAppender(name, layout, filter, ignoreExceptions, manager);
     }
-}</pre>
+}]]></pre>
           </subsection>
           <subsection name="Layouts">
             <p>
