@@ -282,6 +282,7 @@
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
                project -->
+          <doclint>none</doclint>
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
           <links>
