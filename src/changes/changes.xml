@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
+      <action issue="LOG4J2-2453" dev="rgoers" type="fix" due-to="theit">
+        Add Log4j-slf4j18-impl dependency to bom pom.
+      </action>
       <action issue="LOG4J2-2515" dev="rgoers" type="fix" due-to="MakarovS">
         Configuration documentation referenced incorrect method name.
       </action>
