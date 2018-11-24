@@ -337,6 +337,9 @@
       </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
+      <action issue="LOG4J2-2514" dev="rgoers" type="fix" due-to="smilebrian0515">
+        Make Strings.toRootUpperCase a static method so it can be accessed.
+      </action>
       <action issue="LOG4J2-1571" dev="rgoers" type="fix" due-to="torbenmoeller">
         Fixed Appenders section in Extending Log4j.
       </action>
