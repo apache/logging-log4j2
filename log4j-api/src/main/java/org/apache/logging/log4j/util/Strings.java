@@ -269,7 +269,7 @@ public final class Strings {
      * @return a new string
      * @see String#toLowerCase(Locale)
      */
-    public String toRootUpperCase(final String str) {
+    public static String toRootUpperCase(final String str) {
         return str.toUpperCase(Locale.ROOT);
     }
 
