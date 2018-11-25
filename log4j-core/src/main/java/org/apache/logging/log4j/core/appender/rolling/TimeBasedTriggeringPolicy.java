@@ -130,6 +130,7 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         if (nowMillis >= nextRolloverMillis) {
             nextRolloverMillis = ThreadLocalRandom.current().nextLong(0, 1 + maxRandomDelayMillis)
                     + manager.getPatternProcessor().getNextTime(nowMillis, interval, modulate);
+            manager.getPatternProcessor().setCurrentFileTime(System.currentTimeMillis());
             return true;
         }
         return false;

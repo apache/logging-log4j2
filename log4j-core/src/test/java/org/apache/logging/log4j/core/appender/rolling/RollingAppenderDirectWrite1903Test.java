@@ -20,8 +20,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.util.zip.GZIPInputStream;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -29,20 +27,24 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
+
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
  */
-public class RollingAppenderDirectWriteTest {
+public class RollingAppenderDirectWrite1903Test {
 
-    private static final String CONFIG = "log4j-rolling-direct.xml";
+    private static final String CONFIG = "log4j-rolling-direct-1903.xml";
 
-    private static final String DIR = "target/rolling-direct";
+    private static final String DIR = "target/rolling-direct-1903";
 
     public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
@@ -53,7 +55,7 @@ public class RollingAppenderDirectWriteTest {
 
     @Before
     public void setUp() throws Exception {
-        this.logger = loggerContextRule.getLogger(RollingAppenderDirectWriteTest.class.getName());
+        this.logger = loggerContextRule.getLogger(RollingAppenderDirectWrite1903Test.class.getName());
     }
 
     @Test
@@ -61,32 +63,29 @@ public class RollingAppenderDirectWriteTest {
         int count = 100;
         for (int i=0; i < count; ++i) {
             logger.debug("This is test message number " + i);
+            Thread.sleep(50);
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
         assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
         final File[] files = dir.listFiles();
         assertNotNull(files);
-        assertThat(files, hasItemInArray(that(hasName(that(endsWith(".gz"))))));
+        assertThat(files, hasItemInArray(that(hasName(that(endsWith(".log"))))));
         int found = 0;
         for (File file: files) {
             String actual = file.getName();
-            BufferedReader reader;
-            if (file.getName().endsWith(".gz")) {
-                reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file))));
-            } else {
-                reader = new BufferedReader(new FileReader(file));
-            }
+            BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = reader.readLine()) != null) {
                 assertNotNull("No log event in file " + actual, line);
                 String[] parts = line.split((" "));
-                String expected = "test1-" + parts[0];
-                assertTrue("Incorrect file name. Expected file prefix: " + expected + " Actual: " + actual,
-                    actual.startsWith(expected));
+                String expected = "rollingfile." + parts[0] + ".log";
+
+                assertEquals("Incorrect file name. Expected: " + expected + " Actual: " + actual, expected, actual);
                 ++found;
             }
         }
         assertEquals("Incorrect number of events read. Expected " + count + ", Actual " + found, count, found);
+
     }
 }
