@@ -236,6 +236,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
     private volatile String currentFileName;
     private int nextIndex = -1;
     private final PatternProcessor tempCompressedFilePattern;
+    private volatile boolean usePrevTime = false;
 
     /**
      * Constructs a new instance.
@@ -315,7 +316,8 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
             final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
             final int fileIndex = eligibleFiles.size() > 0 ? (nextIndex > 0 ? nextIndex : eligibleFiles.size()) : 1;
             final StringBuilder buf = new StringBuilder(255);
-            manager.getPatternProcessor().formatFileName(strSubstitutor, buf, true, fileIndex);
+            manager.getPatternProcessor().formatFileName(strSubstitutor, buf, true, usePrevTime, fileIndex);
+            usePrevTime = true;
             final int suffixLength = suffixLength(buf.toString());
             final String name = suffixLength > 0 ? buf.substring(0, buf.length() - suffixLength) : buf.toString();
             currentFileName = name;
