@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 
 import org.apache.logging.log4j.Logger;
@@ -40,11 +39,11 @@ import static org.junit.Assert.assertEquals;
 /**
  *
  */
-public class RollingAppenderDirectWrite1903Test {
+public class RollingAppenderDirectWrite1906Test {
 
-    private static final String CONFIG = "log4j-rolling-direct-1903.xml";
+    private static final String CONFIG = "log4j-rolling-direct-1906.xml";
 
-    private static final String DIR = "target/rolling-direct-1903";
+    private static final String DIR = "target/rolling-direct-1906";
 
     public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
@@ -55,7 +54,7 @@ public class RollingAppenderDirectWrite1903Test {
 
     @Before
     public void setUp() throws Exception {
-        this.logger = loggerContextRule.getLogger(RollingAppenderDirectWrite1903Test.class.getName());
+        this.logger = loggerContextRule.getLogger(RollingAppenderDirectWrite1906Test.class.getName());
     }
 
     @Test

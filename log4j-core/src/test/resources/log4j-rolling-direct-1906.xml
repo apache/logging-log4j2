@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="trace" monitorInterval="30">
+<Configuration status="WARN" monitorInterval="30">
   <Properties>
-    <Property name="baseDir">target/rolling-direct-1903</Property>
+    <Property name="baseDir">target/rolling-direct-1906</Property>
   </Properties>
   <Appenders>
     <RollingFile name="RollingFile" filePattern="${baseDir}/rollingfile.%d{yyyy-MM-dd-HH-mm-ss}.log">

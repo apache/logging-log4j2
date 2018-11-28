@@ -56,10 +56,12 @@ public class OnStartupTriggeringPolicyTest {
 
     @Test
     public void testPolicy() throws Exception {
+        //System.setProperty("log4j2.debug", "true");
+        //System.setProperty("log4j2.StatusLogger.level", "trace");
         final Configuration configuration = new DefaultConfiguration();
         final Path target = Paths.get(TARGET_FILE);
         target.toFile().getParentFile().mkdirs();
-        final long timeStamp = System.currentTimeMillis();
+        final long timeStamp = System.currentTimeMillis() - (1000 * 60 * 60 * 24);
         final String expectedDate = formatter.format(timeStamp);
         final String rolledFileName = ROLLED_FILE_PREFIX + expectedDate + ROLLED_FILE_SUFFIX;
         final Path rolled = Paths.get(rolledFileName);
