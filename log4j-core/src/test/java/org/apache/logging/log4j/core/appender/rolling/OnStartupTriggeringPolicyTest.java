@@ -71,7 +71,7 @@ public class OnStartupTriggeringPolicyTest {
         assertTrue(size > 0);
         assertEquals(copied, size);
 
-        Assert.assertTrue(target.toFile().setLastModified(0));
+        Assert.assertTrue(target.toFile().setLastModified(timeStamp));
         final PatternLayout layout = PatternLayout.newBuilder().setPattern("%msg").setConfiguration(configuration)
                 .build();
         final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder().setCompressionLevelStr("0")
