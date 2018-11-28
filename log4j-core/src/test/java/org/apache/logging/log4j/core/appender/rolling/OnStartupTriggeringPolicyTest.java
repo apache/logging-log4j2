@@ -52,12 +52,13 @@ public class OnStartupTriggeringPolicyTest {
     private static final FastDateFormat formatter = FastDateFormat.getInstance("MM-dd-yyyy");
 
     @Rule
-    public CleanFolders rule = new CleanFolders("target/rollOnStartup");
+    public CleanFolders rule = new CleanFolders(TARGET_FOLDER);
 
     @Test
     public void testPolicy() throws Exception {
         final Configuration configuration = new DefaultConfiguration();
         final Path target = Paths.get(TARGET_FILE);
+        Assert.assertFalse(Files.exists(target));
         target.toFile().getParentFile().mkdirs();
         final long timeStamp = System.currentTimeMillis();
         final String expectedDate = formatter.format(timeStamp);
@@ -71,7 +72,7 @@ public class OnStartupTriggeringPolicyTest {
         assertTrue(size > 0);
         assertEquals(copied, size);
 
-        Assert.assertTrue(target.toFile().setLastModified(timeStamp));
+        Assert.assertTrue(target.toFile().setLastModified(0));
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%msg").withConfiguration(configuration)
                 .build();
         final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
