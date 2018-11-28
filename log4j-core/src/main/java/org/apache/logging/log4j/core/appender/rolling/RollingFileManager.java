@@ -22,6 +22,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -53,6 +59,7 @@ public class RollingFileManager extends FileManager {
     private static RollingFileManagerFactory factory = new RollingFileManagerFactory();
     private static final int MAX_TRIES = 3;
     private static final int MIN_DURATION = 100;
+    private static final FileTime EPOCH = FileTime.fromMillis(0);
 
     protected long size;
     private long initialTime;
@@ -640,7 +647,7 @@ public class RollingFileManager extends FileManager {
                 final OutputStream os = data.createOnDemand  || data.fileName == null ? null :
                         new FileOutputStream(data.fileName, data.append);
                 final long time = data.createOnDemand || file == null ?
-                        System.currentTimeMillis() : file.lastModified(); // LOG4J2-531 create file first so time has valid value
+                        0 : initialFileTime(file); // LOG4J2-531 create file first so time has valid value
 
                 final RollingFileManager rm = new RollingFileManager(data.getLoggerContext(), data.fileName, data.pattern, os,
                     data.append, data.createOnDemand, size, time, data.policy, data.strategy, data.advertiseURI,
@@ -655,6 +662,24 @@ public class RollingFileManager extends FileManager {
             }
             return null;
         }
+    }
+
+    private static long initialFileTime(File file) {
+        Path path = file.toPath();
+        if (Files.exists(path)) {
+            try {
+                BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
+                FileTime fileTime = attrs.creationTime();
+                if (fileTime.compareTo(EPOCH) > 0) {
+                    return fileTime.toMillis();
+                } else {
+                    LOGGER.info("Unable to obtain file creation time for " + file.getAbsolutePath());
+                }
+            } catch (Exception ex) {
+                LOGGER.info("Unable to calculate file creation time for " + file.getAbsolutePath() + ": " + ex.getMessage());
+            }
+        }
+        return file.lastModified();
     }
 
     private static class EmptyQueue extends ArrayBlockingQueue<Runnable> {
