@@ -26,6 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.core.config.Configuration;
@@ -74,7 +76,9 @@ public class OnStartupTriggeringPolicyTest {
         assertTrue(size > 0);
         assertEquals(copied, size);
 
-        Assert.assertTrue(target.toFile().setLastModified(timeStamp));
+        final FileTime fileTime = FileTime.fromMillis(timeStamp);
+        final BasicFileAttributeView attrs = Files.getFileAttributeView(target, BasicFileAttributeView.class);
+        attrs.setTimes(fileTime, fileTime, fileTime);
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%msg").withConfiguration(configuration)
                 .build();
         final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
