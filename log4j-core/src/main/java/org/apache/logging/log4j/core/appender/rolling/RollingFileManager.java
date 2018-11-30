@@ -89,7 +89,7 @@ public class RollingFileManager extends FileManager {
      * @since 2.9
      */
     protected RollingFileManager(final LoggerContext loggerContext, final String fileName, final String pattern, final OutputStream os,
-            final boolean append, final boolean createOnDemand, final long size, final long time,
+            final boolean append, final boolean createOnDemand, final long size, final long initialTime,
             final TriggeringPolicy triggeringPolicy, final RolloverStrategy rolloverStrategy,
             final String advertiseURI, final Layout<? extends Serializable> layout,
             final String filePermissions, final String fileOwner, final String fileGroup,
@@ -97,11 +97,11 @@ public class RollingFileManager extends FileManager {
         super(loggerContext, fileName, os, append, false, createOnDemand, advertiseURI, layout,
               filePermissions, fileOwner, fileGroup, writeHeader, buffer);
         this.size = size;
-        this.initialTime = time;
+        this.initialTime = initialTime;
         this.triggeringPolicy = triggeringPolicy;
         this.rolloverStrategy = rolloverStrategy;
         this.patternProcessor = new PatternProcessor(pattern);
-        this.patternProcessor.setPrevFileTime(time);
+        this.patternProcessor.setPrevFileTime(initialTime);
         this.fileName = fileName;
         this.fileExtension = FileExtension.lookupForFile(pattern);
     }
@@ -598,11 +598,11 @@ public class RollingFileManager extends FileManager {
                 final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
                 final OutputStream os = data.createOnDemand  || data.fileName == null ? null :
                         new FileOutputStream(data.fileName, data.append);
-                final long time = data.createOnDemand || file == null ?
+                final long initialTime = data.createOnDemand || file == null ?
                         0 : initialFileTime(file); // LOG4J2-531 create file first so time has valid value
 
                 final RollingFileManager rm = new RollingFileManager(data.getLoggerContext(), data.fileName, data.pattern, os,
-                    data.append, data.createOnDemand, size, time, data.policy, data.strategy, data.advertiseURI,
+                    data.append, data.createOnDemand, size, initialTime, data.policy, data.strategy, data.advertiseURI,
                     data.layout, data.filePermissions, data.fileOwner, data.fileGroup, writeHeader, buffer);
                 if (os != null && rm.isAttributeViewEnabled()) {
                     rm.defineAttributeView(file.toPath());
