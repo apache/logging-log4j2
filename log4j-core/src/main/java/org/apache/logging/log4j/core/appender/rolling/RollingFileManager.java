@@ -36,7 +36,6 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LifeCycle;
-import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConfigurationFactoryData;
@@ -624,9 +623,8 @@ public class RollingFileManager extends FileManager {
                 FileTime fileTime = attrs.creationTime();
                 if (fileTime.compareTo(EPOCH) > 0) {
                     return fileTime.toMillis();
-                } else {
-                    LOGGER.info("Unable to obtain file creation time for " + file.getAbsolutePath());
                 }
+                LOGGER.info("Unable to obtain file creation time for " + file.getAbsolutePath());
             } catch (Exception ex) {
                 LOGGER.info("Unable to calculate file creation time for " + file.getAbsolutePath() + ": " + ex.getMessage());
             }
