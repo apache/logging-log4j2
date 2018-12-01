@@ -83,6 +83,7 @@ public class RollingAppenderDirectWrite1906Test {
                 assertEquals("Incorrect file name. Expected: " + expected + " Actual: " + actual, expected, actual);
                 ++found;
             }
+            reader.close();
         }
         assertEquals("Incorrect number of events read. Expected " + count + ", Actual " + found, count, found);
 
