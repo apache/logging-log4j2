@@ -86,6 +86,7 @@ public class RollingAppenderDirectWriteTest {
                     actual.startsWith(expected));
                 ++found;
             }
+            reader.close();
         }
         assertEquals("Incorrect number of events read. Expected " + count + ", Actual " + found, count, found);
     }

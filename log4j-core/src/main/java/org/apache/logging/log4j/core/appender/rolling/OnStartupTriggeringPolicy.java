@@ -76,6 +76,7 @@ public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
     @Override
     public void initialize(final RollingFileManager manager) {
         if (manager.getFileTime() < JVM_START_TIME && manager.getFileSize() >= minSize) {
+            StatusLogger.getLogger().debug("Initiating rollover at startup");
             if (minSize == 0) {
                 manager.setRenameEmptyFiles(true);
             }
