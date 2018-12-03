@@ -19,9 +19,12 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -80,12 +83,20 @@ public class RollingAppenderDirectWrite1906Test {
                 String[] parts = line.split((" "));
                 String expected = "rollingfile." + parts[0] + ".log";
 
-                assertEquals("Incorrect file name. Expected: " + expected + " Actual: " + actual, expected, actual);
+                assertEquals(logFileNameError(expected, actual), expected, actual);
                 ++found;
             }
             reader.close();
         }
         assertEquals("Incorrect number of events read. Expected " + count + ", Actual " + found, count, found);
 
+    }
+
+    private String logFileNameError(String expected, String actual) {
+        List<StatusData> statusData = StatusLogger.getLogger().getStatusData();
+        for (StatusData statusItem : statusData) {
+            System.err.println(statusItem.getFormattedStatus());
+        }
+        return "Incorrect file name. Expected: " + expected + " Actual: " + actual;
     }
 }
