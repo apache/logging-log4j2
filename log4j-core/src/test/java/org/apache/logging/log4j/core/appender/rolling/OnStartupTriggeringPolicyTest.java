@@ -79,6 +79,7 @@ public class OnStartupTriggeringPolicyTest {
         final FileTime fileTime = FileTime.fromMillis(timeStamp);
         final BasicFileAttributeView attrs = Files.getFileAttributeView(target, BasicFileAttributeView.class);
         attrs.setTimes(fileTime, fileTime, fileTime);
+
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%msg").withConfiguration(configuration)
                 .build();
         final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
