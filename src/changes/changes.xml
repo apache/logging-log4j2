@@ -148,6 +148,9 @@
       <action issue="LOG4J2-2509" dev="ggregory" type="add">
         Allow a JDBC Appender to truncate strings to match a table's metadata column length limit.
       </action>
+      <action issue="LOG4J2-1246" dev="ggregory" type="add">
+        PatternLayout %date conversion pattern should render time zone designator for ISO-ISO8601.
+      </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
       <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">
