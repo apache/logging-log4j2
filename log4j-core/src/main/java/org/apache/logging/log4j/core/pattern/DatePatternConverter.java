@@ -88,7 +88,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         private final FixedDateFormat fixedDateFormat;
 
         // below fields are only used in ThreadLocal caching mode
-        private final char[] cachedBuffer = new char[70]; // max length of formatted date-time in any format < 64
+        private final char[] cachedBuffer = new char[70]; // max length of formatted date-time in any format < 70
         private int length = 0;
 
         FixedFormatter(final FixedDateFormat fixedDateFormat) {
