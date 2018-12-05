@@ -747,6 +747,22 @@ WARN  [main]: Message 2</pre>
                     <td>20121102T143402,781</td>
                   </tr>
                   <tr>
+                    <td>%d{ISO8601_OFFSET_DATE_TIME_X}</td>
+                    <td>2012-11-02'T'14:34:02,781-07</td>
+                  </tr>
+                  <tr>
+                    <td>%d{ISO8601_OFFSET_DATE_TIME_XX}</td>
+                    <td>2012-11-02'T'14:34:02,781-0700</td>
+                  </tr>
+                  <tr>
+                    <td>%d{ISO8601_OFFSET_DATE_TIME_XXX}</td>
+                    <td>2012-11-02'T'14:34:02,781-07:00</td>
+                  </tr>
+                  <tr>
+                    <td>%d{ISO8601_OFFSET_DATE_TIME_Z}</td>
+                    <td>2012-11-02'T'14:34:02,781-0700</td>
+                  </tr>
+                  <tr>
                     <td>%d{ABSOLUTE}</td>
                     <td>14:34:02,781</td>
                   </tr>
