@@ -390,7 +390,7 @@ public class FixedDateFormat {
     private final char millisSeparatorChar;
     private final int timeSeparatorLength;
     private final int millisSeparatorLength;
-    private final FixedTimeZoneFormat timeZoneFormat;
+    private final FixedTimeZoneFormat fixedTimeZoneFormat;
 
     private volatile long midnightToday = 0;
     private volatile long midnightTomorrow = 0;
@@ -434,7 +434,7 @@ public class FixedDateFormat {
         this.timeSeparatorLength = fixedFormat.timeSeparatorLength;
         this.millisSeparatorChar = fixedFormat.millisSeparatorChar;
         this.millisSeparatorLength = fixedFormat.millisSeparatorLength;
-        this.timeZoneFormat = fixedFormat.fixedTimeZoneFormat; // may be null
+        this.fixedTimeZoneFormat = fixedFormat.fixedTimeZoneFormat; // may be null
         this.length = fixedFormat.getLength();
         this.secondFractionDigits = Math.max(1, Math.min(9, secondFractionDigits));
         this.fastDateFormat = fixedFormat.getFastDateFormat(tz);
@@ -673,8 +673,8 @@ public class FixedDateFormat {
     }
 
     private int writeTimeZone(final long epochMillis, final char[] buffer, int pos) {
-        if (timeZoneFormat != null) {
-            pos = timeZoneFormat.write(timeZone.getOffset(epochMillis), buffer, pos);
+        if (fixedTimeZoneFormat != null) {
+            pos = fixedTimeZoneFormat.write(timeZone.getOffset(epochMillis), buffer, pos);
         }
         return pos;
     }
