@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Constants;
@@ -129,7 +130,7 @@ public class DatePatternConverterTest {
     @Test
     public void testFormatLogEventStringBuilderIso8601TimezoneJST() {
         final LogEvent event = new MyLogEvent();
-        final String[] optionsWithTimezone = {ISO8601_FORMAT, "JST"};
+        final String[] optionsWithTimezone = { ISO8601_FORMAT, "JST" };
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
@@ -147,7 +148,7 @@ public class DatePatternConverterTest {
     @Test
     public void testFormatLogEventStringBuilderIso8601TimezoneZ() {
         final LogEvent event = new MyLogEvent();
-        final String[] optionsWithTimezone = {ISO8601_FORMAT, "Z"};
+        final String[] optionsWithTimezone = { ISO8601_FORMAT, "Z" };
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
@@ -164,20 +165,21 @@ public class DatePatternConverterTest {
     @Test
     public void testFormatLogEventStringBuilderIso8601TimezoneOffset() {
         final LogEvent event = new MyLogEvent();
-        final String[] optionsWithTimezone = {ISO8601_OFFSET_DATE_TIME_XXX};
+        final String[] optionsWithTimezone = { ISO8601_OFFSET_DATE_TIME_XXX };
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
 
         final SimpleDateFormat sdf = new SimpleDateFormat(converter.getPattern());
-        final String expected = sdf.format(new Date(event.getTimeMillis()));
+        final String format = sdf.format(new Date(event.getTimeMillis()));
+        final String expected = format.endsWith("Z") ? format.substring(0, format.length()) + "+00:00" : format;
         assertEquals(expected, sb.toString());
     }
 
     @Test
     public void testFormatLogEventStringBuilderIso8601TimezoneOffsetZ() {
         final LogEvent event = new MyLogEvent();
-        final String[] optionsWithTimezone = {ISO8601_OFFSET_Z_FORMAT};
+        final String[] optionsWithTimezone = { ISO8601_OFFSET_Z_FORMAT };
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
