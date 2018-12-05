@@ -160,7 +160,7 @@ public class FixedDateFormatTest {
         final long end = now + TimeUnit.HOURS.toMillis(25);
         for (final FixedFormat format : FixedFormat.values()) {
             String pattern = format.getPattern();
-            if (containsNanos(format) || format.getTimeZoneFormat() != null) {
+            if (containsNanos(format) || format.getFixedTimeZoneFormat() != null) {
                 continue; // cannot compile precise timestamp formats with SimpleDateFormat
             }
             final SimpleDateFormat simpleDF = new SimpleDateFormat(pattern, Locale.getDefault());
@@ -180,7 +180,7 @@ public class FixedDateFormatTest {
         final long end = now + TimeUnit.HOURS.toMillis(25);
         for (final FixedFormat format : FixedFormat.values()) {
             String pattern = format.getPattern();
-            if (containsNanos(format) || format.getTimeZoneFormat() != null) {
+            if (containsNanos(format) || format.getFixedTimeZoneFormat() != null) {
                 continue; // cannot compile precise timestamp formats with SimpleDateFormat
             }
             final SimpleDateFormat simpleDF = new SimpleDateFormat(pattern, Locale.getDefault());
@@ -201,7 +201,7 @@ public class FixedDateFormatTest {
         final char[] buffer = new char[128];
         for (final FixedFormat format : FixedFormat.values()) {
             String pattern = format.getPattern();
-            if (containsNanos(format) || format.getTimeZoneFormat() != null) {
+            if (containsNanos(format) || format.getFixedTimeZoneFormat() != null) {
                 // cannot compile precise timestamp formats with SimpleDateFormat
                 // This format() API not include the TZ
                 continue;
@@ -225,7 +225,7 @@ public class FixedDateFormatTest {
         final char[] buffer = new char[128];
         for (final FixedFormat format : FixedFormat.values()) {
             String pattern = format.getPattern();
-            if (pattern.endsWith("n") || pattern.matches(".+n+X*") || pattern.matches(".+n+Z*") || format.getTimeZoneFormat() != null) {
+            if (pattern.endsWith("n") || pattern.matches(".+n+X*") || pattern.matches(".+n+Z*") || format.getFixedTimeZoneFormat() != null) {
                 continue; // cannot compile precise timestamp formats with SimpleDateFormat
             }
             final SimpleDateFormat simpleDF = new SimpleDateFormat(pattern, Locale.getDefault());
@@ -390,7 +390,7 @@ public class FixedDateFormatTest {
 
         for (final FixedFormat format : FixedFormat.values()) {
             String pattern = format.getPattern();
-            if (containsNanos(format) || format.getTimeZoneFormat() != null) {
+            if (containsNanos(format) || format.getFixedTimeZoneFormat() != null) {
                 continue; // cannot compile precise timestamp formats with SimpleDateFormat
             }
             final SimpleDateFormat simpleDF = new SimpleDateFormat(pattern, Locale.getDefault());

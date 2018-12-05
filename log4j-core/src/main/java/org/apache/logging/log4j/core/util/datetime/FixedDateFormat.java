@@ -153,7 +153,7 @@ public class FixedDateFormat {
         private final char millisSeparatorChar;
         private final int millisSeparatorLength;
         private final int secondFractionDigits;
-        private final FixedTimeZoneFormat timeZoneFormat;
+        private final FixedTimeZoneFormat fixedTimeZoneFormat;
 
         FixedFormat(final String pattern, final String datePattern, final int escapeCount, final char timeSeparator,
                     final int timeSepLength, final char millisSeparator, final int millisSepLength,
@@ -166,7 +166,7 @@ public class FixedDateFormat {
             this.datePattern = datePattern; // may be null
             this.escapeCount = escapeCount;
             this.secondFractionDigits = secondFractionDigits;
-            this.timeZoneFormat = timeZoneFormat;
+            this.fixedTimeZoneFormat = timeZoneFormat;
         }
 
         /**
@@ -290,8 +290,8 @@ public class FixedDateFormat {
          * Returns the optional time zone format.
          * @return the optional time zone format, may be null.
          */
-        public FixedTimeZoneFormat getTimeZoneFormat() {
-            return timeZoneFormat;
+        public FixedTimeZoneFormat getFixedTimeZoneFormat() {
+            return fixedTimeZoneFormat;
         }
     }
 
@@ -434,7 +434,7 @@ public class FixedDateFormat {
         this.timeSeparatorLength = fixedFormat.timeSeparatorLength;
         this.millisSeparatorChar = fixedFormat.millisSeparatorChar;
         this.millisSeparatorLength = fixedFormat.millisSeparatorLength;
-        this.timeZoneFormat = fixedFormat.timeZoneFormat; // may be null
+        this.timeZoneFormat = fixedFormat.fixedTimeZoneFormat; // may be null
         this.length = fixedFormat.getLength();
         this.secondFractionDigits = Math.max(1, Math.min(9, secondFractionDigits));
         this.fastDateFormat = fixedFormat.getFastDateFormat(tz);

@@ -240,7 +240,7 @@ public class DatePatternConverterTest {
 
                     final String[] milliOptions = { pattern, timeZone };
                     DatePatternConverter.newInstance(milliOptions).format(event, milliBuilder);
-                    FixedTimeZoneFormat timeZoneFormat = format.getTimeZoneFormat();
+                    FixedTimeZoneFormat timeZoneFormat = format.getFixedTimeZoneFormat();
                     final int truncateLen = 3 + (timeZoneFormat != null ? timeZoneFormat.getLength() : 0);
                     final String tz = timeZoneFormat != null
                             ? milliBuilder.substring(milliBuilder.length() - timeZoneFormat.getLength(),
@@ -291,7 +291,7 @@ public class DatePatternConverterTest {
 
             final String[] milliOptions = { pattern };
             DatePatternConverter.newInstance(milliOptions).format(event, milliBuilder);
-            FixedTimeZoneFormat timeZoneFormat = format.getTimeZoneFormat();
+            FixedTimeZoneFormat timeZoneFormat = format.getFixedTimeZoneFormat();
             final int truncateLen = 3 + (timeZoneFormat != null ? timeZoneFormat.getLength() : 0);
             final String tz = timeZoneFormat != null
                     ? milliBuilder.substring(milliBuilder.length() - timeZoneFormat.getLength(), milliBuilder.length())
