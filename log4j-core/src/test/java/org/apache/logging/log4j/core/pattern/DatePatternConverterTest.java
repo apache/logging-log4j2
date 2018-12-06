@@ -56,12 +56,12 @@ public class DatePatternConverterTest {
     /**
      * ISO8601_OFFSET_DATE_TIME_XX string literal.
      */
-    private static final String ISO8601_OFFSET_DATE_TIME_XX = FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_HHMM.name();
+    private static final String ISO8601_OFFSET_DATE_TIME_HHMM = FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_HHMM.name();
 
     /**
      * ISO8601_OFFSET_DATE_TIME_XXX string literal.
      */
-    private static final String ISO8601_OFFSET_DATE_TIME_XXX = FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_HHCMM.name();
+    private static final String ISO8601_OFFSET_DATE_TIME_HHCMM = FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_HHCMM.name();
 
     private static final String[] ISO8601_FORMAT_OPTIONS = { ISO8601 };
 
@@ -165,7 +165,7 @@ public class DatePatternConverterTest {
     @Test
     public void testFormatLogEventStringBuilderIso8601TimezoneOffset() {
         final LogEvent event = new MyLogEvent();
-        final String[] optionsWithTimezone = { ISO8601_OFFSET_DATE_TIME_XXX };
+        final String[] optionsWithTimezone = { ISO8601_OFFSET_DATE_TIME_HHCMM };
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
@@ -177,15 +177,16 @@ public class DatePatternConverterTest {
     }
 
     @Test
-    public void testFormatLogEventStringBuilderIso8601TimezoneOffsetZ() {
+    public void testFormatLogEventStringBuilderIso8601TimezoneOffsetXX() {
         final LogEvent event = new MyLogEvent();
-        final String[] optionsWithTimezone = { ISO8601_OFFSET_DATE_TIME_XX };
+        final String[] optionsWithTimezone = { ISO8601_OFFSET_DATE_TIME_HHMM };
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
 
         final SimpleDateFormat sdf = new SimpleDateFormat(converter.getPattern());
-        final String expected = sdf.format(new Date(event.getTimeMillis()));
+        final String format = sdf.format(new Date(event.getTimeMillis()));
+        final String expected = format.endsWith("Z") ? format.substring(0, format.length() - 1) + "+0000" : format;
         assertEquals(expected, sb.toString());
     }
 
