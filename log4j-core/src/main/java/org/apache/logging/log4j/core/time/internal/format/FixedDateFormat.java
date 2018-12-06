@@ -116,22 +116,22 @@ public class FixedDateFormat {
 //      ISO8601_OFFSET_DATE_TIME("yyyy-MM-dd'T'HH:mmXXX", "yyyy-MM-dd'T'", 2, ':', 1, ' ', 0, 0, FixedTimeZoneFormat.XXX),
 
         /**
-         * ISO8601_OFFSET_DATE_TIME_X time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSSX"}.
+         * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSSX"} with a time zone like {@code -07}.
          */
-        ISO8601_OFFSET_DATE_TIME_X("yyyy-MM-dd'T'HH:mm:ss,SSSX", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3,
-                FixedTimeZoneFormat.X),
+        ISO8601_OFFSET_DATE_TIME_HH("yyyy-MM-dd'T'HH:mm:ss,SSSX", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3,
+                FixedTimeZoneFormat.HH),
 
         /**
-         * ISO8601_OFFSET_DATE_TIME_XX time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSSXX"}.
+         * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSSXX"} with a time zone like {@code -0700}.
          */
-        ISO8601_OFFSET_DATE_TIME_XX("yyyy-MM-dd'T'HH:mm:ss,SSSXX", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3,
-                FixedTimeZoneFormat.XX),
+        ISO8601_OFFSET_DATE_TIME_HHMM("yyyy-MM-dd'T'HH:mm:ss,SSSXX", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3,
+                FixedTimeZoneFormat.HHMM),
 
         /**
-         * ISO8601_OFFSET_DATE_TIME_XXX time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSSXXX"}.
+         * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSSXXX"} with a time zone like {@code -07:00}.
          */
-        ISO8601_OFFSET_DATE_TIME_XXX("yyyy-MM-dd'T'HH:mm:ss,SSSXXX", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3,
-                FixedTimeZoneFormat.XXX),
+        ISO8601_OFFSET_DATE_TIME_HHCMM("yyyy-MM-dd'T'HH:mm:ss,SSSXXX", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3,
+                FixedTimeZoneFormat.HHCMM),
 
         /**
          * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss.SSS"}.
@@ -295,26 +295,29 @@ public class FixedDateFormat {
     private static final char NONE = (char) 0;
 
     /**
-     * Fixed time zone formats. The enum names are symbols from
-     * https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html.
+     * Fixed time zone formats. The enum names are symbols from Java's <a href=
+     * "https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter</a>.
+     * 
+     * @see <a href=
+     * "https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter</a>
      */
     public enum FixedTimeZoneFormat {
 
         /**
          * Offset like {@code -07}
          */
-        X(NONE, false, 3),
+        HH(NONE, false, 3),
 
         /**
          * Offset like {@code -0700}.
          * Same as Z.
          */
-        XX(NONE, true, 5),
+        HHMM(NONE, true, 5),
 
         /**
          * Offset like {@code -07:00}
          */
-        XXX(':', true, 6);
+        HHCMM(':', true, 6);
 
         private FixedTimeZoneFormat() {
             this(NONE, true, 4);
