@@ -16,9 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;

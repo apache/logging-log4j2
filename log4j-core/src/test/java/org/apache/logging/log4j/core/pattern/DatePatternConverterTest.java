@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Constants;

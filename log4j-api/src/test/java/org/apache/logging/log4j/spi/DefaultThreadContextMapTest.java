@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.ThreadContext;
 import org.junit.Test;
 
 /**
