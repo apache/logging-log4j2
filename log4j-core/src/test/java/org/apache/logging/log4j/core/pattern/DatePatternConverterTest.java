@@ -56,12 +56,12 @@ public class DatePatternConverterTest {
     /**
      * ISO8601_OFFSET_DATE_TIME_XX string literal.
      */
-    private static final String ISO8601_OFFSET_DATE_TIME_XX = FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_XX.name();
+    private static final String ISO8601_OFFSET_DATE_TIME_XX = FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_HHMM.name();
 
     /**
      * ISO8601_OFFSET_DATE_TIME_XXX string literal.
      */
-    private static final String ISO8601_OFFSET_DATE_TIME_XXX = FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_XXX.name();
+    private static final String ISO8601_OFFSET_DATE_TIME_XXX = FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_HHCMM.name();
 
     private static final String[] ISO8601_FORMAT_OPTIONS = { ISO8601 };
 
