@@ -78,7 +78,7 @@ public class HighlightConverterTest {
 
     @Test
     public void testLevelNamesUnknown() {
-        String colorName = "blue";
+        final String colorName = "blue";
         final String[] options = { "%level", PatternParser.NO_CONSOLE_NO_ANSI + "=false, " + PatternParser.DISABLE_ANSI
                 + "=false, " + "DEBUG=" + colorName + ", CUSTOM1=" + colorName };
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);

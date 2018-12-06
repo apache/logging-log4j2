@@ -62,7 +62,7 @@ public class RollingAppenderDirectWrite1906Test {
 
     @Test
     public void testAppender() throws Exception {
-        int count = 100;
+        final int count = 100;
         for (int i=0; i < count; ++i) {
             logger.debug("This is test message number " + i);
             Thread.sleep(50);
@@ -74,14 +74,14 @@ public class RollingAppenderDirectWrite1906Test {
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(".log"))))));
         int found = 0;
-        for (File file: files) {
-            String actual = file.getName();
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+        for (final File file: files) {
+            final String actual = file.getName();
+            final BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = reader.readLine()) != null) {
                 assertNotNull("No log event in file " + actual, line);
-                String[] parts = line.split((" "));
-                String expected = "rollingfile." + parts[0] + ".log";
+                final String[] parts = line.split((" "));
+                final String expected = "rollingfile." + parts[0] + ".log";
 
                 assertEquals(logFileNameError(expected, actual), expected, actual);
                 ++found;
@@ -92,9 +92,9 @@ public class RollingAppenderDirectWrite1906Test {
 
     }
 
-    private String logFileNameError(String expected, String actual) {
-        List<StatusData> statusData = StatusLogger.getLogger().getStatusData();
-        for (StatusData statusItem : statusData) {
+    private String logFileNameError(final String expected, final String actual) {
+        final List<StatusData> statusData = StatusLogger.getLogger().getStatusData();
+        for (final StatusData statusItem : statusData) {
             System.err.println(statusItem.getFormattedStatus());
         }
         return "Incorrect file name. Expected: " + expected + " Actual: " + actual;

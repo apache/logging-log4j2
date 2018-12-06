@@ -58,7 +58,7 @@ public class RollingAppenderDirectWriteTest {
 
     @Test
     public void testAppender() throws Exception {
-        int count = 100;
+        final int count = 100;
         for (int i=0; i < count; ++i) {
             logger.debug("This is test message number " + i);
         }
@@ -69,8 +69,8 @@ public class RollingAppenderDirectWriteTest {
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(".gz"))))));
         int found = 0;
-        for (File file: files) {
-            String actual = file.getName();
+        for (final File file: files) {
+            final String actual = file.getName();
             BufferedReader reader;
             if (file.getName().endsWith(".gz")) {
                 reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file))));
@@ -80,8 +80,8 @@ public class RollingAppenderDirectWriteTest {
             String line;
             while ((line = reader.readLine()) != null) {
                 assertNotNull("No log event in file " + actual, line);
-                String[] parts = line.split((" "));
-                String expected = "test1-" + parts[0];
+                final String[] parts = line.split((" "));
+                final String expected = "test1-" + parts[0];
                 assertTrue("Incorrect file name. Expected file prefix: " + expected + " Actual: " + actual,
                     actual.startsWith(expected));
                 ++found;

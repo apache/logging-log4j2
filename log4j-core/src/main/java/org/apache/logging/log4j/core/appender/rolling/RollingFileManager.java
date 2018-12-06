@@ -662,17 +662,17 @@ public class RollingFileManager extends FileManager {
         }
     }
 
-    private static long initialFileTime(File file) {
-        Path path = file.toPath();
+    private static long initialFileTime(final File file) {
+        final Path path = file.toPath();
         if (Files.exists(path)) {
             try {
-                BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
-                FileTime fileTime = attrs.creationTime();
+                final BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
+                final FileTime fileTime = attrs.creationTime();
                 if (fileTime.compareTo(EPOCH) > 0) {
                     return fileTime.toMillis();
                 }
                 LOGGER.info("Unable to obtain file creation time for " + file.getAbsolutePath());
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.info("Unable to calculate file creation time for " + file.getAbsolutePath() + ": " + ex.getMessage());
             }
         }

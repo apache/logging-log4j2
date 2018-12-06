@@ -111,8 +111,8 @@ public class DatePatternConverterTest {
     }
 
     private String precisePattern(final String pattern, final int precision) {
-        String search = "SSS";
-        int foundIndex = pattern.indexOf(search);
+        final String search = "SSS";
+        final int foundIndex = pattern.indexOf(search);
         final String seconds = pattern.substring(0, foundIndex);
         final String remainder = pattern.substring(foundIndex + search.length());
         return seconds + "nnnnnnnnn".substring(0, precision) + remainder;
@@ -347,7 +347,7 @@ public class DatePatternConverterTest {
         final LogEvent event = new MyLogEvent();
 
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
-            String pattern = format.getPattern();
+            final String pattern = format.getPattern();
             final String search = "SSS";
             final int foundIndex = pattern.indexOf(search);
             if (pattern.endsWith("n") || pattern.matches(".+n+X*") || pattern.matches(".+n+Z*")) {
@@ -373,7 +373,7 @@ public class DatePatternConverterTest {
 
             final String[] milliOptions = { pattern };
             DatePatternConverter.newInstance(milliOptions).format(event, milliBuilder);
-            FixedTimeZoneFormat timeZoneFormat = format.getFixedTimeZoneFormat();
+            final FixedTimeZoneFormat timeZoneFormat = format.getFixedTimeZoneFormat();
             final int truncateLen = 3 + (timeZoneFormat != null ? timeZoneFormat.getLength() : 0);
             final String tz = timeZoneFormat != null
                     ? milliBuilder.substring(milliBuilder.length() - timeZoneFormat.getLength(), milliBuilder.length())
@@ -422,7 +422,7 @@ public class DatePatternConverterTest {
 
                     final String[] milliOptions = { pattern, timeZone };
                     DatePatternConverter.newInstance(milliOptions).format(event, milliBuilder);
-                    FixedTimeZoneFormat timeZoneFormat = format.getFixedTimeZoneFormat();
+                    final FixedTimeZoneFormat timeZoneFormat = format.getFixedTimeZoneFormat();
                     final int truncateLen = 3 + (timeZoneFormat != null ? timeZoneFormat.getLength() : 0);
                     final String tz = timeZoneFormat != null
                             ? milliBuilder.substring(milliBuilder.length() - timeZoneFormat.getLength(),

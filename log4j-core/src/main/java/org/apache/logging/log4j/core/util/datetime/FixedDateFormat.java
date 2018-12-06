@@ -198,7 +198,7 @@ public class FixedDateFormat {
         }
 
         static FixedFormat lookupIgnoringNanos(final String pattern) {
-            int[] nanoRange = nanoRange(pattern);
+            final int[] nanoRange = nanoRange(pattern);
             final int nanoStart = nanoRange[0];
             final int nanoEnd = nanoRange[1];
             if (nanoStart > 0) {
@@ -320,7 +320,7 @@ public class FixedDateFormat {
             this(NONE, true, 4);
         }
 
-        private FixedTimeZoneFormat(char timeSeparatorChar, boolean minutes, int length) {
+        private FixedTimeZoneFormat(final char timeSeparatorChar, final boolean minutes, final int length) {
             this.timeSeparatorChar = timeSeparatorChar;
             this.timeSeparatorCharLen = timeSeparatorChar != NONE ? 1 : 0;
             this.useMinutes = minutes;
@@ -339,7 +339,7 @@ public class FixedDateFormat {
 
         // Profiling showed this method is important to log4j performance. Modify with care!
         // 262 bytes (will be inlined when hot enough: <= -XX:FreqInlineSize=325 bytes on Linux)
-        private int write(int offset, final char[] buffer, int pos) {
+        private int write(final int offset, final char[] buffer, int pos) {
             // This method duplicates part of writeTime()
 
             buffer[pos++] = offset < 0 ? '-' : '+';
@@ -574,7 +574,7 @@ public class FixedDateFormat {
         final long epochMillisecond = instant.getEpochMillisecond();
         int result = format(epochMillisecond, buffer, startPos);
         result -= digitsLessThanThree();
-        int pos = formatNanoOfMillisecond(instant.getNanoOfMillisecond(), buffer, startPos + result);
+        final int pos = formatNanoOfMillisecond(instant.getNanoOfMillisecond(), buffer, startPos + result);
         return writeTimeZone(epochMillisecond, buffer, pos);
     }
 
@@ -600,7 +600,7 @@ public class FixedDateFormat {
         // int ms = (int) (time % 86400000);
         final int ms = (int) (millisSinceMidnight(epochMillis));
         writeDate(buffer, startPos);
-        int pos = writeTime(ms, buffer, startPos + dateLength);
+        final int pos = writeTime(ms, buffer, startPos + dateLength);
         return pos - startPos;
     }
 
