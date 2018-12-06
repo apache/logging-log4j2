@@ -132,11 +132,6 @@ public class FixedDateFormat {
         ISO8601_OFFSET_DATE_TIME_XXX("yyyy-MM-dd'T'HH:mm:ss,SSSXXX", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3, FixedTimeZoneFormat.XXX),
 
         /**
-         * ISO8601_OFFSET_DATE_TIME_Z time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSSZ"}.
-         */
-        ISO8601_OFFSET_DATE_TIME_Z("yyyy-MM-dd'T'HH:mm:ss,SSSZ", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3, FixedTimeZoneFormat.Z),
-
-        /**
          * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss.SSS"}.
          */
         ISO8601_PERIOD("yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'", 2, ':', 1, '.', 1, 3, null);
@@ -310,21 +305,14 @@ public class FixedDateFormat {
 
         /**
          * Offset like {@code -0700}.
-         * Same as Z.
          */
         XX(NONE, true, 5), 
         
         /** 
          * Offset like {@code -07:00}
          */
-        XXX(':', true, 6), 
+        XXX(':', true, 6);
         
-        /**
-         * Offset like {@code -0700}.
-         * Same as XX.
-         */
-        Z(NONE, true, 5); 
-
         private FixedTimeZoneFormat() {
             this(NONE, true, 4);
         }

@@ -51,19 +51,19 @@ public class DatePatternConverterTest {
     /**
      * ISO8601 string literal.
      */
-    private static final String ISO8601_FORMAT = FixedDateFormat.FixedFormat.ISO8601.name();
+    private static final String ISO8601 = FixedDateFormat.FixedFormat.ISO8601.name();
 
     /**
-     * ISO8601_OFFSET string literal.
+     * ISO8601_OFFSET_DATE_TIME_XX string literal.
+     */
+    private static final String ISO8601_OFFSET_DATE_TIME_XX = FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_XX.name();
+
+    /**
+     * ISO8601_OFFSET_DATE_TIME_XXX string literal.
      */
     private static final String ISO8601_OFFSET_DATE_TIME_XXX = FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_XXX.name();
 
-    /**
-     * ISO8601_OFFSET_Z string literal.
-     */
-    private static final String ISO8601_OFFSET_Z_FORMAT = FixedDateFormat.FixedFormat.ISO8601_OFFSET_DATE_TIME_Z.name();
-
-    private static final String[] ISO8601_FORMAT_OPTIONS = {ISO8601_FORMAT};
+    private static final String[] ISO8601_FORMAT_OPTIONS = { ISO8601 };
 
     @Parameterized.Parameters(name = "threadLocalEnabled={0}")
     public static Collection<Object[]> data() {
@@ -130,7 +130,7 @@ public class DatePatternConverterTest {
     @Test
     public void testFormatLogEventStringBuilderIso8601TimezoneJST() {
         final LogEvent event = new MyLogEvent();
-        final String[] optionsWithTimezone = { ISO8601_FORMAT, "JST" };
+        final String[] optionsWithTimezone = { ISO8601, "JST" };
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
@@ -148,7 +148,7 @@ public class DatePatternConverterTest {
     @Test
     public void testFormatLogEventStringBuilderIso8601TimezoneZ() {
         final LogEvent event = new MyLogEvent();
-        final String[] optionsWithTimezone = { ISO8601_FORMAT, "Z" };
+        final String[] optionsWithTimezone = { ISO8601, "Z" };
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
@@ -179,7 +179,7 @@ public class DatePatternConverterTest {
     @Test
     public void testFormatLogEventStringBuilderIso8601TimezoneOffsetZ() {
         final LogEvent event = new MyLogEvent();
-        final String[] optionsWithTimezone = { ISO8601_OFFSET_Z_FORMAT };
+        final String[] optionsWithTimezone = { ISO8601_OFFSET_DATE_TIME_XX };
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
