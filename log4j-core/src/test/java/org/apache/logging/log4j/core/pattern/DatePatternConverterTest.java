@@ -211,7 +211,7 @@ public class DatePatternConverterTest {
     }
 
     @Test
-    public void testFormatLogEventStringBuilderIso8601TimezoneOffset() {
+    public void testFormatLogEventStringBuilderIso8601TimezoneOffsetHHCMM() {
         final LogEvent event = new MyLogEvent();
         final String[] optionsWithTimezone = { ISO8601_OFFSET_DATE_TIME_HHCMM };
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
@@ -225,7 +225,7 @@ public class DatePatternConverterTest {
     }
 
     @Test
-    public void testFormatLogEventStringBuilderIso8601TimezoneOffsetXX() {
+    public void testFormatLogEventStringBuilderIso8601TimezoneOffsetHHMM() {
         final LogEvent event = new MyLogEvent();
         final String[] optionsWithTimezone = { ISO8601_OFFSET_DATE_TIME_HHMM };
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
