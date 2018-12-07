@@ -237,7 +237,7 @@ public class DatePatternConverterTest {
 
         final SimpleDateFormat sdf = new SimpleDateFormat(converter.getPattern());
         final String format = sdf.format(new Date(event.getTimeMillis()));
-        final String expected = format.endsWith("Z") ? format.substring(0, format.length() - 1) + "+00:00" : format;
+        final String expected = format.endsWith("Z") ? format.substring(0, format.length() - 1) + "+0000" : format;
         assertEquals(expected, sb.toString());
     }
 
