@@ -669,6 +669,7 @@ public class RollingFileManager extends FileManager {
                 final BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
                 final FileTime fileTime = attrs.creationTime();
                 if (fileTime.compareTo(EPOCH) > 0) {
+                    LOGGER.debug("Returning file creation time for {}", file.getAbsolutePath());
                     return fileTime.toMillis();
                 }
                 LOGGER.info("Unable to obtain file creation time for " + file.getAbsolutePath());

@@ -1,0 +1,41 @@
+{
+  "configuration": { "status": "debug",
+    "appenders": {
+      "Console": {
+        "name": "Console",
+        "PatternLayout": {
+          "pattern": "%d{yyyy-MM-dd'T'HH:mm:ss.SSS} [%c{2}] [%t]%n[%p] : %m%n"
+        }
+      },
+      "RollingFile": {
+        "name": "RollingFile",
+        "fileName": "target/rollOnStartup/orchestrator.log",
+        "filePattern": "target/RollOnStartup/orchestrator-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz",
+        "append": false,
+        "PatternLayout": {
+          "pattern": "%d{yyyy-MM-dd'T'HH:mm:ss.SSS} [%c{2}] [%t]%n[%p] : %m%n"
+        },
+        "Policies": {
+          "OnStartupTriggeringPolicy": {
+            "minSize" : 0
+          },
+          "SizeBasedTriggeringPolicy": {
+            "size": "50 MB"
+          }
+        },
+        "DefaultRolloverStrategy": {
+          "max": "10"
+        }
+      }
+    },
+    "loggers": {
+      "root": {
+        "level": "info",
+        "AppenderRef": [
+          {"ref": "RollingFile", "level": "INFO"},
+          {"ref": "Console", "level": "ERROR"}
+        ]
+      }
+    }
+  }
+}

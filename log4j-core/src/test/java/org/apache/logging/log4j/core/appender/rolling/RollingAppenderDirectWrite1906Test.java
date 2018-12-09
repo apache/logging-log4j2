@@ -92,11 +92,14 @@ public class RollingAppenderDirectWrite1906Test {
 
     }
 
-    private String logFileNameError(final String expected, final String actual) {
+    private String logFileNameError(String expected, String actual) {
         final List<StatusData> statusData = StatusLogger.getLogger().getStatusData();
-        for (final StatusData statusItem : statusData) {
-            System.err.println(statusItem.getFormattedStatus());
+        final StringBuilder sb = new StringBuilder();
+        for (StatusData statusItem : statusData) {
+            sb.append(statusItem.getFormattedStatus());
+            sb.append("\n");
         }
-        return "Incorrect file name. Expected: " + expected + " Actual: " + actual;
+        sb.append("Incorrect file name. Expected: ").append(expected).append(" Actual: ").append(actual);
+        return sb.toString();
     }
 }
