@@ -99,6 +99,20 @@ public class MapLookupTest {
     }
 
     @Test
+    public void testLookupDefaultMapIsCheckedBeforeMapMessage() {
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("A", "ADefault");
+        final HashMap<String, Object> eventMap = new HashMap<>();
+        eventMap.put("A", "AEvent");
+        final MapMessage message = new MapMessage<>(eventMap);
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(message)
+                .build();
+        final MapLookup lookup = new MapLookup(map);
+        assertEquals("ADefault", lookup.lookup(event, "A"));
+    }
+
+    @Test
     public void testNullEvent() {
       final HashMap<String, String> map = new HashMap<>();
       map.put("A", "B");
