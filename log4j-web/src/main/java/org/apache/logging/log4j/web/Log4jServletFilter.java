@@ -17,6 +17,10 @@
 package org.apache.logging.log4j.web;
 
 import java.io.IOException;
+import java.util.concurrent.Executor;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -44,6 +48,7 @@ public class Log4jServletFilter implements Filter {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     static final String ALREADY_FILTERED_ATTRIBUTE = Log4jServletFilter.class.getName() + ".FILTERED";
+    static final ThreadLocal<ServletRequest> CURRENT_REQUEST = new ThreadLocal<>();
 
     private ServletContext servletContext;
     private Log4jWebLifeCycle initializer;
@@ -55,6 +60,18 @@ public class Log4jServletFilter implements Filter {
 
         this.initializer = WebLoggerContextUtils.getWebLifeCycle(this.servletContext);
         this.initializer.clearLoggerContext(); // the application is mostly finished starting up now
+
+        filterConfig.getServletContext().setAttribute("log4j.requestExecutor",
+                (BiConsumer<ServletRequest, Runnable>) (request, command) -> {
+                    try {
+                        Log4jServletFilter.this.initializer.setLoggerContext();
+                        CURRENT_REQUEST.set(request);
+                        command.run();
+                    } finally {
+                        Log4jServletFilter.this.initializer.clearLoggerContext();
+                        CURRENT_REQUEST.remove();
+                    }
+                });
     }
 
     @Override
@@ -67,10 +84,11 @@ public class Log4jServletFilter implements Filter {
 
             try {
                 this.initializer.setLoggerContext();
-
+                CURRENT_REQUEST.set(request);
                 chain.doFilter(request, response);
             } finally {
                 this.initializer.clearLoggerContext();
+                CURRENT_REQUEST.remove();
             }
         }
     }
