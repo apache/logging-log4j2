@@ -156,6 +156,13 @@ public class RollingFileManager extends FileManager {
             if (triggeringPolicy instanceof LifeCycle) {
                 ((LifeCycle) triggeringPolicy).start();
             }
+            if (rolloverStrategy instanceof DirectFileRolloverStrategy) {
+                // LOG4J2-2485: Initialize size from the most recently written file.
+                File file = new File(getFileName());
+                if (file.exists()) {
+                    size = file.length();
+                }
+            }
         }
     }
 
