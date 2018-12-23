@@ -340,6 +340,9 @@
       </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
+      <action issue="LOG4J2-2485" dev="rgoers" type="fix" due-to="Giovanni Matteo Fumarola">
+        SizeBasedTriggeringPolicy was not honored when using the DirectWriteRolloverStrategy if the machine restarts.
+      </action>
       <action issue="LOG4J2-1906" dev="rgoers" type="fix">
         Direct write was creating files with the wrong date/time.
       </action>
