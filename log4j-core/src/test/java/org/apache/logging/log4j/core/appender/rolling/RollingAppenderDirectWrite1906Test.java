@@ -19,10 +19,17 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusListener;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -49,6 +56,11 @@ public class RollingAppenderDirectWrite1906Test {
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        StatusLogger.getLogger().registerListener(new NoopStatusListener());
+    }
 
     private Logger logger;
 
@@ -80,12 +92,41 @@ public class RollingAppenderDirectWrite1906Test {
                 String[] parts = line.split((" "));
                 String expected = "rollingfile." + parts[0] + ".log";
 
-                assertEquals("Incorrect file name. Expected: " + expected + " Actual: " + actual, expected, actual);
+                assertEquals(logFileNameError(expected, actual), expected, actual);
                 ++found;
             }
             reader.close();
         }
         assertEquals("Incorrect number of events read. Expected " + count + ", Actual " + found, count, found);
 
+    }
+
+
+    private String logFileNameError(String expected, String actual) {
+        final List<StatusData> statusData = StatusLogger.getLogger().getStatusData();
+        final StringBuilder sb = new StringBuilder();
+        for (StatusData statusItem : statusData) {
+            sb.append(statusItem.getFormattedStatus());
+            sb.append("\n");
+        }
+        sb.append("Incorrect file name. Expected: ").append(expected).append(" Actual: ").append(actual);
+        return sb.toString();
+    }
+
+    private static class NoopStatusListener implements StatusListener {
+        @Override
+        public void log(StatusData data) {
+
+        }
+
+        @Override
+        public Level getStatusLevel() {
+            return Level.TRACE;
+        }
+
+        @Override
+        public void close() throws IOException {
+
+        }
     }
 }
