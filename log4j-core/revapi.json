@@ -1,0 +1,1994 @@
+[
+  {
+    "extension": "revapi.java",
+    "configuration": {
+      "filter": {
+        "classes": {
+          "exclude": [
+            "org\\.apache\\.logging\\.log4j\\.corel\\.impl\\.ContextAnchor",
+            "org\\.apache\\.logging\\.log4j\\.core\\.async\\.AsyncLoggerDisruptor",
+            "org\\.apache\\.logging\\.log4j\\.core\\.async\\.RingBufferLogEvent\\.Factory",
+            "org\\.apache\\.logging\\.log4j\\.core\\.layout\\.AbstractJacksonLayout",
+            "org\\.apache\\.logging\\.log4j\\.core\\.layout\\.AbstractJacksonLayout\\.ResolvableKeyValuePair",
+            "org\\.apache\\.logging\\.log4j\\.core\\.net\\.SmtpManager\\.FactoryData",
+            "org\\.apache\\.logging\\.log4j\\.core\\.net\\.TcpSocketManager\\.FactoryData",
+            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.CronExpression\\.ValueSet",
+            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.NumberRule",
+            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.Rule"
+          ]
+        },
+        "packages": {
+          "exclude": [
+            "org.apache.logging.log4j.core.jmx",
+            "org.apache.logging.log4j.core.jackson",
+            "org.apache.logging.log4j.core.time.internal",
+            "org.apache.logging.log4j.core.util.datetime"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "extension": "revapi.ignore",
+    "configuration": [
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.AsyncAppender.Builder org.apache.logging.log4j.core.appender.AsyncAppender.Builder::setFilter(org.apache.logging.log4j.core.Filter)",
+        "new": "method B org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B>>>::setFilter(org.apache.logging.log4j.core.Filter) @ org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.AsyncAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "class org.apache.logging.log4j.core.appender.AsyncAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "class org.apache.logging.log4j.core.appender.AsyncAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B>>",
+        "typeParameter": "B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.annotation.attributeAdded",
+        "old": "parameter org.apache.logging.log4j.core.appender.NullAppender org.apache.logging.log4j.core.appender.NullAppender::createAppender(===java.lang.String===)",
+        "new": "parameter org.apache.logging.log4j.core.appender.NullAppender org.apache.logging.log4j.core.appender.NullAppender::createAppender(===java.lang.String===)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginAttribute(value = \"name\", defaultString = \"null\")",
+        "attribute": "defaultString",
+        "justification": "LOG4J2-2447 - Allow NullAppender to default its name to null"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder::setFilter(org.apache.logging.log4j.core.Filter)",
+        "new": "method B org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B>>>::setFilter(org.apache.logging.log4j.core.Filter) @ org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder::setFollow(boolean)",
+        "new": "method B org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>>::setFollow(boolean)",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder::setIgnoreExceptions(boolean)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setIgnoreExceptions(boolean) @ org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder::setLayout(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setLayout(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>) @ org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder::setName(java.lang.String)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setName(java.lang.String) @ org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder::setTarget(java.io.OutputStream)",
+        "new": "method B org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>>::setTarget(java.io.OutputStream)",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "typeParameter": "B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setFilter(org.apache.logging.log4j.core.Filter)",
+        "new": "method B org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B>>>::setFilter(org.apache.logging.log4j.core.Filter) @ org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setFollow(boolean)",
+        "new": "method B org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>::setFollow(boolean)",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setIgnoreExceptions(boolean)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setIgnoreExceptions(boolean) @ org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setLayout(===org.apache.logging.log4j.core.StringLayout===)",
+        "new": "parameter B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setLayout(===org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>===) @ org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setLayout(org.apache.logging.log4j.core.StringLayout)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setLayout(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>) @ org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setName(java.lang.String)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setName(java.lang.String) @ org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setTarget(java.io.Writer)",
+        "new": "method B org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>::setTarget(java.io.Writer)",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "typeParameter": "B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppender.Builder<B extends org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppender.Builder<B>>",
+        "new": "class org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppender.Builder<B extends org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender.Builder<B extends org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager::getManager(java.lang.String, int, org.apache.logging.log4j.core.appender.db.jdbc.ConnectionSource, java.lang.String, org.apache.logging.log4j.core.appender.db.jdbc.ColumnConfig[], org.apache.logging.log4j.core.appender.db.ColumnMapping[])",
+        "new": "method org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager::getManager(java.lang.String, int, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.appender.db.jdbc.ConnectionSource, java.lang.String, org.apache.logging.log4j.core.appender.db.jdbc.ColumnConfig[], org.apache.logging.log4j.core.appender.db.ColumnMapping[], boolean, long)",
+        "justification": "LOG4J2-2500 - Allow a JDBC Appender to truncate string to match a table's metadata column length limit"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder::setFilter(org.apache.logging.log4j.core.Filter)",
+        "new": "method B org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B>>>::setFilter(org.apache.logging.log4j.core.Filter) @ org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder::setIgnoreExceptions(boolean)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setIgnoreExceptions(boolean) @ org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder::setLayout(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setLayout(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>) @ org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder::setName(java.lang.String)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setName(java.lang.String) @ org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "typeParameter": "B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.config.Property[] org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender.Builder<B>>>::getProperties()",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender.Builder<B>>>::setProperties(org.apache.logging.log4j.core.config.Property[])",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method void org.apache.logging.log4j.core.util.Closer::close(java.lang.AutoCloseable) throws java.lang.Exception",
+        "new": "method boolean org.apache.logging.log4j.core.util.Closer::close(java.lang.AutoCloseable) throws java.lang.Exception",
+        "justification": "LOG4J2-2496 - JDBC Appender should reconnect to the database when a connection goes stale"
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method java.lang.Object org.apache.logging.log4j.core.util.Loader::newInstanceOf(java.lang.String) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.InstantiationException, java.lang.NoSuchMethodException, java.lang.reflect.InvocationTargetException",
+        "new": "method <T> T org.apache.logging.log4j.core.util.Loader::newInstanceOf(java.lang.String) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.InstantiationException, java.lang.NoSuchMethodException, java.lang.reflect.InvocationTargetException",
+        "justification": "LOG4J2-2482 - BasicContextSelector cannot be used in an OSGi application"
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "method java.lang.Object org.apache.logging.log4j.core.util.Loader::newInstanceOf(java.lang.String) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.InstantiationException, java.lang.NoSuchMethodException, java.lang.reflect.InvocationTargetException",
+        "new": "method <T> T org.apache.logging.log4j.core.util.Loader::newInstanceOf(java.lang.String) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.InstantiationException, java.lang.NoSuchMethodException, java.lang.reflect.InvocationTargetException",
+        "justification": "LOG4J2-2482 - BasicContextSelector cannot be used in an OSGi application"
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "method java.lang.Object org.apache.logging.log4j.core.util.Loader::newInstanceOf(java.lang.String) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.InstantiationException, java.lang.NoSuchMethodException, java.lang.reflect.InvocationTargetException",
+        "new": "method <T> T org.apache.logging.log4j.core.util.Loader::newInstanceOf(java.lang.String) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.InstantiationException, java.lang.NoSuchMethodException, java.lang.reflect.InvocationTargetException",
+        "typeParameter": "T",
+        "justification": "LOG4J2-2482 - BasicContextSelector cannot be used in an OSGi application"
+      },
+      {
+        "code": "java.field.enumConstantOrderChanged",
+        "old": "field org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat.ISO8601_PERIOD",
+        "new": "field org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat.ISO8601_PERIOD",
+        "justification": "LOG4J2-1247 - PatternLayout %date conversion pattern should render time zone designator"
+
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.util.Map<java.lang.String, java.lang.String> org.apache.logging.log4j.core.AbstractLogEvent::getContextMap()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method boolean org.apache.logging.log4j.core.LifeCycle::stop(long, java.util.concurrent.TimeUnit)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.util.Map<java.lang.String, java.lang.String> org.apache.logging.log4j.core.LogEvent::getContextMap()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::withConfiguration(org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::withIgnoreExceptions(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::withLayout(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::withName(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method void org.apache.logging.log4j.core.appender.AbstractAppender::<init>(java.lang.String, org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, boolean)",
+        "new": "method void org.apache.logging.log4j.core.appender.AbstractAppender::<init>(java.lang.String, org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, boolean, org.apache.logging.log4j.core.config.Property[])",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.AbstractAppender::<init>(java.lang.String, org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B>>>::withAdvertise(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B>>>::withAdvertiseUri(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B>>>::withAppend(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B>>>::withCreateOnDemand(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B>>>::withFileGroup(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B>>>::withFileName(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B>>>::withFileOwner(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B>>>::withFilePermissions(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractFileAppender.Builder<B>>>::withLocking(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.AbstractManager::release()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender.Builder<B>>>::withBufferSize(int)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender.Builder<B>>>::withBufferedIo(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender.Builder<B>>>::withImmediateFlush(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method void org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender<M extends org.apache.logging.log4j.core.appender.OutputStreamManager>::<init>(java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, boolean, boolean, M)",
+        "new": "method void org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender<M extends org.apache.logging.log4j.core.appender.OutputStreamManager>::<init>(java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, boolean, boolean, org.apache.logging.log4j.core.config.Property[], M)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method void org.apache.logging.log4j.core.appender.AbstractWriterAppender<M extends org.apache.logging.log4j.core.appender.WriterManager>::<init>(java.lang.String, org.apache.logging.log4j.core.StringLayout, org.apache.logging.log4j.core.Filter, boolean, boolean, M)",
+        "new": "method void org.apache.logging.log4j.core.appender.AbstractWriterAppender<M extends org.apache.logging.log4j.core.appender.WriterManager>::<init>(java.lang.String, org.apache.logging.log4j.core.StringLayout, org.apache.logging.log4j.core.Filter, boolean, boolean, org.apache.logging.log4j.core.config.Property[], M)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.AppenderSet.Builder org.apache.logging.log4j.core.appender.AppenderSet.Builder::withConfiguration(org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.AppenderSet.Builder org.apache.logging.log4j.core.appender.AppenderSet.Builder::withNode(org.apache.logging.log4j.core.config.Node)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.AsyncAppender org.apache.logging.log4j.core.appender.AsyncAppender::createAppender(org.apache.logging.log4j.core.config.AppenderRef[], java.lang.String, boolean, long, int, java.lang.String, boolean, org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.config.Configuration, boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.ConsoleAppender org.apache.logging.log4j.core.appender.ConsoleAppender::createAppender(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, java.lang.String, java.lang.String, java.lang.String, java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.ConsoleAppender org.apache.logging.log4j.core.appender.ConsoleAppender::createAppender(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.appender.ConsoleAppender.Target, java.lang.String, boolean, boolean, boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B>>>::withAdvertise(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B>>>::withAdvertiseUri(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B>>>::withAppend(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B>>>::withCreateOnDemand(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B>>>::withFileGroup(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B>>>::withFileName(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B>>>::withFileOwner(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B>>>::withFilePermissions(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B>>>::withLocking(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B extends org.apache.logging.log4j.core.appender.FileAppender.Builder<B>>> org.apache.logging.log4j.core.appender.FileAppender org.apache.logging.log4j.core.appender.FileAppender::createAppender(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.FileManager::<init>(java.lang.String, java.io.OutputStream, boolean, boolean, java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, boolean, java.nio.ByteBuffer)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.FileManager::<init>(java.lang.String, java.io.OutputStream, boolean, boolean, java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, int, boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.FileManager::<init>(org.apache.logging.log4j.core.LoggerContext, java.lang.String, java.io.OutputStream, boolean, boolean, boolean, java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, boolean, java.nio.ByteBuffer)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <B extends org.apache.logging.log4j.core.appender.MemoryMappedFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.MemoryMappedFileAppender.Builder<B>>> org.apache.logging.log4j.core.appender.MemoryMappedFileAppender org.apache.logging.log4j.core.appender.MemoryMappedFileAppender::createAppender(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <B extends org.apache.logging.log4j.core.appender.RandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RandomAccessFileAppender.Builder<B>>> org.apache.logging.log4j.core.appender.RandomAccessFileAppender org.apache.logging.log4j.core.appender.RandomAccessFileAppender::createAppender(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B>>>::withAdvertise(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B>>>::withAdvertiseUri(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B>>>::withAppend(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B>>>::withCreateOnDemand(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B>>>::withFileGroup(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B>>>::withFileName(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B>>>::withFileOwner(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B>>>::withFilePattern(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B>>>::withFilePermissions(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B>>>::withLocking(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B>>>::withPolicy(org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B>>>::withStrategy(org.apache.logging.log4j.core.appender.rolling.RolloverStrategy)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingFileAppender.Builder<B>>> org.apache.logging.log4j.core.appender.RollingFileAppender org.apache.logging.log4j.core.appender.RollingFileAppender::createAppender(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy, org.apache.logging.log4j.core.appender.rolling.RolloverStrategy, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B>>>::withAdvertise(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B>>>::withAdvertiseURI(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B>>>::withAppend(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B>>>::withFileGroup(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B>>>::withFileName(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B>>>::withFileOwner(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B>>>::withFilePattern(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B>>>::withFilePermissions(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B>>>::withPolicy(org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B>>>::withStrategy(org.apache.logging.log4j.core.appender.rolling.RolloverStrategy)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B extends org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender.Builder<B>>> org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender::createAppender(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy, org.apache.logging.log4j.core.appender.rolling.RolloverStrategy, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.ScriptAppenderSelector.Builder org.apache.logging.log4j.core.appender.ScriptAppenderSelector.Builder::withAppenderNodeSet(org.apache.logging.log4j.core.appender.AppenderSet)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.ScriptAppenderSelector.Builder org.apache.logging.log4j.core.appender.ScriptAppenderSelector.Builder::withConfiguration(org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.ScriptAppenderSelector.Builder org.apache.logging.log4j.core.appender.ScriptAppenderSelector.Builder::withName(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.ScriptAppenderSelector.Builder org.apache.logging.log4j.core.appender.ScriptAppenderSelector.Builder::withScript(org.apache.logging.log4j.core.script.AbstractScript)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.SmtpAppender",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B>>>::withAdvertise(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B>>>::withConnectTimeoutMillis(int)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B>>>::withHost(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B>>>::withImmediateFail(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B>>>::withPort(int)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B>>>::withProtocol(org.apache.logging.log4j.core.net.Protocol)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B>>>::withReconnectDelayMillis(int)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B>>>::withSocketOptions(org.apache.logging.log4j.core.net.SocketOptions)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B extends org.apache.logging.log4j.core.appender.SocketAppender.AbstractBuilder<B>>>::withSslConfiguration(org.apache.logging.log4j.core.net.ssl.SslConfiguration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.SocketAppender org.apache.logging.log4j.core.appender.SocketAppender::createAppender(java.lang.String, int, org.apache.logging.log4j.core.net.Protocol, org.apache.logging.log4j.core.net.ssl.SslConfiguration, int, int, boolean, java.lang.String, boolean, boolean, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, boolean, org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.SocketAppender org.apache.logging.log4j.core.appender.SocketAppender::createAppender(java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.net.ssl.SslConfiguration, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, java.lang.String, org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.net.AbstractSocketManager org.apache.logging.log4j.core.appender.SocketAppender::createSocketManager(java.lang.String, org.apache.logging.log4j.core.net.Protocol, java.lang.String, int, int, org.apache.logging.log4j.core.net.ssl.SslConfiguration, int, boolean, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, int)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <B extends org.apache.logging.log4j.core.appender.SyslogAppender.Builder<B extends org.apache.logging.log4j.core.appender.SyslogAppender.Builder<B>>> org.apache.logging.log4j.core.appender.SyslogAppender org.apache.logging.log4j.core.appender.SyslogAppender::createAppender(java.lang.String, int, java.lang.String, org.apache.logging.log4j.core.net.ssl.SslConfiguration, int, int, boolean, java.lang.String, boolean, boolean, org.apache.logging.log4j.core.net.Facility, java.lang.String, int, boolean, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.config.Configuration, java.nio.charset.Charset, java.lang.String, org.apache.logging.log4j.core.layout.LoggerFields[], boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method void org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender<T extends org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager>::<init>(java.lang.String, org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, boolean, T)",
+        "new": "method void org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender<T extends org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager>::<init>(java.lang.String, org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, boolean, org.apache.logging.log4j.core.config.Property[], T)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender<T extends org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager>::<init>(java.lang.String, org.apache.logging.log4j.core.Filter, boolean, T)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager::write(org.apache.logging.log4j.core.LogEvent)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager::writeInternal(org.apache.logging.log4j.core.LogEvent)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jdbc.AbstractConnectionSource",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jdbc.AbstractDriverManagerConnectionSource",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jdbc.ColumnConfig",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "interface org.apache.logging.log4j.core.appender.db.jdbc.ConnectionSource",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jdbc.DataSourceConnectionSource",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jdbc.DriverManagerConnectionSource",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jdbc.FactoryMethodConnectionSource",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppender",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.mom.JmsAppender",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.mom.JmsManager",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.mom.jeromq.JeroMqAppender",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.mom.jeromq.JeroMqManager",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.mom.kafka.DefaultKafkaProducerFactory",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.mom.kafka.KafkaManager",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "interface org.apache.logging.log4j.core.appender.mom.kafka.KafkaProducerFactory",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.nosql.NoSqlAppender org.apache.logging.log4j.core.appender.nosql.NoSqlAppender::createAppender(java.lang.String, java.lang.String, org.apache.logging.log4j.core.Filter, java.lang.String, org.apache.logging.log4j.core.appender.nosql.NoSqlProvider<?>)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.nosql.NoSqlDatabaseManager<W>::writeInternal(org.apache.logging.log4j.core.LogEvent)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder::withCompressionLevelStr(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder::withConfig(org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder::withCustomActions(org.apache.logging.log4j.core.appender.rolling.action.Action[])",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder::withFileIndex(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder::withMax(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder::withMin(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder::withStopCustomActionsOnError(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy.Builder::withTempCompressedFilePattern(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy::<init>(int, int, boolean, int, org.apache.logging.log4j.core.lookup.StrSubstitutor, org.apache.logging.log4j.core.appender.rolling.action.Action[], boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy::createStrategy(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.appender.rolling.action.Action[], boolean, org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy.Builder::withCompressionLevelStr(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy.Builder::withConfig(org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy.Builder::withCustomActions(org.apache.logging.log4j.core.appender.rolling.action.Action[])",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy.Builder::withMaxFiles(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy.Builder::withStopCustomActionsOnError(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy.Builder org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy.Builder::withTempCompressedFilePattern(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy::<init>(int, int, org.apache.logging.log4j.core.lookup.StrSubstitutor, org.apache.logging.log4j.core.appender.rolling.action.Action[], boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy::createStrategy(java.lang.String, java.lang.String, org.apache.logging.log4j.core.appender.rolling.action.Action[], boolean, org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.rolling.RollingFileManager::<init>(java.lang.String, java.lang.String, java.io.OutputStream, boolean, long, long, org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy, org.apache.logging.log4j.core.appender.rolling.RolloverStrategy, java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, boolean, java.nio.ByteBuffer)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.rolling.RollingFileManager::<init>(java.lang.String, java.lang.String, java.io.OutputStream, boolean, long, long, org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy, org.apache.logging.log4j.core.appender.rolling.RolloverStrategy, java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, int, boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.rolling.RollingFileManager::<init>(org.apache.logging.log4j.core.LoggerContext, java.lang.String, java.lang.String, java.io.OutputStream, boolean, boolean, long, long, org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy, org.apache.logging.log4j.core.appender.rolling.RolloverStrategy, java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, boolean, java.nio.ByteBuffer)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager::<init>(org.apache.logging.log4j.core.LoggerContext, java.io.RandomAccessFile, java.lang.String, java.lang.String, java.io.OutputStream, boolean, boolean, int, long, long, org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy, org.apache.logging.log4j.core.appender.rolling.RolloverStrategy, java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy.Builder org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy.Builder::withInterval(int)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy.Builder org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy.Builder::withMaxRandomDelay(int)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy.Builder org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy.Builder::withModulate(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy::createPolicy(java.lang.String, java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder::withBasePath(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder::withConfiguration(org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder::withFileGroup(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder::withFileOwner(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder::withFilePermissions(java.util.Set<java.nio.file.attribute.PosixFilePermission>)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder::withFilePermissionsString(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder::withFollowLinks(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder::withMaxDepth(int)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder::withPathConditions(org.apache.logging.log4j.core.appender.rolling.action.PathCondition[])",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction.Builder::withSubst(org.apache.logging.log4j.core.lookup.StrSubstitutor)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.routing.Routes.Builder org.apache.logging.log4j.core.appender.routing.Routes.Builder::withConfiguration(org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.routing.Routes.Builder org.apache.logging.log4j.core.appender.routing.Routes.Builder::withPattern(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.routing.Routes.Builder org.apache.logging.log4j.core.appender.routing.Routes.Builder::withPatternScript(org.apache.logging.log4j.core.script.AbstractScript)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.routing.Routes.Builder org.apache.logging.log4j.core.appender.routing.Routes.Builder::withRoutes(org.apache.logging.log4j.core.appender.routing.Route[])",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.routing.Routes org.apache.logging.log4j.core.appender.routing.Routes::createRoutes(java.lang.String, org.apache.logging.log4j.core.appender.routing.Route[])",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.routing.RoutingAppender.Builder<B extends org.apache.logging.log4j.core.appender.routing.RoutingAppender.Builder<B extends org.apache.logging.log4j.core.appender.routing.RoutingAppender.Builder<B>>>::withDefaultRouteScript(org.apache.logging.log4j.core.script.AbstractScript)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.routing.RoutingAppender.Builder<B extends org.apache.logging.log4j.core.appender.routing.RoutingAppender.Builder<B extends org.apache.logging.log4j.core.appender.routing.RoutingAppender.Builder<B>>>::withPurgePolicy(org.apache.logging.log4j.core.appender.routing.PurgePolicy)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.routing.RoutingAppender.Builder<B extends org.apache.logging.log4j.core.appender.routing.RoutingAppender.Builder<B extends org.apache.logging.log4j.core.appender.routing.RoutingAppender.Builder<B>>>::withRewritePolicy(org.apache.logging.log4j.core.appender.rewrite.RewritePolicy)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.routing.RoutingAppender.Builder<B extends org.apache.logging.log4j.core.appender.routing.RoutingAppender.Builder<B extends org.apache.logging.log4j.core.appender.routing.RoutingAppender.Builder<B>>>::withRoutes(org.apache.logging.log4j.core.appender.routing.Routes)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.routing.RoutingAppender org.apache.logging.log4j.core.appender.routing.RoutingAppender::createAppender(java.lang.String, java.lang.String, org.apache.logging.log4j.core.appender.routing.Routes, org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.appender.rewrite.RewritePolicy, org.apache.logging.log4j.core.appender.routing.PurgePolicy, org.apache.logging.log4j.core.Filter)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.async.AsyncLoggerConfig.RootLogger::createLogger(java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.async.AsyncLoggerConfig::createLogger(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.util.Map<java.lang.String, java.lang.String> org.apache.logging.log4j.core.async.RingBufferLogEvent::getContextMap()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter void org.apache.logging.log4j.core.async.RingBufferLogEvent::setValues(org.apache.logging.log4j.core.async.AsyncLogger, java.lang.String, org.apache.logging.log4j.Marker, java.lang.String, org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable, org.apache.logging.log4j.util.StringMap, org.apache.logging.log4j.ThreadContext.ContextStack, long, java.lang.String, int, java.lang.StackTraceElement, ===org.apache.logging.log4j.core.util.Clock===, org.apache.logging.log4j.core.util.NanoClock)",
+        "new": "parameter void org.apache.logging.log4j.core.async.RingBufferLogEvent::setValues(org.apache.logging.log4j.core.async.AsyncLogger, java.lang.String, org.apache.logging.log4j.Marker, java.lang.String, org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable, org.apache.logging.log4j.util.StringMap, org.apache.logging.log4j.ThreadContext.ContextStack, long, java.lang.String, int, java.lang.StackTraceElement, ===org.apache.logging.log4j.core.time.Clock===, org.apache.logging.log4j.core.time.NanoClock)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter void org.apache.logging.log4j.core.async.RingBufferLogEvent::setValues(org.apache.logging.log4j.core.async.AsyncLogger, java.lang.String, org.apache.logging.log4j.Marker, java.lang.String, org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable, org.apache.logging.log4j.util.StringMap, org.apache.logging.log4j.ThreadContext.ContextStack, long, java.lang.String, int, java.lang.StackTraceElement, org.apache.logging.log4j.core.util.Clock, ===org.apache.logging.log4j.core.util.NanoClock===)",
+        "new": "parameter void org.apache.logging.log4j.core.async.RingBufferLogEvent::setValues(org.apache.logging.log4j.core.async.AsyncLogger, java.lang.String, org.apache.logging.log4j.Marker, java.lang.String, org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable, org.apache.logging.log4j.util.StringMap, org.apache.logging.log4j.ThreadContext.ContextStack, long, java.lang.String, int, java.lang.StackTraceElement, org.apache.logging.log4j.core.time.Clock, ===org.apache.logging.log4j.core.time.NanoClock===)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter void org.apache.logging.log4j.core.async.RingBufferLogEventTranslator::setBasicValues(org.apache.logging.log4j.core.async.AsyncLogger, java.lang.String, org.apache.logging.log4j.Marker, java.lang.String, org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable, org.apache.logging.log4j.ThreadContext.ContextStack, java.lang.StackTraceElement, ===org.apache.logging.log4j.core.util.Clock===, org.apache.logging.log4j.core.util.NanoClock)",
+        "new": "parameter void org.apache.logging.log4j.core.async.RingBufferLogEventTranslator::setBasicValues(org.apache.logging.log4j.core.async.AsyncLogger, java.lang.String, org.apache.logging.log4j.Marker, java.lang.String, org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable, org.apache.logging.log4j.ThreadContext.ContextStack, java.lang.StackTraceElement, ===org.apache.logging.log4j.core.time.Clock===, org.apache.logging.log4j.core.time.NanoClock)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter void org.apache.logging.log4j.core.async.RingBufferLogEventTranslator::setBasicValues(org.apache.logging.log4j.core.async.AsyncLogger, java.lang.String, org.apache.logging.log4j.Marker, java.lang.String, org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable, org.apache.logging.log4j.ThreadContext.ContextStack, java.lang.StackTraceElement, org.apache.logging.log4j.core.util.Clock, ===org.apache.logging.log4j.core.util.NanoClock===)",
+        "new": "parameter void org.apache.logging.log4j.core.async.RingBufferLogEventTranslator::setBasicValues(org.apache.logging.log4j.core.async.AsyncLogger, java.lang.String, org.apache.logging.log4j.Marker, java.lang.String, org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable, org.apache.logging.log4j.ThreadContext.ContextStack, java.lang.StackTraceElement, org.apache.logging.log4j.core.time.Clock, ===org.apache.logging.log4j.core.time.NanoClock===)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method org.apache.logging.log4j.core.util.NanoClock org.apache.logging.log4j.core.config.AbstractConfiguration::getNanoClock()",
+        "new": "method org.apache.logging.log4j.core.time.NanoClock org.apache.logging.log4j.core.config.AbstractConfiguration::getNanoClock()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter void org.apache.logging.log4j.core.config.AbstractConfiguration::setNanoClock(===org.apache.logging.log4j.core.util.NanoClock===)",
+        "new": "parameter void org.apache.logging.log4j.core.config.AbstractConfiguration::setNanoClock(===org.apache.logging.log4j.core.time.NanoClock===)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method org.apache.logging.log4j.core.util.NanoClock org.apache.logging.log4j.core.config.Configuration::getNanoClock()",
+        "new": "method org.apache.logging.log4j.core.time.NanoClock org.apache.logging.log4j.core.config.Configuration::getNanoClock()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter void org.apache.logging.log4j.core.config.Configuration::setNanoClock(===org.apache.logging.log4j.core.util.NanoClock===)",
+        "new": "parameter void org.apache.logging.log4j.core.config.Configuration::setNanoClock(===org.apache.logging.log4j.core.time.NanoClock===)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.config.LoggerConfig::createLogger(java.lang.String, org.apache.logging.log4j.Level, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.util.Map<org.apache.logging.log4j.core.config.Property, java.lang.Boolean> org.apache.logging.log4j.core.config.LoggerConfig::getProperties()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method boolean org.apache.logging.log4j.core.config.LoggerConfig::includeLocation(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.config.plugins.convert.DateTypeConverter",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.config.plugins.util.PluginBuilder org.apache.logging.log4j.core.config.plugins.util.PluginBuilder::withConfiguration(org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.config.plugins.util.PluginBuilder org.apache.logging.log4j.core.config.plugins.util.PluginBuilder::withConfigurationNode(org.apache.logging.log4j.core.config.Node)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.config.plugins.util.PluginManager::main(java.lang.String[])",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.config.status.StatusConfiguration org.apache.logging.log4j.core.config.status.StatusConfiguration::withDestination(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.config.status.StatusConfiguration org.apache.logging.log4j.core.config.status.StatusConfiguration::withStatus(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.config.status.StatusConfiguration org.apache.logging.log4j.core.config.status.StatusConfiguration::withStatus(org.apache.logging.log4j.Level)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.config.status.StatusConfiguration org.apache.logging.log4j.core.config.status.StatusConfiguration::withVerboseClasses(java.lang.String[])",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.config.status.StatusConfiguration org.apache.logging.log4j.core.config.status.StatusConfiguration::withVerbosity(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B>>>::withFilter(org.apache.logging.log4j.core.Filter)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method void org.apache.logging.log4j.core.filter.AbstractFilterable::<init>(org.apache.logging.log4j.core.Filter)",
+        "new": "method void org.apache.logging.log4j.core.filter.AbstractFilterable::<init>(org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.config.Property[])",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.util.List<org.apache.logging.log4j.core.Filter> org.apache.logging.log4j.core.filter.CompositeFilter::getFilters()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.util.Map<java.lang.String, java.util.List<java.lang.String>> org.apache.logging.log4j.core.filter.MapFilter::getMap()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder::setContextMap(java.util.Map<java.lang.String, java.lang.String>)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.impl.Log4jLogEvent::<init>(java.lang.String, org.apache.logging.log4j.Marker, java.lang.String, org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.impl.Log4jLogEvent::<init>(java.lang.String, org.apache.logging.log4j.Marker, java.lang.String, org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable, java.util.Map<java.lang.String, java.lang.String>, org.apache.logging.log4j.ThreadContext.ContextStack, java.lang.String, java.lang.StackTraceElement, long)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.impl.Log4jLogEvent::<init>(long)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.impl.Log4jLogEvent org.apache.logging.log4j.core.impl.Log4jLogEvent::createEvent(java.lang.String, org.apache.logging.log4j.Marker, java.lang.String, org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable, org.apache.logging.log4j.core.impl.ThrowableProxy, java.util.Map<java.lang.String, java.lang.String>, org.apache.logging.log4j.ThreadContext.ContextStack, java.lang.String, java.lang.StackTraceElement, long)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.util.Map<java.lang.String, java.lang.String> org.apache.logging.log4j.core.impl.Log4jLogEvent::getContextMap()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method org.apache.logging.log4j.core.util.NanoClock org.apache.logging.log4j.core.impl.Log4jLogEvent::getNanoClock()",
+        "new": "method org.apache.logging.log4j.core.time.NanoClock org.apache.logging.log4j.core.impl.Log4jLogEvent::getNanoClock()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter void org.apache.logging.log4j.core.impl.Log4jLogEvent::setNanoClock(===org.apache.logging.log4j.core.util.NanoClock===)",
+        "new": "parameter void org.apache.logging.log4j.core.impl.Log4jLogEvent::setNanoClock(===org.apache.logging.log4j.core.time.NanoClock===)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.util.Map<java.lang.String, java.lang.String> org.apache.logging.log4j.core.impl.MutableLogEvent::getContextMap()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.layout.AbstractCsvLayout",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.layout.AbstractLayout<T extends java.io.Serializable>::<init>(byte[], byte[])",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.layout.CsvLogEventLayout",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.layout.CsvParameterLayout",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.layout.GelfLayout::<init>(java.lang.String, org.apache.logging.log4j.core.util.KeyValuePair[], org.apache.logging.log4j.core.layout.GelfLayout.CompressionType, int, boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.GelfLayout org.apache.logging.log4j.core.layout.GelfLayout::createLayout(java.lang.String, org.apache.logging.log4j.core.util.KeyValuePair[], org.apache.logging.log4j.core.layout.GelfLayout.CompressionType, int, boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.HtmlLayout.Builder org.apache.logging.log4j.core.layout.HtmlLayout.Builder::withCharset(java.nio.charset.Charset)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.HtmlLayout.Builder org.apache.logging.log4j.core.layout.HtmlLayout.Builder::withContentType(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.HtmlLayout.Builder org.apache.logging.log4j.core.layout.HtmlLayout.Builder::withFontName(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.HtmlLayout.Builder org.apache.logging.log4j.core.layout.HtmlLayout.Builder::withFontSize(org.apache.logging.log4j.core.layout.HtmlLayout.FontSize)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.HtmlLayout.Builder org.apache.logging.log4j.core.layout.HtmlLayout.Builder::withLocationInfo(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.HtmlLayout.Builder org.apache.logging.log4j.core.layout.HtmlLayout.Builder::withTitle(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.layout.JsonLayout",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.layout.MarkerPatternSelector::<init>(org.apache.logging.log4j.core.layout.PatternMatch[], java.lang.String, boolean, boolean, org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.MarkerPatternSelector org.apache.logging.log4j.core.layout.MarkerPatternSelector::createSelector(org.apache.logging.log4j.core.layout.PatternMatch[], java.lang.String, boolean, boolean, org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.PatternLayout.Builder org.apache.logging.log4j.core.layout.PatternLayout.Builder::withAlwaysWriteExceptions(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.PatternLayout.Builder org.apache.logging.log4j.core.layout.PatternLayout.Builder::withCharset(java.nio.charset.Charset)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.PatternLayout.Builder org.apache.logging.log4j.core.layout.PatternLayout.Builder::withConfiguration(org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.PatternLayout.Builder org.apache.logging.log4j.core.layout.PatternLayout.Builder::withDisableAnsi(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.PatternLayout.Builder org.apache.logging.log4j.core.layout.PatternLayout.Builder::withFooter(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.PatternLayout.Builder org.apache.logging.log4j.core.layout.PatternLayout.Builder::withHeader(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.PatternLayout.Builder org.apache.logging.log4j.core.layout.PatternLayout.Builder::withNoConsoleNoAnsi(boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.PatternLayout.Builder org.apache.logging.log4j.core.layout.PatternLayout.Builder::withPattern(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.PatternLayout.Builder org.apache.logging.log4j.core.layout.PatternLayout.Builder::withPatternSelector(org.apache.logging.log4j.core.layout.PatternSelector)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.PatternLayout.Builder org.apache.logging.log4j.core.layout.PatternLayout.Builder::withRegexReplacement(org.apache.logging.log4j.core.pattern.RegexReplacement)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.PatternLayout org.apache.logging.log4j.core.layout.PatternLayout::createLayout(java.lang.String, org.apache.logging.log4j.core.layout.PatternSelector, org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.pattern.RegexReplacement, java.nio.charset.Charset, boolean, boolean, java.lang.String, java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer org.apache.logging.log4j.core.layout.PatternLayout::createSerializer(org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.pattern.RegexReplacement, java.lang.String, java.lang.String, org.apache.logging.log4j.core.layout.PatternSelector, boolean, boolean)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.visibilityReduced",
+        "old": "method void org.apache.logging.log4j.core.layout.ScriptPatternSelector::<init>(org.apache.logging.log4j.core.script.AbstractScript, org.apache.logging.log4j.core.layout.PatternMatch[], java.lang.String, boolean, boolean, boolean, org.apache.logging.log4j.core.config.Configuration)",
+        "new": "method void org.apache.logging.log4j.core.layout.ScriptPatternSelector::<init>(org.apache.logging.log4j.core.script.AbstractScript, org.apache.logging.log4j.core.layout.PatternMatch[], java.lang.String, boolean, boolean, boolean, org.apache.logging.log4j.core.config.Configuration)",
+        "oldVisibility": "public",
+        "newVisibility": "private",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.ScriptPatternSelector org.apache.logging.log4j.core.layout.ScriptPatternSelector::createSelector(org.apache.logging.log4j.core.script.AbstractScript, org.apache.logging.log4j.core.layout.PatternMatch[], java.lang.String, boolean, boolean, org.apache.logging.log4j.core.config.Configuration)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.layout.SerializedLayout",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.layout.SyslogLayout org.apache.logging.log4j.core.layout.SyslogLayout::createLayout(org.apache.logging.log4j.core.net.Facility, boolean, java.lang.String, java.nio.charset.Charset)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.layout.XmlLayout",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.layout.YamlLayout",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.lookup.MapLookup::setMainArguments(java.lang.String[])",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.net.MimeMessageBuilder",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.net.SmtpManager",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.net.SslSocketManager::<init>(java.lang.String, java.io.OutputStream, java.net.Socket, org.apache.logging.log4j.core.net.ssl.SslConfiguration, java.net.InetAddress, java.lang.String, int, int, int, boolean, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, int)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.net.SslSocketManager org.apache.logging.log4j.core.net.SslSocketManager::getSocketManager(org.apache.logging.log4j.core.net.ssl.SslConfiguration, java.lang.String, int, int, int, boolean, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, int)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.net.TcpSocketManager::<init>(java.lang.String, java.io.OutputStream, java.net.Socket, java.net.InetAddress, java.lang.String, int, int, int, boolean, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, int)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.net.TcpSocketManager org.apache.logging.log4j.core.net.TcpSocketManager::getSocketManager(java.lang.String, int, int, int, boolean, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, int)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.net.ssl.AbstractKeyStoreConfiguration::<init>(java.lang.String, char[], java.lang.String) throws org.apache.logging.log4j.core.net.ssl.StoreConfigurationException",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.net.ssl.AbstractKeyStoreConfiguration::<init>(java.lang.String, java.lang.String, java.lang.String) throws org.apache.logging.log4j.core.net.ssl.StoreConfigurationException",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration::createKeyStoreConfiguration(java.lang.String, char[], java.lang.String, java.lang.String) throws org.apache.logging.log4j.core.net.ssl.StoreConfigurationException",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration::createKeyStoreConfiguration(java.lang.String, java.lang.String, java.lang.String, java.lang.String) throws org.apache.logging.log4j.core.net.ssl.StoreConfigurationException",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.net.ssl.StoreConfiguration<T>::<init>(java.lang.String, char[])",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.net.ssl.StoreConfiguration<T>::<init>(java.lang.String, java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method java.lang.String org.apache.logging.log4j.core.net.ssl.StoreConfiguration<T>::getPassword()",
+        "new": "method char[] org.apache.logging.log4j.core.net.ssl.StoreConfiguration<T>::getPassword()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method char[] org.apache.logging.log4j.core.net.ssl.StoreConfiguration<T>::getPasswordAsCharArray()",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.net.ssl.StoreConfiguration<T>::setPassword(java.lang.String)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration::<init>(java.lang.String, java.lang.String, java.lang.String, java.lang.String) throws org.apache.logging.log4j.core.net.ssl.StoreConfigurationException",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration::createKeyStoreConfiguration(java.lang.String, char[], java.lang.String, java.lang.String) throws org.apache.logging.log4j.core.net.ssl.StoreConfigurationException",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration::createKeyStoreConfiguration(java.lang.String, java.lang.String, java.lang.String, java.lang.String) throws org.apache.logging.log4j.core.net.ssl.StoreConfigurationException",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.parser.JsonLogEventParser",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.parser.XmlLogEventParser",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.parser.YamlLogEventParser",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.field.serialVersionUIDChanged",
+        "new": "field org.apache.logging.log4j.core.time.MutableInstant.serialVersionUID",
+        "oldSerialVersionUID": "-9042291931185997574",
+        "newSerialVersionUID": "1",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter void org.apache.logging.log4j.core.time.MutableInstant::initFrom(===org.apache.logging.log4j.core.util.Clock===)",
+        "new": "parameter void org.apache.logging.log4j.core.time.MutableInstant::initFrom(===org.apache.logging.log4j.core.time.Clock===)",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "interface org.apache.logging.log4j.core.time.PreciseClock",
+        "new": "interface org.apache.logging.log4j.core.time.PreciseClock",
+        "interface": "org.apache.logging.log4j.core.util.Clock",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "class org.apache.logging.log4j.core.time.internal.FixedPreciseClock",
+        "new": "class org.apache.logging.log4j.core.time.internal.FixedPreciseClock",
+        "interface": "org.apache.logging.log4j.core.util.Clock",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.nonPublicPartOfAPI",
+        "new": "interface org.apache.logging.log4j.core.time.internal.format.FastDatePrinter.NumberRule",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.nonPublicPartOfAPI",
+        "new": "interface org.apache.logging.log4j.core.time.internal.format.FastDatePrinter.Rule",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.util.CachedClock",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "interface org.apache.logging.log4j.core.util.Clock",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.util.ClockFactory",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.util.CoarseCachedClock",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.util.DummyNanoClock",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "interface org.apache.logging.log4j.core.util.NanoClock",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.field.removed",
+        "old": "field org.apache.logging.log4j.core.util.NullOutputStream.NULL_OUTPUT_STREAM",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.util.SystemClock",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.util.SystemMillisClock",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.util.SystemNanoClock",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "interface org.apache.logging.log4j.core.util.datetime.DateParser",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "interface org.apache.logging.log4j.core.util.datetime.DatePrinter",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.util.datetime.FastDateFormat",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.util.datetime.FastDateParser",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.util.datetime.FastDatePrinter",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.util.datetime.FixedDateFormat",
+        "justification": "Removed deprecated code"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.util.datetime.Format",
+        "justification": "Removed deprecated code"
+        
+      }
+    ]
+  }
+]

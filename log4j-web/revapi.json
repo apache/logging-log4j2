@@ -1,0 +1,24 @@
+[
+  {
+    "extension": "revapi.java",
+    "configuration": {
+      "filter": {
+        "classes": {
+          "exclude": [
+            "org\\.apache\\.logging\\.log4j\\.web\\.Log4jWebLifeCycle"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "extension": "revapi.ignore",
+    "configuration": [
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.web.appender.ServletAppender org.apache.logging.log4j.web.appender.ServletAppender::createAppender(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, java.lang.String, boolean)",
+        "justification": "Remove deprecated code"
+      }
+    ]
+  }
+]
