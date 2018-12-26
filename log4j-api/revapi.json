@@ -1,0 +1,35 @@
+[
+  {
+    "extension": "revapi.java",
+    "configuration": {
+      "filter": {
+        "classes": {
+          "exclude": [
+            "org\\.apache\\.logging\\.log4j\\.util\\.Activator",
+            "org\\.apache\\.logging\\.log4j\\.util\\.LoaderUtil",
+            "org\\.apache\\.logging\\.log4j\\.util\\.PrivateSecurityManagerStackTraceUtil",
+            "org\\.apache\\.logging\\.log4j\\.util\\.PropertiesUtil",
+            "org\\.apache\\.logging\\.log4j\\.util\\.ProviderUtil",
+            "org\\.apache\\.logging\\.log4j\\.util\\.StackLocatorUtil"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "extension": "revapi.ignore",
+    "configuration": [
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.util.StackLocator.PrivateSecurityManager org.apache.logging.log4j.util.StackLocator::getSecurityManager()",
+        "justification": "Internal inner class moved to its own class so it can be shared with Java 9"
+      },
+      {
+        "code": "java.method.nowStatic",
+        "old": "method java.lang.String org.apache.logging.log4j.util.Strings::toRootUpperCase(java.lang.String)",
+        "new": "method java.lang.String org.apache.logging.log4j.util.Strings::toRootUpperCase(java.lang.String)",
+        "justification": "Method was inaccessible"
+      }
+    ]
+  }
+]

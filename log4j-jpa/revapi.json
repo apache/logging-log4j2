@@ -1,0 +1,12 @@
+[
+  {
+    "extension": "revapi.ignore",
+    "configuration": [
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.db.jpa.JpaDatabaseManager::writeInternal(org.apache.logging.log4j.core.LogEvent)",
+        "justification": "Method not needed"
+      }
+    ]
+  }
+]

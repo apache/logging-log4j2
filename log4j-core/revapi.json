@@ -1,0 +1,353 @@
+[
+  {
+    "extension": "revapi.java",
+    "configuration": {
+      "filter": {
+        "classes": {
+          "exclude": [
+            "org\\.apache\\.logging\\.log4j\\.corel\\.impl\\.ContextAnchor",
+            "org\\.apache\\.logging\\.log4j\\.core\\.async\\.AsyncLoggerDisruptor",
+            "org\\.apache\\.logging\\.log4j\\.core\\.async\\.RingBufferLogEvent\\.Factory",
+            "org\\.apache\\.logging\\.log4j\\.core\\.layout\\.AbstractJacksonLayout",
+            "org\\.apache\\.logging\\.log4j\\.core\\.layout\\.AbstractJacksonLayout\\.ResolvableKeyValuePair",
+            "org\\.apache\\.logging\\.log4j\\.core\\.net\\.SmtpManager\\.FactoryData",
+            "org\\.apache\\.logging\\.log4j\\.core\\.net\\.TcpSocketManager\\.FactoryData",
+            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.CronExpression\\.ValueSet",
+            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.NumberRule",
+            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.Rule"
+          ]
+        },
+        "packages": {
+          "exclude": [
+            "org.apache.logging.log4j.core.jmx",
+            "org.apache.logging.log4j.core.jackson",
+            "org.apache.logging.log4j.core.time.internal"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "extension": "revapi.ignore",
+    "configuration": [
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.AsyncAppender.Builder org.apache.logging.log4j.core.appender.AsyncAppender.Builder::setFilter(org.apache.logging.log4j.core.Filter)",
+        "new": "method B org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B>>>::setFilter(org.apache.logging.log4j.core.Filter) @ org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.AsyncAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "class org.apache.logging.log4j.core.appender.AsyncAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "class org.apache.logging.log4j.core.appender.AsyncAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B>>",
+        "typeParameter": "B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.annotation.attributeAdded",
+        "old": "parameter org.apache.logging.log4j.core.appender.NullAppender org.apache.logging.log4j.core.appender.NullAppender::createAppender(===java.lang.String===)",
+        "new": "parameter org.apache.logging.log4j.core.appender.NullAppender org.apache.logging.log4j.core.appender.NullAppender::createAppender(===java.lang.String===)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginAttribute(value = \"name\", defaultString = \"null\")",
+        "attribute": "defaultString",
+        "justification": "LOG4J2-2447 - Allow NullAppender to default its name to null"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder::setFilter(org.apache.logging.log4j.core.Filter)",
+        "new": "method B org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B>>>::setFilter(org.apache.logging.log4j.core.Filter) @ org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder::setFollow(boolean)",
+        "new": "method B org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>>::setFollow(boolean)",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder::setIgnoreExceptions(boolean)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setIgnoreExceptions(boolean) @ org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder::setLayout(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setLayout(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>) @ org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder::setName(java.lang.String)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setName(java.lang.String) @ org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder::setTarget(java.io.OutputStream)",
+        "new": "method B org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>>::setTarget(java.io.OutputStream)",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "typeParameter": "B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setFilter(org.apache.logging.log4j.core.Filter)",
+        "new": "method B org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B>>>::setFilter(org.apache.logging.log4j.core.Filter) @ org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setFollow(boolean)",
+        "new": "method B org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>::setFollow(boolean)",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setIgnoreExceptions(boolean)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setIgnoreExceptions(boolean) @ org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setLayout(===org.apache.logging.log4j.core.StringLayout===)",
+        "new": "parameter B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setLayout(===org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>===) @ org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setLayout(org.apache.logging.log4j.core.StringLayout)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setLayout(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>) @ org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setName(java.lang.String)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setName(java.lang.String) @ org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender.Builder::setTarget(java.io.Writer)",
+        "new": "method B org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>>::setTarget(java.io.Writer)",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "typeParameter": "B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppender.Builder<B extends org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppender.Builder<B>>",
+        "new": "class org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppender.Builder<B extends org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender.Builder<B extends org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager::getManager(java.lang.String, int, org.apache.logging.log4j.core.appender.db.jdbc.ConnectionSource, java.lang.String, org.apache.logging.log4j.core.appender.db.jdbc.ColumnConfig[], org.apache.logging.log4j.core.appender.db.ColumnMapping[])",
+        "new": "method org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager::getManager(java.lang.String, int, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.appender.db.jdbc.ConnectionSource, java.lang.String, org.apache.logging.log4j.core.appender.db.jdbc.ColumnConfig[], org.apache.logging.log4j.core.appender.db.ColumnMapping[], boolean, long)",
+        "justification": "LOG4J2-2500 - Allow a JDBC Appender to truncate string to match a table's metadata column length limit"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder::setFilter(org.apache.logging.log4j.core.Filter)",
+        "new": "method B org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B>>>::setFilter(org.apache.logging.log4j.core.Filter) @ org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder::setIgnoreExceptions(boolean)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setIgnoreExceptions(boolean) @ org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder::setLayout(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setLayout(org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>) @ org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder::setName(java.lang.String)",
+        "new": "method B org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B>>>::setName(java.lang.String) @ org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.appender.AbstractAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.class.nonFinalClassInheritsFromNewClass",
+        "old": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "superClass": "org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder",
+        "new": "class org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "typeParameter": "B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.config.Property[] org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender.Builder<B>>>::getProperties()",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method B org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender.Builder<B>>>::setProperties(org.apache.logging.log4j.core.config.Property[])",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+        
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method void org.apache.logging.log4j.core.util.Closer::close(java.lang.AutoCloseable) throws java.lang.Exception",
+        "new": "method boolean org.apache.logging.log4j.core.util.Closer::close(java.lang.AutoCloseable) throws java.lang.Exception",
+        "justification": "LOG4J2-2496 - JDBC Appender should reconnect to the database when a connection goes stale"
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method java.lang.Object org.apache.logging.log4j.core.util.Loader::newInstanceOf(java.lang.String) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.InstantiationException, java.lang.NoSuchMethodException, java.lang.reflect.InvocationTargetException",
+        "new": "method <T> T org.apache.logging.log4j.core.util.Loader::newInstanceOf(java.lang.String) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.InstantiationException, java.lang.NoSuchMethodException, java.lang.reflect.InvocationTargetException",
+        "justification": "LOG4J2-2482 - BasicContextSelector cannot be used in an OSGi application"
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "method java.lang.Object org.apache.logging.log4j.core.util.Loader::newInstanceOf(java.lang.String) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.InstantiationException, java.lang.NoSuchMethodException, java.lang.reflect.InvocationTargetException",
+        "new": "method <T> T org.apache.logging.log4j.core.util.Loader::newInstanceOf(java.lang.String) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.InstantiationException, java.lang.NoSuchMethodException, java.lang.reflect.InvocationTargetException",
+        "justification": "LOG4J2-2482 - BasicContextSelector cannot be used in an OSGi application"
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "method java.lang.Object org.apache.logging.log4j.core.util.Loader::newInstanceOf(java.lang.String) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.InstantiationException, java.lang.NoSuchMethodException, java.lang.reflect.InvocationTargetException",
+        "new": "method <T> T org.apache.logging.log4j.core.util.Loader::newInstanceOf(java.lang.String) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.InstantiationException, java.lang.NoSuchMethodException, java.lang.reflect.InvocationTargetException",
+        "typeParameter": "T",
+        "justification": "LOG4J2-2482 - BasicContextSelector cannot be used in an OSGi application"
+      },
+      {
+        "code": "java.field.enumConstantOrderChanged",
+        "old": "field org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat.ISO8601_PERIOD",
+        "new": "field org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat.ISO8601_PERIOD",
+        "justification": "LOG4J2-1247 - PatternLayout %date conversion pattern should render time zone designator"
+
+      }
+    ]
+  }
+]
