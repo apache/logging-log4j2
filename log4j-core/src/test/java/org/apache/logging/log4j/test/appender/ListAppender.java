@@ -54,11 +54,11 @@ public class ListAppender extends AbstractAppender {
 
     // Use Collections.synchronizedList rather than CopyOnWriteArrayList because we expect
     // more frequent writes than reads.
-    final List<LogEvent> events = Collections.synchronizedList(new ArrayList<>());
+    final List<LogEvent> events = Collections.<LogEvent>synchronizedList(new ArrayList<LogEvent>());
 
-    private final List<String> messages = Collections.synchronizedList(new ArrayList<>());
+    private final List<String> messages = Collections.<String>synchronizedList(new ArrayList<String>());
 
-    final List<byte[]> data = Collections.synchronizedList(new ArrayList<>());
+    final List<byte[]> data = Collections.<byte[]>synchronizedList(new ArrayList<byte[]>());
 
     private final boolean newLine;
 
@@ -199,12 +199,12 @@ public class ListAppender extends AbstractAppender {
 
     /** Returns an immutable snapshot of captured log events */
     public List<LogEvent> getEvents() {
-        return Collections.unmodifiableList(new ArrayList<>(events));
+        return Collections.<LogEvent>unmodifiableList(new ArrayList<LogEvent>(events));
     }
 
     /** Returns an immutable snapshot of captured messages */
     public List<String> getMessages() {
-        return Collections.unmodifiableList(new ArrayList<>(messages));
+        return Collections.<String>unmodifiableList(new ArrayList<String>(messages));
     }
 
     /**
@@ -221,7 +221,7 @@ public class ListAppender extends AbstractAppender {
 
     /** Returns an immutable snapshot of captured data */
     public List<byte[]> getData() {
-        return Collections.unmodifiableList(new ArrayList<>(data));
+        return Collections.<byte[]>unmodifiableList(new ArrayList<byte[]>(data));
     }
 
     public static ListAppender createAppender(final String name, final boolean newLine, final boolean raw,
