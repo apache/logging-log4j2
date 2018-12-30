@@ -16,16 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -35,6 +30,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -68,8 +65,8 @@ public class DefaultRouteScriptAppenderTest {
         final RoutingAppender routingAppender = getRoutingAppender();
         final ConcurrentMap<Object, Object> map = routingAppender.getScriptStaticVariables();
         if (expectBindingEntries) {
-            Assert.assertEquals("TestValue2", map.get("TestKey"));
-            Assert.assertEquals("HEXDUMP", map.get("MarkerName"));
+            assertEquals("TestValue2", map.get("TestKey"));
+            assertEquals("HEXDUMP", map.get("MarkerName"));
         }
     }
 
@@ -93,13 +90,11 @@ public class DefaultRouteScriptAppenderTest {
         final Logger logger = loggerContextRule.getLogger(DefaultRouteScriptAppenderTest.class);
         logger.error("Hello");
         final ListAppender listAppender = getListAppender();
-        final List<LogEvent> list = listAppender.getEvents();
-        assertNotNull("No events generated", list);
-        assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
+        assertEquals("Incorrect number of events", 1, listAppender.getEvents().size());
         logger.error("World");
-        assertTrue("Incorrect number of events. Expected 2, got " + list.size(), list.size() == 2);
+        assertEquals("Incorrect number of events", 2, listAppender.getEvents().size());
         logger.error(marker, "DEADBEEF");
-        assertTrue("Incorrect number of events. Expected 3, got " + list.size(), list.size() == 3);
+        assertEquals("Incorrect number of events", 3, listAppender.getEvents().size());
     }
 
     @Test(expected = AssertionError.class)
@@ -130,7 +125,7 @@ public class DefaultRouteScriptAppenderTest {
         final RoutingAppender routingAppender = getRoutingAppender();
         Assert.assertNotNull(routingAppender.getDefaultRouteScript());
         Assert.assertNotNull(routingAppender.getDefaultRoute());
-        Assert.assertEquals("Service2", routingAppender.getDefaultRoute().getKey());
+        assertEquals("Service2", routingAppender.getDefaultRoute().getKey());
     }
 
     @Test
