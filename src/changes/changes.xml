@@ -341,6 +341,9 @@
       <action issue="LOG4J2-2527" dev="ckozak" type="fix">
         Prevent ConcurrentModificationException while iterating over ListAppender events.
       </action>
+      <action issue="LOG4J2-2522" dev="ckozak" type="fix" due-to="Adam Lesiak">
+        Fix regression using MapMessageLookup.lookup with MapMessages that do not implement StringMapMessage.
+      </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
       <action issue="LOG4J2-1576" dev="rgoers" type="update">
@@ -474,6 +477,9 @@
       </action>
       <action issue="LOG4J2-2527" dev="ckozak" type="fix">
         Prevent ConcurrentModificationException while iterating over ListAppender events.
+      </action>
+      <action issue="LOG4J2-2522" dev="ckozak" type="fix" due-to="Adam Lesiak">
+        Fix regression using MapMessageLookup.lookup with MapMessages that do not implement StringMapMessage.
       </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
