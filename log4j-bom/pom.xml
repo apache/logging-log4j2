@@ -132,6 +132,12 @@
         <artifactId>log4j-slf4j18-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- SLF4J Adapter -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-to-slf4j</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Web Application Support -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
