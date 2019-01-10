@@ -18,8 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.message.StringMapMessage;
-import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
+import org.apache.logging.log4j.message.MapMessage;
 
 /**
  * Able to handle the contents of the LogEvent's MapMessage and either
@@ -30,6 +29,9 @@ import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 @Plugin(name = "MapPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "K", "map", "MAP" })
 public final class MapPatternConverter extends LogEventPatternConverter {
+
+    private static final String[] JAVA_FORMAT = new String[]{MapMessage.MapFormat.JAVA.name()};
+
     /**
      * Name of property to output.
      */
@@ -60,31 +62,19 @@ public final class MapPatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        StringMapMessage msg;
-        if (event.getMessage() instanceof StringMapMessage) {
-            msg = (StringMapMessage) event.getMessage();
+        MapMessage<?, ?> msg;
+        if (event.getMessage() instanceof MapMessage) {
+            msg = (MapMessage) event.getMessage();
         } else {
             return;
         }
-        final IndexedReadOnlyStringMap sortedMap = msg.getIndexedReadOnlyStringMap();
         // if there is no additional options, we output every single
         // Key/Value pair for the Map in a similar format to Hashtable.toString()
         if (key == null) {
-            if (sortedMap.isEmpty()) {
-                toAppendTo.append("{}");
-                return;
-            }
-            toAppendTo.append("{");
-            for (int i = 0; i < sortedMap.size(); i++) {
-                if (i > 0) {
-                    toAppendTo.append(", ");
-                }
-                toAppendTo.append(sortedMap.getKeyAt(i)).append('=').append((String)sortedMap.getValueAt(i));
-            }
-            toAppendTo.append('}');
+            msg.formatTo(JAVA_FORMAT, toAppendTo);
         } else {
             // otherwise they just want a single key output
-            final String val = sortedMap.getValue(key);
+            final String val = msg.get(key);
 
             if (val != null) {
                 toAppendTo.append(val);
