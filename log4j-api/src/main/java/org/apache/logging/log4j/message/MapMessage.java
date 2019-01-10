@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -64,8 +65,15 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
         /** The map should be formatted as JSON. */
         JSON,
         
-        /** The map should be formatted the same as documented by java.util.AbstractMap.toString(). */
-        JAVA;
+        /** The map should be formatted the same as documented by {@link AbstractMap#toString()}. */
+        JAVA,
+
+        /**
+         * The map should be formatted the same as documented by {@link AbstractMap#toString()} but without quotes.
+         *
+         * @since 2.11.2
+         */
+        JAVA_UNQUOTED;
 
         /**
          * Maps a format name to an {@link MapFormat} while ignoring case.
@@ -77,6 +85,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
             return XML.name().equalsIgnoreCase(format) ? XML //
                     : JSON.name().equalsIgnoreCase(format) ? JSON //
                     : JAVA.name().equalsIgnoreCase(format) ? JAVA //
+                    : JAVA_UNQUOTED.name().equalsIgnoreCase(format) ? JAVA_UNQUOTED //
                     : null;
         }
 
@@ -86,7 +95,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
          * @return All {@code MapFormat} names.
          */
         public static String[] names() {
-            return new String[] {XML.name(), JSON.name(), JAVA.name()};
+            return new String[] {XML.name(), JSON.name(), JAVA.name(), JAVA_UNQUOTED.name()};
         }
     }
 
@@ -324,6 +333,9 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
                     asJava(sb);
                     break;
                 }
+                case JAVA_UNQUOTED:
+                    asJavaUnquoted(sb);
+                    break;
                 default : {
                     appendMap(sb);
                 }
@@ -418,16 +430,28 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
         sb.append('}');
     }
 
+    protected void asJavaUnquoted(final StringBuilder sb) {
+        asJava(sb, false);
+    }
 
     protected void asJava(final StringBuilder sb) {
+        asJava(sb, true);
+    }
+
+    private void asJava(final StringBuilder sb, boolean quoted) {
         sb.append('{');
         for (int i = 0; i < data.size(); i++) {
             if (i > 0) {
                 sb.append(", ");
             }
-            sb.append(data.getKeyAt(i)).append(Chars.EQ).append(Chars.DQUOTE);
+            sb.append(data.getKeyAt(i)).append(Chars.EQ);
+            if (quoted) {
+                sb.append(Chars.DQUOTE);
+            }
             ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
-            sb.append(Chars.DQUOTE);
+            if (quoted) {
+                sb.append(Chars.DQUOTE);
+            }
         }
         sb.append('}');
     }
