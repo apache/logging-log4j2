@@ -72,7 +72,7 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "asyncLogger", category = Node.CATEGORY, printObject = true)
 public class AsyncLoggerConfig extends LoggerConfig {
 
-    private static final ThreadLocal<Boolean> ASYNC_LOGGER_ENTERED = new ThreadLocal<>();
+    private static final ThreadLocal<Boolean> ASYNC_LOGGER_ENTERED = ThreadLocal.withInitial(() -> Boolean.FALSE);
     private final AsyncLoggerConfigDelegate delegate;
 
     protected AsyncLoggerConfig(final String name,
@@ -90,7 +90,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
     protected void log(final LogEvent event, final LoggerConfigPredicate predicate) {
         // See LOG4J2-2301
         if (predicate == LoggerConfigPredicate.ALL &&
-                ASYNC_LOGGER_ENTERED.get() == null &&
+                ASYNC_LOGGER_ENTERED.get() == Boolean.FALSE &&
                 // Optimization: AsyncLoggerConfig is identical to LoggerConfig
                 // when no appenders are present. Avoid splitting for synchronous
                 // and asynchronous execution paths until encountering an
@@ -109,7 +109,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                 // from reusable messages.
                 logToAsyncDelegate(event);
             } finally {
-                ASYNC_LOGGER_ENTERED.remove();
+                ASYNC_LOGGER_ENTERED.set(Boolean.FALSE);
             }
         } else {
             super.log(event, predicate);
