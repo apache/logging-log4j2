@@ -41,7 +41,7 @@ public class TlsSyslogFrame {
 
     @Override
     public String toString() {
-        return Integer.toString(byteLength) + Chars.SPACE + message;
+        return message;
     }
 
     @Override
