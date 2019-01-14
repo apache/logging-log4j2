@@ -163,6 +163,11 @@
       <action issue="LOG4J2-2522" dev="ckozak" type="fix" due-to="Adam Lesiak">
         Fix regression using MapMessageLookup.lookup with MapMessages that do not implement StringMapMessage.
       </action>
+      <action issue="LOG4J2-2530" dev="ckozak" type="fix" due-to="Travis Spencer">
+        Generalize checks using MapMessage implementations with do not extend StringMapMessage.
+        Introduce new JAVA_UNQUOTED MapMessage format type based on the JAVA formatting, but without
+        quoted values.
+      </action>
     </release>
     <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
       <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">
