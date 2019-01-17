@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.io;
+package org.apache.logging.log4j.io.internal;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -24,56 +24,57 @@ import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.io.internal.InternalFilterOutputStream;
+import org.apache.logging.log4j.io.ByteStreamLogger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * Logs each line written to a pre-defined level. Can also be configured with a Marker. This class provides an interface
- * that follows the {@link java.io.OutputStream} methods in spirit, but doesn't require output to any external stream.
- * This class should <em>not</em> be used as a stream for an underlying logger unless it's being used as a bridge.
- * Otherwise, infinite loops may occur!
+ * Internal class that exists primiarly to allow location calculations to work.
  *
- * @since 2.1
+ * @since 2.12
  */
-public class LoggerFilterOutputStream extends FilterOutputStream {
-    private static final String FQCN = LoggerFilterOutputStream.class.getName();
+public class InternalFilterOutputStream extends FilterOutputStream {
 
-    private final InternalFilterOutputStream logger;
+    private final ByteStreamLogger logger;
+    private final String fqcn;
 
-    protected LoggerFilterOutputStream(final OutputStream out, final Charset charset, final ExtendedLogger logger,
+    public InternalFilterOutputStream(final OutputStream out, final Charset charset, final ExtendedLogger logger,
                                        final String fqcn, final Level level, final Marker marker) {
         super(out);
-        this.logger = new InternalFilterOutputStream(out, charset, logger, fqcn == null ? FQCN : fqcn,
-            level, marker);
+        this.logger = new ByteStreamLogger(logger, level, marker, charset);
+        this.fqcn = fqcn;
     }
 
     @Override
     public void close() throws IOException {
-        this.logger.close();
+        this.out.close();
+        this.logger.close(this.fqcn);
     }
 
     @Override
     public void flush() throws IOException {
-        this.logger.flush();
+        this.out.flush();
     }
 
     @Override
     public String toString() {
-        return LoggerFilterOutputStream.class.getSimpleName() + logger.toString();
+        return "{stream=" + this.out + '}';
     }
 
     @Override
     public void write(final byte[] b) throws IOException {
-        this.logger.write(b);
+        this.out.write(b);
+        this.logger.put(this.fqcn, b, 0, b.length);
     }
 
     @Override
     public void write(final byte[] b, final int off, final int len) throws IOException {
-        this.logger.write(b, off, len);
+        this.out.write(b, off, len);
+        this.logger.put(this.fqcn, b, off, len);
     }
 
     @Override
     public void write(final int b) throws IOException {
-        this.logger.write(b);
+        this.out.write(b);
+        this.logger.put(this.fqcn, (byte) (b & 0xFF));
     }
 }
