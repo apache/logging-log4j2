@@ -240,7 +240,7 @@
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
-    <mockitoVersion>2.13.0</mockitoVersion>
+    <mockitoVersion>2.23.4</mockitoVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />

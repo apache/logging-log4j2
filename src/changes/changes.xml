@@ -354,6 +354,9 @@
       </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
+      <action issue="LOG4J2-1570" dev="rgoers" type="fix">
+        Logging with a lambda expression with a method call that also logs would cause logs within method call to reference line num and method name of the parent method.
+      </action>
       <action issue="LOG4J2-1576" dev="rgoers" type="update">
         Switch from CLIRR to RevAPI for detecting API changes.
       </action>

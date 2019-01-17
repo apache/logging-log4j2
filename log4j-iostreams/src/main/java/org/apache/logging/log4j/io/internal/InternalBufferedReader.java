@@ -15,61 +15,67 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.io;
+package org.apache.logging.log4j.io.internal;
 
-import java.io.FilterReader;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.CharBuffer;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.io.internal.InternalReader;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * Logs each line read to a pre-defined level. Can also be configured with a Marker.
- * 
- * @since 2.1
+ * Internal class that exists primiarly to allow location calculations to work.
+ * @since 2.12
  */
-public class LoggerReader extends FilterReader {
-    private static final String FQCN = LoggerReader.class.getName();
+public class InternalBufferedReader extends BufferedReader {
+    private static final String FQCN = InternalBufferedReader.class.getName();
 
-    private final InternalReader reader;
+    public InternalBufferedReader(final Reader reader, final ExtendedLogger logger, final String fqcn,
+                                   final Level level, final Marker marker) {
+        super(new InternalLoggerReader(reader, logger, fqcn == null ? FQCN : fqcn, level, marker));
+    }
 
-    protected LoggerReader(final Reader reader, final ExtendedLogger logger, final String fqcn, final Level level,
-                           final Marker marker) {
-        super(reader);
-        this.reader = new InternalReader(reader, logger, fqcn == null ? FQCN : fqcn, level, marker);
+    public InternalBufferedReader(final Reader reader, final int size, final ExtendedLogger logger, final String fqcn,
+                                   final Level level, final Marker marker) {
+        super(new InternalLoggerReader(reader, logger, fqcn == null ? FQCN : fqcn, level, marker), size);
     }
 
     @Override
     public void close() throws IOException {
-        reader.close();
+        super.close();
     }
 
     @Override
     public int read() throws IOException {
-        return reader.read();
+        return super.read();
     }
 
     @Override
     public int read(final char[] cbuf) throws IOException {
-        return reader.read(cbuf);
+        return super.read(cbuf, 0, cbuf.length);
     }
 
     @Override
     public int read(final char[] cbuf, final int off, final int len) throws IOException {
-        return reader.read(cbuf, off, len);
+        return super.read(cbuf, off, len);
     }
 
     @Override
     public int read(final CharBuffer target) throws IOException {
-        return reader.read(target);
+        final int len = target.remaining();
+        final char[] cbuf = new char[len];
+        final int charsRead = read(cbuf, 0, len);
+        if (charsRead > 0) {
+            target.put(cbuf, 0, charsRead);
+        }
+        return charsRead;
     }
 
     @Override
-    public String toString() {
-        return LoggerReader.class.getSimpleName() + this.reader.toString();
+    public String readLine() throws IOException {
+        return super.readLine();
     }
 }

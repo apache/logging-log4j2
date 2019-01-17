@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.io;
+package org.apache.logging.log4j.io.internal;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -24,47 +24,53 @@ import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.io.internal.InternalInputStream;
+import org.apache.logging.log4j.io.ByteStreamLogger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * Logs each line read to a pre-defined level. Can also be configured with a Marker.
- * 
- * @since 2.1
+ * Internal class that exists primarily to allow location calculation to work.
+ *
+ * @since 2.12
  */
-public class LoggerInputStream extends FilterInputStream {
-    private static final String FQCN = LoggerInputStream.class.getName();
+public class InternalInputStream extends FilterInputStream {
 
-    private final InternalInputStream logger;
+    private final String fqcn;
+    private final ByteStreamLogger logger;
 
-    protected LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger,
+    public InternalInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger,
                                 final String fqcn, final Level level, final Marker marker) {
         super(in);
-        this.logger = new InternalInputStream(in, charset, logger, fqcn == null ? FQCN : fqcn, level, marker);
+        this.logger = new ByteStreamLogger(logger, level, marker, charset);
+        this.fqcn = fqcn;
     }
 
     @Override
     public void close() throws IOException {
-        this.logger.close();
+        this.logger.close(this.fqcn);
+        super.close();
     }
 
     @Override
     public int read() throws IOException {
-        return logger.read();
+        final int b = super.read();
+        this.logger.put(this.fqcn, b);
+        return b;
     }
 
     @Override
     public int read(final byte[] b) throws IOException {
-        return logger.read(b);
+        return read(b, 0, b.length);
     }
 
     @Override
     public int read(final byte[] b, final int off, final int len) throws IOException {
-        return logger.read(b, off, len);
+        final int bytesRead = super.read(b, off, len);
+        this.logger.put(this.fqcn, b, off, bytesRead);
+        return bytesRead;
     }
 
     @Override
     public String toString() {
-        return LoggerInputStream.class.getSimpleName() + logger.toString();
+        return "{stream=" + this.in + '}';
     }
 }

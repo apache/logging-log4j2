@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.io;
+package org.apache.logging.log4j.io.internal;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -27,33 +26,27 @@ import java.util.Locale;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.io.internal.InternalPrintStream;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * Logs each line written to a pre-defined level. Can also be configured with a Marker. This class provides an interface
- * that follows the {@link java.io.PrintStream} methods in spirit, but doesn't require output to any external stream.
- * This class should <em>not</em> be used as a stream for an underlying logger unless it's being used as a bridge.
- * Otherwise, infinite loops may occur!
- * 
- * @since 2.1
+ * Internal class used primarily to allow location calculations to work properly.
+ *
+ * @since 2.12
  */
-public class LoggerPrintStream extends PrintStream {
-    private static final String FQCN = LoggerPrintStream.class.getName();
-    private final InternalPrintStream psLogger;
+public class InternalPrintStream extends PrintStream {
 
-    protected LoggerPrintStream(final ExtendedLogger logger, final boolean autoFlush, final Charset charset,
+    public InternalPrintStream(final ExtendedLogger logger, final boolean autoFlush, final Charset charset,
                                 final String fqcn, final Level level, final Marker marker)
         throws UnsupportedEncodingException {
-        super(new PrintStream(new ByteArrayOutputStream()));
-        psLogger = new InternalPrintStream(logger, autoFlush, charset, fqcn == null ? FQCN : fqcn, level, marker);
+        super(new InternalOutputStream(logger, level, marker, ensureNonNull(charset), fqcn),
+            autoFlush, ensureNonNull(charset).name());
     }
 
-    protected LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset,
+    public InternalPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset,
                                 final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker)
         throws UnsupportedEncodingException {
-        super(new PrintStream(out));
-        psLogger = new InternalPrintStream(out, autoFlush, charset, logger, fqcn == null ? FQCN : fqcn, level, marker);
+        super(new InternalFilterOutputStream(out, ensureNonNull(charset), logger, fqcn, level,
+            marker), autoFlush, ensureNonNull(charset).name());
     }
 
     private static Charset ensureNonNull(final Charset charset) {
@@ -61,174 +54,174 @@ public class LoggerPrintStream extends PrintStream {
     }
 
     @Override
-    public LoggerPrintStream append(final char c) {
-        psLogger.append(c);
+    public InternalPrintStream append(final char c) {
+        super.append(c);
         return this;
     }
 
     @Override
-    public LoggerPrintStream append(final CharSequence csq) {
-        psLogger.append(csq);
+    public InternalPrintStream append(final CharSequence csq) {
+        super.append(csq);
         return this;
     }
 
     @Override
-    public LoggerPrintStream append(final CharSequence csq, final int start, final int end) {
-        psLogger.append(csq, start, end);
+    public InternalPrintStream append(final CharSequence csq, final int start, final int end) {
+        super.append(csq, start, end);
         return this;
     }
 
     @Override
     public boolean checkError() {
-        return psLogger.checkError();
+        return super.checkError();
     }
 
     @Override
     public void close() {
-        psLogger.close();
+        super.close();
     }
 
     @Override
     public void flush() {
-        psLogger.flush();
+        super.flush();
     }
 
     @Override
-    public LoggerPrintStream format(final Locale l, final String format, final Object... args) {
-        psLogger.format(l, format, args);
+    public InternalPrintStream format(final Locale l, final String format, final Object... args) {
+        super.format(l, format, args);
         return this;
     }
 
     @Override
-    public LoggerPrintStream format(final String format, final Object... args) {
-        psLogger.format(format, args);
+    public InternalPrintStream format(final String format, final Object... args) {
+        super.format(format, args);
         return this;
     }
 
     @Override
     public void print(final boolean b) {
-        psLogger.print(b);
+        super.print(b);
     }
 
     @Override
     public void print(final char c) {
-        psLogger.print(c);
+        super.print(c);
     }
 
     @Override
     public void print(final char[] s) {
-        psLogger.print(s);
+        super.print(s);
     }
 
     @Override
     public void print(final double d) {
-        psLogger.print(d);
+        super.print(d);
     }
 
     @Override
     public void print(final float f) {
-        psLogger.print(f);
+        super.print(f);
     }
 
     @Override
     public void print(final int i) {
-        psLogger.print(i);
+        super.print(i);
     }
 
     @Override
     public void print(final long l) {
-        psLogger.print(l);
+        super.print(l);
     }
 
     @Override
     public void print(final Object obj) {
-        psLogger.print(obj);
+        super.print(obj);
     }
 
     @Override
     public void print(final String s) {
-        psLogger.print(s);
+        super.print(s);
     }
 
     @Override
-    public LoggerPrintStream printf(final Locale l, final String format, final Object... args) {
-        psLogger.printf(l, format, args);
+    public InternalPrintStream printf(final Locale l, final String format, final Object... args) {
+        super.printf(l, format, args);
         return this;
     }
 
     @Override
-    public LoggerPrintStream printf(final String format, final Object... args) {
-        psLogger.printf(format, args);
+    public InternalPrintStream printf(final String format, final Object... args) {
+        super.printf(format, args);
         return this;
     }
 
     @Override
     public void println() {
-        psLogger.println();
+        super.println();
     }
 
     @Override
     public void println(final boolean x) {
-        psLogger.println(x);
+        super.println(x);
     }
 
     @Override
     public void println(final char x) {
-        psLogger.println(x);
+        super.println(x);
     }
 
     @Override
     public void println(final char[] x) {
-        psLogger.println(x);
+        super.println(x);
     }
 
     @Override
     public void println(final double x) {
-        psLogger.println(x);
+        super.println(x);
     }
 
     @Override
     public void println(final float x) {
-        psLogger.println(x);
+        super.println(x);
     }
 
     @Override
     public void println(final int x) {
-        psLogger.println(x);
+        super.println(x);
     }
 
     @Override
     public void println(final long x) {
-        psLogger.println(x);
+        super.println(x);
     }
 
     @Override
     public void println(final Object x) {
-        psLogger.println(x);
+        super.println(x);
     }
 
     @Override
     public void println(final String x) {
-        psLogger.println(x);
+        super.println(x);
     }
 
     @Override
     public String toString() {
-        return LoggerPrintStream.class.getSimpleName() + psLogger.toString();
+        return "{stream=" + this.out + '}';
     }
 
     @Override
     public void write(final byte[] b) throws IOException {
-        psLogger.write(b);
+        super.write(b);
     }
 
     @Override
     public void write(final byte[] b, final int off, final int len) {
-        psLogger.write(b, off, len);
+        super.write(b, off, len);
     }
 
     @Override
     public void write(final int b) {
-        psLogger.write(b);
+        super.write(b);
     }
 }

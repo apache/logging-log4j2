@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.io;
+package org.apache.logging.log4j.io.internal;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -24,53 +24,49 @@ import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.io.internal.InternalBufferedInputStream;
-import org.apache.logging.log4j.io.internal.InternalInputStream;
+import org.apache.logging.log4j.io.LoggerInputStream;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * 
- * @since 2.1
+ * Internal class that exists primiarly to allow location calculations to work.
+ * @since 2.12
  */
-public class LoggerBufferedInputStream extends BufferedInputStream {
-    private static final String FQCN = LoggerBufferedInputStream.class.getName();
-    private final InternalBufferedInputStream stream;
+public class InternalBufferedInputStream extends BufferedInputStream {
+    private static final String FQCN = InternalBufferedInputStream.class.getName();
 
-    protected LoggerBufferedInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger,
+    public InternalBufferedInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger,
                                         final String fqcn, final Level level, final Marker marker) {
-        super(in);
-        stream = new InternalBufferedInputStream(in, charset, logger, fqcn == null ? FQCN: fqcn, level, marker);
+        super(new InternalInputStream(in, charset, logger, fqcn == null ? FQCN : fqcn, level, marker));
     }
 
-    protected LoggerBufferedInputStream(final InputStream in, final Charset charset, final int size,
+    public InternalBufferedInputStream(final InputStream in, final Charset charset, final int size,
                                         final ExtendedLogger logger, final String fqcn, final Level level,
                                         final Marker marker) {
-        super(in);
-        stream = new InternalBufferedInputStream(in, charset, size, logger, fqcn == null ? FQCN: fqcn, level, marker);
+        super(new InternalInputStream(in, charset, logger, fqcn == null ? FQCN : fqcn, level, marker), size);
     }
 
     @Override
     public void close() throws IOException {
-        stream.close();
+        super.close();
     }
-    
+
     @Override
     public synchronized int read() throws IOException {
-        return stream.read();
+        return super.read();
     }
-    
+
     @Override
     public int read(final byte[] b) throws IOException {
-        return stream.read(b);
+        return super.read(b, 0, b.length);
     }
-    
+
     @Override
     public synchronized int read(final byte[] b, final int off, final int len) throws IOException {
-        return stream.read(b, off, len);
+        return super.read(b, off, len);
     }
 
     @Override
     public String toString() {
-        return LoggerBufferedInputStream.class.getSimpleName() + stream.toString();
+        return "{stream=" + this.in + '}';
     }
 }
