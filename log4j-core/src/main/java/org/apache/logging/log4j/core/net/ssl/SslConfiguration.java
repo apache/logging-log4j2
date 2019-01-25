@@ -46,13 +46,15 @@ public class SslConfiguration {
     private final TrustStoreConfiguration trustStoreConfig;
     private final SSLContext sslContext;
     private final String protocol;
+    private final boolean verifyHostName;
 
     private SslConfiguration(final String protocol, final KeyStoreConfiguration keyStoreConfig,
-            final TrustStoreConfiguration trustStoreConfig) {
+            final TrustStoreConfiguration trustStoreConfig, boolean verifyHostName) {
         this.keyStoreConfig = keyStoreConfig;
         this.trustStoreConfig = trustStoreConfig;
         this.protocol = protocol == null ? SslConfigurationDefaults.PROTOCOL : protocol;
         this.sslContext = this.createSslContext();
+        this.verifyHostName = verifyHostName;
     }
 
     /**
@@ -232,7 +234,26 @@ public class SslConfiguration {
             @PluginElement("KeyStore") final KeyStoreConfiguration keyStoreConfig,
             @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig) {
             // @formatter:on
-        return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig);
+        return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, false);
+    }
+
+    /**
+     * Creates an SslConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.
+     *
+     * @param protocol The protocol, see http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext
+     * @param keyStoreConfig The KeyStoreConfiguration.
+     * @param trustStoreConfig The TrustStoreConfiguration.
+     * @return a new SslConfiguration
+     * @since 2.12
+     */
+    public static SslConfiguration createSSLConfiguration(
+        // @formatter:off
+        @PluginAttribute("protocol") final String protocol,
+        @PluginElement("KeyStore") final KeyStoreConfiguration keyStoreConfig,
+        @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig,
+        @PluginElement("verifyHostName") final boolean verifyHostName) {
+        // @formatter:on
+        return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, verifyHostName);
     }
 
     @Override
@@ -303,5 +324,9 @@ public class SslConfiguration {
 
     public String getProtocol() {
         return protocol;
+    }
+
+    public boolean isVerifyHostName() {
+        return verifyHostName;
     }
 }

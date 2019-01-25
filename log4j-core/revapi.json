@@ -31,6 +31,11 @@
     "extension": "revapi.ignore",
     "configuration": [
       {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.config.ConfiguratonFileWatcher",
+        "justification": "LOG4J2-913 - This class name was misspelled"
+      },
+      {
         "code": "java.method.returnTypeTypeParametersChanged",
         "old": "method org.apache.logging.log4j.core.appender.AsyncAppender.Builder org.apache.logging.log4j.core.appender.AsyncAppender.Builder::setFilter(org.apache.logging.log4j.core.Filter)",
         "new": "method B org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B extends org.apache.logging.log4j.core.filter.AbstractFilterable.Builder<B>>>::setFilter(org.apache.logging.log4j.core.Filter) @ org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B extends org.apache.logging.log4j.core.appender.AsyncAppender.Builder<B>>>",

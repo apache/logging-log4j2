@@ -17,13 +17,13 @@
 
 package org.apache.logging.log4j.util;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -107,5 +107,14 @@ public class PropertiesUtilTest {
             System.getProperties().remove(key1);
             System.getProperties().remove(key2);
         }
+    }
+
+    @Test
+    public void testPublish() {
+        final Properties props = new Properties();
+        final PropertiesUtil util = new PropertiesUtil(props);
+        String value = System.getProperty("Application");
+        assertNotNull("System property was not published", value);
+        assertEquals("Log4j", value);
     }
 }
