@@ -46,6 +46,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class PropertiesUtil {
 
     private static final String LOG4J_PROPERTIES_FILE_NAME = "log4j2.component.properties";
+    private static final String LOG4J_SYSTEM_PROPERTIES_FILE_NAME = "log4j2.system.properties";
+    private static final String SYSTEM = "system:";
     private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME);
 
     private final Environment environment;
@@ -315,6 +317,19 @@ public final class PropertiesUtil {
         private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
 
         private Environment(final PropertySource propertySource) {
+            PropertyFilePropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME);
+            try {
+                sysProps.forEach(new BiConsumer<String, String>() {
+                    @Override
+                    public void accept(String key, String value) {
+                        if (System.getProperty(key) == null) {
+                            System.setProperty(key, value);
+                        }
+                    }
+                });
+            } catch (SecurityException ex) {
+                // Access to System Properties is restricted so just skip it.
+            }
             sources.add(propertySource);
 			for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
 				try {

@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -38,6 +41,9 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
@@ -127,6 +133,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     protected final StrSubstitutor substitutor = new StrSubstitutor(new Interpolator());
 
     private static final Lock LOCK = new ReentrantLock();
+
+    private static final String HTTPS = "https";
 
     /**
      * Returns the ConfigurationFactory.
@@ -294,7 +302,22 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     protected ConfigurationSource getInputFromString(final String config, final ClassLoader loader) {
         try {
             final URL url = new URL(config);
-            return new ConfigurationSource(url.openStream(), FileUtils.fileFromUri(url.toURI()));
+            URLConnection urlConnection = url.openConnection();
+            if (url.getProtocol().equals(HTTPS)) {
+                SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
+                if (sslConfiguration != null) {
+                    ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
+                    if (!sslConfiguration.isVerifyHostName()) {
+                        ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
+                    }
+                }
+            }
+            File file = FileUtils.fileFromUri(url.toURI());
+            if (file != null) {
+                return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
+            } else {
+                return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
+            }
         } catch (final Exception ex) {
             final ConfigurationSource source = ConfigurationSource.fromResource(config, loader);
             if (source == null) {

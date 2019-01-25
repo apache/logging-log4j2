@@ -170,7 +170,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             }
             final Constructor<T> constructor = clazz.getConstructor(LoggerContext.class, ConfigurationSource.class, Component.class);
             configuration = constructor.newInstance(loggerContext, source, root);
-            configuration.setMonitorInterval(monitorInterval);
             configuration.getRootNode().getAttributes().putAll(root.getAttributes());
             if (name != null) {
                 configuration.setName(name);
@@ -196,6 +195,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (advertiser != null) {
                 configuration.createAdvertiser(advertiser, source);
             }
+            configuration.setMonitorInterval(monitorInterval);
         } catch (final Exception ex) {
             throw new IllegalArgumentException("Invalid Configuration class specified", ex);
         }

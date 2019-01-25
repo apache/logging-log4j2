@@ -67,7 +67,10 @@ import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.core.util.NanoClock;
+import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
+import org.apache.logging.log4j.core.util.Watcher;
+import org.apache.logging.log4j.core.util.WatcherFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -238,6 +241,29 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         doConfigure();
         setState(State.INITIALIZED);
         LOGGER.debug("Configuration {} initialized", this);
+    }
+
+    protected void initializeWatchers(Reconfigurable reconfigurable, ConfigurationSource configSource,
+        int monitorIntervalSeconds) {
+        if ((configSource.getFile() != null || configSource.getURL() != null) && monitorIntervalSeconds > 0) {
+            watchManager.setIntervalSeconds(monitorIntervalSeconds);
+            if (configSource.getFile() != null) {
+                final Source cfgSource = new Source(configSource);
+                final long lastModifeid = configSource.getFile().lastModified();
+                final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(this, reconfigurable,
+                    listeners, lastModifeid);
+                watchManager.watch(cfgSource, watcher);
+            } else if (configSource.getURL() != null) {
+                if (configSource.getLastModified() > 0) {
+                    final Source cfgSource = new Source(configSource);
+                    final Watcher watcher = WatcherFactory.getInstance(pluginPackages)
+                        .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
+                    watchManager.watch(cfgSource, watcher);
+                } else {
+                    LOGGER.info("{} does not support dynamic reconfiguration", configSource.getURI());
+                }
+            }
+        }
     }
 
 	/**

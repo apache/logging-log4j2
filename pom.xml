@@ -1376,6 +1376,7 @@
     <module>log4j-liquibase</module>
     <module>log4j-appserver</module>
     <module>log4j-osgi</module>
+    <module>log4j-spring-cloud-config</module>
   </modules>
   <profiles>
     <profile>

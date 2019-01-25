@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.ConfiguratonFileWatcher;
+import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
@@ -37,7 +37,10 @@ import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
+import org.apache.logging.log4j.core.util.Watcher;
+import org.apache.logging.log4j.core.util.WatcherFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -106,14 +109,12 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
         staffChildConfiguration(targetConfiguration);
         final WatchManager watchManager = getWatchManager();
         final WatchManager targetWatchManager = targetConfiguration.getWatchManager();
-        final FileWatcher fileWatcher = new ConfiguratonFileWatcher(this, listeners);
         if (targetWatchManager.getIntervalSeconds() > 0) {
             watchManager.setIntervalSeconds(targetWatchManager.getIntervalSeconds());
-            final Map<File, FileWatcher> watchers = targetWatchManager.getWatchers();
-            for (final Map.Entry<File, FileWatcher> entry : watchers.entrySet()) {
-                if (entry.getValue() instanceof ConfiguratonFileWatcher) {
-                    watchManager.watchFile(entry.getKey(), fileWatcher);
-                }
+            final Map<Source, Watcher> watchers = targetWatchManager.getConfigurationWatchers();
+            for (final Map.Entry<Source, Watcher> entry : watchers.entrySet()) {
+                watchManager.watch(entry.getKey(), entry.getValue().newWatcher(this, listeners,
+                    entry.getValue().getLastModified()));
             }
         }
         for (final AbstractConfiguration sourceConfiguration : configurations.subList(1, configurations.size())) {
@@ -132,11 +133,10 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
                     watchManager.setIntervalSeconds(monitorInterval);
                 }
                 final WatchManager sourceWatchManager = sourceConfiguration.getWatchManager();
-                final Map<File, FileWatcher> watchers = sourceWatchManager.getWatchers();
-                for (final Map.Entry<File, FileWatcher> entry : watchers.entrySet()) {
-                    if (entry.getValue() instanceof ConfiguratonFileWatcher) {
-                        watchManager.watchFile(entry.getKey(), fileWatcher);
-                    }
+                final Map<Source, Watcher> watchers = sourceWatchManager.getConfigurationWatchers();
+                for (final Map.Entry<Source, Watcher> entry : watchers.entrySet()) {
+                    watchManager.watch(entry.getKey(), entry.getValue().newWatcher(this, listeners,
+                        entry.getValue().getLastModified()));
                 }
             }
         }
