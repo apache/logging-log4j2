@@ -324,6 +324,11 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         return currentFileName;
     }
 
+    @Override
+    public void clearCurrentFileName() {
+        currentFileName = null;
+    }
+
     /**
      * Performs the rollover.
      *
