@@ -119,7 +119,9 @@ public class RollingFileManager extends FileManager {
                 File file = new File(getFileName());
                 if (file.exists()) {
                     size = file.length();
-                }
+				} else {
+					((DirectFileRolloverStrategy) rolloverStrategy).clearCurrentFileName();
+				}
             }
         }
     }

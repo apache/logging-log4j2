@@ -266,7 +266,9 @@ public class PatternProcessor {
                                      final Object obj) {
         // LOG4J2-628: we deliberately use System time, not the log4j.Clock time
         // for creating the file name of rolled-over files.
-        final long time = useCurrentTime && currentFileTime != 0 ? currentFileTime :
+		LOGGER.debug("Formatting file name. useCurrentTime={}, currentFileTime={}, prevFileTime={}",
+			useCurrentTime, currentFileTime, prevFileTime);
+		final long time = useCurrentTime ? currentFileTime != 0 ? currentFileTime : System.currentTimeMillis() :
                 prevFileTime != 0 ? prevFileTime : System.currentTimeMillis();
         formatFileName(buf, new Date(time), obj);
         final LogEvent event = new Log4jLogEvent.Builder().setTimeMillis(time).build();

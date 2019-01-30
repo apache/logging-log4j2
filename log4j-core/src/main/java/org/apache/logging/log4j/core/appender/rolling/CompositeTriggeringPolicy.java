@@ -50,6 +50,7 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
     @Override
     public void initialize(final RollingFileManager manager) {
         for (final TriggeringPolicy triggeringPolicy : triggeringPolicies) {
+        	LOGGER.debug("Initializing triggering policy {}", triggeringPolicy.toString());
             triggeringPolicy.initialize(manager);
         }
     }

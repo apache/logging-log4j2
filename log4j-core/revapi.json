@@ -1988,6 +1988,11 @@
         "old": "class org.apache.logging.log4j.core.util.datetime.Format",
         "justification": "Removed deprecated code"
         
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method void org.apache.logging.log4j.core.appender.rolling.DirectFileRolloverStrategy::clearCurrentFileName()",
+        "justification": "Required to reset file name so it can be calculated at the appropriate time"
       }
     ]
   }
