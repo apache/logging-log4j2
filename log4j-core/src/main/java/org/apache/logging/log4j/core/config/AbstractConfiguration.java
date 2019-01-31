@@ -245,26 +245,38 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     protected void initializeWatchers(Reconfigurable reconfigurable, ConfigurationSource configSource,
         int monitorIntervalSeconds) {
-        if ((configSource.getFile() != null || configSource.getURL() != null) && monitorIntervalSeconds > 0) {
-            watchManager.setIntervalSeconds(monitorIntervalSeconds);
-            if (configSource.getFile() != null) {
-                final Source cfgSource = new Source(configSource);
-                final long lastModifeid = configSource.getFile().lastModified();
-                final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(this, reconfigurable,
-                    listeners, lastModifeid);
-                watchManager.watch(cfgSource, watcher);
-            } else if (configSource.getURL() != null) {
-                if (configSource.getLastModified() > 0) {
-                    final Source cfgSource = new Source(configSource);
-                    final Watcher watcher = WatcherFactory.getInstance(pluginPackages)
-                        .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
-                    watchManager.watch(cfgSource, watcher);
-                } else {
-                    LOGGER.info("{} does not support dynamic reconfiguration", configSource.getURI());
-                }
-            }
+        if (configSource.getFile() != null || configSource.getURL() != null) {
+        	if (monitorIntervalSeconds > 0) {
+				watchManager.setIntervalSeconds(monitorIntervalSeconds);
+				if (configSource.getFile() != null) {
+					final Source cfgSource = new Source(configSource);
+					final long lastModifeid = configSource.getFile().lastModified();
+					final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(this, reconfigurable,
+						listeners, lastModifeid);
+					watchManager.watch(cfgSource, watcher);
+				} else {
+					if (configSource.getURL() != null) {
+						monitorSource(reconfigurable, configSource);
+					}
+				}
+			} else if (watchManager.hasEventListeners() && configSource.getURL() != null && monitorIntervalSeconds >= 0) {
+				monitorSource(reconfigurable, configSource);
+			}
         }
     }
+
+    private void monitorSource(Reconfigurable reconfigurable, ConfigurationSource configSource) {
+		if (configSource.getLastModified() > 0) {
+			final Source cfgSource = new Source(configSource);
+			final Watcher watcher = WatcherFactory.getInstance(pluginPackages)
+				.newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
+			if (watcher != null) {
+				watchManager.watch(cfgSource, watcher);
+			}
+		} else {
+			LOGGER.info("{} does not support dynamic reconfiguration", configSource.getURI());
+		}
+	}
 
 	/**
      * Start the configuration.

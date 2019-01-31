@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 /**
  *
  */
-@Plugin(name = "http", category = Watcher.CATEGORY, printObject = true)
+@Plugin(name = "http", category = Watcher.CATEGORY, elementType = Watcher.ELEMENT_TYPE, printObject = true)
 @PluginAliases("https")
 public class HttpWatcher extends AbstractWatcher {
 

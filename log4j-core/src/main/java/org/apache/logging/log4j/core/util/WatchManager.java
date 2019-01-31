@@ -17,9 +17,13 @@
 package org.apache.logging.log4j.core.util;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
@@ -30,6 +34,7 @@ import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Manages {@link FileWatcher}s.
@@ -44,10 +49,21 @@ public class WatchManager extends AbstractLifeCycle {
     private int intervalSeconds = 0;
     private ScheduledFuture<?> future;
     private final ConfigurationScheduler scheduler;
+    private final List<WatchEventService> eventServiceList;
+    private final UUID id = UuidUtil.getTimeBasedUuid();
 
     public WatchManager(final ConfigurationScheduler scheduler) {
         this.scheduler = scheduler;
+        eventServiceList = getEventServices();
     }
+
+    public UUID getId() {
+    	return this.id;
+	}
+
+	public boolean hasEventListeners() {
+    	return eventServiceList.size() > 0;
+	}
 
     /**
      * Resets all file monitors to their current last modified time. If this manager does not watch any file, nothing
@@ -141,15 +157,22 @@ public class WatchManager extends AbstractLifeCycle {
     @Override
     public void start() {
         super.start();
+
         if (intervalSeconds > 0) {
             future = scheduler.scheduleWithFixedDelay(new WatchRunnable(), intervalSeconds, intervalSeconds,
                     TimeUnit.SECONDS);
         }
+        for (WatchEventService service : eventServiceList) {
+        	service.subscribe(this);
+		}
     }
 
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
+		for (WatchEventService service : eventServiceList) {
+			service.unsubscribe(this);
+		}
         final boolean stopped = stop(future);
         setStopped();
         return stopped;
@@ -178,6 +201,10 @@ public class WatchManager extends AbstractLifeCycle {
         logger.debug("Unwatching configuration {}", source);
         watchers.remove(source);
     }
+
+	public void checkFiles() {
+		new WatchRunnable().run();
+	}
 
     /**
      * Watches the given file.
@@ -247,6 +274,22 @@ public class WatchManager extends AbstractLifeCycle {
     private String millisToString(final long millis) {
         return new Date(millis).toString();
     }
+
+	private List<WatchEventService> getEventServices() {
+    	List<WatchEventService> list = new ArrayList<>();
+		for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+			try {
+				final ServiceLoader<WatchEventService > serviceLoader =
+					ServiceLoader.load(WatchEventService.class, classLoader);
+				for (final WatchEventService service : serviceLoader) {
+					list.add(service);
+				}
+			} catch (final Throwable ex) {
+				LOGGER.debug("Unable to retrieve WatchEventService from ClassLoader {}", classLoader, ex);
+			}
+		}
+		return list;
+	}
 
     private final class WatchRunnable implements Runnable {
 
