@@ -316,9 +316,17 @@ public final class PropertiesUtil {
 
         private Environment(final PropertySource propertySource) {
             sources.add(propertySource);
-            for (final PropertySource source : ServiceLoader.load(PropertySource.class, PropertySource.class.getClassLoader())) {
-                sources.add(source);
-            }
+			for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+				try {
+					for (final PropertySource source : ServiceLoader.load(PropertySource.class, classLoader)) {
+						sources.add(source);
+					}
+				} catch (final Throwable ex) {
+					/* Don't log anything to the console. It may not be a problem that a PropertySource
+					 * isn't accessible.
+					 */
+				}
+			}
             reload();
         }
 
