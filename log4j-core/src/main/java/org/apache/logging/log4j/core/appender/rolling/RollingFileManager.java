@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.Collection;
+import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Semaphore;
@@ -318,6 +319,12 @@ public class RollingFileManager extends FileManager {
         LOGGER.debug("RollingFileManager shutdown completed with status {}", status);
         return status;
     }
+
+    public synchronized void rollover(Date prevFileTime, Date prevRollTime) {
+		getPatternProcessor().setPrevFileTime(prevFileTime.getTime());
+		getPatternProcessor().setCurrentFileTime(prevRollTime.getTime());
+		rollover();
+	}
 
     public synchronized void rollover() {
         if (!hasOutputStream()) {
