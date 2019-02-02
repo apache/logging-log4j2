@@ -2640,7 +2640,9 @@ and when the current date no longer matches the log’s start date.
 
 Cron Triggering Policy
 
-The `CronTriggeringPolicy` triggers rollover based on a cron expression.
+The `CronTriggeringPolicy` triggers rollover based on a cron expression. This policy
+is controlled by a timer and is asynchronous to processing log events, so it is possible that log events
+from the previous or next time period may appear at the beginning or end of the log file.
 
 .CronTriggeringPolicy Parameters
 [cols=",,",options="header",]
@@ -2684,7 +2686,10 @@ SizeBased Triggering Policy
 
 The `SizeBasedTriggeringPolicy` causes a rollover once the file has
 reached the specified size. The size can be specified in bytes, with the
-suffix KB, MB or GB, for example `20MB`.
+suffix KB, MB or GB, for example `20MB`. The file pattern must contain
+a `%i` otherwise the target file will be overwritten on every rollover
+as the SizeBased Triggering Policy does not cause the timestamp value
+in the file name to change.
 
 TimeBased Triggering Policy
 

@@ -213,7 +213,9 @@ public class PatternProcessor {
     }
 
     public void updateTime() {
-        prevFileTime = nextFileTime;
+		if (nextFileTime != 0) {
+			prevFileTime = nextFileTime;
+		}
     }
 
     private long debugGetNextTime(final long nextTime) {

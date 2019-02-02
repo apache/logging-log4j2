@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -145,10 +146,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     }
 
     private void rollover() {
-        manager.getPatternProcessor().setPrevFileTime(lastRollDate.getTime());
-        final Date thisRoll = cronExpression.getPrevFireTime(new Date());
-        manager.getPatternProcessor().setCurrentFileTime(thisRoll.getTime());
-        manager.rollover();
+		manager.rollover(cronExpression.getPrevFireTime(new Date()).getTime(), lastRollDate.getTime());
         if (future != null) {
             lastRollDate = future.getFireTime();
         }

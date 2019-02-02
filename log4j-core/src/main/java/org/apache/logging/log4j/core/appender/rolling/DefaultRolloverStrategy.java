@@ -460,9 +460,11 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     @Override
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
         int fileIndex;
+		final StringBuilder buf = new StringBuilder(255);
         if (minIndex == Integer.MIN_VALUE) {
             final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
             fileIndex = eligibleFiles.size() > 0 ? eligibleFiles.lastKey() + 1 : 1;
+			manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
         } else {
             if (maxIndex < 0) {
                 return null;
@@ -472,13 +474,13 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             if (fileIndex < 0) {
                 return null;
             }
+			manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
             if (LOGGER.isTraceEnabled()) {
                 final double durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
                 LOGGER.trace("DefaultRolloverStrategy.purge() took {} milliseconds", durationMillis);
             }
         }
-        final StringBuilder buf = new StringBuilder(255);
-        manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
+
         final String currentFileName = manager.getFileName();
 
         String renameTo = buf.toString();
