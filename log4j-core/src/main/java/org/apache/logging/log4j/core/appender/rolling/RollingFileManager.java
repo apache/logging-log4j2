@@ -100,7 +100,8 @@ public class RollingFileManager extends FileManager {
             final boolean append, final long size, final long initialTime, final TriggeringPolicy triggeringPolicy,
             final RolloverStrategy rolloverStrategy, final String advertiseURI,
             final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer buffer) {
-        super(fileName, os, append, false, advertiseURI, layout, writeHeader, buffer);
+        super(fileName != null ? fileName : pattern, os, append, false, advertiseURI, layout, writeHeader,
+			buffer);
         this.size = size;
         this.initialTime = initialTime;
         this.triggeringPolicy = triggeringPolicy;
@@ -116,7 +117,8 @@ public class RollingFileManager extends FileManager {
             final boolean append, final boolean createOnDemand, final long size, final long initialTime,
             final TriggeringPolicy triggeringPolicy, final RolloverStrategy rolloverStrategy,
             final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer buffer) {
-        super(loggerContext, fileName, os, append, false, createOnDemand, advertiseURI, layout, writeHeader, buffer);
+        super(loggerContext, fileName != null ? fileName : pattern, os, append, false, createOnDemand,
+			advertiseURI, layout, writeHeader, buffer);
         this.size = size;
         this.initialTime = initialTime;
         this.triggeringPolicy = triggeringPolicy;
@@ -136,8 +138,8 @@ public class RollingFileManager extends FileManager {
             final String advertiseURI, final Layout<? extends Serializable> layout,
             final String filePermissions, final String fileOwner, final String fileGroup,
             final boolean writeHeader, final ByteBuffer buffer) {
-        super(loggerContext, fileName, os, append, false, createOnDemand, advertiseURI, layout,
-              filePermissions, fileOwner, fileGroup, writeHeader, buffer);
+        super(loggerContext, fileName != null ? fileName : pattern, os, append, false, createOnDemand,
+			advertiseURI, layout, filePermissions, fileOwner, fileGroup, writeHeader, buffer);
         this.size = size;
         this.initialTime = initialTime;
         this.triggeringPolicy = triggeringPolicy;
