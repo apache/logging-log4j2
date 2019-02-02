@@ -354,6 +354,9 @@
       </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
+      <action issue="LOG4J2-2542" dev="rgoers" type="fix">
+        CronTriggeringPolicy was not rolling properly, especially when used with the SizeBasedTriggeringPolicy.
+      </action>
       <action issue="LOG4J2-2266" dev="rgoers" type="fix">
         Load PropertySources from any accessible ClassLoader. Hide any exceptions that may occur accessing a PropertySource.
       </action>
