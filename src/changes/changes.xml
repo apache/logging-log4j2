@@ -354,6 +354,9 @@
       </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
+      <action issue="LOG4J2-2009" dev="rgoers" type="fix">
+        Expose LoggerContext.setConfiguration as a public method.
+      </action>
       <action issue="LOG4J2-2542" dev="rgoers" type="fix">
         CronTriggeringPolicy was not rolling properly, especially when used with the SizeBasedTriggeringPolicy.
       </action>

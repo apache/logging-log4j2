@@ -521,7 +521,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @param config The new Configuration.
      * @return The previous Configuration.
      */
-    private Configuration setConfiguration(final Configuration config) {
+    public Configuration setConfiguration(final Configuration config) {
         if (config == null) {
             LOGGER.error("No configuration found for context '{}'.", contextName);
             // No change, return the current configuration.
