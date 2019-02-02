@@ -2643,6 +2643,8 @@ Cron Triggering Policy
 The `CronTriggeringPolicy` triggers rollover based on a cron expression. This policy
 is controlled by a timer and is asynchronous to processing log events, so it is possible that log events
 from the previous or next time period may appear at the beginning or end of the log file.
+The filePattern attribute of the Appender should contain a timestamp otherwise the target file will be
+overwritten on each rollover.
 
 .CronTriggeringPolicy Parameters
 [cols=",,",options="header",]
