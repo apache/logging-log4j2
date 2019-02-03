@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.Collection;
+import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Semaphore;
@@ -99,7 +100,8 @@ public class RollingFileManager extends FileManager {
             final boolean append, final long size, final long initialTime, final TriggeringPolicy triggeringPolicy,
             final RolloverStrategy rolloverStrategy, final String advertiseURI,
             final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer buffer) {
-        super(fileName, os, append, false, advertiseURI, layout, writeHeader, buffer);
+        super(fileName != null ? fileName : pattern, os, append, false, advertiseURI, layout, writeHeader,
+			buffer);
         this.size = size;
         this.initialTime = initialTime;
         this.triggeringPolicy = triggeringPolicy;
@@ -115,7 +117,8 @@ public class RollingFileManager extends FileManager {
             final boolean append, final boolean createOnDemand, final long size, final long initialTime,
             final TriggeringPolicy triggeringPolicy, final RolloverStrategy rolloverStrategy,
             final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer buffer) {
-        super(loggerContext, fileName, os, append, false, createOnDemand, advertiseURI, layout, writeHeader, buffer);
+        super(loggerContext, fileName != null ? fileName : pattern, os, append, false, createOnDemand,
+			advertiseURI, layout, writeHeader, buffer);
         this.size = size;
         this.initialTime = initialTime;
         this.triggeringPolicy = triggeringPolicy;
@@ -135,8 +138,8 @@ public class RollingFileManager extends FileManager {
             final String advertiseURI, final Layout<? extends Serializable> layout,
             final String filePermissions, final String fileOwner, final String fileGroup,
             final boolean writeHeader, final ByteBuffer buffer) {
-        super(loggerContext, fileName, os, append, false, createOnDemand, advertiseURI, layout,
-              filePermissions, fileOwner, fileGroup, writeHeader, buffer);
+        super(loggerContext, fileName != null ? fileName : pattern, os, append, false, createOnDemand,
+			advertiseURI, layout, filePermissions, fileOwner, fileGroup, writeHeader, buffer);
         this.size = size;
         this.initialTime = initialTime;
         this.triggeringPolicy = triggeringPolicy;
@@ -318,6 +321,12 @@ public class RollingFileManager extends FileManager {
         LOGGER.debug("RollingFileManager shutdown completed with status {}", status);
         return status;
     }
+
+    public synchronized void rollover(Date prevFileTime, Date prevRollTime) {
+		getPatternProcessor().setPrevFileTime(prevFileTime.getTime());
+		getPatternProcessor().setCurrentFileTime(prevRollTime.getTime());
+		rollover();
+	}
 
     public synchronized void rollover() {
         if (!hasOutputStream()) {

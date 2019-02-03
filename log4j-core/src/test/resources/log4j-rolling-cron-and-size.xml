@@ -16,32 +16,37 @@
  limitations under the License.
 
 -->
-<Configuration status="ERROR" name="XMLConfigTest">
+<Configuration status="ERROR" name="RollingCronTest" monitorInterval="1">
   <Properties>
-    <Property name="filename">target/rolling3/rollingtest.log</Property>
+    <Property name="filename">target/rolling1/rollingtest.log</Property>
+    <Property name="DIR">target/rolling-cron-size</Property>
   </Properties>
-  <ThresholdFilter level="debug"/>
+  <Filters>
+    <ThresholdFilter level="debug"/>
+  </Filters>
 
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
-    <RollingFile name="RollingFile" fileName="${filename}" filePattern="target/rolling3/test/rollingfile_%d{yyyy-MM-dd-HH-mm-ss}_%i.log">
+    <RollingFile name="RollingFile" fileName="${filename}" filePattern="${DIR}/rollingfile_%d{yyyy-MM-dd-HH-mm-ss}_%i.log">
       <PatternLayout pattern="%d{yyyy-MM-dd-HH-mm-ss} [%level] [%c] %msg%n"/>
       <Policies>
-        <TimeBasedTriggeringPolicy />
-        <SizeBasedTriggeringPolicy size="500" />
+        <CronTriggeringPolicy schedule="* * * * * ?"/>
+        <SizeBasedTriggeringPolicy size="1000" />
       </Policies>
     </RollingFile>
     <List name="List">
-      <ThresholdFilter level="error"/>
+      <Filters>
+        <ThresholdFilter level="error"/>
+      </Filters>
     </List>
   </Appenders>
 
   <Loggers>
     <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
       <AppenderRef ref="RollingFile"/>
-    </Logger>>
+    </Logger>
 
     <Root level="error">
       <AppenderRef ref="STDOUT"/>

@@ -145,10 +145,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     }
 
     private void rollover() {
-        manager.getPatternProcessor().setPrevFileTime(lastRollDate.getTime());
-        final Date thisRoll = cronExpression.getPrevFireTime(new Date());
-        manager.getPatternProcessor().setCurrentFileTime(thisRoll.getTime());
-        manager.rollover();
+    	manager.rollover(cronExpression.getPrevFireTime(new Date()), lastRollDate);
         if (future != null) {
             lastRollDate = future.getFireTime();
         }

@@ -16,15 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.Random;
@@ -36,14 +27,24 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
- *
+ * LOG4J2-1804.
  */
-public class RollingAppenderTimeAndSizeTest {
+public class RollingAppenderCronAndSizeTest {
 
-    private static final String CONFIG = "log4j-rolling3.xml";
+  private static final String CONFIG = "log4j-rolling-cron-and-size.xml";
 
-    private static final String DIR = "target/rolling3/test";
+    private static final String DIR = "target/rolling-cron-size";
 
     public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
@@ -54,11 +55,11 @@ public class RollingAppenderTimeAndSizeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.logger = loggerContextRule.getLogger(RollingAppenderTimeAndSizeTest.class.getName());
+        this.logger = loggerContextRule.getLogger(RollingAppenderCronAndSizeTest.class.getName());
     }
 
-    @Test
-    public void testAppender() throws Exception {
+	@Test
+	public void testAppender() throws Exception {
 		Random rand = new Random();
 		for (int j=0; j < 100; ++j) {
 			int count = rand.nextInt(100);
@@ -88,9 +89,10 @@ public class RollingAppenderTimeAndSizeTest {
 			fileCounter = previous.equals(fileParts[1]) ? ++fileCounter : 1;
 			previous = fileParts[1];
 			assertEquals("Incorrect file name. Expected counter value of " + fileCounter + " in " + actual,
-				Integer.toString(fileCounter), fileParts[2]);
+					Integer.toString(fileCounter), fileParts[2]);
 
 
 		}
-    }
+
+	}
 }

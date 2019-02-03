@@ -3181,7 +3181,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   <TimeBasedTriggeringPolicy />
 </Policies>]]></pre>
             <h5>Cron Triggering Policy</h5>
-              <p>The <code>CronTriggeringPolicy</code> triggers rollover based on a cron expression.</p>
+              <p>The <code>CronTriggeringPolicy</code> triggers rollover based on a cron expression. This policy
+              is controlled by a timer and is asynchronous to processing log events, so it is possible that log events
+                from the previous or next time period may appear at the beginning or end of the log file. The
+                filePattern attribute of the Appender should contain a timestamp otherwise the target file will be
+                overwritten on each rollover.
+              </p>
               <table>
                 <caption align="top">CronTriggeringPolicy Parameters</caption>
                 <tr>
@@ -3238,6 +3243,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <p>
                 The <code>SizeBasedTriggeringPolicy</code> causes a rollover once the file has reached the specified
                 size. The size can be specified in bytes, with the suffix KB, MB or GB, for example <code>20MB</code>.
+                The file pattern must contain a <code>%i</code> otherwise the target file will be overwritten on
+                every rollover as the SizeBased Triggering Policy does not cause the timestamp value
+                in the file name to change.
               </p>
             <h5>TimeBased Triggering Policy</h5>
               <p>
