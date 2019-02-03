@@ -444,7 +444,7 @@ public class Bar {
                 <td>Enables diagnostic information while loading plugins.</td>
               </tr>
             </table>
-          <a name="XML"/>
+          <a name="XML"/><h3>Configuration with XML</h3>
           <p>
             Log4j can be configured using two XML flavors; concise and strict. The concise format makes
             configuration very easy as the element names match the components they represent however it
@@ -737,129 +737,6 @@ Configuration:
             Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using
             YAML configuration files.
           </p>
-        <a name="Loggers"/>
-          <h4>Configuring loggers</h4>
-          <p>
-            An understanding of how loggers work in Log4j is critical before trying to configure them.
-            Please reference the Log4j <a href="./architecture.html">architecture</a> if more information is
-            required. Trying to configure Log4j without understanding those concepts will lead to frustration.
-          </p>
-          <p>
-            A LoggerConfig is configured using the <code>logger</code> element. The <code>logger</code> element
-            must have a name attribute specified, will usually have a level attribute specified and may
-            also have an additivity attribute specified.  The level may be configured with one of TRACE,
-            DEBUG, INFO, WARN, ERROR, ALL or OFF. If no level is specified it will default to ERROR. The
-            additivity attribute may be assigned a value of true or false. If the attribute is omitted
-            the default value of true will be used.
-          </p>
-          <p>
-            A LoggerConfig (including the root LoggerConfig) can be configured with properties that will be added
-            to the properties copied from the ThreadContextMap. These properties can be referenced from Appenders,
-            Filters, Layouts, etc just as if they were part of the ThreadContext Map. The properties can contain
-            variables that will be resolved either when the configuration is parsed or dynamically when each
-            event is logged. See <a href="#PropertySubstitution">Property Substitution</a> for more information on
-            using variables.
-          </p>
-          <p>
-            The LoggerConfig may also be configured with one or more AppenderRef elements. Each appender
-            referenced will become associated with the specified LoggerConfig. If multiple appenders
-            are configured on the LoggerConfig each of them be called when processing logging events.
-          </p>
-          <p>
-            <b><em>Every configuration must have a root logger</em></b>. If one is not configured the default root LoggerConfig,
-            which has a level of ERROR and has a Console appender attached, will be used. The main differences
-            between the root logger and other loggers are
-          </p>
-            <ol>
-              <li>The root logger does not have a name attribute.</li>
-              <li>The root logger does not support the additivity attribute since it has no parent.</li>
-            </ol>
-        <a name="Appenders"/>
-          <h4>Configuring Appenders</h4>
-          <p>
-            An appender is configured either using the specific appender plugin's name or with an appender
-            element and the type attibute containing the appender plugin's name. In addition each appender
-            must have a name attribute specified with a value that is unique within the set of appenders.
-            The name will be used by loggers to reference the appender as described in the previous section.
-          </p>
-          <p>
-            Most appenders also support a layout to be configured (which again may be specified either
-            using the specific Layout plugin's name as the element or with "layout" as the element name
-            along with a type attribute that contains the layout plugin's name. The various appenders
-            will contain other attributes or elements that are required for them to function properly.
-          </p>
-        <a name="Filters"/>
-          <h4>Configuring Filters</h4>
-          <p>
-            Log4j allows a filter to be specified in any of 4 places:
-          </p>
-            <ol>
-              <li>At the same level as the appenders, loggers and properties elements. These filters can accept
-              or reject events before they have been passed to a LoggerConfig.</li>
-              <li>In a logger element. These filters can accept or reject events for specific loggers.</li>
-              <li>In an appender element. These filters can prevent or cause events to be processed by
-                the appender.</li>
-              <li>In an appender reference element. These filters are used to determine if a Logger should route
-                the event to an appender.</li>
-            </ol>
-          <p>
-            Although only a single <code>filter</code> element can be configured, that element may be the
-            <code>filters</code> element which represents the CompositeFilter. The <code>filters</code> element
-            allows any number of <code>filter</code> elements to be configured within it. The following example
-            shows how multiple filters can be configured on the ConsoleAppender.
-          </p>
-          <pre class="prettyprint linenums"><![CDATA[
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="debug" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
-  <Properties>
-    <Property name="filename">target/test.log</Property>
-  </Properties>
-  <ThresholdFilter level="trace"/>
-
-  <Appenders>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%m MDC%X%n"/>
-    </Console>
-    <Console name="FLOW">
-      <!-- this pattern outputs class name and line number -->
-      <PatternLayout pattern="%C{1}.%M %m %ex%n"/>
-      <filters>
-        <MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
-        <MarkerFilter marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
-      </filters>
-    </Console>
-    <File name="File" fileName="${dollar}{filename}">
-      <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-    </File>
-  </Appenders>
-
-  <Loggers>
-    <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
-      <ThreadContextMapFilter>
-        <KeyValuePair key="test" value="123"/>
-      </ThreadContextMapFilter>
-      <AppenderRef ref="STDOUT"/>
-    </Logger>
-
-    <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
-      <Property name="user">${dollar}{sys:user.name}</Property>
-      <AppenderRef ref="File">
-        <ThreadContextMapFilter>
-          <KeyValuePair key="test" value="123"/>
-        </ThreadContextMapFilter>
-      </AppenderRef>
-      <AppenderRef ref="STDOUT" level="error"/>
-    </Logger>
-
-    <Root level="trace">
-      <AppenderRef ref="STDOUT"/>
-    </Root>
-  </Loggers>
-
-</Configuration>
-]]></pre>
           <a name="Properties"/>
           <h4>Configuration with Properties</h4>
             <p>
@@ -933,6 +810,129 @@ logger.rolling.appenderRef.rolling.ref = RollingFile
 rootLogger.level = info
 rootLogger.appenderRef.stdout.ref = STDOUT
           </pre>
+          <a name="Loggers"/>
+          <h4>Configuring loggers</h4>
+          <p>
+            An understanding of how loggers work in Log4j is critical before trying to configure them.
+            Please reference the Log4j <a href="./architecture.html">architecture</a> if more information is
+            required. Trying to configure Log4j without understanding those concepts will lead to frustration.
+          </p>
+          <p>
+            A LoggerConfig is configured using the <code>logger</code> element. The <code>logger</code> element
+            must have a name attribute specified, will usually have a level attribute specified and may
+            also have an additivity attribute specified.  The level may be configured with one of TRACE,
+            DEBUG, INFO, WARN, ERROR, ALL or OFF. If no level is specified it will default to ERROR. The
+            additivity attribute may be assigned a value of true or false. If the attribute is omitted
+            the default value of true will be used.
+          </p>
+          <p>
+            A LoggerConfig (including the root LoggerConfig) can be configured with properties that will be added
+            to the properties copied from the ThreadContextMap. These properties can be referenced from Appenders,
+            Filters, Layouts, etc just as if they were part of the ThreadContext Map. The properties can contain
+            variables that will be resolved either when the configuration is parsed or dynamically when each
+            event is logged. See <a href="#PropertySubstitution">Property Substitution</a> for more information on
+            using variables.
+          </p>
+          <p>
+            The LoggerConfig may also be configured with one or more AppenderRef elements. Each appender
+            referenced will become associated with the specified LoggerConfig. If multiple appenders
+            are configured on the LoggerConfig each of them be called when processing logging events.
+          </p>
+          <p>
+            <b><em>Every configuration must have a root logger</em></b>. If one is not configured the default root LoggerConfig,
+            which has a level of ERROR and has a Console appender attached, will be used. The main differences
+            between the root logger and other loggers are
+          </p>
+          <ol>
+            <li>The root logger does not have a name attribute.</li>
+            <li>The root logger does not support the additivity attribute since it has no parent.</li>
+          </ol>
+          <a name="Appenders"/>
+          <h4>Configuring Appenders</h4>
+          <p>
+            An appender is configured either using the specific appender plugin's name or with an appender
+            element and the type attibute containing the appender plugin's name. In addition each appender
+            must have a name attribute specified with a value that is unique within the set of appenders.
+            The name will be used by loggers to reference the appender as described in the previous section.
+          </p>
+          <p>
+            Most appenders also support a layout to be configured (which again may be specified either
+            using the specific Layout plugin's name as the element or with "layout" as the element name
+            along with a type attribute that contains the layout plugin's name. The various appenders
+            will contain other attributes or elements that are required for them to function properly.
+          </p>
+          <a name="Filters"/>
+          <h4>Configuring Filters</h4>
+          <p>
+            Log4j allows a filter to be specified in any of 4 places:
+          </p>
+          <ol>
+            <li>At the same level as the appenders, loggers and properties elements. These filters can accept
+              or reject events before they have been passed to a LoggerConfig.</li>
+            <li>In a logger element. These filters can accept or reject events for specific loggers.</li>
+            <li>In an appender element. These filters can prevent or cause events to be processed by
+              the appender.</li>
+            <li>In an appender reference element. These filters are used to determine if a Logger should route
+              the event to an appender.</li>
+          </ol>
+          <p>
+            Although only a single <code>filter</code> element can be configured, that element may be the
+            <code>filters</code> element which represents the CompositeFilter. The <code>filters</code> element
+            allows any number of <code>filter</code> elements to be configured within it. The following example
+            shows how multiple filters can be configured on the ConsoleAppender.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+  <Properties>
+    <Property name="filename">target/test.log</Property>
+  </Properties>
+  <ThresholdFilter level="trace"/>
+
+  <Appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m MDC%X%n"/>
+    </Console>
+    <Console name="FLOW">
+      <!-- this pattern outputs class name and line number -->
+      <PatternLayout pattern="%C{1}.%M %m %ex%n"/>
+      <filters>
+        <MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
+      </filters>
+    </Console>
+    <File name="File" fileName="${dollar}{filename}">
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </File>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+      <ThreadContextMapFilter>
+        <KeyValuePair key="test" value="123"/>
+      </ThreadContextMapFilter>
+      <AppenderRef ref="STDOUT"/>
+    </Logger>
+
+    <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+      <Property name="user">${dollar}{sys:user.name}</Property>
+      <AppenderRef ref="File">
+        <ThreadContextMapFilter>
+          <KeyValuePair key="test" value="123"/>
+        </ThreadContextMapFilter>
+      </AppenderRef>
+      <AppenderRef ref="STDOUT" level="error"/>
+    </Logger>
+
+    <Root level="trace">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+
+</Configuration>
+]]></pre>
         </subsection>
         <a name="PropertySubstitution"/>
         <subsection name="Property Substitution">
@@ -1064,11 +1064,14 @@ rootLogger.appenderRef.stdout.ref = STDOUT
                 <td>System properties. The formats are <code>${dollar}{sys:some.property}</code> and <code>${dollar}{sys:some.property:-default_value}</code>.</td>
               </tr>
             </table>
-          <p>
-            A default property map can be declared in the configuration file. If the value cannot be located in
-            the specified lookup the value in the default property map will be used. The default map is
-            pre-populated with a value for "hostName" that is the current system's host name or IP address and
-            the "contextName" with is the value of the current logging context.
+          <a name="DefaultProperties"/><h3>Default Properites</h3><p>
+          A default property map can be declared in the configuration file by placing a Properties
+          element directly after the Configuration element and before any Loggers, Filters,
+          Appenders, etc. are declared. If the value cannot be located in the specified lookup the
+          value in the default property map will be used. The default map is pre-populated with a value
+          for "hostName" that is the current system's host name or IP address and
+          the "contextName" with is the value of the current logging context. See many places
+          a Properties element is used in this section for examples.
           </p>
         </subsection>
         <a name="RuntimeLookup"/>
