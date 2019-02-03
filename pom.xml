@@ -22,9 +22,9 @@
   <name>Apache Log4j 2</name>
   <version>2.11.2-SNAPSHOT</version>
   <parent>
-    <groupId>org.apache.logging</groupId>
-    <artifactId>logging-parent</artifactId>
-    <version>1</version>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>21</version>
   </parent>
   <prerequisites>
     <maven>3.0.5</maven>
