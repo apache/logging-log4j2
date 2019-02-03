@@ -456,7 +456,7 @@ configurations.
 |===
 
 [[XML]]
-=== XML
+=== Configuration with XML
 
 Log4j can be configured using two XML flavors; concise and strict. The
 concise format makes configuration very easy as the element names match
@@ -773,6 +773,88 @@ Configuration:
 Additional link:../runtime-dependencies.html[runtime dependencies] are
 required for using YAML configuration files.
 
+[#Properties]
+=== Configuration with Properties
+
+As of version 2.4, Log4j now supports configuration via properties
+files. Note that the property syntax is NOT the same as the syntax used
+in Log4j 1. Like the XML and JSON configurations, properties
+configurations define the configuration in terms of plugins and
+attributes to the plugins.
+
+Prior to version 2.6, the properties configuration requires that you
+list the identifiers of the appenders, filters and loggers, in a comma
+separated list in properties with those names. Each of those components
+will then be expected to be defined in sets of properties that begin
+with _component.<.identifier>._. The identifier does not have to match
+the name of the component being defined but must uniquely identify all
+the attributes and subcomponents that are part of the component. If the
+list of identifiers is not present the identier must not contain a '.'.
+Each individual component MUST have a "type" attribute specified that
+identifies the component's Plugin type.
+
+As of version 2.6, this list of identifiers is no longer required as
+names are inferred upon first usage, however if you wish to use more
+complex identifies you must still use the list. If the list is present
+it will be used.
+
+Unlike the base components, when creating subcomponents you cannot
+specify an element containing a list of identifiers. Instead, you must
+define the wrapper element with its type as is shown in the policies
+definition in the rolling file appender below. You then define each of
+the subcomponents below that wrapper element, as the
+TimeBasedTriggeringPolicy and SizeBasedTriggeringPolicy are defined
+below.
+
+Properties configuration files support the advertiser, monitorInterval,
+name, packages, shutdownHook, shutdownTimeout, status, verbose, and dest
+attributes. See link:#ConfigurationSyntax[Configuration Syntax] for the
+definitions of these attributes.
+
+[source,properties]
+----
+status = error
+dest = err
+name = PropertiesConfig
+
+property.filename = target/rolling/rollingtest.log
+
+filter.threshold.type = ThresholdFilter
+filter.threshold.level = debug
+
+appender.console.type = Console
+appender.console.name = STDOUT
+appender.console.layout.type = PatternLayout
+appender.console.layout.pattern = %m%n
+appender.console.filter.threshold.type = ThresholdFilter
+appender.console.filter.threshold.level = error
+
+appender.rolling.type = RollingFile
+appender.rolling.name = RollingFile
+appender.rolling.fileName = ${filename}
+appender.rolling.filePattern = target/rolling2/test1-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz
+appender.rolling.layout.type = PatternLayout
+appender.rolling.layout.pattern = %d %p %C{1.} [%t] %m%n
+appender.rolling.policies.type = Policies
+appender.rolling.policies.time.type = TimeBasedTriggeringPolicy
+appender.rolling.policies.time.interval = 2
+appender.rolling.policies.time.modulate = true
+appender.rolling.policies.size.type = SizeBasedTriggeringPolicy
+appender.rolling.policies.size.size=100MB
+appender.rolling.strategy.type = DefaultRolloverStrategy
+appender.rolling.strategy.max = 5
+
+logger.rolling.name = com.example.my.app
+logger.rolling.level = debug
+logger.rolling.additivity = false
+logger.rolling.appenderRef.rolling.ref = RollingFile
+
+rootLogger.level = info
+rootLogger.appenderRef.stdout.ref = STDOUT
+          
+----
+
+
 [#Loggers]
 === Configuring loggers
 
@@ -905,87 +987,6 @@ can be configured on the ConsoleAppender.
 </Configuration>
 ----
 
-[#Properties]
-=== Configuration with Properties
-
-As of version 2.4, Log4j now supports configuration via properties
-files. Note that the property syntax is NOT the same as the syntax used
-in Log4j 1. Like the XML and JSON configurations, properties
-configurations define the configuration in terms of plugins and
-attributes to the plugins.
-
-Prior to version 2.6, the properties configuration requires that you
-list the identifiers of the appenders, filters and loggers, in a comma
-separated list in properties with those names. Each of those components
-will then be expected to be defined in sets of properties that begin
-with _component.<.identifier>._. The identifier does not have to match
-the name of the component being defined but must uniquely identify all
-the attributes and subcomponents that are part of the component. If the
-list of identifiers is not present the identier must not contain a '.'.
-Each individual component MUST have a "type" attribute specified that
-identifies the component's Plugin type.
-
-As of version 2.6, this list of identifiers is no longer required as
-names are inferred upon first usage, however if you wish to use more
-complex identifies you must still use the list. If the list is present
-it will be used.
-
-Unlike the base components, when creating subcomponents you cannot
-specify an element containing a list of identifiers. Instead, you must
-define the wrapper element with its type as is shown in the policies
-definition in the rolling file appender below. You then define each of
-the subcomponents below that wrapper element, as the
-TimeBasedTriggeringPolicy and SizeBasedTriggeringPolicy are defined
-below.
-
-Properties configuration files support the advertiser, monitorInterval,
-name, packages, shutdownHook, shutdownTimeout, status, verbose, and dest
-attributes. See link:#ConfigurationSyntax[Configuration Syntax] for the
-definitions of these attributes.
-
-[source,properties]
-----
-status = error
-dest = err
-name = PropertiesConfig
-
-property.filename = target/rolling/rollingtest.log
-
-filter.threshold.type = ThresholdFilter
-filter.threshold.level = debug
-
-appender.console.type = Console
-appender.console.name = STDOUT
-appender.console.layout.type = PatternLayout
-appender.console.layout.pattern = %m%n
-appender.console.filter.threshold.type = ThresholdFilter
-appender.console.filter.threshold.level = error
-
-appender.rolling.type = RollingFile
-appender.rolling.name = RollingFile
-appender.rolling.fileName = ${filename}
-appender.rolling.filePattern = target/rolling2/test1-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz
-appender.rolling.layout.type = PatternLayout
-appender.rolling.layout.pattern = %d %p %C{1.} [%t] %m%n
-appender.rolling.policies.type = Policies
-appender.rolling.policies.time.type = TimeBasedTriggeringPolicy
-appender.rolling.policies.time.interval = 2
-appender.rolling.policies.time.modulate = true
-appender.rolling.policies.size.type = SizeBasedTriggeringPolicy
-appender.rolling.policies.size.size=100MB
-appender.rolling.strategy.type = DefaultRolloverStrategy
-appender.rolling.strategy.max = 5
-
-logger.rolling.name = com.example.my.app
-logger.rolling.level = debug
-logger.rolling.additivity = false
-logger.rolling.appenderRef.rolling.ref = RollingFile
-
-rootLogger.level = info
-rootLogger.appenderRef.stdout.ref = STDOUT
-          
-----
-
 [#PropertySubstitution]
 == Property Substitution
 
@@ -1116,11 +1117,15 @@ elements from the Map.
 `${sys:some.property:-default_value}`.
 |===
 
-A default property map can be declared in the configuration file. If the
-value cannot be located in the specified lookup the value in the default
-property map will be used. The default map is pre-populated with a value
+[#DefaultProperties]
+== Default Properties
+A default property map can be declared in the configuration file by placing a Properties
+element directly after the Configuration element and before any Loggers, Filters,
+Appenders, etc. are declared. If the value cannot be located in the specified lookup the
+value in the default property map will be used. The default map is pre-populated with a value
 for "hostName" that is the current system's host name or IP address and
-the "contextName" with is the value of the current logging context.
+the "contextName" with is the value of the current logging context. See many places
+a Properties element is used in this section for examples.
 
 [#RuntimeLookup]
 == Lookup Variables with Multiple Leading '$' Characters
