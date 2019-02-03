@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2018-xx-xx" description="GA Release 3.0.0">
+      <action issue="LOG4J2-2025" dev="rgoers" type="add" due-to="Thies Wellpott">
+        Implement JUL Bridge Handler..
+      </action>
       <action issue="LOG4J2-2171" dev="rmannibucau" type="add">
         Allow to force LOG4J2 to use TCCL only.
       </action>
