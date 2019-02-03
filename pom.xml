@@ -1386,6 +1386,7 @@
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
             <exclude>RELEASE-NOTES.txt</exclude>
+            <exlude>**/revapi.json</exlude>
           </excludes>
         </configuration>
       </plugin>
@@ -1562,6 +1563,7 @@
                 <!-- Other -->
                 <exclude>felix-cache/**</exclude>
                 <exclude>RELEASE-NOTES.md</exclude>
+                <exlude>**/revapi.json</exlude>
               </excludes>
             </configuration>
             <executions>
