@@ -1,6 +1,18 @@
 /*
- * Copyright (c) 2019 Nextiva, Inc. to Present.
- * All rights reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
 package org.apache.logging.log4j.core.appender;
 
@@ -142,23 +154,23 @@ public class ReconfigureAppenderTest {
 		// Retrieve the logger.
 		Logger logger = (Logger) LogManager.getLogger(this.getClass());
 
-		Builder pattern_builder = PatternLayout.newBuilder().withPattern(
+		Builder pattern_builder = PatternLayout.newBuilder().setPattern(
 			"[%d{dd-MM-yy HH:mm:ss}] %p %m %throwable %n");
 
 		PatternLayout pattern_layout = (PatternLayout) pattern_builder.build();
 
 		appender = RollingFileAppender
 			.newBuilder()
-			.withLayout(pattern_layout)
-			.withName("rollingfileappender")
-			.withFilePattern("target/filepattern.%i.log")
-			.withPolicy(SizeBasedTriggeringPolicy.createPolicy("5 MB"))
-			.withAppend(true)
-			.withStrategy(
+			.setLayout(pattern_layout)
+			.setName("rollingfileappender")
+			.setFilePattern("target/filepattern.%i.log")
+			.setPolicy(SizeBasedTriggeringPolicy.createPolicy("5 MB"))
+			.setAppend(true)
+			.setStrategy(
 				DirectWriteRolloverStrategy
 					.newBuilder()
-					.withConfig(logger_context.getConfiguration())
-					.withMaxFiles("5")
+					.setConfig(logger_context.getConfiguration())
+					.setMaxFiles("5")
 					.build())
 			.setConfiguration(logger_context.getConfiguration())
 			.build();
