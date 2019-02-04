@@ -18,7 +18,7 @@ package org.apache.logging.log4j.spring.cloud.config.server.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.config.environment.Environment;
@@ -45,7 +45,7 @@ import static org.springframework.cloud.config.server.support.EnvironmentPropert
 /**
  * Modified version of Spring Cloud Config's ResourceController to support If-Modified-Since.
  * Should be dropeed when Spring implements this.
- *
+ * <p>
  * An HTTP endpoint for serving up templated plain text resources from an underlying
  * repository. Can be used to supply config files for consumption by a wide variety of
  * applications and services. A {@link ResourceRepository} is used to locate a
@@ -55,56 +55,51 @@ import static org.springframework.cloud.config.server.support.EnvironmentPropert
  *
  * @author Dave Syer
  * @author Daniel Lavoie
- *
  */
 @RestController
 @RequestMapping(method = RequestMethod.GET, path = "${spring.cloud.config.server.prefix:}/resource")
 public class Log4jResourceController {
 
     @Autowired
-	private ResourceRepository resourceRepository;
+    private ResourceRepository resourceRepository;
 
     @Autowired
-	private EnvironmentRepository environmentRepository;
+    private EnvironmentRepository environmentRepository;
 
-	private UrlPathHelper helper = new UrlPathHelper();
+    private UrlPathHelper helper = new UrlPathHelper();
 
-	public Log4jResourceController(ResourceRepository resourceRepository,
-			EnvironmentRepository environmentRepository) {
-		this.resourceRepository = resourceRepository;
-		this.environmentRepository = environmentRepository;
-		this.helper.setAlwaysUseFullPath(true);
-	}
+    public Log4jResourceController(ResourceRepository resourceRepository, EnvironmentRepository environmentRepository) {
+        this.resourceRepository = resourceRepository;
+        this.environmentRepository = environmentRepository;
+        this.helper.setAlwaysUseFullPath(true);
+    }
 
-	@RequestMapping("/{name}/{profile}/{label}/**")
-	public String retrieve(@PathVariable String name, @PathVariable String profile,
-			@PathVariable String label, ServletWebRequest request,
-            @RequestParam(defaultValue = "true") boolean resolvePlaceholders)
-			throws IOException {
-		String path = getFilePath(request, name, profile, label);
-		return retrieve(request, name, profile, label, path, resolvePlaceholders);
-	}
+    @RequestMapping("/{name}/{profile}/{label}/**")
+    public String retrieve(@PathVariable String name, @PathVariable String profile, @PathVariable String label,
+        ServletWebRequest request, @RequestParam(defaultValue = "true") boolean resolvePlaceholders)
+        throws IOException {
+        String path = getFilePath(request, name, profile, label);
+        return retrieve(request, name, profile, label, path, resolvePlaceholders);
+    }
 
-	@RequestMapping(value = "/{name}/{profile}/**", params = "useDefaultLabel")
-	public String retrieve(@PathVariable String name, @PathVariable String profile,
-			ServletWebRequest request, @RequestParam(defaultValue = "true") boolean resolvePlaceholders)
-			throws IOException {
-		String path = getFilePath(request, name, profile, null);
-		return retrieve(request, name, profile, null, path, resolvePlaceholders);
-	}
+    @RequestMapping(value = "/{name}/{profile}/**", params = "useDefaultLabel")
+    public String retrieve(@PathVariable String name, @PathVariable String profile, ServletWebRequest request,
+        @RequestParam(defaultValue = "true") boolean resolvePlaceholders) throws IOException {
+        String path = getFilePath(request, name, profile, null);
+        return retrieve(request, name, profile, null, path, resolvePlaceholders);
+    }
 
-	private String getFilePath(ServletWebRequest request, String name, String profile,
-			String label) {
-		String stem;
-		if(label != null ) {
-			stem = String.format("/%s/%s/%s/", name, profile, label);
-		}else {
-			stem = String.format("/%s/%s/", name, profile);
-		}
-		String path = this.helper.getPathWithinApplication(request.getRequest());
-		path = path.substring(path.indexOf(stem) + stem.length());
-		return path;
-	}
+    private String getFilePath(ServletWebRequest request, String name, String profile, String label) {
+        String stem;
+        if (label != null) {
+            stem = String.format("/%s/%s/%s/", name, profile, label);
+        } else {
+            stem = String.format("/%s/%s/", name, profile);
+        }
+        String path = this.helper.getPathWithinApplication(request.getRequest());
+        path = path.substring(path.indexOf(stem) + stem.length());
+        return path;
+    }
 
     private synchronized String retrieve(ServletWebRequest request, String name, String profile, String label,
         String path, boolean resolvePlaceholders) throws IOException {
@@ -117,7 +112,7 @@ public class Log4jResourceController {
         }
         // ensure InputStream will be closed to prevent file locks on Windows
         try (InputStream is = resource.getInputStream()) {
-            String text = StreamUtils.copyToString(is, Charset.forName("UTF-8"));
+            String text = StreamUtils.copyToString(is, StandardCharsets.UTF_8);
             if (resolvePlaceholders) {
                 Environment environment = this.environmentRepository.findOne(name, profile, label);
                 text = resolvePlaceholders(prepareEnvironment(environment), text);
@@ -129,27 +124,26 @@ public class Log4jResourceController {
     /*
      * Used only for unit tests.
      */
-    String retrieve(String name, String profile, String label, String path,
-        boolean resolvePlaceholders) throws IOException {
-	    return retrieve(null, name, profile, label, path, resolvePlaceholders);
+    String retrieve(String name, String profile, String label, String path, boolean resolvePlaceholders)
+        throws IOException {
+        return retrieve(null, name, profile, label, path, resolvePlaceholders);
     }
 
-	@RequestMapping(value = "/{name}/{profile}/{label}/**", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public synchronized byte[] binary(@PathVariable String name,
-			@PathVariable String profile, @PathVariable String label,
-			ServletWebRequest request) throws IOException {
-		String path = getFilePath(request, name, profile, label);
-		return binary(request, name, profile, label, path);
-	}
+    @RequestMapping(value = "/{name}/{profile}/{label}/**", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public synchronized byte[] binary(@PathVariable String name, @PathVariable String profile,
+        @PathVariable String label, ServletWebRequest request) throws IOException {
+        String path = getFilePath(request, name, profile, label);
+        return binary(request, name, profile, label, path);
+    }
 
-	/*
-	 * Used only for unit tests.
-	 */
-	byte[] binary(String name, String profile, String label, String path) throws IOException {
+    /*
+     * Used only for unit tests.
+     */
+    byte[] binary(String name, String profile, String label, String path) throws IOException {
         return binary(null, name, profile, label, path);
     }
 
-	private synchronized byte[] binary(ServletWebRequest request, String name, String profile, String label,
+    private synchronized byte[] binary(ServletWebRequest request, String name, String profile, String label,
         String path) throws IOException {
         name = resolveName(name);
         label = resolveLabel(label);
@@ -158,14 +152,14 @@ public class Log4jResourceController {
             // Content was not modified. Just return.
             return null;
         }
-		// TODO: is this line needed for side effects?
-		prepareEnvironment(this.environmentRepository.findOne(name, profile, label));
-		try (InputStream is = resource.getInputStream()) {
-			return StreamUtils.copyToByteArray(is);
-		}
-	}
+        // TODO: is this line needed for side effects?
+        prepareEnvironment(this.environmentRepository.findOne(name, profile, label));
+        try (InputStream is = resource.getInputStream()) {
+            return StreamUtils.copyToByteArray(is);
+        }
+    }
 
-	private boolean checkNotModified(ServletWebRequest request, Resource resource) {
+    private boolean checkNotModified(ServletWebRequest request, Resource resource) {
         try {
             return request != null && request.checkNotModified(resource.lastModified());
         } catch (Exception ex) {
@@ -174,7 +168,7 @@ public class Log4jResourceController {
         return false;
     }
 
-	private String resolveName(String name) {
+    private String resolveName(String name) {
         if (name != null && name.contains("(_)")) {
             // "(_)" is uncommon in a git repo name, but "/" cannot be matched
             // by Spring MVC
@@ -192,9 +186,9 @@ public class Log4jResourceController {
         return label;
     }
 
-	@ExceptionHandler(NoSuchResourceException.class)
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public void notFound(NoSuchResourceException e) {
-	}
+    @ExceptionHandler(NoSuchResourceException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public void notFound(NoSuchResourceException e) {
+    }
 
 }

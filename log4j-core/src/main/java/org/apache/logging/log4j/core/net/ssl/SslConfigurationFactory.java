@@ -1,6 +1,18 @@
 /*
- * Copyright (c) 2019 Nextiva, Inc. to Present.
- * All rights reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
 package org.apache.logging.log4j.core.net.ssl;
 
@@ -23,9 +35,9 @@ public class SslConfigurationFactory {
     private static final String trustStoreKeyStoreType = "log4j2.trustStore.keyStoreType";
     private static final String trustStoreKeyManagerFactoryAlgorithm = "log4j2.trustStore.keyManagerFactoryAlgorithm";
     private static final String keyStoreLocation = "log4j2.keyStore.location";
-    private static final String keyStorePassword = "log4j2.keyStorePassword";
-    private static final String keyStorePasswordFile = "log4j2.keyStorePasswordFile";
-    private static final String keyStorePasswordEnvVar = "log4j2.keyStorePasswordEnvironmentVariable";
+    private static final String keyStorePassword = "log4j2.keyStore.password";
+    private static final String keyStorePasswordFile = "log4j2.keyStore.passwordFile";
+    private static final String keyStorePasswordEnvVar = "log4j2.keyStore.passwordEnvironmentVariable";
     private static final String keyStoreType = "log4j2.keyStore.type";
     private static final String keyStoreKeyManagerFactoryAlgorithm = "log4j2.keyStore.keyManagerFactoryAlgorithm";
     private static final String verifyHostName = "log4j2.ssl.verifyHostName";

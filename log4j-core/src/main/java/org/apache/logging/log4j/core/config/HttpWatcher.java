@@ -1,6 +1,18 @@
 /*
- * Copyright (c) 2019 Nextiva, Inc. to Present.
- * All rights reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
 package org.apache.logging.log4j.core.config;
 
@@ -11,8 +23,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.Properties;
-
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.logging.log4j.Logger;
@@ -25,7 +35,6 @@ import org.apache.logging.log4j.core.util.AbstractWatcher;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  *
@@ -72,8 +81,8 @@ public class HttpWatcher extends AbstractWatcher {
     @Override
     public void watching(Source source) {
         if (!source.getURI().getScheme().equals(HTTP) && !source.getURI().getScheme().equals(HTTPS)) {
-            throw new IllegalArgumentException("HttpWatcher requires a url using the HTTP or HTTPS protocol, not " +
-                source.getURI().getScheme());
+            throw new IllegalArgumentException(
+                "HttpWatcher requires a url using the HTTP or HTTPS protocol, not " + source.getURI().getScheme());
         }
         try {
             url = source.getURI().toURL();
@@ -136,15 +145,14 @@ public class HttpWatcher extends AbstractWatcher {
                             return true;
                         } catch (final IOException e) {
                             try (InputStream es = urlConnection.getErrorStream()) {
-                                LOGGER.info("Error accessing configuration at {}: {}", url,
-                                    readStream(es));
+                                LOGGER.info("Error accessing configuration at {}: {}", url, readStream(es));
                             } catch (final IOException ioe) {
                                 LOGGER.error("Error accessing configuration at {}: {}", url, e.getMessage());
                             }
                             return false;
                         }
                     }
-                    default : {
+                    default: {
                         if (code < 0) {
                             LOGGER.info("Invalid response code returned");
                         } else {

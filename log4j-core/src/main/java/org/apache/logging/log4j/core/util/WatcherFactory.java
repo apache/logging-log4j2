@@ -1,12 +1,23 @@
 /*
- * Copyright (c) 2019 Nextiva, Inc. to Present.
- * All rights reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
 package org.apache.logging.log4j.core.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,7 +50,7 @@ public class WatcherFactory {
 
     public static WatcherFactory getInstance(List<String> packages) {
         if (factory == null) {
-            synchronized(pluginManager) {
+            synchronized (pluginManager) {
                 if (factory == null) {
                     factory = new WatcherFactory(packages);
                 }
@@ -58,21 +69,22 @@ public class WatcherFactory {
             String name = source.getURI().getScheme();
             PluginType<?> pluginType = plugins.get(name);
             if (pluginType != null) {
-                return instantiate(name, (Class<? extends Watcher>) pluginType.getPluginClass(),
-                    configuration, reconfigurable, configurationListeners, lastModifiedMillis);
+                return instantiate(name, (Class<? extends Watcher>) pluginType.getPluginClass(), configuration,
+                    reconfigurable, configurationListeners, lastModifiedMillis);
             }
             LOGGER.info("No Watcher plugin is available for protocol '{}'", name);
             return null;
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Watcher> T instantiate(String name, final Class<T> clazz, final Configuration configuration,
-        final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners, long lastModifiedMillis) {
+    public static <T extends Watcher> T instantiate(String name, final Class<T> clazz,
+        final Configuration configuration, final Reconfigurable reconfigurable,
+        final List<ConfigurationListener> listeners, long lastModifiedMillis) {
         Objects.requireNonNull(clazz, "No class provided");
         try {
-            Constructor constructor = clazz.getConstructor(Configuration.class, Reconfigurable.class, List.class, long.class);
-            return (T) constructor.newInstance(configuration, reconfigurable, listeners, lastModifiedMillis);
+            Constructor<T> constructor = clazz
+                .getConstructor(Configuration.class, Reconfigurable.class, List.class, long.class);
+            return constructor.newInstance(configuration, reconfigurable, listeners, lastModifiedMillis);
         } catch (NoSuchMethodException ex) {
             throw new IllegalArgumentException("No valid constructor for Watcher plugin " + name, ex);
         } catch (final LinkageError | InstantiationException e) {

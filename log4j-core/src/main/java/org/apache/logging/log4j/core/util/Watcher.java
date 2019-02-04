@@ -29,8 +29,8 @@ import org.apache.logging.log4j.core.config.Reconfigurable;
  */
 public interface Watcher {
 
-    public static final String CATEGORY = "Watcher";
-    public static final String ELEMENT_TYPE = "watcher";
+    String CATEGORY = "Watcher";
+    String ELEMENT_TYPE = "watcher";
 
     /**
      * Returns the list of listeners for this configuration.

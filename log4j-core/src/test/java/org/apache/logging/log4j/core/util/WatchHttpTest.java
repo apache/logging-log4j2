@@ -110,8 +110,7 @@ public class WatchHttpTest {
         try {
             watchManager.watch(new Source(url.toURI(), previous.getTimeInMillis()), new HttpWatcher(configuration, null,
                 listeners, previous.getTimeInMillis()));
-            Thread.sleep(1500);
-            final String str = queue.poll(1, TimeUnit.SECONDS);
+            final String str = queue.poll(2, TimeUnit.SECONDS);
             assertNotNull("File change not detected", str);
         } finally {
             removeStub(stubMapping);
@@ -147,8 +146,7 @@ public class WatchHttpTest {
         try {
             watchManager.watch(new Source(url.toURI(), previous.getTimeInMillis()), new HttpWatcher(configuration, null,
                 listeners, previous.getTimeInMillis()));
-            Thread.sleep(1500);
-            final String str = queue.poll(1, TimeUnit.SECONDS);
+            final String str = queue.poll(2, TimeUnit.SECONDS);
             assertNull("File changed.", str);
         } finally {
             removeStub(stubMapping);
