@@ -148,8 +148,8 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
     }
 
     @PluginBuilderFactory
-    public static Builder newBuilder() {
-        return new Builder();
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
     }
 
     private WriterAppender(final String name, final StringLayout layout, final Filter filter,
