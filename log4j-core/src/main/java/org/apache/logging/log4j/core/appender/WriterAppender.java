@@ -53,14 +53,14 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
                     isIgnoreExceptions(), getPropertyArray());
         }
 
-        public Builder setFollow(final boolean shouldFollow) {
+        public B setFollow(final boolean shouldFollow) {
             this.follow = shouldFollow;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setTarget(final Writer aTarget) {
+        public B setTarget(final Writer aTarget) {
             this.target = aTarget;
-            return this;
+            return asBuilder();
         }
     }
     /**
@@ -148,8 +148,8 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
     }
 
     @PluginBuilderFactory
-    public static Builder newBuilder() {
-        return new Builder();
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
     }
 
     private WriterAppender(final String name, final StringLayout layout, final Filter filter,
