@@ -119,8 +119,9 @@ public final class RoutingAppender extends AbstractAppender {
             return asBuilder();
         }
 
-        public void setPurgePolicy(@SuppressWarnings("hiding") final PurgePolicy purgePolicy) {
+        public B setPurgePolicy(@SuppressWarnings("hiding") final PurgePolicy purgePolicy) {
             this.purgePolicy = purgePolicy;
+            return asBuilder();
         }
 
     }
