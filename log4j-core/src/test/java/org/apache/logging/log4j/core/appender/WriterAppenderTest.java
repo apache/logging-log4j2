@@ -101,4 +101,9 @@ public class WriterAppenderTest {
         test(new StringWriter());
     }
 
+    @Test
+    public void testBuilder() {
+        // This should compile
+        WriterAppender.newBuilder().setTarget(new StringWriter()).setName("testWriterAppender").build();
+    }
 }
