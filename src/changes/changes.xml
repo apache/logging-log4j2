@@ -30,10 +30,7 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.12.0" date="2019=MM-DD" description="GA Release 2.12.0">
-
-    </release>
-    <release version="2.11.2" date="2019-02-03" description="GA Release 2.11.2">
+    <release version="2.11.2" date="2019-02-04" description="GA Release 2.11.2">
       <action issue="LOG4J2-2500" dev="rgoers" type="fix">
         Document that Properties element must be the first configuration element.
       </action>
@@ -77,7 +74,7 @@
         Fixed Appenders section in Extending Log4j.
       </action>
       <action issue="LOG4J2-2391" dev="ckozak" type="update">
-        Improve exception logging performance. ThrowableProxy construction uses a more faster
+        Improve exception logging performance. ThrowableProxy construction uses a faster
         method to discover the current stack trace. ThrowablePatternConverter and
         ExtendedThrowablePatternConverter default configurations no longer allocate
         an additional buffer for stack trace contents.
