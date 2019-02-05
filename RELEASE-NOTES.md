@@ -92,6 +92,8 @@ Allow a JDBC Appender to truncate strings to match a table's metadata column len
 PatternLayout %date conversion pattern should render time zone designator for ISO-ISO8601.
 
 ### Fixed Bugs
+* [LOG4J2-2500](https://issues.apache.org/jira/browse/LOG4J2-2500):
+Document that Properties element must be the first configuration element.
 * [LOG4J2-2543](https://issues.apache.org/jira/browse/LOG4J2-2543):
 Add Log4j-to-SLF4J to BOM pom.xml. Thanks to Dermot Hardy.
 * [LOG4J2-2061](https://issues.apache.org/jira/browse/LOG4J2-2061):
@@ -169,7 +171,7 @@ Fix a regression introduced by LOG4J2-2301 in 2.11.1 allowing allocation to occu
 * [LOG4J2-1576](https://issues.apache.org/jira/browse/LOG4J2-1576):
 Switch from CLIRR to RevAPI for detecting API changes.
 * [LOG4J2-2391](https://issues.apache.org/jira/browse/LOG4J2-2391):
-Improve exception logging performance. ThrowableProxy construction uses a more faster
+Improve exception logging performance. ThrowableProxy construction uses a faster
         method to discover the current stack trace. ThrowablePatternConverter and
         ExtendedThrowablePatternConverter default configurations no longer allocate
         an additional buffer for stack trace contents.
