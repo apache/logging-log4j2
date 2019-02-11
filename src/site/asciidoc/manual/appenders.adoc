@@ -2750,10 +2750,36 @@ for Java]. The pattern may also contain lookup references that can be
 resolved at runtime such as is shown in the example below.
 
 The default rollover strategy supports three variations for incrementing
-the counter. The first is the "fixed window" strategy. To illustrate how
-it works, suppose that the min attribute is set to 1, the max attribute
-is set to 3, the file name is "foo.log", and the file name pattern is
-"foo-%i.log".
+the counter. To illustrate how it works, suppose that the min attribute 
+is set to 1, the max attribute is set to 3, the file name is "foo.log", 
+and the file name pattern is "foo-%i.log".
+
+[cols=",,,",options="header",]
+|=======================================================================
+|Number of rollovers |Active output target |Archived log files
+|Description
+|0 |foo.log |- |All logging is going to the initial file.
+
+|1 |foo.log |foo-1.log |During the first rollover foo.log is renamed to
+foo-1.log. A new foo.log file is created and starts being written to.
+
+|2 |foo.log |foo-2.log, foo-1.log |During the second rollover foo.log is
+renamed to foo-2.log. A new foo.log file is created and starts being
+written to.
+
+|3 |foo.log |foo-3.log, foo-2.log, foo-1.log |During the third rollover
+foo.log is renamed to foo-3.log. A new foo.log file is created and
+starts being written to.
+
+|4 |foo.log |foo-3.log, foo-2.log, foo-1.log |In the fourth and
+subsequent rollovers, foo-1.log is deleted, foo-2.log is renamed to
+foo-1.log, foo-3.log is renamed to foo-2.log and foo.log is renamed to
+foo-3.log. A new foo.log file is created and starts being written to.
+|=======================================================================
+
+By way of contrast, when the fileIndex attribute is set to "min" but all
+the other settings are the same the "fixed window" strategy will be 
+performed.
 
 [cols=",,,",options="header",]
 |=======================================================================
@@ -2777,32 +2803,6 @@ starts being written to.
 subsequent rollovers, foo-3.log is deleted, foo-2.log is renamed to
 foo-3.log, foo-1.log is renamed to foo-2.log and foo.log is renamed to
 foo-1.log. A new foo.log file is created and starts being written to.
-|=======================================================================
-
-By way of contrast, when the fileIndex attribute is set to "max" but all
-the other settings are the same the following actions will be performed.
-
-[cols=",,,",options="header",]
-|=======================================================================
-|Number of rollovers |Active output target |Archived log files
-|Description
-|0 |foo.log |- |All logging is going to the initial file.
-
-|1 |foo.log |foo-1.log |During the first rollover foo.log is renamed to
-foo-1.log. A new foo.log file is created and starts being written to.
-
-|2 |foo.log |foo-2.log, foo-1.log |During the second rollover foo.log is
-renamed to foo-2.log. A new foo.log file is created and starts being
-written to.
-
-|3 |foo.log |foo-3.log, foo-2.log, foo-1.log |During the third rollover
-foo.log is renamed to foo-3.log. A new foo.log file is created and
-starts being written to.
-
-|4 |foo.log |foo-3.log, foo-2.log, foo-1.log |In the fourth and
-subsequent rollovers, foo-1.log is deleted, foo-2.log is renamed to
-foo-1.log, foo-3.log is renamed to foo-2.log and foo.log is renamed to
-foo-3.log. A new foo.log file is created and starts being written to.
 |=======================================================================
 
 Finally, as of release 2.8, if the fileIndex attribute is set to "nomax"
