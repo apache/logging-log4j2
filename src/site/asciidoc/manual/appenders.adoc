@@ -2791,15 +2791,15 @@ the other settings are the same the following actions will be performed.
 |1 |foo.log |foo-1.log |During the first rollover foo.log is renamed to
 foo-1.log. A new foo.log file is created and starts being written to.
 
-|2 |foo.log |foo-1.log, foo-2.log |During the second rollover foo.log is
+|2 |foo.log |foo-2.log, foo-1.log |During the second rollover foo.log is
 renamed to foo-2.log. A new foo.log file is created and starts being
 written to.
 
-|3 |foo.log |foo-1.log, foo-2.log, foo-3.log |During the third rollover
+|3 |foo.log |foo-3.log, foo-2.log, foo-1.log |During the third rollover
 foo.log is renamed to foo-3.log. A new foo.log file is created and
 starts being written to.
 
-|4 |foo.log |foo-1.log, foo-2.log, foo-3.log |In the fourth and
+|4 |foo.log |foo-3.log, foo-2.log, foo-1.log |In the fourth and
 subsequent rollovers, foo-1.log is deleted, foo-2.log is renamed to
 foo-1.log, foo-3.log is renamed to foo-2.log and foo.log is renamed to
 foo-3.log. A new foo.log file is created and starts being written to.
