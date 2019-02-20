@@ -11,6 +11,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
@@ -93,7 +94,7 @@ public class AsyncLoggerContextCheckDisruptorBacklogTest {
     public static class TestAppender extends AbstractAppender {
 
         protected TestAppender(String name) {
-            super(name, null, null, true, null);
+            super(name, null, null, true, Property.EMPTY_ARRAY);
         }
 
        @PluginFactory
