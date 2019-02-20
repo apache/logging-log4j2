@@ -106,6 +106,13 @@ public class AsyncLoggerContext extends LoggerContext {
         super.stop(timeout, timeUnit);
         return true;
     }
+    
+    /**
+     * Returns {@code true} if the underlying disruptor still has unprocessed events.
+     */
+    public boolean hasBacklog() {
+        return loggerDisruptor.hasBacklog();
+    }
 
     /**
      * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of the {@code AsyncLogger}

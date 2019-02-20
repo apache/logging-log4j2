@@ -156,6 +156,13 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         setStopped();
         return true;
     }
+    
+    /**
+     * Returns {@code true} if the underlying disruptor still has unprocessed events.
+     */
+    boolean hasBacklog() {
+        return hasBacklog(disruptor);
+    }
 
     /**
      * Returns {@code true} if the specified disruptor still has unprocessed events.
