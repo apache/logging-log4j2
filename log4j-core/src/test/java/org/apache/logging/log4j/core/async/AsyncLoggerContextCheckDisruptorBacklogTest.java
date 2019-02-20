@@ -67,7 +67,7 @@ public class AsyncLoggerContextCheckDisruptorBacklogTest {
     @Test
     public void test() {
         final Logger logger = LogManager.getLogger();
-        for(int i = 0; i < 10000; i++ ) {
+        for(int i = 0; i < 1000; i++ ) {
             switchLogging(logger, "1", "2");
             switchLogging(logger, "2", "1");
         }
