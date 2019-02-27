@@ -113,34 +113,39 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             appendColumnNames("INSERT", data, sb);
             sb.append(") values (");
             int i = 1;
-            for (final ColumnMapping mapping : data.columnMappings) {
-                final String mappingName = mapping.getName();
-                if (Strings.isNotEmpty(mapping.getLiteralValue())) {
-                    logger().trace("Adding INSERT VALUES literal for ColumnMapping[{}]: {}={} ", i, mappingName,
-                            mapping.getLiteralValue());
-                    sb.append(mapping.getLiteralValue());
-                } else if (Strings.isNotEmpty(mapping.getParameter())) {
-                    logger().trace("Adding INSERT VALUES parameter for ColumnMapping[{}]: {}={} ", i, mappingName,
-                            mapping.getParameter());
-                    sb.append(mapping.getParameter());
-                } else {
-                    logger().trace("Adding INSERT VALUES parameter marker for ColumnMapping[{}]: {}={} ", i,
-                            mappingName, PARAMETER_MARKER);
-                    sb.append(PARAMETER_MARKER);
-                }
-                sb.append(',');
-                i++;
-            }
-            final List<ColumnConfig> columnConfigs = new ArrayList<>(data.columnConfigs.length);
-            for (final ColumnConfig config : data.columnConfigs) {
-                if (Strings.isNotEmpty(config.getLiteralValue())) {
-                    sb.append(config.getLiteralValue());
-                } else {
-                    sb.append(PARAMETER_MARKER);
-                    columnConfigs.add(config);
-                }
-                sb.append(',');
-            }
+			if (data.columnMappings != null) {
+				for (final ColumnMapping mapping : data.columnMappings) {
+					final String mappingName = mapping.getName();
+					if (Strings.isNotEmpty(mapping.getLiteralValue())) {
+						logger().trace("Adding INSERT VALUES literal for ColumnMapping[{}]: {}={} ", i, mappingName,
+								mapping.getLiteralValue());
+						sb.append(mapping.getLiteralValue());
+					} else if (Strings.isNotEmpty(mapping.getParameter())) {
+						logger().trace("Adding INSERT VALUES parameter for ColumnMapping[{}]: {}={} ", i, mappingName,
+								mapping.getParameter());
+						sb.append(mapping.getParameter());
+					} else {
+						logger().trace("Adding INSERT VALUES parameter marker for ColumnMapping[{}]: {}={} ", i,
+								mappingName, PARAMETER_MARKER);
+						sb.append(PARAMETER_MARKER);
+					}
+					sb.append(',');
+					i++;
+				}
+			}
+			final int columnConfigsLen = data.columnConfigs == null ? 0 : data.columnConfigs.length;
+			final List<ColumnConfig> columnConfigs = new ArrayList<>(columnConfigsLen);
+			if (data.columnConfigs != null) {
+				for (final ColumnConfig config : data.columnConfigs) {
+					if (Strings.isNotEmpty(config.getLiteralValue())) {
+						sb.append(config.getLiteralValue());
+					} else {
+						sb.append(PARAMETER_MARKER);
+						columnConfigs.add(config);
+					}
+					sb.append(',');
+				}
+			}
             // at least one of those arrays is guaranteed to be non-empty
             sb.setCharAt(sb.length() - 1, ')');
             final String sqlStatement = sb.toString();
@@ -334,24 +339,31 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     /**
      * Appends column names to the given buffer in the format {@code "A,B,C"}.
      */
-    private static void appendColumnNames(final String sqlVerb, final FactoryData data, final StringBuilder sb) {
-        // so this gets a little more complicated now that there are two ways to configure column mappings, but
-        // both mappings follow the same exact pattern for the prepared statement
-        int i = 1;
-        final String messagePattern = "Appending {} {}[{}]: {}={} ";
-        for (final ColumnMapping colMapping : data.columnMappings) {
-            final String columnName = colMapping.getName();
-            appendColumnName(i, columnName, sb);
-            logger().trace(messagePattern, sqlVerb, colMapping.getClass().getSimpleName(), i, columnName, colMapping);
-            i++;
-        }
-        for (final ColumnConfig colConfig : data.columnConfigs) {
-            final String columnName = colConfig.getColumnName();
-            appendColumnName(i, columnName, sb);
-            logger().trace(messagePattern, sqlVerb, colConfig.getClass().getSimpleName(), i, columnName, colConfig);
-            i++;
-        }
-    }
+	private static void appendColumnNames(final String sqlVerb, final FactoryData data, final StringBuilder sb) {
+		// so this gets a little more complicated now that there are two ways to
+		// configure column mappings, but
+		// both mappings follow the same exact pattern for the prepared statement
+		int i = 1;
+		final String messagePattern = "Appending {} {}[{}]: {}={} ";
+		if (data.columnMappings != null) {
+			for (final ColumnMapping colMapping : data.columnMappings) {
+				final String columnName = colMapping.getName();
+				appendColumnName(i, columnName, sb);
+				logger().trace(messagePattern, sqlVerb, colMapping.getClass().getSimpleName(), i, columnName,
+						colMapping);
+				i++;
+			}
+			if (data.columnConfigs != null) {
+				for (final ColumnConfig colConfig : data.columnConfigs) {
+					final String columnName = colConfig.getColumnName();
+					appendColumnName(i, columnName, sb);
+					logger().trace(messagePattern, sqlVerb, colConfig.getClass().getSimpleName(), i, columnName,
+							colConfig);
+					i++;
+				}
+			}
+		}
+	}
 
     private static JdbcDatabaseManagerFactory getFactory() {
         return INSTANCE;
@@ -665,26 +677,28 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         }
     }
 
-    private void setFields(final MapMessage<?, ?> mapMessage) throws SQLException {
-        final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
-        final String simpleName = statement.getClass().getName();
-        int j = 1; // JDBC indices start at 1
-        for (final ColumnMapping mapping : this.factoryData.columnMappings) {
-            if (mapping.getLiteralValue() == null) {
-                final String source = mapping.getSource();
-                final String key = Strings.isEmpty(source) ? mapping.getName() : source;
-                final Object value = map.getValue(key);
-                if (logger().isTraceEnabled()) {
-                    final String valueStr = value instanceof String ? "\"" + value + "\""
-                            : Objects.toString(value, null);
-                    logger().trace("{} setObject({}, {}) for key '{}' and mapping '{}'", simpleName, j, valueStr, key,
-                            mapping.getName());
-                }
-                setStatementObject(j, mapping.getNameKey(), value);
-                j++;
-            }
-        }
-    }
+	private void setFields(final MapMessage<?, ?> mapMessage) throws SQLException {
+		final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
+		final String simpleName = statement.getClass().getName();
+		int j = 1; // JDBC indices start at 1
+		if (this.factoryData.columnMappings != null) {
+			for (final ColumnMapping mapping : this.factoryData.columnMappings) {
+				if (mapping.getLiteralValue() == null) {
+					final String source = mapping.getSource();
+					final String key = Strings.isEmpty(source) ? mapping.getName() : source;
+					final Object value = map.getValue(key);
+					if (logger().isTraceEnabled()) {
+						final String valueStr = value instanceof String ? "\"" + value + "\""
+								: Objects.toString(value, null);
+						logger().trace("{} setObject({}, {}) for key '{}' and mapping '{}'", simpleName, j, valueStr,
+								key, mapping.getName());
+					}
+					setStatementObject(j, mapping.getNameKey(), value);
+					j++;
+				}
+			}
+		}
+	}
 
     /**
      * Sets the given Object in the prepared statement. The value is truncated if needed.
@@ -740,35 +754,38 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 setFields((MapMessage<?, ?>) serializable);
             }
             int j = 1; // JDBC indices start at 1
-            for (final ColumnMapping mapping : this.factoryData.columnMappings) {
-                if (ThreadContextMap.class.isAssignableFrom(mapping.getType())
-                        || ReadOnlyStringMap.class.isAssignableFrom(mapping.getType())) {
-                    this.statement.setObject(j++, event.getContextData().toMap());
-                } else if (ThreadContextStack.class.isAssignableFrom(mapping.getType())) {
-                    this.statement.setObject(j++, event.getContextStack().asList());
-                } else if (Date.class.isAssignableFrom(mapping.getType())) {
-                    this.statement.setObject(j++, DateTypeConverter.fromMillis(event.getTimeMillis(),
-                            mapping.getType().asSubclass(Date.class)));
-                } else {
-                    final StringLayout layout = mapping.getLayout();
-                    if (layout != null) {
-                        if (Clob.class.isAssignableFrom(mapping.getType())) {
-                            this.statement.setClob(j++, new StringReader(layout.toSerializable(event)));
-                        } else if (NClob.class.isAssignableFrom(mapping.getType())) {
-                            this.statement.setNClob(j++, new StringReader(layout.toSerializable(event)));
-                        } else {
-                            final Object value = TypeConverters.convert(layout.toSerializable(event), mapping.getType(),
-                                    null);
-                            if (value == null) {
-                                // TODO We might need to always initialize the columnMetaData to specify the type.
-                                this.statement.setNull(j++, Types.NULL);
-                            } else {
-                                setStatementObject(j++, mapping.getNameKey(), value);
-                            }
-                        }
-                    }
-                }
-            }
+			if (this.factoryData.columnMappings != null) {
+				for (final ColumnMapping mapping : this.factoryData.columnMappings) {
+					if (ThreadContextMap.class.isAssignableFrom(mapping.getType())
+							|| ReadOnlyStringMap.class.isAssignableFrom(mapping.getType())) {
+						this.statement.setObject(j++, event.getContextData().toMap());
+					} else if (ThreadContextStack.class.isAssignableFrom(mapping.getType())) {
+						this.statement.setObject(j++, event.getContextStack().asList());
+					} else if (Date.class.isAssignableFrom(mapping.getType())) {
+						this.statement.setObject(j++, DateTypeConverter.fromMillis(event.getTimeMillis(),
+								mapping.getType().asSubclass(Date.class)));
+					} else {
+						final StringLayout layout = mapping.getLayout();
+						if (layout != null) {
+							if (Clob.class.isAssignableFrom(mapping.getType())) {
+								this.statement.setClob(j++, new StringReader(layout.toSerializable(event)));
+							} else if (NClob.class.isAssignableFrom(mapping.getType())) {
+								this.statement.setNClob(j++, new StringReader(layout.toSerializable(event)));
+							} else {
+								final Object value = TypeConverters.convert(layout.toSerializable(event),
+										mapping.getType(), null);
+								if (value == null) {
+									// TODO We might need to always initialize the columnMetaData to specify the
+									// type.
+									this.statement.setNull(j++, Types.NULL);
+								} else {
+									setStatementObject(j++, mapping.getNameKey(), value);
+								}
+							}
+						}
+					}
+				}
+			}
             for (final ColumnConfig column : this.columnConfigs) {
                 if (column.isEventTimestamp()) {
                     this.statement.setTimestamp(j++, new Timestamp(event.getTimeMillis()));
