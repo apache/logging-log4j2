@@ -112,33 +112,38 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             appendColumnNames("INSERT", data, sb);
             sb.append(") values (");
             int i = 1;
-            for (final ColumnMapping mapping : data.columnMappings) {
-                final String mappingName = mapping.getName();
-                if (Strings.isNotEmpty(mapping.getLiteralValue())) {
-                    logger().trace("Adding INSERT VALUES literal for ColumnMapping[{}]: {}={} ", i, mappingName,
-                            mapping.getLiteralValue());
-                    sb.append(mapping.getLiteralValue());
-                } else if (Strings.isNotEmpty(mapping.getParameter())) {
-                    logger().trace("Adding INSERT VALUES parameter for ColumnMapping[{}]: {}={} ", i, mappingName,
-                            mapping.getParameter());
-                    sb.append(mapping.getParameter());
-                } else {
-                    logger().trace("Adding INSERT VALUES parameter marker for ColumnMapping[{}]: {}={} ", i,
-                            mappingName, PARAMETER_MARKER);
-                    sb.append(PARAMETER_MARKER);
+            if (data.columnMappings != null) {
+                for (final ColumnMapping mapping : data.columnMappings) {
+                    final String mappingName = mapping.getName();
+                    if (Strings.isNotEmpty(mapping.getLiteralValue())) {
+                        logger().trace("Adding INSERT VALUES literal for ColumnMapping[{}]: {}={} ", i, mappingName,
+                                mapping.getLiteralValue());
+                        sb.append(mapping.getLiteralValue());
+                    } else if (Strings.isNotEmpty(mapping.getParameter())) {
+                        logger().trace("Adding INSERT VALUES parameter for ColumnMapping[{}]: {}={} ", i, mappingName,
+                                mapping.getParameter());
+                        sb.append(mapping.getParameter());
+                    } else {
+                        logger().trace("Adding INSERT VALUES parameter marker for ColumnMapping[{}]: {}={} ", i,
+                                mappingName, PARAMETER_MARKER);
+                        sb.append(PARAMETER_MARKER);
+                    }
+                    sb.append(',');
+                    i++;
                 }
-                sb.append(',');
-                i++;
             }
-            final List<ColumnConfig> columnConfigs = new ArrayList<>(data.columnConfigs.length);
-            for (final ColumnConfig config : data.columnConfigs) {
-                if (Strings.isNotEmpty(config.getLiteralValue())) {
-                    sb.append(config.getLiteralValue());
-                } else {
-                    sb.append(PARAMETER_MARKER);
-                    columnConfigs.add(config);
+            final int columnConfigsLen = data.columnConfigs == null ? 0 : data.columnConfigs.length;
+            final List<ColumnConfig> columnConfigs = new ArrayList<>(columnConfigsLen);
+            if (data.columnConfigs != null) {
+                for (final ColumnConfig config : data.columnConfigs) {
+                    if (Strings.isNotEmpty(config.getLiteralValue())) {
+                        sb.append(config.getLiteralValue());
+                    } else {
+                        sb.append(PARAMETER_MARKER);
+                        columnConfigs.add(config);
+                    }
+                    sb.append(',');
                 }
-                sb.append(',');
             }
             // at least one of those arrays is guaranteed to be non-empty
             sb.setCharAt(sb.length() - 1, ')');
@@ -334,21 +339,27 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * Appends column names to the given buffer in the format {@code "A,B,C"}.
      */
     private static void appendColumnNames(final String sqlVerb, final FactoryData data, final StringBuilder sb) {
-        // so this gets a little more complicated now that there are two ways to configure column mappings, but
+        // so this gets a little more complicated now that there are two ways to
+        // configure column mappings, but
         // both mappings follow the same exact pattern for the prepared statement
         int i = 1;
         final String messagePattern = "Appending {} {}[{}]: {}={} ";
-        for (final ColumnMapping colMapping : data.columnMappings) {
-            final String columnName = colMapping.getName();
-            appendColumnName(i, columnName, sb);
-            logger().trace(messagePattern, sqlVerb, colMapping.getClass().getSimpleName(), i, columnName, colMapping);
-            i++;
+        if (data.columnMappings != null) {
+            for (final ColumnMapping colMapping : data.columnMappings) {
+                final String columnName = colMapping.getName();
+                appendColumnName(i, columnName, sb);
+                logger().trace(messagePattern, sqlVerb, colMapping.getClass().getSimpleName(), i, columnName,
+                        colMapping);
+                i++;
+            }
         }
-        for (final ColumnConfig colConfig : data.columnConfigs) {
-            final String columnName = colConfig.getColumnName();
-            appendColumnName(i, columnName, sb);
-            logger().trace(messagePattern, sqlVerb, colConfig.getClass().getSimpleName(), i, columnName, colConfig);
-            i++;
+        if (data.columnConfigs != null) {
+            for (final ColumnConfig colConfig : data.columnConfigs) {
+                final String columnName = colConfig.getColumnName();
+                appendColumnName(i, columnName, sb);
+                logger().trace(messagePattern, sqlVerb, colConfig.getClass().getSimpleName(), i, columnName, colConfig);
+                i++;
+            }
         }
     }
 
