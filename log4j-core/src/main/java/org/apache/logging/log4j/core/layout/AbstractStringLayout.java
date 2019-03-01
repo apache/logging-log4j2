@@ -134,7 +134,13 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         final String version = System.getProperty("java.version");
         final String[] parts = version.split("\\.");
         try {
-            final int major = Integer.parseInt(parts[1]);
+            int major = Integer.parseInt(parts[1]);
+
+            final int token = Integer.parseInt(parts[0]);
+            boolean isJEP223 = token != 1;
+            if (isJEP223) {
+                major = token;
+            }
             return major < 8;
         } catch (final Exception ex) {
             return true;
