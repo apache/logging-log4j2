@@ -81,18 +81,26 @@ public class AbstractStringLayoutTest {
     @Test
     public void testJdkVersionDetection() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
-        Properties properties120 = new Properties();
-        properties120.put("java.version","1.2.0");
-        System.setProperties(properties120);
+        final String currentVersion = System.getProperty("java.version");
+
+        Properties properties = new Properties();
+        properties.put("java.version","1.2.0");
+        System.setProperties(properties);
 
         Method method = AbstractStringLayout.class.getDeclaredMethod("isPreJava8",null);
         method.setAccessible(true);
         assertTrue ((Boolean) method.invoke("isPreJava8"));
 
-        Properties properties900 = new Properties();
-        properties120.put("java.version","9.1.0");
-        System.setProperties(properties120);
+        properties = new Properties();
+        properties.put("java.version","9.1.0");
+        System.setProperties(properties);
 
         assertFalse ((Boolean) method.invoke("isPreJava8"));
+
+        //reset the value to the current version
+        properties = new Properties();
+        properties.put("java.version", currentVersion);
+        System.setProperties(properties);
+
     }
 }
