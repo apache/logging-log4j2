@@ -15,7 +15,10 @@ package org.apache.logging.log4j.core.layout;/*
  * limitations under the license.
  */
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
+import java.util.Properties;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.Test;
@@ -73,5 +76,23 @@ public class AbstractStringLayoutTest {
         final StringBuilder sb3 = ConcreteStringLayout.getStringBuilder();
         assertEquals("capacity, trimmed to MAX_STRING_BUILDER_SIZE", ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, sb3.capacity());
         assertEquals("empty, ready for use", 0, sb3.length());
+    }
+
+    @Test
+    public void testJdkVersionDetection() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+
+        Properties properties120 = new Properties();
+        properties120.put("java.version","1.2.0");
+        System.setProperties(properties120);
+
+        Method method = AbstractStringLayout.class.getDeclaredMethod("isPreJava8",null);
+        method.setAccessible(true);
+        assertTrue ((Boolean) method.invoke("isPreJava8"));
+
+        Properties properties900 = new Properties();
+        properties120.put("java.version","9.1.0");
+        System.setProperties(properties120);
+
+        assertFalse ((Boolean) method.invoke("isPreJava8"));
     }
 }
