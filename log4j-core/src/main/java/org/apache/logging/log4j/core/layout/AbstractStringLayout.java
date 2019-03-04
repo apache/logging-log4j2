@@ -131,20 +131,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     // LOG4J2-1151: If the built-in JDK 8 encoders are available we should use them.
     private static boolean isPreJava8() {
-        final String version = System.getProperty("java.version");
-        final String[] parts = version.split("\\.");
-        try {
-            int major = Integer.parseInt(parts[1]);
-
-            final int token = Integer.parseInt(parts[0]);
-            boolean isJEP223 = token != 1;
-            if (isJEP223) {
-                major = token;
-            }
-            return major < 8;
-        } catch (final Exception ex) {
-            return true;
-        }
+        return org.apache.logging.log4j.util.Constants.JAVA_MAJOR_VERSION < 8;
     }
 
     private static int size(final String property, final int defaultValue) {
