@@ -15,10 +15,7 @@ package org.apache.logging.log4j.core.layout;/*
  * limitations under the license.
  */
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.charset.Charset;
-import java.util.Properties;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.Test;
