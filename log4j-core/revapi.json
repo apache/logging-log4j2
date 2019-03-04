@@ -2012,6 +2012,53 @@
         "new": "method <B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>> B org.apache.logging.log4j.core.appender.WriterAppender::newBuilder()",
         "typeParameter": "B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
         "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.AbstractAppender::<init>(java.lang.String, org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, boolean)",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender<M extends org.apache.logging.log4j.core.appender.OutputStreamManager>::<init>(java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, boolean, boolean, M)",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.AbstractWriterAppender<M extends org.apache.logging.log4j.core.appender.WriterManager>::<init>(java.lang.String, org.apache.logging.log4j.core.StringLayout, org.apache.logging.log4j.core.Filter, boolean, boolean, M)",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.SocketAppender::<init>(java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.net.AbstractSocketManager, boolean, boolean, org.apache.logging.log4j.core.net.Advertiser, org.apache.logging.log4j.core.config.Property[])",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.SyslogAppender::<init>(java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, boolean, boolean, org.apache.logging.log4j.core.net.AbstractSocketManager, org.apache.logging.log4j.core.net.Advertiser, org.apache.logging.log4j.core.config.Property[])",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender<T extends org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager>::<init>(java.lang.String, org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, boolean, T)",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter void org.apache.logging.log4j.core.appender.rolling.RollingFileManager::rollover(===java.util.Date===, java.util.Date)",
+        "new": "parameter void org.apache.logging.log4j.core.appender.rolling.RollingFileManager::rollover(===long===, long)",
+        "justification": "Fix RollingFileManger"
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter void org.apache.logging.log4j.core.appender.rolling.RollingFileManager::rollover(java.util.Date, ===java.util.Date===)",
+        "new": "parameter void org.apache.logging.log4j.core.appender.rolling.RollingFileManager::rollover(long, ===long===)",
+        "justification": "Use milliseconds instead of date"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.filter.AbstractFilterable::<init>(org.apache.logging.log4j.core.Filter)",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
       }
     ]
   }

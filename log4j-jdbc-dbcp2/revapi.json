@@ -17,6 +17,11 @@
         "code": "java.class.removed",
         "old": "class org.apache.logging.log4j.core.appender.db.jdbc.PoolingDriverConnectionSource",
         "justification": "Package was renamed to comply with the Java 9 module system"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jdbc.PoolableConnectionFactoryConfig",
+        "justification": "Package was renamed to comply with the Java 9 module system"
       }
     ]
   }
