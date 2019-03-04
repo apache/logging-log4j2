@@ -23,12 +23,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
+import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AbstractWatcher;
@@ -45,16 +44,9 @@ public class HttpWatcher extends AbstractWatcher {
 
     private Logger LOGGER = StatusLogger.getLogger();
 
-    private static int DEFAULT_TIMEOUT = 60000;
-    private int connectTimeoutMillis = DEFAULT_TIMEOUT;
-    private int readTimeoutMillis = DEFAULT_TIMEOUT;
     private SslConfiguration sslConfiguration;
     private URL url;
     private volatile long lastModifiedMillis;
-    private static final String JSON = "application/json";
-    private static final String XML = "application/xml";
-    private static final String PROPERTIES = "text/x-java-properties";
-    private static final String TEXT = "text/plain";
     private static final int NOT_MODIFIED = 304;
     private static final int OK = 200;
     private static final int BUF_SIZE = 1024;
@@ -104,35 +96,15 @@ public class HttpWatcher extends AbstractWatcher {
 
     private boolean refreshConfiguration() {
         try {
-            final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setAllowUserInteraction(false);
-            urlConnection.setDoOutput(true);
-            urlConnection.setDoInput(true);
-            urlConnection.setRequestMethod("GET");
-            if (connectTimeoutMillis > 0) {
-                urlConnection.setConnectTimeout(connectTimeoutMillis);
-            }
-            if (readTimeoutMillis > 0) {
-                urlConnection.setReadTimeout(readTimeoutMillis);
-            }
-            String[] fileParts = url.getFile().split("\\.");
-            String type = fileParts[fileParts.length - 1].trim();
-            String contentType = isXml(type) ? XML : isJson(type) ? JSON : isProperties(type) ? PROPERTIES : TEXT;
-            urlConnection.setRequestProperty("Content-Type", contentType);
-            urlConnection.setIfModifiedSince(lastModifiedMillis);
-            if (url.getProtocol().equals(HTTPS) && sslConfiguration != null) {
-                ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
-                if (!sslConfiguration.isVerifyHostName()) {
-                    ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
-                }
-            }
-
+            final HttpURLConnection urlConnection = UrlConnectionFactory.createConnection(url, lastModifiedMillis,
+                sslConfiguration);
             urlConnection.connect();
 
             try {
                 int code = urlConnection.getResponseCode();
                 switch (code) {
                     case NOT_MODIFIED: {
+                        LOGGER.debug("Configuration Not Modified");
                         return false;
                     }
                     case OK: {
@@ -178,17 +150,5 @@ public class HttpWatcher extends AbstractWatcher {
             result.write(buffer, 0, length);
         }
         return result.toByteArray();
-    }
-
-    private boolean isXml(String type) {
-        return type.equalsIgnoreCase("xml");
-    }
-
-    private boolean isJson(String type) {
-        return type.equalsIgnoreCase("json") || type.equalsIgnoreCase("jsn");
-    }
-
-    private boolean isProperties(String type) {
-        return type.equalsIgnoreCase("properties");
     }
 }

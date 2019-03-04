@@ -31,11 +31,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Objects;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
-import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
@@ -52,6 +49,7 @@ public class ConfigurationSource {
      */
     public static final ConfigurationSource NULL_SOURCE = new ConfigurationSource(new byte[0], null, 0);
     private static final String HTTPS = "https";
+    private static final String HTTP = "http";
 
     private final File file;
     private final URL url;
@@ -320,19 +318,10 @@ public class ConfigurationSource {
         }
         try {
             URL url = configLocation.toURL();
-            URLConnection urlConnection = url.openConnection();
-            if (url.getProtocol().equals(HTTPS)) {
-                SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
-                if (sslConfiguration != null) {
-                    ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
-                    if (!sslConfiguration.isVerifyHostName()) {
-                        ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
-                    }
-                }
-            }
+            URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
             InputStream is = urlConnection.getInputStream();
             long lastModified = urlConnection.getLastModified();
-            return new ConfigurationSource(configLocation.toURL().openStream(), configLocation.toURL(), lastModified);
+            return new ConfigurationSource(is, configLocation.toURL(), lastModified);
         } catch (final MalformedURLException ex) {
             ConfigurationFactory.LOGGER.error("Invalid URL {}", configLocation.toString(), ex);
         } catch (final Exception ex) {

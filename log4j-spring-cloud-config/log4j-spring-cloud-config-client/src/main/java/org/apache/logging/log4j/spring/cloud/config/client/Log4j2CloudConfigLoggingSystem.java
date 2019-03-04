@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
+import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -104,6 +105,10 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
 
     private ConfigurationSource getConfigurationSource(URL url) throws IOException, URISyntaxException {
         URLConnection urlConnection = url.openConnection();
+        AuthorizationProvider provider = ConfigurationFactory.getAuthorizationProvider();
+        if (provider != null) {
+            provider.addAuthorization(urlConnection);
+        }
         if (url.getProtocol().equals(HTTPS)) {
             SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
             if (sslConfiguration != null) {

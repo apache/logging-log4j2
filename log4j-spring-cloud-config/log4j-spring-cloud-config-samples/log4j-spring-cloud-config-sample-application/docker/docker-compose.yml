@@ -1,0 +1,23 @@
+version: "3"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    expose:
+      - "5672"
+      - "15672"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./init/rabbit/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ./init/rabbit/definitions.json:/etc/rabbitmq/definitions.json:ro
+    networks:
+      sample_app:
+        aliases:
+          - rabbitmq
+
+networks:
+  sample_app:
+
+volumes:
+  pgdata:

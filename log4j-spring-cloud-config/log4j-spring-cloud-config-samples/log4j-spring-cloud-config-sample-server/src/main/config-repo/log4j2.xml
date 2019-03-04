@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="DEBUG" monitorInterval="0">
+  <properties>
+    <property name="LOG_DIR">\${sys:user.dir}/logs/sample-app</property>
+  </properties>
+  <Appenders>
+
+    <RollingFile name="log4j" fileName="${LOG_DIR}/log4j.txt" filePattern="${LOG_DIR}/archive/log4j.txt.%d{yyyyMMdd_HH}-%i">
+      <PatternLayout pattern="%d [%t] %-5p %C{1.}.%M:%L - %m%n"/>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="30 KB"/>
+      </Policies>
+    </RollingFile>
+
+  </Appenders>
+  <Loggers>
+    <Root level="DEBUG">
+      <AppenderRef ref="log4j"/>
+    </Root>
+  </Loggers>
+</Configuration>

@@ -19,44 +19,43 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j</artifactId>
+    <artifactId>log4j-spring-cloud-config</artifactId>
     <version>2.12.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
-  <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j-spring-cloud-config</artifactId>
+  <groupId>org.apache.logging.log4j.samples</groupId>
+  <artifactId>log4j-spring-cloud-config-samples</artifactId>
   <packaging>pom</packaging>
-  <name>Apache Log4j Spring Cloud Config Support</name>
+  <name>Apache Log4j Spring Cloud Config Samples</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <revapi.skip>true</revapi.skip>
-    <spring-cloud-version>Finchley.SR3</spring-cloud-version>
-    <spring-boot.version>2.0.8.RELEASE</spring-boot.version>
-    <springVersion>5.0.12.RELEASE</springVersion>
   </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>spring-framework-bom</artifactId>
-        <version>${springVersion}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <artifactId>spring-beans</artifactId>
       </dependency>
       <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot</artifactId>
-        <version>${spring-boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
       </dependency>
       <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>${spring-cloud-version}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.ws</groupId>
+        <artifactId>spring-ws-core</artifactId>
+        <version>2.1.4.RELEASE</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
@@ -67,12 +66,20 @@
     </dependencies>
   </dependencyManagement>
   <modules>
-    <module>log4j-spring-cloud-config-server</module>
-    <module>log4j-spring-cloud-config-client</module>
-    <module>log4j-spring-cloud-config-samples</module>
+    <module>log4j-spring-cloud-config-sample-server</module>
+    <module>log4j-spring-cloud-config-sample-application</module>
   </modules>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>${site.plugin.version}</version>
+        <configuration>
+          <skip>true</skip>
+          <skipDeploy>true</skipDeploy>
+        </configuration>
+      </plugin>
       <!-- Include the standard NOTICE and LICENSE -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -87,6 +94,14 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>${deploy.plugin.version}</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
       </plugin>
     </plugins>
   </build>

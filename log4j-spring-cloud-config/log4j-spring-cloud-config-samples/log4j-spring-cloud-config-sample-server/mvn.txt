@@ -1,0 +1,135 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Log4j Sample Configuration Service 2.1.2.RELEASE
+[INFO] ------------------------------------------------------------------------
+Downloading: https://repo.spring.io/snapshot/org/apache/logging/log4j/log4j-spring-cloud-config-server/2.12.0-SNAPSHOT/maven-metadata.xml
+Downloading: http://repository.nextiva.xyz:8081/nexus/content/repositories/snapshots/org/apache/logging/log4j/log4j-spring-cloud-config-server/2.12.0-SNAPSHOT/maven-metadata.xml
+Downloading: http://repository.nextiva.xyz:8081/nexus/content/repositories/apache-snapshots/org/apache/logging/log4j/log4j-spring-cloud-config-server/2.12.0-SNAPSHOT/maven-metadata.xml
+Downloading: https://repo.spring.io/snapshot/org/apache/logging/log4j/log4j-spring-cloud-config/2.12.0-SNAPSHOT/maven-metadata.xml
+Downloading: https://repo.spring.io/snapshot/org/apache/logging/log4j/log4j/2.12.0-SNAPSHOT/maven-metadata.xml
+Downloading: https://repo.spring.io/snapshot/org/apache/logging/log4j/log4j-api/2.12.0-SNAPSHOT/maven-metadata.xml
+Downloading: https://repo.spring.io/snapshot/org/apache/logging/log4j/log4j-core/2.12.0-SNAPSHOT/maven-metadata.xml
+Downloading: https://repo.spring.io/snapshot/org/apache/logging/log4j/log4j-slf4j-impl/2.12.0-SNAPSHOT/maven-metadata.xml
+[INFO] 
+[INFO] --- maven-dependency-plugin:3.1.1:tree (default-cli) @ log4j-spring-cloud-config-sample-server ---
+[INFO] org.apache.logging.log4j.samples:log4j-spring-cloud-config-sample-server:jar:2.1.2.RELEASE
+[INFO] +- org.springframework.boot:spring-boot-starter-log4j2:jar:2.1.2.RELEASE:compile
+[INFO] |  +- org.apache.logging.log4j:log4j-jul:jar:2.11.1:compile
+[INFO] |  \- org.slf4j:jul-to-slf4j:jar:1.7.25:compile
+[INFO] +- org.springframework.cloud:spring-cloud-starter-config:jar:2.1.0.RELEASE:compile
+[INFO] |  +- org.springframework.cloud:spring-cloud-starter:jar:2.1.0.RELEASE:compile
+[INFO] |  |  +- org.springframework.cloud:spring-cloud-context:jar:2.1.0.RELEASE:compile
+[INFO] |  |  \- org.springframework.cloud:spring-cloud-commons:jar:2.1.0.RELEASE:compile
+[INFO] |  +- org.springframework.cloud:spring-cloud-config-client:jar:2.1.0.RELEASE:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-autoconfigure:jar:2.1.2.RELEASE:compile
+[INFO] |  |  \- com.fasterxml.jackson.core:jackson-annotations:jar:2.9.0:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-databind:jar:2.9.8:compile
+[INFO] |     \- com.fasterxml.jackson.core:jackson-core:jar:2.9.8:compile
+[INFO] +- org.springframework.cloud:spring-cloud-config-server:jar:2.1.0.RELEASE:compile
+[INFO] |  +- org.springframework.security:spring-security-crypto:jar:5.1.3.RELEASE:compile
+[INFO] |  +- org.springframework.security:spring-security-rsa:jar:1.0.7.RELEASE:compile
+[INFO] |  |  \- org.bouncycastle:bcpkix-jdk15on:jar:1.60:compile
+[INFO] |  |     \- org.bouncycastle:bcprov-jdk15on:jar:1.60:compile
+[INFO] |  +- org.eclipse.jgit:org.eclipse.jgit:jar:5.1.3.201810200350-r:compile
+[INFO] |  |  +- com.jcraft:jsch:jar:0.1.54:compile
+[INFO] |  |  +- com.jcraft:jzlib:jar:1.1.1:compile
+[INFO] |  |  \- com.googlecode.javaewah:JavaEWAH:jar:1.1.6:compile
+[INFO] |  +- org.eclipse.jgit:org.eclipse.jgit.http.apache:jar:5.1.3.201810200350-r:compile
+[INFO] |  |  +- org.apache.httpcomponents:httpclient:jar:4.5.6:compile
+[INFO] |  |  |  \- commons-codec:commons-codec:jar:1.11:compile
+[INFO] |  |  \- org.apache.httpcomponents:httpcore:jar:4.4.10:compile
+[INFO] |  \- org.yaml:snakeyaml:jar:1.23:compile
+[INFO] +- org.springframework.cloud:spring-cloud-config-monitor:jar:2.1.0.RELEASE:compile
+[INFO] |  \- org.springframework.cloud:spring-cloud-bus:jar:2.1.0.RELEASE:compile
+[INFO] |     +- org.springframework.cloud:spring-cloud-stream:jar:2.1.0.RELEASE:compile
+[INFO] |     |  +- org.springframework.boot:spring-boot-starter-validation:jar:2.1.2.RELEASE:compile
+[INFO] |     |  +- org.springframework:spring-messaging:jar:5.1.4.RELEASE:compile
+[INFO] |     |  +- org.springframework.integration:spring-integration-jmx:jar:5.1.2.RELEASE:compile
+[INFO] |     |  +- org.springframework:spring-tuple:jar:1.0.0.RELEASE:compile
+[INFO] |     |  |  \- com.esotericsoftware:kryo-shaded:jar:3.0.3:compile
+[INFO] |     |  |     \- com.esotericsoftware:minlog:jar:1.3.0:compile
+[INFO] |     |  +- org.springframework.integration:spring-integration-tuple:jar:1.0.0.RELEASE:compile
+[INFO] |     |  +- org.springframework.retry:spring-retry:jar:1.2.3.RELEASE:compile
+[INFO] |     |  \- org.springframework.cloud:spring-cloud-function-context:jar:2.0.0.RELEASE:compile
+[INFO] |     |     \- org.springframework.cloud:spring-cloud-function-core:jar:2.0.0.RELEASE:compile
+[INFO] |     \- org.springframework.integration:spring-integration-core:jar:5.1.2.RELEASE:compile
+[INFO] |        +- org.springframework:spring-tx:jar:5.1.4.RELEASE:compile
+[INFO] |        \- io.projectreactor:reactor-core:jar:3.2.5.RELEASE:compile
+[INFO] |           \- org.reactivestreams:reactive-streams:jar:1.0.2:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-actuator:jar:2.1.2.RELEASE:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter:jar:2.1.2.RELEASE:compile
+[INFO] |  |  \- javax.annotation:javax.annotation-api:jar:1.3.2:compile
+[INFO] |  +- org.springframework.boot:spring-boot-actuator-autoconfigure:jar:2.1.2.RELEASE:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-actuator:jar:2.1.2.RELEASE:compile
+[INFO] |  |  +- org.springframework:spring-context:jar:5.1.4.RELEASE:compile
+[INFO] |  |  \- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.9.8:compile
+[INFO] |  \- io.micrometer:micrometer-core:jar:1.1.2:compile
+[INFO] |     +- org.hdrhistogram:HdrHistogram:jar:2.1.9:compile
+[INFO] |     \- org.latencyutils:LatencyUtils:jar:2.0.3:compile
+[INFO] +- org.springframework.cloud:spring-cloud-starter-bus-amqp:jar:2.1.0.RELEASE:compile
+[INFO] |  \- org.springframework.cloud:spring-cloud-starter-stream-rabbit:jar:2.1.0.RELEASE:compile
+[INFO] |     \- org.springframework.cloud:spring-cloud-stream-binder-rabbit:jar:2.1.0.RELEASE:compile
+[INFO] |        +- org.springframework.cloud:spring-cloud-stream-binder-rabbit-core:jar:2.1.0.RELEASE:compile
+[INFO] |        |  \- com.rabbitmq:http-client:jar:2.1.0.RELEASE:compile
+[INFO] |        +- org.springframework.boot:spring-boot-starter-amqp:jar:2.1.2.RELEASE:compile
+[INFO] |        |  \- org.springframework.amqp:spring-rabbit:jar:2.1.3.RELEASE:compile
+[INFO] |        |     +- org.springframework.amqp:spring-amqp:jar:2.1.3.RELEASE:compile
+[INFO] |        |     \- com.rabbitmq:amqp-client:jar:5.4.3:compile
+[INFO] |        \- org.springframework.integration:spring-integration-amqp:jar:5.1.2.RELEASE:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-web:jar:2.1.2.RELEASE:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter-json:jar:2.1.2.RELEASE:compile
+[INFO] |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.9.8:compile
+[INFO] |  |  \- com.fasterxml.jackson.module:jackson-module-parameter-names:jar:2.9.8:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter-tomcat:jar:2.1.2.RELEASE:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:9.0.14:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:9.0.14:compile
+[INFO] |  |  \- org.apache.tomcat.embed:tomcat-embed-websocket:jar:9.0.14:compile
+[INFO] |  +- org.hibernate.validator:hibernate-validator:jar:6.0.14.Final:compile
+[INFO] |  |  +- javax.validation:validation-api:jar:2.0.1.Final:compile
+[INFO] |  |  +- org.jboss.logging:jboss-logging:jar:3.3.2.Final:compile
+[INFO] |  |  \- com.fasterxml:classmate:jar:1.4.0:compile
+[INFO] |  +- org.springframework:spring-web:jar:5.1.4.RELEASE:compile
+[INFO] |  |  \- org.springframework:spring-beans:jar:5.1.4.RELEASE:compile
+[INFO] |  \- org.springframework:spring-webmvc:jar:5.1.4.RELEASE:compile
+[INFO] |     \- org.springframework:spring-expression:jar:5.1.4.RELEASE:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-security:jar:2.1.2.RELEASE:compile
+[INFO] |  +- org.springframework:spring-aop:jar:5.1.4.RELEASE:compile
+[INFO] |  +- org.springframework.security:spring-security-config:jar:5.1.3.RELEASE:compile
+[INFO] |  |  \- org.springframework.security:spring-security-core:jar:5.1.3.RELEASE:compile
+[INFO] |  \- org.springframework.security:spring-security-web:jar:5.1.3.RELEASE:compile
+[INFO] +- org.apache.logging.log4j:log4j-spring-cloud-config-server:jar:2.12.0-SNAPSHOT:compile
+[INFO] |  +- org.springframework.boot:spring-boot:jar:2.1.2.RELEASE:compile
+[INFO] |  \- commons-logging:commons-logging:jar:1.2:compile
+[INFO] +- org.apache.logging.log4j:log4j-api:jar:2.12.0-SNAPSHOT:compile
+[INFO] +- org.apache.logging.log4j:log4j-core:jar:2.12.0-SNAPSHOT:compile
+[INFO] +- org.apache.logging.log4j:log4j-slf4j-impl:jar:2.12.0-SNAPSHOT:compile
+[INFO] |  \- org.slf4j:slf4j-api:jar:1.7.25:compile
+[INFO] \- org.springframework.boot:spring-boot-starter-test:jar:2.1.2.RELEASE:test
+[INFO]    +- org.springframework.boot:spring-boot-test:jar:2.1.2.RELEASE:test
+[INFO]    +- org.springframework.boot:spring-boot-test-autoconfigure:jar:2.1.2.RELEASE:test
+[INFO]    +- com.jayway.jsonpath:json-path:jar:2.4.0:test
+[INFO]    |  \- net.minidev:json-smart:jar:2.3:test
+[INFO]    |     \- net.minidev:accessors-smart:jar:1.2:test
+[INFO]    |        \- org.ow2.asm:asm:jar:5.0.4:test
+[INFO]    +- junit:junit:jar:4.12:test
+[INFO]    +- org.assertj:assertj-core:jar:3.11.1:test
+[INFO]    +- org.mockito:mockito-core:jar:2.23.4:test
+[INFO]    |  +- net.bytebuddy:byte-buddy:jar:1.9.7:test
+[INFO]    |  +- net.bytebuddy:byte-buddy-agent:jar:1.9.7:test
+[INFO]    |  \- org.objenesis:objenesis:jar:2.6:compile
+[INFO]    +- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO]    +- org.hamcrest:hamcrest-library:jar:1.3:test
+[INFO]    +- org.skyscreamer:jsonassert:jar:1.5.0:test
+[INFO]    |  \- com.vaadin.external.google:android-json:jar:0.0.20131108.vaadin1:test
+[INFO]    +- org.springframework:spring-core:jar:5.1.4.RELEASE:compile
+[INFO]    |  \- org.springframework:spring-jcl:jar:5.1.4.RELEASE:compile
+[INFO]    +- org.springframework:spring-test:jar:5.1.4.RELEASE:test
+[INFO]    \- org.xmlunit:xmlunit-core:jar:2.6.2:test
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 4.180 s
+[INFO] Finished at: 2019-03-02T14:15:03-07:00
+[INFO] Final Memory: 39M/981M
+[INFO] ------------------------------------------------------------------------

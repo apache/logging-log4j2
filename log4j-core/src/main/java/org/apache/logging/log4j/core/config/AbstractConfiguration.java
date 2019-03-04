@@ -289,7 +289,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.debug("Starting configuration {}", this);
         this.setStarting();
-        if (watchManager.getIntervalSeconds() > 0) {
+        if (watchManager.getIntervalSeconds() >= 0) {
             watchManager.start();
         }
         if (hasAsyncLoggers()) {
