@@ -361,10 +361,16 @@
       <action issue="LOG4J2-2559" dev="ggregory" type="fix" due-to="Li Lei, Gary Gregory">
         NullPointerException in JdbcAppender.createAppender().
       </action>
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
+        Update tests from H2 1.4.197 to 1.4.199.
+      </action>
     </release>
     <release version="2.12.0" date="2019-MM-DD" description="GA Release 2.12.0">
       <action issue="LOG4J2-2559" dev="ggregory" type="fix" due-to="Li Lei, Gary Gregory">
         NullPointerException in JdbcAppender.createAppender().
+      </action>
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
+        Update tests from H2 1.4.197 to 1.4.199.
       </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
