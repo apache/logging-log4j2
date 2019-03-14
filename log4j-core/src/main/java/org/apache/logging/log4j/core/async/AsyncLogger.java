@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
@@ -355,29 +356,37 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
      * @param event the event to log
      */
     public void actualAsyncLog(final RingBufferLogEvent event) {
-        final List<Property> properties = privateConfig.loggerConfig.getPropertyList();
+        final LoggerConfig privateConfigLoggerConfig = privateConfig.loggerConfig;
+        final List<Property> properties = privateConfigLoggerConfig.getPropertyList();
 
         if (properties != null) {
-            StringMap contextData = (StringMap) event.getContextData();
-            if (contextData.isFrozen()) {
-                final StringMap temp = ContextDataFactory.createContextData();
-                temp.putAll(contextData);
-                contextData = temp;
-            }
-            for (int i = 0; i < properties.size(); i++) {
-                final Property prop = properties.get(i);
-                if (contextData.getValue(prop.getName()) != null) {
-                    continue; // contextMap overrides config properties
-                }
-                final String value = prop.isValueNeedsLookup() //
-                        ? privateConfig.config.getStrSubstitutor().replace(event, prop.getValue()) //
-                        : prop.getValue();
-                contextData.putValue(prop.getName(), value);
-            }
-            event.setContextData(contextData);
+            onPropertiesPresent(event, properties);
         }
 
-        final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
-        strategy.log(this, event);
+        privateConfigLoggerConfig.getReliabilityStrategy().log(this, event);
+    }
+
+    private void onPropertiesPresent(final RingBufferLogEvent event, final List<Property> properties) {
+        StringMap contextData = getContextData(event);
+        for (final Property prop : properties) {
+            if (contextData.getValue(prop.getName()) != null) {
+                continue; // contextMap overrides config properties
+            }
+            final String value = prop.isValueNeedsLookup() //
+                    ? privateConfig.config.getStrSubstitutor().replace(event, prop.getValue()) //
+                    : prop.getValue();
+            contextData.putValue(prop.getName(), value);
+        }
+        event.setContextData(contextData);
+    }
+
+    private static StringMap getContextData(final RingBufferLogEvent event) {
+        StringMap contextData = (StringMap) event.getContextData();
+        if (contextData.isFrozen()) {
+            final StringMap temp = ContextDataFactory.createContextData();
+            temp.putAll(contextData);
+            return temp;
+        }
+        return contextData;
     }
 }
