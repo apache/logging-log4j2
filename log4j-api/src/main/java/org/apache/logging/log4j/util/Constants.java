@@ -89,7 +89,10 @@ public final class Constants {
     }
 
     private static int getMajorVersion() {
-        final String version = System.getProperty("java.version");
+        return getMajorVersion(System.getProperty("java.version"));
+    }
+
+    static int getMajorVersion(final String version) {
         final String[] parts = version.split("-|\\.");
         boolean isJEP223;
         try {
