@@ -221,18 +221,134 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     protected static final String DEFAULT_EOL = "\r\n";
     protected static final String COMPACT_EOL = Strings.EMPTY;
-    private static LogEvent convertMutableToLog4jEvent(final LogEvent event) {
-        // If event implements Message, the jackson Message serializer is applied to the event, so we wrap with
-        // a light-weight wrapper to hide type information.
-        return event instanceof Message ? new SimpleLogEventWrapper(event) : event;
+
+    private static ResolvableKeyValuePair[] prepareAdditionalFields(final Configuration config,
+            final KeyValuePair[] additionalFields) {
+        if (additionalFields == null || additionalFields.length == 0) {
+            // No fields set
+            return new ResolvableKeyValuePair[0];
+        }
+
+        // Convert to specific class which already determines whether values needs lookup during serialization
+        final ResolvableKeyValuePair[] resolvableFields = new ResolvableKeyValuePair[additionalFields.length];
+
+        for (int i = 0; i < additionalFields.length; i++) {
+            final ResolvableKeyValuePair resolvable = resolvableFields[i] = new ResolvableKeyValuePair(additionalFields[i]);
+
+            // Validate
+            if (config == null && resolvable.valueNeedsLookup) {
+                throw new IllegalArgumentException(
+                        "configuration needs to be set when there are additional fields with variables");
+            }
+        }
+
+        return resolvableFields;
+    }
+    protected static boolean valueNeedsLookup(final String value) {
+        return value != null && value.contains("${");
+    }
+    protected final String eol;
+
+    protected final ObjectWriter objectWriter;
+
+    protected final boolean compact;
+
+    protected final boolean complete;
+
+    protected final boolean includeNullDelimiter;
+
+    protected final ResolvableKeyValuePair[] additionalFields;
+
+    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
+            final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
+            final Serializer footerSerializer, final boolean includeNullDelimiter,
+            final KeyValuePair[] additionalFields) {
+        super(config, charset, headerSerializer, footerSerializer);
+        this.objectWriter = objectWriter;
+        this.compact = compact;
+        this.complete = complete;
+        this.eol = compact && !eventEol ? COMPACT_EOL : DEFAULT_EOL;
+        this.includeNullDelimiter = includeNullDelimiter;
+        this.additionalFields = prepareAdditionalFields(config, additionalFields);
+    }
+
+    protected LogEventWithAdditionalFields createLogEventWithAdditionalFields(final LogEvent event,
+            final Map<String, String> additionalFieldsMap) {
+        return new LogEventWithAdditionalFields(event, additionalFieldsMap);
+    }
+
+    private Map<String, String> resolveAdditionalFields(final LogEvent logEvent) {
+        // Note: LinkedHashMap retains order
+        final Map<String, String> additionalFieldsMap = new LinkedHashMap<>(additionalFields.length);
+        final StrSubstitutor strSubstitutor = configuration.getStrSubstitutor();
+
+        // Go over each field
+        for (final ResolvableKeyValuePair pair : additionalFields) {
+            if (pair.valueNeedsLookup) {
+                // Resolve value
+                additionalFieldsMap.put(pair.key, strSubstitutor.replace(logEvent, pair.value));
+            } else {
+                // Plain text value
+                additionalFieldsMap.put(pair.key, pair.value);
+            }
+        }
+
+        return additionalFieldsMap;
+    }
+
+    /**
+     * Formats a {@link org.apache.logging.log4j.core.LogEvent}.
+     *
+     * @param event
+     *            The LogEvent.
+     * @return The XML representation of the LogEvent.
+     */
+    @Override
+    public String toSerializable(final LogEvent event) {
+        try (final StringBuilderWriter writer = new StringBuilderWriter()) {
+            toSerializable(event, writer);
+            return writer.toString();
+        } catch (final IOException e) {
+            // Should this be an ISE or IAE?
+            LOGGER.error(e);
+            return Strings.EMPTY;
+        }
+    }
+
+    public void toSerializable(final LogEvent event, final Writer writer) throws IOException {
+        objectWriter.writeValue(writer, wrapLogEvent(sanitizeLogEventType(event)));
+        writer.write(eol);
+        if (includeNullDelimiter) {
+            writer.write('\0');
+        }
+        markEvent();
+    }
+
+    protected Object wrapLogEvent(final LogEvent event) {
+        if (additionalFields.length > 0) {
+            // Construct map for serialization - note that we are intentionally using original LogEvent
+            final Map<String, String> additionalFieldsMap = resolveAdditionalFields(event);
+            // This class combines LogEvent with AdditionalFields during serialization
+            return createLogEventWithAdditionalFields(event, additionalFieldsMap);
+        }
+        // No additional fields, return original object
+        return event;
+    }
+
+    /**
+     * If event implements {@link Message}, the jackson Message serializer is applied to the event, so we wrap with
+     * a {@link LogEventWrapper light-weight wrapper} to hide type information.
+     */
+    private static LogEvent sanitizeLogEventType(final LogEvent event) {
+        return event instanceof Message ? new LogEventWrapper(event) : event;
     }
 
     /** Insulates a delegate {@link LogEvent} from potentially incorrect jackson inspection. */
-    private static final class SimpleLogEventWrapper implements LogEvent {
+    private static final class LogEventWrapper implements LogEvent {
 
         private final LogEvent delegate;
 
-        SimpleLogEventWrapper(LogEvent delegate) {
+        LogEventWrapper(LogEvent delegate) {
             this.delegate = delegate;
         }
 
@@ -340,118 +456,5 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
         public long getNanoTime() {
             return delegate.getNanoTime();
         }
-    }
-
-    private static ResolvableKeyValuePair[] prepareAdditionalFields(final Configuration config,
-            final KeyValuePair[] additionalFields) {
-        if (additionalFields == null || additionalFields.length == 0) {
-            // No fields set
-            return new ResolvableKeyValuePair[0];
-        }
-
-        // Convert to specific class which already determines whether values needs lookup during serialization
-        final ResolvableKeyValuePair[] resolvableFields = new ResolvableKeyValuePair[additionalFields.length];
-
-        for (int i = 0; i < additionalFields.length; i++) {
-            final ResolvableKeyValuePair resolvable = resolvableFields[i] = new ResolvableKeyValuePair(additionalFields[i]);
-
-            // Validate
-            if (config == null && resolvable.valueNeedsLookup) {
-                throw new IllegalArgumentException(
-                        "configuration needs to be set when there are additional fields with variables");
-            }
-        }
-
-        return resolvableFields;
-    }
-    protected static boolean valueNeedsLookup(final String value) {
-        return value != null && value.contains("${");
-    }
-    protected final String eol;
-
-    protected final ObjectWriter objectWriter;
-
-    protected final boolean compact;
-
-    protected final boolean complete;
-
-    protected final boolean includeNullDelimiter;
-
-    protected final ResolvableKeyValuePair[] additionalFields;
-
-    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
-            final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
-            final Serializer footerSerializer, final boolean includeNullDelimiter,
-            final KeyValuePair[] additionalFields) {
-        super(config, charset, headerSerializer, footerSerializer);
-        this.objectWriter = objectWriter;
-        this.compact = compact;
-        this.complete = complete;
-        this.eol = compact && !eventEol ? COMPACT_EOL : DEFAULT_EOL;
-        this.includeNullDelimiter = includeNullDelimiter;
-        this.additionalFields = prepareAdditionalFields(config, additionalFields);
-    }
-
-    protected LogEventWithAdditionalFields createLogEventWithAdditionalFields(final LogEvent event,
-            final Map<String, String> additionalFieldsMap) {
-        return new LogEventWithAdditionalFields(event, additionalFieldsMap);
-    }
-
-    private Map<String, String> resolveAdditionalFields(final LogEvent logEvent) {
-        // Note: LinkedHashMap retains order
-        final Map<String, String> additionalFieldsMap = new LinkedHashMap<>(additionalFields.length);
-        final StrSubstitutor strSubstitutor = configuration.getStrSubstitutor();
-
-        // Go over each field
-        for (final ResolvableKeyValuePair pair : additionalFields) {
-            if (pair.valueNeedsLookup) {
-                // Resolve value
-                additionalFieldsMap.put(pair.key, strSubstitutor.replace(logEvent, pair.value));
-            } else {
-                // Plain text value
-                additionalFieldsMap.put(pair.key, pair.value);
-            }
-        }
-
-        return additionalFieldsMap;
-    }
-
-    /**
-     * Formats a {@link org.apache.logging.log4j.core.LogEvent}.
-     *
-     * @param event
-     *            The LogEvent.
-     * @return The XML representation of the LogEvent.
-     */
-    @Override
-    public String toSerializable(final LogEvent event) {
-        try (final StringBuilderWriter writer = new StringBuilderWriter()) {
-            toSerializable(event, writer);
-            return writer.toString();
-        } catch (final IOException e) {
-            // Should this be an ISE or IAE?
-            LOGGER.error(e);
-            return Strings.EMPTY;
-        }
-    }
-
-    public void toSerializable(final LogEvent event, final Writer writer) throws IOException {
-        objectWriter.writeValue(writer, wrapLogEvent(convertMutableToLog4jEvent(event)));
-        writer.write(eol);
-        if (includeNullDelimiter) {
-            writer.write('\0');
-        }
-        markEvent();
-    }
-
-    protected Object wrapLogEvent(final LogEvent event) {
-        if (additionalFields.length > 0) {
-            // Construct map for serialization - note that we are intentionally using original LogEvent
-            final Map<String, String> additionalFieldsMap = resolveAdditionalFields(event);
-            // This class combines LogEvent with AdditionalFields during serialization
-            return createLogEventWithAdditionalFields(event, additionalFieldsMap);
-        }
-        // No additional fields, return original object
-        return event;
     }
 }
