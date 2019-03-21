@@ -22,15 +22,21 @@ import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.StringBuilderWriter;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -216,11 +222,126 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
     protected static final String DEFAULT_EOL = "\r\n";
     protected static final String COMPACT_EOL = Strings.EMPTY;
     private static LogEvent convertMutableToLog4jEvent(final LogEvent event) {
-        // TODO Jackson-based layouts have certain filters set up for Log4jLogEvent.
-        // TODO Need to set up the same filters for MutableLogEvent but don't know how...
-        // This is a workaround.
-        return event instanceof Log4jLogEvent ? event : Log4jLogEvent.createMemento(event);
+        // If event implements Message, the jackson Message serializer is applied to the event, so we wrap with
+        // a light-weight wrapper to hide type information.
+        return event instanceof Message ? new SimpleLogEventWrapper(event) : event;
     }
+
+    /** Insulates a delegate {@link LogEvent} from potentially incorrect jackson inspection. */
+    private static final class SimpleLogEventWrapper implements LogEvent {
+
+        private final LogEvent delegate;
+
+        SimpleLogEventWrapper(LogEvent delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public LogEvent toImmutable() {
+            return delegate.toImmutable();
+        }
+
+        @Override
+        public ReadOnlyStringMap getContextData() {
+            return delegate.getContextData();
+        }
+
+        @Override
+        public ThreadContext.ContextStack getContextStack() {
+            return delegate.getContextStack();
+        }
+
+        @Override
+        public String getLoggerFqcn() {
+            return delegate.getLoggerFqcn();
+        }
+
+        @Override
+        public Level getLevel() {
+            return delegate.getLevel();
+        }
+
+        @Override
+        public String getLoggerName() {
+            return delegate.getLoggerName();
+        }
+
+        @Override
+        public Marker getMarker() {
+            return delegate.getMarker();
+        }
+
+        @Override
+        public Message getMessage() {
+            return delegate.getMessage();
+        }
+
+        @Override
+        public long getTimeMillis() {
+            return delegate.getTimeMillis();
+        }
+
+        @Override
+        public Instant getInstant() {
+            return delegate.getInstant();
+        }
+
+        @Override
+        public StackTraceElement getSource() {
+            return delegate.getSource();
+        }
+
+        @Override
+        public String getThreadName() {
+            return delegate.getThreadName();
+        }
+
+        @Override
+        public long getThreadId() {
+            return delegate.getThreadId();
+        }
+
+        @Override
+        public int getThreadPriority() {
+            return delegate.getThreadPriority();
+        }
+
+        @Override
+        public Throwable getThrown() {
+            return delegate.getThrown();
+        }
+
+        @Override
+        public ThrowableProxy getThrownProxy() {
+            return delegate.getThrownProxy();
+        }
+
+        @Override
+        public boolean isEndOfBatch() {
+            return delegate.isEndOfBatch();
+        }
+
+        @Override
+        public boolean isIncludeLocation() {
+            return delegate.isIncludeLocation();
+        }
+
+        @Override
+        public void setEndOfBatch(boolean endOfBatch) {
+            delegate.setEndOfBatch(endOfBatch);
+        }
+
+        @Override
+        public void setIncludeLocation(boolean locationRequired) {
+            delegate.setIncludeLocation(locationRequired);
+        }
+
+        @Override
+        public long getNanoTime() {
+            return delegate.getNanoTime();
+        }
+    }
+
     private static ResolvableKeyValuePair[] prepareAdditionalFields(final Configuration config,
             final KeyValuePair[] additionalFields) {
         if (additionalFields == null || additionalFields.length == 0) {
