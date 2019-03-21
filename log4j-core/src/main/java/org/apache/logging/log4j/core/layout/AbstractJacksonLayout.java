@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.jackson.XmlConstants;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.StringBuilderWriter;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.util.Strings;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -277,7 +278,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         // TODO Jackson-based layouts have certain filters set up for Log4jLogEvent.
         // TODO Need to set up the same filters for MutableLogEvent but don't know how...
         // This is a workaround.
-        return event instanceof Log4jLogEvent ? event : Log4jLogEvent.createMemento(event);
+        return event instanceof ReusableMessage ? Log4jLogEvent.createMemento(event) : event;
     }
 
     protected Object wrapLogEvent(final LogEvent event) {

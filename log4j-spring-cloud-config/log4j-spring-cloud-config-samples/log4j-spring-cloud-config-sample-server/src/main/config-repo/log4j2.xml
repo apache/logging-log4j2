@@ -1,22 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Configuration status="DEBUG" monitorInterval="0">
-  <properties>
-    <property name="LOG_DIR">\${sys:user.dir}/logs/sample-app</property>
-  </properties>
   <Appenders>
-
-    <RollingFile name="log4j" fileName="${LOG_DIR}/log4j.txt" filePattern="${LOG_DIR}/archive/log4j.txt.%d{yyyyMMdd_HH}-%i">
-      <PatternLayout pattern="%d [%t] %-5p %C{1.}.%M:%L - %m%n"/>
-      <Policies>
-        <SizeBasedTriggeringPolicy size="30 KB"/>
-      </Policies>
-    </RollingFile>
+    <Console name="console" target="SYSTEM_OUT">
+      <JsonLayout properties="true" compact="true" eventEol="true">
+      </JsonLayout>
+    </Console>
+    <Flume name="flume" ignoreExceptions="false" type="Embedded" compress="false">
+      <Property name="channel.type">memory</Property>
+      <Property name="channel.capacity">100000</Property>
+      <Property name="channel.transactionCapacity">5000</Property>
+      <Property name="sinks">agent1</Property>
+      <Property name="agent1.type">avro</Property>
+      <Property name="agent1.hostname">flume</Property>
+      <Property name="agent1.port">5050</Property>
+      <Property name="agent1.batch-size">1000</Property>
+      <Property name="processor.type">default</Property>
+      <JsonLayout properties="true" compact="true" eventEol="true">
+        <KeyValuePair key="containerId" value="\${docker:containerId}"/>
+        <KeyValuePair key="containerName" value="\${docker:containerName}"/>
+        <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+      </JsonLayout>
+    </Flume>
+    <Flume name="avro" ignoreExceptions="false" batchSize="100" compress="false">
+      <Agent host="flume" port="5050"/>
+      <JsonLayout properties="true" compact="true" eventEol="true">
+        <KeyValuePair key="containerId" value="\${docker:containerId}"/>
+        <KeyValuePair key="containerName" value="\${docker:containerName}"/>
+        <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+      </JsonLayout>
+    </Flume>
+    <Socket name="fluent-bit" host="fluent-bit" port="24221">
+      <JsonLayout properties="true" compact="true" eventEol="true">
+        <KeyValuePair key="containerId" value="\${docker:containerId}"/>
+        <KeyValuePair key="containerName" value="\${docker:containerName}"/>
+        <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+      </JsonLayout>
+    </Socket>
 
   </Appenders>
   <Loggers>
+    <Logger name="org.apache.flume" level="warn" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+    <Logger name="org.apache.avro" level="warn" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
     <Root level="DEBUG">
-      <AppenderRef ref="log4j"/>
+      <AppenderRef ref="flume"/>
+      <!--<AppenderRef ref="flume"/>-->
+      <!--<AppenderRef ref="console"/>-->
+      <!--<AppenderRef ref="fluent-bit"/>-->
     </Root>
   </Loggers>
 </Configuration>

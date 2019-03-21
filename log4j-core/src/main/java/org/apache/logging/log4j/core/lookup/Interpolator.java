@@ -38,6 +38,8 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
 
     private static final String LOOKUP_KEY_WEB = "web";
 
+    private static final String LOOKUP_KEY_DOCKER = "docker";
+
     private static final String LOOKUP_KEY_JNDI = "jndi";
 
     private static final String LOOKUP_KEY_JVMRUNARGS = "jvmrunargs";
@@ -126,6 +128,12 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         } else {
             LOGGER.debug("Not in a ServletContext environment, thus not loading WebLookup plugin.");
         }
+        try {
+            strLookupMap.put(LOOKUP_KEY_DOCKER,
+                Loader.newCheckedInstanceOf("org.apache.logging.log4j.docker.DockerLookup", StrLookup.class));
+        } catch (final Exception ignored) {
+            handleError(LOOKUP_KEY_DOCKER, ignored);
+        }
     }
 
     public Map<String, StrLookup> getStrLookupMap() {
@@ -150,6 +158,8 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
                 LOGGER.info("Log4j appears to be running in a Servlet environment, but there's no log4j-web module " +
                         "available. If you want better web container support, please add the log4j-web JAR to your " +
                         "web archive or server lib directory.");
+                break;
+            case LOOKUP_KEY_DOCKER:
                 break;
             default:
                 LOGGER.error("Unable to create Lookup for {}", lookupKey, t);

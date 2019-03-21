@@ -67,7 +67,6 @@
     </dependencies>
   </dependencyManagement>
   <modules>
-    <module>log4j-spring-cloud-config-server</module>
     <module>log4j-spring-cloud-config-client</module>
     <module>log4j-spring-cloud-config-samples</module>
   </modules>

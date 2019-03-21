@@ -78,6 +78,63 @@ public final class NetUtils {
     }
 
     /**
+     *  Returns the local network interface's MAC address if possible. The local network interface is defined here as
+     *  the {@link java.net.NetworkInterface} that is both up and not a loopback interface.
+     *
+     * @return the MAC address of the local network interface or {@code null} if no MAC address could be determined.
+     */
+    public static byte[] getMacAddress() {
+        byte[] mac = null;
+        try {
+            final InetAddress localHost = InetAddress.getLocalHost();
+            try {
+                final NetworkInterface localInterface = NetworkInterface.getByInetAddress(localHost);
+                if (isUpAndNotLoopback(localInterface)) {
+                    mac = localInterface.getHardwareAddress();
+                }
+                if (mac == null) {
+                    final Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+                    while (networkInterfaces.hasMoreElements() && mac == null) {
+                        final NetworkInterface nic = networkInterfaces.nextElement();
+                        if (isUpAndNotLoopback(nic)) {
+                            mac = nic.getHardwareAddress();
+                        }
+                    }
+                }
+            } catch (final SocketException e) {
+                LOGGER.catching(e);
+            }
+            if (mac == null || mac.length == 0) {
+                mac = localHost.getAddress();
+            }
+        } catch (final UnknownHostException ignored) {
+            // ignored
+        }
+        return mac;
+    }
+
+    /**
+     * Returns the mac address, if it is available, as a string with each byte separated by a ":" character.
+     * @return the mac address String or null.
+     */
+    public static String getMacAddressString() {
+        final byte[] macAddr = getMacAddress();
+        if (macAddr != null && macAddr.length > 0) {
+            StringBuilder sb = new StringBuilder(String.format("%02x", macAddr[0]));
+            for (int i = 1; i < macAddr.length; ++i) {
+                sb.append(":").append(String.format("%02x", macAddr[i]));
+            }
+            return sb.toString();
+
+        }
+        return null;
+    }
+
+    private static boolean isUpAndNotLoopback(final NetworkInterface ni) throws SocketException {
+        return ni != null && !ni.isLoopback() && ni.isUp();
+    }
+
+    /**
      * Converts a URI string or file path to a URI object.
      *
      * @param path the URI string or path

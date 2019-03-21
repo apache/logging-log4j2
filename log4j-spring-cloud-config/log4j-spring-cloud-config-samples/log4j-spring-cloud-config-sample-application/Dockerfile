@@ -9,8 +9,8 @@ RUN mkdir /service
 ADD ./target/sampleapp.jar /service/
 WORKDIR /service
 
-EXPOSE 8080 5005
-#EXPOSE 8080
+#EXPOSE 8080 5005
+EXPOSE 8080
 
-CMD java "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005" -jar sampleapp.jar
-#CMD java -jar sampleapp.jar
+#CMD java "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005" -jar sampleapp.jar
+CMD java -jar -Xmx2G sampleapp.jar

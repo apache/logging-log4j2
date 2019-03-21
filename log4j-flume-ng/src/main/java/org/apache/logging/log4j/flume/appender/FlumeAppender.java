@@ -19,6 +19,7 @@ package org.apache.logging.log4j.flume.appender;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -35,6 +36,7 @@ import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.util.Timer;
 
 /**
  * An Appender that uses the Avro protocol to route events to Flume.
@@ -60,6 +62,9 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     private final boolean compressBody;
 
     private final FlumeEventFactory factory;
+
+    private Timer timer = new Timer("FlumeEvent", 5000);
+    private volatile long count = 0;
 
     /**
      * Which Manager will be used by the appender instance.
@@ -101,10 +106,25 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                 }
             }
         }
+        timer.startOrResume();
         final FlumeEvent flumeEvent = factory.createEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
         flumeEvent.setBody(getLayout().toByteArray(flumeEvent));
+        if (update()) {
+            String msg = timer.stop();
+            LOGGER.debug(msg);
+        } else {
+            timer.pause();
+        }
         manager.send(flumeEvent);
+    }
+
+    private synchronized boolean update() {
+        if (++count == 5000) {
+            count = 0;
+            return true;
+        }
+        return false;
     }
 
     @Override

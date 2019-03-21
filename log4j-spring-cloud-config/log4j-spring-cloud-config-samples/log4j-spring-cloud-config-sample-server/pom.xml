@@ -21,8 +21,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
-    <spring-cloud-config.version>2.1.0.RELEASE</spring-cloud-config.version>
-    <spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
+    <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
     <log4j.version>2.12.0-SNAPSHOT</log4j.version>
 
 
@@ -68,12 +67,10 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-config-server</artifactId>
-      <version>${spring-cloud-config.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-config-monitor</artifactId>
-      <version>${spring-cloud-config.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -96,11 +93,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-spring-cloud-config-server</artifactId>
-      <version>${log4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
