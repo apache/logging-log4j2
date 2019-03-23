@@ -37,6 +37,9 @@
       <action dev="ggregory" type="update" due-to="Gary Gregory">
         Update tests from H2 1.4.197 to 1.4.199.
       </action>
+      <action issue="LOG4J2-2570" dev="ggregory" type="fix" due-to="Gary Gregory">
+        Update Jackson from 2.9.7 to 2.9.8.
+      </action>
     </release>
     <release version="2.11.2" date="2019-02-04" description="GA Release 2.11.2">
       <action issue="LOG4J2-2500" dev="rgoers" type="fix">
