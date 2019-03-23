@@ -196,7 +196,7 @@
     <disruptorVersion>3.4.2</disruptorVersion>
     <conversantDisruptorVersion>1.2.10</conversantDisruptorVersion> <!-- Version 1.2.11 requires Java 8 -->
     <mongodb2.version>2.14.3</mongodb2.version>
-    <mongodb3.version>3.9.0</mongodb3.version>
+    <mongodb3.version>3.10.1</mongodb3.version>
     <compiler.plugin.version>3.8.0</compiler.plugin.version>
     <pmd.plugin.version>3.10.0</pmd.plugin.version>
     <findbugs.plugin.version>3.0.5</findbugs.plugin.version>
