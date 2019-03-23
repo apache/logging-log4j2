@@ -364,8 +364,11 @@
       <action dev="ggregory" type="update" due-to="Gary Gregory">
         Update tests from H2 1.4.197 to 1.4.199.
       </action>
-      <action issue="LOG4J2-2570" dev="ggregory" type="fix" due-to="Gary Gregory">
+      <action issue="LOG4J2-2570" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Jackson from 2.9.7 to 2.9.8.
+      </action>
+      <action issue="LOG4J2-2571" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update conversant disruptor from 1.2.13 to 1.2.15.
       </action>
     </release>
     <release version="2.12.0" date="2019-MM-DD" description="GA Release 2.12.0">
