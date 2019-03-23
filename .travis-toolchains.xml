@@ -25,7 +25,7 @@
       <vendor>oracle</vendor>
     </provides>
     <configuration>
-      <jdkHome>/usr/lib/jvm/java-7-oracle</jdkHome>
+      <jdkHome>/usr/lib/jvm/java-7-openjdk-amd64</jdkHome>
     </configuration>
   </toolchain>
   <toolchain>
