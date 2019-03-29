@@ -52,6 +52,9 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         private boolean eventEol;
 
         @PluginBuilderAttribute
+        private String endOfLine;
+
+        @PluginBuilderAttribute
         private boolean compact;
 
         @PluginBuilderAttribute
@@ -81,6 +84,10 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         public boolean getEventEol() {
             return eventEol;
+        }
+
+        public String getEndOfLine() {
+            return endOfLine;
         }
 
         public boolean isCompact() {
@@ -119,6 +126,11 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         public B setEventEol(final boolean eventEol) {
             this.eventEol = eventEol;
+            return asBuilder();
+        }
+
+        public B setEndOfLine(final String endOfLine) {
+            this.endOfLine = endOfLine;
             return asBuilder();
         }
 
@@ -201,18 +213,18 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
     protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
             final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
             final Serializer footerSerializer, final boolean includeNullDelimiter) {
-        this(config, objectWriter, charset, compact, complete, eventEol, headerSerializer, footerSerializer, includeNullDelimiter, null);
+        this(config, objectWriter, charset, compact, complete, eventEol, null, headerSerializer, footerSerializer, includeNullDelimiter, null);
     }
 
     protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
-            final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
+            final boolean compact, final boolean complete, final boolean eventEol, final String endOfLine, final Serializer headerSerializer,
             final Serializer footerSerializer, final boolean includeNullDelimiter,
             final KeyValuePair[] additionalFields) {
         super(config, charset, headerSerializer, footerSerializer);
         this.objectWriter = objectWriter;
         this.compact = compact;
         this.complete = complete;
-        this.eol = compact && !eventEol ? COMPACT_EOL : DEFAULT_EOL;
+        this.eol = endOfLine != null ? endOfLine : compact && !eventEol ? COMPACT_EOL : DEFAULT_EOL;
         this.includeNullDelimiter = includeNullDelimiter;
         this.additionalFields = prepareAdditionalFields(config, additionalFields);
     }

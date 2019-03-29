@@ -67,7 +67,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
             final String headerPattern = toStringOrNull(getHeader());
             final String footerPattern = toStringOrNull(getFooter());
             return new YamlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(),
-                    isCompact(), getEventEol(), headerPattern, footerPattern, getCharset(),
+                    isCompact(), getEventEol(), getEndOfLine(), headerPattern, footerPattern, getCharset(),
                     isIncludeStacktrace(), isStacktraceAsString(), isIncludeNullDelimiter(),
                     getAdditionalFields());
         }
@@ -81,20 +81,20 @@ public final class YamlLayout extends AbstractJacksonLayout {
             final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
             final String footerPattern, final Charset charset, final boolean includeStacktrace) {
         super(config, new JacksonFactory.YAML(includeStacktrace, false).newWriter(locationInfo, properties, compact),
-                charset, compact, complete, eventEol,
+                charset, compact, complete, eventEol, null,
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
                 false, null);
     }
 
     private YamlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
-                       final boolean complete, final boolean compact, final boolean eventEol,
+                       final boolean complete, final boolean compact, final boolean eventEol, final String endOfLine,
                        final String headerPattern, final String footerPattern, final Charset charset,
                        final boolean includeStacktrace, final boolean stacktraceAsString,
                        final boolean includeNullDelimiter,
                        final KeyValuePair[] additionalFields) {
         super(config, new JacksonFactory.YAML(includeStacktrace, stacktraceAsString).newWriter(locationInfo, properties, compact),
-                charset, compact, complete, eventEol,
+                charset, compact, complete, eventEol, endOfLine,
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
                 includeNullDelimiter,
@@ -185,7 +185,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
             final String footerPattern,
             final Charset charset,
             final boolean includeStacktrace) {
-        return new YamlLayout(config, locationInfo, properties, false, false, true, headerPattern, footerPattern,
+        return new YamlLayout(config, locationInfo, properties, false, false, true, null, headerPattern, footerPattern,
                 charset, includeStacktrace, false, false, null);
     }
 
@@ -200,7 +200,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
      * @return A YAML Layout.
      */
     public static AbstractJacksonLayout createDefaultLayout() {
-        return new YamlLayout(new DefaultConfiguration(), false, false, false, false, false, DEFAULT_HEADER,
+        return new YamlLayout(new DefaultConfiguration(), false, false, false, false, false, null, DEFAULT_HEADER,
                 DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, null);
     }
 }

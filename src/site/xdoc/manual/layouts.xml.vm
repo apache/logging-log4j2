@@ -429,6 +429,14 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               </td>
             </tr>
             <tr>
+              <td>endOfLine</td>
+              <td>String</td>
+              <td>
+                If set, overrides the default end-of-line string. E.g. set it to "\n" and use with eventEol=true and compact=true
+                to have one record per line separated by "\n" instead of "\r\n". Defaults to null (i.e. not set).
+              </td>
+            </tr>
+            <tr>
               <td>complete</td>
               <td>boolean</td>
               <td>If true, the appender includes the JSON header and footer, and comma between records. Defaults to false.</td>
