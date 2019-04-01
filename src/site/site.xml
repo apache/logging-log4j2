@@ -111,6 +111,7 @@
       <item name="Usage" href="/manual/usage.html" collapse="true">
         <item name="Static vs non-Static Loggers" href="/manual/usage.html#StaticVsNonStatic"/>
         <item name="Logger Name vs Class Name" href="/manual/usage.html#LoggerVsClass"/>
+        <item name="Logging in the Cloud" href="/manual/cloud.html"/>
       </item>
 
       <item name="Web Applications and JSPs" href="/manual/webapp.html" collapse="true">
@@ -125,6 +126,7 @@
       <item name="Lookups" href="/manual/lookups.html" collapse="true">
         <item name="Context Map" href="/manual/lookups.html#ContextMapLookup"/>
         <item name="Date" href="/manual/lookups.html#DateLookup"/>
+        <item name="Docker" href="manual/lookups.html#DockerLookup"/>
         <item name="Environment" href="/manual/lookups.html#EnvironmentLookup"/>
         <item name="Java" href="/manual/lookups.html#JavaLookup"/>
         <item name="JNDI" href="/manual/lookups.html#JndiLookup"/>
@@ -295,6 +297,8 @@
       <item name="Log4j Cassandra appender" href="log4j-cassandra/index.html"/>
       <item name="Log4j IO Streams" href="log4j-iostreams/index.html"/>
       <item name="Log4j Liquibase Binding" href="log4j-liquibase/index.html"/>
+      <item name="Log4j Docker Support" href="log4j-docker/index.html"/>
+      <item name="Log4j Spring Cloud Config Client" href="log4j-spring-cloud-config/log4j-spring-cloud-config-client/index.html"/>
     </menu>
 
     <menu name="Project Information" img="icon-info-sign">

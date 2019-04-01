@@ -31,6 +31,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.Log4jThread;
 
@@ -50,7 +51,11 @@ public class KafkaManager extends AbstractManager {
     private final String topic;
     private final String key;
     private final boolean syncSend;
+    private static final KafkaManagerFactory factory = new KafkaManagerFactory();
 
+    /*
+     * The Constructor should have been declared private as all Managers are create by the internal factory;
+     */
     public KafkaManager(final LoggerContext loggerContext, final String name, final String topic, final boolean syncSend,
                         final Property[] properties, final String key) {
         super(loggerContext, name);
@@ -133,6 +138,40 @@ public class KafkaManager extends AbstractManager {
 
     public String getTopic() {
         return topic;
+    }
+
+    public static KafkaManager getManager(final LoggerContext loggerContext, final String name, final String topic,
+        final boolean syncSend, final Property[] properties, final String key) {
+        StringBuilder sb = new StringBuilder(name);
+        for (Property prop: properties) {
+            sb.append(" ").append(prop.getName()).append("=").append(prop.getValue());
+        }
+        return getManager(sb.toString(), factory, new FactoryData(loggerContext, topic, syncSend, properties, key));
+    }
+
+    private static class FactoryData {
+        private final LoggerContext loggerContext;
+        private final String topic;
+        private final boolean syncSend;
+        private final Property[] properties;
+        private final String key;
+
+        public FactoryData(final LoggerContext loggerContext, final String topic, final boolean syncSend,
+            final Property[] properties, final String key) {
+            this.loggerContext = loggerContext;
+            this.topic = topic;
+            this.syncSend = syncSend;
+            this.properties = properties;
+            this.key = key;
+        }
+
+    }
+
+    private static class KafkaManagerFactory implements ManagerFactory<KafkaManager, FactoryData> {
+        @Override
+        public KafkaManager createManager(String name, FactoryData data) {
+            return new KafkaManager(data.loggerContext, name, data.topic, data.syncSend, data.properties, data.key);
+        }
     }
 
 }

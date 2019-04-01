@@ -19,7 +19,6 @@ package org.apache.logging.log4j.flume.appender;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;

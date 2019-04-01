@@ -34,6 +34,7 @@
     <spring-cloud-version>Finchley.SR3</spring-cloud-version>
     <spring-boot.version>2.0.8.RELEASE</spring-boot.version>
     <springVersion>5.0.12.RELEASE</springVersion>
+    <log4jParentDir>${basedir}/..</log4jParentDir>
   </properties>
   <dependencyManagement>
     <dependencies>

@@ -32,6 +32,9 @@ public class IPAMConfig {
     @JsonProperty("Gateway")
     private String gateway;
 
+    @JsonProperty("IPv4Address")
+    private String ipv4Address;
+
     public String getSubnet() {
         return subnet;
     }
@@ -54,5 +57,13 @@ public class IPAMConfig {
 
     public void setGateway(String gateway) {
         this.gateway = gateway;
+    }
+
+    public String getIpv4Address() {
+        return ipv4Address;
+    }
+
+    public void setIpv4Address(String ipv4Address) {
+        this.ipv4Address = ipv4Address;
     }
 }

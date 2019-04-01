@@ -81,8 +81,28 @@
             </td>
           </tr>
           <tr>
+            <td>log4j-appserver</td>
+            <td>org.apache.logging.log4j.appserver</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-cassandra</td>
+            <td>org.apache.logging.log4j.cassandra</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
             <td>log4j-core</td>
             <td>org.apache.logging.log4j.core</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-couchdb</td>
+            <td>org.apache.logging.log4j.couchdb</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-docker</td>
+            <td>org.apache.logging.log4j.docker</td>
             <td>Automatic Module</td>
           </tr>
           <tr>
@@ -90,11 +110,7 @@
             <td>org.apache.log4j</td>
             <td>Automatic Module</td>
           </tr>
-          <tr>
-            <td>log4j-appserver</td>
-            <td>org.apache.logging.log4j.appserver</td>
-            <td>Automatic Module</td>
-          </tr>
+
           <tr>
             <td>log4j-flume-ng</td>
             <td>org.apache.logging.log4j.flume</td>
@@ -121,39 +137,30 @@
             <td>Automatic Module</td>
           </tr>
           <tr>
-            <td>log4j-couchdb</td>
-            <td>org.apache.logging.log4j.couchdb</td>
-            <td>Automatic Module</td>
-          </tr>
-          <tr>
             <td>log4j-mongodb</td>
             <td>org.apache.logging.log4j.mongodb</td>
             <td>Automatic Module</td>
           </tr>
-          <tr>
-            <td>log4j-cassandra</td>
-            <td>org.apache.logging.log4j.cassandra</td>
-            <td>Automatic Module</td>
-          </tr>
+
           <tr>
             <td>log4j-osgi</td>
             <td>org.apache.logging.log4j.osgi</td>
             <td>Automatic Module. Unclear how OSGi will support Java modules.</td>
           </tr>
           <tr>
-          <td>log4j-slf4j-impl</td>
-          <td>org.apache.logging.log4j.slf4j.impl</td>
-          <td>Automatic Module. May require renaming should SLF4J ever require all implementations to have the same
-            module name.</td>
-        </tr>
-          <tr>
-            <td>log4j-to-slf4j</td>
-            <td>org.apache.logging.log4j.slf4j</td>
-            <td>Automatic Module</td>
-          </tr>
+            <td>log4j-slf4j-impl</td>
+            <td>org.apache.logging.log4j.slf4j.impl</td>
+            <td>Automatic Module. May require renaming should SLF4J ever require all implementations to have the same
+              module name.</td>
+            </tr>
           <tr>
             <td>log4j-taglib</td>
             <td>org.apache.logging.log4j.taglib</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-to-slf4j</td>
+            <td>org.apache.logging.log4j.slf4j</td>
             <td>Automatic Module</td>
           </tr>
           <tr>
@@ -286,7 +293,14 @@
           </td>
         </tr>
       </table>
-
+      <a name="log4j-docker"/>
+      <h4>log4j-docker</h4>
+      <p>
+        <a href="log4j-docker/index.html">Log4j Docker Support</a> requires
+        <a href="https://github.com/FasterXML/jackson">Jackson annotations, core, and databind</a>. See the
+        <a href="log4j-docker/dependencies.html#Dependency_Tree">Dependency Tree</a> for the exact list of
+        JAR files needed.
+      </p>
       <a name="log4j-jcl" />
       <h4>log4j-jcl</h4>
       <p>
@@ -348,7 +362,17 @@
         The persistent agent uses Berkeley DB. See the
         <a href="log4j-flume-ng/dependencies.html#Dependency_Tree">Dependency Tree</a> for the exact list of JAR files needed.
       </p>
-
+      <a name="log4j-spring-cloud-config-client"/>
+      <h4>log4j-spring-cloud-config-client</h4>
+      <p>
+        <a href="log4j-spring-cloud-config/log4j-spring-cloud-config-client/index.html">Log4j Spring Cloud Config Client</a> requires
+        <a href="https://spring.io/projects/spring-cloud-config">Spring Cloud Config</a>.
+        <a href="https://spring.io/projects/spring-cloud-bus">Spring Cloud Bus</a> is required if notification of logging
+        configuration changes is desired. <a href="https://spring.io/projects/spring-boot">Spring Boot</a> is required
+        but applications do not have to be packaged as a Spring Boot application.
+        <a href="log4j-spring-cloud-config/log4j-spring-cloud-config-client/dependencies.html#Dependency_Tree">Dependency Tree</a> for the exact list of
+        JAR files needed.
+      </p>
       <a name="log4j-taglib" />
       <h4>log4j-taglib</h4>
       <p>

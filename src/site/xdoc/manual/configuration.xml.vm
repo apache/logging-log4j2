@@ -2386,6 +2386,84 @@ public class AwesomeTest {
       <td>Disables message pattern lookups globally when set to <tt>true</tt>.
           This is equivalent to defining all message patterns using <tt>%m{nolookups}</tt>.</td>
   </tr>
+  <tr>
+    <td><a name="log4j2.trustStore.location "/>log4j2.trustStore.location</td>
+    <td>LOG4J_TRUST_STORE_LOCATION</td>
+    <td></td>
+    <td>The location of the trust store. If not provided the default trust store will be used.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.trustStore.password"/>log4j2.trustStore.password</td>
+    <td>LOG4J_TRUST_STORE_PASSWORD</td>
+    <td></td>
+    <td>Password needed to access the trust store.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.trustStore.passwordFile"/>log4j2.trustStore.passwordFile</td>
+    <td>LOG4J_TRUST_STORE_PASSWORD_FILE</td>
+    <td></td>
+    <td>The location of a file that contains the password for the trust store.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.trustStore.passwordEnvironmentVariable"/>log4j2.trustStore.passwordEnvironmentVariable</td>
+    <td>LOG4J_TRUST_STORE_PASSWORD_ENVIRONMENT_VARIABLE</td>
+    <td></td>
+    <td>The name of the environment variable that contains the trust store password.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.trustStore.type"/>log4j2.trustStore.type</td>
+    <td>LOG4J_TRUST_STORE_TYPE</td>
+    <td></td>
+    <td>The type of key store used for the trust store.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.trustStore.keyManagerFactoryAlgorithm"/>log4j2.trustStore.keyManagerFactoryAlgorithm</td>
+    <td>LOG4J_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM</td>
+    <td></td>
+    <td>Java cryptographic algorithm.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.keyStore.location "/>log4j2.keyStore.location </td>
+    <td>LOG4J_KEY_STORE_LOCATION</td>
+    <td></td>
+    <td>The location of the key store. If not provided the default key store will be used.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.keyStore.password"/>log4j2.keyStore.password</td>
+    <td>LOG4J_KEY_STORE_PASSWORD</td>
+    <td></td>
+    <td>Password needed to access the key store.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.keyStore.passwordFile"/>log4j2.keyStore.passwordFile</td>
+    <td>LOG4J_KEY_STORE_PASSWORD_FILE</td>
+    <td></td>
+    <td>The location of a file that contains the password for the key store.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.keyStore.passwordEnvironmentVariable"/>log4j2.keyStore.passwordEnvironmentVariable</td>
+    <td>LOG4J_KEY_STORE_PASSWORD_ENVIRONMENT_VARIABLE</td>
+    <td></td>
+    <td>The name of the environment variable that contains the key store password.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.keyStore.type"/>log4j2.keyStore.type</td>
+    <td>LOG4J_KEY_STORE_TYPE</td>
+    <td></td>
+    <td>The type of key store.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.keyStore.keyManagerFactoryAlgorithm"/>log4j2.keyStore.keyManagerFactoryAlgorithm</td>
+    <td>LOG4J_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM</td>
+    <td></td>
+    <td>Java cryptographic algorithm.</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.ssl.verifyHostName"/>log4j2.ssl.verifyHostName</td>
+    <td></td>
+    <td>false</td>
+    <td>true or false if the host name should be verified</td>
+  </tr>
 </table>
 
         </subsection>

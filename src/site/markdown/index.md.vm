@@ -107,6 +107,12 @@ $h3 Integrating with Application Servers
 
 Version 2.10.0 introduces a the module log4j-appserver to improve integration with Apache Tomcat and Eclipse Jetty.
 
+$h3 Cloud Enabled
+
+Version 2.12.0 introduces support for accessing Dcoker container information via a Lookup and for accessing
+and updating the Log4j configuration through Spring Clooud Configuration. See [Logging in the Cloud](manual/cloud.html)
+for details.
+
 $h2 Documentation
 
 The Log4j 2 User's Guide is available on this [site](manual/index.html) or as a downloadable

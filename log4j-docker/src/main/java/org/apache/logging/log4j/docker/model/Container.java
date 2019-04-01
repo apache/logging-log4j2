@@ -31,6 +31,12 @@ public class Container {
     @JsonProperty("Names")
     private List<String> names;
 
+    @JsonProperty("Path")
+    private String path;
+
+    @JsonProperty("Args")
+    private String[] args;
+
     @JsonProperty("Image")
     private String image;
 

@@ -24,13 +24,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Network {
 
     @JsonProperty("IPAMConfig")
-    private String ipamConfig;
+    private IPAMConfig ipamConfig;
 
     @JsonProperty("Links")
     private String links;
 
     @JsonProperty("Aliases")
-    private String aliases;
+    private String[] aliases;
 
     @JsonProperty("NetworkID")
     private String networkId;
@@ -62,11 +62,11 @@ public class Network {
     @JsonProperty("DriverOpts")
     private String driverOpts;
 
-    public String getIpamConfig() {
+    public IPAMConfig getIpamConfig() {
         return ipamConfig;
     }
 
-    public void setIpamConfig(String ipamConfig) {
+    public void setIpamConfig(IPAMConfig ipamConfig) {
         this.ipamConfig = ipamConfig;
     }
 
@@ -78,11 +78,11 @@ public class Network {
         this.links = links;
     }
 
-    public String getAliases() {
+    public String[] getAliases() {
         return aliases;
     }
 
-    public void setAliases(String aliases) {
+    public void setAliases(String[] aliases) {
         this.aliases = aliases;
     }
 

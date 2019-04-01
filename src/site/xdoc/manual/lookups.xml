@@ -67,6 +67,31 @@
   <SizeBasedTriggeringPolicy size="500" />
 </RollingFile>]]></pre>
         </subsection>
+        <a name="DockerLookup"/>
+        <subsection name="Docker Lookup">
+          <p>
+            The DockerLookup can be used to lookup attributes from the Docker container the application is running
+            in.
+          </p>
+          Log4j Docker provides access to the following container attributes:
+          <table>
+            <tr><td>containerId</td><td>The full id assigned to the container.</td></tr>
+            <tr><td>containreName</td><td>The name assigned to the container.</td></tr>
+            <tr><td>imageId</td><td>The id assigned to the image.</td></tr>
+            <tr><td>imageName</td><td>The name assigned to the image.</td></tr>
+            <tr><td>shortContainerId</td><td>The first 12 characters of the container id.</td></tr>
+            <tr><td>shortImageId</td><td>The first 12 characters of the image id.</td></tr>
+          </table>
+          <pre class="prettyprint linenums"><![CDATA[
+<JsonLayout properties="true" compact="true" eventEol="true">
+  <KeyValuePair key="containerId" value="${docker:containerId}"/>
+  <KeyValuePair key="containerName" value="${docker:containerName}"/>
+  <KeyValuePair key="imageName" value="${docker:imageName}"/>
+</JsonLayout>]]></pre>
+          <p>
+            This Lookup is subject to the requirements listed at <a href="../log4j-docker/index.html">Log4j Docker Support</a>
+          </p>
+        </subsection>
         <a name="EnvironmentLookup"/>
         <subsection name="Environment Lookup">
           <p>

@@ -22,19 +22,25 @@ import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.jackson.XmlConstants;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.StringBuilderWriter;
-import org.apache.logging.log4j.message.ReusableMessage;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -274,19 +280,15 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         }
     }
 
-    private static LogEvent convertMutableToLog4jEvent(final LogEvent event) {
-        // TODO Jackson-based layouts have certain filters set up for Log4jLogEvent.
-        // TODO Need to set up the same filters for MutableLogEvent but don't know how...
-        // This is a workaround.
-        return event instanceof ReusableMessage ? Log4jLogEvent.createMemento(event) : event;
-    }
-
     protected Object wrapLogEvent(final LogEvent event) {
         if (additionalFields.length > 0) {
             // Construct map for serialization - note that we are intentionally using original LogEvent
             final Map<String, String> additionalFieldsMap = resolveAdditionalFields(event);
             // This class combines LogEvent with AdditionalFields during serialization
             return new LogEventWithAdditionalFields(event, additionalFieldsMap);
+        } else if (event instanceof Message) {
+            // If the LogEvent implements the Messagee interface Jackson will not treat is as a LogEvent.
+            return new ReadOnlyLogEventWrapper(event);
         } else {
             // No additional fields, return original object
             return event;
@@ -314,7 +316,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     public void toSerializable(final LogEvent event, final Writer writer)
             throws JsonGenerationException, JsonMappingException, IOException {
-        objectWriter.writeValue(writer, wrapLogEvent(convertMutableToLog4jEvent(event)));
+        objectWriter.writeValue(writer, wrapLogEvent(event));
         writer.write(eol);
         if (includeNullDelimiter) {
             writer.write('\0');
@@ -356,6 +358,126 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
             this.key = pair.getKey();
             this.value = pair.getValue();
             this.valueNeedsLookup = AbstractJacksonLayout.valueNeedsLookup(this.value);
+        }
+    }
+
+    private static class ReadOnlyLogEventWrapper implements LogEvent {
+
+        @JsonIgnore
+        private final LogEvent event;
+
+        public ReadOnlyLogEventWrapper(LogEvent event) {
+            this.event = event;
+        }
+
+        @Override
+        public LogEvent toImmutable() {
+            return event.toImmutable();
+        }
+
+        @Override
+        public Map<String, String> getContextMap() {
+            return event.getContextMap();
+        }
+
+        @Override
+        public ReadOnlyStringMap getContextData() {
+            return event.getContextData();
+        }
+
+        @Override
+        public ThreadContext.ContextStack getContextStack() {
+            return event.getContextStack();
+        }
+
+        @Override
+        public String getLoggerFqcn() {
+            return event.getLoggerFqcn();
+        }
+
+        @Override
+        public Level getLevel() {
+            return event.getLevel();
+        }
+
+        @Override
+        public String getLoggerName() {
+            return event.getLoggerName();
+        }
+
+        @Override
+        public Marker getMarker() {
+            return event.getMarker();
+        }
+
+        @Override
+        public Message getMessage() {
+            return event.getMessage();
+        }
+
+        @Override
+        public long getTimeMillis() {
+            return event.getTimeMillis();
+        }
+
+        @Override
+        public Instant getInstant() {
+            return event.getInstant();
+        }
+
+        @Override
+        public StackTraceElement getSource() {
+            return event.getSource();
+        }
+
+        @Override
+        public String getThreadName() {
+            return event.getThreadName();
+        }
+
+        @Override
+        public long getThreadId() {
+            return event.getThreadId();
+        }
+
+        @Override
+        public int getThreadPriority() {
+            return event.getThreadPriority();
+        }
+
+        @Override
+        public Throwable getThrown() {
+            return event.getThrown();
+        }
+
+        @Override
+        public ThrowableProxy getThrownProxy() {
+            return event.getThrownProxy();
+        }
+
+        @Override
+        public boolean isEndOfBatch() {
+            return event.isEndOfBatch();
+        }
+
+        @Override
+        public boolean isIncludeLocation() {
+            return event.isIncludeLocation();
+        }
+
+        @Override
+        public void setEndOfBatch(boolean endOfBatch) {
+
+        }
+
+        @Override
+        public void setIncludeLocation(boolean locationRequired) {
+
+        }
+
+        @Override
+        public long getNanoTime() {
+            return event.getNanoTime();
         }
     }
 }

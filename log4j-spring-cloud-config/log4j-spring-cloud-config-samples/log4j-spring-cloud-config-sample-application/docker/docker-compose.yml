@@ -65,6 +65,7 @@ services:
         aliases:
           - flume
 
+
 networks:
   sample_network:
 
