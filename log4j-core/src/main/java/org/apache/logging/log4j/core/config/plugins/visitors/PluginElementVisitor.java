@@ -63,6 +63,7 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
                     }
                     if (childObject.getClass().isArray()) {
                         log.append(Arrays.toString((Object[]) childObject)).append('}');
+                        node.getChildren().removeAll(used);
                         return childObject;
                     }
                     log.append(child.toString());
