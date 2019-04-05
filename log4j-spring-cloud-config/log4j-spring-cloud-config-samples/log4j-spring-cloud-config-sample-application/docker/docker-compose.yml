@@ -41,6 +41,7 @@ services:
       - "24224:24224"
     volumes:
       - ./init/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./target/logs:/var/logs
     networks:
       sample_network:
         aliases:

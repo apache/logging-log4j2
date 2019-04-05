@@ -20,7 +20,7 @@
 
 ## The Twelve-Factor Application
 
-The Logging Guidelines for [The Twelve-Factor App](https://12factor.net/logs) state the all logs should be routed 
+The Logging Guidelines for [The Twelve-Factor App](https://12factor.net/logs) state that all logs should be routed 
 unbuffered to stdout. Since this is the least common denominator it is guaranteed to work for all applications. Howeever,
 as with any set of general guidelines, choosing the least common denominator approach comes at a cost. Some of the costs
 in Java applications include:
@@ -42,7 +42,7 @@ only when it has placed the event in durable storage, such as what Apache Flume 
 
 All the solutions discussed on this page are predicated with the idea that log files cannot permanently
 reside on the file system and that all log events should be routed to one or more log analysis tools that will 
-be used for reporting and alreting. There are many ways to forward and collect events to be sent to the 
+be used for reporting and alerting. There are many ways to forward and collect events to be sent to the 
 log analysis tools. 
 
 Note that any approach that bypasses Docker's logging drivers requires Log4j's 
@@ -94,11 +94,15 @@ host and port be configured on a SocketAppender with an appropriate layout.
 ### Sending Directly to a Log Aggregator via TCP
 
 Similar to sending logs to a forwarder, logs can also be sent to a cluster of aggregators. However,
-setting this up is not as simple. Since, to be highly available, a cluster of aggregators must be used.
+setting this up is not as simple since, to be highly available, a cluster of aggregators must be used.
 However, the SocketAppender currently can only be configured with a single host and port. To allow 
 for failover if the primary aggregator fails the SocketAppender must be enclosed in a 
 [FailoverAppender](appenders.html#FailoverAppender),
-which would also have the secondary aggregator configured.  
+which would also have the secondary aggregator configured. Another option is to have the SocketAppender 
+point to a highly available proxy that can forward to the Log Aggregator.
+
+If the log aggregator used is Apache Flume or Apache Kafka (or similar) the Appenders for these support 
+being configured with a list of hosts and ports so high availability is not an issue. 
 
 ![Aggregator](../images/LoggerAggregator.png "Application Logging to an Aggregator via TCP")
 
@@ -114,7 +118,7 @@ all log events for a specific user or customer to temporarily be logged
 Also, in a micro-services, clustered environment it is quite likely that these changes will need to be propagated
 to multiple servers at the same time. Trying to achieve this via REST calls could be difficult.
   
-Log4j supports dynamic reconfiguration. since the first release Log4j has supported reconfiguration through a file.
+Since its first release Log4j has supported reconfiguration through a file.
 Beginning with Log4j 2.12.0 Log4j also supports accessing the configuration via HTTP(S) and monitoring the file 
 for changes by using the HTTP "If-Modified-Since" header. A patch has also been integrated into Spring Cloud Config
 starting with versions 2.0.3 and 2.1.1 for it to honor the If-Modified-Since header. In addition, the 
@@ -129,7 +133,7 @@ While the standard Spring Boot REST endpoints to update logging will still work 
 REST endpoints will be lost if Log4j reconfigures itself do to changes in the logging configuration file.
 
 Further information regarding integration of the log4j-spring-cloud-config-client can be found at 
-[Log4j Spring Cloud Config Client](../log4j-spring-cloud-config/log4j-spring-cloud-config-client/index.html)
+[Log4j Spring Cloud Config Client](../log4j-spring-cloud-config/log4j-spring-cloud-config-client/index.html).
 
 ## Integration with Docker
 
@@ -140,13 +144,16 @@ provides similar functionality via the [Docker Loookup](lookups.html#DockerLooku
 Log4j's Docker support may also be found at [Log4j-Docker](../log4j-docker/index.html). 
 
 ## Appender Performance
-The numbers in the table below represent how much time was required for the application to call logger.debug
-100,000 times. These numbers only include the time taken to deliver to the specifcly noted endpoint and
-many not include the actual time required before they are availble for viewing. All measurements were
-performed on a MacBook Pro with a 2.9GHz Intel Core I9 processor with 6 physical and 12 logical cores, 
-32GB of 2400 MHz DDR4 RAM, and 1TB of Apple SSD storage. The VM used by Docker was managed by VMWare Fusion 
-and had 4 CPUs and 2 GB of RAM. These number should be used for relative perfomance comparisons as the 
-results on another system may vary considerably. 
+The numbers in the table below represent how much time in seceonds was required for the application to 
+call logger.debug 100,000 times. These numbers only include the time taken to deliver to the specifcly 
+noted endpoint and many not include the actual time required before they are availble for viewing. All 
+measurements were performed on a MacBook Pro with a 2.9GHz Intel Core I9 processor with 6 physical and 12 
+logical cores, 32GB of 2400 MHz DDR4 RAM, and 1TB of Apple SSD storage. The VM used by Docker was managed 
+by VMWare Fusion and had 4 CPUs and 2 GB of RAM. These number should be used for relative perfomance comparisons 
+as the results on another system may vary considerably.
+
+The sample application used can be found under the log4j-spring-cloud-config/log4j-spring-cloud-config-samples
+directory in the Log4j [source repository](https://github.com/apache/logging-log4j2).
 
 | Test                    | 1 Thread | 2 Threads | 4 Threads | 8 Threads |
 |------------------------ |---------:|----------:|----------:|----------:|

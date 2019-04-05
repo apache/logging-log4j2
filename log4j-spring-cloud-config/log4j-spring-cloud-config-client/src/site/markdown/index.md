@@ -18,7 +18,7 @@
 
 # Log4j Spring Cloud Configuration
 
-This module allows logging configuration files managed in be dynamically updated when new versions are available in
+This module allows logging configuration files to be dynamically updated when new versions are available in
 Spring Cloud Configuration. 
 
 ## Overview

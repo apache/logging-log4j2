@@ -3,7 +3,7 @@
 <Configuration status="DEBUG" monitorInterval="0">
   <Appenders>
     <Console name="console" target="SYSTEM_OUT">
-      <JsonLayout properties="true" compact="true" eventEol="true">
+      <JsonLayout properties="true" compact="true" eventEol="true" stackTraceAsString="true">
       </JsonLayout>
     </Console>
     <Flume name="flume" ignoreExceptions="false" type="Embedded" compress="false">
@@ -24,7 +24,7 @@
     </Flume>
     <Flume name="avro" ignoreExceptions="false" batchSize="1" compress="false">
       <Agent host="flume" port="5050"/>
-      <JsonLayout properties="true" compact="true" eventEol="true">
+      <JsonLayout properties="true" compact="true" eventEol="true" stackTraceAsString="true">
         <KeyValuePair key="containerId" value="\${docker:containerId}"/>
         <KeyValuePair key="containerName" value="\${docker:containerName}"/>
         <KeyValuePair key="imageName" value="\${docker:imageName}"/>
@@ -50,7 +50,7 @@
       <Property name="bootstrap.servers">host.docker.internal:9092</Property>
     </Kafka>
     <Socket name="fluent-bit" host="fluent-bit" port="24221">
-      <JsonLayout properties="true" compact="true" eventEol="true">
+      <JsonLayout properties="true" compact="true" eventEol="true" stackTraceAsString="true">
         <KeyValuePair key="containerId" value="\${docker:containerId}"/>
         <KeyValuePair key="containerName" value="\${docker:containerName}"/>
         <KeyValuePair key="imageName" value="\${docker:imageName}"/>
@@ -58,7 +58,7 @@
     </Socket>
     <RollingFile name="RollingFile" fileName="/var/log/sampleapp/app.log"
                  filePattern="/var/log/sampleapp/archive/app.log.%i">
-      <JsonLayout properties="true" compact="true" eventEol="true">
+      <JsonLayout properties="true" compact="true" eventEol="true" stackTraceAsString="true">
         <KeyValuePair key="containerId" value="\${docker:containerId}"/>
         <KeyValuePair key="containerName" value="\${docker:containerName}"/>
         <KeyValuePair key="imageName" value="\${docker:imageName}"/>
@@ -91,7 +91,7 @@
       <AppenderRef ref="console"/>
     </Logger>
     <Root level="DEBUG">
-      <AppenderRef ref="Kafka"/>
+      <AppenderRef ref="console"/>
     </Root>
   </Loggers>
 </Configuration>
