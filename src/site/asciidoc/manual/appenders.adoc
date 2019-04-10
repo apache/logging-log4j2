@@ -4063,7 +4063,13 @@ example, "SelectIt".
 The `SocketAppender` is an OutputStreamAppender that writes its output
 to a remote destination specified by a host and port. The data can be
 sent over either TCP or UDP and can be sent in any format. You can
-optionally secure communication with link:#SSL[SSL].
+optionally secure communication with link:#SSL[SSL]. Note that the TCP and SSL
+variants write to the socket as a stream and do not expect response from
+the target destination. Due to limitations in the TCP protocol that
+means that when the target server closes its connection some log events
+may continue to appear to succeed until a closed connection exception
+is raised, causing those events to be lost. If guaranteed delivery is
+required a protocol that requires acknowledgements must be used.
 
 .`SocketAppender` Parameters
 [cols=",,",options="header",]
@@ -4075,7 +4081,9 @@ optionally secure communication with link:#SSL[SSL].
 log events. This parameter is required.
 
 |port |integer |The port on the host that is listening for log events.
-This parameter must be specified.
+This parameter must be specified.If the host name resolves to multiple
+IP addresses the TCP and SSL variations will fail over to the next IP
+address when a connection is lost.
 
 |protocol |String |"TCP" (default), "SSL" or "UDP".
 

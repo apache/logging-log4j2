@@ -378,6 +378,9 @@
       </action>
     </release>
     <release version="2.12.0" date="2019-MM-DD" description="GA Release 2.12.0">
+      <action issue="LOG4J2-2586" dev="rgoers" type="add">
+        TCP Appender should support a host name resolving to multiple IP addresses.
+      </action>
       <action issue="LOG4J2-2559" dev="ggregory" type="fix" due-to="Li Lei, Gary Gregory">
         NullPointerException in JdbcAppender.createAppender().
       </action>

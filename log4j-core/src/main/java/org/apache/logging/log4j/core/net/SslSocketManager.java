@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.List;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -99,11 +100,10 @@ public class SslSocketManager extends TcpSocketManager {
     }
 
     @Override
-    protected Socket createSocket(final String host, final int port) throws IOException {
+    protected Socket createSocket(final InetSocketAddress socketAddress) throws IOException {
         final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
-        final InetSocketAddress address = new InetSocketAddress(host, port);
         final Socket newSocket = socketFactory.createSocket();
-        newSocket.connect(address, getConnectTimeoutMillis());
+        newSocket.connect(socketAddress, getConnectTimeoutMillis());
         return newSocket;
     }
 
@@ -129,23 +129,32 @@ public class SslSocketManager extends TcpSocketManager {
                     data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout, data.bufferSize,
                     data.socketOptions);
         }
-        
+
         @Override
         Socket createSocket(final SslFactoryData data) throws IOException {
-            return SslSocketManager.createSocket(data.host, data.port, data.connectTimeoutMillis, data.sslConfiguration,
-                    data.socketOptions);
+            List<InetSocketAddress> socketAddresses = resolver.resolveHost(data.host, data.port);
+            IOException ioe = null;
+            for (InetSocketAddress socketAddress : socketAddresses) {
+                try {
+                    return SslSocketManager.createSocket(socketAddress, data.connectTimeoutMillis,
+                            data.sslConfiguration, data.socketOptions);
+                } catch (IOException ex) {
+                    ioe = ex;
+                }
+            }
+            throw new IOException(errorMessage(data, socketAddresses) , ioe);
         }
     }
 
-    static Socket createSocket(final String host, int port, int connectTimeoutMillis,
-            final SslConfiguration sslConfiguration, SocketOptions socketOptions) throws IOException {
+    static Socket createSocket(final InetSocketAddress socketAddress, final int connectTimeoutMillis,
+            final SslConfiguration sslConfiguration, final SocketOptions socketOptions) throws IOException {
         final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfiguration);
         final SSLSocket socket = (SSLSocket) socketFactory.createSocket();
         if (socketOptions != null) {
             // Not sure which options must be applied before or after the connect() call.
             socketOptions.apply(socket);
         }
-        socket.connect(new InetSocketAddress(host, port), connectTimeoutMillis);
+        socket.connect(socketAddress, connectTimeoutMillis);
         if (socketOptions != null) {
             // Not sure which options must be applied before or after the connect() call.
             socketOptions.apply(socket);
