@@ -201,7 +201,6 @@ public class SocketReconnectTest {
 
         server1.shutdown();
         server1.join();
-        logger.error("Ignore");
 
         list.clear();
 
