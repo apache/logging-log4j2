@@ -396,6 +396,10 @@ indentation. Defaults to false.
 each record. Defaults to false. Use with eventEol=true and compact=true
 to get one record per line.
 
+|endOfLine
+|String
+|If set, overrides the default end-of-line string. E.g. set it to "\n" and use with eventEol=true and compact=true to have one record per line separated by "\n" instead of "\r\n". Defaults to null (i.e. not set).
+
 |complete
 |boolean
 |If true, the appender includes the JSON header and

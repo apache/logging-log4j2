@@ -98,7 +98,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
             final String headerPattern = toStringOrNull(getHeader());
             final String footerPattern = toStringOrNull(getFooter());
             return new JsonLayout(getConfiguration(), isLocationInfo(), isProperties(), encodeThreadContextAsList,
-                    isComplete(), isCompact(), getEventEol(), headerPattern, footerPattern, getCharset(),
+                    isComplete(), isCompact(), getEventEol(), getEndOfLine(), headerPattern, footerPattern, getCharset(),
                     isIncludeStacktrace(), isStacktraceAsString(), isIncludeNullDelimiter(),
                     getAdditionalFields(), getObjectMessageAsJsonObject());
         }
@@ -166,7 +166,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @return A JSON Layout.
      */
     public static JsonLayout createDefaultLayout() {
-        return new JsonLayout(new DefaultConfiguration(), false, false, false, false, false, false,
+        return new JsonLayout(new DefaultConfiguration(), false, false, false, false, false, false, null,
                 DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, null, false);
     }
 
@@ -177,14 +177,14 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
     private JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
                        final boolean encodeThreadContextAsList,
-                       final boolean complete, final boolean compact, final boolean eventEol,
+                       final boolean complete, final boolean compact, final boolean eventEol, final String endOfLine,
                        final String headerPattern, final String footerPattern, final Charset charset,
                        final boolean includeStacktrace, final boolean stacktraceAsString,
                        final boolean includeNullDelimiter,
                        final KeyValuePair[] additionalFields, final boolean objectMessageAsJsonObject) {
         super(config, new JsonJacksonFactory(encodeThreadContextAsList, includeStacktrace, stacktraceAsString, objectMessageAsJsonObject).newWriter(
                 locationInfo, properties, compact),
-                charset, compact, complete, eventEol,
+                charset, compact, complete, eventEol, endOfLine,
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
                 includeNullDelimiter,
