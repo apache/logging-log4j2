@@ -319,7 +319,7 @@ public class TcpSocketManager extends AbstractSocketManager {
 
         @Override
         public String toString() {
-            return "Reconnector [latch=" + latch + ", shutdown=" + shutdown + ", owner=" + owner + "]";
+            return "Reconnector [latch=" + latch + ", shutdown=" + shutdown + "]";
         }
     }
 
