@@ -46,7 +46,7 @@
       <action issue="LOG4J2-2574" dev="ggregory" type="update" due-to="Gary Gregory">
         Update MongoDB 3 module driver from 3.9.0 to 3.10.1.
       </action>
-      <action issue="LOG4J2-2592" dev="ggregory" type="update" due-to="Dávid Kaya, Gary Gregory">
+      <action issue="LOG4J2-2592" dev="ggregory" type="fix" due-to="Dávid Kaya, Gary Gregory">
         StackOverflowException when server not reachable with SocketAppender.
       </action>
     </release>
