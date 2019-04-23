@@ -133,7 +133,7 @@ public class JsonLayoutTest {
     }
 
     private void testAllFeatures(final boolean locationInfo, final boolean compact, final boolean eventEol,
-            final boolean includeContext, final boolean contextMapAslist, final boolean includeStacktrace)
+            final String endOfLine, final boolean includeContext, final boolean contextMapAslist, final boolean includeStacktrace)
             throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         // @formatter:off
@@ -144,16 +144,24 @@ public class JsonLayoutTest {
                 .setComplete(false)
                 .setCompact(compact)
                 .setEventEol(eventEol)
+                .setEndOfLine(endOfLine)
                 .setCharset(StandardCharsets.UTF_8)
                 .setIncludeStacktrace(includeStacktrace)
                 .build();
         // @formatter:off
         final String str = layout.toSerializable(expected);
         this.toPropertySeparator(compact);
-        // Just check for \n since \r might or might not be there.
-        assertEquals(str, !compact || eventEol, str.contains("\n"));
+        if (endOfLine == null) {
+            // Just check for \n since \r might or might not be there.
+            assertEquals(str, !compact || eventEol, str.contains("\n"));
+        }
+        else {
+            assertEquals(str, !compact || eventEol, str.contains(endOfLine));
+            assertEquals(str, compact && eventEol, str.endsWith(endOfLine));
+        }
         assertEquals(str, locationInfo, str.contains("source"));
         assertEquals(str, includeContext, str.contains("contextMap"));
+
         final Log4jLogEvent actual = new Log4jJsonObjectMapper(contextMapAslist, includeStacktrace, false, false).readValue(str, Log4jLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, locationInfo, includeContext, includeStacktrace);
         if (includeContext) {
@@ -453,27 +461,32 @@ public class JsonLayoutTest {
 
     @Test
     public void testLocationOffCompactOffMdcOff() throws Exception {
-        this.testAllFeatures(false, false, false, false, false, true);
+        this.testAllFeatures(false, false, false, null, false, false, true);
     }
 
     @Test
     public void testLocationOnCompactOnMdcOn() throws Exception {
-        this.testAllFeatures(true, true, false, true, false, true);
+        this.testAllFeatures(true, true, false, null, true, false, true);
     }
 
     @Test
     public void testLocationOnCompactOnEventEolOnMdcOn() throws Exception {
-        this.testAllFeatures(true, true, true, true, false, true);
+        this.testAllFeatures(true, true, true, null, true, false, true);
     }
 
     @Test
     public void testLocationOnCompactOnEventEolOnMdcOnMdcAsList() throws Exception {
-        this.testAllFeatures(true, true, true, true, true, true);
+        this.testAllFeatures(true, true, true, null, true, true, true);
     }
 
     @Test
     public void testExcludeStacktrace() throws Exception {
-        this.testAllFeatures(false, false, false, false, false, false);
+        this.testAllFeatures(false, false, false, null, false, false, false);
+    }
+
+    @Test
+    public void testLocationOnCustomEndOfLine() throws Exception {
+        this.testAllFeatures(true, true, true, "CUSTOM_END_OF_LINE", true, false, true);
     }
 
     @Test
