@@ -83,7 +83,25 @@
         "old": "method void org.apache.logging.log4j.core.layout.JsonLayout::<init>(org.apache.logging.log4j.core.config.Configuration, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String, java.lang.String, java.nio.charset.Charset, boolean)",
         "new": "method void org.apache.logging.log4j.core.layout.JsonLayout::<init>(org.apache.logging.log4j.core.config.Configuration, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String, java.lang.String, java.lang.String, java.nio.charset.Charset, boolean)",
         "justification": "LOG4J2-2337 - Allow to specify custom end-of-line for JSON layout"
-      }
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender::newBuilder()",
+        "new": "method <B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>> B org.apache.logging.log4j.core.appender.WriterAppender::newBuilder()",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender::newBuilder()",
+        "new": "method <B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>> B org.apache.logging.log4j.core.appender.WriterAppender::newBuilder()",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "method org.apache.logging.log4j.core.appender.WriterAppender.Builder org.apache.logging.log4j.core.appender.WriterAppender::newBuilder()",
+        "new": "method <B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>> B org.apache.logging.log4j.core.appender.WriterAppender::newBuilder()",
+        "typeParameter": "B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
+        "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
     ]
   }
 ]
