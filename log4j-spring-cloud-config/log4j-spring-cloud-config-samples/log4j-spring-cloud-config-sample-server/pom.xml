@@ -5,6 +5,7 @@
 
   <groupId>org.apache.logging.log4j.samples</groupId>
   <artifactId>log4j-spring-cloud-config-sample-server</artifactId>
+  <version>3.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Log4j Sample Configuration Service</name>
@@ -22,7 +23,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
     <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
-    <log4j.version>2.12.0-SNAPSHOT</log4j.version>
+    <log4j.version>3.0.0-SNAPSHOT</log4j.version>
 
 
     <!-- paths -->
