@@ -2215,4 +2215,84 @@ LoggerContext is started. For debug purposes.
 |Disables message
 pattern lookups globally when set to `true`. This is equivalent to
 defining all message patterns using `%m{nolookups}`.
+
+|[[trustStoreLocation]]log4j2.trustStoreLocation +
+([[log4j2.trustStoreLocation]]log4j2.trustStoreLocation)
+|LOG4J_TRUST_STORE_LOCATION
+|
+|The location of the trust store. If not provided the default trust store will be used.
+
+|[[trustStorePassword]]log4j2.trustStorePassword +
+([[log4j2.trustStorePassword]]log4j2.trustStorePassword)
+|LOG4J_TRUST_STORE_PASSWORD
+|
+|Password needed to access the trust store.
+
+|[[trustStorePasswordFile]]log4j2.trustStorePasswordFile +
+([[log4j2.trustStorePasswordFile]]log4j2.trustStorePasswordFile)
+|LOG4J_TRUST_STORE_PASSWORD_FILE
+|
+|The location of a file that contains the password for the trust store.
+
+|[[trustStorePasswordEnvironmentVariable]]log4j2.trustStorePasswordEnvironmentVariable +
+([[log4j2.trustStorePasswordEnvironmentVariable]]log4j2.trustStorePasswordEnvironmentVariable)
+|LOG4J_TRUST_STORE_PASSWORD_ENVIRONMENT_VARIABLE
+|
+|The name of the environment variable that contains the trust store password.
+
+|[[trustStoreType]]log4j2.trustStoreType +
+([[log4j2.trustStoreType]]log4j2.trustStoreType)
+|LOG4J_TRUST_STORE_TYPE
+|
+|The type of key store used for the trust store.
+
+|[[trustStoreKeyManagerFactoryAlgorithm]]log4j2.trustStoreKeyManagerFactoryAlgorithm +
+([[log4j2.trustStoreKeyManagerFactoryAlgorithm]]log4j2.trustStoreKeyStoreFactoryAlgorithm)
+|LOG4J_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM
+|
+|Java cryptographic algorithm.
+
+|[[keyStoreLocation]]log4j2.keyStoreLocation +
+([[log4j2.trustStoreLocation]]log4j2.trustStoreLocation)
+|LOG4J_KEY_STORE_LOCATION
+|
+|The location of the key store. If not provided the default key store will be used.
+
+|[[keyStorePassword]]log4j2.keyStorePassword +
+([[log4j2.keyStorePassword]]log4j2.keyStorePassword)
+|LOG4J_KEY_STORE_PASSWORD
+|
+|Password needed to access the trust store.
+
+|[[keyStorePasswordFile]]log4j2.keyStorePasswordFile +
+([[log4j2.keyStorePasswordFile]]log4j2.keyStorePasswordFile)
+|LOG4J_KEY_STORE_PASSWORD_FILE
+|
+|The location of a file that contains the password for the key store.
+
+|[[keyStorePasswordEnvironmentVariable]]log4j2.keyStorePasswordEnvironmentVariable +
+([[log4j2.keyStorePasswordEnvironmentVariable]]log4j2.keyStorePasswordEnvironmentVariable)
+|LOG4J_KEY_STORE_PASSWORD_ENVIRONMENT_VARIABLE
+|
+|The name of the environment variable that contains the key store password.
+
+|[[keyStoreType]]log4j2.keyStoreType +
+([[log4j2.keyStoreType]]log4j2.keyStoreType)
+|LOG4J_KEY_STORE_TYPE
+|
+|The type of key store used for the trust store.
+
+|[[keyStoreKeyManagerFactoryAlgorithm]]log4j2.keyStoreKeyManagerFactoryAlgorithm +
+([[log4j2.keyStoreKeyManagerFactoryAlgorithm]]log4j2.keyStoreKeyStoreFactoryAlgorithm)
+|LOG4J_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM
+|
+|Java cryptographic algorithm.
+
+
+|[[sslVerifyHostName]]log4j2.sslVerifyHostName +
+([[log4j2.sslVerifyHostName]]log4j2.sslVerifyHostName)
+|LOG4J_SSL_VERIFY_HOSTNAME
+|false
+|true or false if the host name should be verified
+
 |===

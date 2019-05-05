@@ -99,9 +99,9 @@ LogManager.
 
 ## Usage
 
-The JUL configuration file `logging.properties` needs the line<br>
-`handlers = org.apache.logging.log4j.jul.Log4jBridgeHandler`<br>
-and JUL logs go to log4j2. Additionally, you typically want to use to following:<br>
+The JUL configuration file `logging.properties` needs the line<br/>
+`handlers = org.apache.logging.log4j.jul.Log4jBridgeHandler`<br/>
+and JUL logs go to log4j2. Additionally, you typically want to use to following:<br/>
 `org.apache.logging.log4j.jul.Log4jBridgeHandler.propagateLevels = true`
 
 In a webapp on Tomcat (and maybe other servers, too), you may simply create a

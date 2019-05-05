@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.util.Timer;
 
 /**
  * An Appender that uses the Avro protocol to route events to Flume.
@@ -61,6 +62,9 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
 
     private final FlumeEventFactory factory;
 
+    private Timer timer = new Timer("FlumeEvent", 5000);
+    private volatile long count = 0;
+
     /**
      * Which Manager will be used by the appender instance.
      */
@@ -75,7 +79,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     private FlumeAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
             final boolean ignoreExceptions, final String includes, final String excludes, final String required,
             final String mdcPrefix, final String eventPrefix, final boolean compress, final FlumeEventFactory factory,
-            Property[] properties, final AbstractFlumeManager manager) {
+            final Property[] properties, final AbstractFlumeManager manager) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
         this.mdcIncludes = includes;
@@ -101,10 +105,25 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                 }
             }
         }
+        timer.startOrResume();
         final FlumeEvent flumeEvent = factory.createEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
         flumeEvent.setBody(getLayout().toByteArray(flumeEvent));
+        if (update()) {
+            String msg = timer.stop();
+            LOGGER.debug(msg);
+        } else {
+            timer.pause();
+        }
         manager.send(flumeEvent);
+    }
+
+    private synchronized boolean update() {
+        if (++count == 5000) {
+            count = 0;
+            return true;
+        }
+        return false;
     }
 
     @Override

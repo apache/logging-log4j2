@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="DEBUG" monitorInterval="0">
+  <Appenders>
+    <Console name="console" target="SYSTEM_OUT">
+      <JsonLayout properties="true" compact="true" eventEol="true" stackTraceAsString="true">
+      </JsonLayout>
+    </Console>
+    <Flume name="flume" ignoreExceptions="false" type="Embedded" compress="false">
+      <Property name="channel.type">memory</Property>
+      <Property name="channel.capacity">100000</Property>
+      <Property name="channel.transactionCapacity">5000</Property>
+      <Property name="sinks">agent1</Property>
+      <Property name="agent1.type">avro</Property>
+      <Property name="agent1.hostname">flume</Property>
+      <Property name="agent1.port">5050</Property>
+      <Property name="agent1.batch-size">1000</Property>
+      <Property name="processor.type">default</Property>
+      <JsonLayout properties="true" compact="true" eventEol="true">
+        <KeyValuePair key="containerId" value="\${docker:containerId}"/>
+        <KeyValuePair key="containerName" value="\${docker:containerName}"/>
+        <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+      </JsonLayout>
+    </Flume>
+    <Flume name="avro" ignoreExceptions="false" batchSize="1" compress="false">
+      <Agent host="flume" port="5050"/>
+      <JsonLayout properties="true" compact="true" eventEol="true" stackTraceAsString="true">
+        <KeyValuePair key="containerId" value="\${docker:containerId}"/>
+        <KeyValuePair key="containerName" value="\${docker:containerName}"/>
+        <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+      </JsonLayout>
+    </Flume>
+    <Flume name="avroSyslog" ignoreExceptions="false" batchSize="100" compress="false">
+      <Agent host="flume" port="5050"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" mdcId="RequestContext" appName="Sample"
+                     mdcPrefix="">
+        <LoggerFields>
+          <KeyValuePair key="containerId" value="\${docker:containerId}"/>
+          <KeyValuePair key="containerName" value="\${docker:containerName}"/>
+          <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+        </LoggerFields>
+      </RFC5424Layout>
+    </Flume>
+    <Kafka name="Kafka" topic="log-test" syncSend="false">
+      <JsonLayout properties="true" compact="true" eventEol="true">
+        <KeyValuePair key="containerId" value="\${docker:containerId}"/>
+        <KeyValuePair key="containerName" value="\${docker:containerName}"/>
+        <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+      </JsonLayout>
+      <Property name="bootstrap.servers">host.docker.internal:9092</Property>
+    </Kafka>
+    <Socket name="fluent-bit" host="fluent-bit" port="24221">
+      <JsonLayout properties="true" compact="true" eventEol="true" stackTraceAsString="true">
+        <KeyValuePair key="containerId" value="\${docker:containerId}"/>
+        <KeyValuePair key="containerName" value="\${docker:containerName}"/>
+        <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+      </JsonLayout>
+    </Socket>
+    <RollingFile name="RollingFile" fileName="/var/log/sampleapp/app.log"
+                 filePattern="/var/log/sampleapp/archive/app.log.%i">
+      <JsonLayout properties="true" compact="true" eventEol="true" stackTraceAsString="true">
+        <KeyValuePair key="containerId" value="\${docker:containerId}"/>
+        <KeyValuePair key="containerName" value="\${docker:containerName}"/>
+        <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+      </JsonLayout>
+      <SizeBasedTriggeringPolicy size="10MB" />
+      <DefaultRolloverStrategy max="5"/>
+    </RollingFile>
+    <RollingFile name="RollingSyslog" fileName="/var/log/sampleapp/syslog.log"
+                 filePattern="/var/log/sampleapp/archive/syslog.log.%i">
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" mdcId="RequestContext" appName="Sample"
+                     mdcPrefix="">
+        <LoggerFields>
+          <KeyValuePair key="containerId" value="\${docker:containerId}"/>
+          <KeyValuePair key="containerName" value="\${docker:containerName}"/>
+          <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+        </LoggerFields>
+      </RFC5424Layout>
+      <SizeBasedTriggeringPolicy size="10MB" />
+      <DefaultRolloverStrategy max="5"/>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.kafka" level="warn" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+    <Logger name="org.apache.flume" level="warn" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+    <Logger name="org.apache.avro" level="warn" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+    <Root level="DEBUG">
+      <AppenderRef ref="console"/>
+    </Root>
+  </Loggers>
+</Configuration>

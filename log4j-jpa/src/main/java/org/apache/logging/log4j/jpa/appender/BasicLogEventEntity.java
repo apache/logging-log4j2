@@ -45,7 +45,7 @@ import org.apache.logging.log4j.message.Message;
  * columns, override the necessary accessor methods defined in this class with the same annotations plus the
  * {@link javax.persistence.Column @Column} annotation to specify the column name.<br>
  * <br>
- * The {@link #getContextMap()} and {@link #getContextStack()} attributes in this entity use the
+ * The #getContextMap() and {@link #getContextStack()} attributes in this entity use the
  * {@link ContextMapAttributeConverter} and {@link ContextStackAttributeConverter}, respectively. These convert the
  * properties to simple strings that cannot be converted back to the properties. If you wish to instead convert these to
  * a reversible JSON string, override these attributes with the same annotations but use the

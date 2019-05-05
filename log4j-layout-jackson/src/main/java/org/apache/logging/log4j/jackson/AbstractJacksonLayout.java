@@ -22,15 +22,22 @@ import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.StringBuilderWriter;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -227,12 +234,7 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     protected static final String DEFAULT_EOL = "\r\n";
     protected static final String COMPACT_EOL = Strings.EMPTY;
-    private static LogEvent convertMutableToLog4jEvent(final LogEvent event) {
-        // TODO Jackson-based layouts have certain filters set up for Log4jLogEvent.
-        // TODO Need to set up the same filters for MutableLogEvent but don't know how...
-        // This is a workaround.
-        return event instanceof Log4jLogEvent ? event : Log4jLogEvent.createMemento(event);
-    }
+
     private static ResolvableKeyValuePair[] prepareAdditionalFields(final Configuration config,
             final KeyValuePair[] additionalFields) {
         if (additionalFields == null || additionalFields.length == 0) {
@@ -335,7 +337,7 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
     }
 
     public void toSerializable(final LogEvent event, final Writer writer) throws IOException {
-        objectWriter.writeValue(writer, wrapLogEvent(convertMutableToLog4jEvent(event)));
+        objectWriter.writeValue(writer, wrapLogEvent(event));
         writer.write(eol);
         if (includeNullDelimiter) {
             writer.write('\0');
@@ -349,8 +351,125 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
             final Map<String, String> additionalFieldsMap = resolveAdditionalFields(event);
             // This class combines LogEvent with AdditionalFields during serialization
             return createLogEventWithAdditionalFields(event, additionalFieldsMap);
+        } else if (event instanceof Message) {
+            // If the LogEvent implements the Messagee interface Jackson will not treat is as a LogEvent.
+            return new ReadOnlyLogEventWrapper(event);
+            // No additional fields, return original object
         }
-        // No additional fields, return original object
         return event;
+    }
+    private static class ReadOnlyLogEventWrapper implements LogEvent {
+
+        @JsonIgnore
+        private final LogEvent event;
+
+        public ReadOnlyLogEventWrapper(LogEvent event) {
+            this.event = event;
+        }
+
+        @Override
+        public LogEvent toImmutable() {
+            return event.toImmutable();
+        }
+
+        @Override
+        public ReadOnlyStringMap getContextData() {
+            return event.getContextData();
+        }
+
+        @Override
+        public ThreadContext.ContextStack getContextStack() {
+            return event.getContextStack();
+        }
+
+        @Override
+        public String getLoggerFqcn() {
+            return event.getLoggerFqcn();
+        }
+
+        @Override
+        public Level getLevel() {
+            return event.getLevel();
+        }
+
+        @Override
+        public String getLoggerName() {
+            return event.getLoggerName();
+        }
+
+        @Override
+        public Marker getMarker() {
+            return event.getMarker();
+        }
+
+        @Override
+        public Message getMessage() {
+            return event.getMessage();
+        }
+
+        @Override
+        public long getTimeMillis() {
+            return event.getTimeMillis();
+        }
+
+        @Override
+        public Instant getInstant() {
+            return event.getInstant();
+        }
+
+        @Override
+        public StackTraceElement getSource() {
+            return event.getSource();
+        }
+
+        @Override
+        public String getThreadName() {
+            return event.getThreadName();
+        }
+
+        @Override
+        public long getThreadId() {
+            return event.getThreadId();
+        }
+
+        @Override
+        public int getThreadPriority() {
+            return event.getThreadPriority();
+        }
+
+        @Override
+        public Throwable getThrown() {
+            return event.getThrown();
+        }
+
+        @Override
+        public ThrowableProxy getThrownProxy() {
+            return event.getThrownProxy();
+        }
+
+        @Override
+        public boolean isEndOfBatch() {
+            return event.isEndOfBatch();
+        }
+
+        @Override
+        public boolean isIncludeLocation() {
+            return event.isIncludeLocation();
+        }
+
+        @Override
+        public void setEndOfBatch(boolean endOfBatch) {
+
+        }
+
+        @Override
+        public void setIncludeLocation(boolean locationRequired) {
+
+        }
+
+        @Override
+        public long getNanoTime() {
+            return event.getNanoTime();
+        }
     }
 }

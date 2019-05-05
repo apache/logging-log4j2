@@ -67,6 +67,45 @@ be formatted as specified.
 </RollingFile>
 ----
 
+[#DockerLookup]
+== Docker Lookup
+
+The DockerLookup can be used to lookup attributes from the Docker container the application is running in.
+
+Log4j Docker provides access to the following container attributes:
+[cols="1m,4a"]
+|===
+|Key |Description
+
+|containerId
+|The full id assigned to the container.
+
+|containreName
+|The name assigned to the container.
+
+|imageId
+|The id assigned to the image.
+
+|imageName
+|The name assigned to the image.
+
+|shortContainerId
+|The first 12 characters of the container id.
+
+|shortImageId
+|The first 12 characters of the image id.
+|===
+
+----
+<JsonLayout properties="true" compact="true" eventEol="true">
+  <KeyValuePair key="containerId" value="${docker:containerId}"/>
+  <KeyValuePair key="containerName" value="${docker:containerName}"/>
+  <KeyValuePair key="imageName" value="${docker:imageName}"/>
+</JsonLayout>
+----
+
+This Lookup is subject to the requirements listed at link:../log4j-docker/index.html[Log4j Docker Support]
+
 [#EnvironmentLookup]
 == Environment Lookup
 

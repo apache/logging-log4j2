@@ -257,6 +257,12 @@
       <artifactId>commons-io</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Used for testing HTTP Watcher -->
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Other -->
     <dependency>
       <groupId>commons-codec</groupId>

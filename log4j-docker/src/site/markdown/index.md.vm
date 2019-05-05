@@ -1,0 +1,56 @@
+<!-- vim: set syn=markdown : -->
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+#set($dollar = '$')
+#set($h1='#')
+#set($h2='##')
+
+$h1 Log4j Docker Support
+
+Log4j supports Docker by providing a Lookup to retrieve container information.
+
+$h2 Accessing Docker
+
+The Log4j Docker support requires access to the Docker REST intrerface. In practical terms this means the
+application either needs access to unix:///var/run/docker.sock through a volume mount (not recommended),
+bind Docker to another host/port or unix socket. or use a proxy application to provide access. The
+[Log4j Spring Cloud sample application](https://github.com/apache/logging-log4j2/tree/master/log4j-spring-cloud-config/log4j-spring-cloud-config-samples/log4j-spring-cloud-config-sample-application)
+uses a socat proxy to access Docker.
+
+$h2 Lookup Attributes
+
+Log4j Docker provides access to the following container attributes:
+
+* containerId - The full id assigned to the container.
+* containerName - The name assigned to the container.
+* imageId - The id assigned to the image.
+* imageName - The name assigned to the image.
+* shortContainerId - The first 12 characters of the container id.
+* shortImageId - The first 12 characters of the image id.
+
+#set( $D = '${' )
+#set( $container = 'docker:containerId}')
+Attributes may be accessed by adding
+```
+$D$container
+```
+to the configuration. Note that docker variables are only resolved once during logging initializaton so they
+shouldn't be referenced with more than one '$' character.
+
+$h2 Requirements
+Log4j Docker requires Log4j Core, Log4j API and a minimum of Java 8.
+For more information, see [Runtime Dependencies](../runtime-dependencies.html).

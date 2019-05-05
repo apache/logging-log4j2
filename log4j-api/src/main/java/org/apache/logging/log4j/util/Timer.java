@@ -14,13 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
+package org.apache.logging.log4j.util;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
-
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  *
@@ -30,13 +27,20 @@ public class Timer implements Serializable, StringBuilderFormattable
     private static final long serialVersionUID = 9175191792439630013L;
 
     private final String name;        // The timer's name
-    private String status;            // The timer's status
-    private long startTime;           // The start time
+    public enum Status {
+        Started, Stopped, Paused
+    }
+    private Status status; // The timer's status
     private long elapsedTime;         // The elapsed time
     private final int iterations;
     private static long NANO_PER_SECOND = 1000000000L;
     private static long NANO_PER_MINUTE = NANO_PER_SECOND * 60;
     private static long NANO_PER_HOUR = NANO_PER_MINUTE * 60;
+    private ThreadLocal<Long> startTime = new ThreadLocal<Long>() {
+            @Override protected Long initialValue() {
+                return 0L;
+            }
+    };
 
 
     /**
@@ -56,48 +60,56 @@ public class Timer implements Serializable, StringBuilderFormattable
     public Timer(final String name, final int iterations)
     {
         this.name = name;
-        startTime = 0;
-        status = "Stopped";
+        status = Status.Stopped;
         this.iterations = (iterations > 0) ? iterations : 0;
     }
 
     /**
      * Start the timer.
      */
-    public void start()
+    public synchronized void start()
     {
-        startTime = System.nanoTime();
+        startTime.set(System.nanoTime());
         elapsedTime = 0;
-        status = "Start";
+        status = Status.Started;
+    }
+
+    public synchronized void startOrResume() {
+        if (status == Status.Stopped) {
+            start();
+        } else {
+            resume();
+        }
     }
 
     /**
      * Stop the timer.
      */
-    public void stop()
+    public synchronized String stop()
     {
-        elapsedTime += System.nanoTime() - startTime;
-        startTime = 0;
-        status = "Stop";
+        elapsedTime += System.nanoTime() - startTime.get();
+        startTime.set(0L);
+        status = Status.Stopped;
+        return toString();
     }
 
     /**
      * Pause the timer.
      */
-    public void pause()
+    public synchronized void pause()
     {
-        elapsedTime += System.nanoTime() - startTime;
-        startTime = 0;
-        status = "Pause";
+        elapsedTime += System.nanoTime() - startTime.get();
+        startTime.set(0L);
+        status = Status.Paused;
     }
 
     /**
      * Resume the timer.
      */
-    public void resume()
+    public synchronized void resume()
     {
-        startTime = System.nanoTime();
-        status = "Resume";
+        startTime.set(System.nanoTime());
+        status = Status.Started;
     }
 
     /**
@@ -134,7 +146,7 @@ public class Timer implements Serializable, StringBuilderFormattable
      * Resume).
      * @return the string representing the last operation performed.
      */
-    public String getStatus()
+    public Status getStatus()
     {
         return status;
     }
@@ -154,16 +166,13 @@ public class Timer implements Serializable, StringBuilderFormattable
     public void formatTo(final StringBuilder buffer) {
         buffer.append("Timer ").append(name);
         switch (status) {
-            case "Start":
+            case Started:
                 buffer.append(" started");
                 break;
-            case "Pause":
+            case Paused:
                 buffer.append(" paused");
                 break;
-            case "Resume":
-                buffer.append(" resumed");
-                break;
-            case "Stop":
+            case Stopped:
                 long nanoseconds = elapsedTime;
                 // Get elapsed hours
                 long hours = nanoseconds / NANO_PER_HOUR;
@@ -262,7 +271,8 @@ public class Timer implements Serializable, StringBuilderFormattable
         int result;
         result = (name != null ? name.hashCode() : 0);
         result = 29 * result + (status != null ? status.hashCode() : 0);
-        result = 29 * result + (int) (startTime ^ (startTime >>> 32));
+        long time = startTime.get();
+        result = 29 * result + (int) (time ^ (time >>> 32));
         result = 29 * result + (int) (elapsedTime ^ (elapsedTime >>> 32));
         return result;
     }

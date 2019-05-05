@@ -67,8 +67,8 @@ public final class KafkaAppender extends AbstractAppender {
                 AbstractLifeCycle.LOGGER.error("No layout provided for KafkaAppender");
                 return null;
             }
-            final KafkaManager kafkaManager = new KafkaManager(getConfiguration().getLoggerContext(), getName(), topic,
-                    syncSend, getPropertyArray(), key);
+            final KafkaManager kafkaManager = KafkaManager.getManager(getConfiguration().getLoggerContext(),
+                    getName(), topic, syncSend, getPropertyArray(), key);
             return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), getPropertyArray(), kafkaManager);
         }
 

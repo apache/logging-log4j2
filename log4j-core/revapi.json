@@ -2107,6 +2107,11 @@
         "old": "method java.net.Socket org.apache.logging.log4j.core.net.TcpSocketManager::createSocket(java.lang.String, int, org.apache.logging.log4j.core.net.SocketOptions, int) throws java.io.IOException",
         "new": "method java.net.Socket org.apache.logging.log4j.core.net.TcpSocketManager::createSocket(java.net.InetSocketAddress) throws java.io.IOException",
         "justification": "LOG4J2-2586 - Support the host name resolving to mulitple ip addresses"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.config.ConfiguratonFileWatcher",
+        "justification": "Fixed misspelled class name"
       }
     ]
   }

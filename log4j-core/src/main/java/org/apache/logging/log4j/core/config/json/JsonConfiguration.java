@@ -33,14 +33,12 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.ConfiguratonFileWatcher;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
-import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.Patterns;
 
 /**
@@ -70,6 +68,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             processAttributes(rootNode, root);
             final StatusConfiguration statusConfig = new StatusConfiguration().setVerboseClasses(VERBOSE_CLASSES)
                     .setStatus(getDefaultStatus());
+            int monitorIntervalSeconds = 0;
             for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
                 final String key = entry.getKey();
                 final String value = getStrSubstitutor().replace(entry.getValue());
@@ -89,18 +88,12 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 } else if ("name".equalsIgnoreCase(key)) {
                     setName(value);
                 } else if ("monitorInterval".equalsIgnoreCase(key)) {
-                    final int intervalSeconds = Integer.parseInt(value);
-                    if (intervalSeconds > 0) {
-                        getWatchManager().setIntervalSeconds(intervalSeconds);
-                        if (configFile != null) {
-                            final FileWatcher watcher = new ConfiguratonFileWatcher(this, listeners);
-                            getWatchManager().watchFile(configFile, watcher);
-                        }
-                    }
+                    monitorIntervalSeconds = Integer.parseInt(value);
                 } else if ("advertiser".equalsIgnoreCase(key)) {
                     createAdvertiser(value, configSource, buffer, "application/json");
                 }
             }
+            initializeWatchers(this, configSource, monitorIntervalSeconds);
             statusConfig.initialize();
             if (getName() == null) {
                 setName(configSource.getLocation());
