@@ -33,7 +33,6 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
-import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;

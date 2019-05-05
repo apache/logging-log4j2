@@ -28,19 +28,19 @@ public class SslConfigurationFactory {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static SslConfiguration sslConfiguration = null;
 
-    private static final String trustStorelocation = "log4j2.trustStore.location";
-    private static final String trustStorePassword = "log4j2.trustStore.password";
-    private static final String trustStorePasswordFile = "log4j2.trustStore.passwordFile";
-    private static final String trustStorePasswordEnvVar = "log4j2.trustStore.passwordEnvironmentVariable";
-    private static final String trustStoreKeyStoreType = "log4j2.trustStore.keyStoreType";
-    private static final String trustStoreKeyManagerFactoryAlgorithm = "log4j2.trustStore.keyManagerFactoryAlgorithm";
-    private static final String keyStoreLocation = "log4j2.keyStore.location";
-    private static final String keyStorePassword = "log4j2.keyStore.password";
-    private static final String keyStorePasswordFile = "log4j2.keyStore.passwordFile";
-    private static final String keyStorePasswordEnvVar = "log4j2.keyStore.passwordEnvironmentVariable";
-    private static final String keyStoreType = "log4j2.keyStore.type";
-    private static final String keyStoreKeyManagerFactoryAlgorithm = "log4j2.keyStore.keyManagerFactoryAlgorithm";
-    private static final String verifyHostName = "log4j2.ssl.verifyHostName";
+    private static final String trustStorelocation = "log4j2.trustStoreLocation";
+    private static final String trustStorePassword = "log4j2.trustStorePassword";
+    private static final String trustStorePasswordFile = "log4j2.trustStorePasswordFile";
+    private static final String trustStorePasswordEnvVar = "log4j2.trustStorePasswordEnvironmentVariable";
+    private static final String trustStoreKeyStoreType = "log4j2.trustStoreKeyStoreType";
+    private static final String trustStoreKeyManagerFactoryAlgorithm = "log4j2.trustStoreKeyManagerFactoryAlgorithm";
+    private static final String keyStoreLocation = "log4j2.keyStoreLocation";
+    private static final String keyStorePassword = "log4j2.keyStorePassword";
+    private static final String keyStorePasswordFile = "log4j2.keyStorePasswordFile";
+    private static final String keyStorePasswordEnvVar = "log4j2.keyStorePasswordEnvironmentVariable";
+    private static final String keyStoreType = "log4j2.keyStoreType";
+    private static final String keyStoreKeyManagerFactoryAlgorithm = "log4j2.keyStoreKeyManagerFactoryAlgorithm";
+    private static final String verifyHostName = "log4j2.sslVerifyHostName";
 
     static {
         PropertiesUtil props = PropertiesUtil.getProperties();

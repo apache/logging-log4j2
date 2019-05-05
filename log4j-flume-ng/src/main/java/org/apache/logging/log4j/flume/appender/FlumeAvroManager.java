@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -25,7 +24,6 @@ import org.apache.flume.api.RpcClient;
 import org.apache.flume.api.RpcClientFactory;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.util.Timer;
 
 /**
  * Manager for FlumeAvroAppenders.

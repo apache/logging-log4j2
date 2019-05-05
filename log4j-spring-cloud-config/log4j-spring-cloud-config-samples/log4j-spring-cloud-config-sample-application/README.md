@@ -4,7 +4,8 @@ This application uses Spring Boot and reads the logging configuration from the c
 project. The log4j2.xml file is located in the config-repo directory in that project.
 
 This sample packages the application in a docker container that is packaged with rabbit-mq (to allow dynamic updates
-from Spring Cloud Config), fluent-bit (to test as a log forwarder), and Apache Flume (to test as a log forwarder).
+from Spring Cloud Config), fluent-bit (to test as a log forwarder), Apache Flume (to test as a log forwarder), and
+Apache Kafka also as a log forwarder. It also installs Socat, a proxy to allow access to the Docker REST API.
 ###Prerequisites
 Note: This guide assumes you already have docker installed. If you do not you may either use homebrew to install
 it or follow the instructions at https://docs.docker.com/docker-for-mac/install/.
@@ -29,5 +30,7 @@ zookeeper-server-start /usr/local/etc/kafka/zookeeper.properties & kafka-server-
 
 ###Viewing the logs
 
-Accessing the log files varies depending on the appending being used.     
+Accessing the log files varies depending on the appending being used. When logging to the console "docker logs" may 
+be used. As configured, Flume will write to files in /var/log/flume, fluent-bit to the standard output of its container.
+Kafka output may be viewed using a tool like [Kafka Tool](http://www.kafkatool.com/).      
  

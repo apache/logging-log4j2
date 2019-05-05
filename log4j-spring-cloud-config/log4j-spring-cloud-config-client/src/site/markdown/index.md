@@ -61,19 +61,19 @@ TLS can be enabled by adding the following system properties or defining them in
 
 | Property      | Optional or Default Value | Description   |
 | ------------- |-------|:-------------| 
-| log4j2.trustStore.location  | Optional | The location of the trust store. If not provided the default trust store will be used.| 
-| log4j2.trustStore.password  | Optional | Password needed to access the trust store. |
-| log4j2.trustStore.passwordFile | Optinoal | The location of a file that contains the password for the trust store. |
-| log4j2.trustStore.passwordEnvironmentVariable | Optional | The name of the environment variable that contains the trust store password. |
-| log4j2.trustStore.keyStoreType | Required if keystore location provided | The type of key store.  |
-| log4j2.trustStore.keyManagerFactoryAlgorithm | Optional | Java cryptographic algorithm. |
-| log4j2.keyStore.location | Optional | The location of the key store. If not provided the default key store will be used.|
-| log4j2.keyStore.password | Optional | Password needed to access the key store. | 
-| log4j2.keyStore.passwordFile | Optional | The location of a file that contains the password for the key store. |
-| log4j2.keyStore.passwordEnvironmentVariable | Optional | The name of the environment variable that contains the key store password.|
-| log4j2.keyStore.type | Required if trust store location provided. | The type of key store. |
-| log4j2.keyStore.keyManagerFactoryAlgorithm | Optional | Java cryptographic algorithm.  |
-| log4j2.ssl.verifyHostName | false | true or false |
+| log4j2.trustStoreLocation  | Optional | The location of the trust store. If not provided the default trust store will be used.| 
+| log4j2.trustStorePassword  | Optional | Password needed to access the trust store. |
+| log4j2.trustStorePasswordFile | Optinoal | The location of a file that contains the password for the trust store. |
+| log4j2.trustStorePasswordEnvironmentVariable | Optional | The name of the environment variable that contains the trust store password. |
+| log4j2.trustStoreKeyStoreType | Required if keystore location provided | The type of key store.  |
+| log4j2.trustStoreKeyManagerFactoryAlgorithm | Optional | Java cryptographic algorithm. |
+| log4j2.keyStoreLocation | Optional | The location of the key store. If not provided the default key store will be used.|
+| log4j2.keyStorePassword | Optional | Password needed to access the key store. | 
+| log4j2.keyStorePasswordFile | Optional | The location of a file that contains the password for the key store. |
+| log4j2.keyStorePasswordEnvironmentVariable | Optional | The name of the environment variable that contains the key store password.|
+| log4j2.keyStoreType | Required if trust store location provided. | The type of key store. |
+| log4j2.keyStoreKeyManagerFactoryAlgorithm | Optional | Java cryptographic algorithm.  |
+| log4j2.sslVerifyHostName | false | true or false |
 
 
 

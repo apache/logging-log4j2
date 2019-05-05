@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.composite;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -29,18 +28,15 @@ import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
-import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
-import org.apache.logging.log4j.core.util.WatcherFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**

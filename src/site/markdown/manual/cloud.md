@@ -27,6 +27,10 @@ in Java applications include:
 
 1. Java stack traces are multi-line log messages. The standard docker log driver cannot handle these properly. See 
 [Docker Issue #22920](https://github.com/moby/moby/issues/22920) which was closed with the message "Don't Care".
+Solutions for this are to:
+    a. Use a docker log driver that does support multi-line log message,
+    b. Use a logging format that does not produce multi-line messages,
+    c. Log from Log4j directly to a logging forwarder or aggregator and bypass the docker logging driver.
 1. When logging to stdout in Docker, log events pass through Java's standard output handling which is then directed 
 to the operating system so that the output can be piped into a file. The overhead of all this is measurably slower
 than just writing directly to a file as can be seen by the performance results below where logging 
@@ -213,7 +217,7 @@ Log4j Docker Lookup to add the container information to each log event.
 as the Kafka Appender with syncSend set to true that only return control after the downstream agent 
 acknowledges receipt of the event. Beware that using an Appender that writes each event individually should 
 be kept to a minimum since it is much slower than sending buffered events. 
-1. Logging to files within the container is discouraged. Doing so reuires that a volume be declared in 
+1. Logging to files within the container is discouraged. Doing so requires that a volume be declared in 
 the Docker configuration and that the file be tailed by a log forwarder. However, it performs 
 better than logging to the standard output stream. If logging via TCP is not an option and
 proper multiline handling is required then consider this option.
