@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.12.0" date="2019-MM-DD" description="GA Release 2.12.0">
+      <action issue="LOG4J2-2597" dev="rgoers" type="fix">
+        Throw better exception message when both log4j-slf4j-impl and log4j-to-slf4j are present.
+      </action>
       <action issue="LOG4J2-913" dev="rgoers" type="add">
         Add support for reconfiguration via HTTP(S), Docker, and Spring Cloud Configuration.
       </action>
