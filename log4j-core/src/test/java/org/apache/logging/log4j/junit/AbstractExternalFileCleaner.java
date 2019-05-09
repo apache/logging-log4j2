@@ -166,7 +166,7 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
 
 	protected void println(final String msg) {
 		if (printStream != null) {
-			println(msg);
+			printStream.println(msg);
 		}
 	}
 
