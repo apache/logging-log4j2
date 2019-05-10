@@ -20,7 +20,9 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 
 /**
- *
+ * Primarily used in unit tests, but can be used to track elapsed time for a request or portion of any other operation
+ * so long as all the timer methods are called on the same thread in which it was started. Calling start on
+ * multiple threads will cause the the times to be aggregated.
  */
 public class Timer implements Serializable, StringBuilderFormattable
 {

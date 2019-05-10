@@ -17,10 +17,10 @@
 package org.apache.logging.log4j.core.util;
 
 import java.net.URLConnection;
+import java.util.Base64;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Base64Util;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -34,6 +34,7 @@ public class BasicAuthorizationProvider implements AuthorizationProvider {
     public static final String PASSWORD_DECRYPTOR = "log4j2.passwordDecryptor";
 
     private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Base64.Encoder encoder = Base64.getEncoder();
 
     private String authString = null;
 
@@ -52,7 +53,7 @@ public class BasicAuthorizationProvider implements AuthorizationProvider {
             }
         }
         if (userName != null && password != null) {
-            authString = "Basic " + Base64Util.encode(userName + ":" + password);
+            authString = "Basic " + encoder.encodeToString((userName + ":" + password).getBytes());
         }
     }
 

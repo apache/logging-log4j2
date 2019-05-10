@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
+import org.apache.logging.log4j.core.config.ConfigurationScheduler;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,13 +35,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
-import org.apache.logging.log4j.core.config.ConfigurationScheduler;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Manages {@link FileWatcher}s.
@@ -58,12 +58,12 @@ public class WatchManager extends AbstractLifeCycle {
     }
 
     public UUID getId() {
-    	return this.id;
-	}
+        return this.id;
+    }
 
-	public boolean hasEventListeners() {
-    	return eventServiceList.size() > 0;
-	}
+    public boolean hasEventListeners() {
+        return eventServiceList.size() > 0;
+    }
 
     /**
      * Resets all file monitors to their current last modified time. If this manager does not watch any file, nothing
@@ -77,7 +77,7 @@ public class WatchManager extends AbstractLifeCycle {
      */
     public void reset() {
         logger.debug("Resetting {}", this);
-        for (final Source source: watchers.keySet()) {
+        for (final Source source : watchers.keySet()) {
             reset(source);
         }
     }
@@ -90,8 +90,7 @@ public class WatchManager extends AbstractLifeCycle {
      * given watched file has changed during the period of time when the manager was stopped.
      * </p>
      *
-     * @param file
-     *            the file for the monitor to reset.
+     * @param file the file for the monitor to reset.
      * @since 2.11.0
      */
     public void reset(final File file) {
@@ -111,9 +110,8 @@ public class WatchManager extends AbstractLifeCycle {
      * given watched configuration has changed during the period of time when the manager was stopped.
      * </p>
      *
-     * @param source
-     *            the Source for the monitor to reset.
-     * @since 2.11.2
+     * @param source the Source for the monitor to reset.
+     * @since 2.12.0
      */
     public void reset(final Source source) {
         if (source == null) {
@@ -126,8 +124,8 @@ public class WatchManager extends AbstractLifeCycle {
                 final long lastModifiedMillis = watcher.getLastModified();
                 if (logger.isDebugEnabled()) {
                     logger.debug("Resetting file monitor for '{}' from {} ({}) to {} ({})", source.getLocation(),
-                        millisToString(monitor.lastModifiedMillis), monitor.lastModifiedMillis,
-                        millisToString(lastModifiedMillis), lastModifiedMillis);
+                            millisToString(monitor.lastModifiedMillis), monitor.lastModifiedMillis,
+                            millisToString(lastModifiedMillis), lastModifiedMillis);
                 }
                 monitor.setLastModifiedMillis(lastModifiedMillis);
             }
@@ -163,16 +161,16 @@ public class WatchManager extends AbstractLifeCycle {
                     TimeUnit.SECONDS);
         }
         for (WatchEventService service : eventServiceList) {
-        	service.subscribe(this);
-		}
+            service.subscribe(this);
+        }
     }
 
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
-		for (WatchEventService service : eventServiceList) {
-			service.unsubscribe(this);
-		}
+        for (WatchEventService service : eventServiceList) {
+            service.unsubscribe(this);
+        }
         final boolean stopped = stop(future);
         setStopped();
         return stopped;
@@ -181,8 +179,7 @@ public class WatchManager extends AbstractLifeCycle {
     /**
      * Unwatches the given file.
      *
-     * @param file
-     *            the file to stop watching.
+     * @param file the file to stop watching.
      * @since 2.11.0
      */
     public void unwatchFile(final File file) {
@@ -194,25 +191,23 @@ public class WatchManager extends AbstractLifeCycle {
      * Unwatches the given file.
      *
      * @param source the Source to stop watching.
-     *            the file to stop watching.
-     * @since 2.11.2
+     *               the file to stop watching.
+     * @since 2.12.0
      */
     public void unwatch(final Source source) {
         logger.debug("Unwatching configuration {}", source);
         watchers.remove(source);
     }
 
-	public void checkFiles() {
-		new WatchRunnable().run();
-	}
+    public void checkFiles() {
+        new WatchRunnable().run();
+    }
 
     /**
      * Watches the given file.
      *
-     * @param file
-     *            the file to watch.
-     * @param fileWatcher
-     *            the watcher to notify of file changes.
+     * @param file        the file to watch.
+     * @param fileWatcher the watcher to notify of file changes.
      */
     public void watchFile(final File file, final FileWatcher fileWatcher) {
         Watcher watcher;
@@ -228,9 +223,8 @@ public class WatchManager extends AbstractLifeCycle {
     /**
      * Watches the given file.
      *
-     * @param source the source to watch.
-     * @param watcher
-     *            the watcher to notify of file changes.
+     * @param source  the source to watch.
+     * @param watcher the watcher to notify of file changes.
      */
     public void watch(final Source source, final Watcher watcher) {
         watcher.watching(source);
@@ -243,6 +237,7 @@ public class WatchManager extends AbstractLifeCycle {
 
     /**
      * Returns a Map of the file watchers.
+     *
      * @return A Map of the file watchers.
      * @deprecated use getConfigurationWatchers.
      */
@@ -252,7 +247,7 @@ public class WatchManager extends AbstractLifeCycle {
             if (entry.getValue().getWatcher() instanceof ConfigurationFileWatcher) {
                 map.put(entry.getKey().getFile(), (FileWatcher) entry.getValue().getWatcher());
             } else {
-                map.put(entry.getKey().getFile(), new WrappedFileWatcher((FileWatcher)entry.getValue().getWatcher()));
+                map.put(entry.getKey().getFile(), new WrappedFileWatcher((FileWatcher) entry.getValue().getWatcher()));
             }
         }
         return map;
@@ -260,6 +255,7 @@ public class WatchManager extends AbstractLifeCycle {
 
     /**
      * Return the ConfigurationWaatchers.
+     *
      * @return the ConfigurationWatchers.
      * @since 2.11.2
      */
@@ -275,21 +271,21 @@ public class WatchManager extends AbstractLifeCycle {
         return new Date(millis).toString();
     }
 
-	private List<WatchEventService> getEventServices() {
-    	List<WatchEventService> list = new ArrayList<>();
-		for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-			try {
-				final ServiceLoader<WatchEventService > serviceLoader =
-					ServiceLoader.load(WatchEventService.class, classLoader);
-				for (final WatchEventService service : serviceLoader) {
-					list.add(service);
-				}
-			} catch (final Throwable ex) {
-				LOGGER.debug("Unable to retrieve WatchEventService from ClassLoader {}", classLoader, ex);
-			}
-		}
-		return list;
-	}
+    private List<WatchEventService> getEventServices() {
+        List<WatchEventService> list = new ArrayList<>();
+        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+            try {
+                final ServiceLoader<WatchEventService> serviceLoader =
+                        ServiceLoader.load(WatchEventService.class, classLoader);
+                for (final WatchEventService service : serviceLoader) {
+                    list.add(service);
+                }
+            } catch (final Throwable ex) {
+                LOGGER.debug("Unable to retrieve WatchEventService from ClassLoader {}", classLoader, ex);
+            }
+        }
+        return list;
+    }
 
     private final class WatchRunnable implements Runnable {
 
