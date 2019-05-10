@@ -18,12 +18,14 @@ package org.apache.logging.log4j.util;
 
 import java.lang.reflect.Method;
 
+import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- *
+ * Base64 encodes Strings. This utility is only necessary because the mechanism to do this changed in Java 8 and
+ * the original method was removed in Java 9.
  */
-public class Base64Util {
+public final class Base64Util {
 
     private static Method encodeMethod = null;
     private static Object encoder = null;
@@ -45,6 +47,9 @@ public class Base64Util {
         }
     }
 
+    private Base64Util() {
+    }
+
     public static String encode(String str) {
         if (str == null) {
             return null;
@@ -54,11 +59,9 @@ public class Base64Util {
             try {
                 return (String) encodeMethod.invoke(encoder, data);
             } catch (Exception ex) {
-                StatusLogger.getLogger().warn("Unable to encode String: " + ex.getMessage());
-                return str;
+                throw new LoggingException("Unable to encode String", ex);
             }
         }
-        StatusLogger.getLogger().warn("No Encoder, unable to encode string");
-        return str;
+        throw new LoggingException("No Encoder, unable to encode string");
     }
 }

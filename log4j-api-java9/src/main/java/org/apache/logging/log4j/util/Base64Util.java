@@ -20,11 +20,15 @@ import java.util.Base64;
 
 
 /**
- * C
+ * Base64 encodes Strings. This utility is only necessary because the mechanism to do this changed in Java 8 and
+ * the original method for Base64 encoding was removed in Java 9.
  */
-public class Base64Util {
+public final class Base64Util {
 
     private static final Base64.Encoder encoder = Base64.getEncoder();
+
+    private Base64Util() {
+    }
 
     public static String encode(String str) {
         return str != null ? encoder.encodeToString(str.getBytes()) : null;
