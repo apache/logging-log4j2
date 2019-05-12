@@ -71,6 +71,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
         aManager.getPatternProcessor().setCurrentFileTime(lastRegularRoll.getTime());
         LOGGER.debug("LastRollForFile {}, LastRegularRole {}", lastRollForFile, lastRegularRoll);
         aManager.getPatternProcessor().setPrevFileTime(lastRegularRoll.getTime());
+        aManager.getPatternProcessor().setTimeBased(true);
         if (checkOnStartup && lastRollForFile != null && lastRegularRoll != null &&
                 lastRollForFile.before(lastRegularRoll)) {
             lastRollDate = lastRollForFile;

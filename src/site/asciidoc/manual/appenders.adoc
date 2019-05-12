@@ -2686,12 +2686,12 @@ and falls back to Log4J initialization time instead.)
 
 SizeBased Triggering Policy
 
-The `SizeBasedTriggeringPolicy` causes a rollover once the file has
-reached the specified size. The size can be specified in bytes, with the
-suffix KB, MB or GB, for example `20MB`. The file pattern must contain
-a `%i` otherwise the target file will be overwritten on every rollover
-as the SizeBased Triggering Policy does not cause the timestamp value
-in the file name to change.
+The `SizeBasedTriggeringPolicy` causes a rollover once the file has reached the specified size. The size can be
+specified in bytes, with the suffix KB, MB or GB, for example `20MB`.
+When combined with a time based triggering policy the file pattern must contain a `%i`
+otherwise the target file will be overwritten on every rollover as the SizeBased Triggering Policy
+will not cause the timestamp value in the file name to change. When used without a time based
+triggering policy the SizeBased Triggering Policy will cause the timestamp value to change.
 
 TimeBased Triggering Policy
 
