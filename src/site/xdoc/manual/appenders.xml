@@ -3243,9 +3243,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <p>
                 The <code>SizeBasedTriggeringPolicy</code> causes a rollover once the file has reached the specified
                 size. The size can be specified in bytes, with the suffix KB, MB or GB, for example <code>20MB</code>.
-                The file pattern must contain a <code>%i</code> otherwise the target file will be overwritten on
-                every rollover as the SizeBased Triggering Policy does not cause the timestamp value
-                in the file name to change.
+                When combined with a time based triggering policy the file pattern must contain a <code>%i</code>
+                otherwise the target file will be overwritten on every rollover as the SizeBased Triggering Policy
+                will not cause the timestamp value in the file name to change. When used without a time based
+                triggering policy the SizeBased Triggering Policy will cause the timestamp value to change.
               </p>
             <h5>TimeBased Triggering Policy</h5>
               <p>

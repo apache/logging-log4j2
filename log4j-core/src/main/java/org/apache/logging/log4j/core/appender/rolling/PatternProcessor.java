@@ -57,6 +57,8 @@ public class PatternProcessor {
     private long nextFileTime = 0;
     private long currentFileTime = 0;
 
+    private boolean isTimeBased = false;
+
     private RolloverFrequency frequency = null;
 
     private final String pattern;
@@ -104,6 +106,10 @@ public class PatternProcessor {
         this.prevFileTime = copy.prevFileTime;
         this.nextFileTime = copy.nextFileTime;
         this.currentFileTime = copy.currentFileTime;
+    }
+
+    public void setTimeBased(boolean isTimeBased) {
+        this.isTimeBased = isTimeBased;
     }
 
     public long getCurrentFileTime() {
@@ -213,7 +219,7 @@ public class PatternProcessor {
     }
 
     public void updateTime() {
-    	if (nextFileTime != 0) {
+    	if (nextFileTime != 0 || !isTimeBased) {
 			prevFileTime = nextFileTime;
 		}
     }

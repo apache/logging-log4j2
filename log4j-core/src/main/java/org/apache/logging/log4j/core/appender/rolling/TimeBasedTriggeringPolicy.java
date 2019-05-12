@@ -115,6 +115,7 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
 
         // LOG4J2-531: call getNextTime twice to force initialization of both prevFileTime and nextFileTime
         aManager.getPatternProcessor().getNextTime(current, interval, modulate);
+        aManager.getPatternProcessor().setTimeBased(true);
 
         nextRolloverMillis = ThreadLocalRandom.current().nextLong(0, 1 + maxRandomDelayMillis)
                 + aManager.getPatternProcessor().getNextTime(current, interval, modulate);
