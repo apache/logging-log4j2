@@ -69,8 +69,8 @@ public class ValidatingPluginWithFailoverTest {
         final StoringStatusListener listener = new StoringStatusListener();
         // @formatter:off
         final PluginBuilder builder = new PluginBuilder(plugin).
-                withConfiguration(new NullConfiguration()).
-                withConfigurationNode(node);
+                setConfiguration(new NullConfiguration()).
+                setConfigurationNode(node);
         // @formatter:on
         StatusLogger.getLogger().registerListener(listener);
 
