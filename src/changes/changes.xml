@@ -72,6 +72,10 @@
       <action issue="LOG4J2-2598" dev="ggregory" type="fix" due-to="Gary Gregory">
         java.lang.StackOverflowError at org.apache.logging.log4j.junit.AbstractExternalFileCleaner.println(AbstractExternalFileCleaner.java:169).
       </action>
+      <action issue="LOG4J2-2564" dev="ckozak" type="fix">
+        MapPatternConverter is properly created from the '%K', '%map', and '%MAP' patterns.
+        PatternConverter instanceOf methods with unknown parameter types no longer elide those with known parameters.
+      </action>
     </release>
     <release version="2.11.2" date="2019-02-04" description="GA Release 2.11.2">
       <action issue="LOG4J2-2500" dev="rgoers" type="fix">

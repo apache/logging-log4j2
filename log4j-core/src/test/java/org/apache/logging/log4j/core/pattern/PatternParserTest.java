@@ -406,4 +406,13 @@ public class PatternParserTest {
         assertEquals("|", options.getSeparator());
     }
 
+    // LOG4J2-2564: Multiple newInstance methods.
+    @Test
+    public void testMapPatternConverter() {
+        final List<PatternFormatter> formatters = parser.parse("%K");
+        assertNotNull(formatters);
+        assertTrue(formatters.size() == 1);
+        PatternFormatter formatter = formatters.get(0);
+        assertTrue("Expected a MapPatternConverter", formatter.getConverter() instanceof MapPatternConverter);
+    }
 }
