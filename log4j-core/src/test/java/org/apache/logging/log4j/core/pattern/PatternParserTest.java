@@ -33,8 +33,8 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
-import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.SystemNanoClock;
+import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
@@ -406,4 +406,13 @@ public class PatternParserTest {
         assertEquals("|", options.getSeparator());
     }
 
+    // LOG4J2-2564: Multiple newInstance methods.
+    @Test
+    public void testMapPatternConverter() {
+        final List<PatternFormatter> formatters = parser.parse("%K");
+        assertNotNull(formatters);
+        assertTrue(formatters.size() == 1);
+        PatternFormatter formatter = formatters.get(0);
+        assertTrue("Expected a MapPatternConverter", formatter.getConverter() instanceof MapPatternConverter);
+    }
 }
