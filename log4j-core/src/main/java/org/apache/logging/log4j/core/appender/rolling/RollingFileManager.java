@@ -344,7 +344,12 @@ public class RollingFileManager extends FileManager {
     }
 
     protected void createFileAfterRollover() throws IOException  {
-        setOutputStream(createOutputStream());
+        try {
+            Thread.sleep(1L);  // Windows requires delay to prevent log message loss during rapid rollover.
+        } catch (InterruptedException iex) {
+            // Don't care
+        }
+        setOutputStream(createOutputStream(initialTime));
     }
 
     /**

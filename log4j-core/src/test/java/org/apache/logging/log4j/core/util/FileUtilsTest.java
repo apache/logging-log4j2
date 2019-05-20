@@ -24,7 +24,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.BasicFileAttributeView;
 
 import org.junit.Test;
 
@@ -84,6 +90,71 @@ public class FileUtilsTest {
         final File file = FileUtils.fileFromUri(uri);
         assertEquals("this file does not exist.xml", file.getName());
         assertFalse("file does not exist", file.exists());
+    }
+
+    /**
+     * Test FileUtils.updateFileCreationTime() and confirm proper behaviour.
+     * 
+     * Note: This unit test will only be effective when running on an OS that
+     *   supports the creationTime attribute for its filesystems (e.g. Windows).
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testUpdateFileCreationTime() throws Exception {
+        final String textFileName = "testFileForCreationTime.txt";
+        final String textFilePath = "target/" + textFileName;
+        final File file = new File(textFilePath);
+        final long currentTimeMS = System.currentTimeMillis();
+        try {
+            assertEquals(textFileName, file.getName());
+            assertFalse("test text file exists ?", file.exists());
+            assertTrue("test text file creation failed ?", file.createNewFile());
+            final Path filePath = Paths.get(textFilePath);
+            final BasicFileAttributeView view = Files.getFileAttributeView(filePath, BasicFileAttributeView.class);
+            if (view != null) {
+                BasicFileAttributes attributes;
+                final long originalAttributeCreationTimeAsMS;
+                long attributeCreationTimeAsMS;
+                long changeCreationTimeMS;
+                try {
+                    attributes = view.readAttributes();  // Read attributes after file creation
+                    originalAttributeCreationTimeAsMS = attributes.creationTime().toMillis();  // 0L (usually) means unsupported attribute
+                    if (originalAttributeCreationTimeAsMS != 0L) {
+                        assertTrue("file creationTime not >= test currentTimeMS ?", originalAttributeCreationTimeAsMS >= currentTimeMS);
+                        // Attempt to change creationTime with a value under the threshold of 1250ms.
+                        changeCreationTimeMS = originalAttributeCreationTimeAsMS - 1000;  // 1000ms is under threshold
+                        assertFalse("update reported file creationTime change for parameter under the 1250ms threshold ?",
+                                FileUtils.updateFileCreationTime(filePath, changeCreationTimeMS));
+                        attributes = view.readAttributes();  // Re-read attributes
+                        attributeCreationTimeAsMS = attributes.creationTime().toMillis();
+                        assertEquals("current creationTime not equal to original creationTime after false update ?",
+                                originalAttributeCreationTimeAsMS, attributeCreationTimeAsMS);
+                        // Attempt to change creationTime with a value 120000ms (2 minutes) "in the past".
+                        changeCreationTimeMS = currentTimeMS - 120000;  // Set creationTime to two minute in the past
+                        assertTrue("update failed to change file creationTime (1st check) ?",
+                                FileUtils.updateFileCreationTime(filePath, changeCreationTimeMS));
+                        attributes = view.readAttributes();  // Re-read attributes
+                        attributeCreationTimeAsMS = attributes.creationTime().toMillis();
+                        assertEquals("current creationTime not equal to updated creationTime (1st check) ?",
+                                changeCreationTimeMS, attributeCreationTimeAsMS);
+                        // Attempt to change creationTime with a value 120000ms (2 minutes) "in the future".
+                        changeCreationTimeMS = currentTimeMS + 120000;  // Two minutes in the future
+                        assertTrue("update failed to change file creationTime (2nd check) ?",
+                                FileUtils.updateFileCreationTime(filePath, changeCreationTimeMS));
+                        attributes = view.readAttributes();  // Re-read attributes
+                        attributeCreationTimeAsMS = attributes.creationTime().toMillis();
+                        assertEquals("current creationTime not equal to updated creationTime (2nd check) ?",
+                                changeCreationTimeMS, attributeCreationTimeAsMS);
+                    } // Else creationTime unsupported by OS.
+                } catch (final UnsupportedOperationException uoe) {
+                  // Possible failure on OSes that don't support BasicFileAttributeView.
+                }
+            }
+        } finally {
+            file.delete();  // Clean-up
+            assertFalse("test text file exists still exists ?", file.exists());
+        }
     }
 
 }

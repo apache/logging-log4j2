@@ -27,6 +27,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.nio.file.attribute.GroupPrincipal;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFilePermission;
@@ -47,6 +50,8 @@ public final class FileUtils {
     private static final String PROTOCOL_FILE = "file";
 
     private static final String JBOSS_FILE = "vfsfile";
+
+    private static final long FILE_CREATION_TIME_MS_MAX_DELTA = 1250L;
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -194,4 +199,39 @@ public final class FileUtils {
     public static boolean isFilePosixAttributeViewSupported() {
         return FileSystems.getDefault().supportedFileAttributeViews().contains("posix");
     }
+
+    /**
+     * Update file creation time attribute to match the provided creationTimeAsMS, but only if the
+     *   file creationTime attribute read from the path (file) is nonzero (0L indicates creationTime is not
+     *   supported by the underlying OS).  In addition, if the existing creation time differs by less than
+     *   FILE_CREATION_TIME_MS_MAX_DELTA, the method will <b>not</b> attempt a change (already close enough).
+     * 
+     * Note: May be used to compensate for Windows "file system tunneling", where a new file's creationTime
+     *   attribute matches that of an old moved/deleted file of the same name (instead of the expected
+     *   current system time as the creationTime).  See the blog at the site below for further details:
+     *   <a href="https://devblogs.microsoft.com/oldnewthing/20050715-14/?p=34923">MS devblogs article</a>.
+     *
+     * @param path Target path
+     * @param creationTimeAsMS Creation time represented as milliseconds
+     * @return true upon success, false otherwise (failure, unsupported attribute, within delta)
+     */
+    public static boolean updateFileCreationTime(final Path path, final long creationTimeAsMS) throws IOException {
+        boolean result = false;
+        final BasicFileAttributeView view = Files.getFileAttributeView(path, BasicFileAttributeView.class);
+        if (view != null) {
+            try {
+                final BasicFileAttributes attributes = view.readAttributes();
+                final long attributeCreationTimeAsMS = attributes.creationTime().toMillis();  // 0L (usually) means unsupported attribute
+                if (attributeCreationTimeAsMS != 0L && 
+                        Math.abs(attributeCreationTimeAsMS - creationTimeAsMS) > FILE_CREATION_TIME_MS_MAX_DELTA) {
+                    view.setTimes(attributes.lastModifiedTime(), attributes.lastAccessTime(), FileTime.fromMillis(creationTimeAsMS));
+                    result = true;  // Successfully changed
+                } // Else creationTime unsupported or already within FILE_CREATION_TIME_MS_MAX_DELTA.
+            } catch (final UnsupportedOperationException | IOException | SecurityException multiCatchEx) {
+                // Possible failures (result false).
+            }
+        }
+        return result;
+    }
+
 }

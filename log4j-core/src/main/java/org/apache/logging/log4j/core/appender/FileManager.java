@@ -181,12 +181,41 @@ public class FileManager extends OutputStreamManager {
                 createOnDemand, advertiseUri, layout, filePermissions, fileOwner, fileGroup, configuration), FACTORY));
     }
 
+    /**
+     * Creates an OutputStream for the file.  The file creationTime attribute will be unchanged
+     *   (OS default for a new file, existing value for an existing file).
+     * 
+     * @return
+     * @throws IOException 
+     */
     @Override
     protected OutputStream createOutputStream() throws IOException {
+        return createOutputStream(Long.MIN_VALUE);
+    }
+
+    /**
+     * Creates an OutputStream for the file.  With a creationTime parameter of Long.MIN_VALUE the
+     *   file creationTime attribute will be unchanged (OS default for a new file, existing attribute
+     *   value for an existing file).
+     * 
+     * For any other creationTime parameter value this method attempts to set the file creationTime
+     *   attribute to the parameter value (provided the OS supports the creationTime attribute).
+     * 
+     * @param creationTime in milliseconds.  Long.MIN_VALUE specifies OS default for new files, no change for existing files
+     * @return An OutputStream for the file (with specific or OS default creation time)
+     * @throws IOException
+     */
+    protected OutputStream createOutputStream(final long creationTime) throws IOException {
         final String filename = getFileName();
         LOGGER.debug("Now writing to {} at {}", filename, new Date());
         final FileOutputStream fos = new FileOutputStream(filename, isAppend);
-        defineAttributeView(Paths.get(filename));
+        final Path filePath = Paths.get(filename);
+        defineAttributeView(filePath);
+        if (Long.MIN_VALUE != creationTime) {
+            final boolean attributeChanged = FileUtils.updateFileCreationTime(filePath, creationTime);
+            LOGGER.debug("File {}, attempted set of creationTime to {} - result: {}", filename,
+                    new Date(creationTime), attributeChanged);
+        }
         return fos;
     }
 
