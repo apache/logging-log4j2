@@ -2251,6 +2251,13 @@ public class AwesomeTest {
         logger call blocks until the event can be added to the queue.</p>
       <p>Specify <tt>Discard</tt> to drop events whose level is equal or less than the threshold level
         (INFO by default) when the queue is full.</p>
+      <p>Specify <tt>Synchronous</tt> to block until events can be logged on the
+        calling thread, avoiding the asynchronous logging queue entirely.
+        This results in lines logged out of order as synchronous events may
+        be persisted before earlier events, even from the same thread,
+        which wait in the queue. When many threads are concurrently logging
+        this policy will result in lower CPU utilization than the default
+        policy.</p>
     </td>
   </tr>
   <tr>
