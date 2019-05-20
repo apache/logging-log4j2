@@ -76,6 +76,9 @@
         MapPatternConverter is properly created from the '%K', '%map', and '%MAP' patterns.
         PatternConverter instanceOf methods with unknown parameter types no longer elide those with known parameters.
       </action>
+      <action issue="LOG4J2-2609" dev="ckozak" type="add">
+        Implement "Synchronous" AsyncQueueFullPolicy. AsyncQueueFullPolicy short values are case insensitive.
+      </action>
     </release>
     <release version="2.11.2" date="2019-02-04" description="GA Release 2.11.2">
       <action issue="LOG4J2-2500" dev="rgoers" type="fix">
