@@ -19,9 +19,12 @@ package org.apache.logging.log4j.core.async;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.util.Locale;
 
 import static org.junit.Assert.*;
 
@@ -32,7 +35,8 @@ import static org.junit.Assert.*;
 public class AsyncQueueFullPolicyFactoryTest {
 
     @Before
-    public void setUp() throws Exception {
+    @After
+    public void resetProperties() throws Exception {
         System.clearProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER);
         System.clearProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL);
         PropertiesUtil.getProperties().reload();
@@ -105,5 +109,19 @@ public class AsyncQueueFullPolicyFactoryTest {
         System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 DoesNotImplementInterface.class.getName());
         assertEquals(DefaultAsyncQueueFullPolicy.class, AsyncQueueFullPolicyFactory.create().getClass());
+    }
+
+    @Test
+    public void testCreateSynchronousRouter() {
+        System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
+                AsyncQueueFullPolicyFactory.PROPERTY_VALUE_SYNCHRONOUS_ASYNC_EVENT_ROUTER);
+        assertTrue(AsyncQueueFullPolicyFactory.create() instanceof SynchronousAsyncQueueFullPolicy);
+    }
+
+    @Test
+    public void testCreateSynchronousRouterCaseInsensitive() {
+        System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
+                AsyncQueueFullPolicyFactory.PROPERTY_VALUE_SYNCHRONOUS_ASYNC_EVENT_ROUTER.toLowerCase(Locale.ENGLISH));
+        assertTrue(AsyncQueueFullPolicyFactory.create() instanceof SynchronousAsyncQueueFullPolicy);
     }
 }

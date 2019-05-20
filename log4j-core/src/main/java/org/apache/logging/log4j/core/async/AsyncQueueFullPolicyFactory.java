@@ -47,6 +47,7 @@ public class AsyncQueueFullPolicyFactory {
     static final String PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER = "Default";
     static final String PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER = "Discard";
     static final String PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL = "log4j2.DiscardThreshold";
+    static final String PROPERTY_VALUE_SYNCHRONOUS_ASYNC_EVENT_ROUTER = "Synchronous";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -66,17 +67,28 @@ public class AsyncQueueFullPolicyFactory {
      */
     public static AsyncQueueFullPolicy create() {
         final String router = PropertiesUtil.getProperties().getStringProperty(PROPERTY_NAME_ASYNC_EVENT_ROUTER);
-        if (router == null || PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER.equals(router)
-                || DefaultAsyncQueueFullPolicy.class.getSimpleName().equals(router)
-                || DefaultAsyncQueueFullPolicy.class.getName().equals(router)) {
+        if (router == null || isRouterSelected(
+                router, DefaultAsyncQueueFullPolicy.class, PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER)) {
             return new DefaultAsyncQueueFullPolicy();
         }
-        if (PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER.equals(router)
-                || DiscardingAsyncQueueFullPolicy.class.getSimpleName().equals(router)
-                || DiscardingAsyncQueueFullPolicy.class.getName().equals(router)) {
+        if (isRouterSelected(
+                router, DiscardingAsyncQueueFullPolicy.class, PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER)) {
             return createDiscardingAsyncQueueFullPolicy();
         }
+        if (isRouterSelected(
+                router, SynchronousAsyncQueueFullPolicy.class, PROPERTY_VALUE_SYNCHRONOUS_ASYNC_EVENT_ROUTER)) {
+            return new SynchronousAsyncQueueFullPolicy();
+        }
         return createCustomRouter(router);
+    }
+
+    private static boolean isRouterSelected(
+            String propertyValue,
+            Class<? extends AsyncQueueFullPolicy> policy,
+            String shortPropertyValue) {
+        return propertyValue != null && (shortPropertyValue.equalsIgnoreCase(propertyValue)
+                || policy.getName().equals(propertyValue)
+                || policy.getSimpleName().equals(propertyValue));
     }
 
     private static AsyncQueueFullPolicy createCustomRouter(final String router) {
