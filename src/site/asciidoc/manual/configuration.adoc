@@ -2101,6 +2101,14 @@ to the queue.
 Specify `Discard` to drop events whose level is equal or less than the
 threshold level (INFO by default) when the queue is full.
 
+Specify `Synchronous` to block until events can be logged on the
+calling thread, avoiding the asynchronous logging queue entirely.
+This results in lines logged out of order as synchronous events may
+be persisted before earlier events, even from the same thread,
+which wait in the queue. When many threads are concurrently logging
+this policy will result in lower CPU utilization than the default
+policy.
+
 |[[discardThreshold]]log4j2.discardThreshold +
 ([[log4j2.DiscardThreshold]]log4j2.DiscardThreshold)
 |LOG4J_DISCARD_THRESHOLD
