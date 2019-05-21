@@ -178,7 +178,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         final EventRoute eventRoute = loggerDisruptor.getEventRoute(translator.level);
         switch (eventRoute) {
             case ENQUEUE:
-                loggerDisruptor.enqueueLogMessageInfo(translator);
+                loggerDisruptor.enqueueLogMessageWhenQueueFull(translator);
                 break;
             case SYNCHRONOUS:
                 logMessageInCurrentThread(translator.fqcn, translator.level, translator.marker, translator.message,
@@ -328,7 +328,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         final EventRoute eventRoute = loggerDisruptor.getEventRoute(level);
         switch (eventRoute) {
             case ENQUEUE:
-                loggerDisruptor.getDisruptor().getRingBuffer().publishEvent(this,
+                loggerDisruptor.enqueueLogMessageWhenQueueFull(this,
                         this, // asyncLogger: 0
                         location, // location: 1
                         fqcn, // 2
