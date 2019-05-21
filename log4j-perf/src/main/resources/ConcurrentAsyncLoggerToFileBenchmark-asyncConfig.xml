@@ -22,8 +22,8 @@
     </RandomAccessFile>
   </Appenders>
   <Loggers>
-    <Root level="info" includeLocation="false">
+    <AsyncRoot level="info" includeLocation="false">
       <appender-ref ref="RandomAccessFile"/>
-    </Root>
+    </AsyncRoot>
   </Loggers>
 </Configuration>
