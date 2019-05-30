@@ -79,6 +79,9 @@
       <action issue="LOG4J2-2611" dev="ckozak" type="add">
         AsyncQueueFullPolicy configuration short values "Default" and "Discard" are case insensitive to avoid confusion.
       </action>
+      <action issue="LOG4J2-2612" dev="ggregory" type="fix">
+        NullPointerException at org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager.writeInternal(JdbcDatabaseManager.java:803).
+      </action>
     </release>
     <release version="2.11.2" date="2019-02-04" description="GA Release 2.11.2">
       <action issue="LOG4J2-2500" dev="rgoers" type="fix">
