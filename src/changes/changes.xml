@@ -388,6 +388,9 @@
       <action issue="LOG4J2-2598" dev="ggregory" type="fix" due-to="Gary Gregory">
         java.lang.StackOverflowError at org.apache.logging.log4j.junit.AbstractExternalFileCleaner.println(AbstractExternalFileCleaner.java:169).
       </action>
+      <action issue="LOG4J2-2612" dev="ggregory" type="fix">
+        NullPointerException at org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager.writeInternal(JdbcDatabaseManager.java:803).
+      </action>
     </release>
     <release version="2.12.0" date="2019-MM-DD" description="GA Release 2.12.0">
       <action issue="LOG4J2-2561" dev="rgoers" type="fix" due-to="Ulrich Enslin">
@@ -414,8 +417,11 @@
       <action dev="ggregory" type="update" due-to="Gary Gregory">
         Update tests from H2 1.4.197 to 1.4.199.
       </action>
-      <action issue="LOG4J2-2570" dev="ggregory" type="fix" due-to="Gary Gregory">
+      <action issue="LOG4J2-2570" dev="ggregory" type="update" due-to="Gary Gregory">
         Update Jackson from 2.9.7 to 2.9.8.
+      </action>
+      <action issue="LOG4J2-2574" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update MongoDB 3 module driver from 3.9.0 to 3.10.1.
       </action>
       <action issue="LOG4J2-2592" dev="ggregory" type="fix" due-to="Dávid Kaya, Gary Gregory">
         StackOverflowException when server not reachable with SocketAppender.
@@ -435,6 +441,9 @@
       </action>
       <action issue="LOG4J2-2611" dev="ckozak" type="add">
         AsyncQueueFullPolicy configuration short values "Default" and "Discard" are case insensitive to avoid confusion.
+      </action>
+      <action issue="LOG4J2-2612" dev="ggregory" type="fix">
+        NullPointerException at org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager.writeInternal(JdbcDatabaseManager.java:803).
       </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">

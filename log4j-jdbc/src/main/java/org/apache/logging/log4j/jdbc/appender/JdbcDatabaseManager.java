@@ -25,6 +25,7 @@ import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -412,13 +413,13 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     private void checkConnection() {
         boolean connClosed = true;
         try {
-            connClosed = this.connection == null || this.connection.isClosed();
+            connClosed = isClosed(this.connection);
         } catch (final SQLException e) {
             // Be quiet
         }
         boolean stmtClosed = true;
         try {
-            stmtClosed = this.statement == null || this.statement.isClosed();
+            stmtClosed = isClosed(this.statement);
         } catch (final SQLException e) {
             // Be quiet
         }
@@ -441,28 +442,28 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     }
 
     protected void closeResources(final boolean logExceptions) {
+        final PreparedStatement tempPreparedStatement = this.statement;
+        this.statement = null;
         try {
             // Closing a statement returns it to the pool when using Apache Commons DBCP.
             // Closing an already closed statement has no effect.
-            Closer.close(this.statement);
+            Closer.close(tempPreparedStatement);
         } catch (final Exception e) {
             if (logExceptions) {
                 logWarn("Failed to close SQL statement logging event or flushing buffer", e);
             }
-        } finally {
-            this.statement = null;
         }
 
+        final Connection tempConnection = this.connection;
+        this.connection = null;
         try {
             // Closing a connection returns it to the pool when using Apache Commons DBCP.
             // Closing an already closed connection has no effect.
-            Closer.close(this.connection);
+            Closer.close(tempConnection);
         } catch (final Exception e) {
             if (logExceptions) {
                 logWarn("Failed to close database connection logging event or flushing buffer", e);
             }
-        } finally {
-            this.connection = null;
         }
     }
 
@@ -586,6 +587,28 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                         getClass().getSimpleName(), mdStatement);
             }
         }
+    }
+
+    /**
+     * Checks if a statement is closed. A null statement is considered closed.
+     *
+     * @param statement The statement to check.
+     * @return true if a statement is closed, false if null.
+     * @throws SQLException if a database access error occurs
+     */
+    private boolean isClosed(final Statement statement) throws SQLException {
+        return statement == null || statement.isClosed();
+    }
+
+    /**
+     * Checks if a connection is closed. A null connection is considered closed.
+     *
+     * @param connection The connection to check.
+     * @return true if a connection is closed, false if null.
+     * @throws SQLException if a database access error occurs
+     */
+    private boolean isClosed(final Connection connection) throws SQLException {
+        return connection == null || connection.isClosed();
     }
 
     private void reconnectOn(final Exception exception) {
@@ -744,7 +767,10 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         } finally {
             // Release ASAP
             try {
-                statement.clearParameters();
+                // statement can be null when a AppenderLoggingException is thrown at the start of this method
+                if (statement != null) {
+                    statement.clearParameters();
+                }
             } catch (final SQLException e) {
                 // Ignore
             }
