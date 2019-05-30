@@ -85,6 +85,9 @@
       <action issue="LOG4J2-2618" dev="ggregory" type="fix">
         Possible ClassCastException in org.apache.logging.log4j.core.script.ScriptManager.ScriptManager(Configuration, WatchManager)
       </action>
+      <action issue="LOG4J2-2619" dev="ggregory" type="update">
+        Update Jackson from 2.9.8 to 2.9.9.
+      </action>
     </release>
     <release version="2.11.2" date="2019-02-04" description="GA Release 2.11.2">
       <action issue="LOG4J2-2500" dev="rgoers" type="fix">
