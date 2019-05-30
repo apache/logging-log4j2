@@ -82,6 +82,9 @@
       <action issue="LOG4J2-2612" dev="ggregory" type="fix">
         NullPointerException at org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager.writeInternal(JdbcDatabaseManager.java:803).
       </action>
+      <action issue="LOG4J2-2618" dev="ggregory" type="fix">
+        Possible ClassCastException in org.apache.logging.log4j.core.script.ScriptManager.ScriptManager(Configuration, WatchManager)
+      </action>
     </release>
     <release version="2.11.2" date="2019-02-04" description="GA Release 2.11.2">
       <action issue="LOG4J2-2500" dev="rgoers" type="fix">

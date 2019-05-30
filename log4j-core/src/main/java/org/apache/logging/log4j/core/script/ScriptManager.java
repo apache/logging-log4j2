@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -80,7 +81,7 @@ public class ScriptManager implements FileWatcher, Serializable {
             final int factorySize = factories.size();
             logger.debug("Installed {} script engine{}", factorySize, factorySize != 1 ? "s" : Strings.EMPTY);
             for (final ScriptEngineFactory factory : factories) {
-                String threading = (String) factory.getParameter(KEY_THREADING);
+                String threading = Objects.toString(factory.getParameter(KEY_THREADING), null);
                 if (threading == null) {
                     threading = "Not Thread Safe";
                 }
