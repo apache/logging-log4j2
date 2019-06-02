@@ -25,9 +25,11 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileOwnerAttributeView;
+import java.nio.file.attribute.FileTime;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -185,7 +187,14 @@ public class FileManager extends OutputStreamManager {
     protected OutputStream createOutputStream() throws IOException {
         final String filename = getFileName();
         LOGGER.debug("Now writing to {} at {}", filename, new Date());
-        final FileOutputStream fos = new FileOutputStream(filename, isAppend);
+        final File file = new File(filename);
+        final FileOutputStream fos = new FileOutputStream(file, isAppend);
+        try {
+            FileTime now = FileTime.fromMillis(System.currentTimeMillis());
+            Files.setAttribute(file.toPath(), "creationTime", now);
+        } catch (Exception ex) {
+            LOGGER.warn("Unable to set current file tiem for {}", filename);
+        }
         defineAttributeView(Paths.get(filename));
         return fos;
     }

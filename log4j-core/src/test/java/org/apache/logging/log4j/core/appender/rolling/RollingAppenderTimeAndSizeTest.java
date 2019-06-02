@@ -22,10 +22,13 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -60,8 +63,11 @@ public class RollingAppenderTimeAndSizeTest {
     @Test
     public void testAppender() throws Exception {
 		Random rand = new Random();
+		final File logFile = new File("target/rolling3/rollingtest.log");
+		assertTrue("target/rolling3/rollingtest.log does not exist", logFile.exists());
+		FileTime time = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
 		for (int j=0; j < 100; ++j) {
-			int count = rand.nextInt(100);
+			int count = rand.nextInt(50);
 			for (int i = 0; i < count; ++i) {
 				logger.debug("This is test message number " + i);
 			}
@@ -89,8 +95,8 @@ public class RollingAppenderTimeAndSizeTest {
 			previous = fileParts[1];
 			assertEquals("Incorrect file name. Expected counter value of " + fileCounter + " in " + actual,
 				Integer.toString(fileCounter), fileParts[2]);
-
-
 		}
+		FileTime endTime = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
+		assertNotEquals("Creation times are equal", time, endTime);
     }
 }

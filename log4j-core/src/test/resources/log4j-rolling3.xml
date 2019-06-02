@@ -32,6 +32,7 @@
         <TimeBasedTriggeringPolicy />
         <SizeBasedTriggeringPolicy size="500" />
       </Policies>
+      <DefaultRolloverStrategy max="9"/>
     </RollingFile>
     <List name="List">
       <ThresholdFilter level="error"/>
