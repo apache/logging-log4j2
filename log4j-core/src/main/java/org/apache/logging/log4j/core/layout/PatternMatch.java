@@ -20,10 +20,10 @@ package org.apache.logging.log4j.core.layout;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 
 /**
  * PatternMatch configuration item.
@@ -72,7 +72,7 @@ public final class PatternMatch {
         return new Builder();
     }
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<PatternMatch>, Serializable {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<PatternMatch>, Serializable {
 
         private static final long serialVersionUID = 1L;
 

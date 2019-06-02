@@ -24,10 +24,10 @@ import java.util.List;
 import org.apache.commons.dbcp2.PoolableConnectionFactory;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -39,7 +39,7 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "PoolableConnectionFactory", category = Core.CATEGORY_NAME, printObject = true)
 public class PoolableConnectionFactoryConfig {
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<PoolableConnectionFactoryConfig> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<PoolableConnectionFactoryConfig> {
 
         private static final PoolableConnectionFactory DEFAULT = new PoolableConnectionFactory(null, null);
 

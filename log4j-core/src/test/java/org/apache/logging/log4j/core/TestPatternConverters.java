@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.pattern.ConverterKeys;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.util.StringBuilders;

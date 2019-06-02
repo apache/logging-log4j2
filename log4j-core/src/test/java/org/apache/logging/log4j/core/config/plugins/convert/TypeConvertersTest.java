@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.net.Facility;
+import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -45,7 +46,7 @@ import org.junit.runners.Parameterized;
 import static org.junit.Assert.*;
 
 /**
- * Tests {@link TypeConverters}.
+ * Tests {@link CoreTypeConverters}.
  */
 @RunWith(Parameterized.class)
 public class TypeConvertersTest {

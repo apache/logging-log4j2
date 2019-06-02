@@ -23,13 +23,13 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.appender.db.ColumnMapping;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.net.SocketAddress;
 import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
 /**
  * Appender plugin that uses a Cassandra database.
@@ -51,7 +51,7 @@ public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager
     }
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
-        implements org.apache.logging.log4j.core.util.Builder<CassandraAppender> {
+        implements org.apache.logging.log4j.plugins.util.Builder<CassandraAppender> {
 
         /**
          * List of Cassandra node contact points. Addresses without a port (or port set to 0) will use the default

@@ -51,13 +51,13 @@ import org.apache.flume.event.SimpleEvent;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.util.Strings;
 
 /**

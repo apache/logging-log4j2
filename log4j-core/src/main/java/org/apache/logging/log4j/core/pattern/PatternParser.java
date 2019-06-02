@@ -27,9 +27,9 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.time.SystemNanoClock;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 

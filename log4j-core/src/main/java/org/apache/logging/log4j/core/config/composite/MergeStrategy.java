@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core.config.composite;
 
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.util.PluginManager;
 
 /**
  * Merges two configurations together

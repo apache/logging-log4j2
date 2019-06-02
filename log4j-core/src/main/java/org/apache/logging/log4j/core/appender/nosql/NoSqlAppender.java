@@ -24,11 +24,10 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginElement;
 
 /**
  * This Appender writes logging events to a NoSQL database using a configured NoSQL provider. It requires
@@ -53,7 +52,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
      *            The type to build
      */
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<NoSqlAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<NoSqlAppender> {
 
         @PluginBuilderAttribute("bufferSize")
         private int bufferSize;

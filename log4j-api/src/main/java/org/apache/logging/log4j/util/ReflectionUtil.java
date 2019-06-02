@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.util;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
@@ -193,10 +193,13 @@ public final class ReflectionUtil {
         } catch (final IllegalAccessException e) {
             throw new IllegalStateException(e);
         } catch (final InvocationTargetException e) {
-            if (e.getCause() instanceof RuntimeException) {
-                throw (RuntimeException) e.getCause();
+            if (e.getCause() != null) {
+                if (e.getCause() instanceof RuntimeException) {
+                    throw (RuntimeException) e.getCause();
+                }
+                throw new InternalException(e.getCause());
             }
-            throw new
+            throw new InternalException("Error creating new instance of " + clazz.getName(), e);
         }
     }
 }

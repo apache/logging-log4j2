@@ -219,7 +219,7 @@
     <scm.plugin.version>1.9.5</scm.plugin.version>
     <jxr.plugin.version>2.5</jxr.plugin.version>
     <revapi.plugin.version>0.10.5</revapi.plugin.version>
-    <revapi.skip>false</revapi.skip>
+    <revapi.skip>true</revapi.skip>
     <!-- Maven site 3.7 uses the wrong stylesheet? -->
     <site.plugin.version>3.4</site.plugin.version>
     <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
@@ -333,6 +333,24 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-plugins-java9</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-plugins</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-plugins</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -1457,6 +1475,8 @@
   <modules>
     <module>log4j-api-java9</module>
     <module>log4j-api</module>
+    <module>log4j-plugins-java9</module>
+    <module>log4j-plugins</module>
     <module>log4j-core-java9</module>
     <module>log4j-core</module>
     <module>log4j-layout-jackson</module>

@@ -28,7 +28,7 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 

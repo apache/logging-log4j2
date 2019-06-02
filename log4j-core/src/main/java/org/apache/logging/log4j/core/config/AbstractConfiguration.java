@@ -41,7 +41,6 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LifeCycle;
-import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.Version;
@@ -51,8 +50,6 @@ import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDisruptor;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.Interpolator;
@@ -66,12 +63,15 @@ import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.core.util.WatcherFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -940,27 +940,27 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Invokes a static factory method to either create the desired object or to create a builder object that creates
      * the desired object. In the case of a factory method, it should be annotated with
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginFactory}, and each parameter should be annotated with
+     * {@link org.apache.logging.log4j.plugins.PluginFactory}, and each parameter should be annotated with
      * an appropriate plugin annotation depending on what that parameter describes. Parameters annotated with
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginAttribute} must be a type that can be converted from a
-     * string using one of the {@link org.apache.logging.log4j.core.config.plugins.convert.TypeConverter TypeConverters}
-     * . Parameters with {@link org.apache.logging.log4j.core.config.plugins.PluginElement} may be any plugin class or
+     * {@link org.apache.logging.log4j.plugins.PluginAttribute} must be a type that can be converted from a
+     * string using one of the {@link org.apache.logging.log4j.plugins.convert.TypeConverter TypeConverters}
+     * . Parameters with {@link org.apache.logging.log4j.plugins.PluginElement} may be any plugin class or
      * an array of a plugin class. Collections and Maps are currently not supported, although the factory method that is
      * called can create these from an array.
      *
      * Plugins can also be created using a builder class that implements
-     * {@link org.apache.logging.log4j.core.util.Builder}. In that case, a static method annotated with
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute} should create the builder class, and
+     * {@link org.apache.logging.log4j.plugins.util.Builder}. In that case, a static method annotated with
+     * {@link org.apache.logging.log4j.plugins.PluginBuilderAttribute} should create the builder class, and
      * the various fields in the builder class should be annotated similarly to the method parameters. However, instead
      * of using PluginAttribute, one should use
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute} where the default value can be
+     * {@link org.apache.logging.log4j.plugins.PluginBuilderAttribute} where the default value can be
      * specified as the default field value instead of as an additional annotation parameter.
      *
      * In either case, there are also annotations for specifying a
      * {@link org.apache.logging.log4j.core.config.Configuration} (
      * {@link org.apache.logging.log4j.core.config.plugins.PluginConfiguration}) or a
-     * {@link org.apache.logging.log4j.core.config.Node} (
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginNode}).
+     * {@link org.apache.logging.log4j.plugins.Node} (
+     * {@link org.apache.logging.log4j.plugins.PluginNode}).
      *
      * Although the happy path works, more work still needs to be done to log incorrect parameters. These will generally
      * result in unhelpful InvocationTargetExceptions.
@@ -970,8 +970,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param event the LogEvent that spurred the creation of this plugin
      * @return the created plugin object or {@code null} if there was an error setting it up.
      * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
-     * @see org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor
-     * @see org.apache.logging.log4j.core.config.plugins.convert.TypeConverter
+     * @see org.apache.logging.log4j.plugins.visitors.PluginVisitor
+     * @see org.apache.logging.log4j.plugins.convert.TypeConverter
      */
     private Object createPluginObject(final PluginType<?> type, final Node node, final LogEvent event) {
         final Class<?> clazz = type.getPluginClass();

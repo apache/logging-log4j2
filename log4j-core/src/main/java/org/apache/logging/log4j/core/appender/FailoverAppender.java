@@ -29,12 +29,12 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Constants;
 

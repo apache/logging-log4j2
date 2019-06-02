@@ -42,8 +42,8 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;

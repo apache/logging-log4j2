@@ -62,7 +62,7 @@ public class FileUtilsTest {
         final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
         final File file = new File(config);
         assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
-        assertTrue("file exists", file.exists());
+        assertTrue("file does not exist", file.exists());
         //
         final URI uri1 = new URI(config);
         assertNull(uri1.getScheme());

@@ -41,7 +41,7 @@ import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuild
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 import org.apache.logging.log4j.core.filter.AbstractFilter.AbstractFilterBuilder;
-import org.apache.logging.log4j.core.util.Builder;
+import org.apache.logging.log4j.plugins.util.Builder;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 

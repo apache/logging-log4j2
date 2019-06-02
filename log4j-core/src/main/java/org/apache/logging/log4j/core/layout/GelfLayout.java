@@ -31,12 +31,11 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.util.JsonUtils;
@@ -100,7 +99,7 @@ public final class GelfLayout extends AbstractStringLayout {
     private final boolean includeNullDelimiter;
 
     public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
-        implements org.apache.logging.log4j.core.util.Builder<GelfLayout> {
+        implements org.apache.logging.log4j.plugins.util.Builder<GelfLayout> {
 
         @PluginBuilderAttribute
         private String host;

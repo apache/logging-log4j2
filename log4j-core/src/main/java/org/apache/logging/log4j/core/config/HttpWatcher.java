@@ -25,8 +25,8 @@ import java.net.URL;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;

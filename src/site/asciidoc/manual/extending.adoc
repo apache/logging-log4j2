@@ -510,7 +510,7 @@ public static Builder newBuilder() {
     return new Builder();
 }
 
-public static class Builder implements org.apache.logging.log4j.core.util.Builder<ListAppender> {
+public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<ListAppender> {
 
     @PluginBuilderAttribute
     @Required(message = "No name provided for ListAppender")

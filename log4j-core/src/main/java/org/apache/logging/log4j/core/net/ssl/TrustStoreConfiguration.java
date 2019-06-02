@@ -23,9 +23,9 @@ import java.util.Arrays;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * Configuration of the TrustStore

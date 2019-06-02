@@ -23,9 +23,9 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldWriter;
 
@@ -39,7 +39,7 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
      * Builds WriterAppender instances.
      */
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<WriterAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<WriterAppender> {
 
         private boolean follow = false;
 

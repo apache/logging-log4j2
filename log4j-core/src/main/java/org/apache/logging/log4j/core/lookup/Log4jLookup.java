@@ -23,7 +23,7 @@ import java.net.URL;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**

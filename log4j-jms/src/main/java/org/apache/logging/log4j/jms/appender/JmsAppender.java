@@ -29,13 +29,13 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AbstractManager;
-import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.jms.appender.JmsManager.JmsManagerConfiguration;
 
@@ -48,7 +48,7 @@ import org.apache.logging.log4j.jms.appender.JmsManager.JmsManagerConfiguration;
 public class JmsAppender extends AbstractAppender {
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<JmsAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<JmsAppender> {
         
         public static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 5000;
 

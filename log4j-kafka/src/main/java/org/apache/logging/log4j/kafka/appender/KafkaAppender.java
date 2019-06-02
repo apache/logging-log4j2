@@ -29,11 +29,11 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 
 /**
  * Sends log events to an Apache Kafka topic.
@@ -48,7 +48,7 @@ public final class KafkaAppender extends AbstractAppender {
      *            The type to build
      */
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<KafkaAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<KafkaAppender> {
 
         @PluginAttribute("topic")
         private String topic;

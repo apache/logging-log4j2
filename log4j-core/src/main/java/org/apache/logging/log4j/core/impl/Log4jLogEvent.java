@@ -77,7 +77,7 @@ public class Log4jLogEvent implements LogEvent {
     private final transient long nanoTime;
 
     /** LogEvent Builder helper class. */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<LogEvent> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<LogEvent> {
 
         private String loggerFqcn;
         private Marker marker;
