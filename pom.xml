@@ -1495,6 +1495,7 @@
     <module>log4j-osgi</module>
     <module>log4j-docker</module>
     <module>log4j-spring-cloud-config</module>
+    <module>log4j-groovy-dsl</module>
   </modules>
   <profiles>
     <profile>

@@ -1,0 +1,13 @@
+configuration(name: 'DeclarativeGroovyDSL' /*, status: 'TRACE' */) {
+    appenders {
+        list(name: 'Messages') {
+            patternLayout(pattern: '%msg%n')
+        }
+    }
+    loggers {
+        logger(name: 'org.apache.logging.log4j.groovy.declarative', level: 'INFO')
+        root(level: 'WARN') {
+            appenderRef(ref: 'Messages')
+        }
+    }
+}
