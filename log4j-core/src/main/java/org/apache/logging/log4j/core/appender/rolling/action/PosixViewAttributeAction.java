@@ -31,12 +31,12 @@ import java.util.Set;
 
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -82,7 +82,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
     /**
      * Builder for the posix view attribute action.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<PosixViewAttributeAction> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<PosixViewAttributeAction> {
 
         @PluginConfiguration
         private Configuration configuration;

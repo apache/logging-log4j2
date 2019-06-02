@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNull;
 
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.core.config.NullConfiguration;
-import org.apache.logging.log4j.plugins.util.PluginBuilder;
+import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.validation.ValidatingPluginWithGenericBuilder;

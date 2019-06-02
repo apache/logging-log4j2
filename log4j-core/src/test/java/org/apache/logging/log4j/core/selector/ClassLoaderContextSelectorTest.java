@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.selector;
 import java.lang.reflect.Field;
 
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.util.ReflectionUtil;
+import org.apache.logging.log4j.util.ReflectionUtil;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -2164,7 +2164,7 @@
         Removed deprecated Core API org.apache.logging.log4j.core.util.Constants.UTF_8.
       </action>
       <action issue="LOG4J2-1544" dev="ggregory" type="update">
-        Removed deprecated Core API org.apache.logging.log4j.core.util.Assert.requireNonNull(T, String).
+        Removed deprecated Core API org.apache.logging.log4j.util.Assert.requireNonNull(T, String).
       </action>
       <action issue="LOG4J2-1545" dev="ggregory" type="update">
         Removed deprecated Web API org.apache.logging.log4j.web.WebLookup.getServletContext().

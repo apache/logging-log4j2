@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.net.Advertiser;
 
 @Plugin(name = "memory", category = Core.CATEGORY_NAME, elementType = "advertiser", printObject = false)

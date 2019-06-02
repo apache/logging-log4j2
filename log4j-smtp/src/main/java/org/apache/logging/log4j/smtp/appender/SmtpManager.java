@@ -47,7 +47,7 @@ import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
-import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.smtp.MimeMessageBuilder;

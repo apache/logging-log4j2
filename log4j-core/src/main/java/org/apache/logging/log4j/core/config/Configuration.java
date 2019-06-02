@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.util.WatchManager;
+import org.apache.logging.log4j.plugins.Node;
 
 /**
  * Interface that must be implemented to create a configuration.

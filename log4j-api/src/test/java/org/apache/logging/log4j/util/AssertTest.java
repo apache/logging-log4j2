@@ -14,12 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import org.apache.logging.log4j.util.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

@@ -21,11 +21,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 
 /**
  * Rolls a file over based on time.
@@ -34,7 +32,7 @@ import org.apache.logging.log4j.core.util.Integers;
 public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
 
     
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<TimeBasedTriggeringPolicy> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<TimeBasedTriggeringPolicy> {
 
         @PluginBuilderAttribute
         private int interval = 1;

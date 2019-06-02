@@ -25,10 +25,10 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.core.layout.LoggerFields;
 import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
@@ -38,7 +38,6 @@ import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  * The Syslog Appender.
@@ -47,7 +46,7 @@ import org.apache.logging.log4j.util.EnglishEnums;
 public class SyslogAppender extends SocketAppender {
 
     public static class Builder<B extends Builder<B>> extends AbstractBuilder<B>
-            implements org.apache.logging.log4j.core.util.Builder<SocketAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<SocketAppender> {
 
         @PluginBuilderAttribute(value = "facility")
         private Facility facility = Facility.LOCAL0;

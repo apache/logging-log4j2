@@ -35,11 +35,11 @@ import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
 import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Integers;
 
@@ -85,7 +85,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     /**
      * Builds DefaultRolloverStrategy instances.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<DefaultRolloverStrategy> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<DefaultRolloverStrategy> {
         @PluginBuilderAttribute("max")
         private String max;
         

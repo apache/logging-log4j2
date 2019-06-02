@@ -20,11 +20,11 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.db.ColumnMapping;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -36,7 +36,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Plugin(name = "Column", category = Core.CATEGORY_NAME, printObject = true)
 public final class ColumnConfig {
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ColumnConfig> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<ColumnConfig> {
 
         @PluginConfiguration
         private Configuration configuration;

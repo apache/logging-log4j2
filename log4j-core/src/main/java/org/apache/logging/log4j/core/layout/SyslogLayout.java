@@ -28,10 +28,10 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.util.NetUtils;
@@ -55,7 +55,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      * @param <B> the builder type
      */
     public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<SyslogLayout> {
+            implements org.apache.logging.log4j.plugins.util.Builder<SyslogLayout> {
         
         public Builder() {
             super();

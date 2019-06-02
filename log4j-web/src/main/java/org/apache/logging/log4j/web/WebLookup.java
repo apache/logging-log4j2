@@ -21,7 +21,7 @@ package org.apache.logging.log4j.web;
 import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
 import org.apache.logging.log4j.util.Strings;
 
