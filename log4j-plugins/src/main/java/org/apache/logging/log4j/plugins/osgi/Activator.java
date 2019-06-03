@@ -42,7 +42,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
     ServiceRegistration provideRegistration = null;
 
     @Override
-    public void start(final BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception { /*
         final PluginService pluginService = new Log4jProvider();
         final Hashtable<String, String> props = new Hashtable<>();
         props.put("APIVersion", "3.0");
@@ -51,7 +51,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
             context.addBundleListener(this);
             // done after the BundleListener as to not miss any new bundle installs in the interim
             scanInstalledBundlesForPlugins(context);
-        }
+        } */
     }
 
     private static void scanInstalledBundlesForPlugins(final BundleContext context) {
