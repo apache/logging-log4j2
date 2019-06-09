@@ -16,37 +16,44 @@
  */
 package org.apache.logging.log4j.plugins.processor;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import org.apache.logging.log4j.plugins.util.PluginType;
+
+import java.util.*;
 
 /**
  * Class Description goes here.
  */
 public abstract class PluginService {
 
-    private final Map<String, Map<String, PluginEntry>> categories = new LinkedHashMap<>();
+    private final Map<String, List<PluginType<?>>> categories = new LinkedHashMap<>();
 
     public PluginService() {
         PluginEntry[] entries = getEntries();
         for (PluginEntry entry : entries) {
             String category = entry.getCategory().toLowerCase();
             if (!categories.containsKey(category)) {
-                categories.put(category, new LinkedHashMap<>());
+                categories.put(category, new LinkedList<>());
             }
-            Map<String, PluginEntry> map = categories.get(category);
-            map.put(entry.getKey(), entry);
+            try {
+                Class<?> clazz = this.getClass().getClassLoader().loadClass(entry.getClassName());
+                List<PluginType<?>> list = categories.get(category);
+                PluginType<?> type = new PluginType<>(entry, clazz, entry.getName());
+                list.add(type);
+            } catch (ClassNotFoundException ex) {
+                throw new IllegalStateException("No class named " + entry.getClassName() +
+                        " located for element " + entry.getName(), ex);
+            }
         }
     }
 
     public abstract PluginEntry[] getEntries();
 
-    public Map<String, Map<String, PluginEntry>> getCategories() {
+    public Map<String, List<PluginType<?>>> getCategories() {
         return Collections.unmodifiableMap(categories);
     }
 
-    public Map<String, PluginEntry> getCategory(String category) {
-        return Collections.unmodifiableMap(categories.get(category.toLowerCase()));
+    public List<PluginType<?>> getCategory(String category) {
+        return Collections.unmodifiableList(categories.get(category.toLowerCase()));
     }
 
     public long size() {

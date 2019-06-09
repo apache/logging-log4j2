@@ -36,6 +36,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Registry singleton for PluginType maps partitioned by source type and then by category names.
@@ -46,6 +48,7 @@ public class PluginRegistry {
 
     private static volatile PluginRegistry INSTANCE;
     private static final Object INSTANCE_LOCK = new Object();
+    protected static final Lock STARTUP_LOCK = new ReentrantLock();
 
     /**
      * Contains plugins found in Log4j2Plugins.dat cache files in the main CLASSPATH.
@@ -151,6 +154,22 @@ public class PluginRegistry {
             return existing;
         }
         return newPluginsByCategory;
+    }
+
+    /**
+     * Loads all the plugins in a Bundle.
+     * @param categories All the categories in the bundle.
+     * @since 3.0
+     */
+    public void loadFromBundle(Map<String, List<PluginType<?>>> categories, Long bundleId) {
+        pluginsByCategoryByBundleId.put(bundleId, categories);
+        for (Map.Entry<String, List<PluginType<?>>> entry: categories.entrySet()) {
+            if (!categories.containsKey(entry.getKey())) {
+
+                categories.put(entry.getKey(), new LinkedList<>());
+            }
+            categories.get(entry.getKey()).addAll(entry.getValue());
+        }
     }
 
     /**

@@ -40,6 +40,10 @@ public class PluginType<T> {
         this.elementName = elementName;
     }
 
+    public PluginEntry getPluginEntry() {
+        return this.pluginEntry;
+    }
+
     public Class<T> getPluginClass() {
         return this.pluginClass;
     }

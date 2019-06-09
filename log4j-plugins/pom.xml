@@ -224,9 +224,10 @@
             <!-- TODO: exclude internal classes from export -->
             <Export-Package>org.apache.logging.log4j.plugins.*</Export-Package>
             <Import-Package>
-              sun.reflect;resolution:=optional,
+              org.apache.logging.log4j,
+              org.apache.logging.log4j.status,
               org.apache.logging.log4j.util,
-              *
+              org.osgi.framework.*
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.plugins.osgi.Activator</Bundle-Activator>
           </instructions>
