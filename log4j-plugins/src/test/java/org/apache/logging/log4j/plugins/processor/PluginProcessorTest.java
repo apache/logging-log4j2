@@ -19,6 +19,7 @@ package org.apache.logging.log4j.plugins.processor;
 
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.util.PluginType;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +50,7 @@ public class PluginProcessorTest {
     @Test
     public void testTestCategoryFound() throws Exception {
         assertNotNull("No plugin annotation on FakePlugin.", p);
-        final Map<String, PluginEntry> testCategory = pluginService.getCategory(p.category());
+        final List<PluginType<?>> testCategory = pluginService.getCategory(p.category());
         assertNotEquals("No plugins were found.", 0, pluginService.size());
         assertNotNull("The category '" + p.category() + "' was not found.", testCategory);
         assertFalse(testCategory.isEmpty());
@@ -57,7 +58,10 @@ public class PluginProcessorTest {
 
     @Test
     public void testFakePluginFoundWithCorrectInformation() throws Exception {
-        final PluginEntry fake = pluginService.getCategory(p.category()).get(p.name().toLowerCase());
+        final List<PluginType<?>> list = pluginService.getCategory(p.category());
+        assertNotNull(list);
+        final PluginEntry fake = getEntry(list, p.name());
+        assertNotNull(fake);
         verifyFakePluginEntry(p.name(), fake);
     }
 
@@ -65,7 +69,10 @@ public class PluginProcessorTest {
     public void testFakePluginAliasesContainSameInformation() throws Exception {
         final PluginAliases aliases = FakePlugin.class.getAnnotation(PluginAliases.class);
         for (final String alias : aliases.value()) {
-            final PluginEntry fake = pluginService.getCategory(p.category()).get(alias.toLowerCase());
+            final List<PluginType<?>> list = pluginService.getCategory(p.category());
+            assertNotNull(list);
+            final PluginEntry fake = getEntry(list, alias);
+            assertNotNull(fake);
             verifyFakePluginEntry(alias, fake);
         }
     }
@@ -83,7 +90,9 @@ public class PluginProcessorTest {
     @Test
     public void testNestedPlugin() throws Exception {
         final Plugin p = FakePlugin.Nested.class.getAnnotation(Plugin.class);
-        final PluginEntry nested = pluginService.getCategory(p.category()).get(p.name().toLowerCase());
+        final List<PluginType<?>> list = pluginService.getCategory(p.category());
+        assertNotNull(list);
+        final PluginEntry nested = getEntry(list, p.name());
         assertNotNull(nested);
         assertEquals(p.name().toLowerCase(), nested.getKey());
         assertEquals(FakePlugin.Nested.class.getName(), nested.getClassName());
@@ -91,5 +100,14 @@ public class PluginProcessorTest {
         assertEquals(Plugin.EMPTY, p.elementType());
         assertEquals(p.printObject(), nested.isPrintable());
         assertEquals(p.deferChildren(), nested.isDefer());
+    }
+
+    private PluginEntry getEntry(List<PluginType<?>> list, String name) {
+        for (PluginType<?> type : list) {
+            if (type.getPluginEntry().getName().equalsIgnoreCase(name)) {
+                return type.getPluginEntry();
+            }
+        }
+        return null;
     }
 }

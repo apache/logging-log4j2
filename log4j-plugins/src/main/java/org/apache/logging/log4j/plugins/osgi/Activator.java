@@ -17,16 +17,16 @@
 
 package org.apache.logging.log4j.plugins.osgi;
 
-import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.processor.PluginService;
 import org.apache.logging.log4j.plugins.util.PluginRegistry;
-import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.osgi.framework.*;
 import org.osgi.framework.wiring.BundleWiring;
 
+import java.security.Permission;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -37,21 +37,77 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
+    private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();
+
     private final AtomicReference<BundleContext> contextRef = new AtomicReference<>();
 
-    ServiceRegistration provideRegistration = null;
-
     @Override
-    public void start(final BundleContext context) throws Exception { /*
-        final PluginService pluginService = new Log4jProvider();
-        final Hashtable<String, String> props = new Hashtable<>();
-        props.put("APIVersion", "3.0");
-        provideRegistration = context.registerService(pluginService.class.getName(), provider, props);
-        if (this.contextRef.compareAndSet(null, context)) {
-            context.addBundleListener(this);
-            // done after the BundleListener as to not miss any new bundle installs in the interim
-            scanInstalledBundlesForPlugins(context);
-        } */
+    public void start(final BundleContext bundleContext) throws Exception {
+        loadPlugins(bundleContext);
+        bundleContext.addBundleListener(this);
+        final Bundle[] bundles = bundleContext.getBundles();
+        for (final Bundle bundle : bundles) {
+            loadPlugins(bundle);
+        }
+        scanInstalledBundlesForPlugins(bundleContext);
+        this.contextRef.compareAndSet(null, bundleContext);
+    }
+
+    private void loadPlugins(final BundleContext bundleContext) {
+        try {
+            final Collection<ServiceReference<PluginService>> serviceReferences = bundleContext.getServiceReferences(PluginService.class, null);
+            for (final ServiceReference<PluginService> serviceReference : serviceReferences) {
+                final PluginService pluginService = bundleContext.getService(serviceReference);
+                PluginRegistry.getInstance().loadFromBundle(pluginService.getCategories(), bundleContext.getBundle().getBundleId());
+            }
+        } catch (final InvalidSyntaxException ex) {
+            LOGGER.error("Error accessing Plugins", ex);
+        }
+    }
+
+    private void loadPlugins(final Bundle bundle) {
+        if (bundle.getState() == Bundle.UNINSTALLED) {
+            return;
+        }
+        try {
+            checkPermission(new AdminPermission(bundle, AdminPermission.RESOURCE));
+            checkPermission(new AdaptPermission(BundleWiring.class.getName(), bundle, AdaptPermission.ADAPT));
+            final BundleContext bundleContext = bundle.getBundleContext();
+            if (bundleContext == null) {
+                LOGGER.debug("Bundle {} has no context (state={}), skipping loading plugins", bundle.getSymbolicName(), toStateString(bundle.getState()));
+            } else {
+                loadPlugins(bundleContext);
+            }
+        } catch (final SecurityException e) {
+            LOGGER.debug("Cannot access bundle [{}] contents. Ignoring.", bundle.getSymbolicName(), e);
+        } catch (final Exception e) {
+            LOGGER.warn("Problem checking bundle {} for Log4j 2 provider.", bundle.getSymbolicName(), e);
+        }
+    }
+
+    private static void checkPermission(final Permission permission) {
+        if (SECURITY_MANAGER != null) {
+            SECURITY_MANAGER.checkPermission(permission);
+        }
+    }
+
+    private String toStateString(final int state) {
+        switch (state) {
+            case Bundle.UNINSTALLED:
+                return "UNINSTALLED";
+            case Bundle.INSTALLED:
+                return "INSTALLED";
+            case Bundle.RESOLVED:
+                return "RESOLVED";
+            case Bundle.STARTING:
+                return "STARTING";
+            case Bundle.STOPPING:
+                return "STOPPING";
+            case Bundle.ACTIVE:
+                return "ACTIVE";
+            default:
+                return Integer.toString(state);
+        }
     }
 
     private static void scanInstalledBundlesForPlugins(final BundleContext context) {
@@ -80,7 +136,11 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     @Override
     public void stop(final BundleContext context) throws Exception {
-        provideRegistration.unregister();
+        final Bundle[] bundles = context.getBundles();
+        for (final Bundle bundle : bundles) {
+            stopBundlePlugins(bundle);
+        }
+        stopBundlePlugins(context.getBundle());
         this.contextRef.compareAndSet(context, null);
     }
 
@@ -89,6 +149,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
         switch (event.getType()) {
             // FIXME: STARTING instead of STARTED?
             case BundleEvent.STARTED:
+                loadPlugins(event.getBundle());
                 scanBundleForPlugins(event.getBundle());
                 break;
 

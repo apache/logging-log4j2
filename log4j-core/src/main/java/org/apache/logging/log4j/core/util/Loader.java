@@ -34,6 +34,9 @@ public final class Loader {
 
     private static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
 
+    final static Boolean ignoreTccl =
+        Boolean.valueOf(PropertiesUtil.getProperties().getStringProperty(LoaderUtil.IGNORE_TCCL_PROPERTY, null));
+
     private Loader() {
     }
 
@@ -42,7 +45,7 @@ public final class Loader {
      * @return the ClassLoader.
      */
     public static ClassLoader getClassLoader() {
-        return LoaderUtil.getClassLoader(LoaderUtil.class, null);
+        return Loader.getClassLoader(Loader.class, null);
     }
 
     // TODO: this method could use some explanation
@@ -241,21 +244,12 @@ public final class Loader {
      * @throws InstantiationException if there was an exception whilst instantiating the class
      * @throws NoSuchMethodException if there isn't a no-args constructor on the class
      * @throws InvocationTargetException if there was an exception whilst constructing the class
+     * @since 2.1
      */
     @SuppressWarnings("unchecked")
-    public static <T> T newInstanceOf(final String className)
-        throws ClassNotFoundException,
-        IllegalAccessException,
-        InstantiationException,
-        NoSuchMethodException,
-        InvocationTargetException {
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(getClassLoader());
-            return LoaderUtil.newInstanceOf(className);
-        } finally {
-            Thread.currentThread().setContextClassLoader(contextClassLoader);
-        }
+    public static <T> T newInstanceOf(final String className) throws ClassNotFoundException, IllegalAccessException,
+            InstantiationException, NoSuchMethodException, InvocationTargetException {
+        return newInstanceOf((Class<T>) loadClass(className));
     }
 
     /**
@@ -281,7 +275,7 @@ public final class Loader {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClassLoader());
-            return LoaderUtil.newCheckedInstanceOf(className, clazz);
+            return clazz.cast(newInstanceOf(className));
         } finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
         }
@@ -315,6 +309,26 @@ public final class Loader {
     }
 
     /**
+     * Loads and instantiates a Class using the default constructor.
+     *
+     * @param clazz The class.
+     * @return new instance of the class.
+     * @throws IllegalAccessException if the class can't be instantiated through a public constructor
+     * @throws InstantiationException if there was an exception whilst instantiating the class
+     * @throws InvocationTargetException if there was an exception whilst constructing the class
+     * @since 2.7
+     */
+    public static <T> T newInstanceOf(final Class<T> clazz)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException {
+        try {
+            return clazz.getConstructor().newInstance();
+        } catch (final NoSuchMethodException ignored) {
+            // FIXME: looking at the code for Class.newInstance(), this seems to do the same thing as above
+            return clazz.newInstance();
+        }
+    }
+
+    /**
      * Determines if a named Class can be loaded or not.
      *
      * @param className The class name.
@@ -343,13 +357,13 @@ public final class Loader {
      * @throws ClassNotFoundException if the specified class name could not be found
      */
     public static Class<?> loadClass(final String className) throws ClassNotFoundException {
-
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        if (ignoreTccl) {
+            return Class.forName(className);
+        }
         try {
-            Thread.currentThread().setContextClassLoader(getClassLoader());
-            return LoaderUtil.loadClass(className);
-        } finally {
-            Thread.currentThread().setContextClassLoader(contextClassLoader);
+            return getClassLoader().loadClass(className);
+        } catch (final Throwable ignored) {
+            return Class.forName(className);
         }
     }
 }
