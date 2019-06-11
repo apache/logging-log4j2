@@ -372,6 +372,20 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
         return cache.getDateTimeInstance(dateStyle, timeStyle, timeZone, locale);
     }
 
+    /**
+     * <p>Constructs a new FastDateFormat.</p>
+     *
+     * @param pattern  {@link java.text.SimpleDateFormat} compatible pattern
+     * @param timeZone  non-null time zone to use
+     * @param locale  non-null locale to use
+     * @param centuryStart The start of the 100 year period to use as the "default century" for 2 digit year parsing.  If centuryStart is null, defaults to now - 80 years
+     * @throws NullPointerException if pattern, timeZone, or locale is null.
+     * @since 3.0
+     */
+    public static FastDateFormat getDateTimeInstance(final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
+        return new FastDateFormat(pattern, timeZone, locale, centuryStart);
+    }
+
     // Constructor
     //-----------------------------------------------------------------------
     /**

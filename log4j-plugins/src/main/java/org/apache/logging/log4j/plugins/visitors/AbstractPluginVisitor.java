@@ -26,7 +26,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * Base class for PluginVisitor implementations. Provides convenience methods as well as all method implementations
