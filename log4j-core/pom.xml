@@ -31,6 +31,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
+    <log4j2-logstash-layout.version>0.18</log4j2-logstash-layout.version>
   </properties>
   <dependencies>
     <!-- Naturally, all implementations require the log4j-api JAR -->
@@ -310,6 +311,18 @@
       <groupId>org.hdrhistogram</groupId>
       <artifactId>HdrHistogram</artifactId>
       <scope>test</scope>
+    </dependency>
+    <!-- For testing log4j 2 2.x plugins -->
+    <dependency>
+      <groupId>com.vlkan.log4j2</groupId>
+      <artifactId>log4j2-logstash-layout</artifactId>
+      <version>${log4j2-logstash-layout.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ivandzf</groupId>
+      <artifactId>log4j2-custom-layout</artifactId>
+      <version>1.1.0</version>
     </dependency>
   </dependencies>
   <build>

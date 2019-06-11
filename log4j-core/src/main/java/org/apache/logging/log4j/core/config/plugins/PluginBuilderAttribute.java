@@ -15,23 +15,21 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins;
+package org.apache.logging.log4j.core.config.plugins;
 
-import org.apache.logging.log4j.plugins.visitors.PluginBuilderAttributeVisitor;
+import org.apache.logging.log4j.plugins.PluginVisitorStrategy;
+import org.apache.logging.log4j.core.config.plugins.visitors.PluginBuilderAttributeVisitor;
 import org.apache.logging.log4j.util.Strings;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Marks a field as a Plugin Attribute.
+ * @deprecated Exists for compatibility with Log4j 2 2.x plugins. Not used for Log4j 2 3.x plugins.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.TYPE})
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 @PluginVisitorStrategy(PluginBuilderAttributeVisitor.class)
 public @interface PluginBuilderAttribute {
 
