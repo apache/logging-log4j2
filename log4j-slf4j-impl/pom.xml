@@ -31,7 +31,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>SLF4J Documentation</docLabel>
     <projectDir>/slf4j-impl</projectDir>
-    <slf4j.version>1.7.25</slf4j.version>
+    <slf4j.version>1.7.26</slf4j.version>
   </properties>
   <dependencies>
     <dependency>
