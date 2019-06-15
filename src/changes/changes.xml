@@ -70,7 +70,11 @@
       </action>
       <action issue="LOG4J2-2232" dev="ggregory" type="update">
         Move JMS code to a new module log4j-jms.
-      </action>
+      </acti
+
+
+
+
       <action issue="LOG4J2-2233" dev="ggregory" type="update">
         Move JDBC code to a new module log4j-jdbc.
       </action>
