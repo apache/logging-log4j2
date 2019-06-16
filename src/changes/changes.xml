@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2018-xx-xx" description="GA Release 3.0.0">
+      <action issue="LOG4J2-2523" dev="rgoers" type="update" due-to="Romain Manni-Bucau">
+        Allow web lookup to access more information.
+      </action>
       <action issue="LOG4J2-2621" dev="rgoers" type="update">
         Separate plugin support to its own module. Plugin annotation processor will now generate a Java source
         file compatible with java.util.ServiceLoader instead of a binary file.
