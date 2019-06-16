@@ -134,7 +134,10 @@ public final class RoutingAppender extends AbstractAppender {
     private final Routes routes;
     private Route defaultRoute;
     private final Configuration configuration;
-    private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, AppenderControl> createdAppenders = new ConcurrentHashMap<>();
+    private final Map<String, AppenderControl> createdAppendersUnmodifiableView
+            = Collections.unmodifiableMap(createdAppenders);
+    private final ConcurrentMap<String, AppenderControl> referencedAppenders = new ConcurrentHashMap<>();
     private final RewritePolicy rewritePolicy;
     private final PurgePolicy purgePolicy;
     private final AbstractScript defaultRouteScript;
@@ -188,7 +191,7 @@ public final class RoutingAppender extends AbstractAppender {
                 final Appender appender = configuration.getAppender(route.getAppenderRef());
                 if (appender != null) {
                     final String key = route == defaultRoute ? DEFAULT_KEY : route.getKey();
-                    appenders.put(key, new AppenderControl(appender, null, null));
+                    referencedAppenders.put(key, new AppenderControl(appender, null, null));
                 } else {
                     error("Appender " + route.getAppenderRef() + " cannot be located. Route ignored");
                 }
@@ -201,15 +204,13 @@ public final class RoutingAppender extends AbstractAppender {
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
         super.stop(timeout, timeUnit, false);
-        final Map<String, Appender> map = configuration.getAppenders();
-        for (final Map.Entry<String, AppenderControl> entry : appenders.entrySet()) {
+        // Only stop appenders that were created by this RoutingAppender
+        for (final Map.Entry<String, AppenderControl> entry : createdAppenders.entrySet()) {
             final Appender appender = entry.getValue().getAppender();
-            if (!map.containsKey(appender.getName())) {
-                if (appender instanceof LifeCycle2) {
-                    ((LifeCycle2) appender).stop(timeout, timeUnit);
-                } else {
-                    appender.stop();
-                }
+            if (appender instanceof LifeCycle2) {
+                ((LifeCycle2) appender).stop(timeout, timeUnit);
+            } else {
+                appender.stop();
             }
         }
         setStopped();
@@ -228,13 +229,16 @@ public final class RoutingAppender extends AbstractAppender {
             control.callAppender(event);
         }
 
-        if (purgePolicy != null) {
+        if (purgePolicy != null
+                // LOG4J2-2631: PurgePolicy implementations do not need to be aware of appenders that
+                // were not created by this RoutingAppender.
+                && !referencedAppenders.containsKey(key)) {
             purgePolicy.update(key, event);
         }
     }
 
     private synchronized AppenderControl getControl(final String key, final LogEvent event) {
-        AppenderControl control = appenders.get(key);
+        AppenderControl control = getAppender(key);
         if (control != null) {
             return control;
         }
@@ -247,7 +251,7 @@ public final class RoutingAppender extends AbstractAppender {
         }
         if (route == null) {
             route = defaultRoute;
-            control = appenders.get(DEFAULT_KEY);
+            control = getAppender(DEFAULT_KEY);
             if (control != null) {
                 return control;
             }
@@ -258,10 +262,18 @@ public final class RoutingAppender extends AbstractAppender {
                 return null;
             }
             control = new AppenderControl(app, null, null);
-            appenders.put(key, control);
+            createdAppenders.put(key, control);
         }
 
         return control;
+    }
+
+    private AppenderControl getAppender(final String key) {
+        final AppenderControl result = referencedAppenders.get(key);
+        if (result == null) {
+            return createdAppenders.get(key);
+        }
+        return result;
     }
 
     private Appender createAppender(final Route route, final LogEvent event) {
@@ -283,8 +295,12 @@ public final class RoutingAppender extends AbstractAppender {
         return null;
     }
 
+    /**
+     * Returns an unmodifiable view of the appenders created by this {@link RoutingAppender}.
+     * Note that this map does not contain appenders that are routed by reference.
+     */
     public Map<String, AppenderControl> getAppenders() {
-        return Collections.unmodifiableMap(appenders);
+        return createdAppendersUnmodifiableView;
     }
 
     /**
@@ -293,13 +309,19 @@ public final class RoutingAppender extends AbstractAppender {
      * @param key The appender's key
      */
     public void deleteAppender(final String key) {
-        LOGGER.debug("Deleting route with " + key + " key ");
-        final AppenderControl control = appenders.remove(key);
+        LOGGER.debug("Deleting route with {} key ", key);
+        // LOG4J2-2631: Only appenders created by this RoutingAppender are eligible for deletion.
+        final AppenderControl control = createdAppenders.remove(key);
         if (null != control) {
-            LOGGER.debug("Stopping route with " + key + " key");
+            LOGGER.debug("Stopping route with {} key", key);
             control.getAppender().stop();
         } else {
-            LOGGER.debug("Route with " + key + " key already deleted");
+            if (referencedAppenders.containsKey(key)) {
+                LOGGER.debug("Route {} using an appender reference may not be removed because " +
+                        "the appender may be used outside of the RoutingAppender", key);
+            } else {
+                LOGGER.debug("Route with {} key already deleted", key);
+            }
         }
     }
 

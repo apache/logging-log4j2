@@ -91,6 +91,11 @@
       <action issue="LOG4J2-2619" dev="ggregory" type="update">
         Update Jackson from 2.9.8 to 2.9.9.
       </action>
+      <action issue="LOG4J2-2631" dev="ckozak" type="fix">
+        RoutingAppender PurgePolicy implementations no longer stop appenders referenced from the logger configuration,
+        only those that have been created by the RoutingAppender. Note that RoutingAppender.getAppenders no longer
+        includes entries for referenced appenders, only those which it has created.
+      </action>
     </release>
     <release version="2.11.2" date="2019-02-04" description="GA Release 2.11.2">
       <action issue="LOG4J2-2500" dev="rgoers" type="fix">
