@@ -44,6 +44,8 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 ## English
 
+* [Exploring the Secrets of Java Logs: Log4j 2 Log System](https://www.alibabacloud.com/blog/exploring-the-secrets-of-java-logs-log4j-2-log-system_594821)
+(May 17, 2019)
 * [Log4j2 Tutorial](https://howtodoinjava.com/log4j2/)
 (June 3, 2018)
 * [In Java How to Create your own Logging Level using Log4j (Configuring Log4j 2)](https://crunchify.com/java-how-to-create-your-own-logging-level-in-log4j-configuring-log4j/)
