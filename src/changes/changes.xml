@@ -206,6 +206,10 @@
         only those that have been created by the RoutingAppender. Note that RoutingAppender.getAppenders no longer
         includes entries for referenced appenders, only those which it has created.
       </action>
+      <action issue="LOG4J2-2629" dev="ckozak" type="fix">
+        Fix a race allowing events not to be recorded when a RoutingAppender purge policy attempts to delete an idle
+        appender at exactly the same time as a new event is recorded.
+      </action>
     </release>
     <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
       <action issue="LOG4J2-2500" dev="rgoers" type="fix">
