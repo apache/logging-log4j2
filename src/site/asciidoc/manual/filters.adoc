@@ -397,6 +397,53 @@ appender if the Marker matches:
 </Configuration>
 ----
 
+[#NoMarkerFilter]
+== NoMarkerFilter
+
+The NoMarkerFilter checks that there is no marker included in the LogEvent. A match occurs when there is no
+marker in the Log Event.
+
+.No Marker Filter Parameters
+[cols="1m,1,3"]
+|===
+|Parameter Name |Type |Description
+
+|onMatch
+|String
+|Action to take when the filter matches. May be ACCEPT,
+DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter does not match. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+A sample configuration that only allows the event to be written by the
+appender if no marker is there:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <NoMarkerFilter onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
 [#RegexFilter]
 == RegexFilter
 
