@@ -28,8 +28,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
- * This filter returns the onMatch result if the marker in the LogEvent is the same as or has the
- * configured marker as a parent.
+ * This filter returns the onMatch result if there is no marker in the LogEvent.
  */
 @Plugin(name = "NoMarkerFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 @PerformanceSensitive("allocation")
