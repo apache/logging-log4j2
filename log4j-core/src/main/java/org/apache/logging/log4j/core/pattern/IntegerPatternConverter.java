@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
@@ -29,10 +31,21 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @PerformanceSensitive("allocation")
 public final class IntegerPatternConverter extends AbstractPatternConverter implements ArrayPatternConverter {
 
+    /** A pattern specifying the valid options of an IntegerPattern. */
+    protected static final Pattern PATTERN_OPTIONS= Pattern.compile(""
+        + "^"
+        + "(?<PADDING>[^1-9])?"       // optional padding character
+        + "(?<LENGTH>[1-9][0-9]*)"    // length to pad to
+        + "$");
+
+
     /**
      * Singleton.
      */
-    private static final IntegerPatternConverter INSTANCE = new IntegerPatternConverter();
+    private static final IntegerPatternConverter DEFAULT_INSTANCE = new IntegerPatternConverter();
+
+    /** An (optional) padding. */
+    private PaddingSpec padding;
 
     /**
      * Private constructor.
@@ -42,13 +55,41 @@ public final class IntegerPatternConverter extends AbstractPatternConverter impl
     }
 
     /**
+     * Private constructor.
+     */
+    private IntegerPatternConverter(final PaddingSpec padding) {
+        super("Integer", "integer");
+        this.padding= padding;
+    }
+
+    /**
      * Obtains an instance of pattern converter.
      *
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
     public static IntegerPatternConverter newInstance(final String[] options) {
-        return INSTANCE;
+        if (options == null || options.length == 0) {
+            return DEFAULT_INSTANCE;
+        } else if (options.length > 1){
+            LOGGER.error("At max 1 option is allowed {}");
+            return DEFAULT_INSTANCE;
+        } else {
+            final String option= options[0];
+            final Matcher matcher = PATTERN_OPTIONS.matcher(option);
+
+            if (matcher.matches()) {
+                final int length= Integer.parseInt(matcher.group("LENGTH"));
+                if (matcher.group("PADDING") != null) {
+                    return new IntegerPatternConverter(new PaddingSpec(matcher.group("PADDING").charAt(0), length));
+                } else {
+                    return new IntegerPatternConverter(new PaddingSpec('0', length));
+                }
+            } else {
+                LOGGER.error("Invalid option {} will be ignored", option);
+                return DEFAULT_INSTANCE;
+            }
+        }
     }
 
     @Override
@@ -70,7 +111,11 @@ public final class IntegerPatternConverter extends AbstractPatternConverter impl
     @Override
     public void format(final Object obj, final StringBuilder toAppendTo) {
         if (obj instanceof Integer) {
-            toAppendTo.append(((Integer) obj).intValue());
+            if (this.padding != null) {
+                toAppendTo.append(this.padding.apply((Integer) obj));
+            } else {
+                toAppendTo.append(((Integer) obj).intValue());
+            }
         } else if (obj instanceof Date) {
             toAppendTo.append(((Date) obj).getTime());
         }
