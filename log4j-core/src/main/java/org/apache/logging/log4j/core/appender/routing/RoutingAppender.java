@@ -136,8 +136,8 @@ public final class RoutingAppender extends AbstractAppender {
     private Route defaultRoute;
     private final Configuration configuration;
     private final ConcurrentMap<String, CreatedRouteAppenderControl> createdAppenders = new ConcurrentHashMap<>();
-    private final Map<String, AppenderControl> createdAppendersUnmodifiableView
-            = Collections.unmodifiableMap(createdAppenders);
+    private final Map<String, AppenderControl> createdAppendersUnmodifiableView  = Collections.unmodifiableMap(
+            (Map<String, AppenderControl>) (Map<String, ?>) createdAppenders);
     private final ConcurrentMap<String, RouteAppenderControl> referencedAppenders = new ConcurrentHashMap<>();
     private final RewritePolicy rewritePolicy;
     private final PurgePolicy purgePolicy;
