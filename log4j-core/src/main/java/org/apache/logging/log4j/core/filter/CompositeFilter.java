@@ -26,13 +26,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.ObjectArrayIterator;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.PerformanceSensitive;
@@ -98,17 +99,6 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
         return new ObjectArrayIterator<>(filters);
     }
 
-    /**
-     * Gets a new list over the internal filter array.
-     *
-     * @return a new list over the internal filter array
-     * @deprecated Use {@link #getFiltersArray()}
-     */
-    @Deprecated
-    public List<Filter> getFilters() {
-        return Arrays.asList(filters);
-    }
-
     public Filter[] getFiltersArray() {
         return filters;
     }
@@ -139,11 +129,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         this.setStopping();
         for (final Filter filter : filters) {
-            if (filter instanceof LifeCycle2) {
-                ((LifeCycle2) filter).stop(timeout, timeUnit);
-            } else {
-                filter.stop();
-            }
+            ((LifeCycle) filter).stop(timeout, timeUnit);
         }
         setStopped();
         return true;

@@ -27,12 +27,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -45,7 +45,7 @@ public final class Routes {
 
     private static final String LOG_EVENT_KEY = "logEvent";
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<Routes>  {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<Routes> {
 
         @PluginConfiguration 
         private Configuration configuration;
@@ -95,22 +95,22 @@ public final class Routes {
             return routes;
         }
 
-        public Builder withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+        public Builder setConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
 
-        public Builder withPattern(@SuppressWarnings("hiding") final String pattern) {
+        public Builder setPattern(@SuppressWarnings("hiding") final String pattern) {
             this.pattern = pattern;
             return this;
         }
 
-        public Builder withPatternScript(@SuppressWarnings("hiding") final AbstractScript patternScript) {
+        public Builder setPatternScript(@SuppressWarnings("hiding") final AbstractScript patternScript) {
             this.patternScript = patternScript;
             return this;
         }
 
-        public Builder withRoutes(@SuppressWarnings("hiding") final Route[] routes) {
+        public Builder setRoutes(@SuppressWarnings("hiding") final Route... routes) {
             this.routes = routes;
             return this;
         }
@@ -118,24 +118,6 @@ public final class Routes {
     }
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-
-    /**
-     * Creates the Routes.
-     * @param pattern The pattern.
-     * @param routes An array of Route elements.
-     * @return The Routes container.
-     * @deprecated since 2.7; use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static Routes createRoutes(
-            final String pattern,
-            final Route... routes) {
-        if (routes == null || routes.length == 0) {
-            LOGGER.error("No routes configured");
-            return null;
-        }
-        return new Routes(null, null, pattern, routes);
-    }
 
     @PluginBuilderFactory
     public static Builder newBuilder() {

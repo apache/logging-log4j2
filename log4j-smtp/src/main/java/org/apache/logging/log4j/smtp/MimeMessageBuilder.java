@@ -25,7 +25,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.logging.log4j.core.util.Builder;
+import org.apache.logging.log4j.plugins.util.Builder;
 
 /**
  * Builder for {@link MimeMessage} instances.
@@ -76,14 +76,6 @@ public class MimeMessageBuilder implements Builder<MimeMessage> {
             message.setSubject(subject, StandardCharsets.UTF_8.name());
         }
         return this;
-    }
-
-    /**
-     * @deprecated Use {@link #build()}.
-     */
-    @Deprecated
-    public MimeMessage getMimeMessage() {
-        return build();
     }
 
     @Override

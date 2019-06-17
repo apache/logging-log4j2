@@ -24,6 +24,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
+import org.apache.logging.log4j.core.config.Property;
 
 /**
  * Appends log events as strings to a writer.
@@ -53,12 +54,13 @@ public abstract class AbstractWriterAppender<M extends WriterManager> extends Ab
      *            The name of the Appender.
      * @param layout
      *            The layout to format the message.
+     * @param properties Optional properties.
      * @param manager
      *            The OutputStreamManager.
      */
     protected AbstractWriterAppender(final String name, final StringLayout layout, final Filter filter,
-            final boolean ignoreExceptions, final boolean immediateFlush, final M manager) {
-        super(name, filter, layout, ignoreExceptions);
+            final boolean ignoreExceptions, final boolean immediateFlush, Property[] properties, final M manager) {
+        super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
         this.immediateFlush = immediateFlush;
     }
@@ -84,7 +86,7 @@ public abstract class AbstractWriterAppender<M extends WriterManager> extends Ab
                 }
             }
         } catch (final AppenderLoggingException ex) {
-            error("Unable to write " + manager.getName() + " for appender " + getName() + ": " + ex);
+            error("Unable to write " + manager.getName() + " for appender " + getName(), event, ex);
             throw ex;
         } finally {
             readLock.unlock();

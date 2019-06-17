@@ -35,13 +35,11 @@ import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
 import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Integers;
 
@@ -87,7 +85,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     /**
      * Builds DefaultRolloverStrategy instances.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<DefaultRolloverStrategy> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<DefaultRolloverStrategy> {
         @PluginBuilderAttribute("max")
         private String max;
         
@@ -158,7 +156,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param max The maximum number of files to keep.
          * @return This builder for chaining convenience
          */
-        public Builder withMax(final String max) {
+        public Builder setMax(final String max) {
             this.max = max;
             return this;
         }
@@ -173,7 +171,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param min The minimum number of files to keep.
          * @return This builder for chaining convenience
          */
-        public Builder withMin(final String min) {
+        public Builder setMin(final String min) {
             this.min = min;
             return this;
         }
@@ -189,7 +187,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *            index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
          * @return This builder for chaining convenience
          */
-        public Builder withFileIndex(final String fileIndex) {
+        public Builder setFileIndex(final String fileIndex) {
             this.fileIndex = fileIndex;
             return this;
         }
@@ -204,7 +202,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
          * @return This builder for chaining convenience
          */
-        public Builder withCompressionLevelStr(final String compressionLevelStr) {
+        public Builder setCompressionLevelStr(final String compressionLevelStr) {
             this.compressionLevelStr = compressionLevelStr;
             return this;
         }
@@ -219,7 +217,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param customActions custom actions to perform asynchronously after rollover
          * @return This builder for chaining convenience
          */
-        public Builder withCustomActions(final Action[] customActions) {
+        public Builder setCustomActions(final Action... customActions) {
             this.customActions = customActions;
             return this;
         }
@@ -234,7 +232,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
          * @return This builder for chaining convenience
          */
-        public Builder withStopCustomActionsOnError(final boolean stopCustomActionsOnError) {
+        public Builder setStopCustomActionsOnError(final boolean stopCustomActionsOnError) {
             this.stopCustomActionsOnError = stopCustomActionsOnError;
             return this;
         }
@@ -249,7 +247,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param tempCompressedFilePattern File pattern of the working file pattern used during compression, if null no temporary file are used
          * @return This builder for chaining convenience
          */
-        public Builder withTempCompressedFilePattern(final String tempCompressedFilePattern) {
+        public Builder setTempCompressedFilePattern(final String tempCompressedFilePattern) {
             this.tempCompressedFilePattern = tempCompressedFilePattern;
             return this;
         }
@@ -264,7 +262,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param config The Configuration.
          * @return This builder for chaining convenience
          */
-        public Builder withConfig(final Configuration config) {
+        public Builder setConfig(final Configuration config) {
             this.config = config;
             return this;
         }
@@ -273,44 +271,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    /**
-     * Creates the DefaultRolloverStrategy.
-     *
-     * @param max The maximum number of files to keep.
-     * @param min The minimum number of files to keep.
-     * @param fileIndex If set to "max" (the default), files with a higher index will be newer than files with a smaller
-     *            index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
-     * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
-     * @param customActions custom actions to perform asynchronously after rollover
-     * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
-     * @param config The Configuration.
-     * @return A DefaultRolloverStrategy.
-     * @deprecated Since 2.9 Usage of Builder API is preferable
-     */
-    @PluginFactory
-    @Deprecated
-    public static DefaultRolloverStrategy createStrategy(
-            // @formatter:off
-            @PluginAttribute("max") final String max,
-            @PluginAttribute("min") final String min,
-            @PluginAttribute("fileIndex") final String fileIndex,
-            @PluginAttribute("compressionLevel") final String compressionLevelStr,
-            @PluginElement("Actions") final Action[] customActions,
-            @PluginAttribute(value = "stopCustomActionsOnError", defaultBoolean = true)
-                    final boolean stopCustomActionsOnError,
-            @PluginConfiguration final Configuration config) {
-        return DefaultRolloverStrategy.newBuilder()
-                    .withMin(min)
-                    .withMax(max)
-                    .withFileIndex(fileIndex)
-                    .withCompressionLevelStr(compressionLevelStr)
-                    .withCustomActions(customActions)
-                    .withStopCustomActionsOnError(stopCustomActionsOnError)
-                    .withConfig(config)
-                .build();
-            // @formatter:on
     }
 
     /**
@@ -327,23 +287,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     private final List<Action> customActions;
     private final boolean stopCustomActionsOnError;
     private final PatternProcessor tempCompressedFilePattern;
-
-    /**
-     * Constructs a new instance.
-     *
-     * @param minIndex The minimum index.
-     * @param maxIndex The maximum index.
-     * @param customActions custom actions to perform asynchronously after rollover
-     * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
-     * @deprecated Since 2.9 Added tempCompressedFilePatternString parameter
-     */
-    @Deprecated
-    protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
-            final int compressionLevel, final StrSubstitutor strSubstitutor, final Action[] customActions,
-            final boolean stopCustomActionsOnError) {
-        this(minIndex, maxIndex, useMax, compressionLevel,
-                       strSubstitutor, customActions, stopCustomActionsOnError, null);
-    }
 
     /**
      * Constructs a new instance.
@@ -517,9 +460,11 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     @Override
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
         int fileIndex;
+		final StringBuilder buf = new StringBuilder(255);
         if (minIndex == Integer.MIN_VALUE) {
             final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
             fileIndex = eligibleFiles.size() > 0 ? eligibleFiles.lastKey() + 1 : 1;
+			manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
         } else {
             if (maxIndex < 0) {
                 return null;
@@ -529,13 +474,13 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             if (fileIndex < 0) {
                 return null;
             }
+			manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
             if (LOGGER.isTraceEnabled()) {
                 final double durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
                 LOGGER.trace("DefaultRolloverStrategy.purge() took {} milliseconds", durationMillis);
             }
         }
-        final StringBuilder buf = new StringBuilder(255);
-        manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
+
         final String currentFileName = manager.getFileName();
 
         String renameTo = buf.toString();
@@ -576,14 +521,14 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             // Propagate posix attribute view to compressed file
             // @formatter:off
             final Action posixAttributeViewAction = PosixViewAttributeAction.newBuilder()
-                                                        .withBasePath(compressedName)
-                                                        .withFollowLinks(false)
-                                                        .withMaxDepth(1)
-                                                        .withPathConditions(new PathCondition[0])
-                                                        .withSubst(getStrSubstitutor())
-                                                        .withFilePermissions(manager.getFilePermissions())
-                                                        .withFileOwner(manager.getFileOwner())
-                                                        .withFileGroup(manager.getFileGroup())
+                                                        .setBasePath(compressedName)
+                                                        .setFollowLinks(false)
+                                                        .setMaxDepth(1)
+                                                        .setPathConditions(new PathCondition[0])
+                                                        .setSubst(getStrSubstitutor())
+                                                        .setFilePermissions(manager.getFilePermissions())
+                                                        .setFileOwner(manager.getFileOwner())
+                                                        .setFileGroup(manager.getFileGroup())
                                                         .build();
             // @formatter:on
             compressAction = new CompositeAction(Arrays.asList(compressAction, posixAttributeViewAction), false);

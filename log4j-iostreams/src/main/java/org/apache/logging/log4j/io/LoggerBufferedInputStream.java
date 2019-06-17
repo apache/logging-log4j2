@@ -24,6 +24,8 @@ import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.io.internal.InternalBufferedInputStream;
+import org.apache.logging.log4j.io.internal.InternalInputStream;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
@@ -32,40 +34,43 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  */
 public class LoggerBufferedInputStream extends BufferedInputStream {
     private static final String FQCN = LoggerBufferedInputStream.class.getName();
+    private final InternalBufferedInputStream stream;
 
     protected LoggerBufferedInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger,
                                         final String fqcn, final Level level, final Marker marker) {
-        super(new LoggerInputStream(in, charset, logger, fqcn == null ? FQCN : fqcn, level, marker));
+        super(in);
+        stream = new InternalBufferedInputStream(in, charset, logger, fqcn == null ? FQCN: fqcn, level, marker);
     }
 
     protected LoggerBufferedInputStream(final InputStream in, final Charset charset, final int size,
                                         final ExtendedLogger logger, final String fqcn, final Level level,
                                         final Marker marker) {
-        super(new LoggerInputStream(in, charset, logger, fqcn == null ? FQCN : fqcn, level, marker), size);
+        super(in);
+        stream = new InternalBufferedInputStream(in, charset, size, logger, fqcn == null ? FQCN: fqcn, level, marker);
     }
 
     @Override
     public void close() throws IOException {
-        super.close();
+        stream.close();
     }
     
     @Override
     public synchronized int read() throws IOException {
-        return super.read();
+        return stream.read();
     }
     
     @Override
     public int read(final byte[] b) throws IOException {
-        return super.read(b, 0, b.length);
+        return stream.read(b);
     }
     
     @Override
     public synchronized int read(final byte[] b, final int off, final int len) throws IOException {
-        return super.read(b, off, len);
+        return stream.read(b, off, len);
     }
 
     @Override
     public String toString() {
-        return LoggerBufferedInputStream.class.getSimpleName() + "{stream=" + this.in + '}';
+        return LoggerBufferedInputStream.class.getSimpleName() + stream.toString();
     }
 }

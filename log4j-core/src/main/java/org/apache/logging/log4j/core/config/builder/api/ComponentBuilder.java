@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.config.builder.api;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.util.Builder;
+import org.apache.logging.log4j.plugins.util.Builder;
 
 /**
  * Builds arbitrary components and is the base type for the provided components.

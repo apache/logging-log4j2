@@ -17,8 +17,6 @@
 
 package org.apache.logging.log4j.jpa.appender;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -26,7 +24,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.jpa.appender.AbstractLogEventWrapperEntity;
 import org.apache.logging.log4j.message.Message;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,11 +35,6 @@ public class LogEventEntityTest {
         final LogEvent logEvent = new AbstractLogEventWrapperEntity() {
 
             private static final long serialVersionUID = 2L;
-
-            @Override
-            public Map<String, String> getContextMap() {
-                return null;
-            }
 
             @Override
             public ContextStack getContextStack() {

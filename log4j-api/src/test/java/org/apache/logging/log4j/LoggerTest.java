@@ -59,8 +59,8 @@ public class LoggerTest {
 
     @Test
     public void basicFlow() {
-        logger.entry();
-        logger.exit();
+        logger.traceEntry();
+        logger.traceExit();
         assertEquals(2, results.size());
         assertThat("Incorrect Entry", results.get(0), equalTo("ENTER[ FLOW ] TRACE Enter"));
         assertThat("incorrect Exit", results.get(1), equalTo("EXIT[ FLOW ] TRACE Exit"));

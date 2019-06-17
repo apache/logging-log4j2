@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,13 +35,17 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.net.UrlConnectionFactory;
+import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.core.util.ReflectionUtil;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -86,8 +91,10 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      */
     public static final String CONFIGURATION_FILE_PROPERTY = "log4j.configurationFile";
 
+    public static final String AUTHORIZATION_PROVIDER = "log4j2.authorizationProvider";
+
     /**
-     * Plugin category used to inject a ConfigurationFactory {@link org.apache.logging.log4j.core.config.plugins.Plugin}
+     * Plugin category used to inject a ConfigurationFactory {@link org.apache.logging.log4j.plugins.Plugin}
      * class.
      *
      * @since 2.1
@@ -127,6 +134,11 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     private static final Lock LOCK = new ReentrantLock();
 
+    private static final String HTTPS = "https";
+    private static final String HTTP = "http";
+
+    private static AuthorizationProvider authorizationProvider = null;
+
     /**
      * Returns the ConfigurationFactory.
      * @return the ConfigurationFactory.
@@ -139,7 +151,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             try {
                 if (factories == null) {
                     final List<ConfigurationFactory> list = new ArrayList<>();
-                    final String factoryClass = PropertiesUtil.getProperties().getStringProperty(CONFIGURATION_FACTORY_PROPERTY);
+                    PropertiesUtil props = PropertiesUtil.getProperties();
+                    final String factoryClass = props.getStringProperty(CONFIGURATION_FACTORY_PROPERTY);
                     if (factoryClass != null) {
                         addFactory(list, factoryClass);
                     }
@@ -161,6 +174,22 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     // see above comments about double-checked locking
                     //noinspection NonThreadSafeLazyInitialization
                     factories = Collections.unmodifiableList(list);
+                    final String authClass = props.getStringProperty(AUTHORIZATION_PROVIDER);
+                    if (authClass != null) {
+                        try {
+                            Object obj = LoaderUtil.newInstanceOf(authClass);
+                            if (obj instanceof AuthorizationProvider) {
+                                authorizationProvider = (AuthorizationProvider) obj;
+                            } else {
+                                LOGGER.warn("{} is not an AuthorizationProvider, using default", obj.getClass().getName());
+                            }
+                        } catch (Exception ex) {
+                            LOGGER.warn("Unable to create {}, using default: {}", authClass, ex.getMessage());
+                        }
+                    }
+                    if (authorizationProvider == null) {
+                        authorizationProvider = new BasicAuthorizationProvider(props);
+                    }
                 }
             } finally {
                 LOCK.unlock();
@@ -171,9 +200,13 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         return configFactory;
     }
 
+    public static AuthorizationProvider getAuthorizationProvider() {
+        return authorizationProvider;
+    }
+
     private static void addFactory(final Collection<ConfigurationFactory> list, final String factoryClass) {
         try {
-            addFactory(list, LoaderUtil.loadClass(factoryClass).asSubclass(ConfigurationFactory.class));
+            addFactory(list, Loader.loadClass(factoryClass).asSubclass(ConfigurationFactory.class));
         } catch (final Exception ex) {
             LOGGER.error("Unable to load class {}", factoryClass, ex);
         }
@@ -293,7 +326,13 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     protected ConfigurationSource getInputFromString(final String config, final ClassLoader loader) {
         try {
             final URL url = new URL(config);
-            return new ConfigurationSource(url.openStream(), FileUtils.fileFromUri(url.toURI()));
+            URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
+            File file = FileUtils.fileFromUri(url.toURI());
+            if (file != null) {
+                return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
+            } else {
+                return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
+            }
         } catch (final Exception ex) {
             final ConfigurationSource source = ConfigurationSource.fromResource(config, loader);
             if (source == null) {

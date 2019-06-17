@@ -1,0 +1,23 @@
+[
+  {
+    "extension": "revapi.java",
+    "configuration": {
+      "filter": {
+        "classes": {
+          "exclude": [
+          ]
+        }
+      }
+    }
+  },
+  {
+    "extension": "revapi.ignore",
+    "configuration": [
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jdbc.PoolingDriverConnectionSource",
+        "justification": "Refactored to log4j-jdbc-dbcp2"
+      }
+    ]
+  }
+]

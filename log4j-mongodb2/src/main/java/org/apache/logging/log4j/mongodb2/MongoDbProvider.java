@@ -24,17 +24,17 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.convert.TypeConverters;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
+import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -52,7 +52,7 @@ import com.mongodb.WriteConcern;
 public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 
     public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
-			implements org.apache.logging.log4j.core.util.Builder<MongoDbProvider> {
+			implements org.apache.logging.log4j.plugins.util.Builder<MongoDbProvider> {
 
 		private static WriteConcern toWriteConcern(final String writeConcernConstant,
 	            final String writeConcernConstantClassName) {
@@ -275,47 +275,6 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
     private static final int DEFAULT_PORT = 27017;
 
     private static final int DEFAULT_COLLECTION_SIZE = 536870912;
-    /**
-     * Factory method for creating a MongoDB provider within the plugin manager.
-     *
-     * @param collectionName The name of the MongoDB collection to which log events should be written.
-     * @param writeConcernConstant The {@link WriteConcern} constant to control writing details, defaults to
-     *                             {@link WriteConcern#ACKNOWLEDGED}.
-     * @param writeConcernConstantClassName The name of a class containing the aforementioned static WriteConcern
-     *                                      constant. Defaults to {@link WriteConcern}.
-     * @param databaseName The name of the MongoDB database containing the collection to which log events should be
-     *                     written. Mutually exclusive with {@code factoryClassName&factoryMethodName!=null}.
-     * @param server The host name of the MongoDB server, defaults to localhost and mutually exclusive with
-     *               {@code factoryClassName&factoryMethodName!=null}.
-     * @param port The port the MongoDB server is listening on, defaults to the default MongoDB port and mutually
-     *             exclusive with {@code factoryClassName&factoryMethodName!=null}.
-     * @param userName The username to authenticate against the MongoDB server with.
-     * @param password The password to authenticate against the MongoDB server with.
-     * @param factoryClassName A fully qualified class name containing a static factory method capable of returning a
-     *                         {@link DB} or a {@link MongoClient}.
-     * @param factoryMethodName The name of the public static factory method belonging to the aforementioned factory
-     *                          class.
-     * @return a new MongoDB provider.
-     * @deprecated in 2.8; use {@link #newBuilder()} instead.
-     */
-    @Deprecated
-    public static MongoDbProvider createNoSqlProvider(
-            final String collectionName,
-            final String writeConcernConstant,
-            final String writeConcernConstantClassName,
-            final String databaseName,
-            final String server,
-            final String port,
-            final String userName,
-            final String password,
-            final String factoryClassName,
-			final String factoryMethodName) {
-    	LOGGER.info("createNoSqlProvider");
-		return newBuilder().setCollectionName(collectionName).setWriteConcernConstant(writeConcernConstantClassName)
-				.setWriteConcernConstant(writeConcernConstant).setDatabaseName(databaseName).setServer(server)
-				.setPort(port).setUserName(userName).setPassword(password).setFactoryClassName(factoryClassName)
-				.setFactoryMethodName(factoryMethodName).build();
-	}
     @PluginBuilderFactory
 	public static <B extends Builder<B>> B newBuilder() {
 		return new Builder<B>().asBuilder();

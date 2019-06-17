@@ -58,12 +58,12 @@ public class RollingRandomAccessFileManagerTest {
             final boolean append = false;
             final boolean flushNow = false;
             final long triggerSize = Long.MAX_VALUE;
-            final long time = System.currentTimeMillis();
+            final long initialTime = System.currentTimeMillis();
             final TriggeringPolicy triggerPolicy = new SizeBasedTriggeringPolicy(triggerSize);
             final RolloverStrategy rolloverStrategy = null;
             final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(null, raf,
                     file.getName(), Strings.EMPTY, os, append, flushNow,
-                    RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, triggerSize, time, triggerPolicy, rolloverStrategy,
+                    RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, triggerSize, initialTime, triggerPolicy, rolloverStrategy,
                     null, null, null, null, null, true);
 
             final int size = RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3;

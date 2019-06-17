@@ -911,6 +911,16 @@ ColumnConfig plugin). If a `literal` attribute is given, then its value
 will be used as is in the `INSERT` query without any escaping.
 Otherwise, the layout or pattern specified will be converted into the
 configured type and stored in that column.
+
+|immediateFail |boolean |false |When set to true, log events will not
+wait to try to reconnect and will fail immediately if the JDBC resources
+are not available. New in 2.11.2.
+
+|reconnectIntervalMillis |long |5000 |If set to a value greater than 0,
+after an error, the JDBCDatabaseManager will attempt to reconnect to the database
+after waiting the specified number of milliseconds. If the reconnect
+fails then an exception will be thrown (which can be caught by the
+application if `ignoreExceptions` is set to `false`). New in 2.11.2.
 |=======================================================================
 
 When configuring the JDBCAppender, you must specify a `ConnectionSource`
@@ -988,6 +998,31 @@ to `example`. You can use the JDBC connection string prefix
 `jdbc:apache:commons:dbcp:` followed by the pool name if you want to use
 a pooled connection elsewhere. For example:
 `jdbc:apache:commons:dbcp:example`.
+
+|PoolableConnectionFactory |PoolableConnectionFactory element |Defines a PoolableConnectionFactory.
+|=======================================================================
+
+[#JDBCPoolableConnectionFactory]
+.PoolableConnectionFactory Parameters (Apache Commons DBCP)
+[cols=",,",options="header",]
+|=======================================================================
+|Parameter Name |Type |Description
+|autoCommitOnReturn |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|cacheState |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|connectionInitSqls |Strings | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultAutoCommit |Boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultCatalog |String | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultQueryTimeoutSeconds |Integer | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultReadOnly |Boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultTransactionIsolation |int | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|disconnectionSqlCodes |Strings | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|fastFailValidation |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|maxConnLifetimeMillis |long | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|maxOpenPreparedStatements |int | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|poolStatements |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|rollbackOnReturn |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|validationQuery |String | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|validationQueryTimeoutSeconds |int | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
 |=======================================================================
 
 When configuring the JDBCAppender, use the nested `<Column>` elements to
@@ -2605,7 +2640,11 @@ and when the current date no longer matches the log’s start date.
 
 Cron Triggering Policy
 
-The `CronTriggeringPolicy` triggers rollover based on a cron expression.
+The `CronTriggeringPolicy` triggers rollover based on a cron expression. This policy
+is controlled by a timer and is asynchronous to processing log events, so it is possible that log events
+from the previous or next time period may appear at the beginning or end of the log file.
+The filePattern attribute of the Appender should contain a timestamp otherwise the target file will be
+overwritten on each rollover.
 
 .CronTriggeringPolicy Parameters
 [cols=",,",options="header",]
@@ -2647,9 +2686,12 @@ and falls back to Log4J initialization time instead.)
 
 SizeBased Triggering Policy
 
-The `SizeBasedTriggeringPolicy` causes a rollover once the file has
-reached the specified size. The size can be specified in bytes, with the
-suffix KB, MB or GB, for example `20MB`.
+The `SizeBasedTriggeringPolicy` causes a rollover once the file has reached the specified size. The size can be
+specified in bytes, with the suffix KB, MB or GB, for example `20MB`.
+When combined with a time based triggering policy the file pattern must contain a `%i`
+otherwise the target file will be overwritten on every rollover as the SizeBased Triggering Policy
+will not cause the timestamp value in the file name to change. When used without a time based
+triggering policy the SizeBased Triggering Policy will cause the timestamp value to change.
 
 TimeBased Triggering Policy
 
@@ -2708,10 +2750,36 @@ for Java]. The pattern may also contain lookup references that can be
 resolved at runtime such as is shown in the example below.
 
 The default rollover strategy supports three variations for incrementing
-the counter. The first is the "fixed window" strategy. To illustrate how
-it works, suppose that the min attribute is set to 1, the max attribute
-is set to 3, the file name is "foo.log", and the file name pattern is
-"foo-%i.log".
+the counter. To illustrate how it works, suppose that the min attribute 
+is set to 1, the max attribute is set to 3, the file name is "foo.log", 
+and the file name pattern is "foo-%i.log".
+
+[cols=",,,",options="header",]
+|=======================================================================
+|Number of rollovers |Active output target |Archived log files
+|Description
+|0 |foo.log |- |All logging is going to the initial file.
+
+|1 |foo.log |foo-1.log |During the first rollover foo.log is renamed to
+foo-1.log. A new foo.log file is created and starts being written to.
+
+|2 |foo.log |foo-2.log, foo-1.log |During the second rollover foo.log is
+renamed to foo-2.log. A new foo.log file is created and starts being
+written to.
+
+|3 |foo.log |foo-3.log, foo-2.log, foo-1.log |During the third rollover
+foo.log is renamed to foo-3.log. A new foo.log file is created and
+starts being written to.
+
+|4 |foo.log |foo-3.log, foo-2.log, foo-1.log |In the fourth and
+subsequent rollovers, foo-1.log is deleted, foo-2.log is renamed to
+foo-1.log, foo-3.log is renamed to foo-2.log and foo.log is renamed to
+foo-3.log. A new foo.log file is created and starts being written to.
+|=======================================================================
+
+By way of contrast, when the fileIndex attribute is set to "min" but all
+the other settings are the same the "fixed window" strategy will be 
+performed.
 
 [cols=",,,",options="header",]
 |=======================================================================
@@ -2735,32 +2803,6 @@ starts being written to.
 subsequent rollovers, foo-3.log is deleted, foo-2.log is renamed to
 foo-3.log, foo-1.log is renamed to foo-2.log and foo.log is renamed to
 foo-1.log. A new foo.log file is created and starts being written to.
-|=======================================================================
-
-By way of contrast, when the fileIndex attribute is set to "max" but all
-the other settings are the same the following actions will be performed.
-
-[cols=",,,",options="header",]
-|=======================================================================
-|Number of rollovers |Active output target |Archived log files
-|Description
-|0 |foo.log |- |All logging is going to the initial file.
-
-|1 |foo.log |foo-1.log |During the first rollover foo.log is renamed to
-foo-1.log. A new foo.log file is created and starts being written to.
-
-|2 |foo.log |foo-1.log, foo-2.log |During the second rollover foo.log is
-renamed to foo-2.log. A new foo.log file is created and starts being
-written to.
-
-|3 |foo.log |foo-1.log, foo-2.log, foo-3.log |During the third rollover
-foo.log is renamed to foo-3.log. A new foo.log file is created and
-starts being written to.
-
-|4 |foo.log |foo-1.log, foo-2.log, foo-3.log |In the fourth and
-subsequent rollovers, foo-1.log is deleted, foo-2.log is renamed to
-foo-1.log, foo-3.log is renamed to foo-2.log and foo.log is renamed to
-foo-3.log. A new foo.log file is created and starts being written to.
 |=======================================================================
 
 Finally, as of release 2.8, if the fileIndex attribute is set to "nomax"
@@ -4021,7 +4063,13 @@ example, "SelectIt".
 The `SocketAppender` is an OutputStreamAppender that writes its output
 to a remote destination specified by a host and port. The data can be
 sent over either TCP or UDP and can be sent in any format. You can
-optionally secure communication with link:#SSL[SSL].
+optionally secure communication with link:#SSL[SSL]. Note that the TCP and SSL
+variants write to the socket as a stream and do not expect response from
+the target destination. Due to limitations in the TCP protocol that
+means that when the target server closes its connection some log events
+may continue to appear to succeed until a closed connection exception
+is raised, causing those events to be lost. If guaranteed delivery is
+required a protocol that requires acknowledgements must be used.
 
 .`SocketAppender` Parameters
 [cols=",,",options="header",]
@@ -4033,7 +4081,9 @@ optionally secure communication with link:#SSL[SSL].
 log events. This parameter is required.
 
 |port |integer |The port on the host that is listening for log events.
-This parameter must be specified.
+This parameter must be specified.If the host name resolves to multiple
+IP addresses the TCP and SSL variations will fail over to the next IP
+address when a connection is lost.
 
 |protocol |String |"TCP" (default), "SSL" or "UDP".
 

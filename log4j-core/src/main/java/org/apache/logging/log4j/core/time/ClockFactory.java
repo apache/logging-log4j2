@@ -30,9 +30,7 @@ import java.util.Map;
 
 /**
  * Factory for {@code Clock} objects.
- * <p>
- * This class replaces {@link org.apache.logging.log4j.core.util.ClockFactory}.
- * </p>
+ * 
  * @since 2.11
  */
 public final class ClockFactory {

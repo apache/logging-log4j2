@@ -24,11 +24,12 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
 @Plugin(name = "Hanging", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class HangingAppender extends AbstractAppender {
@@ -40,7 +41,7 @@ public class HangingAppender extends AbstractAppender {
     private final long shutdownDelay;
 
     public HangingAppender(final String name, final long delay, final long startupDelay, final long shutdownDelay) {
-        super(name, null, null);
+        super(name, null, null, true, Property.EMPTY_ARRAY);
         this.delay = delay;
         this.startupDelay = startupDelay;
         this.shutdownDelay = shutdownDelay;

@@ -27,13 +27,14 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.util.Booleans;
@@ -64,9 +65,9 @@ public final class SmtpAppender extends AbstractAppender {
     /** The SMTP Manager */
     private final SmtpManager manager;
 
-    private SmtpAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout, final SmtpManager manager,
-                         final boolean ignoreExceptions) {
-        super(name, filter, layout, ignoreExceptions);
+    private SmtpAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout, final boolean ignoreExceptions,
+                         Property[] properties, final SmtpManager manager) {
+        super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }
 
@@ -153,7 +154,7 @@ public final class SmtpAppender extends AbstractAppender {
             return null;
         }
 
-        return new SmtpAppender(name, filter, layout, manager, ignoreExceptions);
+        return new SmtpAppender(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY, manager);
     }
 
     /**

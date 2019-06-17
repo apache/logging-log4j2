@@ -17,21 +17,22 @@
 
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.visitors.AbstractPluginVisitor;
+
+import java.util.function.Function;
 
 /**
- * PluginVisitor implementation for {@link PluginNode}.
+ *  @deprecated. Provided to support legacy plugins.
  */
-public class PluginNodeVisitor extends AbstractPluginVisitor<PluginNode> {
+public class PluginNodeVisitor extends AbstractPluginVisitor<PluginNode, Object> {
     public PluginNodeVisitor() {
         super(PluginNode.class);
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
+    public Object visit(final Object unused, final Node node, final Function<String, String> substitutor,
                         final StringBuilder log) {
         if (this.conversionType.isInstance(node)) {
             log.append("Node=").append(node.getName());

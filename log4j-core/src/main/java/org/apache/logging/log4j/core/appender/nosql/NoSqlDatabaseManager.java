@@ -67,12 +67,6 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         }
     }
 
-    @Deprecated
-    @Override
-    protected void writeInternal(final LogEvent event) {
-        writeInternal(event, null);
-    }
-    
     @Override
     protected void writeInternal(final LogEvent event, final Serializable serializable) {
         if (!this.isRunning() || this.connection == null || this.connection.isClosed()) {

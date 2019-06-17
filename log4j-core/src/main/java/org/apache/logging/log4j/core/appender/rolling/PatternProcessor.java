@@ -57,6 +57,8 @@ public class PatternProcessor {
     private long nextFileTime = 0;
     private long currentFileTime = 0;
 
+    private boolean isTimeBased = false;
+
     private RolloverFrequency frequency = null;
 
     private final String pattern;
@@ -104,6 +106,10 @@ public class PatternProcessor {
         this.prevFileTime = copy.prevFileTime;
         this.nextFileTime = copy.nextFileTime;
         this.currentFileTime = copy.currentFileTime;
+    }
+
+    public void setTimeBased(boolean isTimeBased) {
+        this.isTimeBased = isTimeBased;
     }
 
     public long getCurrentFileTime() {
@@ -213,7 +219,9 @@ public class PatternProcessor {
     }
 
     public void updateTime() {
-        prevFileTime = nextFileTime;
+        if (nextFileTime != 0 || !isTimeBased) {
+			prevFileTime = nextFileTime;
+		}
     }
 
     private long debugGetNextTime(final long nextTime) {
@@ -266,7 +274,9 @@ public class PatternProcessor {
                                      final Object obj) {
         // LOG4J2-628: we deliberately use System time, not the log4j.Clock time
         // for creating the file name of rolled-over files.
-        final long time = useCurrentTime && currentFileTime != 0 ? currentFileTime :
+		LOGGER.debug("Formatting file name. useCurrentTime={}, currentFileTime={}, prevFileTime={}",
+			useCurrentTime, currentFileTime, prevFileTime);
+		final long time = useCurrentTime ? currentFileTime != 0 ? currentFileTime : System.currentTimeMillis() :
                 prevFileTime != 0 ? prevFileTime : System.currentTimeMillis();
         formatFileName(buf, new Date(time), obj);
         final LogEvent event = new Log4jLogEvent.Builder().setTimeMillis(time).build();

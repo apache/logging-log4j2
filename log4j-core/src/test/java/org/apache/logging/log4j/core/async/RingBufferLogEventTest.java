@@ -173,7 +173,6 @@ public class RingBufferLogEventTest {
         assertEquals(evt.getLevel(), actual.getLevel());
         assertEquals(evt.getMessage(), actual.getMessage());
         assertEquals(evt.getThrown(), actual.getThrown());
-        assertEquals(evt.getContextMap(), actual.getContextMap());
         assertEquals(evt.getContextData(), actual.getContextData());
         assertEquals(evt.getContextStack(), actual.getContextStack());
         assertEquals(evt.getThreadName(), actual.getThreadName());

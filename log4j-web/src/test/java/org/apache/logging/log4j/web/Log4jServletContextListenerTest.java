@@ -31,6 +31,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
 
+import java.util.concurrent.TimeUnit;
+
 @RunWith(MockitoJUnitRunner.class)
 public class Log4jServletContextListenerTest {
     @Mock
@@ -59,7 +61,7 @@ public class Log4jServletContextListenerTest {
         this.listener.contextDestroyed(this.event);
 
         then(initializer).should().clearLoggerContext();
-        then(initializer).should().stop();
+        then(initializer).should().stop(30L, TimeUnit.SECONDS);
     }
 
     @Test

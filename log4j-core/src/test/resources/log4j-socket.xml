@@ -15,11 +15,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF" name="MyApp">
+<Configuration status="ERROR" name="MyApp">
 	<Appenders>
 		<Socket name="socket" host="localhost" port="5514" protocol="TCP" ignoreExceptions="false"
-				reconnectionDelay="100">
-			<BasicLayout />
+						reconnectionDelay="100" immediateFlush="true">
+			<PatternLayout pattern="%m%n"/>
 		</Socket>
 	</Appenders>
 	<Loggers>

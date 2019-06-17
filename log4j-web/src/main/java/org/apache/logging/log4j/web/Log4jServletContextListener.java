@@ -24,6 +24,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -70,16 +71,12 @@ public class Log4jServletContextListener implements ServletContextListener {
 
 		this.initializer.clearLoggerContext(); // the application is finished
 		// shutting down now
-		if (initializer instanceof LifeCycle2) {
-			final String stopTimeoutStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT);
-			final long stopTimeout = Strings.isEmpty(stopTimeoutStr) ? DEFAULT_STOP_TIMEOUT
-					: Long.parseLong(stopTimeoutStr);
-			final String timeoutTimeUnitStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT_TIMEUNIT);
-			final TimeUnit timeoutTimeUnit = Strings.isEmpty(timeoutTimeUnitStr) ? DEFAULT_STOP_TIMEOUT_TIMEUNIT
-					: TimeUnit.valueOf(timeoutTimeUnitStr.toUpperCase(Locale.ROOT));
-			((LifeCycle2) this.initializer).stop(stopTimeout, timeoutTimeUnit);
-		} else {
-			this.initializer.stop();
-		}
+        final String stopTimeoutStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT);
+        final long stopTimeout = Strings.isEmpty(stopTimeoutStr) ? DEFAULT_STOP_TIMEOUT
+                : Long.parseLong(stopTimeoutStr);
+        final String timeoutTimeUnitStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT_TIMEUNIT);
+        final TimeUnit timeoutTimeUnit = Strings.isEmpty(timeoutTimeUnitStr) ? DEFAULT_STOP_TIMEOUT_TIMEUNIT
+                : TimeUnit.valueOf(timeoutTimeUnitStr.toUpperCase(Locale.ROOT));
+        ((LifeCycle) this.initializer).stop(stopTimeout, timeoutTimeUnit);
 	}
 }

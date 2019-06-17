@@ -26,10 +26,10 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.message.Message;
@@ -62,25 +62,27 @@ public final class TimeFilter extends AbstractFilter {
      * Starting offset from midnight in milliseconds.
      */
     private final long start;
+    
     /**
      * Ending offset from midnight in milliseconds.
      */
     private final long end;
+    
     /**
      * Timezone.
      */
-    private final TimeZone timezone;
+    private final TimeZone timeZone;
 
     private long midnightToday;
     private long midnightTomorrow;
 
 
-    private TimeFilter(final long start, final long end, final TimeZone tz, final Result onMatch,
+    private TimeFilter(final long start, final long end, final TimeZone timeZone, final Result onMatch,
                        final Result onMismatch) {
         super(onMatch, onMismatch);
         this.start = start;
         this.end = end;
-        timezone = tz;
+        this.timeZone = timeZone;
         initMidnight(start);
     }
 
@@ -89,7 +91,7 @@ public final class TimeFilter extends AbstractFilter {
      * @param now a time in milliseconds since the epoch, used to pinpoint the current date
      */
     void initMidnight(final long now) {
-        final Calendar calendar = Calendar.getInstance(timezone);
+        final Calendar calendar = Calendar.getInstance(timeZone);
         calendar.setTimeInMillis(now);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -213,7 +215,7 @@ public final class TimeFilter extends AbstractFilter {
         final StringBuilder sb = new StringBuilder();
         sb.append("start=").append(start);
         sb.append(", end=").append(end);
-        sb.append(", timezone=").append(timezone.toString());
+        sb.append(", timezone=").append(timeZone.toString());
         return sb.toString();
     }
 
@@ -236,10 +238,10 @@ public final class TimeFilter extends AbstractFilter {
             @PluginAttribute("onMismatch") final Result mismatch) {
         final long s = parseTimestamp(start, 0);
         final long e = parseTimestamp(end, Long.MAX_VALUE);
-        final TimeZone timezone = tz == null ? TimeZone.getDefault() : TimeZone.getTimeZone(tz);
+        final TimeZone timeZone = tz == null ? TimeZone.getDefault() : TimeZone.getTimeZone(tz);
         final Result onMatch = match == null ? Result.NEUTRAL : match;
         final Result onMismatch = mismatch == null ? Result.DENY : mismatch;
-        return new TimeFilter(s, e, timezone, onMatch, onMismatch);
+        return new TimeFilter(s, e, timeZone, onMatch, onMismatch);
     }
 
     private static long parseTimestamp(final String timestamp, final long defaultValue) {

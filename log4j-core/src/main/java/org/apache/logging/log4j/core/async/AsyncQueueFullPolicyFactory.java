@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -66,22 +66,29 @@ public class AsyncQueueFullPolicyFactory {
      */
     public static AsyncQueueFullPolicy create() {
         final String router = PropertiesUtil.getProperties().getStringProperty(PROPERTY_NAME_ASYNC_EVENT_ROUTER);
-        if (router == null || PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER.equals(router)
-                || DefaultAsyncQueueFullPolicy.class.getSimpleName().equals(router)
-                || DefaultAsyncQueueFullPolicy.class.getName().equals(router)) {
+        if (router == null || isRouterSelected(
+                router, DefaultAsyncQueueFullPolicy.class, PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER)) {
             return new DefaultAsyncQueueFullPolicy();
         }
-        if (PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER.equals(router)
-                || DiscardingAsyncQueueFullPolicy.class.getSimpleName().equals(router)
-                || DiscardingAsyncQueueFullPolicy.class.getName().equals(router)) {
+        if (isRouterSelected(
+                router, DiscardingAsyncQueueFullPolicy.class, PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER)) {
             return createDiscardingAsyncQueueFullPolicy();
         }
         return createCustomRouter(router);
     }
 
+    private static boolean isRouterSelected(
+            String propertyValue,
+            Class<? extends AsyncQueueFullPolicy> policy,
+            String shortPropertyValue) {
+        return propertyValue != null && (shortPropertyValue.equalsIgnoreCase(propertyValue)
+                || policy.getName().equals(propertyValue)
+                || policy.getSimpleName().equals(propertyValue));
+    }
+
     private static AsyncQueueFullPolicy createCustomRouter(final String router) {
         try {
-            final Class<? extends AsyncQueueFullPolicy> cls = LoaderUtil.loadClass(router).asSubclass(AsyncQueueFullPolicy.class);
+            final Class<? extends AsyncQueueFullPolicy> cls = Loader.loadClass(router).asSubclass(AsyncQueueFullPolicy.class);
             LOGGER.debug("Creating custom AsyncQueueFullPolicy '{}'", router);
             return cls.newInstance();
         } catch (final Exception ex) {

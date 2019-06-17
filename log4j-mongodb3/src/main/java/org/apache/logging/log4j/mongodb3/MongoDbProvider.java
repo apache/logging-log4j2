@@ -22,17 +22,17 @@ import java.lang.reflect.Method;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.convert.TypeConverters;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
+import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.bson.codecs.configuration.CodecRegistries;
 
@@ -50,7 +50,7 @@ import com.mongodb.client.MongoDatabase;
 public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 
     public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<MongoDbProvider> {
+            implements org.apache.logging.log4j.plugins.util.Builder<MongoDbProvider> {
 
         private static WriteConcern toWriteConcern(final String writeConcernConstant,
                 final String writeConcernConstantClassName) {

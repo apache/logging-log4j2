@@ -24,9 +24,9 @@ import java.util.Map;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
 import org.apache.logging.log4j.jackson.XmlConstants;
@@ -67,7 +67,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 public final class XmlLayout extends AbstractJacksonLayout {
 
     public static class Builder<B extends Builder<B>> extends AbstractJacksonLayout.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<XmlLayout> {
+            implements org.apache.logging.log4j.plugins.util.Builder<XmlLayout> {
 
         public Builder() {
             super();
@@ -102,44 +102,9 @@ public final class XmlLayout extends AbstractJacksonLayout {
         return new XmlLayout(null, false, false, false, false, StandardCharsets.UTF_8, true, false, false, null);
     }
 
-    /**
-     * Creates an XML Layout.
-     *
-     * @param locationInfo
-     *            If "true", includes the location information in the generated XML.
-     * @param properties
-     *            If "true", includes the thread context map in the generated XML.
-     * @param complete
-     *            If "true", includes the XML header and footer, defaults to "false".
-     * @param compact
-     *            If "true", does not use end-of-lines and indentation, defaults to "false".
-     * @param charset
-     *            The character set to use, if {@code null}, uses "UTF-8".
-     * @param includeStacktrace
-     *            If "true", includes the stacktrace of any Throwable in the generated XML, defaults to "true".
-     * @return An XML Layout.
-     *
-     * @deprecated Use {@link #newBuilder()} instead
-     */
-    @Deprecated
-    public static XmlLayout createLayout(final boolean locationInfo, final boolean properties, final boolean complete,
-            final boolean compact, final Charset charset, final boolean includeStacktrace) {
-        return new XmlLayout(null, locationInfo, properties, complete, compact, charset, includeStacktrace, false,
-                false, null);
-    }
-
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
-    }
-
-    /**
-     * @deprecated Use {@link #newBuilder()} instead
-     */
-    @Deprecated
-    protected XmlLayout(final boolean locationInfo, final boolean properties, final boolean complete,
-            final boolean compact, final Charset charset, final boolean includeStacktrace) {
-        this(null, locationInfo, properties, complete, compact, charset, includeStacktrace, false, false, null);
     }
 
     private XmlLayout(final Configuration config, final boolean locationInfo, final boolean properties,

@@ -123,7 +123,7 @@ public class YamlLayoutTest {
                 .setIncludeStacktrace(true)
                 .setStacktraceAsString(stacktraceAsString)
                 .build();
-        // @formatter:off
+        // @formatter:on
         return layout.toSerializable(expected);
     }
 
@@ -296,7 +296,9 @@ public class YamlLayoutTest {
         final Configuration configuration = rootLogger.getContext().getConfiguration();
         // set up appender
         // Use [[ and ]] to test header and footer (instead of [ and ])
-        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, "[[", "]]", null, true);
+        final AbstractJacksonLayout layout = YamlLayout.newBuilder().setConfiguration(configuration).setLocationInfo(true).setProperties(true)
+                .setHeader("[[".getBytes(StandardCharsets.UTF_8)).setFooter("]]".getBytes(StandardCharsets.UTF_8))
+                .setIncludeStacktrace(true).build();
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 

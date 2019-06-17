@@ -123,15 +123,15 @@ public class AbstractStringLayoutStringEncodingBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
-    public void baseline() {
-        consume(bytes);
+    public long baseline() {
+        return consume(bytes);
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
-    public void usAsciiGetBytes() {
-        consume(usAsciiGetBytesLayout.toByteArray(logEvent));
+    public long usAsciiGetBytes() {
+        return consume(usAsciiGetBytesLayout.toByteArray(logEvent));
     }
 
     @BenchmarkMode(Mode.Throughput)
@@ -145,8 +145,8 @@ public class AbstractStringLayoutStringEncodingBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
-    public void iso8859_1GetBytes() {
-        consume(iso8859_1GetBytesLayout.toByteArray(logEvent));
+    public long iso8859_1GetBytes() {
+        return consume(iso8859_1GetBytesLayout.toByteArray(logEvent));
     }
 
     @BenchmarkMode(Mode.Throughput)
@@ -160,8 +160,8 @@ public class AbstractStringLayoutStringEncodingBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
-    public void utf8GetBytes() {
-        consume(utf8GetBytesLayout.toByteArray(logEvent));
+    public long utf8GetBytes() {
+        return consume(utf8GetBytesLayout.toByteArray(logEvent));
     }
 
     @BenchmarkMode(Mode.Throughput)
@@ -175,8 +175,8 @@ public class AbstractStringLayoutStringEncodingBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
-    public void utf16GetBytes() {
-        consume(utf16GetBytesLayout.toByteArray(logEvent));
+    public long utf16GetBytes() {
+        return consume(utf16GetBytesLayout.toByteArray(logEvent));
     }
 
     @BenchmarkMode(Mode.Throughput)

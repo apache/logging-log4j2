@@ -22,25 +22,25 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.script.Bindings;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.rewrite.RewritePolicy;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
-import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginElement;
 
 /**
  * This Appender "routes" between various Appenders, some of which can be references to
@@ -56,7 +56,7 @@ public final class RoutingAppender extends AbstractAppender {
     public static final String STATIC_VARIABLES_KEY = "staticVariables";
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<RoutingAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<RoutingAppender> {
 
         // Does not work unless the element is called "Script", I wanted "DefaultRounteScript"...
         @PluginElement("Script")
@@ -83,7 +83,7 @@ public final class RoutingAppender extends AbstractAppender {
                 return null;
             }
             return new RoutingAppender(name, getFilter(), isIgnoreExceptions(), routes, rewritePolicy,
-                    getConfiguration(), purgePolicy, defaultRouteScript);
+                    getConfiguration(), purgePolicy, defaultRouteScript, getPropertyArray());
         }
 
         public Routes getRoutes() {
@@ -102,23 +102,24 @@ public final class RoutingAppender extends AbstractAppender {
             return purgePolicy;
         }
 
-        public B withRoutes(@SuppressWarnings("hiding") final Routes routes) {
+        public B setRoutes(@SuppressWarnings("hiding") final Routes routes) {
             this.routes = routes;
             return asBuilder();
         }
 
-        public B withDefaultRouteScript(@SuppressWarnings("hiding") final AbstractScript defaultRouteScript) {
+        public B setDefaultRouteScript(@SuppressWarnings("hiding") final AbstractScript defaultRouteScript) {
             this.defaultRouteScript = defaultRouteScript;
             return asBuilder();
         }
 
-        public B withRewritePolicy(@SuppressWarnings("hiding") final RewritePolicy rewritePolicy) {
+        public B setRewritePolicy(@SuppressWarnings("hiding") final RewritePolicy rewritePolicy) {
             this.rewritePolicy = rewritePolicy;
             return asBuilder();
         }
 
-        public void withPurgePolicy(@SuppressWarnings("hiding") final PurgePolicy purgePolicy) {
+        public B setPurgePolicy(@SuppressWarnings("hiding") final PurgePolicy purgePolicy) {
             this.purgePolicy = purgePolicy;
+            return asBuilder();
         }
 
     }
@@ -133,7 +134,10 @@ public final class RoutingAppender extends AbstractAppender {
     private final Routes routes;
     private Route defaultRoute;
     private final Configuration configuration;
-    private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, CreatedRouteAppenderControl> createdAppenders = new ConcurrentHashMap<>();
+    private final Map<String, AppenderControl> createdAppendersUnmodifiableView
+            = Collections.unmodifiableMap(createdAppenders);
+    private final ConcurrentMap<String, RouteAppenderControl> referencedAppenders = new ConcurrentHashMap<>();
     private final RewritePolicy rewritePolicy;
     private final PurgePolicy purgePolicy;
     private final AbstractScript defaultRouteScript;
@@ -141,8 +145,8 @@ public final class RoutingAppender extends AbstractAppender {
 
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
             final RewritePolicy rewritePolicy, final Configuration configuration, final PurgePolicy purgePolicy,
-            final AbstractScript defaultRouteScript) {
-        super(name, filter, null, ignoreExceptions);
+            final AbstractScript defaultRouteScript, Property[] properties) {
+        super(name, filter, null, ignoreExceptions, properties);
         this.routes = routes;
         this.configuration = configuration;
         this.rewritePolicy = rewritePolicy;
@@ -187,7 +191,7 @@ public final class RoutingAppender extends AbstractAppender {
                 final Appender appender = configuration.getAppender(route.getAppenderRef());
                 if (appender != null) {
                     final String key = route == defaultRoute ? DEFAULT_KEY : route.getKey();
-                    appenders.put(key, new AppenderControl(appender, null, null));
+                    referencedAppenders.put(key, new ReferencedRouteAppenderControl(appender));
                 } else {
                     error("Appender " + route.getAppenderRef() + " cannot be located. Route ignored");
                 }
@@ -200,16 +204,10 @@ public final class RoutingAppender extends AbstractAppender {
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
         super.stop(timeout, timeUnit, false);
-        final Map<String, Appender> map = configuration.getAppenders();
-        for (final Map.Entry<String, AppenderControl> entry : appenders.entrySet()) {
+        // Only stop appenders that were created by this RoutingAppender
+        for (final Map.Entry<String, CreatedRouteAppenderControl> entry : createdAppenders.entrySet()) {
             final Appender appender = entry.getValue().getAppender();
-            if (!map.containsKey(appender.getName())) {
-                if (appender instanceof LifeCycle2) {
-                    ((LifeCycle2) appender).stop(timeout, timeUnit);
-                } else {
-                    appender.stop();
-                }
-            }
+            appender.stop(timeout, timeUnit);
         }
         setStopped();
         return true;
@@ -222,19 +220,30 @@ public final class RoutingAppender extends AbstractAppender {
         }
         final String pattern = routes.getPattern(event, scriptStaticVariables);
         final String key = pattern != null ? configuration.getStrSubstitutor().replace(event, pattern) : defaultRoute.getKey();
-        final AppenderControl control = getControl(key, event);
+        final RouteAppenderControl control = getControl(key, event);
         if (control != null) {
-            control.callAppender(event);
+            try {
+                control.callAppender(event);
+            } finally {
+                control.release();
+            }
         }
+        updatePurgePolicy(key, event);
+    }
 
-        if (purgePolicy != null) {
+    private void updatePurgePolicy(final String key, final LogEvent event) {
+        if (purgePolicy != null
+                // LOG4J2-2631: PurgePolicy implementations do not need to be aware of appenders that
+                // were not created by this RoutingAppender.
+                && !referencedAppenders.containsKey(key)) {
             purgePolicy.update(key, event);
         }
     }
 
-    private synchronized AppenderControl getControl(final String key, final LogEvent event) {
-        AppenderControl control = appenders.get(key);
+    private synchronized RouteAppenderControl getControl(final String key, final LogEvent event) {
+        RouteAppenderControl control = getAppender(key);
         if (control != null) {
+            control.checkout();
             return control;
         }
         Route route = null;
@@ -246,8 +255,9 @@ public final class RoutingAppender extends AbstractAppender {
         }
         if (route == null) {
             route = defaultRoute;
-            control = appenders.get(DEFAULT_KEY);
+            control = getAppender(DEFAULT_KEY);
             if (control != null) {
+                control.checkout();
                 return control;
             }
         }
@@ -256,11 +266,23 @@ public final class RoutingAppender extends AbstractAppender {
             if (app == null) {
                 return null;
             }
-            control = new AppenderControl(app, null, null);
-            appenders.put(key, control);
+            CreatedRouteAppenderControl created = new CreatedRouteAppenderControl(app);
+            control = created;
+            createdAppenders.put(key, created);
         }
 
+        if (control != null) {
+            control.checkout();
+        }
         return control;
+    }
+
+    private RouteAppenderControl getAppender(final String key) {
+        final RouteAppenderControl result = referencedAppenders.get(key);
+        if (result == null) {
+            return createdAppenders.get(key);
+        }
+        return result;
     }
 
     private Appender createAppender(final Route route, final LogEvent event) {
@@ -282,8 +304,12 @@ public final class RoutingAppender extends AbstractAppender {
         return null;
     }
 
+    /**
+     * Returns an unmodifiable view of the appenders created by this {@link RoutingAppender}.
+     * Note that this map does not contain appenders that are routed by reference.
+     */
     public Map<String, AppenderControl> getAppenders() {
-        return Collections.unmodifiableMap(appenders);
+        return createdAppendersUnmodifiableView;
     }
 
     /**
@@ -292,48 +318,27 @@ public final class RoutingAppender extends AbstractAppender {
      * @param key The appender's key
      */
     public void deleteAppender(final String key) {
-        LOGGER.debug("Deleting route with " + key + " key ");
-        final AppenderControl control = appenders.remove(key);
+        LOGGER.debug("Deleting route with {} key ", key);
+        // LOG4J2-2631: Only appenders created by this RoutingAppender are eligible for deletion.
+        final CreatedRouteAppenderControl control = createdAppenders.remove(key);
         if (null != control) {
-            LOGGER.debug("Stopping route with " + key + " key");
-            control.getAppender().stop();
+            LOGGER.debug("Stopping route with {} key", key);
+            // Synchronize with getControl to avoid triggering stopAppender before RouteAppenderControl.checkout
+            // can be invoked.
+            synchronized (this) {
+                control.pendingDeletion = true;
+            }
+            // Don't attempt to stop the appender in a synchronized block, since it may block flushing events
+            // to disk.
+            control.tryStopAppender();
         } else {
-            LOGGER.debug("Route with " + key + " key already deleted");
+            if (referencedAppenders.containsKey(key)) {
+                LOGGER.debug("Route {} using an appender reference may not be removed because " +
+                        "the appender may be used outside of the RoutingAppender", key);
+            } else {
+                LOGGER.debug("Route with {} key already deleted", key);
+            }
         }
-    }
-
-    /**
-     * Creates a RoutingAppender.
-     * @param name The name of the Appender.
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
-     *               they are propagated to the caller.
-     * @param routes The routing definitions.
-     * @param config The Configuration (automatically added by the Configuration).
-     * @param rewritePolicy A RewritePolicy, if any.
-     * @param filter A Filter to restrict events processed by the Appender or null.
-     * @return The RoutingAppender
-     * @deprecated Since 2.7; use {@link #newBuilder()}
-     */
-    @Deprecated
-    public static RoutingAppender createAppender(
-            final String name,
-            final String ignore,
-            final Routes routes,
-            final Configuration config,
-            final RewritePolicy rewritePolicy,
-            final PurgePolicy purgePolicy,
-            final Filter filter) {
-
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        if (name == null) {
-            LOGGER.error("No name provided for RoutingAppender");
-            return null;
-        }
-        if (routes == null) {
-            LOGGER.error("No routes defined for RoutingAppender");
-            return null;
-        }
-        return new RoutingAppender(name, filter, ignoreExceptions, routes, rewritePolicy, config, purgePolicy, null);
     }
 
     public Route getDefaultRoute() {
@@ -362,5 +367,83 @@ public final class RoutingAppender extends AbstractAppender {
 
     public ConcurrentMap<Object, Object> getScriptStaticVariables() {
         return scriptStaticVariables;
+    }
+
+    /**
+     * LOG4J2-2629: PurgePolicy implementations can invoke {@link #deleteAppender(String)} after we have looked up
+     * an instance of a target appender but before events are appended, which could result in events not being
+     * recorded to any appender.
+     * This extension of {@link AppenderControl} allows to to mark usage of an appender, allowing deferral of
+     * {@link Appender#stop()} until events have successfully been recorded.
+     * Alternative approaches considered:
+     * - More aggressive synchronization: Appenders may do expensive I/O that shouldn't block routing.
+     * - Move the 'updatePurgePolicy' invocation before appenders are called: Unfortunately this approach doesn't work
+     *   if we consider an ImmediatePurgePolicy (or IdlePurgePolicy with a very small timeout) because it may attempt
+     *   to remove an appender that doesn't exist yet. It's counterintuitive to get an event that a route has been
+     *   used at a point when we expect the route doesn't exist in {@link #getAppenders()}.
+     */
+    private static abstract class RouteAppenderControl extends AppenderControl {
+
+        RouteAppenderControl(Appender appender) {
+            super(appender, null, null);
+        }
+
+        abstract void checkout();
+
+        abstract void release();
+    }
+
+    private static final class CreatedRouteAppenderControl extends RouteAppenderControl {
+
+        private volatile boolean pendingDeletion = false;
+        private final AtomicInteger depth = new AtomicInteger();
+
+        CreatedRouteAppenderControl(Appender appender) {
+            super(appender);
+        }
+
+        @Override
+        void checkout() {
+            if (pendingDeletion) {
+                LOGGER.warn("CreatedRouteAppenderControl.checkout invoked on a " +
+                        "RouteAppenderControl that is pending deletion");
+            }
+            depth.incrementAndGet();
+        }
+
+        @Override
+        void release() {
+            depth.decrementAndGet();
+            tryStopAppender();
+        }
+
+        void tryStopAppender() {
+            if (pendingDeletion
+                    // Only attempt to stop the appender if we can CaS the depth away from zero, otherwise either
+                    // 1. Another invocation of tryStopAppender has succeeded, or
+                    // 2. Events are being appended, and will trigger stop when they complete
+                    && depth.compareAndSet(0, -100_000)) {
+                Appender appender = getAppender();
+                LOGGER.debug("Stopping appender {}", appender);
+                appender.stop();
+            }
+        }
+    }
+
+    private static final class ReferencedRouteAppenderControl extends RouteAppenderControl {
+
+        ReferencedRouteAppenderControl(Appender appender) {
+            super(appender);
+        }
+
+        @Override
+        void checkout() {
+            // nop
+        }
+
+        @Override
+        void release() {
+            // nop
+        }
     }
 }

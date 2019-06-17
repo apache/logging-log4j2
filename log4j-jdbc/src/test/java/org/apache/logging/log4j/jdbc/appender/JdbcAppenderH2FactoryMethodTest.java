@@ -24,14 +24,14 @@ import java.sql.SQLException;
  */
 public class JdbcAppenderH2FactoryMethodTest extends AbstractJdbcAppenderFactoryMethodTest {
     public JdbcAppenderH2FactoryMethodTest() {
-        super(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE,
+        super(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
                 "CREATE TABLE fmLogEntry ("
                         + "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), "
-                        + "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB, anotherDate TIMESTAMP" + ")",
+                        + "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB, anotherDate TIMESTAMP)",
                 "DROP TABLE fmLogEntry"), "h2");
     }
 
     public static Connection getConnection() throws SQLException {
-        return JdbcH2TestHelper.getConnection();
+        return JdbcH2TestHelper.getConnectionMem();
     }
 }

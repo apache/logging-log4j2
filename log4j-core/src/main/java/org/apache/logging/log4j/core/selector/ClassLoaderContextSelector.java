@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.core.LoggerContext;
@@ -51,6 +52,52 @@ public class ClassLoaderContextSelector implements ContextSelector {
 
     protected static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> CONTEXT_MAP =
             new ConcurrentHashMap<>();
+
+    @Override
+    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext,
+                         final boolean allContexts) {
+        LoggerContext ctx = null;
+        if (currentContext) {
+            ctx = ContextAnchor.THREAD_CONTEXT.get();
+        } else if (loader != null) {
+            ctx = findContext(loader);
+        } else {
+            final Class<?> clazz = StackLocatorUtil.getCallerClass(fqcn);
+            if (clazz != null) {
+                ctx = findContext(clazz.getClassLoader());
+            }
+            ctx = ContextAnchor.THREAD_CONTEXT.get();
+        }
+        if (ctx != null) {
+            ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    @Override
+    public boolean hasContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+        if (currentContext) {
+            return ContextAnchor.THREAD_CONTEXT.get() != null;
+        } else if (loader != null) {
+            return findContext(loader) != null;
+        } else {
+            final Class<?> clazz = StackLocatorUtil.getCallerClass(fqcn);
+            if (clazz != null) {
+                return findContext(clazz.getClassLoader()) != null;
+            }
+            return ContextAnchor.THREAD_CONTEXT.get() != null;
+        }
+    }
+
+    private LoggerContext findContext(ClassLoader loaderOrNull) {
+        final ClassLoader loader = loaderOrNull != null ? loaderOrNull : ClassLoader.getSystemClassLoader();
+        final String name = toContextMapKey(loader);
+        AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        if (ref != null) {
+            final WeakReference<LoggerContext> weakRef = ref.get();
+            return weakRef.get();
+        }
+        return null;
+    }
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {

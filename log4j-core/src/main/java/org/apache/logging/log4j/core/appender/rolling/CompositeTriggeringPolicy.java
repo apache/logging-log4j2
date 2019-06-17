@@ -23,9 +23,9 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * Triggering policy that wraps other triggering policies.
@@ -50,6 +50,7 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
     @Override
     public void initialize(final RollingFileManager manager) {
         for (final TriggeringPolicy triggeringPolicy : triggeringPolicies) {
+        	LOGGER.debug("Initializing triggering policy {}", triggeringPolicy.toString());
             triggeringPolicy.initialize(manager);
         }
     }
@@ -85,12 +86,7 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
         setStopping();
         boolean stopped = true;
         for (final TriggeringPolicy triggeringPolicy : triggeringPolicies) {
-            if (triggeringPolicy instanceof LifeCycle2) {
-                stopped &= ((LifeCycle2) triggeringPolicy).stop(timeout, timeUnit);
-            } else if (triggeringPolicy instanceof LifeCycle) {
-                ((LifeCycle) triggeringPolicy).stop();
-                stopped &= true;
-            }
+            stopped &= ((LifeCycle) triggeringPolicy).stop(timeout, timeUnit);
         }
         setStopped();
         return stopped;

@@ -16,11 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Identifies a Method as the factory to create the plugin. This annotation should only be used on a {@code static}
@@ -28,6 +24,7 @@ import java.lang.annotation.Target;
  * <p>
  * There can only be one factory method per class.
  * </p>
+ * @deprecated Exists for compatibility with Log4j 2 2.x plugins. Not used for Log4j 2 3.x plugins.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

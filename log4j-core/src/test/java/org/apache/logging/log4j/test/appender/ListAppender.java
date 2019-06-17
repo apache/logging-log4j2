@@ -30,17 +30,17 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
-import org.apache.logging.log4j.core.layout.SerializedLayout;
 
 /**
- * This appender is primarily used for testing. Use in a real environment is discouraged as the
- * List could eventually grow to cause an OutOfMemoryError.
+ * This appender is primarily used for testing. Use in a real environment is discouraged as the List could eventually
+ * grow to cause an OutOfMemoryError.
  *
  * This appender is not thread-safe.
  *
@@ -51,13 +51,13 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 @Plugin(name = "List", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class ListAppender extends AbstractAppender {
 
-    // Use CopyOnWriteArrayList?
+    // Use Collections.synchronizedList rather than CopyOnWriteArrayList because we expect
+    // more frequent writes than reads.
+    final List<LogEvent> events = Collections.synchronizedList(new ArrayList<>());
 
-    final List<LogEvent> events = new ArrayList<>();
+    private final List<String> messages = Collections.synchronizedList(new ArrayList<>());
 
-    private final List<String> messages = new ArrayList<>();
-
-    final List<byte[]> data = new ArrayList<>();
+    final List<byte[]> data = Collections.synchronizedList(new ArrayList<>());
 
     private final boolean newLine;
 
@@ -67,17 +67,18 @@ public class ListAppender extends AbstractAppender {
 
     /**
      * CountDownLatch for asynchronous logging tests. Example usage:
+     * 
      * <pre>
-     * @Rule
+     * &#64;Rule
      * public LoggerContextRule context = new LoggerContextRule("log4j-list.xml");
      * private ListAppender listAppender;
      *
-     * @Before
+     * &#64;Before
      * public void before() throws Exception {
      *     listAppender = context.getListAppender("List");
      * }
      *
-     * @Test
+     * &#64;Test
      * public void testSomething() throws Exception {
      *     listAppender.countDownLatch = new CountDownLatch(1);
      *
@@ -91,20 +92,20 @@ public class ListAppender extends AbstractAppender {
      * }
      * </pre>
      */
-    public CountDownLatch countDownLatch = null;
+    public volatile CountDownLatch countDownLatch = null;
 
     public ListAppender(final String name) {
-        super(name, null, null);
+        super(name, null, null, true, Property.EMPTY_ARRAY);
         newLine = false;
         raw = false;
     }
 
-    public ListAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout, final boolean newline,
-                        final boolean raw) {
-        super(name, filter, layout);
+    public ListAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+            final boolean newline, final boolean raw) {
+        super(name, filter, layout, true, Property.EMPTY_ARRAY);
         this.newLine = newline;
         this.raw = raw;
-        if (layout != null && !(layout instanceof SerializedLayout)) {
+        if (layout != null) {
             final byte[] bytes = layout.getHeader();
             if (bytes != null) {
                 write(bytes);
@@ -113,7 +114,7 @@ public class ListAppender extends AbstractAppender {
     }
 
     @Override
-    public synchronized void append(final LogEvent event) {
+    public void append(final LogEvent event) {
         final Layout<? extends Serializable> layout = getLayout();
         if (layout == null) {
             if (event instanceof MutableLogEvent) {
@@ -122,13 +123,6 @@ public class ListAppender extends AbstractAppender {
             } else {
                 events.add(event);
             }
-        } else if (layout instanceof SerializedLayout) {
-            final byte[] header = layout.getHeader();
-            final byte[] content = layout.toByteArray(event);
-            final byte[] record = new byte[header.length + content.length];
-            System.arraycopy(header, 0, record, 0, header.length);
-            System.arraycopy(content, 0, record, header.length, content.length);
-            data.add(record);
         } else {
             write(layout.toByteArray(event));
         }
@@ -189,39 +183,43 @@ public class ListAppender extends AbstractAppender {
         return true;
     }
 
-    public synchronized ListAppender clear() {
+    public ListAppender clear() {
         events.clear();
         messages.clear();
         data.clear();
         return this;
     }
 
-    public synchronized List<LogEvent> getEvents() {
-        return Collections.unmodifiableList(events);
+    /** Returns an immutable snapshot of captured log events */
+    public List<LogEvent> getEvents() {
+        return Collections.unmodifiableList(new ArrayList<>(events));
     }
 
-    public synchronized List<String> getMessages() {
-        return Collections.unmodifiableList(messages);
+    /** Returns an immutable snapshot of captured messages */
+    public List<String> getMessages() {
+        return Collections.unmodifiableList(new ArrayList<>(messages));
     }
 
     /**
      * Polls the messages list for it to grow to a given minimum size at most timeout timeUnits and return a copy of
      * what we have so far.
      */
-    public List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit) throws InterruptedException {
+    public List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit)
+            throws InterruptedException {
         final long endMillis = System.currentTimeMillis() + timeUnit.toMillis(timeout);
         while (messages.size() < minSize && System.currentTimeMillis() < endMillis) {
             Thread.sleep(100);
         }
-        return Collections.unmodifiableList(messages);
+        return getMessages();
     }
 
-    public synchronized List<byte[]> getData() {
-        return Collections.unmodifiableList(data);
+    /** Returns an immutable snapshot of captured data */
+    public List<byte[]> getData() {
+        return Collections.unmodifiableList(new ArrayList<>(data));
     }
 
     public static ListAppender createAppender(final String name, final boolean newLine, final boolean raw,
-                                              final Layout<? extends Serializable> layout, final Filter filter) {
+            final Layout<? extends Serializable> layout, final Filter filter) {
         return new ListAppender(name, filter, layout, newLine, raw);
     }
 
@@ -230,7 +228,7 @@ public class ListAppender extends AbstractAppender {
         return new Builder();
     }
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ListAppender> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<ListAppender> {
 
         @PluginBuilderAttribute
         @Required
@@ -282,7 +280,8 @@ public class ListAppender extends AbstractAppender {
     /**
      * Gets the named ListAppender if it has been registered.
      *
-     * @param name the name of the ListAppender
+     * @param name
+     *            the name of the ListAppender
      * @return the named ListAppender or {@code null} if it does not exist
      * @see org.apache.logging.log4j.junit.LoggerContextRule#getListAppender(String)
      */

@@ -117,8 +117,8 @@ public class PatternLayoutTest {
     @Test
     public void testEqualsEmptyMarker() throws Exception {
         // replace "[]" with the empty string
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("[%logger]%equals{[%marker]}{[]}{} %msg")
-                .withConfiguration(ctx.getConfiguration()).build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("[%logger]%equals{[%marker]}{[]}{} %msg")
+                .setConfiguration(ctx.getConfiguration()).build();
         // Not empty marker
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
@@ -142,8 +142,8 @@ public class PatternLayoutTest {
     public void testHeaderFooterJavaLookup() throws Exception {
         // % does not work here.
         final String pattern = "%d{UNIX} MyApp%n${java:version}%n${java:runtime}%n${java:vm}%n${java:os}%n${java:hw}";
-        final PatternLayout layout = PatternLayout.newBuilder().withConfiguration(ctx.getConfiguration())
-                .withHeader("Header: " + pattern).withFooter("Footer: " + pattern).build();
+        final PatternLayout layout = PatternLayout.newBuilder().setConfiguration(ctx.getConfiguration())
+                .setHeader("Header: " + pattern).setFooter("Footer: " + pattern).build();
         final byte[] header = layout.getHeader();
         assertNotNull("No header", header);
         final String headerStr = new String(header);
@@ -171,8 +171,8 @@ public class PatternLayoutTest {
     @Test
     public void testHeaderFooterMainLookup() {
         MainMapLookup.setMainArguments("value0", "value1", "value2");
-        final PatternLayout layout = PatternLayout.newBuilder().withConfiguration(ctx.getConfiguration())
-                .withHeader("${main:0}").withFooter("${main:2}").build();
+        final PatternLayout layout = PatternLayout.newBuilder().setConfiguration(ctx.getConfiguration())
+                .setHeader("${main:0}").setFooter("${main:2}").build();
         final byte[] header = layout.getHeader();
         assertNotNull("No header", header);
         final String headerStr = new String(header);
@@ -186,8 +186,8 @@ public class PatternLayoutTest {
 
     @Test
     public void testHeaderFooterThreadContext() throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%d{UNIX} %m")
-                .withConfiguration(ctx.getConfiguration()).withHeader("${ctx:header}").withFooter("${ctx:footer}")
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("%d{UNIX} %m")
+                .setConfiguration(ctx.getConfiguration()).setHeader("${ctx:header}").setFooter("${ctx:footer}")
                 .build();
         ThreadContext.put("header", "Hello world Header");
         ThreadContext.put("footer", "Hello world Footer");
@@ -199,8 +199,8 @@ public class PatternLayoutTest {
 
     private void testMdcPattern(final String patternStr, final String expectedStr, final boolean useThreadContext)
             throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern(patternStr)
-                .withConfiguration(ctx.getConfiguration()).build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern(patternStr)
+                .setConfiguration(ctx.getConfiguration()).build();
         if (useThreadContext) {
             ThreadContext.put("key1", "value1");
             ThreadContext.put("key2", "value2");
@@ -247,9 +247,17 @@ public class PatternLayoutTest {
     public void testPatternSelector() throws Exception {
         final PatternMatch[] patterns = new PatternMatch[1];
         patterns[0] = new PatternMatch("FLOW", "%d %-5p [%t]: ====== %C{1}.%M:%L %m ======%n");
-        final PatternSelector selector = MarkerPatternSelector.createSelector(patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
-        final PatternLayout layout = PatternLayout.newBuilder().withPatternSelector(selector)
-                .withConfiguration(ctx.getConfiguration()).build();
+        // @formatter:off
+        final PatternSelector selector = MarkerPatternSelector.newBuilder()
+                .setProperties(patterns)
+                .setDefaultPattern("%d %-5p [%t]: %m%n")
+                .setAlwaysWriteExceptions(true)
+                .setNoConsoleNoAnsi(true)
+                .setConfiguration(ctx.getConfiguration())
+                .build();
+        // @formatter:on
+        final PatternLayout layout = PatternLayout.newBuilder().setPatternSelector(selector)
+                .setConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.layout.PatternLayoutTest$FauxLogger")
                 .setMarker(MarkerManager.getMarker("FLOW"))
@@ -270,8 +278,8 @@ public class PatternLayoutTest {
 
     @Test
     public void testRegex() throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern(regexPattern)
-                .withConfiguration(ctx.getConfiguration()).build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern(regexPattern)
+                .setConfiguration(ctx.getConfiguration()).build();
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
@@ -283,8 +291,8 @@ public class PatternLayoutTest {
     @Test
     public void testRegexEmptyMarker() throws Exception {
         // replace "[]" with the empty string
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("[%logger]%replace{[%marker]}{\\[\\]}{} %msg")
-                .withConfiguration(ctx.getConfiguration()).build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("[%logger]%replace{[%marker]}{\\[\\]}{} %msg")
+                .setConfiguration(ctx.getConfiguration()).build();
         // Not empty marker
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
@@ -308,8 +316,8 @@ public class PatternLayoutTest {
     @Test
     public void testEqualsMarkerWithMessageSubstitution() throws Exception {
         // replace "[]" with the empty string
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("[%logger]%equals{[%marker]}{[]}{[%msg]}")
-            .withConfiguration(ctx.getConfiguration()).build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("[%logger]%equals{[%marker]}{[]}{[%msg]}")
+            .setConfiguration(ctx.getConfiguration()).build();
         // Not empty marker
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
             .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
@@ -329,8 +337,8 @@ public class PatternLayoutTest {
 
     @Test
     public void testSpecialChars() throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("\\\\%level\\t%msg\\n\\t%logger\\r\\n\\f")
-                .withConfiguration(ctx.getConfiguration()).build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("\\\\%level\\t%msg\\n\\t%logger\\r\\n\\f")
+                .setConfiguration(ctx.getConfiguration()).build();
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
@@ -345,8 +353,8 @@ public class PatternLayoutTest {
 
     @Test
     public void testUnixTime() throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%d{UNIX} %m")
-                .withConfiguration(ctx.getConfiguration()).build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("%d{UNIX} %m")
+                .setConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
@@ -365,8 +373,8 @@ public class PatternLayoutTest {
 
     @SuppressWarnings("unused")
     private void testUnixTime(final String pattern) throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern(pattern + " %m")
-                .withConfiguration(ctx.getConfiguration()).build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern(pattern + " %m")
+                .setConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
@@ -385,8 +393,8 @@ public class PatternLayoutTest {
 
     @Test
     public void testUnixTimeMillis() throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%d{UNIX_MILLIS} %m")
-                .withConfiguration(ctx.getConfiguration()).build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("%d{UNIX_MILLIS} %m")
+                .setConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
@@ -405,23 +413,23 @@ public class PatternLayoutTest {
 
     @Test
     public void testUsePlatformDefaultIfNoCharset() throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%m")
-                .withConfiguration(ctx.getConfiguration()).build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("%m")
+                .setConfiguration(ctx.getConfiguration()).build();
         assertEquals(Charset.defaultCharset(), layout.getCharset());
     }
 
     @Test
     public void testUseSpecifiedCharsetIfExists() throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%m")
-                .withConfiguration(ctx.getConfiguration()).withCharset(StandardCharsets.UTF_8).build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("%m")
+                .setConfiguration(ctx.getConfiguration()).setCharset(StandardCharsets.UTF_8).build();
         assertEquals(StandardCharsets.UTF_8, layout.getCharset());
     }
 
     @Test
     public void testLoggerNameTruncationByRetainingPartsFromEnd() throws Exception {
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%c{1} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%c{1} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -430,8 +438,8 @@ public class PatternLayoutTest {
             assertEquals(this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1) + " Hello, world 1!", new String(result1));
         }
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%c{2} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%c{2} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -442,8 +450,8 @@ public class PatternLayoutTest {
             assertEquals(this.getClass().getName().substring(name.length() + 1) + " Hello, world 1!", new String(result1));
         }
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%c{20} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%c{20} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -456,8 +464,8 @@ public class PatternLayoutTest {
     @Test
     public void testCallersFqcnTruncationByRetainingPartsFromEnd() throws Exception {
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%C{1} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%C{1} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -468,8 +476,8 @@ public class PatternLayoutTest {
             assertEquals(this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1) + " Hello, world 1!", new String(result1));
         }
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%C{2} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%C{2} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -482,8 +490,8 @@ public class PatternLayoutTest {
             assertEquals(this.getClass().getName().substring(name.length() + 1) + " Hello, world 1!", new String(result1));
         }
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%C{20} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%C{20} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -494,8 +502,8 @@ public class PatternLayoutTest {
             assertEquals(this.getClass().getName() + " Hello, world 1!", new String(result1));
         }
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%class{1} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%class{1} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -510,8 +518,8 @@ public class PatternLayoutTest {
     @Test
     public void testLoggerNameTruncationByDroppingPartsFromFront() throws Exception {
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%c{-1} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%c{-1} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -521,8 +529,8 @@ public class PatternLayoutTest {
             assertEquals(name + " Hello, world 1!", new String(result1));
         }
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%c{-3} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%c{-3} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -534,8 +542,8 @@ public class PatternLayoutTest {
             assertEquals(name + " Hello, world 1!", new String(result1));
         }
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%logger{-3} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%logger{-3} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -547,8 +555,8 @@ public class PatternLayoutTest {
             assertEquals(name + " Hello, world 1!", new String(result1));
         }
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%c{-20} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%c{-20} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -562,8 +570,8 @@ public class PatternLayoutTest {
     @Test
     public void testCallersFqcnTruncationByDroppingPartsFromFront() throws Exception {
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%C{-1} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%C{-1} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -575,8 +583,8 @@ public class PatternLayoutTest {
             assertEquals(name + " Hello, world 1!", new String(result1));
         }
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%C{-3} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%C{-3} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -590,8 +598,8 @@ public class PatternLayoutTest {
             assertEquals(name + " Hello, world 1!", new String(result1));
         }
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%class{-3} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%class{-3} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)
@@ -605,8 +613,8 @@ public class PatternLayoutTest {
             assertEquals(name + " Hello, world 1!", new String(result1));
         }
         {
-            final PatternLayout layout = PatternLayout.newBuilder().withPattern("%C{-20} %m")
-                    .withConfiguration(ctx.getConfiguration()).build();
+            final PatternLayout layout = PatternLayout.newBuilder().setPattern("%C{-20} %m")
+                    .setConfiguration(ctx.getConfiguration()).build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger")
                     .setLevel(Level.INFO)

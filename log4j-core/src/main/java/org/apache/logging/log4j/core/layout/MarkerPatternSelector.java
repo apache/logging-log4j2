@@ -24,12 +24,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -43,7 +43,7 @@ public class MarkerPatternSelector implements PatternSelector {
     /**
      * Custom MarkerPatternSelector builder. Use the {@link MarkerPatternSelector#newBuilder() builder factory method} to create this.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<MarkerPatternSelector> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<MarkerPatternSelector> {
 
         @PluginElement("PatternMatch")
         private PatternMatch[] properties;
@@ -119,16 +119,6 @@ public class MarkerPatternSelector implements PatternSelector {
     private static Logger LOGGER = StatusLogger.getLogger();
 
 
-    /**
-     * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.
-     */
-    @Deprecated
-    public MarkerPatternSelector(final PatternMatch[] properties, final String defaultPattern,
-                                 final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
-                                 final Configuration config) {
-        this(properties, defaultPattern, alwaysWriteExceptions, false, noConsoleNoAnsi, config);
-    }
-
     private MarkerPatternSelector(final PatternMatch[] properties, final String defaultPattern,
                                  final boolean alwaysWriteExceptions, final boolean disableAnsi,
                                  final boolean noConsoleNoAnsi, final Configuration config) {
@@ -175,32 +165,6 @@ public class MarkerPatternSelector implements PatternSelector {
     @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    /**
-     * Deprecated, use {@link #newBuilder()} instead.
-     * @param properties
-     * @param defaultPattern
-     * @param alwaysWriteExceptions
-     * @param noConsoleNoAnsi
-     * @param configuration
-     * @return a new MarkerPatternSelector.
-     * @deprecated Use {@link #newBuilder()} instead.
-     */
-    @Deprecated
-    public static MarkerPatternSelector createSelector(
-            final PatternMatch[] properties,
-            final String defaultPattern,
-            final boolean alwaysWriteExceptions,
-            final boolean noConsoleNoAnsi,
-            final Configuration configuration) {
-        final Builder builder = newBuilder();
-        builder.setProperties(properties);
-        builder.setDefaultPattern(defaultPattern);
-        builder.setAlwaysWriteExceptions(alwaysWriteExceptions);
-        builder.setNoConsoleNoAnsi(noConsoleNoAnsi);
-        builder.setConfiguration(configuration);
-        return builder.build();
     }
 
     @Override

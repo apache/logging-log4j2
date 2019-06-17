@@ -25,7 +25,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.Strings;
@@ -80,9 +80,9 @@ import org.apache.logging.log4j.util.Strings;
 @PerformanceSensitive("allocation")
 public final class HighlightConverter extends LogEventPatternConverter implements AnsiConverter {
 
-    private static final Map<Level, String> DEFAULT_STYLES = new HashMap<>();
+    private static final Map<String, String> DEFAULT_STYLES = new HashMap<>();
 
-    private static final Map<Level, String> LOGBACK_STYLES = new HashMap<>();
+    private static final Map<String, String> LOGBACK_STYLES = new HashMap<>();
 
     private static final String STYLE_KEY = "STYLE";
 
@@ -90,23 +90,23 @@ public final class HighlightConverter extends LogEventPatternConverter implement
 
     private static final String STYLE_KEY_LOGBACK = "LOGBACK";
 
-    private static final Map<String, Map<Level, String>> STYLES = new HashMap<>();
+    private static final Map<String, Map<String, String>> STYLES = new HashMap<>();
 
     static {
         // Default styles:
-        DEFAULT_STYLES.put(Level.FATAL, AnsiEscape.createSequence("BRIGHT", "RED"));
-        DEFAULT_STYLES.put(Level.ERROR, AnsiEscape.createSequence("BRIGHT", "RED"));
-        DEFAULT_STYLES.put(Level.WARN, AnsiEscape.createSequence("YELLOW"));
-        DEFAULT_STYLES.put(Level.INFO, AnsiEscape.createSequence("GREEN"));
-        DEFAULT_STYLES.put(Level.DEBUG, AnsiEscape.createSequence("CYAN"));
-        DEFAULT_STYLES.put(Level.TRACE, AnsiEscape.createSequence("BLACK"));
+        DEFAULT_STYLES.put(Level.FATAL.name(), AnsiEscape.createSequence("BRIGHT", "RED"));
+        DEFAULT_STYLES.put(Level.ERROR.name(), AnsiEscape.createSequence("BRIGHT", "RED"));
+        DEFAULT_STYLES.put(Level.WARN.name(), AnsiEscape.createSequence("YELLOW"));
+        DEFAULT_STYLES.put(Level.INFO.name(), AnsiEscape.createSequence("GREEN"));
+        DEFAULT_STYLES.put(Level.DEBUG.name(), AnsiEscape.createSequence("CYAN"));
+        DEFAULT_STYLES.put(Level.TRACE.name(), AnsiEscape.createSequence("BLACK"));
         // Logback styles:
-        LOGBACK_STYLES.put(Level.FATAL, AnsiEscape.createSequence("BLINK", "BRIGHT", "RED"));
-        LOGBACK_STYLES.put(Level.ERROR, AnsiEscape.createSequence("BRIGHT", "RED"));
-        LOGBACK_STYLES.put(Level.WARN, AnsiEscape.createSequence("RED"));
-        LOGBACK_STYLES.put(Level.INFO, AnsiEscape.createSequence("BLUE"));
-        LOGBACK_STYLES.put(Level.DEBUG, AnsiEscape.createSequence((String[]) null));
-        LOGBACK_STYLES.put(Level.TRACE, AnsiEscape.createSequence((String[]) null));
+        LOGBACK_STYLES.put(Level.FATAL.name(), AnsiEscape.createSequence("BLINK", "BRIGHT", "RED"));
+        LOGBACK_STYLES.put(Level.ERROR.name(), AnsiEscape.createSequence("BRIGHT", "RED"));
+        LOGBACK_STYLES.put(Level.WARN.name(), AnsiEscape.createSequence("RED"));
+        LOGBACK_STYLES.put(Level.INFO.name(), AnsiEscape.createSequence("BLUE"));
+        LOGBACK_STYLES.put(Level.DEBUG.name(), AnsiEscape.createSequence((String[]) null));
+        LOGBACK_STYLES.put(Level.TRACE.name(), AnsiEscape.createSequence((String[]) null));
         // Style map:
         STYLES.put(STYLE_KEY_DEFAULT, DEFAULT_STYLES);
         STYLES.put(STYLE_KEY_LOGBACK, LOGBACK_STYLES);
@@ -140,7 +140,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
      *        The second slot can optionally contain the style map.
      * @return a new map
      */
-    private static Map<Level, String> createLevelStyleMap(final String[] options) {
+    private static Map<String, String> createLevelStyleMap(final String[] options) {
         if (options.length < 2) {
             return DEFAULT_STYLES;
         }
@@ -150,12 +150,12 @@ public final class HighlightConverter extends LogEventPatternConverter implement
                 .replaceAll(PatternParser.NO_CONSOLE_NO_ANSI + "=(true|false)", Strings.EMPTY);
         //
         final Map<String, String> styles = AnsiEscape.createMap(string, new String[] {STYLE_KEY});
-        final Map<Level, String> levelStyles = new HashMap<>(DEFAULT_STYLES);
+        final Map<String, String> levelStyles = new HashMap<>(DEFAULT_STYLES);
         for (final Map.Entry<String, String> entry : styles.entrySet()) {
             final String key = entry.getKey().toUpperCase(Locale.ENGLISH);
             final String value = entry.getValue();
             if (STYLE_KEY.equalsIgnoreCase(key)) {
-                final Map<Level, String> enumMap = STYLES.get(value.toUpperCase(Locale.ENGLISH));
+                final Map<String, String> enumMap = STYLES.get(value.toUpperCase(Locale.ENGLISH));
                 if (enumMap == null) {
                     LOGGER.error("Unknown level style: " + value + ". Use one of " +
                         Arrays.toString(STYLES.keySet().toArray()));
@@ -165,9 +165,10 @@ public final class HighlightConverter extends LogEventPatternConverter implement
             } else {
                 final Level level = Level.toLevel(key, null);
                 if (level == null) {
-                    LOGGER.error("Unknown level name: {}; use one of {}", key, Arrays.toString(Level.values()));
+                    LOGGER.warn("Setting style for yet unknown level name {}", key);
+                    levelStyles.put(key, value);
                 } else {
-                    levelStyles.put(level, value);
+                    levelStyles.put(level.name(), value);
                 }
             }
         }
@@ -199,7 +200,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         return new HighlightConverter(formatters, createLevelStyleMap(options), hideAnsi);
     }
 
-    private final Map<Level, String> levelStyles;
+    private final Map<String, String> levelStyles;
 
     private final List<PatternFormatter> patternFormatters;
 
@@ -215,7 +216,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
      * @param noAnsi
      *            If true, do not output ANSI escape codes.
      */
-    private HighlightConverter(final List<PatternFormatter> patternFormatters, final Map<Level, String> levelStyles, final boolean noAnsi) {
+    private HighlightConverter(final List<PatternFormatter> patternFormatters, final Map<String, String> levelStyles, final boolean noAnsi) {
         super("style", "style");
         this.patternFormatters = patternFormatters;
         this.levelStyles = levelStyles;
@@ -230,9 +231,12 @@ public final class HighlightConverter extends LogEventPatternConverter implement
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         int start = 0;
         int end = 0;
+        String levelStyle = levelStyles.get(event.getLevel().name());
         if (!noAnsi) { // use ANSI: set prefix
             start = toAppendTo.length();
-            toAppendTo.append(levelStyles.get(event.getLevel()));
+            if (levelStyle != null) {
+              toAppendTo.append(levelStyle);
+            }
             end = toAppendTo.length();
         }
 
@@ -246,14 +250,14 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         if (!noAnsi) {
             if (empty) {
                 toAppendTo.setLength(start); // erase prefix
-            } else {
+            } else if (levelStyle != null) {
                 toAppendTo.append(defaultStyle); // add postfix
             }
         }
     }
 
     String getLevelStyle(Level level) {
-        return levelStyles.get(level);
+        return levelStyles.get(level.name());
     }
 
     @Override

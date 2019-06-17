@@ -23,6 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginConfigurationVisitor;
+import org.apache.logging.log4j.plugins.PluginVisitorStrategy;
 
 /**
  * Identifies a parameter or field as a Configuration.

@@ -17,24 +17,25 @@
 
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.visitors.AbstractPluginVisitor;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
+import java.util.function.Function;
+
 /**
- * PluginVisitor implementation for {@link PluginValue}.
+ *  @deprecated. Provided to support legacy plugins.
  */
-public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue> {
+public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue, Object> {
     public PluginValueVisitor() {
         super(PluginValue.class);
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
-            final StringBuilder log) {
+    public Object visit(final Object unused, final Node node, final Function<String, String> substitutor,
+                        final StringBuilder log) {
         final String name = this.annotation.value();
         final String elementValue = node.getValue();
         final String attributeValue = node.getAttributes().get("value");
@@ -49,7 +50,7 @@ public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue> {
         } else {
             rawValue = removeAttributeValue(node.getAttributes(), "value");
         }
-        final String value = this.substitutor.replace(event, rawValue);
+        final String value = substitutor.apply(rawValue);
         StringBuilders.appendKeyDqValue(log, name, value);
         return value;
     }

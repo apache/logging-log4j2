@@ -53,12 +53,14 @@ public class PatternLayoutMainMapLookupTest {
         final ListAppender listApp = context.getListAppender("List");
         final Logger logger = context.getLogger(this.getClass().getName());
         logger.info("Hello World");
-        final List<String> messages = listApp.getMessages();
-        Assert.assertFalse(messages.isEmpty());
-        final String messagesStr = messages.toString();
-        Assert.assertEquals(messagesStr, "Header: value0", messages.get(0));
+        final List<String> initialMessages = listApp.getMessages();
+        Assert.assertFalse(initialMessages.isEmpty());
+        final String messagesStr = initialMessages.toString();
+        Assert.assertEquals(messagesStr, "Header: value0", initialMessages.get(0));
         listApp.stop();
-        Assert.assertEquals(messagesStr, "Footer: value1", messages.get(2));
+        final List<String> finalMessages = listApp.getMessages();
+        Assert.assertEquals(3, finalMessages.size());
+        Assert.assertEquals("Footer: value1", finalMessages.get(2));
     }
 
 }

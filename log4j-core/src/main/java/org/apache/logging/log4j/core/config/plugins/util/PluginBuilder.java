@@ -23,28 +23,32 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidator;
-import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidators;
-import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor;
-import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitors;
-import org.apache.logging.log4j.core.util.Builder;
-import org.apache.logging.log4j.core.util.ReflectionUtil;
-import org.apache.logging.log4j.core.util.TypeUtil;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.util.Builder;
+import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
+import org.apache.logging.log4j.plugins.validation.ConstraintValidators;
+import org.apache.logging.log4j.plugins.visitors.PluginVisitor;
+import org.apache.logging.log4j.plugins.visitors.PluginVisitors;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -61,6 +65,8 @@ public class PluginBuilder implements Builder<Object> {
     private Configuration configuration;
     private Node node;
     private LogEvent event;
+    private Substitutor substitutor;
+    private ConcurrentMap<String, Boolean> aliases = new ConcurrentHashMap<>();
 
     /**
      * Constructs a PluginBuilder for a given PluginType.
@@ -78,7 +84,7 @@ public class PluginBuilder implements Builder<Object> {
      * @param configuration the configuration to use.
      * @return {@code this}
      */
-    public PluginBuilder withConfiguration(final Configuration configuration) {
+    public PluginBuilder setConfiguration(final Configuration configuration) {
         this.configuration = configuration;
         return this;
     }
@@ -89,7 +95,7 @@ public class PluginBuilder implements Builder<Object> {
      * @param node the plugin configuration node to use.
      * @return {@code this}
      */
-    public PluginBuilder withConfigurationNode(final Node node) {
+    public PluginBuilder setConfigurationNode(final Node node) {
         this.node = node;
         return this;
     }
@@ -113,6 +119,7 @@ public class PluginBuilder implements Builder<Object> {
     @Override
     public Object build() {
         verify();
+        substitutor = new Substitutor(event);
         // first try to use a builder class if one is available
         try {
             LOGGER.debug("Building Plugin[name={}, class={}].", pluginType.getElementName(),
@@ -128,7 +135,7 @@ public class PluginBuilder implements Builder<Object> {
         } catch (final Exception e) {
             LOGGER.error("Could not create plugin of type {} for element {}: {}",
                     this.clazz, node.getName(),
-                    (e instanceof InvocationTargetException ? ((InvocationTargetException) e).getCause() : e).toString(), e);
+                    (e instanceof InvocationTargetException ? e.getCause() : e).toString(), e);
         }
         // or fall back to factory method if no builder class is available
         try {
@@ -138,7 +145,7 @@ public class PluginBuilder implements Builder<Object> {
         } catch (final Exception e) {
             LOGGER.error("Unable to invoke factory method in {} for element {}: {}",
                     this.clazz, this.node.getName(),
-                    (e instanceof InvocationTargetException ? ((InvocationTargetException) e).getCause() : e).toString(), e);
+                    (e instanceof InvocationTargetException ? e.getCause() : e).toString(), e);
             return null;
         }
     }
@@ -156,57 +163,67 @@ public class PluginBuilder implements Builder<Object> {
                 TypeUtil.isAssignable(Builder.class, method.getReturnType())) {
                 ReflectionUtil.makeAccessible(method);
                 return (Builder<?>) method.invoke(null);
+            } else if (method.isAnnotationPresent(org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory.class) &&
+                    Modifier.isStatic(method.getModifiers()) &&
+                    TypeUtil.isAssignable(org.apache.logging.log4j.core.util.Builder.class, method.getReturnType())) {
+                ReflectionUtil.makeAccessible(method);
+                return new BuilderWrapper((org.apache.logging.log4j.core.util.Builder<?>) method.invoke(null));
             }
         }
         return null;
     }
 
     private void injectFields(final Builder<?> builder) throws IllegalAccessException {
-        final List<Field> fields = TypeUtil.getAllDeclaredFields(builder.getClass());
+        final Object target = builder instanceof BuilderWrapper ? ((BuilderWrapper) builder).getBuilder() : builder;
+        final List<Field> fields = TypeUtil.getAllDeclaredFields(target.getClass());
         AccessibleObject.setAccessible(fields.toArray(new Field[] {}), true);
         final StringBuilder log = new StringBuilder();
         boolean invalid = false;
-        String reason = "";
+        StringBuilder reason = new StringBuilder();
         for (final Field field : fields) {
-            log.append(log.length() == 0 ? simpleName(builder) + "(" : ", ");
+            log.append(log.length() == 0 ? simpleName(target) + "(" : ", ");
             final Annotation[] annotations = field.getDeclaredAnnotations();
             final String[] aliases = extractPluginAliases(annotations);
-            for (final Annotation a : annotations) {
-                if (a instanceof PluginAliases) {
+            for (Annotation a : annotations) {
+                if (a instanceof PluginAliases ||
+                        a instanceof org.apache.logging.log4j.core.config.plugins.PluginAliases) {
                     continue; // already processed
                 }
-                final PluginVisitor<? extends Annotation> visitor =
+                final PluginVisitor<? extends Annotation, Configuration> visitor =
                     PluginVisitors.findVisitor(a.annotationType());
                 if (visitor != null) {
                     final Object value = visitor.setAliases(aliases)
                         .setAnnotation(a)
                         .setConversionType(field.getType())
-                        .setStrSubstitutor(configuration.getStrSubstitutor())
                         .setMember(field)
-                        .visit(configuration, node, event, log);
+                        .visit(configuration, node, substitutor, log);
                     // don't overwrite default values if the visitor gives us no value to inject
                     if (value != null) {
-                        field.set(builder, value);
+                        field.set(target, value);
                     }
                 }
             }
             final Collection<ConstraintValidator<?>> validators =
                 ConstraintValidators.findValidators(annotations);
-            final Object value = field.get(builder);
+            final Object value = field.get(target);
             for (final ConstraintValidator<?> validator : validators) {
                 if (!validator.isValid(field.getName(), value)) {
                     invalid = true;
-                    if (!reason.isEmpty()) {
-                        reason += ", ";
+                    if (reason.length() > 0) {
+                        reason.append(", ");
+                    } else {
+                        reason.append("Arguments given for element ").append(node.getName())
+                            .append(" are invalid: ");
                     }
-                    reason += "field '" + field.getName() + "' has invalid value '" + value + "'";
+                    reason.append("field '").append(field.getName()).append("' has invalid value '")
+                        .append(value).append("'");
                 }
             }
         }
         log.append(log.length() == 0 ? builder.getClass().getSimpleName() + "()" : ")");
         LOGGER.debug(log.toString());
         if (invalid) {
-            throw new ConfigurationException("Arguments given for element " + node.getName() + " are invalid: " + reason);
+            throw new ConfigurationException(reason.toString());
         }
         checkForRemainingAttributes();
         verifyNodeChildrenUsed();
@@ -226,7 +243,8 @@ public class PluginBuilder implements Builder<Object> {
 
     private static Method findFactoryMethod(final Class<?> clazz) {
         for (final Method method : clazz.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(PluginFactory.class) &&
+            if ((method.isAnnotationPresent(PluginFactory.class) ||
+                 method.isAnnotationPresent(org.apache.logging.log4j.core.config.plugins.PluginFactory.class)) &&
                 Modifier.isStatic(method.getModifiers())) {
                 ReflectionUtil.makeAccessible(method);
                 return method;
@@ -245,18 +263,19 @@ public class PluginBuilder implements Builder<Object> {
             log.append(log.length() == 0 ? factory.getName() + "(" : ", ");
             final String[] aliases = extractPluginAliases(annotations[i]);
             for (final Annotation a : annotations[i]) {
-                if (a instanceof PluginAliases) {
+                if (a instanceof PluginAliases ||
+                        a instanceof org.apache.logging.log4j.core.config.plugins.PluginAliases) {
                     continue; // already processed
                 }
-                final PluginVisitor<? extends Annotation> visitor = PluginVisitors.findVisitor(
+                final PluginVisitor<? extends Annotation, Configuration> visitor = PluginVisitors.findVisitor(
                     a.annotationType());
+
                 if (visitor != null) {
                     final Object value = visitor.setAliases(aliases)
                         .setAnnotation(a)
                         .setConversionType(types[i])
-                        .setStrSubstitutor(configuration.getStrSubstitutor())
                         .setMember(factory)
-                        .visit(configuration, node, event, log);
+                        .visit(configuration, node, substitutor, log);
                     // don't overwrite existing values if the visitor gives us no value to inject
                     if (value != null) {
                         args[i] = value;
@@ -288,6 +307,8 @@ public class PluginBuilder implements Builder<Object> {
         for (final Annotation a : parmTypes) {
             if (a instanceof PluginAliases) {
                 aliases = ((PluginAliases) a).value();
+            } else if (a instanceof org.apache.logging.log4j.core.config.plugins.PluginAliases) {
+                aliases = ((org.apache.logging.log4j.core.config.plugins.PluginAliases) a).value();
             }
         }
         return aliases;
@@ -323,6 +344,37 @@ public class PluginBuilder implements Builder<Object> {
                 final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
                 LOGGER.error("{} has no parameter that matches element {}", start, child.getName());
             }
+        }
+    }
+
+    private class Substitutor implements Function<String, String> {
+        private final LogEvent event;
+        private final StrSubstitutor strSubstitutor;
+
+        Substitutor(LogEvent event) {
+            this.event = event;
+            this.strSubstitutor = configuration.getStrSubstitutor();
+        }
+
+        @Override
+        public String apply(String str) {
+            return strSubstitutor.replace(event, str);
+        }
+    }
+
+    public static class BuilderWrapper<T> implements Builder<T> {
+        private final org.apache.logging.log4j.core.util.Builder<T> builder;
+
+        BuilderWrapper(org.apache.logging.log4j.core.util.Builder<T> builder) {
+            this.builder = builder;
+        }
+
+        public T build() {
+            return builder.build();
+        }
+
+        org.apache.logging.log4j.core.util.Builder<T> getBuilder() {
+            return builder;
         }
     }
 }

@@ -20,16 +20,15 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -80,7 +79,7 @@ public final class FactoryMethodConnectionSource extends AbstractConnectionSourc
 
         final Method method;
         try {
-            final Class<?> factoryClass = LoaderUtil.loadClass(className);
+            final Class<?> factoryClass = Loader.loadClass(className);
             method = factoryClass.getMethod(methodName);
         } catch (final Exception e) {
             LOGGER.error(e.toString(), e);

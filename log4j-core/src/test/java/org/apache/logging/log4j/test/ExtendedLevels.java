@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.test;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  *

@@ -27,11 +27,11 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
@@ -210,19 +210,6 @@ public class MapFilter extends AbstractFilter {
 
     protected boolean isAnd() {
         return isAnd;
-    }
-
-    /** @deprecated  use {@link #getStringMap()} instead */
-    @Deprecated
-    protected Map<String, List<String>> getMap() {
-        final Map<String, List<String>> result = new HashMap<>(map.size());
-        map.forEach(new BiConsumer<String, List<String>>() {
-            @Override
-            public void accept(final String key, final List<String> value) {
-                result.put(key, value);
-            }
-        });
-        return result;
     }
 
     /**

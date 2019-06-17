@@ -17,36 +17,32 @@
 
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
-import java.util.Map;
-
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.visitors.AbstractPluginVisitor;
+import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 
+import java.util.Map;
+import java.util.function.Function;
+
 /**
- * PluginVisitor for PluginBuilderAttribute. If {@code null} is returned for the
- * {@link #visit(org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.config.Node, org.apache.logging.log4j.core.LogEvent, StringBuilder)}
- * method, then the default value of the field should remain untouched.
- *
- * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
+ * @deprecated Provided for support for PluginBuilderAttribute.
  */
-public class PluginBuilderAttributeVisitor extends AbstractPluginVisitor<PluginBuilderAttribute> {
+public class PluginBuilderAttributeVisitor extends AbstractPluginVisitor<PluginBuilderAttribute, Object> {
 
     public PluginBuilderAttributeVisitor() {
         super(PluginBuilderAttribute.class);
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
+    public Object visit(final Object unused, final Node node, final Function<String, String> substitutor,
                         final StringBuilder log) {
         final String overridden = this.annotation.value();
         final String name = overridden.isEmpty() ? this.member.getName() : overridden;
         final Map<String, String> attributes = node.getAttributes();
         final String rawValue = removeAttributeValue(attributes, name, this.aliases);
-        final String replacedValue = this.substitutor.replace(event, rawValue);
+        final String replacedValue = substitutor.apply(rawValue);
         final Object value = convert(replacedValue, null);
         final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
         StringBuilders.appendKeyDqValue(log, name, debugValue);
