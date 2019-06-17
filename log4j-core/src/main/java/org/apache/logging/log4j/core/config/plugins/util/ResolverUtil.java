@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.JarURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -33,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
 import org.apache.logging.log4j.Logger;
@@ -85,6 +87,8 @@ public class ResolverUtil {
     private static final String VFSZIP = "vfszip";
 
     private static final String VFS = "vfs";
+
+    private static final String JAR = "jar";
 
     private static final String BUNDLE_RESOURCE = "bundleresource";
 
@@ -225,6 +229,8 @@ public class ResolverUtil {
                     }
                 } else if (BUNDLE_RESOURCE.equals(url.getProtocol())) {
                     loadImplementationsInBundle(test, packageName);
+                } else if (JAR.equals(url.getProtocol())) {
+                    loadImplementationsInJar(test, packageName, url);
                 } else {
                     final File file = new File(urlPath);
                     if (file.isDirectory()) {
@@ -318,6 +324,40 @@ public class ResolverUtil {
 
     private boolean isTestApplicable(final Test test, final String path) {
         return test.doesMatchResource() || path.endsWith(".class") && test.doesMatchClass();
+    }
+
+    /**
+     * Finds matching classes within a jar files that contains a folder structure matching the package structure. If the
+     * File is not a JarFile or does not exist a warning will be logged, but no error will be raised.
+     *
+     * @param test
+     *        a Test used to filter the classes that are discovered
+     * @param parent
+     *        the parent package under which classes must be in order to be considered
+     * @param url
+     *        the url that identifies the jar containing the resource.
+     */
+    private void loadImplementationsInJar(final Test test, final String parent, final URL url) {
+        JarURLConnection connection = null;
+        try {
+            connection = (JarURLConnection) url.openConnection();
+            if (connection != null) {
+                JarFile jarFile = connection.getJarFile();
+                Enumeration<JarEntry> entries = jarFile.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    final String name = entry.getName();
+                    if (!entry.isDirectory() && name.startsWith(parent) && isTestApplicable(test, name)) {
+                        addIfMatching(test, name);
+                    }
+                }
+            } else {
+                LOGGER.error("Could not establish connection to {}", url.toString());
+            }
+        } catch (final IOException ex) {
+            LOGGER.error("Could not search JAR file '{}' for classes matching criteria {}, file not found",
+                url.toString(), test, ex);
+        }
     }
 
     /**
