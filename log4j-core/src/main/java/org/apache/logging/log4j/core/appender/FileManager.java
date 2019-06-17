@@ -25,9 +25,11 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileOwnerAttributeView;
+import java.nio.file.attribute.FileTime;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -59,56 +61,6 @@ public class FileManager extends OutputStreamManager {
     private final String fileOwner;
     private final String fileGroup;
     private final boolean attributeViewEnabled;
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
-            final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize,
-            final boolean writeHeader) {
-        this(fileName, os, append, locking, advertiseURI, layout, writeHeader, ByteBuffer.wrap(new byte[bufferSize]));
-    }
-
-    /**
-     * @deprecated
-     * @since 2.6
-     */
-    @Deprecated
-    protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
-            final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader,
-            final ByteBuffer buffer) {
-        super(os, fileName, layout, writeHeader, buffer);
-        this.isAppend = append;
-        this.createOnDemand = false;
-        this.isLocking = locking;
-        this.advertiseURI = advertiseURI;
-        this.bufferSize = buffer.capacity();
-        this.filePermissions = null;
-        this.fileOwner = null;
-        this.fileGroup = null;
-        this.attributeViewEnabled = false;
-    }
-
-    /**
-     * @deprecated
-     * @since 2.7
-     */
-    @Deprecated
-    protected FileManager(final LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,
-            final boolean createOnDemand, final String advertiseURI, final Layout<? extends Serializable> layout,
-            final boolean writeHeader, final ByteBuffer buffer) {
-        super(loggerContext, os, fileName, createOnDemand, layout, writeHeader, buffer);
-        this.isAppend = append;
-        this.createOnDemand = createOnDemand;
-        this.isLocking = locking;
-        this.advertiseURI = advertiseURI;
-        this.bufferSize = buffer.capacity();
-        this.filePermissions = null;
-        this.fileOwner = null;
-        this.fileGroup = null;
-        this.attributeViewEnabled = false;
-    }
 
     /**
      * @since 2.9
@@ -164,7 +116,7 @@ public class FileManager extends OutputStreamManager {
      * @param bufferSize buffer size for buffered IO
      * @param filePermissions File permissions
      * @param fileOwner File owner
-     * @param fileOwner File group
+     * @param fileGroup File group
      * @param configuration The configuration.
      * @return A FileManager for the File.
      */
@@ -185,7 +137,16 @@ public class FileManager extends OutputStreamManager {
     protected OutputStream createOutputStream() throws IOException {
         final String filename = getFileName();
         LOGGER.debug("Now writing to {} at {}", filename, new Date());
-        final FileOutputStream fos = new FileOutputStream(filename, isAppend);
+        final File file = new File(filename);
+        final FileOutputStream fos = new FileOutputStream(file, isAppend);
+        if (file.exists() && file.length() == 0) {
+            try {
+                FileTime now = FileTime.fromMillis(System.currentTimeMillis());
+                Files.setAttribute(file.toPath(), "creationTime", now);
+            } catch (Exception ex) {
+                LOGGER.warn("Unable to set current file tiem for {}", filename);
+            }
+        }
         defineAttributeView(Paths.get(filename));
         return fos;
     }

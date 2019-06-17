@@ -21,9 +21,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.PluginElement;
 
 /**
  * Enhances a Class by allowing it to contain Filters.
@@ -40,17 +42,29 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
         @PluginElement("Filter")
         private Filter filter;
 
-        public Filter getFilter() {
-            return filter;
-        }
+        @PluginElement("Properties")
+        private Property[] propertyArray;
 
         @SuppressWarnings("unchecked")
         public B asBuilder() {
             return (B) this;
         }
 
-        public B withFilter(final Filter filter) {
+        public Filter getFilter() {
+            return filter;
+        }
+
+        public Property[] getPropertyArray() {
+            return propertyArray;
+        }
+
+        public B setFilter(final Filter filter) {
             this.filter = filter;
+            return asBuilder();
+        }
+
+        public B setPropertyArray(final Property[] properties) {
+            this.propertyArray = properties;
             return asBuilder();
         }
 
@@ -60,21 +74,16 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      * May be null.
      */
     private volatile Filter filter;
-
-    protected AbstractFilterable(final Filter filter) {
-        this.filter = filter;
-    }
+    
+    private final Property[] propertyArray;
 
     protected AbstractFilterable() {
+        this(null, null);
     }
 
-    /**
-     * Returns the Filter.
-     * @return the Filter or null.
-     */
-    @Override
-    public Filter getFilter() {
-        return filter;
+    protected AbstractFilterable(final Filter filter, Property[] propertyArray) {
+        this.filter = filter;
+        this.propertyArray = propertyArray == null ? Property.EMPTY_ARRAY : propertyArray;
     }
 
     /**
@@ -94,6 +103,38 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
             final Filter[] filters = new Filter[] {this.filter, filter};
             this.filter = CompositeFilter.createFilters(filters);
         }
+    }
+
+    /**
+     * Returns the Filter.
+     * @return the Filter or null.
+     */
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    public Property[] getPropertyArray() {
+        return propertyArray;
+    }
+
+    /**
+     * Determines if a Filter is present.
+     * @return false if no Filter is present.
+     */
+    @Override
+    public boolean hasFilter() {
+        return filter != null;
+    }
+
+    /**
+     * Determine if the LogEvent should be processed or ignored.
+     * @param event The LogEvent.
+     * @return true if the LogEvent should be processed.
+     */
+    @Override
+    public boolean isFiltered(final LogEvent event) {
+        return filter != null && filter.filter(event) == Filter.Result.DENY;
     }
 
     /**
@@ -119,15 +160,6 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
                 this.filter = null;
             }
         }
-    }
-
-    /**
-     * Determines if a Filter is present.
-     * @return false if no Filter is present.
-     */
-    @Override
-    public boolean hasFilter() {
-        return filter != null;
     }
 
     /**
@@ -159,27 +191,12 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
         }
         boolean stopped = true;
         if (filter != null) {
-            if (filter instanceof LifeCycle2) {
-                stopped = ((LifeCycle2) filter).stop(timeout, timeUnit);
-            } else {
-                filter.stop();
-                stopped = true;
-            }
+            stopped = ((LifeCycle) filter).stop(timeout, timeUnit);
         }
         if (changeLifeCycleState) {
             this.setStopped();
         }
         return stopped;
-    }
-
-    /**
-     * Determine if the LogEvent should be processed or ignored.
-     * @param event The LogEvent.
-     * @return true if the LogEvent should be processed.
-     */
-    @Override
-    public boolean isFiltered(final LogEvent event) {
-        return filter != null && filter.filter(event) == Filter.Result.DENY;
     }
 
 }

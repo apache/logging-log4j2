@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
@@ -30,6 +31,16 @@ import org.apache.logging.log4j.core.impl.ContextAnchor;
 public class BasicContextSelector implements ContextSelector {
 
     private static final LoggerContext CONTEXT = new LoggerContext("Default");
+
+    @Override
+    public void shutdown(String fqcn, ClassLoader loader, boolean currentContext, boolean allContexts) {
+        ContextAnchor.THREAD_CONTEXT.get().stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {
+        return ContextAnchor.THREAD_CONTEXT.get() != null;
+    }
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {

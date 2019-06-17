@@ -23,10 +23,10 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 

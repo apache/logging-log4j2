@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
+import java.util.Base64;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -37,7 +38,6 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.convert.Base64Converter;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.time.ClockFactoryTest;
@@ -57,6 +57,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class Log4jLogEventTest {
+
+    private static final Base64.Decoder decoder = Base64.getDecoder();
 
     /** Helper class */
     public static class FixedTimeClock implements Clock {
@@ -114,7 +116,6 @@ public class Log4jLogEventTest {
         assertEquals(evt.getLevel(), evt2.getLevel());
         assertEquals(evt.getLoggerName(), evt2.getLoggerName());
         assertEquals(evt.getMarker(), evt2.getMarker());
-        assertEquals(evt.getContextMap(), evt2.getContextMap());
         assertEquals(evt.getContextData(), evt2.getContextData());
         assertEquals(evt.getContextStack(), evt2.getContextStack());
         assertEquals(evt.getMessage(), evt2.getMessage());
@@ -144,7 +145,6 @@ public class Log4jLogEventTest {
         assertEquals(evt.getLevel(), evt2.getLevel());
         assertEquals(evt.getLoggerName(), evt2.getLoggerName());
         assertEquals(evt.getMarker(), evt2.getMarker());
-        assertEquals(evt.getContextMap(), evt2.getContextMap());
         assertEquals(evt.getContextData(), evt2.getContextData());
         assertEquals(evt.getContextStack(), evt2.getContextStack());
         assertEquals(evt.getMessage(), evt2.getMessage());
@@ -201,7 +201,7 @@ public class Log4jLogEventTest {
 
         final String base64 = "rO0ABXNyAD5vcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkxvZzRqTG9nRXZlbnQkTG9nRXZlbnRQcm94eYgtmn+yXsP9AwAQWgAMaXNFbmRPZkJhdGNoWgASaXNMb2NhdGlvblJlcXVpcmVkSgAIdGhyZWFkSWRJAA50aHJlYWRQcmlvcml0eUoACnRpbWVNaWxsaXNMAAtjb250ZXh0RGF0YXQAKUxvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovdXRpbC9TdHJpbmdNYXA7TAAMY29udGV4dFN0YWNrdAA1TG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9UaHJlYWRDb250ZXh0JENvbnRleHRTdGFjaztMAAVsZXZlbHQAIExvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovTGV2ZWw7TAAKbG9nZ2VyRlFDTnQAEkxqYXZhL2xhbmcvU3RyaW5nO0wACmxvZ2dlck5hbWVxAH4ABEwABm1hcmtlcnQAIUxvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovTWFya2VyO0wAEW1hcnNoYWxsZWRNZXNzYWdldAAbTGphdmEvcm1pL01hcnNoYWxsZWRPYmplY3Q7TAANbWVzc2FnZVN0cmluZ3EAfgAETAAGc291cmNldAAdTGphdmEvbGFuZy9TdGFja1RyYWNlRWxlbWVudDtMAAp0aHJlYWROYW1lcQB+AARMAAt0aHJvd25Qcm94eXQAM0xvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovY29yZS9pbXBsL1Rocm93YWJsZVByb3h5O3hwAAAAAAAAAAAAAQAAAAUAAAAASZYC0nNyADJvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGoudXRpbC5Tb3J0ZWRBcnJheVN0cmluZ01hcLA3yJFz7CvcAwACWgAJaW1tdXRhYmxlSQAJdGhyZXNob2xkeHABAAAAAXcIAAAAAQAAAAB4c3IAPm9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5UaHJlYWRDb250ZXh0JEVtcHR5VGhyZWFkQ29udGV4dFN0YWNrAAAAAAAAAAECAAB4cHNyAB5vcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouTGV2ZWwAAAAAABggGgIAA0kACGludExldmVsTAAEbmFtZXEAfgAETAANc3RhbmRhcmRMZXZlbHQALExvcmcvYXBhY2hlL2xvZ2dpbmcvbG9nNGovc3BpL1N0YW5kYXJkTGV2ZWw7eHAAAAGQdAAESU5GT35yACpvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouc3BpLlN0YW5kYXJkTGV2ZWwAAAAAAAAAABIAAHhyAA5qYXZhLmxhbmcuRW51bQAAAAAAAAAAEgAAeHB0AARJTkZPdAAAdAAJc29tZS50ZXN0cHNyABlqYXZhLnJtaS5NYXJzaGFsbGVkT2JqZWN0fL0el+1j/D4CAANJAARoYXNoWwAIbG9jQnl0ZXN0AAJbQlsACG9iakJ5dGVzcQB+ABl4cJNvO+xwdXIAAltCrPMX+AYIVOACAAB4cAAAAGms7QAFc3IALm9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5tZXNzYWdlLlNpbXBsZU1lc3NhZ2WLdE0wYLeiqAMAAUwAB21lc3NhZ2V0ABJMamF2YS9sYW5nL1N0cmluZzt4cHQAA2FiY3h0AANhYmNwdAAEbWFpbnNyADFvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLlRocm93YWJsZVByb3h52cww1Zp7rPoCAAdJABJjb21tb25FbGVtZW50Q291bnRMAApjYXVzZVByb3h5cQB+AAhbABJleHRlbmRlZFN0YWNrVHJhY2V0AD9bTG9yZy9hcGFjaGUvbG9nZ2luZy9sb2c0ai9jb3JlL2ltcGwvRXh0ZW5kZWRTdGFja1RyYWNlRWxlbWVudDtMABBsb2NhbGl6ZWRNZXNzYWdlcQB+AARMAAdtZXNzYWdlcQB+AARMAARuYW1lcQB+AARbABFzdXBwcmVzc2VkUHJveGllc3QANFtMb3JnL2FwYWNoZS9sb2dnaW5nL2xvZzRqL2NvcmUvaW1wbC9UaHJvd2FibGVQcm94eTt4cAAAAABwdXIAP1tMb3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5FeHRlbmRlZFN0YWNrVHJhY2VFbGVtZW50O8rPiCOlx8+8AgAAeHAAAAAec3IAPG9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuRXh0ZW5kZWRTdGFja1RyYWNlRWxlbWVudOHez7rGtpAHAgACTAAOZXh0cmFDbGFzc0luZm90ADZMb3JnL2FwYWNoZS9sb2dnaW5nL2xvZzRqL2NvcmUvaW1wbC9FeHRlbmRlZENsYXNzSW5mbztMABFzdGFja1RyYWNlRWxlbWVudHEAfgAHeHBzcgA0b3JnLmFwYWNoZS5sb2dnaW5nLmxvZzRqLmNvcmUuaW1wbC5FeHRlbmRlZENsYXNzSW5mbwAAAAAAAAABAgADWgAFZXhhY3RMAAhsb2NhdGlvbnEAfgAETAAHdmVyc2lvbnEAfgAEeHABdAANdGVzdC1jbGFzc2VzL3QAAT9zcgAbamF2YS5sYW5nLlN0YWNrVHJhY2VFbGVtZW50YQnFmiY23YUCAARJAApsaW5lTnVtYmVyTAAOZGVjbGFyaW5nQ2xhc3NxAH4ABEwACGZpbGVOYW1lcQB+AARMAAptZXRob2ROYW1lcQB+AAR4cAAAAKx0ADRvcmcuYXBhY2hlLmxvZ2dpbmcubG9nNGouY29yZS5pbXBsLkxvZzRqTG9nRXZlbnRUZXN0dAAWTG9nNGpMb2dFdmVudFRlc3QuamF2YXQAKnRlc3RKYXZhSW9TZXJpYWxpemFibGVXaXRoVW5rbm93blRocm93YWJsZXNxAH4AJXNxAH4AKABxAH4AK3QACDEuNy4wXzU1c3EAfgAs/////nQAJHN1bi5yZWZsZWN0Lk5hdGl2ZU1ldGhvZEFjY2Vzc29ySW1wbHQAHU5hdGl2ZU1ldGhvZEFjY2Vzc29ySW1wbC5qYXZhdAAHaW52b2tlMHNxAH4AJXNxAH4AKABxAH4AK3EAfgAzc3EAfgAsAAAAOXEAfgA1cQB+ADZ0AAZpbnZva2VzcQB+ACVzcQB+ACgAcQB+ACtxAH4AM3NxAH4ALAAAACt0AChzdW4ucmVmbGVjdC5EZWxlZ2F0aW5nTWV0aG9kQWNjZXNzb3JJbXBsdAAhRGVsZWdhdGluZ01ldGhvZEFjY2Vzc29ySW1wbC5qYXZhcQB+ADtzcQB+ACVzcQB+ACgAcQB+ACtxAH4AM3NxAH4ALAAAAl50ABhqYXZhLmxhbmcucmVmbGVjdC5NZXRob2R0AAtNZXRob2QuamF2YXEAfgA7c3EAfgAlc3EAfgAoAXQADmp1bml0LTQuMTIuamFydAAENC4xMnNxAH4ALAAAADJ0AClvcmcuanVuaXQucnVubmVycy5tb2RlbC5GcmFtZXdvcmtNZXRob2QkMXQAFEZyYW1ld29ya01ldGhvZC5qYXZhdAARcnVuUmVmbGVjdGl2ZUNhbGxzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAAAx0ADNvcmcuanVuaXQuaW50ZXJuYWwucnVubmVycy5tb2RlbC5SZWZsZWN0aXZlQ2FsbGFibGV0ABdSZWZsZWN0aXZlQ2FsbGFibGUuamF2YXQAA3J1bnNxAH4AJXNxAH4AKAF0AA5qdW5pdC00LjEyLmphcnEAfgBJc3EAfgAsAAAAL3QAJ29yZy5qdW5pdC5ydW5uZXJzLm1vZGVsLkZyYW1ld29ya01ldGhvZHEAfgBMdAARaW52b2tlRXhwbG9zaXZlbHlzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAABF0ADJvcmcuanVuaXQuaW50ZXJuYWwucnVubmVycy5zdGF0ZW1lbnRzLkludm9rZU1ldGhvZHQAEUludm9rZU1ldGhvZC5qYXZhdAAIZXZhbHVhdGVzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAAUV0AB5vcmcuanVuaXQucnVubmVycy5QYXJlbnRSdW5uZXJ0ABFQYXJlbnRSdW5uZXIuamF2YXQAB3J1bkxlYWZzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAAE50AChvcmcuanVuaXQucnVubmVycy5CbG9ja0pVbml0NENsYXNzUnVubmVydAAbQmxvY2tKVW5pdDRDbGFzc1J1bm5lci5qYXZhdAAIcnVuQ2hpbGRzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAADlxAH4AbXEAfgBucQB+AG9zcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAASJ0ACBvcmcuanVuaXQucnVubmVycy5QYXJlbnRSdW5uZXIkM3EAfgBncQB+AFRzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAAEd0ACBvcmcuanVuaXQucnVubmVycy5QYXJlbnRSdW5uZXIkMXEAfgBndAAIc2NoZWR1bGVzcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAASBxAH4AZnEAfgBndAALcnVuQ2hpbGRyZW5zcQB+ACVzcQB+ACgBdAAOanVuaXQtNC4xMi5qYXJxAH4ASXNxAH4ALAAAADpxAH4AZnEAfgBndAAKYWNjZXNzJDAwMHNxAH4AJXNxAH4AKAF0AA5qdW5pdC00LjEyLmphcnEAfgBJc3EAfgAsAAABDHQAIG9yZy5qdW5pdC5ydW5uZXJzLlBhcmVudFJ1bm5lciQycQB+AGdxAH4AYXNxAH4AJXNxAH4AKAF0AA5qdW5pdC00LjEyLmphcnEAfgBJc3EAfgAsAAAAGnQAMG9yZy5qdW5pdC5pbnRlcm5hbC5ydW5uZXJzLnN0YXRlbWVudHMuUnVuQmVmb3Jlc3QAD1J1bkJlZm9yZXMuamF2YXEAfgBhc3EAfgAlc3EAfgAoAXQADmp1bml0LTQuMTIuamFycQB+AElzcQB+ACwAAAAbdAAvb3JnLmp1bml0LmludGVybmFsLnJ1bm5lcnMuc3RhdGVtZW50cy5SdW5BZnRlcnN0AA5SdW5BZnRlcnMuamF2YXEAfgBhc3EAfgAlc3EAfgAoAXQADmp1bml0LTQuMTIuamFycQB+AElzcQB+ACwAAAFrcQB+AGZxAH4AZ3EAfgBUc3EAfgAlc3EAfgAoAXQADmp1bml0LTQuMTIuamFycQB+AElzcQB+ACwAAACJdAAab3JnLmp1bml0LnJ1bm5lci5KVW5pdENvcmV0AA5KVW5pdENvcmUuamF2YXEAfgBUc3EAfgAlc3EAfgAoAXQADGp1bml0LXJ0LmphcnEAfgArc3EAfgAsAAAAdXQAKGNvbS5pbnRlbGxpai5qdW5pdDQuSlVuaXQ0SWRlYVRlc3RSdW5uZXJ0ABlKVW5pdDRJZGVhVGVzdFJ1bm5lci5qYXZhdAATc3RhcnRSdW5uZXJXaXRoQXJnc3NxAH4AJXNxAH4AKAF0AAxqdW5pdC1ydC5qYXJxAH4AK3NxAH4ALAAAACpxAH4AqHEAfgCpcQB+AKpzcQB+ACVzcQB+ACgBdAAManVuaXQtcnQuamFycQB+ACtzcQB+ACwAAAEGdAAsY29tLmludGVsbGlqLnJ0LmV4ZWN1dGlvbi5qdW5pdC5KVW5pdFN0YXJ0ZXJ0ABFKVW5pdFN0YXJ0ZXIuamF2YXQAFnByZXBhcmVTdHJlYW1zQW5kU3RhcnRzcQB+ACVzcQB+ACgBdAAManVuaXQtcnQuamFycQB+ACtzcQB+ACwAAABUcQB+ALNxAH4AtHQABG1haW5zcQB+ACVzcQB+ACgAcQB+ACtxAH4AM3NxAH4ALP////5xAH4ANXEAfgA2cQB+ADdzcQB+ACVzcQB+ACgAcQB+ACtxAH4AM3NxAH4ALAAAADlxAH4ANXEAfgA2cQB+ADtzcQB+ACVzcQB+ACgAcQB+ACtxAH4AM3NxAH4ALAAAACtxAH4AP3EAfgBAcQB+ADtzcQB+ACVzcQB+ACgAcQB+ACtxAH4AM3NxAH4ALAAAAl5xAH4ARHEAfgBFcQB+ADtzcQB+ACVzcQB+ACgBdAALaWRlYV9ydC5qYXJxAH4AK3NxAH4ALAAAAJN0AC1jb20uaW50ZWxsaWoucnQuZXhlY3V0aW9uLmFwcGxpY2F0aW9uLkFwcE1haW50AAxBcHBNYWluLmphdmFxAH4AunQAFk9NRyBJJ3ZlIGJlZW4gZGVsZXRlZCFxAH4AzXQARW9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuTG9nNGpMb2dFdmVudFRlc3QkRGVsZXRlZEV4Y2VwdGlvbnVyADRbTG9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuVGhyb3dhYmxlUHJveHk7+u0B4IWi6zkCAAB4cAAAAAB4";
 
-        final byte[] binaryDecoded = Base64Converter.parseBase64Binary(base64);
+        final byte[] binaryDecoded = decoder.decode(base64);
         final Log4jLogEvent evt2 = deserialize(binaryDecoded);
 
         assertEquals(loggerFQN, evt2.getLoggerFqcn());
@@ -242,22 +242,14 @@ public class Log4jLogEventTest {
         verifyNanoTimeWithAllConstructors(87654);
     }
 
-    @SuppressWarnings("deprecation")
     private void verifyNanoTimeWithAllConstructors(final long expected) {
         assertEquals(expected, Log4jLogEvent.getNanoClock().nanoTime());
 
         assertEquals("No-arg constructor", expected, new Log4jLogEvent().getNanoTime());
-        assertEquals("1-arg constructor", expected, new Log4jLogEvent(98).getNanoTime());
-        assertEquals("6-arg constructor", expected, new Log4jLogEvent("l", null, "a", null, null, null).getNanoTime());
         assertEquals("7-arg constructor", expected, new Log4jLogEvent("l", null, "a", null, null, null, null)
                 .getNanoTime());
-        assertEquals("11-arg constructor", expected, new Log4jLogEvent("l", null, "a", null, null, null, null, null,
-                null, null, 0).getNanoTime());
-        assertEquals("12-arg factory method", expected, Log4jLogEvent.createEvent("l", null, "a", null, null, null,
-                null, null, null, null, null, 0).getNanoTime());
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void testBuilderCorrectlyCopiesAllEventAttributes() {
         final StringMap contextData = ContextDataFactory.createContextData();

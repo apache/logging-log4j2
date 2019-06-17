@@ -23,6 +23,7 @@ import java.io.Serializable;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 
 /**
@@ -31,8 +32,8 @@ import org.apache.logging.log4j.core.filter.CompositeFilter;
 public class InMemoryAppender extends AbstractOutputStreamAppender<InMemoryAppender.InMemoryManager> {
 
     public InMemoryAppender(final String name, final Layout<? extends Serializable> layout, final CompositeFilter filters,
-                            final boolean ignoreExceptions, final boolean writeHeader) {
-        super(name, layout, filters, ignoreExceptions, true, new InMemoryManager(name, layout, writeHeader));
+                            final boolean ignoreExceptions, final boolean writeHeader, Property[] properties) {
+        super(name, layout, filters, ignoreExceptions, true, properties, new InMemoryManager(name, layout, writeHeader));
     }
 
     @Override

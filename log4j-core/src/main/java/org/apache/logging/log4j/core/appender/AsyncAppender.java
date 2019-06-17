@@ -41,13 +41,15 @@ import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -62,6 +64,7 @@ public final class AsyncAppender extends AbstractAppender {
 
     private static final int DEFAULT_QUEUE_SIZE = 1024;
     private static final LogEvent SHUTDOWN_LOG_EVENT = new AbstractLogEvent() {
+        // empty
     };
 
     private static final AtomicLong THREAD_SEQUENCE = new AtomicLong(1);
@@ -79,10 +82,10 @@ public final class AsyncAppender extends AbstractAppender {
     private AsyncQueueFullPolicy asyncQueueFullPolicy;
 
     private AsyncAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
-                          final String errorRef, final int queueSize, final boolean blocking,
-                          final boolean ignoreExceptions, final long shutdownTimeout, final Configuration config,
-                          final boolean includeLocation, final BlockingQueueFactory<LogEvent> blockingQueueFactory) {
-        super(name, filter, null, ignoreExceptions);
+            final String errorRef, final int queueSize, final boolean blocking, final boolean ignoreExceptions,
+            final long shutdownTimeout, final Configuration config, final boolean includeLocation,
+            final BlockingQueueFactory<LogEvent> blockingQueueFactory, Property[] properties) {
+        super(name, filter, null, ignoreExceptions, properties);
         this.queue = blockingQueueFactory.create(queueSize);
         this.queueSize = queueSize;
         this.blocking = blocking;
@@ -236,49 +239,13 @@ public final class AsyncAppender extends AbstractAppender {
         }
     }
 
-    /**
-     * Create an AsyncAppender. This method is retained for backwards compatibility. New code should use the
-     * {@link Builder} instead. This factory will use {@link ArrayBlockingQueueFactory} by default as was the behavior
-     * pre-2.7.
-     *
-     * @param appenderRefs     The Appenders to reference.
-     * @param errorRef         An optional Appender to write to if the queue is full or other errors occur.
-     * @param blocking         True if the Appender should wait when the queue is full. The default is true.
-     * @param shutdownTimeout  How many milliseconds the Appender should wait to flush outstanding log events
-     *                         in the queue on shutdown. The default is zero which means to wait forever.
-     * @param size             The size of the event queue. The default is 128.
-     * @param name             The name of the Appender.
-     * @param includeLocation  whether to include location information. The default is false.
-     * @param filter           The Filter or null.
-     * @param config           The Configuration.
-     * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged;
-     *                         otherwise they are propagated to the caller.
-     * @return The AsyncAppender.
-     * @deprecated use {@link Builder} instead
-     */
-    @Deprecated
-    public static AsyncAppender createAppender(final AppenderRef[] appenderRefs, final String errorRef,
-                                               final boolean blocking, final long shutdownTimeout, final int size,
-                                               final String name, final boolean includeLocation, final Filter filter,
-                                               final Configuration config, final boolean ignoreExceptions) {
-        if (name == null) {
-            LOGGER.error("No name provided for AsyncAppender");
-            return null;
-        }
-        if (appenderRefs == null) {
-            LOGGER.error("No appender references provided to AsyncAppender {}", name);
-        }
-
-        return new AsyncAppender(name, filter, appenderRefs, errorRef, size, blocking, ignoreExceptions,
-            shutdownTimeout, config, includeLocation, new ArrayBlockingQueueFactory<LogEvent>());
-    }
-
     @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<AsyncAppender> {
+    public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
+            implements org.apache.logging.log4j.plugins.util.Builder<AsyncAppender> {
 
         @PluginElement("AppenderRef")
         @Required(message = "No appender references provided to AsyncAppender")
@@ -303,9 +270,6 @@ public final class AsyncAppender extends AbstractAppender {
 
         @PluginBuilderAttribute
         private boolean includeLocation = false;
-
-        @PluginElement("Filter")
-        private Filter filter;
 
         @PluginConfiguration
         private Configuration configuration;
@@ -351,11 +315,6 @@ public final class AsyncAppender extends AbstractAppender {
             return this;
         }
 
-        public Builder setFilter(final Filter filter) {
-            this.filter = filter;
-            return this;
-        }
-
         public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
@@ -373,8 +332,8 @@ public final class AsyncAppender extends AbstractAppender {
 
         @Override
         public AsyncAppender build() {
-            return new AsyncAppender(name, filter, appenderRefs, errorRef, bufferSize, blocking, ignoreExceptions,
-                shutdownTimeout, configuration, includeLocation, blockingQueueFactory);
+            return new AsyncAppender(name, getFilter(), appenderRefs, errorRef, bufferSize, blocking, ignoreExceptions,
+                shutdownTimeout, configuration, includeLocation, blockingQueueFactory, getPropertyArray());
         }
     }
 

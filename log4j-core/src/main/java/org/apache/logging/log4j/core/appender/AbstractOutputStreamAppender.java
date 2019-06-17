@@ -22,7 +22,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.util.Constants;
 
 /**
@@ -60,17 +61,17 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
             return immediateFlush;
         }
         
-        public B withImmediateFlush(final boolean immediateFlush) {
+        public B setImmediateFlush(final boolean immediateFlush) {
             this.immediateFlush = immediateFlush;
             return asBuilder();
         }
         
-        public B withBufferedIo(final boolean bufferedIo) {
+        public B setBufferedIo(final boolean bufferedIo) {
             this.bufferedIo = bufferedIo;
             return asBuilder();
         }
 
-        public B withBufferSize(final int bufferSize) {
+        public B setBufferSize(final int bufferSize) {
             this.bufferSize = bufferSize;
             return asBuilder();
         }
@@ -93,11 +94,13 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
      *
      * @param name The name of the Appender.
      * @param layout The layout to format the message.
+     * @param properties Optional properties.
      * @param manager The OutputStreamManager.
      */
     protected AbstractOutputStreamAppender(final String name, final Layout<? extends Serializable> layout,
-            final Filter filter, final boolean ignoreExceptions, final boolean immediateFlush, final M manager) {
-        super(name, filter, layout, ignoreExceptions);
+            final Filter filter, final boolean ignoreExceptions, final boolean immediateFlush, Property[] properties,
+            final M manager) {
+        super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
         this.immediateFlush = immediateFlush;
     }
@@ -160,7 +163,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
         try {
             tryAppend(event);
         } catch (final AppenderLoggingException ex) {
-            error("Unable to write to stream " + manager.getName() + " for appender " + getName() + ": " + ex);
+            error("Unable to write to stream " + manager.getName() + " for appender " + getName(), event, ex);
             throw ex;
         }
     }

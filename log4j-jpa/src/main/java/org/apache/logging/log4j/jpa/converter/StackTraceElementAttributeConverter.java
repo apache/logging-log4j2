@@ -72,7 +72,7 @@ public class StackTraceElementAttributeConverter implements AttributeConverter<S
                     // we don't care
                 }
             } else {
-                fileName = parenthesisContents.substring(0);
+                fileName = parenthesisContents;
             }
         }
 

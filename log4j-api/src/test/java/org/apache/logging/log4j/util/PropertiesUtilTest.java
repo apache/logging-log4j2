@@ -108,4 +108,13 @@ public class PropertiesUtilTest {
             System.getProperties().remove(key2);
         }
     }
+
+    @Test
+    public void testPublish() {
+        final Properties props = new Properties();
+        final PropertiesUtil util = new PropertiesUtil(props);
+        String value = System.getProperty("Application");
+        assertNotNull("System property was not published", value);
+        assertEquals("Log4j", value);
+    }
 }

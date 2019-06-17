@@ -18,7 +18,7 @@ package org.apache.logging.log4j;
 
 import java.util.Map;
 
-import org.apache.logging.log4j.Timer;
+import org.apache.logging.log4j.util.Timer;
 import org.apache.logging.log4j.ThreadContext;
 import static org.junit.Assert.*;
 

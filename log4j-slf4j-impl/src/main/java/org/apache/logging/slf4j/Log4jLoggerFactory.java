@@ -17,6 +17,7 @@
 package org.apache.logging.slf4j;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -30,11 +31,12 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
 
     private static final String FQCN = Log4jLoggerFactory.class.getName();
     private static final String PACKAGE = "org.slf4j";
+    private static final String TO_SLF4J_CONTEXT = "org.apache.logging.slf4j.SLF4JLoggerContext";
 
     @Override
     protected Logger newLogger(final String name, final LoggerContext context) {
         final String key = Logger.ROOT_LOGGER_NAME.equals(name) ? LogManager.ROOT_LOGGER_NAME : name;
-        return new Log4jLogger(context.getLogger(key), name);
+        return new Log4jLogger(validateContext(context).getLogger(key), name);
     }
 
     @Override
@@ -43,4 +45,10 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
         return anchor == null ? LogManager.getContext() : getContext(StackLocatorUtil.getCallerClass(anchor));
     }
 
+    private LoggerContext validateContext(final LoggerContext context) {
+        if (TO_SLF4J_CONTEXT.equals(context.getClass().getName())) {
+            throw new LoggingException("log4j-slf4j-impl cannot be present with log4j-to-slf4j");
+        }
+        return context;
+    }
 }

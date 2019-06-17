@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<Configuration status="WARN">
+
+  <Appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
+    </Console>
+    <Jdbc name="databaseAppender" tableName="TableNameA" ignoreExceptions="false">
+      <PoolingDriver connectionString="jdbc:h2:${sys:java.io.tmpdir}/h2/h2_test0;TRACE_LEVEL_SYSTEM_OUT=0" driverClassName="org.h2.Driver">
+        <!-- PoolableConnectionFactory default values -->
+        <PoolableConnectionFactory 
+          autoCommitOnReturn="true"
+          cacheState="false"
+          defaultAutoCommit="false"
+          defaultCatalog=""
+          defaultQueryTimeoutSeconds="0"
+          defaultReadOnly="false"
+          defaultTransactionIsolation="-1"
+          fastFailValidation="true"
+          maxConnLifetimeMillis="-1"
+          maxOpenPreparedStatements="8"
+          poolStatements="false"
+          rollbackOnReturn="true"
+          validationQuery=""
+          validationQueryTimeoutSeconds="-1">
+        </PoolableConnectionFactory>
+      </PoolingDriver>
+      <ColumnMapping name="ColumnA" />
+    </Jdbc>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppenderColumnMappingLiteralTest" level="DEBUG" additivity="false">
+      <AppenderRef ref="databaseAppender" />
+    </Logger>
+
+    <Root level="FATAL">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+
+</Configuration>

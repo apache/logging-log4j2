@@ -46,6 +46,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class PropertiesUtil {
 
     private static final String LOG4J_PROPERTIES_FILE_NAME = "log4j2.component.properties";
+    private static final String LOG4J_SYSTEM_PROPERTIES_FILE_NAME = "log4j2.system.properties";
+    private static final String SYSTEM = "system:";
     private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME);
 
     private final Environment environment;
@@ -178,9 +180,9 @@ public final class PropertiesUtil {
         if (Charset.isSupported(charsetName)) {
             return Charset.forName(charsetName);
         }
-        ResourceBundle bundle = getCharsetsResourceBundle();
+        final ResourceBundle bundle = getCharsetsResourceBundle();
         if (bundle.containsKey(name)) {
-            String mapped = bundle.getString(name);
+            final String mapped = bundle.getString(name);
             if (Charset.isSupported(mapped)) {
                 return Charset.forName(mapped);
             }
@@ -315,10 +317,32 @@ public final class PropertiesUtil {
         private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
 
         private Environment(final PropertySource propertySource) {
-            sources.add(propertySource);
-            for (final PropertySource source : ServiceLoader.load(PropertySource.class, PropertySource.class.getClassLoader())) {
-                sources.add(source);
+            PropertyFilePropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME);
+            try {
+                sysProps.forEach(new BiConsumer<String, String>() {
+                    @Override
+                    public void accept(String key, String value) {
+                        if (System.getProperty(key) == null) {
+                            System.setProperty(key, value);
+                        }
+                    }
+                });
+            } catch (SecurityException ex) {
+                // Access to System Properties is restricted so just skip it.
             }
+            sources.add(propertySource);
+			for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+				try {
+					for (final PropertySource source : ServiceLoader.load(PropertySource.class, classLoader)) {
+						sources.add(source);
+					}
+				} catch (final Throwable ex) {
+					/* Don't log anything to the console. It may not be a problem that a PropertySource
+					 * isn't accessible.
+					 */
+				}
+			}
+
             reload();
         }
 

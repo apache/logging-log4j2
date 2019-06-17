@@ -85,21 +85,6 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * where parameters should be substituted.
      * @param arguments The arguments for substitution.
      * @param throwable A Throwable.
-     * @deprecated Use constructor ParameterizedMessage(String, Object[], Throwable) instead
-     */
-    @Deprecated
-    public ParameterizedMessage(final String messagePattern, final String[] arguments, final Throwable throwable) {
-        this.argArray = arguments;
-        this.throwable = throwable;
-        init(messagePattern);
-    }
-
-    /**
-     * Creates a parameterized message.
-     * @param messagePattern The message "format" string. This will be a String containing "{}" placeholders
-     * where parameters should be substituted.
-     * @param arguments The arguments for substitution.
-     * @param throwable A Throwable.
      */
     public ParameterizedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
         this.argArray = arguments;

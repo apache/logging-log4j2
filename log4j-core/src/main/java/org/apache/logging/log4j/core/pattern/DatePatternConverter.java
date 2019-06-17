@@ -23,7 +23,7 @@ import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
@@ -88,7 +88,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         private final FixedDateFormat fixedDateFormat;
 
         // below fields are only used in ThreadLocal caching mode
-        private final char[] cachedBuffer = new char[64]; // max length of formatted date-time in any format < 64
+        private final char[] cachedBuffer = new char[70]; // max length of formatted date-time in any format < 70
         private int length = 0;
 
         FixedFormatter(final FixedDateFormat fixedDateFormat) {
@@ -216,7 +216,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         // if we get here, options is a non-null array with at least one element (first of which non-null)
         Objects.requireNonNull(options);
         if (options.length == 0) {
-            throw new IllegalArgumentException("options array must have at least one element");
+            throw new IllegalArgumentException("Options array must have at least one element");
         }
         Objects.requireNonNull(options[0]);
         final String patternOption = options[0];
@@ -279,9 +279,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
                 threadLocalMutableInstant.set(result);
             }
             return result;
-        } else {
-            return new MutableInstant();
         }
+        return new MutableInstant();
     }
 
     public void format(final Instant instant, final StringBuilder output) {

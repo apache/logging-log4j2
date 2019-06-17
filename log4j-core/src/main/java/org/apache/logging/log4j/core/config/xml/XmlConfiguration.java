@@ -28,7 +28,6 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -38,17 +37,15 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.ConfiguratonFileWatcher;
-import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
-import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.ResolverUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -108,21 +105,22 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             }
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
-            final StatusConfiguration statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES)
-                    .withStatus(getDefaultStatus());
+            final StatusConfiguration statusConfig = new StatusConfiguration().setVerboseClasses(VERBOSE_CLASSES)
+                    .setStatus(getDefaultStatus());
+            int monitorIntervalSeconds = 0;
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
                 final String key = entry.getKey();
                 final String value = getStrSubstitutor().replace(entry.getValue());
                 if ("status".equalsIgnoreCase(key)) {
-                    statusConfig.withStatus(value);
+                    statusConfig.setStatus(value);
                 } else if ("dest".equalsIgnoreCase(key)) {
-                    statusConfig.withDestination(value);
+                    statusConfig.setDestination(value);
                 } else if ("shutdownHook".equalsIgnoreCase(key)) {
                     isShutdownHookEnabled = !"disable".equalsIgnoreCase(value);
                 } else if ("shutdownTimeout".equalsIgnoreCase(key)) {
                     shutdownTimeoutMillis = Long.parseLong(value);
                 } else if ("verbose".equalsIgnoreCase(key)) {
-                    statusConfig.withVerbosity(value);
+                    statusConfig.setVerbosity(value);
                 } else if ("packages".equalsIgnoreCase(key)) {
                     pluginPackages.addAll(Arrays.asList(value.split(Patterns.COMMA_SEPARATOR)));
                 } else if ("name".equalsIgnoreCase(key)) {
@@ -132,18 +130,12 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 } else if ("schema".equalsIgnoreCase(key)) {
                     schemaResource = value;
                 } else if ("monitorInterval".equalsIgnoreCase(key)) {
-                    final int intervalSeconds = Integer.parseInt(value);
-                    if (intervalSeconds > 0) {
-                        getWatchManager().setIntervalSeconds(intervalSeconds);
-                        if (configFile != null) {
-                            final FileWatcher watcher = new ConfiguratonFileWatcher(this, listeners);
-                            getWatchManager().watchFile(configFile, watcher);
-                        }
-                    }
+                    monitorIntervalSeconds = Integer.parseInt(value);
                 } else if ("advertiser".equalsIgnoreCase(key)) {
                     createAdvertiser(value, configSource, buffer, "text/xml");
                 }
             }
+            initializeWatchers(this, configSource, monitorIntervalSeconds);
             statusConfig.initialize();
         } catch (final SAXException | IOException | ParserConfigurationException e) {
             LOGGER.error("Error parsing " + configSource.getLocation(), e);
@@ -151,7 +143,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         if (strict && schemaResource != null && buffer != null) {
             try (InputStream is = Loader.getResourceAsStream(schemaResource, XmlConfiguration.class.getClassLoader())) {
                 if (is != null) {
-                    final Source src = new StreamSource(is, LOG4J_XSD);
+                    final javax.xml.transform.Source src = new StreamSource(is, LOG4J_XSD);
                     final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
                     Schema schema = null;
                     try {

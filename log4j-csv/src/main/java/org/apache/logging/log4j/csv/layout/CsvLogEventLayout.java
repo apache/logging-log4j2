@@ -24,11 +24,11 @@ import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**

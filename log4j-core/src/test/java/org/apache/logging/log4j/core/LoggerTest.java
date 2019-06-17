@@ -51,9 +51,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-/**
- *
- */
 public class LoggerTest {
 
     private static final String CONFIG = "log4j-test2.xml";
@@ -96,16 +93,8 @@ public class LoggerTest {
 
     @Test
     public void simpleFlow() {
-        logger.entry(CONFIG);
+        logger.traceEntry(CONFIG);
         logger.traceExit(0);
-        final List<LogEvent> events = app.getEvents();
-        assertEventCount(events, 2);
-    }
-
-    @Test
-    public void simpleFlowDepreacted() {
-        logger.entry(CONFIG);
-        logger.exit(0);
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 2);
     }
@@ -138,14 +127,13 @@ public class LoggerTest {
     @Test
     public void debugChangeLevel() {
         logger.debug("Debug message 1");
-        final List<LogEvent> events = app.getEvents();
-        assertEventCount(events, 1);
+        assertEventCount(app.getEvents(), 1);
         Configurator.setLevel(logger.getName(), Level.OFF);
         logger.debug("Debug message 2");
-        assertEventCount(events, 1);
+        assertEventCount(app.getEvents(), 1);
         Configurator.setLevel(logger.getName(), Level.DEBUG);
         logger.debug("Debug message 3");
-        assertEventCount(events, 2);
+        assertEventCount(app.getEvents(), 2);
     }
 
     @Test
@@ -154,18 +142,17 @@ public class LoggerTest {
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 child");
         loggerGrandchild.debug("Debug message 1 grandchild");
-        final List<LogEvent> events = app.getEvents();
-        assertEventCount(events, 3);
+        assertEventCount(app.getEvents(), 3);
         Configurator.setAllLevels(logger.getName(), Level.OFF);
         logger.debug("Debug message 2");
         loggerChild.warn("Warn message 2 child");
         loggerGrandchild.fatal("Fatal message 2 grandchild");
-        assertEventCount(events, 3);
+        assertEventCount(app.getEvents(), 3);
         Configurator.setAllLevels(logger.getName(), Level.DEBUG);
         logger.debug("Debug message 3");
         loggerChild.warn("Trace message 3 child");
         loggerGrandchild.trace("Fatal message 3 grandchild");
-        assertEventCount(events, 5);
+        assertEventCount(app.getEvents(), 5);
     }
 
     @Test
@@ -174,18 +161,17 @@ public class LoggerTest {
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 child");
         loggerGrandchild.debug("Debug message 1 grandchild");
-        final List<LogEvent> events = app.getEvents();
-        assertEventCount(events, 3);
+        assertEventCount(app.getEvents(), 3);
         Configurator.setLevel(logger.getName(), Level.OFF);
         logger.debug("Debug message 2");
         loggerChild.debug("Debug message 2 child");
         loggerGrandchild.debug("Debug message 2 grandchild");
-        assertEventCount(events, 3);
+        assertEventCount(app.getEvents(), 3);
         Configurator.setLevel(logger.getName(), Level.DEBUG);
         logger.debug("Debug message 3");
         loggerChild.debug("Debug message 3 child");
         loggerGrandchild.debug("Debug message 3 grandchild");
-        assertEventCount(events, 6);
+        assertEventCount(app.getEvents(), 6);
     }
 
     @Test
@@ -194,33 +180,31 @@ public class LoggerTest {
         // Use logger AND loggerChild
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 child");
-        final List<LogEvent> events = app.getEvents();
-        assertEventCount(events, 2);
+        assertEventCount(app.getEvents(), 2);
         Configurator.setLevel(logger.getName(), Level.ERROR);
         Configurator.setLevel(loggerChild.getName(), Level.DEBUG);
         logger.debug("Debug message 2");
         loggerChild.debug("Debug message 2 child");
-        assertEventCount(events, 3);
+        assertEventCount(app.getEvents(), 3);
         Configurator.setLevel(logger.getName(), Level.DEBUG);
         logger.debug("Debug message 3");
         loggerChild.debug("Debug message 3 child");
-        assertEventCount(events, 5);
+        assertEventCount(app.getEvents(), 5);
     }
 
     @Test
     public void debugChangeLevelsMap() {
         logger.debug("Debug message 1");
-        final List<LogEvent> events = app.getEvents();
-        assertEventCount(events, 1);
+        assertEventCount(app.getEvents(), 1);
         final Map<String, Level> map = new HashMap<>();
         map.put(logger.getName(), Level.OFF);
         Configurator.setLevel(map);
         logger.debug("Debug message 2");
-        assertEventCount(events, 1);
+        assertEventCount(app.getEvents(), 1);
         map.put(logger.getName(), Level.DEBUG);
         Configurator.setLevel(map);
         logger.debug("Debug message 3");
-        assertEventCount(events, 2);
+        assertEventCount(app.getEvents(), 2);
     }
 
     @Test
@@ -228,8 +212,7 @@ public class LoggerTest {
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 C");
         loggerGrandchild.debug("Debug message 1 GC");
-        final List<LogEvent> events = app.getEvents();
-        assertEventCount(events, 3);
+        assertEventCount(app.getEvents(), 3);
         final Map<String, Level> map = new HashMap<>();
         map.put(logger.getName(), Level.OFF);
         map.put(loggerChild.getName(), Level.DEBUG);
@@ -238,7 +221,7 @@ public class LoggerTest {
         logger.debug("Debug message 2");
         loggerChild.debug("Debug message 2 C");
         loggerGrandchild.debug("Debug message 2 GC");
-        assertEventCount(events, 4);
+        assertEventCount(app.getEvents(), 4);
         map.put(logger.getName(), Level.DEBUG);
         map.put(loggerChild.getName(), Level.OFF);
         map.put(loggerGrandchild.getName(), Level.DEBUG);
@@ -246,20 +229,19 @@ public class LoggerTest {
         logger.debug("Debug message 3");
         loggerChild.debug("Debug message 3 C");
         loggerGrandchild.debug("Debug message 3 GC");
-        assertEventCount(events, 6);
+        assertEventCount(app.getEvents(), 6);
     }
 
     @Test
     public void debugChangeRootLevel() {
         logger.debug("Debug message 1");
-        final List<LogEvent> events = app.getEvents();
-        assertEventCount(events, 1);
+        assertEventCount(app.getEvents(), 1);
         Configurator.setRootLevel(Level.OFF);
         logger.debug("Debug message 2");
-        assertEventCount(events, 1);
+        assertEventCount(app.getEvents(), 1);
         Configurator.setRootLevel(Level.DEBUG);
         logger.debug("Debug message 3");
-        assertEventCount(events, 2);
+        assertEventCount(app.getEvents(), 2);
     }
 
     @Test

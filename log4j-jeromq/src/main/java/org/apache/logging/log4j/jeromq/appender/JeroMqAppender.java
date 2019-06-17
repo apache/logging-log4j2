@@ -27,13 +27,13 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.Strings;
 
@@ -69,8 +69,8 @@ public final class JeroMqAppender extends AbstractAppender {
             final long maxMsgSize, final long rcvHwm, final long receiveBufferSize, final int receiveTimeOut,
             final long reconnectIVL, final long reconnectIVLMax, final long sendBufferSize, final int sendTimeOut,
             final long sndHWM, final int tcpKeepAlive, final long tcpKeepAliveCount, final long tcpKeepAliveIdle,
-            final long tcpKeepAliveInterval, final boolean xpubVerbose) {
-        super(name, filter, layout, ignoreExceptions);
+            final long tcpKeepAliveInterval, final boolean xpubVerbose, Property[] properties) {
+        super(name, filter, layout, ignoreExceptions, properties);
         this.manager = JeroMqManager.getJeroMqManager(name, affinity, backlog, delayAttachOnConnect, identity, ipv4Only,
             linger, maxMsgSize, rcvHwm, receiveBufferSize, receiveTimeOut, reconnectIVL, reconnectIVLMax,
             sendBufferSize, sendTimeOut, sndHWM, tcpKeepAlive, tcpKeepAliveCount, tcpKeepAliveIdle,
@@ -134,7 +134,7 @@ public final class JeroMqAppender extends AbstractAppender {
         return new JeroMqAppender(name, filter, layout, ignoreExceptions, endpoints, affinity, backlog,
                 delayAttachOnConnect, identity, ipv4Only, linger, maxMsgSize, rcvHwm, receiveBufferSize,
                 receiveTimeOut, reconnectIVL, reconnectIVLMax, sendBufferSize, sendTimeOut, sndHwm, tcpKeepAlive,
-                tcpKeepAliveCount, tcpKeepAliveIdle, tcpKeepAliveInterval, xpubVerbose);
+                tcpKeepAliveCount, tcpKeepAliveIdle, tcpKeepAliveInterval, xpubVerbose, Property.EMPTY_ARRAY);
     }
 
     @Override

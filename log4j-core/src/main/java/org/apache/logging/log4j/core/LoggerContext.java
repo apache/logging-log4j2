@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -50,7 +51,6 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 
@@ -65,7 +65,7 @@ public class LoggerContext extends AbstractLifeCycle
     static {
         try {
             // LOG4J2-1642 preload ExecutorServices as it is used in shutdown hook
-            LoaderUtil.loadClass(ExecutorServices.class.getName());
+            Loader.loadClass(ExecutorServices.class.getName());
         } catch (final Exception e) {
             LOGGER.error("Failed to preload ExecutorServices class.", e);
         }
@@ -349,11 +349,7 @@ public class LoggerContext extends AbstractLifeCycle
             final Configuration prev = configuration;
             configuration = NULL_CONFIGURATION;
             updateLoggers();
-            if (prev instanceof LifeCycle2) {
-                ((LifeCycle2) prev).stop(timeout, timeUnit);
-            } else {
-                prev.stop();
-            }
+            ((LifeCycle) prev).stop(timeout, timeUnit);
             externalContext = null;
             LogManager.getFactory().removeContext(this);
         } finally {
@@ -493,7 +489,8 @@ public class LoggerContext extends AbstractLifeCycle
     /**
      * Returns the current Configuration. The Configuration will be replaced when a reconfigure occurs.
      *
-     * @return The Configuration.
+     * @return The current Configuration, never {@code null}, but may be
+     * {@link org.apache.logging.log4j.core.config.NullConfiguration}.
      */
     public Configuration getConfiguration() {
         return configuration;
@@ -524,7 +521,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @param config The new Configuration.
      * @return The previous Configuration.
      */
-    private Configuration setConfiguration(final Configuration config) {
+    public Configuration setConfiguration(final Configuration config) {
         if (config == null) {
             LOGGER.error("No configuration found for context '{}'.", contextName);
             // No change, return the current configuration.
@@ -663,14 +660,17 @@ public class LoggerContext extends AbstractLifeCycle
      */
     @Override
     public synchronized void onChange(final Reconfigurable reconfigurable) {
+        final long startMillis = System.currentTimeMillis();
         LOGGER.debug("Reconfiguration started for context {} ({})", contextName, this);
         initApiModule();
         final Configuration newConfig = reconfigurable.reconfigure();
         if (newConfig != null) {
             setConfiguration(newConfig);
-            LOGGER.debug("Reconfiguration completed for {} ({})", contextName, this);
+            LOGGER.debug("Reconfiguration completed for {} ({}) in {} milliseconds.", contextName, this,
+                    System.currentTimeMillis() - startMillis);
         } else {
-            LOGGER.debug("Reconfiguration failed for {} ({})", contextName, this);
+            LOGGER.debug("Reconfiguration failed for {} ({}) in {} milliseconds.", contextName, this,
+                    System.currentTimeMillis() - startMillis);
         }
     }
 

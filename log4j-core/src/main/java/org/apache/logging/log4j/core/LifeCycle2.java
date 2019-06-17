@@ -26,15 +26,4 @@ import java.util.concurrent.TimeUnit;
  * @since 2.7
  */
 public interface LifeCycle2 extends LifeCycle {
-
-    /**
-     * Blocks until all tasks have completed execution after a shutdown request, or the timeout occurs, or the current
-     * thread is interrupted, whichever happens first.
-     *
-     * @param timeout the maximum time to wait
-     * @param timeUnit the time unit of the timeout argument
-     * @return true if the receiver was stopped cleanly and normally, false otherwise.
-     * @since 2.7
-     */
-    boolean stop(long timeout, TimeUnit timeUnit);
 }

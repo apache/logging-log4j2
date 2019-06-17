@@ -17,25 +17,33 @@
 
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.status.StatusLogger;
+
 /**
- * Helper class for closing resources.
+ * Closes resources.
  */
 public final class Closer {
 
     private Closer() {
+        // empty
     }
 
     /**
      * Closes an AutoCloseable or ignores if {@code null}.
      *
      * @param closeable the resource to close; may be null
+     * @return Whether the resource was closed.
      * @throws Exception if the resource cannot be closed
      * @since 2.8
+     * @since 2.11.2 returns a boolean instead of being a void return type.
      */
-    public static void close(final AutoCloseable closeable) throws Exception {
+    public static boolean close(final AutoCloseable closeable) throws Exception {
         if (closeable != null) {
+            StatusLogger.getLogger().debug("Closing {} {}", closeable.getClass().getSimpleName(), closeable);
             closeable.close();
+            return true;
         }
+        return false;
     }
 
     /**
@@ -46,8 +54,7 @@ public final class Closer {
      */
     public static boolean closeSilently(final AutoCloseable closeable) {
         try {
-            close(closeable);
-            return true;
+            return close(closeable);
         } catch (final Exception ignored) {
             return false;
         }

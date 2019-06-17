@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.io.internal.InternalInputStream;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
@@ -34,43 +35,36 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 public class LoggerInputStream extends FilterInputStream {
     private static final String FQCN = LoggerInputStream.class.getName();
 
-    private final String fqcn;
-    private final ByteStreamLogger logger;
+    private final InternalInputStream logger;
 
     protected LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger,
                                 final String fqcn, final Level level, final Marker marker) {
         super(in);
-        this.logger = new ByteStreamLogger(logger, level, marker, charset);
-        this.fqcn = fqcn == null ? FQCN : fqcn;
+        this.logger = new InternalInputStream(in, charset, logger, fqcn == null ? FQCN : fqcn, level, marker);
     }
 
     @Override
     public void close() throws IOException {
-        this.logger.close(this.fqcn);
-        super.close();
+        this.logger.close();
     }
 
     @Override
     public int read() throws IOException {
-        final int b = super.read();
-        this.logger.put(this.fqcn, b);
-        return b;
+        return logger.read();
     }
 
     @Override
     public int read(final byte[] b) throws IOException {
-        return read(b, 0, b.length);
+        return logger.read(b);
     }
 
     @Override
     public int read(final byte[] b, final int off, final int len) throws IOException {
-        final int bytesRead = super.read(b, off, len);
-        this.logger.put(this.fqcn, b, off, bytesRead);
-        return bytesRead;
+        return logger.read(b, off, len);
     }
 
     @Override
     public String toString() {
-        return LoggerInputStream.class.getSimpleName() + "{stream=" + this.in + '}';
+        return LoggerInputStream.class.getSimpleName() + logger.toString();
     }
 }

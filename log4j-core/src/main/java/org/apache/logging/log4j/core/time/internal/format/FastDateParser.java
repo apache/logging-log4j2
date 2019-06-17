@@ -573,7 +573,7 @@ public class FastDateParser implements DateParser, Serializable {
         case 'K':  // Hour in am/pm (0-11) 
             return HOUR_STRATEGY;
         case 'M':
-            return width>=3 ?getLocaleSpecificStrategy(Calendar.MONTH, definingCalendar) :NUMBER_MONTH_STRATEGY;
+            return width >= 3 ? getLocaleSpecificStrategy(Calendar.MONTH, definingCalendar) : NUMBER_MONTH_STRATEGY;
         case 'S':
             return MILLISECOND_STRATEGY;
         case 'W':
@@ -596,7 +596,7 @@ public class FastDateParser implements DateParser, Serializable {
             return WEEK_OF_YEAR_STRATEGY;
         case 'y':
         case 'Y':
-            return width>2 ?LITERAL_YEAR_STRATEGY :ABBREVIATED_YEAR_STRATEGY;
+            return width > 2 ? LITERAL_YEAR_STRATEGY : ABBREVIATED_YEAR_STRATEGY;
         case 'X':
             return ISO8601TimeZoneStrategy.getStrategy(width);
         case 'Z':

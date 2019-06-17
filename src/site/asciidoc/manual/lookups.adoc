@@ -67,6 +67,45 @@ be formatted as specified.
 </RollingFile>
 ----
 
+[#DockerLookup]
+== Docker Lookup
+
+The DockerLookup can be used to lookup attributes from the Docker container the application is running in.
+
+Log4j Docker provides access to the following container attributes:
+[cols="1m,4a"]
+|===
+|Key |Description
+
+|containerId
+|The full id assigned to the container.
+
+|containreName
+|The name assigned to the container.
+
+|imageId
+|The id assigned to the image.
+
+|imageName
+|The name assigned to the image.
+
+|shortContainerId
+|The first 12 characters of the container id.
+
+|shortImageId
+|The first 12 characters of the image id.
+|===
+
+----
+<JsonLayout properties="true" compact="true" eventEol="true">
+  <KeyValuePair key="containerId" value="${docker:containerId}"/>
+  <KeyValuePair key="containerName" value="${docker:containerName}"/>
+  <KeyValuePair key="imageName" value="${docker:imageName}"/>
+</JsonLayout>
+----
+
+This Lookup is subject to the requirements listed at link:../log4j-docker/index.html[Log4j Docker Support]
+
 [#EnvironmentLookup]
 == Environment Lookup
 
@@ -455,6 +494,42 @@ retrieved:
 |attr._name_
 |Returns the ServletContext attribute with the specified name
 
+|request.attr._name_
+|Returns the ServletRequest attribute with the specified name - requires Log4jServletFilter
+
+|header._name_
+|Returns the HttpServletRequest header with the specified name - requires Log4jServletFilter
+
+|cookie._name_
+|Returns the HttpServletRequest cookie with the specified name - requires Log4jServletFilter
+
+|header._name_
+|Returns the HttpServletRequest header with the specified name - requires Log4jServletFilter
+
+|request._method_
+|Returns the HttpServletRequest method - requires Log4jServletFilter
+
+|request._uri_
+|Returns the HttpServletRequest URI - requires Log4jServletFilter
+
+|request._url_
+|Returns the HttpServletRequest URL - requires Log4jServletFilter
+
+|request._remoteAddress_
+|Returns the HttpServletRequest remote address - requires Log4jServletFilter
+
+|request._remoteHost_
+|Returns the HttpServletRequest remote host - requires Log4jServletFilter
+
+|request.parameter._name_
+|Returns the HttpServletRequest parameter - requires Log4jServletFilter
+
+|request.principal
+|Returns the HttpServletRequest principal name - requires Log4jServletFilter
+
+|session.id
+|Returns the HttpSession id or null if none is started - requires Log4jServletFilter
+
 |contextPath
 |The context path of the web application
 
@@ -495,4 +570,23 @@ located then the corresponding value will be returned.
 <Appenders>
   <File name="ApplicationLog" fileName="${web:rootDir}/app.log"/>
 </Appenders>
+----
+
+=== Request lookups and asynchronous calls
+
+Servlet 3.0 supports asynchronous calls, by default the request tracking - and therefore request related lookups,
+will not work. To make it work you can extract the servlet context attribute `log4j.requestExecutor` which
+is a `BiConsumer<ServletRequest, Runnable>` and call it passing the correct request and task to execute
+synchronously. During this task execution the lookups will be set up properly:
+
+[source,java]
+----
+@GET // example using JAX-RS asynchronous feature backed by servlet AsyncContext
+public void get(@Suspended AsyncResponse response,
+                @Context ServletContext context,
+                @Context ServletRequest request) {
+   final BiConsumer<ServletRequest, Runnable> log4jWrapper =
+        (BiConsumer<ServletRequest, Runnable>) context.getAttribute("log4j.requestExecutor");
+   myThreadPool.submit(() -> log4jWrapper.accept(request, () -> response.resume(doInternalGet()));
+}
 ----

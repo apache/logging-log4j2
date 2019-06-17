@@ -25,12 +25,12 @@ import javax.script.SimpleBindings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.script.AbstractScript;
@@ -46,7 +46,7 @@ public class ScriptPatternSelector implements PatternSelector {
     /**
      * Custom ScriptPatternSelector builder. Use the {@link #newBuilder() builder factory method} to create this.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ScriptPatternSelector> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<ScriptPatternSelector> {
 
         @PluginElement("Script") 
         private AbstractScript script;
@@ -145,11 +145,7 @@ public class ScriptPatternSelector implements PatternSelector {
     private final Configuration configuration;
 
 
-    /**
-     * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.
-     */
-    @Deprecated
-    public ScriptPatternSelector(final AbstractScript script, final PatternMatch[] properties, final String defaultPattern,
+    private ScriptPatternSelector(final AbstractScript script, final PatternMatch[] properties, final String defaultPattern,
                                  final boolean alwaysWriteExceptions, final boolean disableAnsi,
                                  final boolean noConsoleNoAnsi, final Configuration config) {
         this.script = script;
@@ -200,36 +196,6 @@ public class ScriptPatternSelector implements PatternSelector {
     @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    /**
-     * Deprecated, use {@link #newBuilder()} instead.
-     * 
-     * @param script
-     * @param properties
-     * @param defaultPattern
-     * @param alwaysWriteExceptions
-     * @param noConsoleNoAnsi
-     * @param configuration
-     * @return a new ScriptPatternSelector
-     * @deprecated Use {@link #newBuilder()} instead.
-     */
-    @Deprecated
-    public static ScriptPatternSelector createSelector(
-            final AbstractScript script,
-            final PatternMatch[] properties,
-            final String defaultPattern,
-            final boolean alwaysWriteExceptions,
-            final boolean noConsoleNoAnsi,
-            final Configuration configuration) {
-        final Builder builder = newBuilder();
-        builder.setScript(script);
-        builder.setProperties(properties);
-        builder.setDefaultPattern(defaultPattern);
-        builder.setAlwaysWriteExceptions(alwaysWriteExceptions);
-        builder.setNoConsoleNoAnsi(noConsoleNoAnsi);
-        builder.setConfiguration(configuration);
-        return builder.build();
     }
 
     @Override

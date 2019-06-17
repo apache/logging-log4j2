@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginValueVisitor;
+import org.apache.logging.log4j.plugins.PluginVisitorStrategy;
+
+
+import java.lang.annotation.*;
 
 /**
  * Identifies a parameter as a value. These correspond with property values generally, but are meant as values to be
  * used as a placeholder value somewhere.
  *
  * @see org.apache.logging.log4j.core.config.PropertiesPlugin
+ * @deprecated Exists for compatibility with Log4j 2 2.x plugins. Not used for Log4j 2 3.x plugins.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

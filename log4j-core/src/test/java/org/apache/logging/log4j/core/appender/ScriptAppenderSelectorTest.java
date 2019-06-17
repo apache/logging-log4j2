@@ -16,12 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.util.List;
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.categories.Scripts;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -33,9 +30,6 @@ import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.*;
 
-/**
- *
- */
 @RunWith(Parameterized.class)
 @Category(Scripts.Groovy.class)
 public class ScriptAppenderSelectorTest {
@@ -66,13 +60,11 @@ public class ScriptAppenderSelectorTest {
         final Logger logger = loggerContextRule.getLogger(ScriptAppenderSelectorTest.class);
         logger.error("Hello");
         final ListAppender listAppender = getListAppender();
-        final List<LogEvent> list = listAppender.getEvents();
-        assertNotNull("No events generated", list);
-        assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
+        assertEquals("Incorrect number of events", 1, listAppender.getEvents().size());
         logger.error("World");
-        assertTrue("Incorrect number of events. Expected 2, got " + list.size(), list.size() == 2);
+        assertEquals("Incorrect number of events", 2, listAppender.getEvents().size());
         logger.error(marker, "DEADBEEF");
-        assertTrue("Incorrect number of events. Expected 3, got " + list.size(), list.size() == 3);
+        assertEquals("Incorrect number of events", 3, listAppender.getEvents().size());
     }
 
     @Test(expected = AssertionError.class)

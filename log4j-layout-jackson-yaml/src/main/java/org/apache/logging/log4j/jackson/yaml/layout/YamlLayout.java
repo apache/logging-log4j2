@@ -26,9 +26,9 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
@@ -57,7 +57,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 public final class YamlLayout extends AbstractJacksonLayout {
 
     public static class Builder<B extends Builder<B>> extends AbstractJacksonLayout.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<YamlLayout> {
+            implements org.apache.logging.log4j.plugins.util.Builder<YamlLayout> {
 
         public Builder() {
             super();
@@ -111,54 +111,9 @@ public final class YamlLayout extends AbstractJacksonLayout {
                 DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, null);
     }
 
-    /**
-     * Creates a YAML Layout.
-     *
-     * @param config
-     *            The plugin configuration.
-     * @param locationInfo
-     *            If "true", includes the location information in the generated YAML.
-     * @param properties
-     *            If "true", includes the thread context map in the generated YAML.
-     * @param headerPattern
-     *            The header pattern, defaults to {@code ""} if null.
-     * @param footerPattern
-     *            The header pattern, defaults to {@code ""} if null.
-     * @param charset
-     *            The character set to use, if {@code null}, uses "UTF-8".
-     * @param includeStacktrace
-     *            If "true", includes the stacktrace of any Throwable in the generated YAML, defaults to "true".
-     * @return A YAML Layout.
-     *
-     * @deprecated Use {@link #newBuilder()} instead
-     */
-    @Deprecated
-    public static AbstractJacksonLayout createLayout(final Configuration config, final boolean locationInfo,
-            final boolean properties, final String headerPattern, final String footerPattern, final Charset charset,
-            final boolean includeStacktrace) {
-        return new YamlLayout(config, locationInfo, properties, false, false, true, headerPattern, footerPattern,
-                charset, includeStacktrace, false, false, null);
-    }
-
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
-    }
-
-    /**
-     * @deprecated Use {@link #newBuilder()} instead
-     */
-    @Deprecated
-    protected YamlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
-            final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
-            final String footerPattern, final Charset charset, final boolean includeStacktrace) {
-        super(config, new YamlJacksonFactory(includeStacktrace, false).newWriter(locationInfo, properties, compact),
-                charset, compact, complete, eventEol,
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern)
-                        .setDefaultPattern(DEFAULT_HEADER).build(),
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern)
-                        .setDefaultPattern(DEFAULT_FOOTER).build(),
-                false, null);
     }
 
     private YamlLayout(final Configuration config, final boolean locationInfo, final boolean properties,

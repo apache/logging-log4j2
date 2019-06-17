@@ -17,28 +17,28 @@
 
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.visitors.AbstractPluginVisitor;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import java.util.function.Function;
 
 /**
- * PluginVisitor implementation for {@link PluginElement}. Supports arrays as well as singular values.
+ *  @deprecated. Provided to support legacy plugins.
  */
-public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
+public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement, Object> {
     public PluginElementVisitor() {
         super(PluginElement.class);
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
+    public Object visit(final Object unused, final Node node, final Function<String, String> substitutor,
                         final StringBuilder log) {
         final String name = this.annotation.value();
         if (this.conversionType.isArray()) {
@@ -63,6 +63,7 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
                     }
                     if (childObject.getClass().isArray()) {
                         log.append(Arrays.toString((Object[]) childObject)).append('}');
+                        node.getChildren().removeAll(used);
                         return childObject;
                     }
                     log.append(child.toString());

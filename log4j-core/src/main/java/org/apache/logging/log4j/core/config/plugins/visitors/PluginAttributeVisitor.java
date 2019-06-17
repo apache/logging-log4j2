@@ -14,41 +14,40 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
-import java.util.Map;
-
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.plugins.visitors.AbstractPluginVisitor;
+import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 
+import java.util.Map;
+import java.util.function.Function;
+
 /**
- * PluginVisitor implementation for {@link PluginAttribute}.
+ * @deprecated. Provided to support legacy plugins.
  */
-public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribute> {
+public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribute, Object> {
     public PluginAttributeVisitor() {
         super(PluginAttribute.class);
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
+    public Object visit(final Object unused, final Node node, final Function<String, String> substitutor,
                         final StringBuilder log) {
         final String name = this.annotation.value();
         final Map<String, String> attributes = node.getAttributes();
         final String rawValue = removeAttributeValue(attributes, name, this.aliases);
-        final String replacedValue = this.substitutor.replace(event, rawValue);
-        final Object defaultValue = findDefaultValue(event);
+        final String replacedValue = substitutor.apply(rawValue);
+        final Object defaultValue = findDefaultValue(substitutor);
         final Object value = convert(replacedValue, defaultValue);
         final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
         StringBuilders.appendKeyDqValue(log, name, debugValue);
         return value;
     }
 
-    private Object findDefaultValue(final LogEvent event) {
+    private Object findDefaultValue(Function<String, String> substitutor) {
         if (this.conversionType == int.class || this.conversionType == Integer.class) {
             return this.annotation.defaultInt();
         }
@@ -76,6 +75,6 @@ public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribut
         if (this.conversionType == Class.class) {
             return this.annotation.defaultClass();
         }
-        return this.substitutor.replace(event, this.annotation.defaultString());
+        return substitutor.apply(this.annotation.defaultString());
     }
 }

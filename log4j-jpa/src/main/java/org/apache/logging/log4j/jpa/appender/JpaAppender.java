@@ -24,10 +24,11 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -45,8 +46,8 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
     private final String description;
 
     private JpaAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-            final JpaDatabaseManager manager) {
-        super(name, filter, ignoreExceptions, manager);
+            Property[] properties, final JpaDatabaseManager manager) {
+        super(name, filter, null, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
 
@@ -110,7 +111,7 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
                 return null;
             }
 
-            return new JpaAppender(name, filter, ignoreExceptions, manager);
+            return new JpaAppender(name, filter, ignoreExceptions, null, manager);
         } catch (final ClassNotFoundException e) {
             LOGGER.error("Could not load entity class [{}].", entityClassName, e);
             return null;

@@ -127,13 +127,13 @@ public class SocketAppenderTest {
             throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-                .withHost("localhost")
-                .withPort(tcpTestServer.getLocalPort())
-                .withReconnectDelayMillis(-1)
-                .withName("test")
-                .withImmediateFail(false)
-                .withBufferSize(bufferSize)
-                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setHost("localhost")
+                .setPort(tcpTestServer.getLocalPort())
+                .setReconnectDelayMillis(-1)
+                .setName("test")
+                .setImmediateFail(false)
+                .setBufferSize(bufferSize)
+                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -176,11 +176,11 @@ public class SocketAppenderTest {
     public void testDefaultProtocol() throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-                .withPort(tcpServer.getLocalPort())
-                .withReconnectDelayMillis(-1)
-                .withName("test")
-                .withImmediateFail(false)
-                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setPort(tcpServer.getLocalPort())
+                .setReconnectDelayMillis(-1)
+                .setName("test")
+                .setImmediateFail(false)
+                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         assertNotNull(appender);
@@ -197,12 +197,12 @@ public class SocketAppenderTest {
 
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-                .withProtocol(Protocol.UDP)
-                .withPort(tcpServer.getLocalPort())
-                .withReconnectDelayMillis(-1)
-                .withName("test")
-                .withImmediateFail(false)
-                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setProtocol(Protocol.UDP)
+                .setPort(tcpServer.getLocalPort())
+                .setReconnectDelayMillis(-1)
+                .setName("test")
+                .setImmediateFail(false)
+                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -223,12 +223,12 @@ public class SocketAppenderTest {
 
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-                .withHost("localhost")
-                .withPort(DYN_PORT)
-                .withReconnectDelayMillis(100)
-                .withName("test")
-                .withImmediateFail(false)
-                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setHost("localhost")
+                .setPort(DYN_PORT)
+                .setReconnectDelayMillis(100)
+                .setName("test")
+                .setImmediateFail(false)
+                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();
@@ -254,13 +254,13 @@ public class SocketAppenderTest {
     public void testTcpAppenderNoWait() throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-                .withHost("localhost")
-                .withPort(ERROR_PORT)
-                .withReconnectDelayMillis(100)
-                .withName("test")
-                .withImmediateFail(false)
-                .withIgnoreExceptions(false)
-                .withLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setHost("localhost")
+                .setPort(ERROR_PORT)
+                .setReconnectDelayMillis(100)
+                .setName("test")
+                .setImmediateFail(false)
+                .setIgnoreExceptions(false)
+                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
         appender.start();

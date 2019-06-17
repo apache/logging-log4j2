@@ -17,9 +17,11 @@
 package org.apache.logging.log4j.jdbc.appender;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 
-import org.apache.logging.log4j.jdbc.appender.ConnectionSource;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -34,45 +36,54 @@ import org.junit.runner.Description;
  */
 public class JdbcRule implements TestRule {
 
-    private final ConnectionSource connectionSource;
-    private final String createTableStatement;
-    private final String dropTableStatement;
+	private final ConnectionSource connectionSource;
+	private final String createTableStatement;
+	private final String dropTableStatement;
 
-    /**
-     * Creates a JdbcRule using a {@link ConnectionSource} and a table creation statement.
-     *
-     * @param connectionSource     a source for obtaining a Connection
-     * @param createTableStatement a SQL DDL statement to set up a table for use in a JUnit test
-     * @param dropTableStatement   a SQL DDL statement to drop the created table
-     */
-    public JdbcRule(final ConnectionSource connectionSource, final String createTableStatement,
-                    final String dropTableStatement) {
-        this.dropTableStatement = dropTableStatement;
-        this.connectionSource = connectionSource;
-        this.createTableStatement = createTableStatement;
-    }
+	/**
+	 * Creates a JdbcRule using a {@link ConnectionSource} and a table creation statement.
+	 *
+	 * @param connectionSource a required source for obtaining a Connection.
+	 * @param createTableStatement an optional SQL DDL statement to create a table for use in a JUnit test.
+	 * @param dropTableStatement an optional SQL DDL statement to drop the created table.
+	 */
+	public JdbcRule(final ConnectionSource connectionSource, final String createTableStatement,
+			final String dropTableStatement) {
+		this.connectionSource = Objects.requireNonNull(connectionSource, "connectionSource");
+		this.createTableStatement = createTableStatement;
+		this.dropTableStatement = dropTableStatement;
+	}
 
-    public ConnectionSource getConnectionSource() {
-        return connectionSource;
-    }
+	@Override
+	public org.junit.runners.model.Statement apply(final org.junit.runners.model.Statement base,
+			final Description description) {
+		return new org.junit.runners.model.Statement() {
+			@Override
+			public void evaluate() throws Throwable {
+				try (final Connection connection = getConnection();
+						final Statement statement = connection.createStatement()) {
+					try {
+						if (StringUtils.isNotEmpty(createTableStatement)) {
+							statement.executeUpdate(createTableStatement);
+						}
+						base.evaluate();
+					} finally {
+						if (StringUtils.isNotEmpty(dropTableStatement)) {
+							statement.executeUpdate(dropTableStatement);
+						}
+						statement.execute("SHUTDOWN");
+					}
+				}
+			}
 
-    @Override
-    public org.junit.runners.model.Statement apply(final org.junit.runners.model.Statement base,
-                                                   final Description description) {
-        return new org.junit.runners.model.Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                try (final Connection connection = connectionSource.getConnection()) {
-                    try (final Statement statement = connection.createStatement()) {
-                        statement.executeUpdate(createTableStatement);
-                    }
-                    base.evaluate();
-                    try (final Statement statement = connection.createStatement()) {
-                        statement.executeUpdate(dropTableStatement);
-                        statement.execute("SHUTDOWN");
-                    }
-                }
-            }
-        };
-    }
+		};
+	}
+
+	public Connection getConnection() throws SQLException {
+		return connectionSource.getConnection();
+	}
+
+	public ConnectionSource getConnectionSource() {
+		return connectionSource;
+	}
 }

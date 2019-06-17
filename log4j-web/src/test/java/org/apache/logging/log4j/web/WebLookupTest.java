@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockServletContext;
 
 import static org.junit.Assert.*;
@@ -97,6 +98,61 @@ public class WebLookupTest {
         }
         initializer.stop();
         ContextAnchor.THREAD_CONTEXT.remove();
+    }
+
+    @Test
+    public void testRequestAttributeLookups() {
+        final Log4jWebLifeCycle initializer = startInitializer();
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setAttribute("foo", "bar");
+        Log4jServletFilter.CURRENT_REQUEST.set(request);
+        final WebLookup lookup = new WebLookup();
+        assertEquals("bar", lookup.lookup(null, "request.attr.foo"));
+        assertNull(lookup.lookup(null, "request.attr.missing"));
+        Log4jServletFilter.CURRENT_REQUEST.remove();
+        assertNull(lookup.lookup(null, "request.attr.missing"));
+        assertNull(lookup.lookup(null, "request.attr.foo"));
+        initializer.stop();
+        ContextAnchor.THREAD_CONTEXT.remove();
+    }
+
+    @Test
+    public void testRequestHeaderLookups() {
+        final Log4jWebLifeCycle initializer = startInitializer();
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("foo", "bar");
+        Log4jServletFilter.CURRENT_REQUEST.set(request);
+        final WebLookup lookup = new WebLookup();
+        assertEquals("bar", lookup.lookup(null, "header.foo"));
+        assertNull(lookup.lookup(null, "header.missing"));
+        Log4jServletFilter.CURRENT_REQUEST.remove();
+        assertNull(lookup.lookup(null, "header.foo"));
+        assertNull(lookup.lookup(null, "header.missing"));
+        initializer.stop();
+        ContextAnchor.THREAD_CONTEXT.remove();
+    }
+
+    @Test
+    public void testSessionId() {
+        final Log4jWebLifeCycle initializer = startInitializer();
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.getSession();
+        Log4jServletFilter.CURRENT_REQUEST.set(request);
+        final WebLookup lookup = new WebLookup();
+        assertNotNull(lookup.lookup(null, "session.id"));
+        Log4jServletFilter.CURRENT_REQUEST.remove();
+        assertNull(lookup.lookup(null, "session.id"));
+        initializer.stop();
+        ContextAnchor.THREAD_CONTEXT.remove();
+    }
+
+    private Log4jWebLifeCycle startInitializer() {
+        ContextAnchor.THREAD_CONTEXT.remove();
+        final ServletContext servletContext = new MockServletContext();
+        final Log4jWebLifeCycle initializer = WebLoggerContextUtils.getWebLifeCycle(servletContext);
+        initializer.start();
+        initializer.setLoggerContext();
+        return initializer;
     }
 
 }

@@ -164,13 +164,6 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
         return this.getWrappedEvent().getThrownProxy();
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    @Transient
-    public Map<String, String> getContextMap() {
-        return this.getWrappedEvent().getContextMap();
-    }
-
     @Override
     @Transient
     public ReadOnlyStringMap getContextData() {

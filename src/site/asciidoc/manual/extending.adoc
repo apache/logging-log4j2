@@ -354,10 +354,14 @@ pause while the reconfiguration takes place.
 [source,java]
 ----
 @Plugin(name = "Stub", category = "Core", elementType = "appender", printObject = true)
-public final class StubAppender extends OutputStreamAppender {
+public final class StubAppender extends AbstractOutputStreamAppender<StubManager> {
 
-    private StubAppender(String name, Layout layout, Filter filter, StubManager manager,
-                         boolean ignoreExceptions) {
+    private StubAppender(String name,
+                         Layout<? extends Serializable> layout,
+                         Filter filter,
+                         boolean ignoreExceptions,
+                         StubManager  manager) {
+        super(name, layout, filter, ignoreExceptions, true, manager);
     }
 
     @PluginFactory
@@ -378,7 +382,7 @@ public final class StubAppender extends OutputStreamAppender {
         if (layout == null) {
             layout = PatternLayout.createDefaultLayout();
         }
-        return new StubAppender(name, layout, filter, manager, ignoreExceptions);
+        return new StubAppender(name, layout, filter, ignoreExceptions, manager);
     }
 }
 ----
@@ -506,7 +510,7 @@ public static Builder newBuilder() {
     return new Builder();
 }
 
-public static class Builder implements org.apache.logging.log4j.core.util.Builder<ListAppender> {
+public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<ListAppender> {
 
     @PluginBuilderAttribute
     @Required(message = "No name provided for ListAppender")

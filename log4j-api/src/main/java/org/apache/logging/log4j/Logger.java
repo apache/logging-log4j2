@@ -621,34 +621,6 @@ public interface Logger {
             Object p8, Object p9);
 
     /**
-     * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
-     * logged.
-     * @deprecated Use {@link #traceEntry()} instead which performs the same function.
-     */
-    @Deprecated
-    void entry();
-
-    /**
-     * Logs entry to a method along with its parameters (consider using one of the {@code traceEntry(...)} methods instead.)
-     * <p>
-     * For example:
-     * </p>
-     * <pre>
-     * public void doSomething(String foo, int bar) {
-     *     LOGGER.entry(foo, bar);
-     *     // do something
-     * }
-     * </pre>
-     * <p>
-     * The use of methods such as this are more effective when combined with aspect-oriented programming or other
-     * bytecode manipulation tools. It can be rather tedious (and messy) to use this type of method manually.
-     * </p>
-     *
-     * @param params The parameters to the method.
-     */
-    void entry(Object... params);
-
-    /**
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement
@@ -1173,28 +1145,6 @@ public interface Logger {
      */
     void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
             Object p8, Object p9);
-
-    /**
-     * Logs exit from a method. Used for methods that do not return anything.
-     * @deprecated Use {@link #traceExit()} instead which performs the same function.
-     */
-    @Deprecated
-    void exit();
-
-    /**
-     * Logs exiting from a method with the result. This may be coded as:
-     *
-     * <pre>
-     * return LOGGER.exit(myResult);
-     * </pre>
-     *
-     * @param <R> The type of the parameter and object being returned.
-     * @param result The result being returned from the method call.
-     * @return the result.
-     * @deprecated Use {@link #traceExit(Object)} instead which performs the same function.
-     */
-    @Deprecated
-    <R> R exit(R result);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.

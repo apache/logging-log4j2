@@ -27,9 +27,9 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.time.SystemNanoClock;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -540,8 +540,10 @@ public final class PatternParser {
         final Method[] methods = converterClass.getDeclaredMethods();
         Method newInstanceMethod = null;
         for (final Method method : methods) {
-            if (Modifier.isStatic(method.getModifiers()) && method.getDeclaringClass().equals(converterClass)
-                    && method.getName().equals("newInstance")) {
+            if (Modifier.isStatic(method.getModifiers())
+                    && method.getDeclaringClass().equals(converterClass)
+                    && method.getName().equals("newInstance")
+                    && areValidNewInstanceParameters(method.getParameterTypes())) {
                 if (newInstanceMethod == null) {
                     newInstanceMethod = method;
                 } else if (method.getReturnType().equals(newInstanceMethod.getReturnType())) {
@@ -593,6 +595,17 @@ public final class PatternParser {
         }
 
         return null;
+    }
+
+    /** LOG4J2-2564: Returns true if all method parameters are valid for injection. */
+    private static boolean areValidNewInstanceParameters(Class<?>[] parameterTypes) {
+        for (Class<?> clazz : parameterTypes) {
+            if (!clazz.isAssignableFrom(Configuration.class)
+                    && !(clazz.isArray() && "[Ljava.lang.String;".equals(clazz.getName()))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

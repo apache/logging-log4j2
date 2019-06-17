@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.List;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -39,31 +40,6 @@ public class SslSocketManager extends TcpSocketManager {
     private final SslConfiguration sslConfig;
 
     /**
-    *
-    *
-    * @param name          The unique name of this connection.
-    * @param os            The OutputStream.
-    * @param sock          The Socket.
-    * @param inetAddress          The Internet address of the host.
-    * @param host          The name of the host.
-    * @param port          The port number on the host.
-    * @param connectTimeoutMillis the connect timeout in milliseconds.
-    * @param reconnectionDelayMillis         Reconnection interval.
-    * @param immediateFail
-    * @param layout        The Layout.
-    * @param bufferSize The buffer size.
-    * @deprecated Use {@link #SslSocketManager(String, OutputStream, Socket, SslConfiguration, InetAddress, String, int, int, int, boolean, Layout, int, SocketOptions)}.
-    */
-   @Deprecated
-   public SslSocketManager(final String name, final OutputStream os, final Socket sock,
-           final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
-           final int connectTimeoutMillis, final int reconnectionDelayMillis, final boolean immediateFail,
-           final Layout<? extends Serializable> layout, final int bufferSize) {
-       super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail, layout, bufferSize, null);
-       this.sslConfig = sslConfig;
-   }
-
-   /**
    *
    *
    * @param name          The unique name of this connection.
@@ -106,16 +82,6 @@ public class SslSocketManager extends TcpSocketManager {
         }
     }
 
-    /**
-     * @deprecated Use {@link SslSocketManager#getSocketManager(SslConfiguration, String, int, int, int, boolean, Layout, int, SocketOptions)}.
-     */
-    @Deprecated
-    public static SslSocketManager getSocketManager(final SslConfiguration sslConfig, final String host, final int port,
-            final int connectTimeoutMillis, final int reconnectDelayMillis, final boolean immediateFail,
-            final Layout<? extends Serializable> layout, final int bufferSize) {
-        return getSocketManager(sslConfig, host, port, connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, null);
-    }
-
     public static SslSocketManager getSocketManager(final SslConfiguration sslConfig, final String host, int port,
             final int connectTimeoutMillis, int reconnectDelayMillis, final boolean immediateFail,
             final Layout<? extends Serializable> layout, final int bufferSize, final SocketOptions socketOptions) {
@@ -134,11 +100,10 @@ public class SslSocketManager extends TcpSocketManager {
     }
 
     @Override
-    protected Socket createSocket(final String host, final int port) throws IOException {
+    protected Socket createSocket(final InetSocketAddress socketAddress) throws IOException {
         final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
-        final InetSocketAddress address = new InetSocketAddress(host, port);
         final Socket newSocket = socketFactory.createSocket();
-        newSocket.connect(address, getConnectTimeoutMillis());
+        newSocket.connect(socketAddress, getConnectTimeoutMillis());
         return newSocket;
     }
 
@@ -164,23 +129,32 @@ public class SslSocketManager extends TcpSocketManager {
                     data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout, data.bufferSize,
                     data.socketOptions);
         }
-        
+
         @Override
         Socket createSocket(final SslFactoryData data) throws IOException {
-            return SslSocketManager.createSocket(data.host, data.port, data.connectTimeoutMillis, data.sslConfiguration,
-                    data.socketOptions);
+            List<InetSocketAddress> socketAddresses = resolver.resolveHost(data.host, data.port);
+            IOException ioe = null;
+            for (InetSocketAddress socketAddress : socketAddresses) {
+                try {
+                    return SslSocketManager.createSocket(socketAddress, data.connectTimeoutMillis,
+                            data.sslConfiguration, data.socketOptions);
+                } catch (IOException ex) {
+                    ioe = ex;
+                }
+            }
+            throw new IOException(errorMessage(data, socketAddresses) , ioe);
         }
     }
 
-    static Socket createSocket(final String host, int port, int connectTimeoutMillis,
-            final SslConfiguration sslConfiguration, SocketOptions socketOptions) throws IOException {
+    static Socket createSocket(final InetSocketAddress socketAddress, final int connectTimeoutMillis,
+            final SslConfiguration sslConfiguration, final SocketOptions socketOptions) throws IOException {
         final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfiguration);
         final SSLSocket socket = (SSLSocket) socketFactory.createSocket();
         if (socketOptions != null) {
             // Not sure which options must be applied before or after the connect() call.
             socketOptions.apply(socket);
         }
-        socket.connect(new InetSocketAddress(host, port), connectTimeoutMillis);
+        socket.connect(socketAddress, connectTimeoutMillis);
         if (socketOptions != null) {
             // Not sure which options must be applied before or after the connect() call.
             socketOptions.apply(socket);

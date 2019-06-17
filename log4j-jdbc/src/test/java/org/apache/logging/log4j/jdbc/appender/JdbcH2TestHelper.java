@@ -20,24 +20,44 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.apache.logging.log4j.jdbc.appender.AbstractConnectionSource;
-import org.apache.logging.log4j.jdbc.appender.ConnectionSource;
+import org.apache.commons.lang3.SystemUtils;
 
 public class JdbcH2TestHelper {
 
-    public static final String CONNECTION_STRING = "jdbc:h2:mem:Log4j";
+    /**
+     * A JDBC connection string for an H2 in-memory database.
+     */
+    public static final String CONNECTION_STRING_MEM = "jdbc:h2:mem:Log4j";
+
+    /**
+     * A JDBC connection string for an H2 database in the Java temporary directory.
+     */
+    static final String CONNECTION_STRING_TMPDIR = "jdbc:h2:" + SystemUtils.JAVA_IO_TMPDIR
+            + "/h2/test_log4j;TRACE_LEVEL_SYSTEM_OUT=0";
+
     public static final String USER_NAME = "sa";
     public static final String PASSWORD = "";
-    
-    public static ConnectionSource TEST_CONFIGURATION_SOURCE = new AbstractConnectionSource() {
+
+    public static ConnectionSource TEST_CONFIGURATION_SOURCE_MEM = new AbstractConnectionSource() {
         @Override
         public Connection getConnection() throws SQLException {
-            return JdbcH2TestHelper.getConnection();
+            return JdbcH2TestHelper.getConnectionMem();
         }
     };
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(CONNECTION_STRING, USER_NAME, PASSWORD);
+    public static ConnectionSource TEST_CONFIGURATION_SOURCE_TMPDIR = new AbstractConnectionSource() {
+        @Override
+        public Connection getConnection() throws SQLException {
+            return JdbcH2TestHelper.getConnectionTmpDir();
+        }
+    };
+
+    public static Connection getConnectionMem() throws SQLException {
+        return DriverManager.getConnection(CONNECTION_STRING_MEM, USER_NAME, PASSWORD);
+    }
+
+    public static Connection getConnectionTmpDir() throws SQLException {
+        return DriverManager.getConnection(CONNECTION_STRING_TMPDIR, USER_NAME, PASSWORD);
     }
 
 }

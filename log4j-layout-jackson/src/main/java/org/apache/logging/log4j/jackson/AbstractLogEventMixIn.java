@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
 
@@ -52,11 +50,6 @@ public abstract class AbstractLogEventMixIn implements LogEvent {
     public static final String JSON_FILTER_ID = "org.apache.logging.log4j.core.impl.Log4jLogEvent";
 
     private static final long serialVersionUID = 1L;
-
-    @Deprecated
-    @Override
-    @JsonIgnore
-    public abstract Map<String, String> getContextMap();
 
     @JsonSerialize(using = MessageSerializer.class)
     @JsonDeserialize(using = SimpleMessageDeserializer.class)

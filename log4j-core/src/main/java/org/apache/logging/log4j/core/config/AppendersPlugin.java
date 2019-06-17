@@ -21,9 +21,9 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * An Appender container.

@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -25,16 +24,14 @@ import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.ConfiguratonFileWatcher;
-import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.builder.api.Component;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
-import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
-import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.ResolverUtil;
 
 /**
  * This is the general version of the Configuration created by the Builder. It may be extended to
@@ -56,7 +53,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
 
     public BuiltConfiguration(final LoggerContext loggerContext, final ConfigurationSource source, final Component rootComponent) {
         super(loggerContext, source);
-        statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES).withStatus(getDefaultStatus());
+        statusConfig = new StatusConfiguration().setVerboseClasses(VERBOSE_CLASSES).setStatus(getDefaultStatus());
         for (final Component component : rootComponent.getComponents()) {
             switch (component.getPluginType()) {
                 case "Scripts": {
@@ -153,17 +150,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
 
     public void setMonitorInterval(final int intervalSeconds) {
         if (this instanceof Reconfigurable && intervalSeconds > 0) {
-            final ConfigurationSource configSource = getConfigurationSource();
-            if (configSource != null) {
-                final File configFile = configSource.getFile();
-                if (intervalSeconds > 0) {
-                    getWatchManager().setIntervalSeconds(intervalSeconds);
-                    if (configFile != null) {
-                        final FileWatcher watcher = new ConfiguratonFileWatcher((Reconfigurable) this, listeners);
-                        getWatchManager().watchFile(configFile, watcher);
-                    }
-                }
-            }
+            initializeWatchers((Reconfigurable) this, getConfigurationSource(), intervalSeconds);
         }
     }
 

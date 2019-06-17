@@ -16,32 +16,25 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Constructor;
-import java.nio.charset.Charset;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.util.Chars;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.nio.charset.Charset;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Appends log events to <code>System.out</code> or <code>System.err</code> using a layout specified by the user. The
@@ -96,89 +89,15 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     private ConsoleAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final OutputStreamManager manager, final boolean ignoreExceptions, final Target target) {
-        super(name, layout, filter, ignoreExceptions, true, manager);
+            final OutputStreamManager manager, final boolean ignoreExceptions, final Target target, Property[] properties) {
+        super(name, layout, filter, ignoreExceptions, true, properties, manager);
         this.target = target;
-    }
-
-    /**
-     * Creates a Console Appender.
-     *
-     * @param layout The layout to use (required).
-     * @param filter The Filter or null.
-     * @param targetStr The target ("SYSTEM_OUT" or "SYSTEM_ERR"). The default is "SYSTEM_OUT".
-     * @param name The name of the Appender (required).
-     * @param follow If true will follow changes to the underlying output stream.
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
-     *            are propagated to the caller.
-     * @return The ConsoleAppender.
-     * @deprecated Deprecated in 2.7; use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static ConsoleAppender createAppender(Layout<? extends Serializable> layout,
-            final Filter filter,
-            final String targetStr,
-            final String name,
-            final String follow,
-            final String ignore) {
-        if (name == null) {
-            LOGGER.error("No name provided for ConsoleAppender");
-            return null;
-        }
-        if (layout == null) {
-            layout = PatternLayout.createDefaultLayout();
-        }
-        final boolean isFollow = Boolean.parseBoolean(follow);
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final Target target = targetStr == null ? DEFAULT_TARGET : Target.valueOf(targetStr);
-        return new ConsoleAppender(name, layout, filter, getManager(target, isFollow, false, layout), ignoreExceptions, target);
-    }
-
-    /**
-     * Creates a Console Appender.
-     *
-     * @param layout The layout to use (required).
-     * @param filter The Filter or null.
-     * @param target The target (SYSTEM_OUT or SYSTEM_ERR). The default is SYSTEM_OUT.
-     * @param name The name of the Appender (required).
-     * @param follow If true will follow changes to the underlying output stream.
-     * @param direct If true will write directly to {@link java.io.FileDescriptor} and bypass
-     *            {@link System#out}/{@link System#err}.
-     * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
-     *            are propagated to the caller.
-     * @return The ConsoleAppender.
-     * @deprecated Deprecated in 2.7; use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static ConsoleAppender createAppender(
-            // @formatter:off
-            Layout<? extends Serializable> layout,
-            final Filter filter,
-            Target target,
-            final String name,
-            final boolean follow,
-            final boolean direct,
-            final boolean ignoreExceptions) {
-            // @formatter:on
-        if (name == null) {
-            LOGGER.error("No name provided for ConsoleAppender");
-            return null;
-        }
-        if (layout == null) {
-            layout = PatternLayout.createDefaultLayout();
-        }
-        target = target == null ? Target.SYSTEM_OUT : target;
-        if (follow && direct) {
-            LOGGER.error("Cannot use both follow and direct on ConsoleAppender");
-            return null;
-        }
-        return new ConsoleAppender(name, layout, filter, getManager(target, follow, direct, layout), ignoreExceptions, target);
     }
 
     public static ConsoleAppender createDefaultAppenderForLayout(final Layout<? extends Serializable> layout) {
         // this method cannot use the builder class without introducing an infinite loop due to DefaultConfiguration
         return new ConsoleAppender("DefaultConsole-" + COUNT.incrementAndGet(), layout, null,
-                getDefaultManager(DEFAULT_TARGET, false, false, layout), true, DEFAULT_TARGET);
+                getDefaultManager(DEFAULT_TARGET, false, false, layout), true, DEFAULT_TARGET, null);
     }
 
     @PluginBuilderFactory
@@ -191,7 +110,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * @param <B> The type to build
      */
     public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<ConsoleAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<ConsoleAppender> {
 
         @PluginBuilderAttribute
         @Required
@@ -225,7 +144,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             }
             final Layout<? extends Serializable> layout = getOrCreateLayout(target.getDefaultCharset());
             return new ConsoleAppender(getName(), layout, getFilter(), getManager(target, follow, direct, layout),
-                    isIgnoreExceptions(), target);
+                    isIgnoreExceptions(), target, getPropertyArray());
         }
     }
 
@@ -266,7 +185,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         }
         try {
             // We type the parameter as a wildcard to avoid a hard reference to Jansi.
-            final Class<?> clazz = LoaderUtil.loadClass(JANSI_CLASS);
+            final Class<?> clazz = Loader.loadClass(JANSI_CLASS);
             final Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
             return new CloseShieldOutputStream((OutputStream) constructor.newInstance(outputStream));
         } catch (final ClassNotFoundException cnfe) {

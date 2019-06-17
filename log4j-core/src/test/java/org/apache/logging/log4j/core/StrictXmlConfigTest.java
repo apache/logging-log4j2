@@ -68,8 +68,8 @@ public class StrictXmlConfigTest {
 
     @Test
     public void simpleFlow() {
-        logger.entry(CONFIG);
-        logger.exit(0);
+        logger.traceEntry(CONFIG);
+        logger.traceExit(0);
         final List<LogEvent> events = app.getEvents();
         assertEquals("Incorrect number of events. Expected 2, actual " + events.size(), 2, events.size());
     }

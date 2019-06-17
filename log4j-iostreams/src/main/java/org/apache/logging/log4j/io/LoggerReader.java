@@ -24,6 +24,7 @@ import java.nio.CharBuffer;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.io.internal.InternalReader;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
@@ -34,54 +35,41 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 public class LoggerReader extends FilterReader {
     private static final String FQCN = LoggerReader.class.getName();
 
-    private final CharStreamLogger logger;
-    private final String fqcn;
+    private final InternalReader reader;
 
     protected LoggerReader(final Reader reader, final ExtendedLogger logger, final String fqcn, final Level level,
                            final Marker marker) {
         super(reader);
-        this.logger = new CharStreamLogger(logger, level, marker);
-        this.fqcn = fqcn == null ? FQCN : fqcn;
+        this.reader = new InternalReader(reader, logger, fqcn == null ? FQCN : fqcn, level, marker);
     }
 
     @Override
     public void close() throws IOException {
-        super.close();
-        this.logger.close(this.fqcn);
+        reader.close();
     }
 
     @Override
     public int read() throws IOException {
-        final int c = super.read();
-        this.logger.put(this.fqcn, c);
-        return c;
+        return reader.read();
     }
 
     @Override
     public int read(final char[] cbuf) throws IOException {
-        return read(cbuf, 0, cbuf.length);
+        return reader.read(cbuf);
     }
 
     @Override
     public int read(final char[] cbuf, final int off, final int len) throws IOException {
-        final int charsRead = super.read(cbuf, off, len);
-        this.logger.put(this.fqcn, cbuf, off, charsRead);
-        return charsRead;
+        return reader.read(cbuf, off, len);
     }
 
     @Override
     public int read(final CharBuffer target) throws IOException {
-        final int len = target.remaining();
-        final char[] cbuf = new char[len];
-        final int charsRead = read(cbuf, 0, len);
-        if (charsRead > 0) {
-            target.put(cbuf, 0, charsRead);
-        }
-        return charsRead;
+        return reader.read(target);
     }
 
     @Override
     public String toString() {
-        return LoggerReader.class.getSimpleName() + "{stream=" + this.in + '}';
+        return LoggerReader.class.getSimpleName() + this.reader.toString();
     }
 }

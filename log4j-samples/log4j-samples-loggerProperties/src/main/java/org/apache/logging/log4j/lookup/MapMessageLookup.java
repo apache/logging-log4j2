@@ -20,9 +20,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -52,26 +53,13 @@ public class MapMessageLookup extends AbstractLookup {
     @Override
     public String lookup(final LogEvent event, final String key) {
         final Message msg = event.getMessage();
-        if (msg instanceof StringMapMessage) {
+        if (msg instanceof MapMessage) {
             try {
-                final Map<String, String> properties = ((StringMapMessage) msg).getData();
-                if (properties == null) {
-                    return "";
-                }
+                MapMessage<?, ?> mapMessage = (MapMessage) msg;
                 if (key == null || key.length() == 0 || key.equals("*")) {
-                    final StringBuilder sb = new StringBuilder("{");
-                    boolean first = true;
-                    for (final Map.Entry<String, String> entry : properties.entrySet()) {
-                        if (!first) {
-                            sb.append(", ");
-                        }
-                        sb.append(entry.getKey()).append("=").append(entry.getValue());
-                        first = false;
-                    }
-                    sb.append("}");
-                    return sb.toString();
+                    return mapMessage.asString(MapMessage.MapFormat.JAVA_UNQUOTED.name());
                 }
-                return properties.get(key);
+                return mapMessage.get(key);
             } catch (final Exception ex) {
                 LOGGER.warn(LOOKUP, "Error while getting property [{}].", key, ex);
                 return null;
