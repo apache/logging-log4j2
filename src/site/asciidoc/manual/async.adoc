@@ -232,6 +232,15 @@ events after an initially spinning. Yield is a good compromise between
 performance and CPU resource, but may use more CPU than Sleep in order
 to get the message logged to disk sooner.
 
+|AsyncLogger.SynchronizeEnqueueWhenQueueFull
+|`true`
+|Synchronizes access to the Disruptor ring buffer for blocking enqueue operations when the queue is full.
+Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application
+was logging more than the underlying appender could keep up with and the ring buffer became full,
+especially when the number of application threads vastly outnumbered the number of cores.
+CPU utilization is significantly reduced by restricting access to the enqueue operation. Setting this value
+to `false` may lead to very high CPU utilization when the async logging queue is full.
+
 |log4j2.asyncLoggerThreadNameStrategy
 |`CACHED`
 |Valid values: CACHED, UNCACHED.
@@ -388,6 +397,16 @@ latency for actually getting the message logged. +
 events after an initially spinning. Yield is a good compromise between
 performance and CPU resource, but may use more CPU than Sleep in order
 to get the message logged to disk sooner.
+
+|AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull
+|`true`
+|Synchronizes access to the Disruptor ring buffer for blocking enqueue operations when the queue is full.
+Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application
+was logging more than the underlying appender could keep up with and the ring buffer became full,
+especially when the number of application threads vastly outnumbered the number of cores.
+CPU utilization is significantly reduced by restricting access to the enqueue operation. Setting this value
+to `false` may lead to very high CPU utilization when the async logging queue is full.
+
 |===
 
 There are also a few system properties that can be used to maintain
