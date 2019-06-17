@@ -28,7 +28,7 @@
       <PatternLayout>
         <Pattern>%m%n</Pattern>
       </PatternLayout>
-      <SizeBasedTriggeringPolicy size="1000" />
+      <SizeBasedTriggeringPolicy size="5000" />
       <DefaultRolloverStrategy max="500"/>
     </RollingFile>
   </Appenders>

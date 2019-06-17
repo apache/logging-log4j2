@@ -63,12 +63,12 @@ public class RollingAppenderSizeWithTimeTest {
     @Ignore("LOG4J2-2613")
     public void testAppender() throws Exception {
         final List<String> messages = new ArrayList<>();
-        for (int i = 0; i < 1000; ++i) {
+        for (int i = 0; i < 5000; ++i) {
             final String message = "This is test message number " + i;
             messages.add(message);
             logger.debug(message);
             if (i % 100 == 0) {
-                Thread.sleep(500);
+                Thread.sleep(10);
             }
         }
         if (!loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS)) {
