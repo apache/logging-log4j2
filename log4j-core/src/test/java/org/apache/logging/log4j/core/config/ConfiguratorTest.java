@@ -17,10 +17,13 @@
 package org.apache.logging.log4j.core.config;
 
 import java.io.File;
+import java.net.URI;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 public class ConfiguratorTest {
 
@@ -36,9 +39,34 @@ public class ConfiguratorTest {
         testInitializeFromFilePath(path);
     }
 
+    @Test
+    public void testReconfigure() {
+        final String path = new File("src/test/resources/log4j-list.xml").getAbsolutePath();
+        try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path)) {
+            assertNotNull(loggerContext.getConfiguration().getAppender("List"));
+            URI uri = loggerContext.getConfigLocation();
+            assertNotNull("No configuration location returned", uri);
+            Configurator.reconfigure();
+            assertEquals("Unexpected configuration location returned", uri, loggerContext.getConfigLocation());
+        }
+    }
+
+    @Test
+    public void testReconfigureFromPath() {
+        final String path = new File("src/test/resources/log4j-list.xml").getAbsolutePath();
+        try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path)) {
+            assertNotNull(loggerContext.getConfiguration().getAppender("List"));
+            URI uri = loggerContext.getConfigLocation();
+            assertNotNull("No configuration location returned", uri);
+            final URI location = new File("src/test/resources/log4j2-config.xml").toURI();
+            Configurator.reconfigure(location);
+            assertEquals("Unexpected configuration location returned", location, loggerContext.getConfigLocation());
+        }
+    }
+
     private void testInitializeFromFilePath(final String path) {
         try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path)) {
-            Assert.assertNotNull(loggerContext.getConfiguration().getAppender("List"));
+            assertNotNull(loggerContext.getConfiguration().getAppender("List"));
         }
     }
 }
