@@ -73,7 +73,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                strLookupMap.put(entry.getKey(), ReflectionUtil.instantiate(clazz));
+                strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
             } catch (final Throwable t) {
                 handleError(entry.getKey(), t);
             }
