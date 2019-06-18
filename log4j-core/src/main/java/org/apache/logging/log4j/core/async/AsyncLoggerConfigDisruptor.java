@@ -186,6 +186,8 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     private EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig> translator;
     private volatile boolean alreadyLoggedWarning = false;
 
+    private final Object queueFullEnqueueLock = new Object();
+
     public AsyncLoggerConfigDisruptor() {
     }
 
@@ -369,7 +371,19 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     }
 
     private void enqueue(final LogEvent logEvent, final AsyncLoggerConfig asyncLoggerConfig) {
-        disruptor.getRingBuffer().publishEvent(translator, logEvent, asyncLoggerConfig);
+        if (synchronizeEnqueueWhenQueueFull()) {
+            synchronized (queueFullEnqueueLock) {
+                disruptor.getRingBuffer().publishEvent(translator, logEvent, asyncLoggerConfig);
+            }
+        } else {
+            disruptor.getRingBuffer().publishEvent(translator, logEvent, asyncLoggerConfig);
+        }
+    }
+
+    private boolean synchronizeEnqueueWhenQueueFull() {
+        return DisruptorUtil.ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
+                // Background thread must never block
+                && backgroundThreadId != Thread.currentThread().getId();
     }
 
     @Override

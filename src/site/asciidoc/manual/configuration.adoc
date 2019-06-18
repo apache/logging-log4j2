@@ -2034,6 +2034,13 @@ details.
 link:async.html#SysPropsAllAsync[Async Logger System Properties] for
 details.
 
+|[[AsyncLogger.SynchronizeEnqueueWhenQueueFull]]AsyncLogger.SynchronizeEnqueueWhenQueueFull
+|ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
+|true
+|See
+link:async.html#SysPropsAllAsync[Async Logger System Properties] for
+details.
+
 |[[asyncLoggerThreadNameStrategy]]log4j2.asyncLoggerThreadNameStrategy +
 ([[AsyncLogger.ThreadNameStrategy]]AsyncLogger.ThreadNameStrategy)
 |LOG4J_ASYNC_LOGGER_THREAD_NAME_STRATEGY
@@ -2062,6 +2069,13 @@ System Properties] for details.
 ([[AsyncLoggerConfig.WaitStrategy]]AsyncLoggerConfig.WaitStrategy)
 |LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY
 |Timeout
+|See
+link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
+System Properties] for details.
+
+|[[AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull]]AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull
+|ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
+|true
 |See
 link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
 System Properties] for details.

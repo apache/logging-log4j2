@@ -46,6 +46,17 @@ final class DisruptorUtil {
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
     private static final int RINGBUFFER_NO_GC_DEFAULT_SIZE = 4 * 1024;
 
+    /**
+     * LOG4J2-2606: Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application
+     * was logging more than the underlying appender could keep up with and the ringbuffer became full,
+     * especially when the number of application threads vastly outnumbered the number of cores.
+     * CPU utilization is significantly reduced by restricting access to the enqueue operation.
+     */
+    static final boolean ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
+            .getBooleanProperty("AsyncLogger.SynchronizeEnqueueWhenQueueFull", true);
+    static final boolean ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
+            .getBooleanProperty("AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", true);
+
     private DisruptorUtil() {
     }
 

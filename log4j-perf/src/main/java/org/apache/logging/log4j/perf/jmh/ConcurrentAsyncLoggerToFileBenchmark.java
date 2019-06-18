@@ -39,6 +39,9 @@ import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -71,17 +74,19 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
     @State(Scope.Benchmark)
     public static class BenchmarkState {
 
-        @Param({"ENQUEUE", "SYNCHRONOUS"})
+        @Param({"ENQUEUE", "ENQUEUE_UNSYNCHRONIZED", "SYNCHRONOUS"})
         private QueueFullPolicy queueFullPolicy;
+
+        @Param({"ASYNC_CONTEXT", "ASYNC_CONFIG"})
+        private AsyncLoggerType asyncLoggerType;
 
         private Logger logger;
 
         @Setup
         public final void before() {
-            new File("target/testRandomlog4j2.log").delete();
-            System.setProperty("log4j.configurationFile", "ConcurrentAsyncLoggerToFileBenchmark.xml");
-            System.setProperty("Log4jContextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
+            new File("target/ConcurrentAsyncLoggerToFileBenchmark.log").delete();
             System.setProperty("log4j2.is.webapp", "false");
+            asyncLoggerType.setProperties();
             queueFullPolicy.setProperties();
             logger = LogManager.getLogger(ConcurrentAsyncLoggerToFileBenchmark.class);
         }
@@ -89,23 +94,55 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
         @TearDown
         public final void after() {
             ((LifeCycle) LogManager.getContext(false)).stop();
-            new File("target/testRandomlog4j2.log").delete();
+            new File("target/ConcurrentAsyncLoggerToFileBenchmark.log").delete();
             logger = null;
         }
 
         @SuppressWarnings("unused") // Used by JMH
         public enum QueueFullPolicy {
-            ENQUEUE("Default"),
-            SYNCHRONOUS(SynchronousAsyncQueueFullPolicy.class.getName());
+            ENQUEUE(Collections.singletonMap("log4j2.AsyncQueueFullPolicy", "Default")),
+            ENQUEUE_UNSYNCHRONIZED(new HashMap<>() {{
+                put("log4j2.AsyncQueueFullPolicy", "Default");
+                put("AsyncLogger.SynchronizeEnqueueWhenQueueFull", "false");
+                put("AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", "false");
+            }
+            }),
+            SYNCHRONOUS(Collections.singletonMap("log4j2.AsyncQueueFullPolicy",
+                    SynchronousAsyncQueueFullPolicy.class.getName()));
 
-            private final String queueFullPolicy;
+            private final Map<String, String> properties;
 
-            QueueFullPolicy(String queueFullPolicy) {
-                this.queueFullPolicy = queueFullPolicy;
+            QueueFullPolicy(Map<String, String> properties) {
+                this.properties = properties;
             }
 
             void setProperties() {
-                System.setProperty("log4j2.AsyncQueueFullPolicy", queueFullPolicy);
+                for (Map.Entry<String, String> entry : properties.entrySet()) {
+                    System.setProperty(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        @SuppressWarnings("unused") // Used by JMH
+        public enum AsyncLoggerType {
+            ASYNC_CONTEXT,
+            ASYNC_CONFIG;
+            // TODO(ckozak): Consider adding ASYNC_APPENDER
+
+            void setProperties() {
+                switch (this) {
+                    case ASYNC_CONTEXT:
+                        System.setProperty("log4j.configurationFile", "ConcurrentAsyncLoggerToFileBenchmark.xml");
+                        System.setProperty("Log4jContextSelector",
+                                "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
+                        break;
+                    case ASYNC_CONFIG:
+                        System.setProperty("log4j.configurationFile",
+                                "ConcurrentAsyncLoggerToFileBenchmark-asyncConfig.xml");
+                        break;
+                    default:
+                        throw new IllegalStateException("Unknown type: " + this);
+                }
             }
         }
     }

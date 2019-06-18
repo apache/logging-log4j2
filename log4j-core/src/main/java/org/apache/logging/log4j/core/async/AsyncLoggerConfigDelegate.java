@@ -46,6 +46,11 @@ public interface AsyncLoggerConfigDelegate {
      */
     EventRoute getEventRoute(final Level level);
 
+    /**
+     * Enqueues the {@link LogEvent} on the mixed configuration ringbuffer.
+     * This method must only be used after {@link #tryEnqueue(LogEvent, AsyncLoggerConfig)} returns <code>false</code>
+     * indicating that the ringbuffer is full, otherwise it may incur unnecessary synchronization.
+     */
     void enqueueEvent(LogEvent event, AsyncLoggerConfig asyncLoggerConfig);
 
     boolean tryEnqueue(LogEvent event, AsyncLoggerConfig asyncLoggerConfig);
