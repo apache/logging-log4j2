@@ -255,6 +255,20 @@
             </td>
           </tr>
           <tr>
+            <td>AsyncLogger.SynchronizeEnqueueWhenQueueFull</td>
+            <td>
+              <tt>true</tt>
+            </td>
+            <td>
+              Synchronizes access to the Disruptor ring buffer for blocking enqueue operations when the queue is full.
+              Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application
+              was logging more than the underlying appender could keep up with and the ring buffer became full,
+              especially when the number of application threads vastly outnumbered the number of cores.
+              CPU utilization is significantly reduced by restricting access to the enqueue operation. Setting this value
+              to <tt>false</tt> may lead to very high CPU utilization when the async logging queue is full.
+            </td>
+          </tr>
+          <tr>
             <td>log4j2.asyncLoggerThreadNameStrategy</td>
             <td>
               <tt>CACHED</tt>
@@ -432,6 +446,20 @@
               <tt>Yield</tt> is a strategy that uses a Thread.yield() for waiting for log events after an initially spinning.
               Yield is a good compromise between performance and CPU resource, but may use more CPU than Sleep
               in order to get the message logged to disk sooner.
+            </td>
+          </tr>
+          <tr>
+            <td>AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull</td>
+            <td>
+              <tt>true</tt>
+            </td>
+            <td>
+              Synchronizes access to the Disruptor ring buffer for blocking enqueue operations when the queue is full.
+              Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application
+              was logging more than the underlying appender could keep up with and the ring buffer became full,
+              especially when the number of application threads vastly outnumbered the number of cores.
+              CPU utilization is significantly reduced by restricting access to the enqueue operation. Setting this value
+              to <tt>false</tt> may lead to very high CPU utilization when the async logging queue is full.
             </td>
           </tr>
         </table>

@@ -2162,6 +2162,17 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
+    <td><a name="AsyncLogger.SynchronizeEnqueueWhenQueueFull"/>AsyncLogger.SynchronizeEnqueueWhenQueueFull
+    </td>
+    <td>ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</td>
+    <td>
+      true
+    </td>
+    <td>
+      See <a href="async.html#SysPropsAllAsync">Async Logger System Properties</a> for details.
+    </td>
+  </tr>
+  <tr>
     <td><a name="asyncLoggerThreadNameStrategy"/>log4j2.asyncLoggerThreadNameStrategy
       <br />
       (<a name="AsyncLogger.ThreadNameStrategy"/>AsyncLogger.ThreadNameStrategy)
@@ -2204,6 +2215,17 @@ public class AwesomeTest {
     <td>LOG4J_ASYNC_LOGGER_CONFIG_WAIT_STRATEGY</td>
     <td>
       Timeout
+    </td>
+    <td>
+      See <a href="async.html#SysPropsMixedSync-Async">Mixed Async/Synchronous Logger System Properties</a> for details.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull"/>AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull
+    </td>
+    <td>ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</td>
+    <td>
+      true
     </td>
     <td>
       See <a href="async.html#SysPropsMixedSync-Async">Mixed Async/Synchronous Logger System Properties</a> for details.
