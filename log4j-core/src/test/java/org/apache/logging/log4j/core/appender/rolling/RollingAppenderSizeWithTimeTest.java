@@ -28,7 +28,6 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -60,7 +59,6 @@ public class RollingAppenderSizeWithTimeTest {
     }
 
     @Test
-    @Ignore("LOG4J2-2613")
     public void testAppender() throws Exception {
         final List<String> messages = new ArrayList<>();
         for (int i = 0; i < 5000; ++i) {
