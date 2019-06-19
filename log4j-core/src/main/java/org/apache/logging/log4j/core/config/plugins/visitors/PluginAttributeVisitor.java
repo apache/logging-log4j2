@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * @deprecated. Provided to support legacy plugins.
+ * @deprecated Provided to support legacy plugins.
  */
 public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribute, Object> {
     public PluginAttributeVisitor() {

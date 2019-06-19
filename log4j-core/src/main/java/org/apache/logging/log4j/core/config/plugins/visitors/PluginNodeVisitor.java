@@ -24,7 +24,7 @@ import org.apache.logging.log4j.plugins.visitors.AbstractPluginVisitor;
 import java.util.function.Function;
 
 /**
- *  @deprecated. Provided to support legacy plugins.
+ *  @deprecated Provided to support legacy plugins.
  */
 public class PluginNodeVisitor extends AbstractPluginVisitor<PluginNode, Object> {
     public PluginNodeVisitor() {

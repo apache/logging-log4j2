@@ -26,7 +26,7 @@ import org.apache.logging.log4j.util.Strings;
 import java.util.function.Function;
 
 /**
- *  @deprecated. Provided to support legacy plugins.
+ *  @deprecated Provided to support legacy plugins.
  */
 public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue, Object> {
     public PluginValueVisitor() {

@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- *  @deprecated. Provided to support legacy plugins.
+ *  @deprecated Provided to support legacy plugins.
  */
 public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement, Object> {
     public PluginElementVisitor() {
