@@ -118,6 +118,9 @@
       <action issue="LOG4J2-2606" dev="ckozak" type="fix">
         Asynchronous logging when the queue is full no longer results in heavy CPU utilization and low throughput.
       </action>
+      <action issue="LOG4J2-2634" dev="ckozak" type="update">
+        Refactor several AsyncLogger methods below the 35 byte threshold for inlining.
+      </action>
     </release>
     <release version="2.11.2" date="2019-02-04" description="GA Release 2.11.2">
       <action issue="LOG4J2-2500" dev="rgoers" type="fix">
