@@ -1839,7 +1839,8 @@ WARN  [main]: Message 2</pre>
             can specify right padding with the left justification flag. The
             padding character is space. If the data item is larger than the
             minimum field width, the field is expanded to accommodate the
-            data. The value is never truncated.
+            data. The value is never truncated. To use zeros as the padding character prepend
+            the <em>minimum field width</em> with a zero.
           </p>
           <p>This behavior can be changed using the
             <em>maximum field
