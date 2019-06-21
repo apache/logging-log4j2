@@ -48,22 +48,21 @@ public enum ThreadNameCachingStrategy { // LOG4J2-467
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private static final ThreadLocal<String> THREADLOCAL_NAME = new ThreadLocal<>();
-    private static final String DEFAULT_STRATEGY = isAllocatingThreadGetName() ? "CACHED" : "UNCACHED";
+    static final ThreadNameCachingStrategy DEFAULT_STRATEGY = isAllocatingThreadGetName() ? CACHED : UNCACHED;
 
     abstract String getThreadName();
 
     public static ThreadNameCachingStrategy create() {
         final String name = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ThreadNameStrategy");
         try {
-            final ThreadNameCachingStrategy result = ThreadNameCachingStrategy.valueOf(
-                    name != null ? name : DEFAULT_STRATEGY);
+            final ThreadNameCachingStrategy result = name != null ? ThreadNameCachingStrategy.valueOf(name) : DEFAULT_STRATEGY;
             LOGGER.debug("AsyncLogger.ThreadNameStrategy={} (user specified {}, default is {})",
-                    result, name, DEFAULT_STRATEGY);
+                         result.name(), name, DEFAULT_STRATEGY.name());
             return result;
         } catch (final Exception ex) {
             LOGGER.debug("Using AsyncLogger.ThreadNameStrategy.{}: '{}' not valid: {}",
-                    DEFAULT_STRATEGY, name, ex.toString());
-            return ThreadNameCachingStrategy.valueOf(DEFAULT_STRATEGY);
+                         DEFAULT_STRATEGY.name(), name, ex.toString());
+            return DEFAULT_STRATEGY;
         }
     }
 
