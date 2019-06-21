@@ -121,6 +121,9 @@
       <action issue="LOG4J2-2634" dev="ckozak" type="update">
         Refactor several AsyncLogger methods below the 35 byte threshold for inlining.
       </action>
+      <action issue="LOG4J2-2634" dev="ggregory" type="add">
+        Add and use method org.apache.logging.log4j.message.MapMessage.toKey(String) for simpler subclasses.
+      </action>
     </release>
     <release version="2.11.2" date="2019-02-04" description="GA Release 2.11.2">
       <action issue="LOG4J2-2500" dev="rgoers" type="fix">
