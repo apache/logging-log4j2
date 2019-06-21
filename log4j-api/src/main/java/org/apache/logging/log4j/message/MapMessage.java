@@ -58,13 +58,13 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * When set as the format specifier causes the Map to be formatted as XML.
      */
     public enum MapFormat {
-        
+
         /** The map should be formatted as XML. */
         XML,
-        
+
         /** The map should be formatted as JSON. */
         JSON,
-        
+
         /** The map should be formatted the same as documented by {@link AbstractMap#toString()}. */
         JAVA,
 
@@ -77,7 +77,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
         /**
          * Maps a format name to an {@link MapFormat} while ignoring case.
-         * 
+         *
          * @param format a MapFormat name
          * @return a MapFormat
          */
@@ -91,7 +91,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
         /**
          * All {@code MapFormat} names.
-         * 
+         *
          * @return All {@code MapFormat} names.
          */
         public static String[] names() {
@@ -110,7 +110,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Constructs a new instance.
-     * 
+     *
      * @param  initialCapacity the initial capacity.
      */
     public MapMessage(final int initialCapacity) {
@@ -259,7 +259,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
             return asString();
         }
     }
-    
+
     /**
      * Performs the given action for each key-value pair in this data structure
      * until all entries have been processed or the action throws an exception.
@@ -310,7 +310,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     public <CV, S> void forEach(final TriConsumer<String, ? super CV, S> action, final S state) {
         data.forEach(action, state);
     }
-    
+
     /**
      * Formats the Structured data as described in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>.
      *
@@ -510,10 +510,10 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     public Throwable getThrowable() {
         return null;
     }
-    
+
     /**
      * Default implementation does nothing.
-     * 
+     *
      * @since 2.9
      */
     protected void validate(final String key, final boolean value) {
@@ -522,7 +522,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     *
      * @since 2.9
      */
     protected void validate(final String key, final byte value) {
@@ -531,7 +531,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     *
      * @since 2.9
      */
     protected void validate(final String key, final char value) {
@@ -540,7 +540,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     *
      * @since 2.9
      */
     protected void validate(final String key, final double value) {
@@ -549,16 +549,16 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     *
      * @since 2.9
      */
     protected void validate(final String key, final float value) {
         // do nothing
     }
-    
+
     /**
      * Default implementation does nothing.
-     * 
+     *
      * @since 2.9
      */
     protected void validate(final String key, final int value) {
@@ -567,16 +567,16 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     *
      * @since 2.9
      */
     protected void validate(final String key, final long value) {
         // do nothing
     }
-    
+
     /**
      * Default implementation does nothing.
-     * 
+     *
      * @since 2.9
      */
     protected void validate(final String key, final Object value) {
@@ -585,7 +585,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     *
      * @since 2.9
      */
     protected void validate(final String key, final short value) {
@@ -594,7 +594,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     *
      * @since 2.9
      */
     protected void validate(final String key, final String value) {
