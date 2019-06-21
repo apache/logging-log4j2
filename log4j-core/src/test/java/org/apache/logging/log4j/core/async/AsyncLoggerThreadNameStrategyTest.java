@@ -26,9 +26,7 @@ import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerThreadNameStrategyTest {
-    static final String DEFAULT_STRATEGY = System.getProperty("java.version").compareTo("1.8.0_102") < 0
-            ? "CACHED" // LOG4J2-2052 JDK 8u102 removed the String allocation in Thread.getName()
-            : "UNCACHED";
+    static final String DEFAULT_STRATEGY = ThreadNameCachingStrategy.isAllocatingThreadGetName() ? "CACHED" : "UNCACHED";
 
     @After
     public void after() {
