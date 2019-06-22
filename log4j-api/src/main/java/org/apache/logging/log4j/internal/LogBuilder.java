@@ -14,27 +14,51 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.internal;
 
-package org.apache.logging.log4j.core.impl;
-
-import java.util.List;
-
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.message.Message;
 
 /**
- *
+ * Class Description goes here.
  */
-public interface LogEventFactory {
+public interface LogBuilder {
 
-    LogEvent createEvent(String loggerName, Marker marker, String fqcn, Level level, Message data,
-                         List<Property> properties, Throwable t);
+    public static final LogBuilder INSTANCE = new LogBuilder() {};
 
-    default LogEvent createEvent(String loggerName, Marker marker, String fqcn, StackTraceElement location, Level level,
-            Message data, List<Property> properties, Throwable t) {
-        return createEvent(loggerName, marker, fqcn, level, data, properties, t);
+    default LogBuilder withMarker(Marker marker) {
+        return this;
+    }
+
+    default LogBuilder withThrowable(Throwable throwable) {
+        return this;
+    }
+
+    default LogBuilder withLocation() {
+        return this;
+    }
+
+    default LogBuilder withLocation(StackTraceElement location) {
+        return this;
+    }
+
+    default LogBuilder withMessage(Message msg) {
+        return this;
+    }
+
+    default LogBuilder withMessage(String msg) {
+        return this;
+    }
+
+    default LogBuilder withMessage(Object msg) {
+        return this;
+    }
+
+
+    default LogBuilder withParameters(Object... params) {
+        return this;
+    }
+
+    default void log() {
     }
 }

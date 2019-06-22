@@ -301,6 +301,30 @@ public class Log4jLogEvent implements LogEvent {
            nanoClock.nanoTime());
    }
 
+    /**
+     * Constructor.
+     * @param loggerName The name of the Logger.
+     * @param marker The Marker or null.
+     * @param source The location of the caller.
+     * @param level The logging Level.
+     * @param message The Message.
+     * @param properties the properties to be merged with ThreadContext key-value pairs into the event's ReadOnlyStringMap.
+     * @param t A Throwable or null.
+     */
+    // This constructor is called from LogEventFactories.
+    public Log4jLogEvent(final String loggerName, final Marker marker, final String fqcn, final StackTraceElement source,
+            final Level level, final Message message, final List<Property> properties, final Throwable t) {
+        this(loggerName, marker,fqcn, level, message, t,
+                null, createContextData(properties),
+                ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), // mutable copy
+                0, // thread id
+                null, // thread name
+                0, // thread priority
+                source, // StackTraceElement source
+                CLOCK, //
+                nanoClock.nanoTime());
+    }
+
    /**
      * Constructor.
      * @param loggerName The name of the Logger.

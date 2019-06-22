@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.Serializable;
+
 /**
- * Creates {@link FormattedMessage} instances for {@link MessageFactory2} methods (and {@link MessageFactory} by
- * extension.)
+ * Creates {@link FormattedMessage} instances for {@link MessageFactory} methods.
  * <p>
  * Enables the use of {@link java.util.Formatter} strings in message strings.
  * </p>
@@ -30,10 +31,10 @@ package org.apache.logging.log4j.message;
  * </p>
  * <h4>Note to implementors</h4>
  * <p>
- * This class implements all {@link MessageFactory2} methods.
+ * This class implements all {@link MessageFactory} methods.
  * </p>
  */
-public final class StringFormatterMessageFactory extends AbstractMessageFactory {
+public final class StringFormatterMessageFactory implements MessageFactory, Serializable {
 
     /**
      * Instance of StringFormatterMessageFactory.

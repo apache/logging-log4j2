@@ -147,6 +147,13 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     }
 
     @Override
+    protected void log(final Level level, final Marker marker, final String fqcn, final StackTraceElement location,
+            final Message message, final Throwable throwable) {
+        final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
+        strategy.log(this, getName(), fqcn, location, marker, level, message, throwable);
+    }
+
+    @Override
     public boolean isEnabled(final Level level, final Marker marker, final String message, final Throwable t) {
         return privateConfig.filter(level, marker, message, t);
     }

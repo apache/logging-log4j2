@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.internal.DefaultLogBuilder;
+import org.apache.logging.log4j.internal.LogBuilder;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.MessageFactory2;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
+
+import java.util.List;
 
 /**
  * This is the central interface in the log4j package. Most logging operations, except configuration, are done through
@@ -1682,13 +1685,7 @@ public interface Logger {
     /**
      * Gets the message factory used to convert message Objects and Strings/CharSequences into actual log Messages.
      *
-     * Since version 2.6, Log4j internally uses message factories that implement the {@link MessageFactory2} interface.
-     * From version 2.6.2, the return type of this method was changed from {@link MessageFactory} to
-     * {@code <MF extends MessageFactory> MF}. The returned factory will always implement {@link MessageFactory2},
-     * but the return type of this method could not be changed to {@link MessageFactory2} without breaking binary
-     * compatibility.
-     *
-     * @return the message factory, as an instance of {@link MessageFactory2}
+     * @return the message factory, as an instance of {@link MessageFactory}
      */
     <MF extends MessageFactory> MF getMessageFactory();
 
@@ -4198,5 +4195,78 @@ public interface Logger {
      */
     void warn(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
             Object p8, Object p9);
+
+    /**
+     * Logs a Message.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param location The location of the caller.
+     * @param message The message format.
+     * @param throwable the exception to log, including its stack trace.
+     * @since 3.0
+     */
+    default void logMessage(Level level, Marker marker, String fqcn, StackTraceElement location, Message message,
+            Throwable throwable) {
+
+    }
+
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    default LogBuilder atTrace() {
+        return LogBuilder.INSTANCE;
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    default LogBuilder atDebug() {
+        return LogBuilder.INSTANCE;
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    default LogBuilder atInfo() {
+        return LogBuilder.INSTANCE;
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    default LogBuilder atWarn() {
+        return LogBuilder.INSTANCE;
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    default LogBuilder atError() {
+        return LogBuilder.INSTANCE;
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    default LogBuilder atFatal() {
+        return LogBuilder.INSTANCE;
+    }
+    /**
+     * Constuct a log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    default LogBuilder atLevel(Level level) {
+        return LogBuilder.INSTANCE;
+    }
 
 }

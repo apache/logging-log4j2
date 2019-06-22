@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public final class ReusableMessageFactory implements MessageFactory2, Serializable {
+public final class ReusableMessageFactory implements MessageFactory, Serializable {
 
     /**
      * Instance of ReusableMessageFactory..
