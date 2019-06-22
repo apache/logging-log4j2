@@ -42,6 +42,22 @@ public interface ReliabilityStrategy {
      */
     void log(Supplier<LoggerConfig> reconfigured, String loggerName, String fqcn, Marker marker, Level level,
             Message data, Throwable t);
+    /**
+     * Logs an event.
+     *
+     * @param reconfigured supplies the next LoggerConfig if the strategy's LoggerConfig is no longer active
+     * @param loggerName The name of the Logger.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param location The location of the caller or null.
+     * @param marker A Marker or null if none is present.
+     * @param level The event Level.
+     * @param data The Message.
+     * @param t A Throwable or null.
+     * @since 3.0
+     */
+    default void log(Supplier<LoggerConfig> reconfigured, String loggerName, String fqcn, StackTraceElement location,
+            Marker marker, Level level, Message data, Throwable t) {
+    }
 
     /**
      * Logs an event.

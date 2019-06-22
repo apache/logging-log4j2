@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -41,15 +36,20 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class LoggerTest {
 
@@ -82,6 +82,20 @@ public class LoggerTest {
     org.apache.logging.log4j.Logger logger;
     org.apache.logging.log4j.Logger loggerChild;
     org.apache.logging.log4j.Logger loggerGrandchild;
+
+    @Test
+    public void builder() {
+        logger.atDebug().withLocation().withMessage("Hello").log();
+        Marker marker = MarkerManager.getMarker("test");
+        logger.atError().withMarker(marker).withMessage("Hello {}").withParameters("John").log();
+        logger.atWarn().withMessage(new SimpleMessage("Log4j rocks!")).withThrowable(new Throwable("This is a test")).log();
+        final List<LogEvent> events = app.getEvents();
+        assertEventCount(events, 3);
+        assertEquals("Incorrect location", "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:88)", events.get(0).getSource().toString());
+        assertEquals("Incorrect Level", Level.DEBUG, events.get(0).getLevel());
+        assertThat("Incorrect message", events.get(1).getMessage().getFormattedMessage(), equalTo("Hello John"));
+        assertNotNull("Missing Throwable", events.get(2).getThrown());
+    }
 
     @Test
     public void basicFlow() {
@@ -275,15 +289,12 @@ public class LoggerTest {
         return testLogger1;
     }
 
-    private static void checkMessageFactory(final MessageFactory messageFactory1, final Logger testLogger1) {
-        if (messageFactory1 == null) {
-            assertEquals(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS, testLogger1.getMessageFactory().getClass());
+    private static void checkMessageFactory(final MessageFactory messageFactory, final Logger testLogger) {
+        if (messageFactory == null) {
+            assertEquals(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS, testLogger.getMessageFactory().getClass());
         } else {
-            MessageFactory actual = testLogger1.getMessageFactory();
-            if (actual instanceof MessageFactory2Adapter) {
-                actual = ((MessageFactory2Adapter) actual).getOriginal();
-            }
-            assertEquals(messageFactory1, actual);
+            MessageFactory actual = testLogger.getMessageFactory();
+            assertEquals(messageFactory, actual);
         }
     }
 

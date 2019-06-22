@@ -31,7 +31,9 @@ public interface MessageFactory {
      *            a message object
      * @return a new message
      */
-    Message newMessage(Object message);
+    default Message newMessage(Object message) {
+        return new ObjectMessage(message);
+    }
 
     /**
      * Creates a new message based on a String.
@@ -40,7 +42,9 @@ public interface MessageFactory {
      *            a message String
      * @return a new message
      */
-    Message newMessage(String message);
+    default Message newMessage(String message) {
+        return new SimpleMessage(message);
+    }
 
     /**
      * Creates a new parameterized message.
@@ -54,4 +58,182 @@ public interface MessageFactory {
      * @see StringFormatterMessageFactory
      */
     Message newMessage(String message, Object... params);
+
+    /**
+     * Creates a new message for the specified CharSequence.
+     * @param charSequence the (potentially mutable) CharSequence
+     * @return a new message for the specified CharSequence
+     */
+    default Message newMessage(CharSequence charSequence) {
+        return new SimpleMessage(charSequence);
+    }
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 a message parameter
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    default Message newMessage(String message, Object p0) {
+        return newMessage(message, new Object[] { p0 });
+    }
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    default Message newMessage(String message, Object p0, Object p1) {
+        return newMessage(message, new Object[] { p0, p1 });
+    }
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    default Message newMessage(String message, Object p0, Object p1, Object p2) {
+        return newMessage(message, new Object[] { p0, p1, p2 });
+    }
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    default Message newMessage(String message, Object p0, Object p1, Object p2, Object p3) {
+        return newMessage(message, new Object[] { p0, p1, p2, p3 });
+    }
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
+     * @param p4 a message parameter
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    default Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+        return newMessage(message, new Object[] { p0, p1, p2, p3, p4 });
+    }
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
+     * @param p4 a message parameter
+     * @param p5 a message parameter
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    default Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+        return newMessage(message, new Object[] { p0, p1, p2, p3, p4, p5 });
+    }
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
+     * @param p4 a message parameter
+     * @param p5 a message parameter
+     * @param p6 a message parameter
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    default Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
+            Object p6) {
+        return newMessage(message, new Object[] { p0, p1, p2, p3, p4, p5, p6 });
+    }
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
+     * @param p4 a message parameter
+     * @param p5 a message parameter
+     * @param p6 a message parameter
+     * @param p7 a message parameter
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    default Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
+            Object p6, Object p7) {
+        return newMessage(message, new Object[] { p0, p1, p2, p3, p4, p5, p6, p7 });
+    }
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
+     * @param p4 a message parameter
+     * @param p5 a message parameter
+     * @param p6 a message parameter
+     * @param p7 a message parameter
+     * @param p8 a message parameter
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    default Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
+            Object p6, Object p7, Object p8) {
+        return newMessage(message, new Object[] { p0, p1, p2, p3, p4, p5, p6, p7, p8 });
+    }
+
+    /**
+     * Creates a new parameterized message.
+     *
+     * @param message a message template, the kind of message template depends on the implementation.
+     * @param p0 a message parameter
+     * @param p1 a message parameter
+     * @param p2 a message parameter
+     * @param p3 a message parameter
+     * @param p4 a message parameter
+     * @param p5 a message parameter
+     * @param p6 a message parameter
+     * @param p7 a message parameter
+     * @param p8 a message parameter
+     * @param p9 a message parameter
+     * @return a new message
+     * @see ParameterizedMessageFactory
+     */
+    default Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
+            Object p6, Object p7, Object p8, Object p9) {
+        return newMessage(message, new Object[] { p0, p1, p2, p3, p4, p5, p6, p7, p8, p9 });
+    }
 }

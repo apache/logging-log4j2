@@ -62,6 +62,25 @@ public class LockingReliabilityStrategy implements ReliabilityStrategy {
      * (non-Javadoc)
      *
      * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
+     * java.lang.String, java.lang.String, java.lang.StackTraceElement, org.apache.logging.log4j.Marker,
+     * org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable)
+     */
+    @Override
+    public void log(final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn,
+            final StackTraceElement location, final Marker marker, final Level level, final Message data,
+            final Throwable t) {
+        final LoggerConfig config = getActiveLoggerConfig(reconfigured);
+        try {
+            config.log(loggerName, fqcn, location, marker, level, data, t);
+        } finally {
+            config.getReliabilityStrategy().afterLogEvent();
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
      * org.apache.logging.log4j.core.LogEvent)
      */
     @Override

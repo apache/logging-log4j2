@@ -31,7 +31,6 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.MessageSupplier;
@@ -989,7 +988,7 @@ public class AbstractLoggerTest {
         private int objectCount;
 
         CountingLogger() {
-            super("CountingLogger", new MessageFactory2Adapter(ParameterizedMessageFactory.INSTANCE));
+            super("CountingLogger", ParameterizedMessageFactory.INSTANCE);
         }
 
         void setCurrentLevel(final Level currentLevel) {
@@ -1216,7 +1215,7 @@ public class AbstractLoggerTest {
         private final boolean expectingThrowables;
 
         ThrowableExpectingLogger(final boolean expectingThrowables) {
-            super("ThrowableExpectingLogger", new MessageFactory2Adapter(ParameterizedMessageFactory.INSTANCE));
+            super("ThrowableExpectingLogger", ParameterizedMessageFactory.INSTANCE);
             this.expectingThrowables = expectingThrowables;
         }
 

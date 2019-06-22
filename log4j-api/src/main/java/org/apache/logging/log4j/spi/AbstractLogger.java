@@ -22,12 +22,13 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.internal.DefaultLogBuilder;
+import org.apache.logging.log4j.internal.LogBuilder;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.MessageFactory2;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
@@ -102,9 +103,11 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static final String CATCHING = "Catching";
 
     protected final String name;
-    private final MessageFactory2 messageFactory;
+    private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
     private static ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
+    private final ThreadLocal<DefaultLogBuilder> logBuilder;
+
 
     /**
      * Creates a new logger named after this class (or subclass).
@@ -113,6 +116,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         this.name = getClass().getName();
         this.messageFactory = createDefaultMessageFactory();
         this.flowMessageFactory = createDefaultFlowMessageFactory();
+        this.logBuilder = new LocalLogBuilder(this);
     }
 
     /**
@@ -132,8 +136,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     public AbstractLogger(final String name, final MessageFactory messageFactory) {
         this.name = name;
-        this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : narrow(messageFactory);
+        this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : messageFactory;
         this.flowMessageFactory = createDefaultFlowMessageFactory();
+        this.logBuilder = new LocalLogBuilder(this);
     }
 
     /**
@@ -214,20 +219,12 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
     }
 
-    private static MessageFactory2 createDefaultMessageFactory() {
+    private static MessageFactory createDefaultMessageFactory() {
         try {
-            final MessageFactory result = DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
-            return narrow(result);
+            return DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
         } catch (final InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    private static MessageFactory2 narrow(final MessageFactory result) {
-        if (result instanceof MessageFactory2) {
-            return (MessageFactory2) result;
-        }
-        return new MessageFactory2Adapter(result);
     }
 
     private static FlowMessageFactory createDefaultFlowMessageFactory() {
@@ -2028,6 +2025,23 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    public void logMessage(final Level level, final Marker marker, final String fqcn, final StackTraceElement location,
+            final Message message, final Throwable throwable) {
+        try {
+            incrementRecursionDepth();
+            log(level, marker, fqcn, location, message, throwable);
+        } catch (Exception ex) {
+            handleLogMessageException(ex, fqcn, message);
+        } finally {
+            decrementRecursionDepth();
+            ReusableMessageFactory.release(message);
+        }
+    }
+
+    protected void log(final Level level, final Marker marker, final String fqcn, final StackTraceElement location,
+            final Message message, final Throwable throwable) {
+    }
+
     @Override
     public void printf(final Level level, final Marker marker, final String format, final Object... params) {
         if (isEnabled(level, marker, format, params)) {
@@ -2733,5 +2747,109 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             final Object p4, final Object p5, final Object p6,
             final Object p7, final Object p8, final Object p9) {
         logIfEnabled(FQCN, Level.WARN, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+    }
+
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    @Override
+    public  LogBuilder atTrace() {
+        if (isTraceEnabled()) {
+            return logBuilder.get().setLevel(Level.TRACE);
+        } else {
+            return LogBuilder.INSTANCE;
+        }
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    @Override
+    public LogBuilder atDebug() {
+        if (isDebugEnabled()) {
+            return logBuilder.get().setLevel(Level.DEBUG);
+        } else {
+            return LogBuilder.INSTANCE;
+        }
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    @Override
+    public LogBuilder atInfo() {
+        if (isInfoEnabled()) {
+            return logBuilder.get().setLevel(Level.INFO);
+        } else {
+            return LogBuilder.INSTANCE;
+        }
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    @Override
+    public LogBuilder atWarn() {
+        if (isWarnEnabled()) {
+            return logBuilder.get().setLevel(Level.WARN);
+        } else {
+            return LogBuilder.INSTANCE;
+        }
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    @Override
+    public LogBuilder atError() {
+        if (isErrorEnabled()) {
+            return logBuilder.get().setLevel(Level.ERROR);
+        } else {
+            return LogBuilder.INSTANCE;
+        }
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    @Override
+    public LogBuilder atFatal() {
+        if (isFatalEnabled()) {
+            return logBuilder.get().setLevel(Level.FATAL);
+        } else {
+            return LogBuilder.INSTANCE;
+        }
+    }
+    /**
+     * Constuct a log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    @Override
+    public LogBuilder atLevel(Level level) {
+        if (isEnabled(level)) {
+            return logBuilder.get().setLevel(level);
+        } else {
+            return LogBuilder.INSTANCE;
+        }
+    }
+
+    private class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {
+        private AbstractLogger logger;
+        LocalLogBuilder(AbstractLogger logger) {
+            this.logger = logger;
+        }
+
+        @Override
+        protected DefaultLogBuilder initialValue() {
+            return new DefaultLogBuilder(logger);
+        }
     }
 }

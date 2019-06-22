@@ -26,10 +26,10 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.Before;
@@ -56,6 +56,18 @@ public class LoggerTest {
     private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
     private final Marker marker = MarkerManager.getMarker("test");
     private final List<String> results = logger.getEntries();
+
+    @Test
+    public void builder() {
+        logger.atDebug().withLocation().withMessage("Hello").log();
+        logger.atError().withMarker(marker).withMessage("Hello {}").withParameters("John").log();
+        logger.atWarn().withMessage(new SimpleMessage("Log4j rocks!")).withThrowable(new Throwable("This is a test")).log();
+        assertEquals(3, results.size());
+        assertThat("Incorrect message 1", results.get(0), equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:62) Hello"));
+        assertThat("Incorrect message 2", results.get(1), equalTo("test ERROR Hello John"));
+        assertThat("Incorrect message 3", results.get(2), startsWith(" WARN Log4j rocks! java.lang.Throwable: This is a test\n" +
+                "\tat org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:64)"));
+    }
 
     @Test
     public void basicFlow() {
@@ -253,9 +265,6 @@ public class LoggerTest {
     }
 
     private static void assertMessageFactoryInstanceOf(MessageFactory factory, final Class<?> cls) {
-        if (factory instanceof MessageFactory2Adapter) {
-            factory = ((MessageFactory2Adapter) factory).getOriginal();
-        }
         assertTrue(factory.getClass().isAssignableFrom(cls));
     }
 
@@ -327,9 +336,6 @@ public class LoggerTest {
 
     private void assertEqualMessageFactory(final MessageFactory messageFactory, final TestLogger testLogger) {
         MessageFactory actual = testLogger.getMessageFactory();
-        if (actual instanceof MessageFactory2Adapter) {
-            actual = ((MessageFactory2Adapter) actual).getOriginal();
-        }
         assertEquals(messageFactory, actual);
     }
 
