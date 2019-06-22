@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Configuration status="DEBUG" monitorInterval="0">
+<Configuration status="ERROR" monitorInterval="0">
   <Appenders>
     <Console name="console" target="SYSTEM_OUT">
       <JsonLayout properties="true" compact="true" eventEol="true" stackTraceAsString="true">
