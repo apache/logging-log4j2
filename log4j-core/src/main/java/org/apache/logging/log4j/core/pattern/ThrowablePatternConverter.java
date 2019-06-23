@@ -60,6 +60,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      * @param options options, may be null.
      * @deprecated Use ThrowablePatternConverter(String name, String stule, String[] options, Configuration config)
      */
+    @Deprecated
     protected ThrowablePatternConverter(final String name, final String style, final String[] options) {
         this(name, style, options, null);
     }
