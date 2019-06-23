@@ -1206,8 +1206,14 @@
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
+            <exclude>**/README.md</exclude>
             <exclude>RELEASE-NOTES.md</exclude>
-            <exclude>**/revapi.json</exclude>
+            <exclude>**/*.yml</exclude>
+            <exclude>**/*.json</exclude>
+            <excllude>**/images/*.drawio</excllude>
+            <exclude>**/fluent-bit.conf</exclude>
+            <exclude>**/rabbitmq.config</exclude>
+            <exclude>**/MANIFEST.MF</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -1332,8 +1338,14 @@
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
-            <exclude>RELEASE-NOTES.txt</exclude>
-            <exclude>**/revapi.json</exclude>
+            <exclude>**/README.md</exclude>
+            <exclude>RELEASE-NOTES.md</exclude>
+            <exclude>**/*.yml</exclude>
+            <exclude>**/*.json</exclude>
+            <excllude>**/images/*.drawio</excllude>
+            <exclude>**/fluent-bit.conf</exclude>
+            <exclude>**/rabbitmq.config</exclude>
+            <exclude>**/MANIFEST.MF</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -1493,8 +1505,14 @@
                 <exclude>velocity.log</exclude>
                 <!-- Other -->
                 <exclude>felix-cache/**</exclude>
+                <exclude>**/README.md</exclude>
                 <exclude>RELEASE-NOTES.md</exclude>
-                <exclude>**/revapi.json</exclude>
+                <exclude>**/*.yml</exclude>
+                <exclude>**/*.json</exclude>
+                <excllude>**/images/*.drawio</excllude>
+                <exclude>**/fluent-bit.conf</exclude>
+                <exclude>**/rabbitmq.config</exclude>
+                <exclude>**/MANIFEST.MF</exclude>
               </excludes>
             </configuration>
             <executions>
