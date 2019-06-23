@@ -138,8 +138,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         this.includeMdc = includeMDC;
         this.includeNewLine = includeNL;
         this.escapeNewLine = escapeNL == null ? null : Matcher.quoteReplacement(escapeNL);
-        this.mdcId = id == null ? DEFAULT_MDCID : id;
-        this.mdcSdId = new StructuredDataId(mdcId, enterpriseNumber, null, null);
+        this.mdcId = mdcId != null ? mdcId : id == null ? DEFAULT_MDCID : id;
+        this.mdcSdId = new StructuredDataId(this.mdcId, enterpriseNumber, null, null);
         this.mdcPrefix = mdcPrefix;
         this.eventPrefix = eventPrefix;
         this.appName = appName;
