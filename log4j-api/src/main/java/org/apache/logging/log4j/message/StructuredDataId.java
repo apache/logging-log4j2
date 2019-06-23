@@ -95,11 +95,13 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @param optional The list of keys that are optional for this id.
      * @since 2.9
      */
-    public StructuredDataId(final String name, final String[] required, final String[] optional,
-                               final int maxLength) {
+    public StructuredDataId(final String name, final String[] required, final String[] optional, int maxLength) {
         int index = -1;
         if (name != null) {
-            if (maxLength > 0 && name.length() > MAX_LENGTH) {
+            if (maxLength <= 0) {
+                maxLength = MAX_LENGTH;
+            }
+            if (name.length() > maxLength) {
                 throw new IllegalArgumentException(String.format("Length of id %s exceeds maximum of %d characters",
                         name, maxLength));
             }
