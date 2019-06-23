@@ -111,7 +111,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
                             .build();
                 }
             } else if (fileName == null && !(strategy instanceof DirectFileRolloverStrategy)) {
-                LOGGER.error("RollingFileAppender '{}': When no file name is provided a DirectFilenameRolloverStrategy must be configured");
+                LOGGER.error("RollingFileAppender '{}': When no file name is provided a DirectFileRolloverStrategy must be configured");
                 return null;
             }
 
