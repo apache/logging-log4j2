@@ -16,13 +16,17 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.util.NoSuchElementException;
 import java.util.Stack;
+
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * <em>Consider this class private.</em> Provides various methods to determine the caller class. <h3>Background</h3>
  */
 public final class StackLocatorUtil {
     private static StackLocator stackLocator = null;
+    private static volatile boolean errorLogged = false;
 
     static {
         stackLocator = StackLocator.getInstance();
@@ -68,6 +72,14 @@ public final class StackLocatorUtil {
     }
 
     public static StackTraceElement calcLocation(final String fqcnOfLogger) {
-        return stackLocator.calcLocation(fqcnOfLogger);
+        try {
+            return stackLocator.calcLocation(fqcnOfLogger);
+        } catch (NoSuchElementException ex) {
+            if (!errorLogged) {
+                errorLogged = true;
+                StatusLogger.getLogger().warn("Unable to locate stack trace element for {}", fqcnOfLogger, ex);
+            }
+            return null;
+        }
     }
 }
