@@ -142,6 +142,9 @@
       </action>
     </release>
     <release version="2.12.0" date="2019-MM-DD" description="GA Release 2.12.0">
+      <action issue="LOG4J2-2636" dev="rgoers" type="fix">
+        RFC5424Layout was not properly setting default Structured Element id for the MDC
+      </action>
       <action issue="LOG4J2-2403" dev="rgoers" type="add" due-to="hupfdule">
         Allow zero padding the counter of a RollingFileAppender.
       </action>
