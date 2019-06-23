@@ -90,6 +90,12 @@
         <artifactId>log4j-to-slf4j</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- Application Service Support -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-appserver</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Web Application Support -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -142,6 +148,18 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-liquibase</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Docker support -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-docker</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Spring Cloud Config Client -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-spring-cloud-config-client</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
