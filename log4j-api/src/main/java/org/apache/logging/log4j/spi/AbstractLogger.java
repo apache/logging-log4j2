@@ -2756,15 +2756,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     @Override
     public  LogBuilder trace() {
-        if (isTraceEnabled()) {
-            DefaultLogBuilder builder = logBuilder.get();
-            if (builder.isInUse()) {
-                return new DefaultLogBuilder(this);
-            }
-            return builder.setLevel(Level.TRACE);
-        } else {
-            return LogBuilder.NOOP;
-        }
+        return atLevel(Level.TRACE);
     }
     /**
      * Constuct a debug log event.
@@ -2773,15 +2765,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     @Override
     public LogBuilder debug() {
-        if (isDebugEnabled()) {
-            DefaultLogBuilder builder = logBuilder.get();
-            if (builder.isInUse()) {
-                return new DefaultLogBuilder(this);
-            }
-            return logBuilder.get().setLevel(Level.DEBUG);
-        } else {
-            return LogBuilder.NOOP;
-        }
+        return atLevel(Level.DEBUG);
     }
     /**
      * Constuct an informational log event.
@@ -2790,15 +2774,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     @Override
     public LogBuilder info() {
-        if (isInfoEnabled()) {
-            DefaultLogBuilder builder = logBuilder.get();
-            if (builder.isInUse()) {
-                return new DefaultLogBuilder(this);
-            }
-            return logBuilder.get().setLevel(Level.INFO);
-        } else {
-            return LogBuilder.NOOP;
-        }
+        return atLevel(Level.INFO);
     }
     /**
      * Constuct a warning log event.
@@ -2807,15 +2783,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     @Override
     public LogBuilder warn() {
-        if (isWarnEnabled()) {
-            DefaultLogBuilder builder = logBuilder.get();
-            if (builder.isInUse()) {
-                return new DefaultLogBuilder(this);
-            }
-            return logBuilder.get().setLevel(Level.WARN);
-        } else {
-            return LogBuilder.NOOP;
-        }
+        return atLevel(Level.WARN);
     }
     /**
      * Constuct an error log event.
@@ -2824,15 +2792,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     @Override
     public LogBuilder error() {
-        if (isErrorEnabled()) {
-            DefaultLogBuilder builder = logBuilder.get();
-            if (builder.isInUse()) {
-                return new DefaultLogBuilder(this);
-            }
-            return logBuilder.get().setLevel(Level.ERROR);
-        } else {
-            return LogBuilder.NOOP;
-        }
+        return atLevel(Level.ERROR);
     }
     /**
      * Constuct a fatal log event.
@@ -2841,15 +2801,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     @Override
     public LogBuilder fatal() {
-        if (isFatalEnabled()) {
-            DefaultLogBuilder builder = logBuilder.get();
-            if (builder.isInUse()) {
-                return new DefaultLogBuilder(this);
-            }
-            return logBuilder.get().setLevel(Level.FATAL);
-        } else {
-            return LogBuilder.NOOP;
-        }
+        return atLevel(Level.FATAL);
     }
     /**
      * Constuct a fatal log event.
@@ -2872,6 +2824,10 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public LogBuilder atLevel(Level level) {
         if (isEnabled(level)) {
+            DefaultLogBuilder builder = logBuilder.get();
+            if (builder.isInUse()) {
+                return new DefaultLogBuilder(this, level);
+            }
             return logBuilder.get().setLevel(level);
         } else {
             return LogBuilder.NOOP;

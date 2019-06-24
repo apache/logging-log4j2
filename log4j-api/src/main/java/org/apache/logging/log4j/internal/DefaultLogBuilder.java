@@ -47,6 +47,14 @@ public class DefaultLogBuilder implements LogBuilder {
     private volatile boolean inUse;
     private long threadId;
 
+    public DefaultLogBuilder(Logger logger, Level level) {
+        this.logger = logger;
+        this.level = level;
+        this.inUse = false;
+        this.threadId = Thread.currentThread().getId();
+        this.inUse = true;
+    }
+
     public DefaultLogBuilder(Logger logger) {
         this.logger = logger;
         this.inUse = false;
