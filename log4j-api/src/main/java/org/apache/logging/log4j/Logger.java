@@ -4217,48 +4217,56 @@ public interface Logger {
      * @return a LogBuilder.
      * @since 3.0
      */
-    default LogBuilder atTrace() {
-        return LogBuilder.INSTANCE;
+    default LogBuilder trace() {
+        return LogBuilder.NOOP;
     }
     /**
      * Constuct a trace log event.
      * @return a LogBuilder.
      * @since 3.0
      */
-    default LogBuilder atDebug() {
-        return LogBuilder.INSTANCE;
+    default LogBuilder debug() {
+        return LogBuilder.NOOP;
     }
     /**
      * Constuct a trace log event.
      * @return a LogBuilder.
      * @since 3.0
      */
-    default LogBuilder atInfo() {
-        return LogBuilder.INSTANCE;
+    default LogBuilder info() {
+        return LogBuilder.NOOP;
     }
     /**
      * Constuct a trace log event.
      * @return a LogBuilder.
      * @since 3.0
      */
-    default LogBuilder atWarn() {
-        return LogBuilder.INSTANCE;
+    default LogBuilder warn() {
+        return LogBuilder.NOOP;
     }
     /**
      * Constuct a trace log event.
      * @return a LogBuilder.
      * @since 3.0
      */
-    default LogBuilder atError() {
-        return LogBuilder.INSTANCE;
+    default LogBuilder error() {
+        return LogBuilder.NOOP;
     }
     /**
      * Constuct a trace log event.
      * @return a LogBuilder.
      * @since 3.0
      */
-    default LogBuilder atFatal() {
-        return LogBuilder.INSTANCE;
+    default LogBuilder fatal() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Constuct a log event that will alwways be logged.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    default LogBuilder always() {
+        return LogBuilder.NOOP;
     }
     /**
      * Constuct a log event.
@@ -4266,7 +4274,7 @@ public interface Logger {
      * @since 3.0
      */
     default LogBuilder atLevel(Level level) {
-        return LogBuilder.INSTANCE;
+        return LogBuilder.NOOP;
     }
 
 }

@@ -19,12 +19,14 @@ package org.apache.logging.log4j.internal;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 
+import java.util.function.Supplier;
+
 /**
- * Class Description goes here.
+ * Interface for constructing log events before logging them.
  */
 public interface LogBuilder {
 
-    public static final LogBuilder INSTANCE = new LogBuilder() {};
+    public static final LogBuilder NOOP = new LogBuilder() {};
 
     default LogBuilder withMarker(Marker marker) {
         return this;
@@ -54,8 +56,11 @@ public interface LogBuilder {
         return this;
     }
 
-
     default LogBuilder withParameters(Object... params) {
+        return this;
+    }
+
+    default LogBuilder withParameters(Supplier<Object>... params) {
         return this;
     }
 

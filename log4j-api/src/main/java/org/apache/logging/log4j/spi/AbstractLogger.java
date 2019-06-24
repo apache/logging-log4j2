@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.spi;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
@@ -43,6 +41,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
+
+import java.io.Serializable;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
@@ -2755,77 +2755,114 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @since 3.0
      */
     @Override
-    public  LogBuilder atTrace() {
+    public  LogBuilder trace() {
         if (isTraceEnabled()) {
-            return logBuilder.get().setLevel(Level.TRACE);
+            DefaultLogBuilder builder = logBuilder.get();
+            if (builder.isInUse()) {
+                return new DefaultLogBuilder(this);
+            }
+            return builder.setLevel(Level.TRACE);
         } else {
-            return LogBuilder.INSTANCE;
+            return LogBuilder.NOOP;
         }
     }
     /**
-     * Constuct a trace log event.
+     * Constuct a debug log event.
      * @return a LogBuilder.
      * @since 3.0
      */
     @Override
-    public LogBuilder atDebug() {
+    public LogBuilder debug() {
         if (isDebugEnabled()) {
+            DefaultLogBuilder builder = logBuilder.get();
+            if (builder.isInUse()) {
+                return new DefaultLogBuilder(this);
+            }
             return logBuilder.get().setLevel(Level.DEBUG);
         } else {
-            return LogBuilder.INSTANCE;
+            return LogBuilder.NOOP;
         }
     }
     /**
-     * Constuct a trace log event.
+     * Constuct an informational log event.
      * @return a LogBuilder.
      * @since 3.0
      */
     @Override
-    public LogBuilder atInfo() {
+    public LogBuilder info() {
         if (isInfoEnabled()) {
+            DefaultLogBuilder builder = logBuilder.get();
+            if (builder.isInUse()) {
+                return new DefaultLogBuilder(this);
+            }
             return logBuilder.get().setLevel(Level.INFO);
         } else {
-            return LogBuilder.INSTANCE;
+            return LogBuilder.NOOP;
         }
     }
     /**
-     * Constuct a trace log event.
+     * Constuct a warning log event.
      * @return a LogBuilder.
      * @since 3.0
      */
     @Override
-    public LogBuilder atWarn() {
+    public LogBuilder warn() {
         if (isWarnEnabled()) {
+            DefaultLogBuilder builder = logBuilder.get();
+            if (builder.isInUse()) {
+                return new DefaultLogBuilder(this);
+            }
             return logBuilder.get().setLevel(Level.WARN);
         } else {
-            return LogBuilder.INSTANCE;
+            return LogBuilder.NOOP;
         }
     }
     /**
-     * Constuct a trace log event.
+     * Constuct an error log event.
      * @return a LogBuilder.
      * @since 3.0
      */
     @Override
-    public LogBuilder atError() {
+    public LogBuilder error() {
         if (isErrorEnabled()) {
+            DefaultLogBuilder builder = logBuilder.get();
+            if (builder.isInUse()) {
+                return new DefaultLogBuilder(this);
+            }
             return logBuilder.get().setLevel(Level.ERROR);
         } else {
-            return LogBuilder.INSTANCE;
+            return LogBuilder.NOOP;
         }
     }
     /**
-     * Constuct a trace log event.
+     * Constuct a fatal log event.
      * @return a LogBuilder.
      * @since 3.0
      */
     @Override
-    public LogBuilder atFatal() {
+    public LogBuilder fatal() {
         if (isFatalEnabled()) {
+            DefaultLogBuilder builder = logBuilder.get();
+            if (builder.isInUse()) {
+                return new DefaultLogBuilder(this);
+            }
             return logBuilder.get().setLevel(Level.FATAL);
         } else {
-            return LogBuilder.INSTANCE;
+            return LogBuilder.NOOP;
         }
+    }
+    /**
+     * Constuct a fatal log event.
+     * @return a LogBuilder.
+     * @since 3.0
+     */
+    @Override
+    public LogBuilder always() {
+        DefaultLogBuilder builder = logBuilder.get();
+        if (builder.isInUse()) {
+            return new DefaultLogBuilder(this);
+        }
+        return logBuilder.get().setLevel(Level.OFF);
     }
     /**
      * Constuct a log event.
@@ -2837,7 +2874,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         if (isEnabled(level)) {
             return logBuilder.get().setLevel(level);
         } else {
-            return LogBuilder.INSTANCE;
+            return LogBuilder.NOOP;
         }
     }
 
