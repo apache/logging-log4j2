@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.config.plugins.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -36,6 +37,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
 import org.apache.logging.log4j.junit.CleanFolders;
 import org.junit.Rule;
@@ -149,40 +151,40 @@ public class ResolverUtilTest {
 
     @Test
     public void testFindInPackageFromDirectoryPath() throws Exception {
-        try (final URLClassLoader cl = compileAndCreateClassLoader("1")) {
+        try (final CompiledJarAndClassLoader wrapper = compileAndCreateClassLoader("1")) {
             final ResolverUtil resolverUtil = new ResolverUtil();
-            resolverUtil.setClassLoader(cl);
+            resolverUtil.setClassLoader(wrapper.classLoader());
             resolverUtil.findInPackage(new PluginTest(), "customplugin1");
             assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin1.FixedString1Layout"),
+            assertEquals("Unexpected class resolved", wrapper.classLoader().loadClass("customplugin1.FixedString1Layout"),
                     resolverUtil.getClasses().iterator().next());
         }
     }
 
     @Test
     public void testFindInPackageFromJarPath() throws Exception {
-        try (final URLClassLoader cl = compileJarAndCreateClassLoader("2")) {
+        try (final CompiledJarAndClassLoader wrapper = compileJarAndCreateClassLoader("2")) {
             final ResolverUtil resolverUtil = new ResolverUtil();
-            resolverUtil.setClassLoader(cl);
+            resolverUtil.setClassLoader(wrapper.classLoader());
             resolverUtil.findInPackage(new PluginTest(), "customplugin2");
             assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin2.FixedString2Layout"),
+            assertEquals("Unexpected class resolved", wrapper.classLoader().loadClass("customplugin2.FixedString2Layout"),
                     resolverUtil.getClasses().iterator().next());
         }
     }
 
-    static URLClassLoader compileJarAndCreateClassLoader(final String suffix) throws IOException, Exception {
+    static CompiledJarAndClassLoader compileJarAndCreateClassLoader(final String suffix) throws IOException, Exception {
         final File workDir = compile(suffix);
         final File jarFile = new File(workDir, "customplugin" + suffix + ".jar");
         final URI jarURI = jarFile.toURI();
         createJar(jarURI, workDir, new File(workDir,
               "customplugin" + suffix + "/FixedString" + suffix + "Layout.class"));
-        return URLClassLoader.newInstance(new URL[] {jarURI.toURL()});
+        return new CompiledJarAndClassLoader(URLClassLoader.newInstance(new URL[] {jarURI.toURL()}), workDir);
     }
 
-    static URLClassLoader compileAndCreateClassLoader(final String suffix) throws IOException {
+    static CompiledJarAndClassLoader compileAndCreateClassLoader(final String suffix) throws IOException {
         final File workDir = compile(suffix);
-        return URLClassLoader.newInstance(new URL[] {workDir.toURI().toURL()});
+        return new CompiledJarAndClassLoader(URLClassLoader.newInstance(new URL[] {workDir.toURI().toURL()}), workDir);
     }
 
     static File compile(final String suffix) throws IOException {
@@ -218,4 +220,34 @@ public class ResolverUtilTest {
         }
     }
 
+    static final class CompiledJarAndClassLoader implements Closeable {
+
+        private final URLClassLoader classLoader;
+        private final File directory;
+
+        CompiledJarAndClassLoader(URLClassLoader classLoader, File directory) {
+            this.classLoader = classLoader;
+            this.directory = directory;
+        }
+
+        ClassLoader classLoader() {
+            return classLoader;
+        }
+
+        @Override
+        public void close() {
+            try {
+                classLoader.close();
+            } catch (IOException | RuntimeException e) {
+                throw new RuntimeException("Failed to close URLClassLoader", e);
+            }
+            if (directory.exists()) {
+                try {
+                    FileUtils.deleteDirectory(directory);
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to delete directory " + directory, e);
+                }
+            }
+        }
+    }
 }

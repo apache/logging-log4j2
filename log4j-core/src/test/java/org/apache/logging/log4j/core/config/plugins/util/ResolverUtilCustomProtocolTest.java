@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.net.Proxy;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
@@ -183,26 +182,26 @@ public class ResolverUtilCustomProtocolTest {
 
     @Test
     public void testFindInPackageFromVfsDirectoryURL() throws Exception {
-        try (final URLClassLoader cl = ResolverUtilTest.compileAndCreateClassLoader("3")) {
+        try (final ResolverUtilTest.CompiledJarAndClassLoader wrapper = ResolverUtilTest.compileAndCreateClassLoader("3")) {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil
-                    .setClassLoader(new SingleURLClassLoader(new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil3/customplugin3/"), cl));
+                    .setClassLoader(new SingleURLClassLoader(new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil3/customplugin3/"), wrapper.classLoader()));
             resolverUtil.findInPackage(new PluginTest(), "customplugin3");
             assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin3.FixedString3Layout"),
+            assertEquals("Unexpected class resolved", wrapper.classLoader().loadClass("customplugin3.FixedString3Layout"),
                     resolverUtil.getClasses().iterator().next());
         }
     }
 
     @Test
     public void testFindInPackageFromVfsJarURL() throws Exception {
-        try (final URLClassLoader cl = ResolverUtilTest.compileJarAndCreateClassLoader("4")) {
+        try (final ResolverUtilTest.CompiledJarAndClassLoader wrapper = ResolverUtilTest.compileJarAndCreateClassLoader("4")) {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(new SingleURLClassLoader(
-                    new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil4/customplugin4.jar/customplugin4/"), cl));
+                    new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil4/customplugin4.jar/customplugin4/"), wrapper.classLoader()));
             resolverUtil.findInPackage(new PluginTest(), "customplugin4");
             assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin4.FixedString4Layout"),
+            assertEquals("Unexpected class resolved", wrapper.classLoader().loadClass("customplugin4.FixedString4Layout"),
                     resolverUtil.getClasses().iterator().next());
         }
     }
