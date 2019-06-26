@@ -21,7 +21,7 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.internal.DefaultLogBuilder;
-import org.apache.logging.log4j.internal.LogBuilder;
+import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
@@ -2755,7 +2755,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @since 3.0
      */
     @Override
-    public  LogBuilder trace() {
+    public  LogBuilder atTrace() {
         return atLevel(Level.TRACE);
     }
     /**
@@ -2764,7 +2764,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @since 3.0
      */
     @Override
-    public LogBuilder debug() {
+    public LogBuilder atDebug() {
         return atLevel(Level.DEBUG);
     }
     /**
@@ -2773,7 +2773,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @since 3.0
      */
     @Override
-    public LogBuilder info() {
+    public LogBuilder atInfo() {
         return atLevel(Level.INFO);
     }
     /**
@@ -2782,7 +2782,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @since 3.0
      */
     @Override
-    public LogBuilder warn() {
+    public LogBuilder atWarn() {
         return atLevel(Level.WARN);
     }
     /**
@@ -2791,7 +2791,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @since 3.0
      */
     @Override
-    public LogBuilder error() {
+    public LogBuilder atError() {
         return atLevel(Level.ERROR);
     }
     /**
@@ -2800,7 +2800,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @since 3.0
      */
     @Override
-    public LogBuilder fatal() {
+    public LogBuilder atFatal() {
         return atLevel(Level.FATAL);
     }
     /**
@@ -2814,7 +2814,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         if (builder.isInUse()) {
             return new DefaultLogBuilder(this);
         }
-        return logBuilder.get().setLevel(Level.OFF);
+        return builder.reset(Level.OFF);
     }
     /**
      * Constuct a log event.
@@ -2828,7 +2828,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             if (builder.isInUse()) {
                 return new DefaultLogBuilder(this, level);
             }
-            return logBuilder.get().setLevel(level);
+            return builder.reset(level);
         } else {
             return LogBuilder.NOOP;
         }

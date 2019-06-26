@@ -59,9 +59,9 @@ public class LoggerTest {
 
     @Test
     public void builder() {
-        logger.debug().withLocation().withMessage("Hello").log();
-        logger.error().withMarker(marker).withMessage("Hello {}").withParameters("John").log();
-        logger.warn().withMessage(new SimpleMessage("Log4j rocks!")).withThrowable(new Throwable("This is a test")).log();
+        logger.atDebug().withLocation().log("Hello");
+        logger.atError().withMarker(marker).log("Hello {}", "John");
+        logger.atWarn().withThrowable(new Throwable("This is a test")).log((Message) new SimpleMessage("Log4j rocks!"));
         assertEquals(3, results.size());
         assertThat("Incorrect message 1", results.get(0), equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:62) Hello"));
         assertThat("Incorrect message 2", results.get(1), equalTo("test ERROR Hello John"));

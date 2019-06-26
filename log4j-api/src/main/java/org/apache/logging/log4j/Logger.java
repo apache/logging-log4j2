@@ -16,15 +16,11 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.internal.DefaultLogBuilder;
-import org.apache.logging.log4j.internal.LogBuilder;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
-
-import java.util.List;
 
 /**
  * This is the central interface in the log4j package. Most logging operations, except configuration, are done through
@@ -4217,7 +4213,7 @@ public interface Logger {
      * @return a LogBuilder.
      * @since 3.0
      */
-    default LogBuilder trace() {
+    default LogBuilder atTrace() {
         return LogBuilder.NOOP;
     }
     /**
@@ -4225,7 +4221,7 @@ public interface Logger {
      * @return a LogBuilder.
      * @since 3.0
      */
-    default LogBuilder debug() {
+    default LogBuilder atDebug() {
         return LogBuilder.NOOP;
     }
     /**
@@ -4233,7 +4229,7 @@ public interface Logger {
      * @return a LogBuilder.
      * @since 3.0
      */
-    default LogBuilder info() {
+    default LogBuilder atInfo() {
         return LogBuilder.NOOP;
     }
     /**
@@ -4241,7 +4237,7 @@ public interface Logger {
      * @return a LogBuilder.
      * @since 3.0
      */
-    default LogBuilder warn() {
+    default LogBuilder atWarn() {
         return LogBuilder.NOOP;
     }
     /**
@@ -4249,7 +4245,7 @@ public interface Logger {
      * @return a LogBuilder.
      * @since 3.0
      */
-    default LogBuilder error() {
+    default LogBuilder atError() {
         return LogBuilder.NOOP;
     }
     /**
@@ -4257,7 +4253,7 @@ public interface Logger {
      * @return a LogBuilder.
      * @since 3.0
      */
-    default LogBuilder fatal() {
+    default LogBuilder atFatal() {
         return LogBuilder.NOOP;
     }
     /**

@@ -17,17 +17,19 @@
 package org.apache.logging.log4j.internal;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Supplier;
 
 
 /**
- * Collects data for a log event and then logs it.
+ * Collects data for a log event and then logs it. This class should be considered private.
  */
 public class DefaultLogBuilder implements LogBuilder {
     private static Message EMPTY_MESSAGE = new SimpleMessage("");
@@ -39,18 +41,12 @@ public class DefaultLogBuilder implements LogBuilder {
     private Marker marker;
     private Throwable throwable;
     private StackTraceElement location;
-    private Object object;
-    private Message msg;
-    private String textMessage;
-    private Supplier<Message> supplier;
-    private Object[] parameters;
     private volatile boolean inUse;
     private long threadId;
 
     public DefaultLogBuilder(Logger logger, Level level) {
         this.logger = logger;
         this.level = level;
-        this.inUse = false;
         this.threadId = Thread.currentThread().getId();
         this.inUse = true;
     }
@@ -61,17 +57,17 @@ public class DefaultLogBuilder implements LogBuilder {
         this.threadId = Thread.currentThread().getId();
     }
 
-    public LogBuilder setLevel(Level level) {
+    /**
+     * This method should be considered internal. It is used to reset the LogBuilder for a new log message.
+     * @param level The logging level for this event.
+     * @return This LogBuilder instance.
+     */
+    public LogBuilder reset(Level level) {
         this.inUse = true;
         this.level = level;
         this.marker = null;
         this.throwable = null;
         this.location = null;
-        this.object = null;
-        this.msg = null;
-        this.textMessage = null;
-        this.supplier = null;
-        this.parameters = null;
         return this;
     }
 
@@ -95,93 +91,78 @@ public class DefaultLogBuilder implements LogBuilder {
         return this;
     }
 
-    public LogBuilder withMessage(String msg) {
-        this.textMessage = msg;
-        return this;
-    }
-
-    public LogBuilder withMessage(Object msg) {
-        this.object = msg;
-        return this;
-    }
-
-    public LogBuilder withMessage(Message msg) {
-        this.msg = msg;
-        return this;
-    }
-
-    public LogBuilder withMessage(Supplier<Message> supplier) {
-        this.supplier = supplier;
-        return this;
-    }
-
-    public LogBuilder withParameters(Object... params) {
-        if (params != null && params.length > 0) {
-            if (parameters == null) {
-                parameters = params;
-            } else {
-                Object[] prev = parameters;
-                int count = parameters.length + params.length;
-                parameters = new Object[count];
-                System.arraycopy(prev, 0, parameters, 0, prev.length);
-                System.arraycopy(params, 0, parameters, prev.length, params.length);
-            }
-        }
-        return this;
-    }
-
-     @SafeVarargs
-     public final LogBuilder withParameters(java.util.function.Supplier<Object>... params) {
-         if (params != null && params.length > 0) {
-             if (parameters == null) {
-                 parameters = new Object[params.length];
-                 for (int i = 0; i < params.length; ++i) {
-                    parameters[i] = params[i].get();
-                 }
-             } else {
-                 Object[] prev = parameters;
-                 int count = parameters.length + params.length;
-                 parameters = new Object[count];
-                 System.arraycopy(prev, 0, parameters, 0, prev.length);
-                 for (int i = 0; i < params.length; ++i) {
-                     parameters[prev.length + i] = params[i].get();
-                 }
-             }
-         }
-        return this;
-    }
-
     public boolean isInUse() {
         return inUse;
     }
 
-    public void log() {
-        if (!inUse) {
-            LOGGER.warn("Attempt to reuse LogBuilder was ignored. {}",
-                    StackLocatorUtil.getCallerClass(2));
-            return;
+    @Override
+    public void log(Message message) {
+        if (isValid()) {
+            logMessage(message);
         }
-        if (this.threadId != Thread.currentThread().getId()) {
-            LOGGER.warn("LogBuilder can only be used on the owning thread. {}",
-                    StackLocatorUtil.getCallerClass(2));
+    }
+
+    @Override
+    public void log(CharSequence message) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message));
         }
+    }
+
+    @Override
+    public void log(String message) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message));
+        }
+    }
+
+    @Override
+    public void log(String message, Object... params) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message, params));
+        }
+    }
+
+    @Override
+    public void log(String message, Supplier<?>... params) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message, LambdaUtil.getAll(params)));
+        }
+    }
+
+    @Override
+    public void log(Supplier<Message> messageSupplier) {
+        if (isValid()) {
+            logMessage(messageSupplier.get());
+        }
+    }
+
+    @Override
+    public void log(Object message) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message));
+        }
+    }
+
+    private void logMessage(Message message) {
         try {
-            Message message;
-            if (msg != null) {
-                message = msg;
-            } else if (supplier != null) {
-                message = supplier.get();
-            } else if (object != null) {
-                message = logger.getMessageFactory().newMessage(object);
-            } else if (textMessage != null) {
-                message = logger.getMessageFactory().newMessage(textMessage, parameters);
-            } else {
-                message = EMPTY_MESSAGE;
-            }
             logger.logMessage(level, marker, FQCN, location, message, throwable);
         } finally {
             inUse = false;
         }
+    }
 
+    private boolean isValid() {
+        if (!inUse) {
+            LOGGER.warn("Attempt to reuse LogBuilder was ignored. {}",
+                    StackLocatorUtil.getCallerClass(2));
+            return false ;
+        }
+        if (this.threadId != Thread.currentThread().getId()) {
+            LOGGER.warn("LogBuilder can only be used on the owning thread. {}",
+                    StackLocatorUtil.getCallerClass(2));
+            return false;
+        }
+        return true;
     }
 }
