@@ -14,15 +14,15 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.internal;
+package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.Supplier;
 
-import java.util.function.Supplier;
 
 /**
- * Interface for constructing log events before logging them.
+ * Interface for constructing log events before logging them. Instances of LogBuilders should only be created
+ * by calling one of the Logger methods that return a LogBuilder.
  */
 public interface LogBuilder {
 
@@ -44,26 +44,25 @@ public interface LogBuilder {
         return this;
     }
 
-    default LogBuilder withMessage(Message msg) {
-        return this;
+    default void log(CharSequence message) {
     }
 
-    default LogBuilder withMessage(String msg) {
-        return this;
+    default void log(String message) {
     }
 
-    default LogBuilder withMessage(Object msg) {
-        return this;
+    default void log(String message, Object... params) {
     }
 
-    default LogBuilder withParameters(Object... params) {
-        return this;
+    default void log(String message, Supplier<?>... params) {
     }
 
-    default LogBuilder withParameters(Supplier<Object>... params) {
-        return this;
+    default void log(Message message) {
     }
 
-    default void log() {
+    default void log(Supplier<Message> messageSupplier) {
+    }
+
+    default void log(Object message) {
+
     }
 }
