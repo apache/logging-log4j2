@@ -146,6 +146,20 @@ public class WebLookupTest {
         ContextAnchor.THREAD_CONTEXT.remove();
     }
 
+    @Test
+    public void testSessionAttribute() {
+        final Log4jWebLifeCycle initializer = startInitializer();
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.getSession().setAttribute("foo", "bar");
+        Log4jServletFilter.CURRENT_REQUEST.set(request);
+        final WebLookup lookup = new WebLookup();
+        assertEquals("bar", lookup.lookup(null, "session.attr.foo"));
+        Log4jServletFilter.CURRENT_REQUEST.remove();
+        assertNull(lookup.lookup(null, "session.attr.foo"));
+        initializer.stop();
+        ContextAnchor.THREAD_CONTEXT.remove();
+    }
+
     private Log4jWebLifeCycle startInitializer() {
         ContextAnchor.THREAD_CONTEXT.remove();
         final ServletContext servletContext = new MockServletContext();
