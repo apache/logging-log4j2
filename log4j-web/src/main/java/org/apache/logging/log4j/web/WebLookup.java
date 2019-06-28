@@ -19,6 +19,7 @@ package org.apache.logging.log4j.web;
 // this comment if no longer relevant
 
 import java.security.Principal;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.servlet.ServletContext;
@@ -98,8 +99,7 @@ public class WebLookup extends AbstractLookup {
                 final HttpSession session = HttpServletRequest.class.cast(req).getSession(false);
                 if (session != null) {
                     final String name = key.substring(SESSION_ATTR_PREFIX.length());
-                    final Object attribute = session.getAttribute(name);
-                    return attribute == null ? null : String.valueOf(attribute);
+                    return Objects.toString(session.getAttribute(name), null);
                 }
             }
             return null;
