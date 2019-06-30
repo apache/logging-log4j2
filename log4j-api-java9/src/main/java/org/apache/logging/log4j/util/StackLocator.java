@@ -18,6 +18,7 @@ package org.apache.logging.log4j.util;
 
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -31,6 +32,11 @@ public class StackLocator {
 
     private final static StackLocator INSTANCE = new StackLocator();
 
+    private final static ThreadLocal<CallerLocator> LOCATOR = new ThreadLocal<CallerLocator>() {
+        public CallerLocator initialValue() {
+            return new CallerLocator();
+        }
+    };
 
     public static StackLocator getInstance() {
         return INSTANCE;
@@ -72,15 +78,40 @@ public class StackLocator {
     }
 
     public StackTraceElement calcLocation(final String fqcnOfLogger) {
-        return stackWalker.walk(
-                s -> s.dropWhile(f -> !f.getClassName().equals(fqcnOfLogger)) // drop the top frames until we reach the logger
-                        .dropWhile(f -> f.getClassName().equals(fqcnOfLogger)) // drop the logger frames
-                        .findFirst())
-                .get()
-                .toStackTraceElement();
+        return walker.walk(s -> s.filter(LOCATOR.get().setFqcn(fqcnOfLogger)).findFirst()).get().toStackTraceElement();
     }
 
     public StackTraceElement getStackTraceElement(final int depth) {
         return stackWalker.walk(s -> s.skip(depth).findFirst()).get().toStackTraceElement();
+    }
+
+    static final class CallerLocator implements Predicate<StackWalker.StackFrame> {
+
+        private String fqcn;
+
+        private boolean foundFqcn = false;
+        private boolean foundLogger = false;
+
+        public CallerLocator setFqcn(String fqcn) {
+            this.fqcn = fqcn;
+            this.foundFqcn = false;
+            this.foundLogger = false;
+            return this;
+        }
+
+        @Override
+        public boolean test(StackWalker.StackFrame t) {
+            final String className = t.getClassName();
+            if (!foundLogger) {
+                if (!foundFqcn) {
+                    foundFqcn = className.equals(fqcn);
+                    return false;
+                } else if (!className.equals(fqcn)) {
+                    foundLogger = true;
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
