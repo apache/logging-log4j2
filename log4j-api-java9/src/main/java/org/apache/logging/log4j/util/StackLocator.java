@@ -18,8 +18,9 @@ package org.apache.logging.log4j.util;
 
 import java.util.List;
 import java.util.Stack;
-import java.util.function.Predicate;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <em>Consider this class private.</em> Determines the caller's class.
@@ -32,11 +33,7 @@ public class StackLocator {
 
     private final static StackLocator INSTANCE = new StackLocator();
 
-    private final static ThreadLocal<CallerLocator> LOCATOR = new ThreadLocal<CallerLocator>() {
-        public CallerLocator initialValue() {
-            return new CallerLocator();
-        }
-    };
+    private final static ThreadLocal<FqcnCallerLocator> LOCATOR = ThreadLocal.withInitial(FqcnCallerLocator::new);
 
     public static StackLocator getInstance() {
         return INSTANCE;
@@ -78,40 +75,38 @@ public class StackLocator {
     }
 
     public StackTraceElement calcLocation(final String fqcnOfLogger) {
-        return walker.walk(s -> s.filter(LOCATOR.get().setFqcn(fqcnOfLogger)).findFirst()).get().toStackTraceElement();
+        return walker.walk(LOCATOR.get().setFqcn(fqcnOfLogger)).toStackTraceElement();
     }
 
     public StackTraceElement getStackTraceElement(final int depth) {
         return stackWalker.walk(s -> s.skip(depth).findFirst()).get().toStackTraceElement();
     }
 
-    static final class CallerLocator implements Predicate<StackWalker.StackFrame> {
+    static final class FqcnCallerLocator implements Function<Stream<StackWalker.StackFrame>, StackWalker.StackFrame> {
 
         private String fqcn;
 
-        private boolean foundFqcn = false;
-        private boolean foundLogger = false;
-
-        public CallerLocator setFqcn(String fqcn) {
+        public FqcnCallerLocator setFqcn(String fqcn) {
             this.fqcn = fqcn;
-            this.foundFqcn = false;
-            this.foundLogger = false;
             return this;
         }
 
         @Override
-        public boolean test(StackWalker.StackFrame t) {
-            final String className = t.getClassName();
-            if (!foundLogger) {
+        public StackWalker.StackFrame apply(Stream<StackWalker.StackFrame> stackFrameStream) {
+            boolean foundFqcn = false;
+            Object[] frames = stackFrameStream.toArray();
+            for (int i = 0; i < frames.length ; ++i) {
+                final String className = ((StackWalker.StackFrame) frames[i]).getClassName();
                 if (!foundFqcn) {
+                    // Skip frames until we find the FQCN
                     foundFqcn = className.equals(fqcn);
-                    return false;
                 } else if (!className.equals(fqcn)) {
-                    foundLogger = true;
-                    return true;
-                }
+                    // The frame is no longer equal to the FQCN so it is the one we want.
+                    return (StackWalker.StackFrame) frames[i];
+                } // Otherwise it is equal to the FQCN so we need to skip it.
             }
-            return false;
+            // Should never happen
+            return null;
         }
     }
 }
