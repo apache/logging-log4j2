@@ -178,7 +178,7 @@ public final class StackLocator {
                 found = true;
                 continue;
             }
-            if (found) {
+            if (found && !fqcnOfLogger.equals(className)) {
                 return stackTrace[i];
             }
         }
