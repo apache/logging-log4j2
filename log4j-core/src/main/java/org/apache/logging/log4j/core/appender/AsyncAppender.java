@@ -166,6 +166,7 @@ public final class AsyncAppender extends AbstractAppender {
                 if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
                     // If queue is full AND we are in a recursive call, call appender directly to prevent deadlock
                     AsyncQueueFullMessageUtil.logWarningToStatusLogger();
+                    final EventRoute route = asyncQueueFullPolicy.getRoute(thread.getId(), memento.getLevel());
                     logMessageInCurrentThread(logEvent);
                 } else {
                     // delegate to the event router (which may discard, enqueue and block, or log in current thread)
