@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 import org.apache.logging.log4j.Logger;
@@ -105,7 +106,10 @@ public final class NetUtils {
                 LOGGER.catching(e);
             }
             if (mac == null || mac.length == 0) {
-                mac = localHost.getAddress();
+                // Emulate a mac address with an IP v4 or v6
+                final byte[] address = localHost.getAddress();
+                // Take only 6 bytes if the address is an IPv6 otherwise will pad with two zero bytes
+                mac = Arrays.copyOf(address, 6);
             }
         } catch (final UnknownHostException ignored) {
             // ignored
