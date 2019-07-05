@@ -28,7 +28,7 @@ import org.apache.logging.log4j.util.Supplier;
 /**
  * Reliability strategy that assumes reconfigurations will never take place.
  */
-public class DefaultReliabilityStrategy implements ReliabilityStrategy {
+public class DefaultReliabilityStrategy implements ReliabilityStrategy, LocationAwareReliabilityStrategy {
 
     private final LoggerConfig loggerConfig;
 
@@ -47,6 +47,20 @@ public class DefaultReliabilityStrategy implements ReliabilityStrategy {
     public void log(final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn, final Marker marker, final Level level,
             final Message data, final Throwable t) {
         loggerConfig.log(loggerName, fqcn, marker, level, data, t);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
+     * java.lang.String, java.lang.String, java.lang.StackTraceElement, org.apache.logging.log4j.Marker,
+     * org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable)
+     */
+    @Override
+    public void log(final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn,
+        final StackTraceElement location, final Marker marker, final Level level, final Message data,
+        final Throwable t) {
+        loggerConfig.log(loggerName, fqcn, location, marker, level, data, t);
     }
 
     /*

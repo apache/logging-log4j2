@@ -353,6 +353,10 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return thrownProxy;
     }
 
+    public void setSource(StackTraceElement source) {
+        this.source = source;
+    }
+
     /**
      * Returns the StackTraceElement for the caller. This will be the entry that occurs right
      * before the first occurrence of FQCN as a class name.

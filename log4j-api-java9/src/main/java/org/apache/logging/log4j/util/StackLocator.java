@@ -34,7 +34,8 @@ public class StackLocator {
 
     private final static StackLocator INSTANCE = new StackLocator();
 
-    private final static ThreadLocal<FqcnCallerLocator> LOCATOR = ThreadLocal.withInitial(FqcnCallerLocator::new);
+    private final static ThreadLocal<String> FQCN = new ThreadLocal<>();
+    private final static FqcnCallerLocator LOCATOR = new FqcnCallerLocator();
 
     public static StackLocator getInstance() {
         return INSTANCE;
@@ -76,27 +77,21 @@ public class StackLocator {
     }
 
     public StackTraceElement calcLocation(final String fqcnOfLogger) {
-        return walker.walk(LOCATOR.get().setFqcn(fqcnOfLogger)).toStackTraceElement();
+        FQCN.set(fqcnOfLogger);
+        StackTraceElement element = walker.walk(LOCATOR).toStackTraceElement();
+        FQCN.set(null);
+        return element;
     }
 
     public StackTraceElement getStackTraceElement(final int depth) {
         return stackWalker.walk(s -> s.skip(depth).findFirst()).get().toStackTraceElement();
     }
 
-    /**
-     * This Class isn't thread safe but each Thread has its own instance.
-     */
     static final class FqcnCallerLocator implements Function<Stream<StackWalker.StackFrame>, StackWalker.StackFrame> {
-
-        private String fqcn;
-
-        public FqcnCallerLocator setFqcn(String fqcn) {
-            this.fqcn = fqcn;
-            return this;
-        }
 
         @Override
         public StackWalker.StackFrame apply(Stream<StackWalker.StackFrame> stackFrameStream) {
+            String fqcn = FQCN.get();
             boolean foundFqcn = false;
             Object[] frames = stackFrameStream.toArray();
             for (int i = 0; i < frames.length ; ++i) {
@@ -105,7 +100,7 @@ public class StackLocator {
                     // Skip frames until we find the FQCN
                     foundFqcn = className.equals(fqcn);
                 } else if (!className.equals(fqcn)) {
-                    // At this point we have found the FQCN and are looking for the first frame that isn't the FQCN.
+                    // The frame is no longer equal to the FQCN so it is the one we want.
                     return (StackWalker.StackFrame) frames[i];
                 } // Otherwise it is equal to the FQCN so we need to skip it.
             }

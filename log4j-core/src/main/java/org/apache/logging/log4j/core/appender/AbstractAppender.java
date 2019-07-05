@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
+import org.apache.logging.log4j.core.impl.LocationAware;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Integers;
 
@@ -39,7 +40,7 @@ import org.apache.logging.log4j.core.util.Integers;
  * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so will simplify their
  * implementation.
  */
-public abstract class AbstractAppender extends AbstractFilterable implements Appender {
+public abstract class AbstractAppender extends AbstractFilterable implements Appender, LocationAware {
 
     /**
      * Subclasses can extend this abstract Builder.
@@ -159,6 +160,11 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
     private final Layout<? extends Serializable> layout;
 
     private ErrorHandler handler = new DefaultErrorHandler(this);
+
+    @Override
+    public boolean requiresLocation() {
+        return layout != null && layout instanceof LocationAware && ((LocationAware) layout).requiresLocation();
+    }
 
     /**
      * Constructor that defaults to suppressing exceptions.

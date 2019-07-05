@@ -35,7 +35,7 @@ import org.apache.logging.log4j.util.Supplier;
  * ReliabilityStrategy that counts the number of threads that have started to log an event but have not completed yet,
  * and waits for these threads to finish before allowing the appenders to be stopped.
  */
-public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
+public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy, LocationAwareReliabilityStrategy {
     private static final int MAX_RETRIES = 3;
     private final AtomicInteger counter = new AtomicInteger();
     private final AtomicBoolean shutdown = new AtomicBoolean(false);
@@ -61,6 +61,25 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
         final LoggerConfig config = getActiveLoggerConfig(reconfigured);
         try {
             config.log(loggerName, fqcn, marker, level, data, t);
+        } finally {
+            config.getReliabilityStrategy().afterLogEvent();
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
+     * java.lang.String, java.lang.String, java.lang.StackTraceElement, org.apache.logging.log4j.Marker,
+     * org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable)
+     */
+    @Override
+    public void log(final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn,
+        final StackTraceElement location, final Marker marker, final Level level, final Message data,
+        final Throwable t) {
+        final LoggerConfig config = getActiveLoggerConfig(reconfigured);
+        try {
+            config.log(loggerName, fqcn, location, marker, level, data, t);
         } finally {
             config.getReliabilityStrategy().afterLogEvent();
         }

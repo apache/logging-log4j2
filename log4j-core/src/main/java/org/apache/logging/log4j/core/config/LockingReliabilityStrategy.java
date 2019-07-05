@@ -24,13 +24,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.LocationAware;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.Supplier;
 
 /**
  * ReliabilityStrategy that uses read/write locks to prevent the LoggerConfig from stopping while it is in use.
  */
-public class LockingReliabilityStrategy implements ReliabilityStrategy {
+public class LockingReliabilityStrategy implements ReliabilityStrategy, LocationAwareReliabilityStrategy {
     private final LoggerConfig loggerConfig;
     private final ReadWriteLock reconfigureLock = new ReentrantReadWriteLock();
     private volatile boolean isStopping = false;
@@ -53,6 +54,25 @@ public class LockingReliabilityStrategy implements ReliabilityStrategy {
         final LoggerConfig config = getActiveLoggerConfig(reconfigured);
         try {
             config.log(loggerName, fqcn, marker, level, data, t);
+        } finally {
+            config.getReliabilityStrategy().afterLogEvent();
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
+     * java.lang.String, java.lang.String, java.lang.StackTraceElement, org.apache.logging.log4j.Marker,
+     * org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable)
+     */
+    @Override
+    public void log(final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn,
+        final StackTraceElement location, final Marker marker, final Level level, final Message data,
+        final Throwable t) {
+        final LoggerConfig config = getActiveLoggerConfig(reconfigured);
+        try {
+            config.log(loggerName, fqcn, location, marker, level, data, t);
         } finally {
             config.getReliabilityStrategy().afterLogEvent();
         }

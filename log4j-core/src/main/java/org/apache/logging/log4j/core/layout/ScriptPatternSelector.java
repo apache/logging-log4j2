@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.impl.LocationAware;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.script.AbstractScript;
@@ -41,7 +42,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Selects the pattern to use based on the Marker in the LogEvent.
  */
 @Plugin(name = "ScriptPatternSelector", category = Node.CATEGORY, elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
-public class ScriptPatternSelector implements PatternSelector {
+public class ScriptPatternSelector implements PatternSelector, LocationAware {
 
     /**
      * Custom ScriptPatternSelector builder. Use the {@link #newBuilder() builder factory method} to create this.
@@ -143,7 +144,7 @@ public class ScriptPatternSelector implements PatternSelector {
     private static Logger LOGGER = StatusLogger.getLogger();
     private final AbstractScript script;
     private final Configuration configuration;
-
+    private final boolean requiresLocation;
 
     /**
      * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.
@@ -158,22 +159,36 @@ public class ScriptPatternSelector implements PatternSelector {
             config.getScriptManager().addScript(script);
         }
         final PatternParser parser = PatternLayout.createPatternParser(config);
+        boolean needsLocation = false;
         for (final PatternMatch property : properties) {
             try {
                 final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
-                formatterMap.put(property.getKey(), list.toArray(new PatternFormatter[list.size()]));
+                PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
+                formatterMap.put(property.getKey(), formatters);
                 patternMap.put(property.getKey(), property.getPattern());
+                for (int i = 0; !needsLocation && i < formatters.length; ++i) {
+                    needsLocation = formatters[i].requiresLocation();
+                }
             } catch (final RuntimeException ex) {
                 throw new IllegalArgumentException("Cannot parse pattern '" + property.getPattern() + "'", ex);
             }
         }
         try {
             final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
-            defaultFormatters = list.toArray(new PatternFormatter[list.size()]);
+            defaultFormatters = list.toArray(new PatternFormatter[0]);
             this.defaultPattern = defaultPattern;
+            for (int i = 0; !needsLocation && i < defaultFormatters.length; ++i) {
+                needsLocation = defaultFormatters[i].requiresLocation();
+            }
         } catch (final RuntimeException ex) {
             throw new IllegalArgumentException("Cannot parse pattern '" + defaultPattern + "'", ex);
         }
+        this.requiresLocation = needsLocation;
+    }
+
+    @Override
+    public boolean requiresLocation() {
+        return requiresLocation;
     }
 
     @Override

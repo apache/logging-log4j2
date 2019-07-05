@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
+import org.apache.logging.log4j.core.impl.LocationAware;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -45,7 +46,7 @@ import org.apache.logging.log4j.util.Strings;
  * Implementation note: prefer String.getBytes(String) to String.getBytes(Charset) for performance reasons. See
  * https://issues.apache.org/jira/browse/LOG4J2-935 for details.
  */
-public abstract class AbstractStringLayout extends AbstractLayout<String> implements StringLayout {
+public abstract class AbstractStringLayout extends AbstractLayout<String> implements StringLayout, LocationAware {
 
     public abstract static class Builder<B extends Builder<B>> extends AbstractLayout.Builder<B> {
 
@@ -85,6 +86,10 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
             return asBuilder();
         }
 
+    }
+
+    public boolean requiresLocation() {
+        return false;
     }
 
     public interface Serializer {

@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.Supplier;
 /**
  * Reliability strategy that sleeps unconditionally for some time before allowing a Configuration to be stopped.
  */
-public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrategy {
+public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrategy, LocationAwareReliabilityStrategy {
 
     private static final long DEFAULT_SLEEP_MILLIS = 5000; // 5 seconds
     private static final long SLEEP_MILLIS = sleepMillis();
@@ -56,6 +56,20 @@ public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrat
     public void log(final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn, final Marker marker, final Level level,
             final Message data, final Throwable t) {
         loggerConfig.log(loggerName, fqcn, marker, level, data, t);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#log(org.apache.logging.log4j.util.Supplier,
+     * java.lang.String, java.lang.String, java.lang.StackTraceElement, org.apache.logging.log4j.Marker,
+     * org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable)
+     */
+    @Override
+    public void log(final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn,
+        final StackTraceElement location, final Marker marker, final Level level, final Message data,
+        final Throwable t) {
+        loggerConfig.log(loggerName, fqcn, location, marker, level, data, t);
     }
 
     /*
