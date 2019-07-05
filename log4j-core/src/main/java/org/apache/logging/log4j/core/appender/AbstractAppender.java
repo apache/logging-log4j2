@@ -145,6 +145,11 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         }
     }
 
+    @Override
+    public boolean requiresLocation() {
+        return layout != null && layout.requiresLocation();
+    }
+
     /**
      * Handle an error with a message using the {@link ErrorHandler} configured for this Appender.
      * 

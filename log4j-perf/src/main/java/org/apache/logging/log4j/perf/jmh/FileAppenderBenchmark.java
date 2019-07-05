@@ -115,12 +115,13 @@ public class FileAppenderBenchmark {
         log4j2RandomLogger.debug(MESSAGE);
     }
 
+    /* The MemoryMappedFileAppender gets exceptions in Java 11
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
     public void log4j2MMF() {
         log4j2MemoryLogger.debug(MESSAGE);
-    }
+    } */
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)

@@ -60,4 +60,9 @@ public final class MethodLocationPatternConverter extends LogEventPatternConvert
             toAppendTo.append(element.getMethodName());
         }
     }
+
+    @Override
+    public boolean requiresLocation() {
+        return true;
+    }
 }

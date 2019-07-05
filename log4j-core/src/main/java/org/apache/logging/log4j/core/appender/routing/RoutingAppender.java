@@ -71,6 +71,9 @@ public final class RoutingAppender extends AbstractAppender {
         @PluginElement("PurgePolicy")
         private PurgePolicy purgePolicy;
 
+        @PluginElement("RequiresLocation")
+        private Boolean requiresLocation;
+
         @Override
         public RoutingAppender build() {
             final String name = getName();
@@ -83,7 +86,7 @@ public final class RoutingAppender extends AbstractAppender {
                 return null;
             }
             return new RoutingAppender(name, getFilter(), isIgnoreExceptions(), routes, rewritePolicy,
-                    getConfiguration(), purgePolicy, defaultRouteScript, getPropertyArray());
+                    getConfiguration(), purgePolicy, defaultRouteScript, getPropertyArray(), requiresLocation);
         }
 
         public Routes getRoutes() {
@@ -100,6 +103,10 @@ public final class RoutingAppender extends AbstractAppender {
 
         public PurgePolicy getPurgePolicy() {
             return purgePolicy;
+        }
+
+        public Boolean requiresLocation() {
+            return requiresLocation;
         }
 
         public B setRoutes(@SuppressWarnings("hiding") final Routes routes) {
@@ -119,6 +126,11 @@ public final class RoutingAppender extends AbstractAppender {
 
         public B setPurgePolicy(@SuppressWarnings("hiding") final PurgePolicy purgePolicy) {
             this.purgePolicy = purgePolicy;
+            return asBuilder();
+        }
+
+        public B setRequestLocation(@SuppressWarnings("hiding") final boolean requiresLocation) {
+            this.requiresLocation = requiresLocation;
             return asBuilder();
         }
 
@@ -142,15 +154,17 @@ public final class RoutingAppender extends AbstractAppender {
     private final PurgePolicy purgePolicy;
     private final AbstractScript defaultRouteScript;
     private final ConcurrentMap<Object, Object> scriptStaticVariables = new ConcurrentHashMap<>();
+    private Boolean requiresLocation;
 
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
             final RewritePolicy rewritePolicy, final Configuration configuration, final PurgePolicy purgePolicy,
-            final AbstractScript defaultRouteScript, Property[] properties) {
+            final AbstractScript defaultRouteScript, Property[] properties, final Boolean requiresLocation) {
         super(name, filter, null, ignoreExceptions, properties);
         this.routes = routes;
         this.configuration = configuration;
         this.rewritePolicy = rewritePolicy;
         this.purgePolicy = purgePolicy;
+        this.requiresLocation = requiresLocation;
         if (this.purgePolicy != null) {
             this.purgePolicy.initialize(this);
         }
@@ -199,6 +213,12 @@ public final class RoutingAppender extends AbstractAppender {
         }
         super.start();
     }
+
+    @Override
+    public boolean requiresLocation() {
+        return requiresLocation != null ? requiresLocation : false;
+    }
+
 
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {

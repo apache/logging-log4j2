@@ -139,6 +139,11 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     }
 
     @Override
+    protected boolean requiresLocation() {
+        return privateConfig.loggerConfig.requiresLocation();
+    }
+
+    @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message,
             final Throwable t) {
         final Message msg = message == null ? new SimpleMessage(Strings.EMPTY) : message;

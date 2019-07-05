@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * Wrapper class that exposes the protected AbstractLogger methods to support wrapped loggers.
@@ -214,6 +215,9 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message,
             final Throwable t) {
+        if (requiresLocation()) {
+            logger.logMessage(level, marker, fqcn, StackLocatorUtil.calcLocation(fqcn), message, t);
+        }
         logger.logMessage(fqcn, level, marker, message, t);
     }
 }

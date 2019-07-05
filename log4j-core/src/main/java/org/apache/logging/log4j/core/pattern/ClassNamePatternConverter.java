@@ -64,4 +64,9 @@ public final class ClassNamePatternConverter extends NamePatternConverter {
             abbreviate(element.getClassName(), toAppendTo);
         }
     }
+
+    @Override
+    public boolean requiresLocation() {
+        return true;
+    }
 }

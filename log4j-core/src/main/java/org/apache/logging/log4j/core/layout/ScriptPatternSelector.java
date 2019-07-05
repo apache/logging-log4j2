@@ -143,7 +143,7 @@ public class ScriptPatternSelector implements PatternSelector {
     private static Logger LOGGER = StatusLogger.getLogger();
     private final AbstractScript script;
     private final Configuration configuration;
-
+    private final boolean requiresLocation;
 
     private ScriptPatternSelector(final AbstractScript script, final PatternMatch[] properties, final String defaultPattern,
                                  final boolean alwaysWriteExceptions, final boolean disableAnsi,
@@ -154,11 +154,16 @@ public class ScriptPatternSelector implements PatternSelector {
             config.getScriptManager().addScript(script);
         }
         final PatternParser parser = PatternLayout.createPatternParser(config);
+        boolean needsLocation = false;
         for (final PatternMatch property : properties) {
             try {
                 final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
-                formatterMap.put(property.getKey(), list.toArray(new PatternFormatter[list.size()]));
+                PatternFormatter[] formatters = list.toArray(new PatternFormatter[list.size()]);
+                formatterMap.put(property.getKey(), formatters);
                 patternMap.put(property.getKey(), property.getPattern());
+                for (int i = 0; !needsLocation && i < formatters.length; ++i) {
+                    needsLocation = formatters[i].requiresLocation();
+                }
             } catch (final RuntimeException ex) {
                 throw new IllegalArgumentException("Cannot parse pattern '" + property.getPattern() + "'", ex);
             }
@@ -167,9 +172,18 @@ public class ScriptPatternSelector implements PatternSelector {
             final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
             defaultFormatters = list.toArray(new PatternFormatter[list.size()]);
             this.defaultPattern = defaultPattern;
+            for (int i = 0; !needsLocation && i < defaultFormatters.length; ++i) {
+                needsLocation = defaultFormatters[i].requiresLocation();
+            }
         } catch (final RuntimeException ex) {
             throw new IllegalArgumentException("Cannot parse pattern '" + defaultPattern + "'", ex);
         }
+        requiresLocation = needsLocation;
+    }
+
+    @Override
+    public boolean requiresLocation() {
+        return requiresLocation;
     }
 
     @Override

@@ -59,6 +59,7 @@ public class DefaultLogEventFactory implements LogEventFactory {
      *
      * @param loggerName The name of the Logger.
      * @param marker An optional Marker.
+     * @param fqcn The fully qualified class name of the caller.
      * @param location The location of the caller
      * @param level The event Level.
      * @param data The Message.

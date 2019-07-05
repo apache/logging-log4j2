@@ -89,6 +89,10 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     public interface Serializer {
         String toSerializable(final LogEvent event);
+
+        default boolean requiresLocation() {
+            return false;
+        }
     }
 
     /**

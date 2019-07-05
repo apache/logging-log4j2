@@ -124,6 +124,11 @@ public final class HtmlLayout extends AbstractStringLayout {
         return locationInfo;
     }
 
+    @Override
+    public boolean requiresLocation() {
+        return locationInfo;
+    }
+
     private String addCharsetToContentType(final String contentType) {
         if (contentType == null) {
             return DEFAULT_CONTENT_TYPE + "; charset=" + getCharset();

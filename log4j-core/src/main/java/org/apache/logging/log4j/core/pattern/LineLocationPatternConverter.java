@@ -60,4 +60,9 @@ public final class LineLocationPatternConverter extends LogEventPatternConverter
             output.append(element.getLineNumber());
         }
     }
+
+    @Override
+    public boolean requiresLocation() {
+        return true;
+    }
 }

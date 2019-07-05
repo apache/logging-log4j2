@@ -33,7 +33,8 @@ public class StackLocator {
 
     private final static StackLocator INSTANCE = new StackLocator();
 
-    private final static ThreadLocal<FqcnCallerLocator> LOCATOR = ThreadLocal.withInitial(FqcnCallerLocator::new);
+    private final static ThreadLocal<String> FQCN = new ThreadLocal<>();
+    private final static FqcnCallerLocator LOCATOR = new FqcnCallerLocator();
 
     public static StackLocator getInstance() {
         return INSTANCE;
@@ -75,7 +76,10 @@ public class StackLocator {
     }
 
     public StackTraceElement calcLocation(final String fqcnOfLogger) {
-        return walker.walk(LOCATOR.get().setFqcn(fqcnOfLogger)).toStackTraceElement();
+        FQCN.set(fqcnOfLogger);
+        StackTraceElement element = walker.walk(LOCATOR).toStackTraceElement();
+        FQCN.set(null);
+        return element;
     }
 
     public StackTraceElement getStackTraceElement(final int depth) {
@@ -84,15 +88,9 @@ public class StackLocator {
 
     static final class FqcnCallerLocator implements Function<Stream<StackWalker.StackFrame>, StackWalker.StackFrame> {
 
-        private String fqcn;
-
-        public FqcnCallerLocator setFqcn(String fqcn) {
-            this.fqcn = fqcn;
-            return this;
-        }
-
         @Override
         public StackWalker.StackFrame apply(Stream<StackWalker.StackFrame> stackFrameStream) {
+            String fqcn = FQCN.get();
             boolean foundFqcn = false;
             Object[] frames = stackFrameStream.toArray();
             for (int i = 0; i < frames.length ; ++i) {
