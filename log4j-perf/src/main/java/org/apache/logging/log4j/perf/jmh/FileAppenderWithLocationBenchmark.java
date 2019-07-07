@@ -102,6 +102,13 @@ public class FileAppenderWithLocationBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
+    public void log4j2FluentFile() {
+        log4j2Logger.atDebug().withLocation().log(MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
     public void logbackFile() {
         slf4jLogger.debug(MESSAGE);
     }
