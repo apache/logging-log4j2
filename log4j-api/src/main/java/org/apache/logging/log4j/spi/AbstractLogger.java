@@ -107,7 +107,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
     private static ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
-    private final ThreadLocal<DefaultLogBuilder> logBuilder;
+    protected final ThreadLocal<DefaultLogBuilder> logBuilder;
 
 
     /**
@@ -2838,14 +2838,15 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public LogBuilder atLevel(Level level) {
         if (isEnabled(level)) {
-            DefaultLogBuilder builder = logBuilder.get();
-            if (builder.isInUse()) {
-                return new DefaultLogBuilder(this, level);
-            }
-            return builder.reset(level);
+            return (getLogBuilder(level).reset(level));
         } else {
             return LogBuilder.NOOP;
         }
+    }
+
+    private DefaultLogBuilder getLogBuilder(Level level) {
+        DefaultLogBuilder builder = logBuilder.get();
+        return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
     }
 
     private class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {
