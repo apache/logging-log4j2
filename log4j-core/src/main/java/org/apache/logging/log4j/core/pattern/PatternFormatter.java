@@ -68,6 +68,15 @@ public class PatternFormatter {
     }
 
     /**
+     * Most pattern formatters do not use location information. When they do they should return true here
+     * so that the logging system can efficiently capture it.
+     * @return true if location information is required.
+     */
+    public boolean requiresLocation() {
+        return converter.requiresLocation();
+    }
+
+    /**
      * Returns a String suitable for debugging.
      *
      * @return a String suitable for debugging.

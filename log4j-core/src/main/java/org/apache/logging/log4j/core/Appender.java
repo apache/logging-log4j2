@@ -89,4 +89,12 @@ public interface Appender extends LifeCycle {
      * @param handler the ErrorHandler to use for handling exceptions.
      */
     void setHandler(ErrorHandler handler);
+
+    /**
+     * Appenders should return true if they require location information.
+     * @return true if the Appender requires location information.
+     */
+    default boolean requiresLocation() {
+        return false;
+    }
 }

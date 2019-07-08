@@ -140,6 +140,11 @@ public final class PatternLayout extends AbstractStringLayout {
         return new SerializerBuilder();
     }
 
+    @Override
+    public boolean requiresLocation() {
+        return eventSerializer.requiresLocation();
+    }
+
     /**
      * Gets the conversion pattern.
      *
@@ -273,6 +278,16 @@ public final class PatternLayout extends AbstractStringLayout {
             builder.append("]");
             return builder.toString();
         }
+
+        @Override
+        public boolean requiresLocation() {
+            for (PatternFormatter formatter : formatters) {
+                if (formatter.requiresLocation()) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     public static class SerializerBuilder implements org.apache.logging.log4j.plugins.util.Builder<Serializer> {
@@ -382,6 +397,11 @@ public final class PatternLayout extends AbstractStringLayout {
                 buffer.append(str);
             }
             return buffer;
+        }
+
+        @Override
+        public boolean requiresLocation() {
+            return patternSelector.requiresLocation();
         }
 
         @Override

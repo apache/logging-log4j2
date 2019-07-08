@@ -60,4 +60,9 @@ public final class FullLocationPatternConverter extends LogEventPatternConverter
             output.append(element.toString());
         }
     }
+
+    @Override
+    public boolean requiresLocation() {
+        return true;
+    }
 }

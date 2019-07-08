@@ -39,6 +39,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 
@@ -106,7 +107,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
     private static ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
-    private final ThreadLocal<DefaultLogBuilder> logBuilder;
+    protected final ThreadLocal<DefaultLogBuilder> logBuilder;
 
 
     /**
@@ -2040,6 +2041,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     protected void log(final Level level, final Marker marker, final String fqcn, final StackTraceElement location,
             final Message message, final Throwable throwable) {
+        logMessage(fqcn, level, marker, message, throwable);
     }
 
     @Override
@@ -2072,7 +2074,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @PerformanceSensitive
-    // NOTE: This is a hot method. Current implementation compiles to 29 bytes of byte code.
+    // NOTE: This is a hot method. Current implementation compiles to 33 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
     private void logMessageTrackRecursion(final String fqcn,
                                           final Level level,
@@ -2081,7 +2083,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
                                           final Throwable throwable) {
         try {
             incrementRecursionDepth(); // LOG4J2-1518, LOG4J2-2031
-            tryLogMessage(fqcn, level, marker, msg, throwable);
+            tryLogMessage(fqcn, getLocation(fqcn), level, marker, msg, throwable);
         } finally {
             decrementRecursionDepth();
         }
@@ -2118,19 +2120,27 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @PerformanceSensitive
-    // NOTE: This is a hot method. Current implementation compiles to 26 bytes of byte code.
+    // NOTE: This is a hot method. Current implementation compiles to 27 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
     private void tryLogMessage(final String fqcn,
+                               final StackTraceElement location,
                                final Level level,
                                final Marker marker,
                                final Message msg,
                                final Throwable throwable) {
         try {
-            logMessage(fqcn, level, marker, msg, throwable);
+            log(level, marker, fqcn, location, msg, throwable);
         } catch (final Exception e) {
             // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
             handleLogMessageException(e, fqcn, msg);
         }
+    }
+
+    @PerformanceSensitive
+    // NOTE: This is a hot method. Current implementation compiles to 15 bytes of byte code.
+    // This is within the 35 byte MaxInlineSize threshold. Modify with care!
+    private StackTraceElement getLocation(String fqcn) {
+        return requiresLocation() ? StackLocatorUtil.calcLocation(fqcn) : null;
     }
 
     // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
@@ -2749,6 +2759,10 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         logIfEnabled(FQCN, Level.WARN, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
+    protected boolean requiresLocation() {
+        return false;
+    }
+
     /**
      * Constuct a trace log event.
      * @return a LogBuilder.
@@ -2824,14 +2838,15 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public LogBuilder atLevel(Level level) {
         if (isEnabled(level)) {
-            DefaultLogBuilder builder = logBuilder.get();
-            if (builder.isInUse()) {
-                return new DefaultLogBuilder(this, level);
-            }
-            return builder.reset(level);
+            return (getLogBuilder(level).reset(level));
         } else {
             return LogBuilder.NOOP;
         }
+    }
+
+    private DefaultLogBuilder getLogBuilder(Level level) {
+        DefaultLogBuilder builder = logBuilder.get();
+        return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
     }
 
     private class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {

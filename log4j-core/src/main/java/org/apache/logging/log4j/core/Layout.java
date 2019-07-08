@@ -96,4 +96,12 @@ public interface Layout<T extends Serializable> extends Encoder<LogEvent> {
      * format descriptors are specified.
      */
     Map<String, String> getContentFormat();
+
+    /**
+     * Indiates whether this Layout requires location information.
+     * @return returns true if the Layout requires location information.
+     */
+    default boolean requiresLocation() {
+        return false;
+    }
 }

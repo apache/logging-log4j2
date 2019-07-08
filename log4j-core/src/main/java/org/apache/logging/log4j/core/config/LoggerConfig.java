@@ -52,6 +52,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -373,7 +374,8 @@ public class LoggerConfig extends AbstractFilterable {
                 }
             }
         }
-        final LogEvent logEvent = logEventFactory.createEvent(loggerName, marker, fqcn, level, data, props, t);
+        StackTraceElement location = requiresLocation() ? StackLocatorUtil.calcLocation(fqcn) : null;
+        final LogEvent logEvent = logEventFactory.createEvent(loggerName, marker, fqcn, location, level, data, props, t);
         try {
             log(logEvent, LoggerConfigPredicate.ALL);
         } finally {
@@ -466,6 +468,30 @@ public class LoggerConfig extends AbstractFilterable {
             callAppenders(event);
         }
         logParent(event, predicate);
+    }
+
+    public boolean requiresLocation() {
+        if (!includeLocation) {
+            return false;
+        }
+        AppenderControl[] controls = appenders.get();
+        LoggerConfig loggerConfig = this;
+        while (loggerConfig != null) {
+            for (AppenderControl control : controls) {
+                if (control.getAppender().requiresLocation()) {
+                    return true;
+                }
+            }
+            if (loggerConfig.additive) {
+                loggerConfig = loggerConfig.parent;
+                if (loggerConfig != null) {
+                    controls = loggerConfig.appenders.get();
+                }
+            } else {
+                break;
+            }
+        }
+        return false;
     }
 
     private void logParent(final LogEvent event, final LoggerConfigPredicate predicate) {
