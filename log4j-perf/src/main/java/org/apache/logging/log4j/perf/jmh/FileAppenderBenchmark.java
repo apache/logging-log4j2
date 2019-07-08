@@ -71,7 +71,7 @@ public class FileAppenderBenchmark {
         log4j2AsyncAppender = LogManager.getLogger("AsyncAppender");
         log4j2AsyncDisruptor = LogManager.getLogger("AsyncDisruptorAppender");
         log4j2AsyncLogger = LogManager.getLogger("AsyncLogger");
-        log4j2MemoryLogger = LogManager.getLogger("MemoryMapped");
+        //log4j2MemoryLogger = LogManager.getLogger("MemoryMapped");
         log4j2RandomLogger = LogManager.getLogger("TestRandom");
         slf4jLogger = LoggerFactory.getLogger(FileAppenderBenchmark.class);
         slf4jAsyncLogger = LoggerFactory.getLogger("Async");
@@ -115,12 +115,12 @@ public class FileAppenderBenchmark {
         log4j2RandomLogger.debug(MESSAGE);
     }
 
-    @BenchmarkMode(Mode.Throughput)
+    /*@BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
     public void log4j2MMF() {
         log4j2MemoryLogger.debug(MESSAGE);
-    }
+    }*/
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)

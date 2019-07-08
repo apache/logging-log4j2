@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
+import org.apache.logging.log4j.core.impl.LocationAwareLogEventFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
@@ -95,12 +96,19 @@ public class LogEventFactoryTest {
         assertEquals("TestLogEventFactory wasn't used", "Test", event.getLoggerName());
     }
 
-    public static class TestLogEventFactory implements LogEventFactory {
+    public static class TestLogEventFactory implements LogEventFactory, LocationAwareLogEventFactory {
 
         @Override
         public LogEvent createEvent(final String loggerName, final Marker marker,
                                     final String fqcn, final Level level, final Message data,
                                     final List<Property> properties, final Throwable t) {
+            return new Log4jLogEvent("Test", marker, fqcn, level, data, properties, t);
+        }
+
+        @Override
+        public LogEvent createEvent(final String loggerName, final Marker marker,
+            final String fqcn, final StackTraceElement location, final Level level, final Message data,
+            final List<Property> properties, final Throwable t) {
             return new Log4jLogEvent("Test", marker, fqcn, level, data, properties, t);
         }
     }

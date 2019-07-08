@@ -18,14 +18,14 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-
+import org.apache.logging.log4j.core.impl.LocationAware;
 
 /**
  * Returns the event's line location information in a StringBuilder.
  */
 @Plugin(name = "MethodLocationPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "M", "method" })
-public final class MethodLocationPatternConverter extends LogEventPatternConverter {
+public final class MethodLocationPatternConverter extends LogEventPatternConverter implements LocationAware {
     /**
      * Singleton.
      */
@@ -59,5 +59,10 @@ public final class MethodLocationPatternConverter extends LogEventPatternConvert
         if (element != null) {
             toAppendTo.append(element.getMethodName());
         }
+    }
+
+    @Override
+    public boolean requiresLocation() {
+        return true;
     }
 }

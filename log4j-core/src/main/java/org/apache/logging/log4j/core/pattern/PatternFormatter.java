@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-
+import org.apache.logging.log4j.core.impl.LocationAware;
 
 /**
  *
@@ -65,6 +65,15 @@ public class PatternFormatter {
      */
     public boolean handlesThrowable() {
         return converter.handlesThrowable();
+    }
+
+    /**
+     * Most pattern formatters do not use location information. When they do they should return true here
+     * so that the logging system can efficiently capture it.
+     * @return true if location information is required.
+     */
+    public boolean requiresLocation() {
+        return converter instanceof LocationAware && ((LocationAware) converter).requiresLocation();
     }
 
     /**

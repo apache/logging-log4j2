@@ -26,9 +26,11 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LocationAwareReliabilityStrategy;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
+import org.apache.logging.log4j.core.impl.LocationAware;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -139,11 +141,28 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     }
 
     @Override
+    protected boolean requiresLocation() {
+        return privateConfig.loggerConfig.requiresLocation();
+    }
+
+    @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message,
             final Throwable t) {
         final Message msg = message == null ? new SimpleMessage(Strings.EMPTY) : message;
         final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
         strategy.log(this, getName(), fqcn, marker, level, msg, t);
+    }
+
+    @Override
+    protected void log(final Level level, final Marker marker, final String fqcn, final StackTraceElement location,
+        final Message message, final Throwable throwable) {
+        final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
+        if (strategy instanceof LocationAwareReliabilityStrategy) {
+            ((LocationAwareReliabilityStrategy) strategy).log(this, getName(), fqcn, location, marker, level,
+                message, throwable);
+        } else {
+            strategy.log(this, getName(), fqcn, marker, level, message, throwable);
+        }
     }
 
     @Override

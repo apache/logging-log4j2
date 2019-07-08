@@ -40,13 +40,14 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
  */
-public abstract class AbstractLogger implements ExtendedLogger, Serializable {
+public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLogger, Serializable {
     // Implementation note: many methods in this class are tuned for performance. MODIFY WITH CARE!
     // Specifically, try to keep the hot methods to 35 bytecodes or less:
     // this is within the MaxInlineSize threshold on Java 7 and Java 8 Hotspot and makes these methods
@@ -2083,6 +2084,24 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    public void logMessage(final Level level, final Marker marker, final String fqcn, final StackTraceElement location,
+        final Message message, final Throwable throwable) {
+        try {
+            incrementRecursionDepth();
+            log(level, marker, fqcn, location, message, throwable);
+        } catch (Exception ex) {
+            handleLogMessageException(ex, fqcn, message);
+        } finally {
+            decrementRecursionDepth();
+            ReusableMessageFactory.release(message);
+        }
+    }
+
+    protected void log(final Level level, final Marker marker, final String fqcn, final StackTraceElement location,
+        final Message message, final Throwable throwable) {
+        logMessage(fqcn, level, marker, message, throwable);
+    }
+
     @Override
     public void printf(final Level level, final Marker marker, final String format, final Object... params) {
         if (isEnabled(level, marker, format, params)) {
@@ -2113,7 +2132,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @PerformanceSensitive
-    // NOTE: This is a hot method. Current implementation compiles to 29 bytes of byte code.
+    // NOTE: This is a hot method. Current implementation compiles to 33 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
     private void logMessageTrackRecursion(final String fqcn,
                                           final Level level,
@@ -2122,7 +2141,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
                                           final Throwable throwable) {
         try {
             incrementRecursionDepth(); // LOG4J2-1518, LOG4J2-2031
-            tryLogMessage(fqcn, level, marker, msg, throwable);
+            tryLogMessage(fqcn, getLocation(fqcn), level, marker, msg, throwable);
         } finally {
             decrementRecursionDepth();
         }
@@ -2162,16 +2181,24 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     // NOTE: This is a hot method. Current implementation compiles to 26 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
     private void tryLogMessage(final String fqcn,
+                               final StackTraceElement location,
                                final Level level,
                                final Marker marker,
                                final Message msg,
                                final Throwable throwable) {
         try {
-            logMessage(fqcn, level, marker, msg, throwable);
+            log(level, marker, fqcn, location, msg, throwable);
         } catch (final Exception e) {
             // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
             handleLogMessageException(e, fqcn, msg);
         }
+    }
+
+    @PerformanceSensitive
+    // NOTE: This is a hot method. Current implementation compiles to 15 bytes of byte code.
+    // This is within the 35 byte MaxInlineSize threshold. Modify with care!
+    private StackTraceElement getLocation(String fqcn) {
+        return requiresLocation() ? StackLocatorUtil.calcLocation(fqcn) : null;
     }
 
     // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
@@ -2797,5 +2824,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             final Object p4, final Object p5, final Object p6,
             final Object p7, final Object p8, final Object p9) {
         logIfEnabled(FQCN, Level.WARN, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+    }
+
+    protected boolean requiresLocation() {
+        return false;
     }
 }

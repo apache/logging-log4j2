@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.impl.LocationAware;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
@@ -141,6 +142,12 @@ public final class PatternLayout extends AbstractStringLayout {
     public static SerializerBuilder newSerializerBuilder() {
         return new SerializerBuilder();
     }
+
+    @Override
+    public boolean requiresLocation() {
+        return eventSerializer instanceof LocationAware && ((LocationAware) eventSerializer).requiresLocation();
+    }
+
 
     /**
      * Deprecated, use {@link #newSerializerBuilder()} instead.
@@ -306,7 +313,7 @@ public final class PatternLayout extends AbstractStringLayout {
             .build();
     }
 
-    private static class PatternSerializer implements Serializer, Serializer2 {
+    private static class PatternSerializer implements Serializer, Serializer2, LocationAware {
 
         private final PatternFormatter[] formatters;
         private final RegexReplacement replace;
@@ -340,6 +347,16 @@ public final class PatternLayout extends AbstractStringLayout {
                 buffer.append(str);
             }
             return buffer;
+        }
+
+        @Override
+        public boolean requiresLocation() {
+            for (PatternFormatter formatter : formatters) {
+                if (formatter.requiresLocation()) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         @Override
@@ -427,7 +444,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
     }
 
-    private static class PatternSelectorSerializer implements Serializer, Serializer2 {
+    private static class PatternSelectorSerializer implements Serializer, Serializer2, LocationAware {
 
         private final PatternSelector patternSelector;
         private final RegexReplacement replace;
@@ -462,6 +479,11 @@ public final class PatternLayout extends AbstractStringLayout {
                 buffer.append(str);
             }
             return buffer;
+        }
+
+        @Override
+        public boolean requiresLocation() {
+            return patternSelector instanceof LocationAware && ((LocationAware) patternSelector).requiresLocation();
         }
 
         @Override
