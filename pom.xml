@@ -198,7 +198,7 @@
     <mongodb2.version>2.14.3</mongodb2.version>
     <mongodb3.version>3.10.2</mongodb3.version>
     <groovy.version>2.5.6</groovy.version>
-    <compiler.plugin.version>3.7.0</compiler.plugin.version>
+    <compiler.plugin.version>3.8.1</compiler.plugin.version>
     <pmd.plugin.version>3.10.0</pmd.plugin.version>
     <spotbugs.plugin.version>3.1.5</spotbugs.plugin.version>
     <spotbugs.version>3.1.7</spotbugs.version>
