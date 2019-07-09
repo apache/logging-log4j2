@@ -57,6 +57,15 @@
       <jdkHome>/home/jenkins/tools/java/latest10</jdkHome>
     </configuration>
   </toolchain>
-
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>11</version>
+      <vendor>oracle</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/home/jenkins/tools/java/latest11/</jdkHome>
+    </configuration>
+  </toolchain>
   <!-- other toolchains -->
 </toolchains>
