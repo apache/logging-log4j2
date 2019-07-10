@@ -48,6 +48,13 @@ import org.apache.logging.log4j.util.StringMap;
 public class ContextDataFactory {
     private static final String CLASS_NAME = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextData");
     private static final Class<? extends StringMap> CACHED_CLASS = createCachedClass(CLASS_NAME);
+
+    /**
+     * In LOG4J2-2649 (https://issues.apache.org/jira/browse/LOG4J2-2649),
+     * the reporter said some reason about using graalvm to static compile.
+     * In graalvm doc (https://github.com/oracle/graal/blob/master/substratevm/LIMITATIONS.md),
+     * graalvm is not support MethodHandle now, so the Constructor need not to return MethodHandle.
+     */
     private static final Constructor<?> DEFAULT_CONSTRUCTOR = createDefaultConstructor(CACHED_CLASS);
     private static final Constructor<?> INITIAL_CAPACITY_CONSTRUCTOR = createInitialCapacityConstructor(CACHED_CLASS);
 
