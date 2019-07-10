@@ -48,8 +48,8 @@ import org.apache.logging.log4j.util.StringMap;
 public class ContextDataFactory {
     private static final String CLASS_NAME = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextData");
     private static final Class<? extends StringMap> CACHED_CLASS = createCachedClass(CLASS_NAME);
-    private static final Constructor DEFAULT_CONSTRUCTOR = createDefaultConstructor(CACHED_CLASS);
-    private static final Constructor INITIAL_CAPACITY_CONSTRUCTOR = createInitialCapacityConstructor(CACHED_CLASS);
+    private static final Constructor<?> DEFAULT_CONSTRUCTOR = createDefaultConstructor(CACHED_CLASS);
+    private static final Constructor<?> INITIAL_CAPACITY_CONSTRUCTOR = createInitialCapacityConstructor(CACHED_CLASS);
 
     private static final StringMap EMPTY_STRING_MAP = createContextData(0);
 
@@ -68,24 +68,24 @@ public class ContextDataFactory {
         }
     }
 
-    private static Constructor createDefaultConstructor(final Class<? extends StringMap> cachedClass){
-        if(cachedClass==null){
+    private static Constructor<?> createDefaultConstructor(final Class<? extends StringMap> cachedClass){
+        if (cachedClass == null) {
             return null;
         }
-        try{
+        try {
             return cachedClass.getConstructor();
-        }catch (final NoSuchMethodException | IllegalAccessError ignored){
+        } catch (final NoSuchMethodException | IllegalAccessError ignored) {
             return null;
         }
     }
 
-    private static Constructor createInitialCapacityConstructor(final Class<? extends StringMap> cachedClass){
-        if(cachedClass==null){
+    private static Constructor<?> createInitialCapacityConstructor(final Class<? extends StringMap> cachedClass){
+        if (cachedClass == null) {
             return null;
         }
-        try{
+        try {
             return cachedClass.getConstructor(int.class);
-        }catch (final NoSuchMethodException | IllegalAccessError ignored){
+        } catch (final NoSuchMethodException | IllegalAccessError ignored) {
             return null;
         }
     }
