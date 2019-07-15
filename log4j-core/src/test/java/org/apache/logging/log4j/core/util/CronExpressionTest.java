@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.util;
 
 import org.junit.Test;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -150,6 +152,24 @@ public class CronExpressionTest {
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
         final Date expected = new GregorianCalendar(2015, 9, 16, 10, 15, 0).getTime();
+        assertEquals("Dates not equal.", expected, fireDate);
+    }
+
+    /*
+     * Input time with milliseconds will correctly return the next
+     * scheduled time.
+     */
+    @Test
+    public void testTimeBeforeMilliseconds() throws Exception {
+        final CronExpression parser = new CronExpression("0 0 0 * * ?");
+        final GregorianCalendar cal = new GregorianCalendar(2015, 10, 2, 0, 0, 0);
+        cal.set(Calendar.MILLISECOND, 100);
+        final Date date = cal.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        System.err.println(sdf.format(date));
+        final Date fireDate = parser.getTimeBefore(date);
+        System.err.println(sdf.format(fireDate));
+        final Date expected = new GregorianCalendar(2015, 10, 1, 0, 0, 0).getTime();
         assertEquals("Dates not equal.", expected, fireDate);
     }
 
