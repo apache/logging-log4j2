@@ -17,6 +17,17 @@
 
 package org.apache.logging.log4j.kafka.appender;
 
+import org.apache.kafka.clients.producer.Callback;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.KafkaException;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AbstractManager;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.util.Log4jThread;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Properties;
@@ -24,16 +35,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.AbstractManager;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.util.Log4jThread;
 
 public class KafkaManager extends AbstractManager {
 
@@ -51,17 +52,20 @@ public class KafkaManager extends AbstractManager {
     private final String topic;
     private final String key;
     private final boolean syncSend;
+    private final boolean ignoreKafkaConnectionError;
 
     private static final KafkaManagerFactory factory = new KafkaManagerFactory();
 
     /*
      * The Constructor should have been declared private as all Managers are create by the internal factory;
      */
-    private KafkaManager(final LoggerContext loggerContext, final String name, final String topic, final boolean syncSend,
-                        final Property[] properties, final String key) {
+    private KafkaManager(final LoggerContext loggerContext, final String name, final String topic,
+                         final boolean syncSend,
+                         final boolean ignoreKafkaConnectionError, final Property[] properties, final String key) {
         super(loggerContext, name);
         this.topic = Objects.requireNonNull(topic, "topic");
         this.syncSend = syncSend;
+        this.ignoreKafkaConnectionError = ignoreKafkaConnectionError;
         config.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         config.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         config.setProperty("batch.size", "0");
@@ -87,7 +91,7 @@ public class KafkaManager extends AbstractManager {
     private void closeProducer(final long timeout, final TimeUnit timeUnit) {
         if (producer != null) {
             // This thread is a workaround for this Kafka issue: https://issues.apache.org/jira/browse/KAFKA-1660
-           final Thread closeThread = new Log4jThread(new Runnable() {
+            final Thread closeThread = new Log4jThread(new Runnable() {
                 @Override
                 public void run() {
                     if (producer != null) {
@@ -110,8 +114,9 @@ public class KafkaManager extends AbstractManager {
         if (producer != null) {
             byte[] newKey = null;
 
-            if(key != null && key.contains("${")) {
-                newKey = getLoggerContext().getConfiguration().getStrSubstitutor().replace(key).getBytes(StandardCharsets.UTF_8);
+            if (key != null && key.contains("${")) {
+                newKey = getLoggerContext().getConfiguration().getStrSubstitutor().replace(key)
+                                           .getBytes(StandardCharsets.UTF_8);
             } else if (key != null) {
                 newKey = key.getBytes(StandardCharsets.UTF_8);
             }
@@ -134,7 +139,15 @@ public class KafkaManager extends AbstractManager {
     }
 
     public void startup() {
-        producer = producerFactory.newKafkaProducer(config);
+        if (ignoreKafkaConnectionError) {
+            try {
+                producer = producerFactory.newKafkaProducer(config);
+            } catch (KafkaException ex) {
+                LOGGER.error("Unable to create Kafka Producer", ex);
+            }
+        } else {
+            producer = producerFactory.newKafkaProducer(config);
+        }
     }
 
     public String getTopic() {
@@ -142,36 +155,41 @@ public class KafkaManager extends AbstractManager {
     }
 
     public static KafkaManager getManager(final LoggerContext loggerContext, final String name, final String topic,
-            final boolean syncSend, final Property[] properties, final String key) {
+                                          final boolean syncSend, final boolean ignoreKafkaConnectionError,
+                                          final Property[] properties, final String key) {
         StringBuilder sb = new StringBuilder(name);
-        for (Property prop: properties) {
+        for (Property prop : properties) {
             sb.append(" ").append(prop.getName()).append("=").append(prop.getValue());
         }
-        return getManager(sb.toString(), factory, new FactoryData(loggerContext, topic, syncSend, properties, key));
+        return getManager(sb.toString(), factory, new FactoryData(loggerContext, topic, syncSend,
+                                                                  ignoreKafkaConnectionError, properties, key));
     }
 
     private static class FactoryData {
         private final LoggerContext loggerContext;
         private final String topic;
         private final boolean syncSend;
+        private final boolean ignoreKafkaConnectionError;
+
         private final Property[] properties;
         private final String key;
 
         public FactoryData(final LoggerContext loggerContext, final String topic, final boolean syncSend,
-                final Property[] properties, final String key) {
+                           final boolean ignoreKafkaConnectionError, final Property[] properties, final String key) {
             this.loggerContext = loggerContext;
             this.topic = topic;
             this.syncSend = syncSend;
+            this.ignoreKafkaConnectionError = ignoreKafkaConnectionError;
             this.properties = properties;
             this.key = key;
         }
-
     }
 
     private static class KafkaManagerFactory implements ManagerFactory<KafkaManager, FactoryData> {
         @Override
         public KafkaManager createManager(String name, FactoryData data) {
-            return new KafkaManager(data.loggerContext, name, data.topic, data.syncSend, data.properties, data.key);
+            return new KafkaManager(data.loggerContext, name, data.topic, data.syncSend,
+                                    data.ignoreKafkaConnectionError, data.properties, data.key);
         }
     }
 

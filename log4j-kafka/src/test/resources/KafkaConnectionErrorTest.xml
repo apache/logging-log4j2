@@ -1,0 +1,12 @@
+<Configuration name="KafkaConnectionErrorTest" status="OFF">
+    <Appenders>
+        <Kafka name="KafkaConnectionErrorIgnoredTest" topic="kafka-topic" ignoreKafkaConnectionError="true">
+            <PatternLayout pattern="%m"/>
+        </Kafka>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="KafkaConnectionErrorIgnoredTest"/>
+        </Root>
+    </Loggers>
+</Configuration>
