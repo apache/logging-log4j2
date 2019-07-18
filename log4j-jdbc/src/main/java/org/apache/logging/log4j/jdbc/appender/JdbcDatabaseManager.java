@@ -201,6 +201,11 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             shutdown = true;
         }
 
+        @Override
+        public String toString() {
+            return String.format("Reconnector [latch=%s, shutdown=%s]", latch, shutdown);
+        }
+
     }
 
     private static final class ResultSetColumnMetaData {
@@ -431,11 +436,11 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 reconnector.latch();
                 if (connection == null) {
                     throw new AppenderLoggingException(
-                            "Error writing to JDBC Manager '" + getName() + "': JDBC connection not available.");
+                            "Error writing to JDBC Manager '%s': JDBC connection not available [%s]", getName(), fieldsToString());
                 }
                 if (statement == null) {
                     throw new AppenderLoggingException(
-                            "Error writing to JDBC Manager '" + getName() + "': JDBC statement not available.");
+                            "Error writing to JDBC Manager '%s': JDBC statement not available [%s].", getName(), connection, fieldsToString());
                 }
             }
         }
@@ -481,7 +486,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 this.connection.commit();
             }
         } catch (final SQLException e) {
-            throw new DbAppenderLoggingException("Failed to commit transaction logging event or flushing buffer.", e);
+            throw new AppenderLoggingException(e, "Failed to commit transaction logging event or flushing buffer [%s]",
+                    fieldsToString());
         } finally {
             closeResources(true);
         }
@@ -551,6 +557,13 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         sb.append(this.factoryData.tableName);
         sb.append(" where 1=0");
         return sb.toString();
+    }
+
+    private String fieldsToString() {
+        return String.format(
+                "columnConfigs=%s, sqlStatement=%s, factoryData=%s, connection=%s, statement=%s, reconnector=%s, isBatchSupported=%s, columnMetaData=%s",
+                columnConfigs, sqlStatement, factoryData, connection, statement, reconnector, isBatchSupported,
+                columnMetaData);
     }
 
     public ConnectionSource getConnectionSource() {
@@ -625,8 +638,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 reconnector.start();
                 reconnector.latch();
                 if (connection == null || statement == null) {
-                    throw new AppenderLoggingException(
-                            String.format("Error sending to %s for %s", getName(), factoryData), exception);
+                    throw new AppenderLoggingException(exception, "Error sending to %s for %s [%s]", getName(),
+                            factoryData, fieldsToString());
                 }
             }
         }
@@ -686,7 +699,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                     value = resultSetColumnMetaData.truncate(value.toString());
                 }
             } else {
-                logger().error("Missing ResultSetColumnMetaData for {}", nameKey);
+                logger().error("Missing ResultSetColumnMetaData for {}, connection={}, statement={}", nameKey,
+                        connection, statement);
             }
         }
         return value;
@@ -699,7 +713,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             if (!this.isRunning() || this.connection == null || this.connection.isClosed() || this.statement == null
                     || this.statement.isClosed()) {
                 throw new AppenderLoggingException(
-                        "Cannot write logging event; JDBC manager not connected to the database.");
+                        "Cannot write logging event; JDBC manager not connected to the database, running=%s, [%s]).",
+                        isRunning(), fieldsToString());
             }
             // Clear in case there are leftovers.
             statement.clearParameters();
@@ -759,11 +774,11 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 this.statement.addBatch();
             } else if (this.statement.executeUpdate() == 0) {
                 throw new AppenderLoggingException(
-                        "No records inserted in database table for log event in JDBC manager.");
+                        "No records inserted in database table for log event in JDBC manager [%s].", fieldsToString());
             }
         } catch (final SQLException e) {
-            throw new DbAppenderLoggingException(
-                    "Failed to insert record for log event in JDBC manager: " + e.getMessage(), e);
+            throw new AppenderLoggingException(e, "Failed to insert record for log event in JDBC manager: %s [%s]", e,
+                    fieldsToString());
         } finally {
             // Release ASAP
             try {

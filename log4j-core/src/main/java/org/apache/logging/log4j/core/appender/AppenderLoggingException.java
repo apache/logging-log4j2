@@ -24,17 +24,18 @@ import org.apache.logging.log4j.LoggingException;
  * using the {@link org.apache.logging.log4j.status.StatusLogger}. Appenders should only throw exceptions when an error
  * prevents an event from being written. Appenders <em>must</em> throw an exception in this case so that error-handling
  * features like the {@link FailoverAppender} work properly.
- *
+ * <p>
  * Also note that appenders <em>must</em> provide a way to suppress exceptions when the user desires and abide by
  * that instruction. See {@link org.apache.logging.log4j.core.Appender#ignoreExceptions()}, which is the standard
  * way to do this.
+ * </p>
  */
 public class AppenderLoggingException extends LoggingException {
 
     private static final long serialVersionUID = 6545990597472958303L;
 
     /**
-     * Construct an exception with a message.
+     * Constructs an exception with a message.
      *
      * @param message The reason for the exception
      */
@@ -43,7 +44,18 @@ public class AppenderLoggingException extends LoggingException {
     }
 
     /**
-     * Construct an exception with a message and underlying cause.
+     * Constructs an exception with a message.
+     *
+     * @param format The reason format for the exception, see {@link String#format(String, Object...)}.
+     * @param args The reason arguments for the exception, see {@link String#format(String, Object...)}.
+     * @since 2.12.1
+     */
+    public AppenderLoggingException(final String format, Object... args) {
+        super(String.format(format, args));
+    }
+
+    /**
+     * Constructs an exception with a message and underlying cause.
      *
      * @param message The reason for the exception
      * @param cause The underlying cause of the exception
@@ -53,11 +65,23 @@ public class AppenderLoggingException extends LoggingException {
     }
 
     /**
-     * Construct an exception with an underlying cause.
+     * Constructs an exception with an underlying cause.
      *
      * @param cause The underlying cause of the exception
      */
     public AppenderLoggingException(final Throwable cause) {
         super(cause);
+    }
+
+    /**
+     * Constructs an exception with a message.
+     *
+     * @param cause The underlying cause of the exception
+     * @param format The reason format for the exception, see {@link String#format(String, Object...)}.
+     * @param args The reason arguments for the exception, see {@link String#format(String, Object...)}.
+     * @since 2.12.1
+     */
+    public AppenderLoggingException(final Throwable cause, final String format, Object... args) {
+        super(String.format(format, args), cause);
     }
 }
