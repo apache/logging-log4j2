@@ -115,8 +115,7 @@ public class KafkaManager extends AbstractManager {
             byte[] newKey = null;
 
             if (key != null && key.contains("${")) {
-                newKey = getLoggerContext().getConfiguration().getStrSubstitutor().replace(key)
-                                           .getBytes(StandardCharsets.UTF_8);
+                newKey = getLoggerContext().getConfiguration().getStrSubstitutor().replace(key).getBytes(StandardCharsets.UTF_8);
             } else if (key != null) {
                 newKey = key.getBytes(StandardCharsets.UTF_8);
             }
@@ -158,7 +157,7 @@ public class KafkaManager extends AbstractManager {
                                           final boolean syncSend, final boolean ignoreKafkaConnectionError,
                                           final Property[] properties, final String key) {
         StringBuilder sb = new StringBuilder(name);
-        for (Property prop : properties) {
+        for (Property prop: properties) {
             sb.append(" ").append(prop.getName()).append("=").append(prop.getValue());
         }
         return getManager(sb.toString(), factory, new FactoryData(loggerContext, topic, syncSend,
