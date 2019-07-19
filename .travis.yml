@@ -19,7 +19,7 @@ dist: bionic
 addons:
   apt:
     packages:
-      - openjdk-8-jdk
+      - oracle-java8-installer
       - openjdk-11-jdk
       - maven
 
