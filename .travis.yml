@@ -13,8 +13,8 @@
 language: java
 # sudo enabled because sudo vms have more memory: https://docs.travis-ci.com/user/reference/overview/
 sudo: true
-# trusty required for oraclejdk9
-dist: trusty
+# bionic required for openjdk-11-jdk
+dist: bionic
 
 jdk:
   - oraclejdk8
@@ -23,7 +23,7 @@ addons:
   apt:
     packages:
       - oracle-java8-installer
-      - oracle-java11-installer
+      - openjdk-11-jdk
       - maven
 
 env:

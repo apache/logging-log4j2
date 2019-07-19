@@ -33,10 +33,10 @@
     <provides>
       <id>java11</id>
       <version>11</version>
-      <vendor>oracle</vendor>
+      <vendor>openjdk</vendor>
     </provides>
     <configuration>
-      <jdkHome>/usr/lib/jvm/java-11-oracle</jdkHome>
+      <jdkHome>/usr/lib/jvm/java-11-openjdk-amd64</jdkHome>
     </configuration>
   </toolchain>
 </toolchains>
