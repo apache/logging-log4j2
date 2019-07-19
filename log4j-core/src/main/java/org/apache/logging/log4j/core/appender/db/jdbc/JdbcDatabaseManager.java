@@ -553,10 +553,10 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 logger().debug("Committing Connection {}", this.connection);
                 this.connection.commit();
             }
-		} catch (final SQLException e) {
-			throw new AppenderLoggingException(e, "Failed to commit transaction logging event or flushing buffer [%s]",
-					fieldsToString());
-		} finally {
+        } catch (final SQLException e) {
+            throw new AppenderLoggingException(e, "Failed to commit transaction logging event or flushing buffer [%s]",
+                    fieldsToString());
+        } finally {
             closeResources(true);
         }
         return closed;
