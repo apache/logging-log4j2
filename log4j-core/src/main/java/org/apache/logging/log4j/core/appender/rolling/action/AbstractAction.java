@@ -101,6 +101,7 @@ public abstract class AbstractAction implements Action {
      * @param ex exception.
      */
     protected void reportException(final Exception ex) {
+        LOGGER.warn("Exception reported by action '{}'", getClass(), ex);
     }
 
 }
