@@ -35,11 +35,46 @@ public class AbstractActionTest {
                 "$TestAction.execute(AbstractActionTest.java:"));
     }
 
+    @Test
+    public void testRuntimeExceptionsAreLoggedToStatusLogger() {
+        StatusLogger statusLogger = StatusLogger.getLogger();
+        statusLogger.clear();
+        new AbstractAction() {
+            @Override
+            public boolean execute() {
+                throw new IllegalStateException();
+            }
+        }.run();
+        List<StatusData> statusDataList = statusLogger.getStatusData();
+        assertEquals(1, statusDataList.size());
+        StatusData statusData = statusDataList.get(0);
+        assertEquals(Level.WARN, statusData.getLevel());
+        String formattedMessage = statusData.getFormattedStatus();
+        assertTrue(formattedMessage.contains("Exception reported by action"));
+    }
+
+    @Test
+    public void testErrorsAreLoggedToStatusLogger() {
+        StatusLogger statusLogger = StatusLogger.getLogger();
+        statusLogger.clear();
+        new AbstractAction() {
+            @Override
+            public boolean execute() {
+                throw new AssertionError();
+            }
+        }.run();
+        List<StatusData> statusDataList = statusLogger.getStatusData();
+        assertEquals(1, statusDataList.size());
+        StatusData statusData = statusDataList.get(0);
+        assertEquals(Level.WARN, statusData.getLevel());
+        String formattedMessage = statusData.getFormattedStatus();
+        assertTrue(formattedMessage.contains("Exception reported by action"));
+    }
+
     private static final class TestAction extends AbstractAction {
         @Override
-        public boolean execute() {
-            this.reportException(new IOException("failed"));
-            return false;
+        public boolean execute() throws IOException {
+            throw new IOException("failed");
         }
     }
 }
