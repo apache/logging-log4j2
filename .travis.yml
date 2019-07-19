@@ -16,9 +16,6 @@ sudo: true
 # bionic required for openjdk-11-jdk
 dist: bionic
 
-jdk:
-  - openjdk8
-
 addons:
   apt:
     packages:
