@@ -43,6 +43,9 @@
         AbstractAction.reportException records a warning to the status logger, providing more information when file
         based appenders fail to compress rolled data asynchronously.
       </action>
+      <action issue="LOG4J2-2659" dev="ckozak" type="fix">
+        AbstractAction handles and records unchecked RuntimeException and Error in addition to IOException.
+      </action>
     </release>
     <release version="2.12.0" date="2019-06-23" description="GA Release 2.12.0">
       <action issue="LOG4J2-2547" dev="rgoers" type="fix">
