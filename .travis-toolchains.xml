@@ -31,12 +31,12 @@
   <toolchain>
     <type>jdk</type>
     <provides>
-      <id>java9</id>
-      <version>9</version>
+      <id>java11</id>
+      <version>11</version>
       <vendor>oracle</vendor>
     </provides>
     <configuration>
-      <jdkHome>/usr/lib/jvm/java-9-oracle</jdkHome>
+      <jdkHome>/usr/lib/jvm/java-11-oracle</jdkHome>
     </configuration>
   </toolchain>
 </toolchains>

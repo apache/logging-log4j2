@@ -23,7 +23,7 @@ addons:
   apt:
     packages:
       - oracle-java8-installer
-      - oracle-java9-installer
+      - oracle-java11-installer
       - maven
 
 env:
