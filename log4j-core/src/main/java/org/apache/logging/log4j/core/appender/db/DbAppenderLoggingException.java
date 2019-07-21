@@ -26,8 +26,37 @@ public class DbAppenderLoggingException extends AppenderLoggingException {
 
     private static final long serialVersionUID = 1L;
 
-    public DbAppenderLoggingException(String message, Throwable cause) {
+    /**
+     * Constructs an exception with a message.
+     *
+     * @param format The reason format for the exception, see {@link String#format(String, Object...)}.
+     * @param args The reason arguments for the exception, see {@link String#format(String, Object...)}.
+     * @since 2.12.1
+     */
+    public DbAppenderLoggingException(String format, Object... args) {
+        super(format, args);
+    }
+
+    /**
+     * Constructs an exception with a message and underlying cause.
+     *
+     * @param message The reason for the exception
+     * @param cause The underlying cause of the exception
+     */
+    public DbAppenderLoggingException(final String message, final Throwable cause) {
         super(message, cause);
+    }
+
+    /**
+     * Constructs an exception with a message.
+     *
+     * @param cause The underlying cause of the exception
+     * @param format The reason format for the exception, see {@link String#format(String, Object...)}.
+     * @param args The reason arguments for the exception, see {@link String#format(String, Object...)}.
+     * @since 2.12.1
+     */
+    public DbAppenderLoggingException(Throwable cause, String format, Object... args) {
+        super(cause, format, args);
     }
 
 }

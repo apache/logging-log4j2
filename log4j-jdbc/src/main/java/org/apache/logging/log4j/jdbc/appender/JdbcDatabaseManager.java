@@ -25,6 +25,7 @@ import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.SQLTransactionRollbackException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -45,11 +46,11 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.appender.db.ColumnMapping;
 import org.apache.logging.log4j.core.appender.db.DbAppenderLoggingException;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.jdbc.convert.DateTypeConverter;
 import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
@@ -479,14 +480,20 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             if (this.connection != null && !this.connection.isClosed()) {
                 if (this.isBatchSupported && this.statement != null) {
                     logger().debug("Executing batch PreparedStatement {}", this.statement);
-                    final int[] result = this.statement.executeBatch();
+                    int[] result;
+                    try {
+                        result = this.statement.executeBatch();
+                    } catch (SQLTransactionRollbackException e) {
+                        logger().debug("{} executing batch PreparedStatement {}, retrying.", e, this.statement);
+                        result = this.statement.executeBatch();
+                    }
                     logger().debug("Batch result: {}", Arrays.toString(result));
                 }
                 logger().debug("Committing Connection {}", this.connection);
                 this.connection.commit();
             }
         } catch (final SQLException e) {
-            throw new AppenderLoggingException(e, "Failed to commit transaction logging event or flushing buffer [%s]",
+            throw new DbAppenderLoggingException(e, "Failed to commit transaction logging event or flushing buffer [%s]",
                     fieldsToString());
         } finally {
             closeResources(true);
@@ -777,7 +784,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                         "No records inserted in database table for log event in JDBC manager [%s].", fieldsToString());
             }
         } catch (final SQLException e) {
-            throw new AppenderLoggingException(e, "Failed to insert record for log event in JDBC manager: %s [%s]", e,
+            throw new DbAppenderLoggingException(e, "Failed to insert record for log event in JDBC manager: %s [%s]", e,
                     fieldsToString());
         } finally {
             // Release ASAP
