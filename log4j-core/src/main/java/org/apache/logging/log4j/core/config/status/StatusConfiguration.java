@@ -217,9 +217,12 @@ public class StatusConfiguration {
     }
 
     private void migrateSavedLogMessages() {
-        for (final String message : this.errorMessages) {
-            this.logger.error(message);
+        synchronized(this.errorMessages) {
+            for (final String message : this.errorMessages) {
+                this.logger.error(message);
+            }
         }
+
         this.initialized = true;
         this.errorMessages.clear();
     }
