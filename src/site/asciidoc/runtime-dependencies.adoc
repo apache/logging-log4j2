@@ -213,7 +213,7 @@ For details see the file https://github.com/zeromq/jeromq/blob/master/LICENSE[LI
 
 |log4j-1.2-api[[log4j-1.2-api]]
 |The link:log4j-1.2-api/index.html[Log4j 1.2 Bridge] has no external
-dependencies. This only requires the Log4j API and Log4j Core.
+dependencies. This only requires the Log4j API. Including Log4j Core provides optional, extra functionality.
 
 |log4j-api-scala[[log4j-api-scala]]
 |The Log4j link:manual/scala-api.html[Scala API] requires Scala runtime

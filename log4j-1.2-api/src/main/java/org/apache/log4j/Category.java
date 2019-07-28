@@ -24,9 +24,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.helpers.NullEnumeration;
+import org.apache.log4j.legacy.core.CategoryUtil;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.message.LocalizedMessage;
 import org.apache.logging.log4j.message.Message;
@@ -47,12 +48,26 @@ public class Category {
 
     private static final String FQCN = Category.class.getName();
 
+    private static final boolean isCoreAvailable;
+
+
+    static {
+        boolean available;
+
+        try {
+            available = Class.forName("org.apache.logging.log4j.core.Logger") != null;
+        } catch (Exception ex) {
+            available = false;
+        }
+        isCoreAvailable = available;
+    }
+
     /**
      * Resource bundle for localized messages.
      */
     protected ResourceBundle bundle = null;
 
-    private final org.apache.logging.log4j.core.Logger logger;
+    private final org.apache.logging.log4j.Logger logger;
 
     /**
      * Constructor used by Logger to specify a LoggerContext.
@@ -71,7 +86,7 @@ public class Category {
         this(PrivateManager.getContext(), name);
     }
 
-    private Category(final org.apache.logging.log4j.core.Logger logger) {
+    private Category(final org.apache.logging.log4j.Logger logger) {
         this.logger = logger;
     }
 
@@ -117,16 +132,20 @@ public class Category {
         return logger.getName();
     }
 
-    org.apache.logging.log4j.core.Logger getLogger() {
+    org.apache.logging.log4j.Logger getLogger() {
         return logger;
     }
 
     public final Category getParent() {
-        final org.apache.logging.log4j.core.Logger parent = logger.getParent();
-        if (parent == null) {
+        if (!isCoreAvailable) {
             return null;
         }
-        final ConcurrentMap<String, Logger> loggers = getLoggersMap(logger.getContext());
+        org.apache.logging.log4j.Logger parent = CategoryUtil.getParent(logger);
+        LoggerContext loggerContext = CategoryUtil.getLoggerContext(logger);
+        if (parent == null || loggerContext == null) {
+            return null;
+        }
+        final ConcurrentMap<String, Logger> loggers = getLoggersMap(loggerContext);
         final Logger l = loggers.get(parent.getName());
         return l == null ? new Category(parent) : l;
     }
@@ -182,8 +201,6 @@ public class Category {
             return Level.ERROR;
         case FATAL:
             return Level.FATAL;
-        case OFF:
-            return Level.OFF;
         default:
             // TODO Should this be an IllegalStateException?
             return Level.OFF;
@@ -199,7 +216,7 @@ public class Category {
     }
 
     public void setLevel(final Level level) {
-        logger.setLevel(org.apache.logging.log4j.Level.toLevel(level.levelStr));
+        setLevel(level.levelStr);
     }
 
     public final Level getPriority() {
@@ -207,7 +224,13 @@ public class Category {
     }
 
     public void setPriority(final Priority priority) {
-        logger.setLevel(org.apache.logging.log4j.Level.toLevel(priority.levelStr));
+        setLevel(priority.levelStr);
+    }
+
+    private void setLevel(final String levelStr) {
+        if (isCoreAvailable) {
+            CategoryUtil.setLevel(logger, org.apache.logging.log4j.Level.toLevel(levelStr));
+        }
     }
 
     public void debug(final Object message) {
@@ -354,7 +377,7 @@ public class Category {
     public void forcedLog(final String fqcn, final Priority level, final Object message, final Throwable t) {
         final org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
         final Message msg = message instanceof Message ? (Message) message : new ObjectMessage(message);
-        logger.logMessage(fqcn, lvl, null, msg, t);
+        logger.logMessage(lvl, null, fqcn, null, msg, t);
     }
 
     public boolean exists(final String name) {
@@ -362,11 +385,13 @@ public class Category {
     }
 
     public boolean getAdditivity() {
-        return logger.isAdditive();
+        return isCoreAvailable ? CategoryUtil.isAdditive(logger) : false;
     }
 
     public void setAdditivity(final boolean additivity) {
-        logger.setAdditive(additivity);
+        if (isCoreAvailable) {
+            CategoryUtil.setAdditivity(logger, additivity);
+        }
     }
 
     public void setResourceBundle(final ResourceBundle bundle) {
@@ -378,13 +403,18 @@ public class Category {
             return bundle;
         }
         String name = logger.getName();
-        final ConcurrentMap<String, Logger> loggers = getLoggersMap(logger.getContext());
-        while ((name = NameUtil.getSubName(name)) != null) {
-            final Logger subLogger = loggers.get(name);
-            if (subLogger != null) {
-				final ResourceBundle rb = subLogger.bundle;
-                if (rb != null) {
-                    return rb;
+        if (isCoreAvailable) {
+            LoggerContext ctx = CategoryUtil.getLoggerContext(logger);
+            if (ctx != null) {
+                final ConcurrentMap<String, Logger> loggers = getLoggersMap(ctx);
+                while ((name = NameUtil.getSubName(name)) != null) {
+                    final Logger subLogger = loggers.get(name);
+                    if (subLogger != null) {
+                        final ResourceBundle rb = subLogger.bundle;
+                        if (rb != null) {
+                            return rb;
+                        }
+                    }
                 }
             }
         }
@@ -448,8 +478,8 @@ public class Category {
 
     private void maybeLog(final String fqcn, final org.apache.logging.log4j.Level level,
             final Object message, final Throwable throwable) {
-        if (logger.isEnabled(level, null, message, throwable)) {
-            logger.logMessage(FQCN, level, null, new ObjectMessage(message), throwable);
+        if (logger.isEnabled(level)) {
+            logger.logMessage(level, null, fqcn, null, new ObjectMessage(message), throwable);
         }
     }
 
@@ -457,7 +487,7 @@ public class Category {
 
         @Override
         protected Logger newLogger(final String name, final org.apache.logging.log4j.spi.LoggerContext context) {
-            return new Logger((LoggerContext) context, name);
+            return new Logger(context, name);
         }
 
         @Override
@@ -473,7 +503,7 @@ public class Category {
         private static final String FQCN = Category.class.getName();
 
         public static LoggerContext getContext() {
-            return (LoggerContext) getContext(FQCN, false);
+            return getContext(FQCN, false);
         }
 
         public static org.apache.logging.log4j.Logger getLogger(final String name) {
@@ -482,7 +512,7 @@ public class Category {
     }
 
     private boolean isEnabledFor(final org.apache.logging.log4j.Level level) {
-        return logger.isEnabled(level, null, null);
+        return logger.isEnabled(level);
     }
 
 }

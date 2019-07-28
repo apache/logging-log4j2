@@ -23,7 +23,22 @@ Log4j 2 instead.
 
 ## Requirements
 
-The Log4j 1.2 bridge is dependent on the Log4j 2 API and implementation.
+The Log4j 1.2 bridge is dependent on the Log4j 2 API. The following Log4j 1.x methods will behave differently when
+the Log4j 2 Core module is included then when it is not:
+
+| Method                        | Without log4j-core | With log4j-core                      |
+| ----------------------------- | ------------------ | ------------------------------------ |
+| Category.getParent()          | Returns null       | Returns parent logger                |
+| Category.setLevel()           | NoOp               | Sets Logger Level                    |
+| Category.setPriority()        | NoOp               | Sets Logger Level                    | 
+| Category.getAdditivity()      | Returns false      | Returns Logger's additivity setting  | 
+| Category.setAdditivity()      | NoOp               | Sets additivity of LoggerConfig      |
+| Category.getResourceBundle()  | NoOp               | Returns the resource bundle associated with the Logger |
+| BasicConfigurator.configure() | NoOp               | Reconfigures Log4j 2                 |
+
+If log4j-core is not present location information will not be accurate in calls using the Log4j 1.2 API. The config
+package which attempts tp convert Log4j 1.x configurations to Log4j 2 is not supported without Log4j 2.  
+
 For more information, see [Runtime Dependencies](../runtime-dependencies.html).
 
 ## Usage
