@@ -19,11 +19,12 @@ package org.apache.log4j;
 import java.util.Enumeration;
 
 import org.apache.log4j.helpers.NullEnumeration;
+import org.apache.log4j.legacy.core.ContextUtil;
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -63,6 +64,20 @@ public final class LogManager {
 
     private static final LoggerRepository REPOSITORY = new Repository();
 
+    private static final boolean isLog4jCore;
+
+    static {
+        boolean core = false;
+        try {
+            if (Class.forName("org.apache.logging.log4j.core.LoggerContext") != null) {
+                core = true;
+            }
+        } catch (Exception ex) {
+            // Ignore the exception;
+        }
+        isLog4jCore = core;
+    }
+
     private LogManager() {
     }
 
@@ -96,8 +111,10 @@ public final class LogManager {
     }
 
     static void reconfigure() {
-        final LoggerContext ctx = PrivateManager.getContext();
-        ctx.reconfigure();
+        if (isLog4jCore) {
+            final LoggerContext ctx = PrivateManager.getContext();
+            ContextUtil.reconfigure(ctx);
+        }
     }
 
     /**
@@ -212,7 +229,7 @@ public final class LogManager {
         private static final String FQCN = LogManager.class.getName();
 
         public static LoggerContext getContext() {
-            return (LoggerContext) getContext(FQCN, false);
+            return getContext(FQCN, false);
         }
 
         public static org.apache.logging.log4j.Logger getLogger(final String name) {

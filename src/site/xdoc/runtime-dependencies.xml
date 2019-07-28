@@ -314,7 +314,7 @@
       <h4>log4j-1.2-api</h4>
       <p>
         The <a href="log4j-1.2-api/index.html">Log4j 1.2 Bridge</a> has no external dependencies.
-        This only requires the Log4j API and Log4j Core.
+        This only requires the Log4j API. Including Log4j Core provides optional, extra functionality.
       </p>
 
       <a name="log4j-slf4j-impl" />

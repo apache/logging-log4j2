@@ -74,7 +74,7 @@ public class CategoryTest {
     public void testForcedLog() {
         final MockCategory category = new MockCategory("org.example.foo");
         category.setAdditivity(false);
-        category.getLogger().addAppender(appender);
+        ((org.apache.logging.log4j.core.Logger) category.getLogger()).addAppender(appender);
         category.info("Hello, World");
         final List<LogEvent> list = appender.getEvents();
         int events = list.size();
@@ -172,7 +172,7 @@ public class CategoryTest {
         final ListAppender appender = new ListAppender("List2", null, layout, false, false);
         appender.start();
         category.setAdditivity(false);
-        category.getLogger().addAppender(appender);
+        ((org.apache.logging.log4j.core.Logger) category.getLogger()).addAppender(appender);
         category.error("Test Message");
         final List<String> msgs = appender.getMessages();
         assertTrue("Incorrect number of messages. Expected 1 got " + msgs.size(), msgs.size() == 1);

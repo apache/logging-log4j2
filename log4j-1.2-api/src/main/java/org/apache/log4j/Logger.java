@@ -18,7 +18,7 @@ package org.apache.log4j;
 
 
 import org.apache.log4j.spi.LoggerFactory;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
  *
@@ -56,7 +56,7 @@ public class Logger extends Category {
         private static final String FQCN = Logger.class.getName();
 
         public static LoggerContext getContext() {
-            return (LoggerContext) getContext(FQCN, false);
+            return getContext(FQCN, false);
         }
 
         public static org.apache.logging.log4j.Logger getLogger(final String name) {
