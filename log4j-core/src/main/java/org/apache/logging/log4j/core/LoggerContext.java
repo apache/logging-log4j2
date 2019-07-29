@@ -22,7 +22,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -48,6 +51,8 @@ import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
+import org.apache.logging.log4j.spi.LoggerContextShutdownEnabled;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
@@ -60,7 +65,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * filters, etc and will be atomically updated whenever a reconfigure occurs.
  */
 public class LoggerContext extends AbstractLifeCycle
-        implements org.apache.logging.log4j.spi.LoggerContext, AutoCloseable, Terminable, ConfigurationListener {
+        implements org.apache.logging.log4j.spi.LoggerContext, AutoCloseable, Terminable, ConfigurationListener,
+        LoggerContextShutdownEnabled {
 
     static {
         try {
@@ -80,6 +86,7 @@ public class LoggerContext extends AbstractLifeCycle
 
     private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
+    private volatile List<LoggerContextShutdownAware> listeners = null;
 
     /**
      * The Configuration is volatile to guarantee that initialization of the Configuration has completed before the
@@ -147,6 +154,21 @@ public class LoggerContext extends AbstractLifeCycle
         } else {
             configLocation = null;
         }
+    }
+
+    public void addShutdownListener(LoggerContextShutdownAware listener) {
+        if (listeners == null) {
+            synchronized(this) {
+                if (listeners == null) {
+                    listeners = Collections.synchronizedList(new ArrayList<LoggerContextShutdownAware>());
+                }
+            }
+        }
+        listeners.add(listener);
+    }
+
+    public List<LoggerContextShutdownAware> getListeners() {
+        return listeners;
     }
 
     /**
@@ -359,6 +381,15 @@ public class LoggerContext extends AbstractLifeCycle
         } finally {
             configLock.unlock();
             this.setStopped();
+        }
+        if (listeners != null) {
+            for (LoggerContextShutdownAware listener : listeners) {
+                try {
+                    listener.contextShutdown(this);
+                } catch (Exception ex) {
+                    // Ignore the exception.
+                }
+            }
         }
         LOGGER.debug("Stopped LoggerContext[name={}, {}] with status {}", getName(), this, true);
         return true;

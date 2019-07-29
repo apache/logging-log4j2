@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
@@ -43,7 +44,7 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
  *
  * This ContextSelector should not be used with a Servlet Filter such as the Log4jServletFilter.
  */
-public class ClassLoaderContextSelector implements ContextSelector {
+public class ClassLoaderContextSelector implements ContextSelector, LoggerContextShutdownAware {
 
     private static final AtomicReference<LoggerContext> DEFAULT_CONTEXT = new AtomicReference<>();
 
@@ -51,6 +52,13 @@ public class ClassLoaderContextSelector implements ContextSelector {
 
     protected static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> CONTEXT_MAP =
             new ConcurrentHashMap<>();
+
+    @Override
+    public void contextShutdown(org.apache.logging.log4j.spi.LoggerContext loggerContext) {
+        if (loggerContext instanceof LoggerContext) {
+            removeContext((LoggerContext) loggerContext);
+        }
+    }
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
