@@ -142,6 +142,9 @@
       </action>
     </release>
     <release version="2.12.1" date="2019-MM-DD" description="GA Release 2.12.1">
+      <action issue="LOG4J2-2650" dev="rgoers" type="fix" due-to="Mattia Bertorello">
+        Support emulating a MAC address when using ipv6.
+      </action>
       <action issue="LOG4J2-2366" dev="rgoers" type="fix">
         Remove references to LoggerContext when it is shutdown.
       </action>
