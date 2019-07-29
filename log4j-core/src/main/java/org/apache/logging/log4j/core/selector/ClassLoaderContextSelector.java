@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
@@ -44,7 +45,7 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
  *
  * This ContextSelector should not be used with a Servlet Filter such as the Log4jServletFilter.
  */
-public class ClassLoaderContextSelector implements ContextSelector {
+public class ClassLoaderContextSelector implements ContextSelector, LoggerContextShutdownAware {
 
     private static final AtomicReference<LoggerContext> DEFAULT_CONTEXT = new AtomicReference<>();
 
@@ -70,6 +71,13 @@ public class ClassLoaderContextSelector implements ContextSelector {
         }
         if (ctx != null) {
             ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    @Override
+    public void contextShutdown(org.apache.logging.log4j.spi.LoggerContext loggerContext) {
+        if (loggerContext instanceof LoggerContext) {
+            removeContext((LoggerContext) loggerContext);
         }
     }
 
@@ -193,8 +201,11 @@ public class ClassLoaderContextSelector implements ContextSelector {
             final AtomicReference<WeakReference<LoggerContext>> r = new AtomicReference<>();
             r.set(new WeakReference<>(ctx));
             CONTEXT_MAP.putIfAbsent(name, r);
-            ctx = CONTEXT_MAP.get(name).get().get();
-            return ctx;
+            LoggerContext newContext = CONTEXT_MAP.get(name).get().get();
+            if (newContext != null && newContext == ctx) {
+                newContext.addShutdownListener(this);
+            }
+            return newContext;
         }
         final WeakReference<LoggerContext> weakRef = ref.get();
         LoggerContext ctx = weakRef.get();
@@ -210,7 +221,9 @@ public class ClassLoaderContextSelector implements ContextSelector {
             return ctx;
         }
         ctx = createContext(name, configLocation);
-        ref.compareAndSet(weakRef, new WeakReference<>(ctx));
+        if (ref.compareAndSet(weakRef, new WeakReference<>(ctx))) {
+            ctx.addShutdownListener(this);
+        }
         return ctx;
     }
 

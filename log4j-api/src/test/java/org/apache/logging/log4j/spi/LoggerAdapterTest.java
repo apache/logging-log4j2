@@ -16,12 +16,18 @@
  */
 package org.apache.logging.log4j.spi;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.TestLogger;
+import org.apache.logging.log4j.TestLoggerContext;
+import org.apache.logging.log4j.TestLoggerContextFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.junit.Test;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -68,12 +74,6 @@ public class LoggerAdapterTest {
 
     }
 
-    private static class TestLogger extends Logger {
-        public TestLogger() {
-            super("test", null);
-        }
-    }
-
     private static class TestLoggerAdapter extends AbstractLoggerAdapter<Logger> {
 
         @Override
@@ -86,6 +86,67 @@ public class LoggerAdapterTest {
             return null;
         }
     }
+
+    private static class TestLoggerAdapter2 extends AbstractLoggerAdapter<Logger> {
+
+        @Override
+        protected Logger newLogger(String name, LoggerContext context) {
+            return context.getLogger(name);
+        }
+
+        @Override
+        protected LoggerContext getContext() {
+            return null;
+        }
+
+        public LoggerContext getContext(String fqcn) {
+            for (LoggerContext lc : registry.keySet()) {
+                TestLoggerContext2 context = (TestLoggerContext2) lc;
+                if (fqcn.equals(context.getName())) {
+                    return context;
+                }
+            }
+            LoggerContext lc = new TestLoggerContext2(fqcn, this);
+            registry.put(lc, new ConcurrentHashMap<>());
+            return lc;
+        }
+    }
+
+    private static class TestLoggerContext2 extends TestLoggerContext {
+        private final String name;
+        private final LoggerContextShutdownAware listener;
+
+        public TestLoggerContext2(String name, LoggerContextShutdownAware listener) {
+            this.name = name;
+            this.listener = listener;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void shutdown() {
+            listener.contextShutdown(this);
+        }
+    }
+
+    @Test
+    public void testCleanup() throws Exception {
+        final LoggerContextFactory factory = new TestLoggerContextFactory();
+        final TestLoggerAdapter2 adapter = new TestLoggerAdapter2();
+        for (int i = 0; i < 5; ++i) {
+            LoggerContext lc = adapter.getContext(Integer.toString(i));
+            lc.getLogger(Integer.toString(i));
+        }
+        assertEquals("Expected 5 LoggerContexts", 5, adapter.registry.size());
+        Set<LoggerContext> contexts = new HashSet<>(adapter.registry.keySet());
+        for (LoggerContext context : contexts) {
+            ((TestLoggerContext2) context).shutdown();
+        }
+        assertEquals("Expected 0 LoggerContexts", 0, adapter.registry.size());
+    }
+
+
 
     /**
      * Testing synchronization in the getLoggersInContext() method

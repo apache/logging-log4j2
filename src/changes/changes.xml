@@ -142,6 +142,9 @@
       </action>
     </release>
     <release version="2.12.1" date="2019-MM-DD" description="GA Release 2.12.1">
+      <action issue="LOG4J2-2366" dev="rgoers" type="fix">
+        Remove references to LoggerContext when it is shutdown.
+      </action>
       <action issue="LOG4J2-2556" dev="rgoers" type="update">
         Make Log4j Core optional for Log4j 1.2 API.
       </action>
