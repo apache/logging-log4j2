@@ -357,7 +357,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
         final int maxFiles = highIndex - lowIndex + 1;
 
-        boolean renameFiles = false;
+        boolean renameFiles = !eligibleFiles.isEmpty() && eligibleFiles.lastKey() >= maxIndex;
         while (eligibleFiles.size() >= maxFiles) {
             try {
                 LOGGER.debug("Eligible files: {}", eligibleFiles);
