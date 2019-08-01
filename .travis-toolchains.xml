@@ -50,4 +50,15 @@
       <jdkHome>/usr/lib/jvm/java-9-oracle</jdkHome>
     </configuration>
   </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <id>java11</id>
+      <version>11</version>
+      <vendor>openjdk</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/usr/lib/jvm/java-11-openjdk</jdkHome>
+    </configuration>
+  </toolchain>
 </toolchains>

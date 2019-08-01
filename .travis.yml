@@ -18,6 +18,8 @@ dist: trusty
 
 jdk:
   - openjdk7
+  - openjdk8
+  - openjdk11
 
 env:
   global:
