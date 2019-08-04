@@ -29,7 +29,7 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.12.1" date="2019-MM-DD" description="GA Release 2.12.1">
+    <release version="2.12.1" date="2019-08-04" description="GA Release 2.12.1">
       <action issue="LOG4J2-1946" dev="rgoers" type="fix" due-to="Igor Perelyotov">
         Allow file renames to work when files are missing from the sequence.
       </action>
