@@ -142,7 +142,8 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     @Override
     protected boolean requiresLocation() {
-        return privateConfig.loggerConfig.requiresLocation();
+
+        return privateConfig.requiresLocation;
     }
 
     @Override
@@ -396,6 +397,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         private final Level loggerConfigLevel;
         private final int intLevel;
         private final Logger logger;
+        private final boolean requiresLocation;
 
         public PrivateConfig(final Configuration config, final Logger logger) {
             this.config = config;
@@ -403,6 +405,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
             this.loggerConfigLevel = this.loggerConfig.getLevel();
             this.intLevel = this.loggerConfigLevel.intLevel();
             this.logger = logger;
+            this.requiresLocation = this.loggerConfig.requiresLocation();
         }
 
         public PrivateConfig(final PrivateConfig pc, final Level level) {
@@ -411,6 +414,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
             this.loggerConfigLevel = level;
             this.intLevel = this.loggerConfigLevel.intLevel();
             this.logger = pc.logger;
+            this.requiresLocation = this.loggerConfig.requiresLocation();
         }
 
         public PrivateConfig(final PrivateConfig pc, final LoggerConfig lc) {
@@ -419,6 +423,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
             this.loggerConfigLevel = lc.getLevel();
             this.intLevel = this.loggerConfigLevel.intLevel();
             this.logger = pc.logger;
+            this.requiresLocation = this.loggerConfig.requiresLocation();
         }
 
         // LOG4J2-151: changed visibility to public
