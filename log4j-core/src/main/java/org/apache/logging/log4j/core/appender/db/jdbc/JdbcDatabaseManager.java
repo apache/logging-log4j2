@@ -546,7 +546,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         final boolean closed = true;
         try {
             if (this.connection != null && !this.connection.isClosed()) {
-                if (this.isBatchSupported && this.statement != null) {
+                if (isBuffered() && this.isBatchSupported && this.statement != null) {
                     logger().debug("Executing batch PreparedStatement {}", this.statement);
                     int[] result;
                     try {
@@ -849,7 +849,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 }
             }
 
-            if (this.isBatchSupported) {
+            if (isBuffered() && this.isBatchSupported) {
                 this.statement.addBatch();
             } else if (this.statement.executeUpdate() == 0) {
                 throw new AppenderLoggingException(
