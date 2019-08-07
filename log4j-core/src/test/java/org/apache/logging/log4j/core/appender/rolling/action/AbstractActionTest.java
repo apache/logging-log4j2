@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.junit.StatusLoggerRule;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Rule;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class AbstractActionTest {
 
@@ -45,10 +45,11 @@ public class AbstractActionTest {
         StatusData statusData = statusDataList.get(0);
         assertEquals(Level.WARN, statusData.getLevel());
         String formattedMessage = statusData.getFormattedStatus();
-        assertTrue(formattedMessage.contains("Exception reported by action 'class org.apache." +
-                "logging.log4j.core.appender.rolling.action.AbstractActionTest$TestAction' java.io.IOException: " +
-                "failed\n\tat org.apache.logging.log4j.core.appender.rolling.action.AbstractActionTest" +
-                "$TestAction.execute(AbstractActionTest.java:"));
+        assertTrue(formattedMessage, formattedMessage.contains("Exception reported by action 'class org.apache."
+                + "logging.log4j.core.appender.rolling.action.AbstractActionTest$TestAction' java.io.IOException: "
+                + "failed" + System.lineSeparator()
+                + "\tat org.apache.logging.log4j.core.appender.rolling.action.AbstractActionTest"
+                + "$TestAction.execute(AbstractActionTest.java:"));
     }
 
     @Test
