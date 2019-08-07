@@ -29,10 +29,11 @@ public class AbstractActionTest {
         StatusData statusData = statusDataList.get(0);
         assertEquals(Level.WARN, statusData.getLevel());
         String formattedMessage = statusData.getFormattedStatus();
-        assertTrue(formattedMessage.contains("Exception reported by action 'class org.apache." +
-                "logging.log4j.core.appender.rolling.action.AbstractActionTest$TestAction' java.io.IOException: " +
-                "failed\n\tat org.apache.logging.log4j.core.appender.rolling.action.AbstractActionTest" +
-                "$TestAction.execute(AbstractActionTest.java:"));
+        assertTrue(formattedMessage, formattedMessage.contains("Exception reported by action 'class org.apache."
+                + "logging.log4j.core.appender.rolling.action.AbstractActionTest$TestAction' java.io.IOException: "
+                + "failed" + System.lineSeparator()
+                + "\tat org.apache.logging.log4j.core.appender.rolling.action.AbstractActionTest"
+                + "$TestAction.execute(AbstractActionTest.java:"));
     }
 
     @Test
