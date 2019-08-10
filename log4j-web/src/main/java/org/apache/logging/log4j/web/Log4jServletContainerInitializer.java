@@ -34,14 +34,14 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class Log4jServletContainerInitializer implements ServletContainerInitializer {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
     @Override
     public void onStartup(final Set<Class<?>> classes, final ServletContext servletContext) throws ServletException {
         if (servletContext.getMajorVersion() > 2 && servletContext.getEffectiveMajorVersion() > 2 &&
                 !"true".equalsIgnoreCase(servletContext.getInitParameter(
                         Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED
                 ))) {
+            final Logger LOGGER = StatusLogger.getLogger();
+
             LOGGER.debug("Log4jServletContainerInitializer starting up Log4j in Servlet 3.0+ environment.");
 
             final FilterRegistration.Dynamic filter =
