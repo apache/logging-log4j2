@@ -43,7 +43,10 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
@@ -107,7 +110,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
     private static ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
-    protected final ThreadLocal<DefaultLogBuilder> logBuilder;
+    protected final transient ThreadLocal<DefaultLogBuilder> logBuilder;
 
 
     /**
@@ -2766,7 +2769,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     /**
      * Constuct a trace log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     @Override
     public  LogBuilder atTrace() {
@@ -2775,7 +2778,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     /**
      * Constuct a debug log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     @Override
     public LogBuilder atDebug() {
@@ -2784,7 +2787,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     /**
      * Constuct an informational log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     @Override
     public LogBuilder atInfo() {
@@ -2793,7 +2796,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     /**
      * Constuct a warning log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     @Override
     public LogBuilder atWarn() {
@@ -2802,7 +2805,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     /**
      * Constuct an error log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     @Override
     public LogBuilder atError() {
@@ -2811,7 +2814,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     /**
      * Constuct a fatal log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     @Override
     public LogBuilder atFatal() {
@@ -2820,7 +2823,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     /**
      * Constuct a fatal log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     @Override
     public LogBuilder always() {
@@ -2833,7 +2836,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     /**
      * Constuct a log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     @Override
     public LogBuilder atLevel(Level level) {
@@ -2847,6 +2850,17 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private DefaultLogBuilder getLogBuilder(Level level) {
         DefaultLogBuilder builder = logBuilder.get();
         return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
+    }
+
+    private void readObject (final ObjectInputStream s) throws ClassNotFoundException, IOException {
+        s.defaultReadObject( );
+        try {
+            Field f = this.getClass().getDeclaredField("logBuilder");
+            f.setAccessible(true);
+            f.set(this, new LocalLogBuilder(this));
+        } catch (NoSuchFieldException | IllegalAccessException ex) {
+            StatusLogger.getLogger().warn("Unable to initialize LogBuilder");
+        }
     }
 
     private class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {

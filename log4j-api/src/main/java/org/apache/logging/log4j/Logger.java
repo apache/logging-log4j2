@@ -4201,7 +4201,7 @@ public interface Logger {
      * @param location The location of the caller.
      * @param message The message format.
      * @param throwable the exception to log, including its stack trace.
-     * @since 3.0
+     * @since 2.13.0
      */
     default void logMessage(Level level, Marker marker, String fqcn, StackTraceElement location, Message message,
             Throwable throwable) {
@@ -4211,7 +4211,7 @@ public interface Logger {
     /**
      * Constuct a trace log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     default LogBuilder atTrace() {
         return LogBuilder.NOOP;
@@ -4219,7 +4219,7 @@ public interface Logger {
     /**
      * Constuct a trace log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     default LogBuilder atDebug() {
         return LogBuilder.NOOP;
@@ -4227,7 +4227,7 @@ public interface Logger {
     /**
      * Constuct a trace log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     default LogBuilder atInfo() {
         return LogBuilder.NOOP;
@@ -4235,7 +4235,7 @@ public interface Logger {
     /**
      * Constuct a trace log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     default LogBuilder atWarn() {
         return LogBuilder.NOOP;
@@ -4243,7 +4243,7 @@ public interface Logger {
     /**
      * Constuct a trace log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     default LogBuilder atError() {
         return LogBuilder.NOOP;
@@ -4251,7 +4251,7 @@ public interface Logger {
     /**
      * Constuct a trace log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     default LogBuilder atFatal() {
         return LogBuilder.NOOP;
@@ -4259,7 +4259,7 @@ public interface Logger {
     /**
      * Constuct a log event that will alwways be logged.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     default LogBuilder always() {
         return LogBuilder.NOOP;
@@ -4267,7 +4267,7 @@ public interface Logger {
     /**
      * Constuct a log event.
      * @return a LogBuilder.
-     * @since 3.0
+     * @since 2.13.0
      */
     default LogBuilder atLevel(Level level) {
         return LogBuilder.NOOP;

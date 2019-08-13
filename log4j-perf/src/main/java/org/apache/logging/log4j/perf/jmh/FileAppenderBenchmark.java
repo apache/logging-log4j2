@@ -107,13 +107,13 @@ public class FileAppenderBenchmark {
         final File julFile = new File("target/testJulLog.log");
         julFile.delete();
     }
-
+/*
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
     public void log4j2RAF() {
         log4j2RandomLogger.debug(MESSAGE);
-    }
+    }*/
 
     /* The MemoryMappedFileAppender gets exceptions in Java 11
     @BenchmarkMode(Mode.Throughput)
@@ -122,7 +122,7 @@ public class FileAppenderBenchmark {
     public void log4j2MMF() {
         log4j2MemoryLogger.debug(MESSAGE);
     } */
-
+/*
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
@@ -142,7 +142,7 @@ public class FileAppenderBenchmark {
     @Benchmark
     public void log4j2AsyncLogger() {
         log4j2AsyncLogger.debug(MESSAGE);
-    }
+    }*/
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
@@ -154,10 +154,17 @@ public class FileAppenderBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
+    public void log4j2Builder() {
+        log4j2Logger.atDebug().withLocation().log(MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
     public void logbackFile() {
         slf4jLogger.debug(MESSAGE);
     }
-
+/*
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
@@ -178,5 +185,5 @@ public class FileAppenderBenchmark {
     public void julFile() {
         // must specify sourceClass or JUL will look it up by walking the stack trace!
         julLogger.logp(Level.INFO, getClass().getName(), "julFile", MESSAGE);
-    }
+    }*/
 }

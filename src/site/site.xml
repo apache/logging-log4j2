@@ -76,6 +76,7 @@
       <item name="Log4j 1.x Migration" href="manual/migration.html"/>
 
       <item name="Java API" href="/manual/api.html" collapse="true">
+        <item name="Log Builder" href="manual/logbuilder.html"/>
         <item name="Flow Tracing" href="manual/flowtracing.html"/>
         <item name="Markers" href="manual/markers.html"/>
         <item name="Event Logging" href="/manual/eventlogging.html"/>
@@ -274,8 +275,9 @@
     </menu>
 
     <menu name="Legacy" inherit="top" img="icon-tags">
-      <item name="Log4j 1.2" href="http://logging.apache.org/log4j/1.2/"/>
-      <item name="Log4j 2.3" href="http://logging.apache.org/log4j/log4j-2.3/"/>
+      <item name="Log4j 1.2 - End of Life" href="http://logging.apache.org/log4j/1.2/"/>
+      <item name="Log4j 2.3 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3/"/>
+      <item name="Log4j 2.12.1 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.1/"/>
     </menu>
 
     <menu name="Components" inherit="top" img="icon-cog">
