@@ -26,6 +26,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -56,6 +57,18 @@ public class LoggerTest {
     private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
     private final Marker marker = MarkerManager.getMarker("test");
     private final List<String> results = logger.getEntries();
+
+    @Test
+    public void builder() {
+        logger.atDebug().withLocation().log("Hello");
+        logger.atError().withMarker(marker).log("Hello {}", "John");
+        logger.atWarn().withThrowable(new Throwable("This is a test")).log((Message) new SimpleMessage("Log4j rocks!"));
+        assertEquals(3, results.size());
+        assertThat("Incorrect message 1", results.get(0), equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:63) Hello"));
+        assertThat("Incorrect message 2", results.get(1), equalTo("test ERROR Hello John"));
+        assertThat("Incorrect message 3", results.get(2), startsWith(" WARN Log4j rocks! java.lang.Throwable: This is a test\n" +
+            "\tat org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:65)"));
+    }
 
     @Test
     public void basicFlow() {

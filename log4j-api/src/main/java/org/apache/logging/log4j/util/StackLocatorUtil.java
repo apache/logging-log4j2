@@ -19,6 +19,7 @@ package org.apache.logging.log4j.util;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
+import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -47,6 +48,7 @@ public final class StackLocatorUtil {
     public static StackTraceElement getStackTraceElement(final int depth) {
         return stackLocator.getStackTraceElement(depth + 1);
     }
+
     // migrated from ClassLoaderContextSelector
     @PerformanceSensitive
     public static Class<?> getCallerClass(final String fqcn) {

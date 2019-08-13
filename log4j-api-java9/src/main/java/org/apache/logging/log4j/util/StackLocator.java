@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.util.List;
 import java.util.Stack;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

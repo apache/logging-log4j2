@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -32,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -41,6 +44,7 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -82,6 +86,20 @@ public class LoggerTest {
     org.apache.logging.log4j.Logger logger;
     org.apache.logging.log4j.Logger loggerChild;
     org.apache.logging.log4j.Logger loggerGrandchild;
+
+    @Test
+    public void builder() {
+        logger.atDebug().withLocation().log("Hello");
+        Marker marker = MarkerManager.getMarker("test");
+        logger.atError().withMarker(marker).log("Hello {}", "John");
+        logger.atWarn().withThrowable(new Throwable("This is a test")).log((Message) new SimpleMessage("Log4j rocks!"));
+        final List<LogEvent> events = app.getEvents();
+        assertEventCount(events, 3);
+        assertEquals("Incorrect location", "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:92)", events.get(0).getSource().toString());
+        assertEquals("Incorrect Level", Level.DEBUG, events.get(0).getLevel());
+        assertThat("Incorrect message", events.get(1).getMessage().getFormattedMessage(), equalTo("Hello John"));
+        assertNotNull("Missing Throwable", events.get(2).getThrown());
+    }
 
     @Test
     public void basicFlow() {

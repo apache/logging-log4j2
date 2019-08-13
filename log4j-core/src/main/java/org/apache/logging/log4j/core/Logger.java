@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.config.LocationAwareReliabilityStrategy;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
-import org.apache.logging.log4j.core.impl.LocationAware;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;

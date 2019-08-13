@@ -29,6 +29,13 @@
         "old": "method java.lang.String org.apache.logging.log4j.util.Strings::toRootUpperCase(java.lang.String)",
         "new": "method java.lang.String org.apache.logging.log4j.util.Strings::toRootUpperCase(java.lang.String)",
         "justification": "Method was inaccessible"
+      },
+      {
+        "code": "java.field.serialVersionUIDUnchanged",
+        "old": "field org.apache.logging.log4j.spi.AbstractLogger.serialVersionUID",
+        "new": "field org.apache.logging.log4j.spi.AbstractLogger.serialVersionUID",
+        "serialVersionUID": "2",
+        "justification": "LOG4J2-2639 - Add builder pattern to Logger interface"
       }
     ]
   }

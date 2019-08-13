@@ -4251,4 +4251,85 @@ public interface Logger {
     void warn(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
             Object p8, Object p9);
 
+
+    /**
+     * Logs a Message.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param location The location of the caller.
+     * @param message The message format.
+     * @param throwable the exception to log, including its stack trace.
+     * @since 2.13.0
+     */
+    default void logMessage(Level level, Marker marker, String fqcn, StackTraceElement location, Message message,
+        Throwable throwable) {
+
+    }
+
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atTrace() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atDebug() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atInfo() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atWarn() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atError() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Constuct a trace log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atFatal() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Constuct a log event that will alwways be logged.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder always() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Constuct a log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atLevel(Level level) {
+        return LogBuilder.NOOP;
+    }
 }

@@ -98,6 +98,10 @@ $h3 Custom Log Levels
 In Log4j 2, [custom log levels](manual/customloglevels.html) can easily be defined in code or in configuration. No
 subclassing is required.
 
+$h3 Log Builder API
+In addition to using one of the many log methods in the Log4j API, log events can be constructed using a builder. See
+[Log Builder][manual/logbuilder.html] for more information.
+
 $h3 Garbage-free
 
 During steady state logging, Log4j 2 is [garbage-free](manual/garbagefree.html) in stand-alone applications, and low
@@ -129,8 +133,9 @@ Log4j $Log4jReleaseVersion is now available for production. The API for Log4j 2 
 available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for Apache Commons
 Logging, SLF4J, and java.util.logging.
 
-Log4j $Log4jReleaseVersion is the latest release of Log4j and contains several bug fixes that were found after the release of Log4j 2.6.
-The list of fixes can be found in the latest [changes report](changes-report.html#a$Log4jReleaseVersion).
+Log4j $Log4jReleaseVersion is the latest release of Log4j. As of Log4j 2.13.0 Log4j 2 requires Java 8 or greater at
+runtime. This release contains new features and fixes which can be found
+in the latest [changes report](changes-report.html#a$Log4jReleaseVersion).
 
 Note that subsequent to the release of Log4j 2.6 a minor source incompatibility with prior release was found due to the
 addition of new methods to the Logger interface. If you have code that does:

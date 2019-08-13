@@ -16,12 +16,17 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.internal.DefaultLogBuilder;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
@@ -106,6 +111,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     private final MessageFactory2 messageFactory;
     private final FlowMessageFactory flowMessageFactory;
     private static ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
+    protected final transient ThreadLocal<DefaultLogBuilder> logBuilder;
 
     /**
      * Creates a new logger named after this class (or subclass).
@@ -114,6 +120,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         this.name = getClass().getName();
         this.messageFactory = createDefaultMessageFactory();
         this.flowMessageFactory = createDefaultFlowMessageFactory();
+        this.logBuilder = new LocalLogBuilder(this);
     }
 
     /**
@@ -135,6 +142,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         this.name = name;
         this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : narrow(messageFactory);
         this.flowMessageFactory = createDefaultFlowMessageFactory();
+        this.logBuilder = new LocalLogBuilder(this);
     }
 
     /**
@@ -2828,5 +2836,114 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
 
     protected boolean requiresLocation() {
         return false;
+    }
+
+    /**
+     * Construct a trace log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    @Override
+    public LogBuilder atTrace() {
+        return atLevel(Level.TRACE);
+    }
+    /**
+     * Construct a debug log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    @Override
+    public LogBuilder atDebug() {
+        return atLevel(Level.DEBUG);
+    }
+    /**
+     * Constuct an informational log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    @Override
+    public LogBuilder atInfo() {
+        return atLevel(Level.INFO);
+    }
+    /**
+     * Construct a warning log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    @Override
+    public LogBuilder atWarn() {
+        return atLevel(Level.WARN);
+    }
+    /**
+     * Constuct an error log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    @Override
+    public LogBuilder atError() {
+        return atLevel(Level.ERROR);
+    }
+    /**
+     * Constuct a fatal log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    @Override
+    public LogBuilder atFatal() {
+        return atLevel(Level.FATAL);
+    }
+    /**
+     * Construct a fatal log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    @Override
+    public LogBuilder always() {
+        DefaultLogBuilder builder = logBuilder.get();
+        if (builder.isInUse()) {
+            return new DefaultLogBuilder(this);
+        }
+        return builder.reset(Level.OFF);
+    }
+    /**
+     * Construct a log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    @Override
+    public LogBuilder atLevel(Level level) {
+        if (isEnabled(level)) {
+            return (getLogBuilder(level).reset(level));
+        } else {
+            return LogBuilder.NOOP;
+        }
+    }
+
+    private DefaultLogBuilder getLogBuilder(Level level) {
+        DefaultLogBuilder builder = logBuilder.get();
+        return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
+    }
+
+    private void readObject (final ObjectInputStream s) throws ClassNotFoundException, IOException {
+        s.defaultReadObject( );
+        try {
+            Field f = this.getClass().getDeclaredField("logBuilder");
+            f.setAccessible(true);
+            f.set(this, new LocalLogBuilder(this));
+        } catch (NoSuchFieldException | IllegalAccessException ex) {
+            StatusLogger.getLogger().warn("Unable to initialize LogBuilder");
+        }
+    }
+
+    private class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {
+        private AbstractLogger logger;
+        LocalLogBuilder(AbstractLogger logger) {
+            this.logger = logger;
+        }
+
+        @Override
+        protected DefaultLogBuilder initialValue() {
+            return new DefaultLogBuilder(logger);
+        }
     }
 }
