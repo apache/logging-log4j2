@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.filter.NoMarkerFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -56,6 +57,19 @@ public class OutputStreamAppenderTest {
         appender.start();
         config.addAppender(appender);
         ConfigurationTestUtils.updateLoggers(appender, config);
+    }
+
+    @Test
+    public void testBuildFilter() {
+        final NoMarkerFilter filter = NoMarkerFilter.newBuilder().build();
+        // @formatter:off
+        final OutputStreamAppender.Builder builder = OutputStreamAppender.newBuilder()
+                .setName("test")
+                .setFilter(filter);
+        // @formatter:on
+        Assert.assertEquals(filter, builder.getFilter());
+        final OutputStreamAppender appender = builder.build();
+        Assert.assertEquals(filter, appender.getFilter());
     }
 
     @Test
