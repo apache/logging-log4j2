@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
+import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
  * Appends log events to a given output stream using a layout.
@@ -41,11 +42,12 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
     /**
      * Builds OutputStreamAppender instances.
+     *
+     * @param <B>
+     *            The type to build.
      */
     public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<OutputStreamAppender> {
-
-        private Filter filter;
 
         private boolean follow = false;
 
@@ -58,7 +60,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
             final Layout<? extends Serializable> layout = getLayout();
             final Layout<? extends Serializable> actualLayout = layout == null ? PatternLayout.createDefaultLayout()
                     : layout;
-            return new OutputStreamAppender(getName(), actualLayout, filter, getManager(target, follow, actualLayout),
+            return new OutputStreamAppender(getName(), actualLayout, getFilter(), getManager(target, follow, actualLayout),
                     ignoreExceptions, getPropertyArray());
         }
 
@@ -155,15 +157,16 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
     private static OutputStreamManager getManager(final OutputStream target, final boolean follow,
             final Layout<? extends Serializable> layout) {
-        final OutputStream os = new CloseShieldOutputStream(target);
-        final String managerName = target.getClass().getName() + "@" + Integer.toHexString(target.hashCode()) + '.'
-                + follow;
+        final OutputStream os = target == null ? NullOutputStream.getInstance() : new CloseShieldOutputStream(target);
+        final OutputStream targetRef = target == null ? os : target;
+        final String managerName = targetRef.getClass().getName() + "@" + Integer.toHexString(targetRef.hashCode())
+                + '.' + follow;
         return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
     }
 
     @PluginBuilderFactory
-    public static Builder newBuilder() {
-        return new Builder();
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
     }
 
     private OutputStreamAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
