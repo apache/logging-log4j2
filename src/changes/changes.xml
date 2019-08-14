@@ -142,10 +142,13 @@
       </action>
     </release>
     <release version="2.13.0" date="2019-MM-DD" description="GA Release 2.13.0">
+      <action issue="LOG4J-2672" dev="rgoers" type="fix" due-to="Stephen Colebourne">
+        Add automatic module names where missing.
+      </action>
       <action issue="LOG4J2-2639" dev="rgoers" type="add">
         Add builder pattern to Logger interface.
       </action>
-      <action issue="LOG4J2-2673" dev="ggregory" type="fix" due-to="Yuichi Sugimura, Gary Gregory">
+      <action issue="LOG4J2-2673" dev="ggregory" type="fix" due-to="Yuichi Sugimura">
         OutputStreamAppender.Builder ignores setFilter().
       </action>
     </release>
