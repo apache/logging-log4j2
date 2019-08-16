@@ -217,7 +217,7 @@
     <release.plugin.version>2.5.3</release.plugin.version>
     <scm.plugin.version>1.9.5</scm.plugin.version>
     <jxr.plugin.version>2.5</jxr.plugin.version>
-    <revapi.plugin.version>0.10.5</revapi.plugin.version>
+    <revapi.plugin.version>0.11.1</revapi.plugin.version>
     <revapi.skip>false</revapi.skip>
     <clirr.plugin.version>2.8</clirr.plugin.version>
     <!-- Maven site 3.7 uses the wrong stylesheet? -->
@@ -1626,6 +1626,30 @@
          }
        }
      }
+  },
+  {
+    "extension": "revapi.ignore",
+    "configuration": [
+      {
+  		"code": "java.method.returnTypeTypeParametersChanged",
+  		"old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender::newBuilder()",
+  		"new": "method <B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>> B org.apache.logging.log4j.core.appender.OutputStreamAppender::newBuilder()",
+  		"justification": "The compiler erases types (https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.6)"
+	  },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender::newBuilder()",
+        "new": "method <B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>> B org.apache.logging.log4j.core.appender.OutputStreamAppender::newBuilder()",
+        "justification": "The compiler erases types (https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.6)"
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender::newBuilder()",
+        "new": "method <B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>> B org.apache.logging.log4j.core.appender.OutputStreamAppender::newBuilder()",
+        "typeParameter": "B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
+        "justification": "The compiler erases types (https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.6)"  
+      }
+    ]
   }
 ]
               ]]></analysisConfiguration>
