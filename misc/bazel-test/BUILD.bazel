@@ -1,0 +1,50 @@
+java_import(
+    name = "logging_log4j2_api_jar",
+    jars = [
+        "jars/log4j-api-2.13.0-SNAPSHOT.jar",
+    ],
+)
+
+java_import(
+    name = "logging_log4j2_core_jar",
+    jars = [
+        "jars/log4j-core-2.13.0-SNAPSHOT.jar",
+    ],
+)
+
+java_library(
+    name = "log4j_api",
+    visibility = [
+        "//visibility:public",
+    ],
+    exports = [
+        ":logging_log4j2_api_jar",
+    ],
+)
+
+java_library(
+    name = "log4j_core",
+    exported_plugins = [
+        ":log4j_core_plugin",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+    exports = [
+        ":log4j_api",
+        ":logging_log4j2_core_jar",
+    ],
+)
+
+java_plugin(
+    name = "log4j_core_plugin",
+    generates_api = False,
+    processor_class = "org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor",
+    visibility = [
+        "//visibility:public",
+    ],
+    deps = [
+        ":log4j_api",
+        ":logging_log4j2_core_jar",
+    ],
+)

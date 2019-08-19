@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
@@ -67,16 +68,17 @@ public class PluginProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
-        System.out.println("Processing annotations");
+        Messager messager = processingEnv.getMessager();
+        messager.printMessage(Kind.NOTE, "Processing Log4j annotations");
         try {
             final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Plugin.class);
             if (elements.isEmpty()) {
-                System.out.println("No elements to process");
+                messager.printMessage(Kind.NOTE, "No elements to process");
                 return false;
             }
             collectPlugins(elements);
             writeCacheFile(elements.toArray(new Element[elements.size()]));
-            System.out.println("Annotations processed");
+            messager.printMessage(Kind.NOTE, "Annotations processed");
             return true;
         } catch (final IOException e) {
             e.printStackTrace();

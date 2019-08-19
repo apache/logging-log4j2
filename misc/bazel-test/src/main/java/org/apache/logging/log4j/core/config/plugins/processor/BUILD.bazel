@@ -1,0 +1,5 @@
+java_library(
+    name = "processor",
+    srcs = ["BazelTestPlugin.java"],
+    deps = ["//:log4j_core"],
+)
