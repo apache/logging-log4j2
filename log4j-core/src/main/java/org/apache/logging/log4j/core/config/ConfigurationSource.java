@@ -42,11 +42,15 @@ import org.apache.logging.log4j.util.LoaderUtil;
  * Represents the source for the logging configuration.
  */
 public class ConfigurationSource {
-    
+
     /**
      * ConfigurationSource to use with Configurations that do not require a "real" configuration source.
      */
     public static final ConfigurationSource NULL_SOURCE = new ConfigurationSource(new byte[0], null, 0);
+    /**
+     * ConfigurationSource to use with {@link org.apache.logging.log4j.core.config.composite.CompositeConfiguration}.
+     */
+    public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(new byte[0], null, 0);
     private static final String HTTPS = "https";
     private static final String HTTP = "http";
 
@@ -284,6 +288,9 @@ public class ConfigurationSource {
         }
         if (this == NULL_SOURCE) {
             return "NULL_SOURCE";
+        }
+        if (this == COMPOSITE_SOURCE) {
+            return "COMPOSITE_SOURCE";
         }
         final int length = data == null ? -1 : data.length;
         return "stream (" + length + " bytes, unknown location)";

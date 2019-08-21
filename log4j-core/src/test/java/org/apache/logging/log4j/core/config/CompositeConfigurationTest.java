@@ -115,6 +115,9 @@ public class CompositeConfigurationTest {
                         appendersMap.size());
                 assertTrue(appendersMap.get("File") instanceof FileAppender);
                 assertTrue(appendersMap.get("STDOUT") instanceof ConsoleAppender);
+
+                assertEquals("Expected COMPOSITE_SOURCE for composite configuration but got " + config.getConfigurationSource(),
+                        config.getConfigurationSource(), ConfigurationSource.COMPOSITE_SOURCE);
             }
         };
         runTest(lcr, test);
