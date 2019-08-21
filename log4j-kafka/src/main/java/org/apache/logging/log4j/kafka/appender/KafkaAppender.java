@@ -59,6 +59,9 @@ public final class KafkaAppender extends AbstractAppender {
         @PluginAttribute(value = "syncSend", defaultBoolean = true)
         private boolean syncSend;
 
+        @PluginAttribute(value = "timestamp", defaultBoolean = false)
+        private boolean sendTimestamp;
+
         @SuppressWarnings("resource")
         @Override
         public KafkaAppender build() {
@@ -68,7 +71,7 @@ public final class KafkaAppender extends AbstractAppender {
                 return null;
             }
             final KafkaManager kafkaManager = KafkaManager.getManager(getConfiguration().getLoggerContext(),
-                    getName(), topic, syncSend, getPropertyArray(), key);
+                    getName(), topic, syncSend, sendTimestamp, getPropertyArray(), key);
             return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), getPropertyArray(), kafkaManager);
         }
 
@@ -80,6 +83,8 @@ public final class KafkaAppender extends AbstractAppender {
             return syncSend;
         }
 
+        public boolean isSendTimestamp() { return sendTimestamp; }
+
         public B setTopic(final String topic) {
             this.topic = topic;
             return asBuilder();
@@ -87,6 +92,11 @@ public final class KafkaAppender extends AbstractAppender {
 
         public B setSyncSend(final boolean syncSend) {
             this.syncSend = syncSend;
+            return asBuilder();
+        }
+
+        public B setSendTimestamp(boolean sendTimestamp) {
+            this.sendTimestamp = sendTimestamp;
             return asBuilder();
         }
     }
@@ -125,8 +135,11 @@ public final class KafkaAppender extends AbstractAppender {
     private void tryAppend(final LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
         final Layout<? extends Serializable> layout = getLayout();
         byte[] data;
+        Long eventTimestamp;
+
         data = layout.toByteArray(event);
-        manager.send(data);
+        eventTimestamp = event.getTimeMillis();
+        manager.send(data, eventTimestamp);
     }
 
     @Override
