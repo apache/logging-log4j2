@@ -110,8 +110,8 @@ Version 2.10.0 introduces a the module log4j-appserver to improve integration wi
 
 === Cloud Enabled
 
-Version 2.12.0 introduces support for accessing Dcoker container information via a Lookup and for accessing
-and updating the Log4j configuration through Spring Clooud Configuration. See [Logging in the Cloud](manual/cloud.html)
+Version 2.12.0 introduces support for accessing Docker container information via a Lookup and for accessing
+and updating the Log4j configuration through Spring Cloud Configuration. See [Logging in the Cloud](manual/cloud.html)
 for details.
 
 == Documentation
