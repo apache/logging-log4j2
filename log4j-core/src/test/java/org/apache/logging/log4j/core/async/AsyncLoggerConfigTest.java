@@ -74,14 +74,14 @@ public class AsyncLoggerConfigTest {
     	final LoggerConfig rootLoggerConfig =
     			AsyncLoggerConfig.RootLogger.createLogger(
     					null, Level.INFO, null, new AppenderRef[0], null, new DefaultConfiguration(), null);
-    	assertFalse("Include location should default to false for async logggers",
+	assertFalse("Include location should default to false for async loggers",
     			    rootLoggerConfig.isIncludeLocation());
 
     	final LoggerConfig loggerConfig =
     	        AsyncLoggerConfig.createLogger(
     	                false, Level.INFO, "com.foo.Bar", null, new AppenderRef[0], null, new DefaultConfiguration(),
     	        		null);
-    	assertFalse("Include location should default to false for async logggers",
+	assertFalse("Include location should default to false for async loggers",
     			    loggerConfig.isIncludeLocation());
     }
 }

@@ -21,7 +21,7 @@
 ## The Twelve-Factor Application
 
 The Logging Guidelines for [The Twelve-Factor App](https://12factor.net/logs) state that all logs should be routed 
-unbuffered to stdout. Since this is the least common denominator it is guaranteed to work for all applications. Howeever,
+unbuffered to stdout. Since this is the least common denominator it is guaranteed to work for all applications. However,
 as with any set of general guidelines, choosing the least common denominator approach comes at a cost. Some of the costs
 in Java applications include:
 
@@ -114,7 +114,7 @@ being configured with a list of hosts and ports so high availability is not an i
 
 Spring Boot provides another least common denominator approach to logging configuration. It will let you set the 
 log level for various Loggers within an application which can be dynamically updated via REST endpoints provided 
-by Spring. While this works in a lot of cases it does not support any of the more advanced filtering featurs of 
+by Spring. While this works in a lot of cases it does not support any of the more advanced filtering features of
 Log4j. For example, since it cannot add or modify any Filters other than the log level of a logger, changes cannot be made to allow 
 all log events for a specific user or customer to temporarily be logged 
 (see [DynamicThresholdFilter](filters.html#DynamicThresholdFilter) or 
@@ -127,7 +127,7 @@ Beginning with Log4j 2.12.0 Log4j also supports accessing the configuration via 
 for changes by using the HTTP "If-Modified-Since" header. A patch has also been integrated into Spring Cloud Config
 starting with versions 2.0.3 and 2.1.1 for it to honor the If-Modified-Since header. In addition, the 
 log4j-spring-cloud-config project will listen for update events published by Spring Cloud Bus and then verify
-that the configuratoin file has been modified, so polling via HTTP is not required.
+that the configuration file has been modified, so polling via HTTP is not required.
 
 Log4j also supports composite configurations. A distributed application spread across microservices could 
 share a common configuration file that could be used to control things like enabling debug logging for a 
@@ -144,16 +144,16 @@ Further information regarding integration of the log4j-spring-cloud-config-clien
 Applications within a Docker container that log using a Docker logging driver can include special 
 attributes in the formatted log event as described at 
 [Customize Log Driver Output](https://docs.docker.com/config/containers/logging/log_tags/). Log4j 
-provides similar functionality via the [Docker Loookup](lookups.html#DockerLookup). More information on
+provides similar functionality via the [Docker Lookup](lookups.html#DockerLookup). More information on
 Log4j's Docker support may also be found at [Log4j-Docker](../log4j-docker/index.html). 
 
 ## Appender Performance
-The numbers in the table below represent how much time in seceonds was required for the application to 
-call logger.debug 100,000 times. These numbers only include the time taken to deliver to the specifcly 
-noted endpoint and many not include the actual time required before they are availble for viewing. All 
+The numbers in the table below represent how much time in seconds was required for the application to
+call logger.debug 100,000 times. These numbers only include the time taken to deliver to the specifically
+noted endpoint and many not include the actual time required before they are available for viewing. All
 measurements were performed on a MacBook Pro with a 2.9GHz Intel Core I9 processor with 6 physical and 12 
 logical cores, 32GB of 2400 MHz DDR4 RAM, and 1TB of Apple SSD storage. The VM used by Docker was managed 
-by VMWare Fusion and had 4 CPUs and 2 GB of RAM. These number should be used for relative perfomance comparisons 
+by VMWare Fusion and had 4 CPUs and 2 GB of RAM. These number should be used for relative performance comparisons
 as the results on another system may vary considerably.
 
 The sample application used can be found under the log4j-spring-cloud-config/log4j-spring-cloud-config-samples
@@ -213,7 +213,7 @@ circular buffer the overhead of logging will almost be unnoticeable to the appli
 1. If overall performance is a consideration or you require multiline events such as stack traces
 be processed properly then log via TCP to a companion container that acts as a log forwarder. Use the 
 Log4j Docker Lookup to add the container information to each log event.
-1. Whenvever guaranteed delivery is required use Flume Avro with a batch size of 1 or another Appender such 
+1. Whenever guaranteed delivery is required use Flume Avro with a batch size of 1 or another Appender such
 as the Kafka Appender with syncSend set to true that only return control after the downstream agent 
 acknowledges receipt of the event. Beware that using an Appender that writes each event individually should 
 be kept to a minimum since it is much slower than sending buffered events. 

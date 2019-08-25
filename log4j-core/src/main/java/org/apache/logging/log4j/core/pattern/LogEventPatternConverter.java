@@ -66,7 +66,7 @@ public abstract class LogEventPatternConverter extends AbstractPatternConverter 
     }
 
     /**
-     * Some pattern converters require location informatoin. By returning true the location can be
+     * Some pattern converters require location information. By returning true the location can be
      * calculated efficiently.
      * @return true if this PatternConverter uses location information.
      */

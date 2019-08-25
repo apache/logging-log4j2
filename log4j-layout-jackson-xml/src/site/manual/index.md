@@ -18,7 +18,7 @@
 
 # Apache Log4j Layout for Jackson XML module
 
-As of Log4j 3.0.0, the layout based on Jackson XML has moved from the existing module logj-core to the new modules log4j-layout-jackson-xml.
+As of Log4j 3.0.0, the layout based on Jackson XML has moved from the existing module log4j-core to the new modules log4j-layout-jackson-xml.
 
 ## Requirements
 

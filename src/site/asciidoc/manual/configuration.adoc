@@ -789,7 +789,7 @@ will then be expected to be defined in sets of properties that begin
 with _component.<.identifier>._. The identifier does not have to match
 the name of the component being defined but must uniquely identify all
 the attributes and subcomponents that are part of the component. If the
-list of identifiers is not present the identier must not contain a '.'.
+list of identifiers is not present the identifier must not contain a '.'.
 Each individual component MUST have a "type" attribute specified that
 identifies the component's Plugin type.
 
@@ -899,7 +899,7 @@ has no parent.
 === Configuring Appenders
 
 An appender is configured either using the specific appender plugin's
-name or with an appender element and the type attibute containing the
+name or with an appender element and the type attribute containing the
 appender plugin's name. In addition each appender must have a name
 attribute specified with a value that is unique within the set of
 appenders. The name will be used by loggers to reference the appender as
@@ -1052,7 +1052,7 @@ originate from. To accommodate this, Log4j also supports the syntax
 `${prefix:name}` where the prefix identifies tells Log4j that variable
 name should be evaluated in a specific context. See the
 link:lookups.html[Lookups] manual page for more details. The contexts
-that are built in to Logj4 are:
+that are built in to Log4j are:
 
 [cols="1m,5"]
 |===
@@ -2088,7 +2088,7 @@ System Properties] for details.
 |Default LoggerAdapter to use in the JUL adapter.
 By default, if log4j-core is available, then the class
 `org.apache.logging.log4j.jul .CoreLoggerAdapter` will be used.
-Otherwise, the `ApiLogggerAdapter` will be used. Custom implementations
+Otherwise, the `ApiLoggerAdapter` will be used. Custom implementations
 must provide a public default constructor.
 
 |[[formatMsgAsync]]log4j2.formatMsgAsync +

@@ -56,7 +56,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     private MergeStrategy mergeStrategy;
 
     /**
-     * Construct the ComponsiteConfiguration.
+     * Construct the CompositeConfiguration.
      *
      * @param configurations The List of Configurations to merge.
      */

@@ -271,7 +271,7 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
             final String result = baos.toString().substring(
                 12).trim(); // remove the instant then the spaces at start and end, that are non constant
             String expected = "[main] ERROR org.apache.logging.log4j.configuration.CustomConfiguration - Test OK";
-            Assert.assertTrue("Incorrect string. Expected string ends woth: " + expected + " Actual: " + result,
+            Assert.assertTrue("Incorrect string. Expected string ends with: " + expected + " Actual: " + result,
                     result.endsWith(expected));
         } finally {
             System.setOut(bakStream);

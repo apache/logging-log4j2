@@ -20,7 +20,7 @@
 [#Static_vs_Non_Static]
 == Static vs Non-Static Loggers
 As with any variable in Java, Loggers may be declared as static variables or class member variables. However,
-there are a few factors to consider when choosing to delare a logger as static vs non-static. Generally, it
+there are a few factors to consider when choosing to declare a logger as static vs non-static. Generally, it
 is better to declare Loggers as static.
 
 1. Instantiation of a new Logger is a fairly expensive operation when using the default ContextSelector,
@@ -194,7 +194,7 @@ method is in Child that is the class name that appears.
 7. Logging is performed in the parent class using the logger of Child. The logger name matches the name of the child
 and so it is printed.
 8. Logging is performed in the parent class using the logger of the Child. Although the method was called against
-the Child instance it is implemented in PArent so that is what appears as the class name.
+the Child instance it is implemented in Parent so that is what appears as the class name.
 9. Logging is performed in Child using the logger in the parent which is set to the child logger, so the name of the
 child is printed as the logger name.
 10. Logging is performed in Child using the logger in the parent, which is set to the child logger. Since

@@ -44,7 +44,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
          * Constructs the base factory data.
          *
          * @param bufferSize The size of the buffer.
-         * @param bufferSize The appender-level layout
+         * @param layout The appender-level layout
          */
         protected AbstractFactoryData(final int bufferSize, final Layout<? extends Serializable> layout) {
             this.bufferSize = bufferSize;

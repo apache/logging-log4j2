@@ -129,7 +129,7 @@ public class SslConfiguration {
         try {
             return createSslContext(true, false);
         } catch (final KeyStoreConfigurationException dummy) {
-             LOGGER.debug("Exception occured while using default keystore. This should be a BUG");
+             LOGGER.debug("Exception occurred while using default keystore. This should be a BUG");
              return null;
         }
     }
@@ -139,7 +139,7 @@ public class SslConfiguration {
             return createSslContext(false, true);
         }
         catch (final TrustStoreConfigurationException dummy) {
-            LOGGER.debug("Exception occured while using default truststore. This should be a BUG");
+            LOGGER.debug("Exception occurred while using default truststore. This should be a BUG");
             return null;
         }
     }

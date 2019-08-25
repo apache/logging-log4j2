@@ -40,7 +40,7 @@ public class ValidatingPluginWithGenericBuilderTest {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<ValidatingPluginWithGenericBuilder>) manager.getPluginType("ValidatingPluginWithGenericBuilder");
-        assertNotNull("Rebuild this module to make sure annotaion processing kicks in.", plugin);
+        assertNotNull("Rebuild this module to make sure annotation processing kicks in.", plugin);
         node = new Node(null, "Validator", plugin);
     }
 
