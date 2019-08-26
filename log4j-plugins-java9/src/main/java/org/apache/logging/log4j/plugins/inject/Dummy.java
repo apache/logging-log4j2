@@ -14,11 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.plugins.visitors;
+package org.apache.logging.log4j.plugins.inject;
 
 /**
  * This is a dummy class and is only here to allow module-info.java to compile. It will not
- * be copied into the log4j-api module.
+ * be copied into the log4j-plugins module.
  */
 public class Dummy {
 }

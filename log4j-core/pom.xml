@@ -469,7 +469,7 @@
               org.apache.logging.log4j.plugins.processor,
               org.apache.logging.log4j.plugins.util,
               org.apache.logging.log4j.plugins.validation,
-              org.apache.logging.log4j.plugins.visitors,
+              org.apache.logging.log4j.plugins.inject,
               *
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>

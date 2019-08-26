@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginConfigurationVisitor;
-import org.apache.logging.log4j.plugins.PluginVisitorStrategy;
+import org.apache.logging.log4j.plugins.inject.InjectionStrategy;
 
 /**
  * Identifies a parameter or field as a Configuration.
@@ -32,7 +32,7 @@ import org.apache.logging.log4j.plugins.PluginVisitorStrategy;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-@PluginVisitorStrategy(PluginConfigurationVisitor.class)
+@InjectionStrategy(PluginConfigurationVisitor.class)
 public @interface PluginConfiguration {
     // empty
 }

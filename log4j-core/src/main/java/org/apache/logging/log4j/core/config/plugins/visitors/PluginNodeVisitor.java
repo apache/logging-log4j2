@@ -18,10 +18,6 @@
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
-import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.visitors.AbstractPluginVisitor;
-
-import java.util.function.Function;
 
 /**
  *  @deprecated Provided to support legacy plugins.
@@ -32,10 +28,9 @@ public class PluginNodeVisitor extends AbstractPluginVisitor<PluginNode, Object>
     }
 
     @Override
-    public Object visit(final Object unused, final Node node, final Function<String, String> substitutor,
-                        final StringBuilder log) {
+    public Object build() {
         if (this.conversionType.isInstance(node)) {
-            log.append("Node=").append(node.getName());
+            debugLog.append("Node=").append(node.getName());
             return node;
         }
         LOGGER.warn("Variable annotated with @PluginNode is not compatible with the type {}.", node.getClass());

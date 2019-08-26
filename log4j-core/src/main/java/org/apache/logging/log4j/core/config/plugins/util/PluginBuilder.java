@@ -17,6 +17,25 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationException;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.inject.PluginInjectionBuilder;
+import org.apache.logging.log4j.plugins.util.Builder;
+import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
+import org.apache.logging.log4j.plugins.validation.ConstraintValidators;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.util.StringBuilders;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -27,29 +46,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationException;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.PluginAliases;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.plugins.util.Builder;
-import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
-import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
-import org.apache.logging.log4j.plugins.validation.ConstraintValidators;
-import org.apache.logging.log4j.plugins.visitors.PluginVisitor;
-import org.apache.logging.log4j.plugins.visitors.PluginVisitors;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.ReflectionUtil;
-import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Builder class to instantiate and configure a Plugin object using a PluginFactory method or PluginBuilderFactory
@@ -189,18 +189,20 @@ public class PluginBuilder implements Builder<Object> {
                         a instanceof org.apache.logging.log4j.core.config.plugins.PluginAliases) {
                     continue; // already processed
                 }
-                final PluginVisitor<? extends Annotation, Configuration> visitor =
-                    PluginVisitors.findVisitor(a.annotationType());
-                if (visitor != null) {
-                    final Object value = visitor.setAliases(aliases)
-                        .setAnnotation(a)
-                        .setConversionType(field.getType())
-                        .setMember(field)
-                        .visit(configuration, node, substitutor, log);
-                    // don't overwrite default values if the visitor gives us no value to inject
-                    if (value != null) {
-                        field.set(target, value);
-                    }
+                final Object value = PluginInjectionBuilder.findBuilderForInjectionStrategy(a.annotationType())
+                        .flatMap(b -> Optional.ofNullable(b
+                                .withAliases(aliases)
+                                .withAnnotation(a)
+                                .withConfiguration(configuration)
+                                .withConfigurationNode(node)
+                                .withConversionType(field.getType())
+                                .withDebugLog(log)
+                                .withMember(field)
+                                .withStringSubstitutionStrategy(substitutor)
+                                .build()))
+                        .orElse(null);
+                if (value != null) {
+                    field.set(target, value);
                 }
             }
             final Collection<ConstraintValidator<?>> validators =
@@ -262,24 +264,27 @@ public class PluginBuilder implements Builder<Object> {
         for (int i = 0; i < annotations.length; i++) {
             log.append(log.length() == 0 ? factory.getName() + "(" : ", ");
             final String[] aliases = extractPluginAliases(annotations[i]);
+            final Class<?> conversionType = types[i];
             for (final Annotation a : annotations[i]) {
                 if (a instanceof PluginAliases ||
                         a instanceof org.apache.logging.log4j.core.config.plugins.PluginAliases) {
                     continue; // already processed
                 }
-                final PluginVisitor<? extends Annotation, Configuration> visitor = PluginVisitors.findVisitor(
-                    a.annotationType());
-
-                if (visitor != null) {
-                    final Object value = visitor.setAliases(aliases)
-                        .setAnnotation(a)
-                        .setConversionType(types[i])
-                        .setMember(factory)
-                        .visit(configuration, node, substitutor, log);
-                    // don't overwrite existing values if the visitor gives us no value to inject
-                    if (value != null) {
-                        args[i] = value;
-                    }
+                final Object value = PluginInjectionBuilder.findBuilderForInjectionStrategy(a.annotationType())
+                        .flatMap(b -> Optional.ofNullable(b
+                                .withAliases(aliases)
+                                .withAnnotation(a)
+                                .withConfiguration(configuration)
+                                .withConfigurationNode(node)
+                                .withConversionType(conversionType)
+                                .withDebugLog(log)
+                                .withMember(factory)
+                                .withStringSubstitutionStrategy(substitutor)
+                                .build()))
+                        .orElse(null);
+                // don't overwrite existing values if the builder gives us no value to inject
+                if (value != null) {
+                    args[i] = value;
                 }
             }
             final Collection<ConstraintValidator<?>> validators =

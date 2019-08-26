@@ -18,13 +18,10 @@
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.visitors.AbstractPluginVisitor;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * @deprecated Provided for support for PluginBuilderAttribute.
@@ -36,16 +33,15 @@ public class PluginBuilderAttributeVisitor extends AbstractPluginVisitor<PluginB
     }
 
     @Override
-    public Object visit(final Object unused, final Node node, final Function<String, String> substitutor,
-                        final StringBuilder log) {
+    public Object build() {
         final String overridden = this.annotation.value();
         final String name = overridden.isEmpty() ? this.member.getName() : overridden;
         final Map<String, String> attributes = node.getAttributes();
         final String rawValue = removeAttributeValue(attributes, name, this.aliases);
-        final String replacedValue = substitutor.apply(rawValue);
+        final String replacedValue = stringSubstitutionStrategy.apply(rawValue);
         final Object value = convert(replacedValue, null);
         final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
-        StringBuilders.appendKeyDqValue(log, name, debugValue);
+        StringBuilders.appendKeyDqValue(debugLog, name, debugValue);
         return value;
     }
 }

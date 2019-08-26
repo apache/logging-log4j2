@@ -15,26 +15,22 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.visitors;
+package org.apache.logging.log4j.plugins.inject;
 
-import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginValue;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
-import java.util.function.Function;
-
 /**
- * PluginVisitor implementation for {@link PluginValue}.
+ * PluginInjectionBuilder implementation for {@link PluginValue}.
  */
-public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue, Object> {
-    public PluginValueVisitor() {
+public class PluginValueBuilder extends AbstractPluginInjectionBuilder<PluginValue, Object> {
+    public PluginValueBuilder() {
         super(PluginValue.class);
     }
 
     @Override
-    public Object visit(final Object unused, final Node node, final Function<String, String> substitutor,
-                        final StringBuilder log) {
+    public Object build() {
         final String name = this.annotation.value();
         final String elementValue = node.getValue();
         final String attributeValue = node.getAttributes().get("value");
@@ -49,8 +45,8 @@ public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue, Objec
         } else {
             rawValue = removeAttributeValue(node.getAttributes(), "value");
         }
-        final String value = substitutor.apply(rawValue);
-        StringBuilders.appendKeyDqValue(log, name, value);
+        final String value = stringSubstitutionStrategy.apply(rawValue);
+        StringBuilders.appendKeyDqValue(debugLog, name, value);
         return value;
     }
 }

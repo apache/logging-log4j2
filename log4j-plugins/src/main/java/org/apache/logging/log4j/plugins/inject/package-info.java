@@ -16,9 +16,8 @@
  */
 
 /**
- * Visitor classes for extracting values from a Configuration or Node corresponding to a plugin annotation.
- * Visitor implementations must implement {@link org.apache.logging.log4j.plugins.inject.PluginInjectionBuilder},
- * and the corresponding annotation must be annotated with
- * {@link org.apache.logging.log4j.plugins.inject.InjectionStrategy}.
+ * Injection builder classes for parsing data from a {@code Configuration} or {@link org.apache.logging.log4j.plugins.Node}
+ * corresponding to an {@link org.apache.logging.log4j.plugins.inject.InjectionStrategy}-annotated annotation.
+ * Injection strategies must implement {@link org.apache.logging.log4j.plugins.inject.PluginInjectionBuilder}.
  */
-package org.apache.logging.log4j.core.config.plugins.visitors;
+package org.apache.logging.log4j.plugins.inject;

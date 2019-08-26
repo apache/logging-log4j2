@@ -20,7 +20,7 @@ module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins.processor;
     exports org.apache.logging.log4j.plugins.util;
     exports org.apache.logging.log4j.plugins.validation;
-    exports org.apache.logging.log4j.plugins.visitors;
+    exports org.apache.logging.log4j.plugins.inject;
 
     uses org.apache.logging.log4j.plugins.processor.PluginService;
 }

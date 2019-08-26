@@ -19,10 +19,6 @@ package org.apache.logging.log4j.core.config.plugins.visitors;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.plugins.visitors.AbstractPluginVisitor;
-import org.apache.logging.log4j.plugins.Node;
-
-import java.util.function.Function;
 
 /**
  * PluginVisitor implementation for {@link PluginConfiguration}.
@@ -33,17 +29,16 @@ public class PluginConfigurationVisitor extends AbstractPluginVisitor<PluginConf
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final Function<String, String> substitutor,
-                        final StringBuilder log) {
+    public Object build() {
         if (this.conversionType.isInstance(configuration)) {
-            log.append("Configuration");
+            debugLog.append("Configuration");
             if (configuration.getName() != null) {
-                log.append('(').append(configuration.getName()).append(')');
+                debugLog.append('(').append(configuration.getName()).append(')');
             }
             return configuration;
         }
         LOGGER.warn("Variable annotated with @PluginConfiguration is not compatible with type {}.",
-            configuration.getClass());
+                configuration.getClass());
         return null;
     }
 }

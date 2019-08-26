@@ -15,40 +15,35 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.visitors;
+package org.apache.logging.log4j.plugins.inject;
 
-import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 
 import java.util.Map;
-import java.util.function.Function;
 
 /**
- * PluginVisitor for PluginBuilderAttribute. If {@code null} is returned for the
- * {@link #visit(org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.plugins.Node, org.apache.logging.log4j.core.LogEvent, StringBuilder)}
+ * PluginInjectionBuilder for PluginBuilderAttribute. If {@code null} is returned for the
+ * {@link PluginInjectionBuilder#build()}}
  * method, then the default value of the field should remain untouched.
- *
- * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
  */
-public class PluginBuilderAttributeVisitor extends AbstractPluginVisitor<PluginBuilderAttribute, Object> {
+public class PluginBuilderAttributeBuilder extends AbstractPluginInjectionBuilder<PluginBuilderAttribute, Object> {
 
-    public PluginBuilderAttributeVisitor() {
+    public PluginBuilderAttributeBuilder() {
         super(PluginBuilderAttribute.class);
     }
 
     @Override
-    public Object visit(final Object unused, final Node node, final Function<String, String> substitutor,
-                        final StringBuilder log) {
+    public Object build() {
         final String overridden = this.annotation.value();
         final String name = overridden.isEmpty() ? this.member.getName() : overridden;
         final Map<String, String> attributes = node.getAttributes();
         final String rawValue = removeAttributeValue(attributes, name, this.aliases);
-        final String replacedValue = substitutor.apply(rawValue);
+        final String replacedValue = stringSubstitutionStrategy.apply(rawValue);
         final Object value = convert(replacedValue, null);
         final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
-        StringBuilders.appendKeyDqValue(log, name, debugValue);
+        StringBuilders.appendKeyDqValue(debugLog, name, debugValue);
         return value;
     }
 }

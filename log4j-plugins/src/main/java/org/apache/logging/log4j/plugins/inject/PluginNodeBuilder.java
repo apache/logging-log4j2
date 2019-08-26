@@ -15,10 +15,25 @@
  * limitations under the license.
  */
 
+package org.apache.logging.log4j.plugins.inject;
+
+import org.apache.logging.log4j.plugins.PluginNode;
+
 /**
- * Visitor classes for extracting values from a Configuration or Node corresponding to a plugin annotation.
- * Visitor implementations must implement {@link org.apache.logging.log4j.plugins.visitors.PluginVisitor},
- * and the corresponding annotation must be annotated with
- * {@link org.apache.logging.log4j.plugins.PluginVisitorStrategy}.
+ * PluginInjectionBuilder implementation for {@link PluginNode}.
  */
-package org.apache.logging.log4j.plugins.visitors;
+public class PluginNodeBuilder extends AbstractPluginInjectionBuilder<PluginNode, Object> {
+    public PluginNodeBuilder() {
+        super(PluginNode.class);
+    }
+
+    @Override
+    public Object build() {
+        if (this.conversionType.isInstance(node)) {
+            debugLog.append("Node=").append(node.getName());
+            return node;
+        }
+        LOGGER.warn("Variable annotated with @PluginNode is not compatible with the type {}.", node.getClass());
+        return null;
+    }
+}

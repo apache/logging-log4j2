@@ -29,6 +29,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+// TODO: this can be combined with @PluginFactory as differentiating them by method signature is obvious
 public @interface PluginBuilderFactory {
     // empty
 }

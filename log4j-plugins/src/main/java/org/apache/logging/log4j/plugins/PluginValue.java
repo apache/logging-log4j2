@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.visitors.PluginValueVisitor;
+import org.apache.logging.log4j.plugins.inject.InjectionStrategy;
+import org.apache.logging.log4j.plugins.inject.PluginValueBuilder;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -33,7 +34,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-@PluginVisitorStrategy(PluginValueVisitor.class)
+@InjectionStrategy(PluginValueBuilder.class)
 public @interface PluginValue {
 
     String value();

@@ -15,9 +15,10 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.visitors;
+package org.apache.logging.log4j.plugins.inject;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -26,14 +27,15 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
- * Base class for PluginVisitor implementations. Provides convenience methods as well as all method implementations
- * other than the {@code visit} method.
+ * Base class for InjectionStrategyBuilder implementations. Provides fields and setters for the builder leaving only
+ * {@link PluginInjectionBuilder#build()} to be implemented.
  *
- * @param <A> the Plugin annotation type.
+ * @param <Ann> the Plugin annotation type.
  */
-public abstract class AbstractPluginVisitor<A extends Annotation, T> implements PluginVisitor<A, T> {
+public abstract class AbstractPluginInjectionBuilder<Ann extends Annotation, Cfg> implements PluginInjectionBuilder<Ann, Cfg> {
 
     /** Status logger. */
     protected static final Logger LOGGER = StatusLogger.getLogger();
@@ -41,11 +43,11 @@ public abstract class AbstractPluginVisitor<A extends Annotation, T> implements 
     /**
      * 
      */
-    protected final Class<A> clazz;
+    protected final Class<Ann> clazz;
     /**
      * 
      */
-    protected A annotation;
+    protected Ann annotation;
     /**
      * 
      */
@@ -59,40 +61,71 @@ public abstract class AbstractPluginVisitor<A extends Annotation, T> implements 
      */
     protected Member member;
 
+    protected Cfg configuration;
+
+    protected Node node;
+
+    protected Function<String, String> stringSubstitutionStrategy;
+
+    protected StringBuilder debugLog;
+
     /**
      * This constructor must be overridden by implementation classes as a no-arg constructor.
      *
      * @param clazz the annotation class this PluginVisitor is for.
      */
-    protected AbstractPluginVisitor(final Class<A> clazz) {
+    protected AbstractPluginInjectionBuilder(final Class<Ann> clazz) {
         this.clazz = clazz;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public PluginVisitor<A, T> setAnnotation(final Annotation anAnnotation) {
+    public PluginInjectionBuilder<Ann, Cfg> withAnnotation(final Annotation anAnnotation) {
         final Annotation a = Objects.requireNonNull(anAnnotation, "No annotation was provided");
         if (this.clazz.isInstance(a)) {
-            this.annotation = (A) a;
+            this.annotation = clazz.cast(a);
         }
         return this;
     }
 
     @Override
-    public PluginVisitor<A, T> setAliases(final String... someAliases) {
+    public PluginInjectionBuilder<Ann, Cfg> withAliases(final String... someAliases) {
         this.aliases = someAliases;
         return this;
     }
 
     @Override
-    public PluginVisitor<A, T> setConversionType(final Class<?> aConversionType) {
+    public PluginInjectionBuilder<Ann, Cfg> withConversionType(final Class<?> aConversionType) {
         this.conversionType = Objects.requireNonNull(aConversionType, "No conversion type class was provided");
         return this;
     }
 
     @Override
-    public PluginVisitor<A, T> setMember(final Member aMember) {
+    public PluginInjectionBuilder<Ann, Cfg> withMember(final Member aMember) {
         this.member = aMember;
+        return this;
+    }
+
+    @Override
+    public PluginInjectionBuilder<Ann, Cfg> withConfiguration(final Cfg aConfiguration) {
+        this.configuration = aConfiguration;
+        return this;
+    }
+
+    @Override
+    public PluginInjectionBuilder<Ann, Cfg> withStringSubstitutionStrategy(final Function<String, String> aStringSubstitutionStrategy) {
+        this.stringSubstitutionStrategy = aStringSubstitutionStrategy;
+        return this;
+    }
+
+    @Override
+    public PluginInjectionBuilder<Ann, Cfg> withDebugLog(final StringBuilder aDebugLog) {
+        this.debugLog = aDebugLog;
+        return this;
+    }
+
+    @Override
+    public PluginInjectionBuilder<Ann, Cfg> withConfigurationNode(final Node aNode) {
+        this.node = aNode;
         return this;
     }
 

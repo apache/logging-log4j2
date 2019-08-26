@@ -15,9 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins;
-
-import org.apache.logging.log4j.plugins.visitors.PluginVisitor;
+package org.apache.logging.log4j.plugins.inject;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
@@ -28,17 +26,17 @@ import java.lang.annotation.Target;
 
 /**
  * Meta-annotation to denote the class name to use that implements
- * {@link org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor} for the annotated annotation.
+ * {@link PluginInjectionBuilder} for the annotated annotation.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface PluginVisitorStrategy {
+public @interface InjectionStrategy {
 
     /**
-     * The class to use that implements {@link org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor}
-     * for the given annotation. The generic type in {@code PluginVisitor} should match the annotation this annotation
-     * is applied to.
+     * The class to use that implements {@link PluginInjectionBuilder}
+     * for the given annotation. The generic annotation type in {@code PluginInjectionBuilder} should match the
+     * annotation this annotation is applied to.
      */
-    Class<? extends PluginVisitor<? extends Annotation, ?>> value();
+    Class<? extends PluginInjectionBuilder<? extends Annotation, ?>> value();
 }
