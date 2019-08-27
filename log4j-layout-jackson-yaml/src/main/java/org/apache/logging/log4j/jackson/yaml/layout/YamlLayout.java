@@ -20,6 +20,7 @@ package org.apache.logging.log4j.jackson.yaml.layout;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -76,7 +77,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
     @JsonRootName(YamlConstants.EVENT)
     public static class YamlLogEventWithAdditionalFields extends LogEventWithAdditionalFields {
 
-        public YamlLogEventWithAdditionalFields(final Object logEvent, final Map<String, String> additionalFields) {
+        public YamlLogEventWithAdditionalFields(final LogEvent logEvent, final Map<String, String> additionalFields) {
             super(logEvent, additionalFields);
         }
 
@@ -88,7 +89,8 @@ public final class YamlLayout extends AbstractJacksonLayout {
 
         @Override
         @JsonUnwrapped
-        public Object getLogEvent() {
+        @JsonSerialize(as = LogEvent.class)
+        public LogEvent getLogEvent() {
             return super.getLogEvent();
         }
 

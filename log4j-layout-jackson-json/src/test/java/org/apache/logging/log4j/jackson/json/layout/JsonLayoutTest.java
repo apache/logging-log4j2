@@ -199,6 +199,29 @@ public class JsonLayoutTest {
         assertTrue(str, str.contains("\"KEY2\":\"" + new JavaLookup().getRuntime() + "\""));
     }
 
+    @Test
+    public void testMutableLogEvent() throws Exception {
+        final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setLocationInfo(false)
+                .setProperties(false)
+                .setComplete(false)
+                .setCompact(true)
+                .setEventEol(false)
+                .setIncludeStacktrace(false)
+                .setAdditionalFields(new KeyValuePair[] {
+                        new KeyValuePair("KEY1", "VALUE1"),
+                        new KeyValuePair("KEY2", "${java:runtime}"), })
+                .setCharset(StandardCharsets.UTF_8)
+                .setConfiguration(ctx.getConfiguration())
+                .build();
+        Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
+        final MutableLogEvent mutableEvent = new MutableLogEvent();
+        mutableEvent.initFrom(logEvent);
+        final String strLogEvent = layout.toSerializable(logEvent);
+        final String strMutableEvent = layout.toSerializable(mutableEvent);
+        assertEquals(strMutableEvent, strLogEvent, strMutableEvent);
+    }
+
     private void testAllFeatures(final boolean locationInfo, final boolean compact, final boolean eventEol,
             final String endOfLine, final boolean includeContext, final boolean contextMapAslist, final boolean includeStacktrace)
             throws Exception {

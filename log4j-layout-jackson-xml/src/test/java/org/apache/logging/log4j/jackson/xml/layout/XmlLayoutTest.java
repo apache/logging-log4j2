@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.layout.LogEventFixtures;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.util.KeyValuePair;
@@ -197,6 +198,20 @@ public class XmlLayoutTest {
         assertTrue(str, str.contains("<KEY2>" + new JavaLookup().getRuntime() + "</KEY2>"));
     }
 
+    @Test
+    public void testMutableLogEvent() throws Exception {
+        final AbstractJacksonLayout layout = XmlLayout.newBuilder().setLocationInfo(false).setProperties(false)
+                .setIncludeStacktrace(false)
+                .setAdditionalFields(new KeyValuePair[] { new KeyValuePair("KEY1", "VALUE1"),
+                        new KeyValuePair("KEY2", "${java:runtime}"), })
+                .setCharset(StandardCharsets.UTF_8).setConfiguration(ctx.getConfiguration()).build();
+        Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
+        final MutableLogEvent mutableEvent = new MutableLogEvent();
+        mutableEvent.initFrom(logEvent);
+        final String strLogEvent = layout.toSerializable(logEvent);
+        final String strMutableEvent = layout.toSerializable(mutableEvent);
+        assertEquals(strMutableEvent, strLogEvent, strMutableEvent);
+    }
     /**
      * @param includeLocationInfo
      *            TODO
