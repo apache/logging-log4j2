@@ -59,5 +59,8 @@ public @interface Plugin {
      */
     boolean printObject() default false;
 
+    /**
+     * Indicates if construction and injection of child configuration nodes should be deferred until first use.
+     */
     boolean deferChildren() default false;
 }
