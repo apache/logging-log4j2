@@ -59,7 +59,6 @@ public class WatcherFactory {
         return factory;
     }
 
-    @SuppressWarnings("unchecked")
     public Watcher newWatcher(Source source, final Configuration configuration, final Reconfigurable reconfigurable,
         final List<ConfigurationListener> configurationListeners, long lastModifiedMillis) {
         if (source.getFile() != null) {
@@ -69,7 +68,7 @@ public class WatcherFactory {
             String name = source.getURI().getScheme();
             PluginType<?> pluginType = plugins.get(name);
             if (pluginType != null) {
-                return instantiate(name, (Class<? extends Watcher>) pluginType.getPluginClass(), configuration,
+                return instantiate(name, pluginType.getPluginClass().asSubclass(Watcher.class), configuration,
                     reconfigurable, configurationListeners, lastModifiedMillis);
             }
             LOGGER.info("No Watcher plugin is available for protocol '{}'", name);

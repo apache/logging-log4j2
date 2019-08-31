@@ -87,7 +87,7 @@ public final class PatternParser {
 
     private final Configuration config;
 
-    private final Map<String, Class<PatternConverter>> converterRules;
+    private final Map<String, Class<? extends PatternConverter>> converterRules;
 
     /**
      * Constructor.
@@ -131,12 +131,11 @@ public final class PatternParser {
         final PluginManager manager = new PluginManager(converterKey);
         manager.collectPlugins(config == null ? null : config.getPluginPackages());
         final Map<String, PluginType<?>> plugins = manager.getPlugins();
-        final Map<String, Class<PatternConverter>> converters = new LinkedHashMap<>();
+        final Map<String, Class<? extends PatternConverter>> converters = new LinkedHashMap<>();
 
         for (final PluginType<?> type : plugins.values()) {
             try {
-                @SuppressWarnings("unchecked")
-                final Class<PatternConverter> clazz = (Class<PatternConverter>) type.getPluginClass();
+                final Class<? extends PatternConverter> clazz = type.getPluginClass().asSubclass(PatternConverter.class);
                 if (filterClass != null && !filterClass.isAssignableFrom(clazz)) {
                     continue;
                 }
@@ -518,10 +517,10 @@ public final class PatternParser {
      * @return converter or null.
      */
     private PatternConverter createConverter(final String converterId, final StringBuilder currentLiteral,
-            final Map<String, Class<PatternConverter>> rules, final List<String> options, final boolean disableAnsi,
+            final Map<String, Class<? extends PatternConverter>> rules, final List<String> options, final boolean disableAnsi,
             final boolean noConsoleNoAnsi) {
         String converterName = converterId;
-        Class<PatternConverter> converterClass = null;
+        Class<? extends PatternConverter> converterClass = null;
 
         if (rules == null) {
             LOGGER.error("Null rules for [" + converterId + ']');
@@ -643,7 +642,7 @@ public final class PatternParser {
      */
     private int finalizeConverter(final char c, final String pattern, final int start,
             final StringBuilder currentLiteral, final FormattingInfo formattingInfo,
-            final Map<String, Class<PatternConverter>> rules, final List<PatternConverter> patternConverters,
+            final Map<String, Class<? extends PatternConverter>> rules, final List<PatternConverter> patternConverters,
             final List<FormattingInfo> formattingInfos, final boolean disableAnsi, final boolean noConsoleNoAnsi,
             final boolean convertBackslashes) {
         int i = start;

@@ -197,7 +197,7 @@ public class PluginRegistry {
             for (PluginEntry entry : entries) {
                 try {
                     final Class<?> clazz = classLoader.loadClass(entry.getClassName());
-                    final PluginType<?> type = new PluginType(entry, clazz, entry.getName());
+                    final PluginType<?> type = new PluginType<>(entry, clazz, entry.getName());
                     String category = entry.getCategory().toLowerCase();
                     if (!map.containsKey(category)) {
                         map.put(category, new ArrayList<>());
