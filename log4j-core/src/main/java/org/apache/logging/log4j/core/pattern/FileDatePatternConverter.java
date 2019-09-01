@@ -27,7 +27,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @Plugin(name = "FileDatePatternConverter", category = "FileConverter")
 @ConverterKeys({ "d", "date" })
 @PerformanceSensitive("allocation")
-public final class FileDatePatternConverter implements PatternConverter {
+public final class FileDatePatternConverter implements ArrayPatternConverter {
 
     private final DatePatternConverter delegate;
 
@@ -44,7 +44,7 @@ public final class FileDatePatternConverter implements PatternConverter {
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static PatternConverter newInstance(final String[] options) {
+    public static FileDatePatternConverter newInstance(final String[] options) {
         if (options == null || options.length == 0) {
             return new FileDatePatternConverter("yyyy-MM-dd");
         }
@@ -65,5 +65,14 @@ public final class FileDatePatternConverter implements PatternConverter {
     @Override
     public String getStyleClass(final Object e) {
         return delegate.getStyleClass(e);
+    }
+
+    @Override
+    public void format(final StringBuilder toAppendTo, final Object... objects) {
+        delegate.format(toAppendTo, objects);
+    }
+
+    public String getPattern() {
+        return delegate.getPattern();
     }
 }

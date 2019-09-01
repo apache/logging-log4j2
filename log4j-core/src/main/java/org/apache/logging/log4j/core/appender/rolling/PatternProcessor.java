@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.pattern.ArrayPatternConverter;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
+import org.apache.logging.log4j.core.pattern.FileDatePatternConverter;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
@@ -79,6 +80,7 @@ public class PatternProcessor {
     public PatternProcessor(final String pattern) {
         this.pattern = pattern;
         final PatternParser parser = createPatternParser();
+        // FIXME: this seems to expect List<ArrayPatternConverter> in practice; types need to be fixed around this
         final List<PatternConverter> converters = new ArrayList<>();
         final List<FormattingInfo> fields = new ArrayList<>();
         parser.parse(pattern, converters, fields, false, false, false);
@@ -88,9 +90,12 @@ public class PatternProcessor {
         patternConverters = converters.toArray(converterArray);
 
         for (final ArrayPatternConverter converter : patternConverters) {
+            // TODO: extract common interface
             if (converter instanceof DatePatternConverter) {
                 final DatePatternConverter dateConverter = (DatePatternConverter) converter;
                 frequency = calculateFrequency(dateConverter.getPattern());
+            } else if (converter instanceof FileDatePatternConverter) {
+                frequency = calculateFrequency(((FileDatePatternConverter) converter).getPattern());
             }
         }
     }
