@@ -20,12 +20,12 @@
   <toolchain>
     <type>jdk</type>
     <provides>
-      <id>java8</id>
+      <id>java7</id>
       <version>1.7</version>
       <vendor>oracle</vendor>
     </provides>
     <configuration>
-      <jdkHome>/usr/lib/jvm/java-7-openjdk</jdkHome>
+      <jdkHome>/usr/lib/jvm/java-7-openjdk-amd64</jdkHome>
     </configuration>
   </toolchain>
   <toolchain>
@@ -36,7 +36,7 @@
       <vendor>oracle</vendor>
     </provides>
     <configuration>
-      <jdkHome>/usr/lib/jvm/java-11-oracle</jdkHome>
+      <jdkHome>/home/travis/oraclejdk11</jdkHome>
     </configuration>
   </toolchain>
 </toolchains>
