@@ -36,7 +36,7 @@
       <vendor>oracle</vendor>
     </provides>
     <configuration>
-      <jdkHome>/usr/lib/jvm/java-11-openjdk-amd64</jdkHome>
+      <jdkHome>/usr/local/lib/jvm/openjdk11</jdkHome>
     </configuration>
   </toolchain>
 </toolchains>
