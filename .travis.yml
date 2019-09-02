@@ -12,19 +12,13 @@
 
 language: java
 # sudo enabled because sudo vms have more memory: https://docs.travis-ci.com/user/reference/overview/
-sudo: true
-# trusty required for oraclejdk9
-dist: trusty
+# may not be true anymore
+#sudo: true
+dist: xenial
 
 jdk:
-  - oraclejdk8
-
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
-      - oracle-java9-installer
-      - maven
+  - openjdk8
+  - openjdk11
 
 env:
   global:
