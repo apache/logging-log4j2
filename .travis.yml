@@ -12,7 +12,8 @@
 
 language: java
 dist: xenial
-# xenial defaults to openjdk8
+jdk:
+  - openjdk8
 
 env:
   global:
