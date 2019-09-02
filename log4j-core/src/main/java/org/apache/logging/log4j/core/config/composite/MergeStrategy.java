@@ -33,9 +33,9 @@ public interface MergeStrategy {
     void mergeRootProperties(Node rootNode, AbstractConfiguration configuration);
 
     /**
-     * Merge the soure node tree into the target node tree.
+     * Merge the source node tree into the target node tree.
      * @param target The target Node tree.
      * @param source The source Node tree.
      */
-    void mergConfigurations(Node target, Node source, PluginManager pluginManager);
+    void mergeConfigurations(Node target, Node source, PluginManager pluginManager);
 }

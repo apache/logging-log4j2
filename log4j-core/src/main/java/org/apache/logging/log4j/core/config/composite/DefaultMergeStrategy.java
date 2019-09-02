@@ -113,7 +113,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
      * @param pluginManager The PluginManager.
      */
     @Override
-    public void mergConfigurations(final Node target, final Node source, final PluginManager pluginManager) {
+    public void mergeConfigurations(final Node target, final Node source, final PluginManager pluginManager) {
         for (final Node sourceChildNode : source.getChildren()) {
             final boolean isFilter = isFilterNode(sourceChildNode);
             boolean isMerged = false;

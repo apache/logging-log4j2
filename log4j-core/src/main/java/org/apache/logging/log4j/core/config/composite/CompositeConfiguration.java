@@ -116,7 +116,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
         for (final AbstractConfiguration sourceConfiguration : configurations.subList(1, configurations.size())) {
             staffChildConfiguration(sourceConfiguration);
             final Node sourceRoot = sourceConfiguration.getRootNode();
-            mergeStrategy.mergConfigurations(rootNode, sourceRoot, getPluginManager());
+            mergeStrategy.mergeConfigurations(rootNode, sourceRoot, getPluginManager());
             if (LOGGER.isEnabled(Level.ALL)) {
                 final StringBuilder sb = new StringBuilder();
                 printNodes("", rootNode, sb);
