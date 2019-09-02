@@ -18,6 +18,7 @@ package org.apache.logging.log4j.jackson.yaml;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 /**
@@ -43,6 +44,7 @@ public class Log4jYamlObjectMapper extends YAMLMapper {
     public Log4jYamlObjectMapper(final boolean encodeThreadContextAsList, final boolean includeStacktrace, final boolean stacktraceAsString) {
         this.registerModule(new Log4jYamlModule(encodeThreadContextAsList, includeStacktrace, stacktraceAsString));
         this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        this.disable(YAMLGenerator.Feature.SPLIT_LINES);
     }
 
 }
