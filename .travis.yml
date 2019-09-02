@@ -11,14 +11,8 @@
 #   limitations under the License.
 
 language: java
-# sudo enabled because sudo vms have more memory: https://docs.travis-ci.com/user/reference/overview/
-# may not be true anymore
-#sudo: true
 dist: xenial
-
-jdk:
-  - openjdk8
-  - openjdk11
+# xenial defaults to openjdk8
 
 env:
   global:
