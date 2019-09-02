@@ -270,7 +270,7 @@ public final class LoaderUtil {
     public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz)
             throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
             IllegalAccessException {
-        return clazz.cast(newInstanceOf(className));
+        return newInstanceOf(loadClass(className).asSubclass(clazz));
     }
 
     /**
