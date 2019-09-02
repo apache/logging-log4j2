@@ -13,7 +13,7 @@
 language: java
 dist: xenial
 jdk:
-  - openjdk8
+  - openjdk7
 
 env:
   global:

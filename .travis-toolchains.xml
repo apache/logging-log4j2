@@ -21,11 +21,11 @@
     <type>jdk</type>
     <provides>
       <id>java8</id>
-      <version>1.8</version>
+      <version>1.7</version>
       <vendor>oracle</vendor>
     </provides>
     <configuration>
-      <jdkHome>/usr/lib/jvm/java-8-openjdk-amd64</jdkHome>
+      <jdkHome>/usr/lib/jvm/java-7-openjdk-amd64</jdkHome>
     </configuration>
   </toolchain>
   <toolchain>
