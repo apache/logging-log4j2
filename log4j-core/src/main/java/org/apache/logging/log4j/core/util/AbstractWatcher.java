@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.io.File;
 import java.util.List;
 
 import org.apache.logging.log4j.core.config.Configuration;
@@ -40,7 +39,7 @@ public abstract class AbstractWatcher implements Watcher {
         this.reconfigurable = reconfigurable;
         this.configurationListeners = configurationListeners;
         this.threadFactory = configurationListeners != null ?
-            Log4jThreadFactory.createDaemonThreadFactory("ConfiguratonFileWatcher") : null;
+            Log4jThreadFactory.createDaemonThreadFactory("ConfigurationFileWatcher") : null;
     }
 
     @Override
