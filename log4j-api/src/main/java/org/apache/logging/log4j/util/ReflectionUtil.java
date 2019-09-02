@@ -171,8 +171,7 @@ public final class ReflectionUtil {
 
     /**
      * Constructs a new {@code T} object using the default constructor of its class. Any exceptions thrown by the
-     * constructor will be rethrown by this method, possibly wrapped in an
-     * {@link java.lang.reflect.UndeclaredThrowableException}.
+     * constructor will be rethrown by this method, possibly wrapped in an {@link InternalException}.
      *
      * @param clazz the class to use for instantiation.
      * @param <T>   the type of the object to construct.
@@ -180,6 +179,7 @@ public final class ReflectionUtil {
      * @throws IllegalArgumentException if the given class is abstract, an interface, an array class, a primitive type,
      *                                  or void
      * @throws IllegalStateException    if access is denied to the constructor, or there are no default constructors
+     * @throws InternalException        wrapper of the the underlying exception if checked
      */
     public static <T> T instantiate(final Class<T> clazz) {
         Objects.requireNonNull(clazz, "No class provided");
