@@ -126,6 +126,7 @@ public class KafkaAppenderTest {
         assertNotNull(item);
         assertEquals(TOPIC_NAME, item.topic());
         byte[] keyValue = "key".getBytes(StandardCharsets.UTF_8);
+        assertEquals(Long.valueOf(logEvent.getTimeMillis()), item.timestamp());
         assertArrayEquals(item.key(), keyValue);
         assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
     }
@@ -143,14 +144,15 @@ public class KafkaAppenderTest {
         assertNotNull(item);
         assertEquals(TOPIC_NAME, item.topic());
         byte[] keyValue = format.format(date).getBytes(StandardCharsets.UTF_8);
+        assertEquals(Long.valueOf(logEvent.getTimeMillis()), item.timestamp());
         assertArrayEquals(item.key(), keyValue);
         assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
     }
 
 
     @Test
-    public void testAppenderWithTimestamp() throws Exception {
-        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithTimestamp");
+    public void testAppenderNoEventTimestamp() throws Exception {
+        final Appender appender = ctx.getRequiredAppender("KafkaAppenderNoEventTimestamp");
         final LogEvent logEvent = createLogEvent();
         appender.append(logEvent);
         final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
@@ -160,7 +162,7 @@ public class KafkaAppenderTest {
         assertEquals(TOPIC_NAME, item.topic());
         byte[] keyValue = "key".getBytes(StandardCharsets.UTF_8);
         assertArrayEquals(item.key(), keyValue);
-        assertEquals(Long.valueOf(logEvent.getTimeMillis()), item.timestamp());
+        assertNotEquals(Long.valueOf(logEvent.getTimeMillis()), item.timestamp());
         assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
     }
 

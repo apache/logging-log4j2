@@ -59,8 +59,8 @@ public final class KafkaAppender extends AbstractAppender {
         @PluginAttribute(value = "syncSend", defaultBoolean = true)
         private boolean syncSend;
 
-        @PluginAttribute(value = "timestamp", defaultBoolean = false)
-        private boolean sendTimestamp;
+        @PluginAttribute(value = "eventTimestamp", defaultBoolean = true)
+        private boolean sendEventTimestamp;
 
         @SuppressWarnings("resource")
         @Override
@@ -71,7 +71,7 @@ public final class KafkaAppender extends AbstractAppender {
                 return null;
             }
             final KafkaManager kafkaManager = KafkaManager.getManager(getConfiguration().getLoggerContext(),
-                    getName(), topic, syncSend, sendTimestamp, getPropertyArray(), key);
+                    getName(), topic, syncSend, sendEventTimestamp, getPropertyArray(), key);
             return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), getPropertyArray(), kafkaManager);
         }
 
@@ -83,7 +83,7 @@ public final class KafkaAppender extends AbstractAppender {
             return syncSend;
         }
 
-        public boolean isSendTimestamp() { return sendTimestamp; }
+        public boolean isSendEventTimestamp() { return sendEventTimestamp; }
 
         public B setTopic(final String topic) {
             this.topic = topic;
@@ -95,8 +95,8 @@ public final class KafkaAppender extends AbstractAppender {
             return asBuilder();
         }
 
-        public B setSendTimestamp(boolean sendTimestamp) {
-            this.sendTimestamp = sendTimestamp;
+        public B setSendEventTimestamp(boolean sendEventTimestamp) {
+            this.sendEventTimestamp = sendEventTimestamp;
             return asBuilder();
         }
     }
