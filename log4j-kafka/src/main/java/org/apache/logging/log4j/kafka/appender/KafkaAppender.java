@@ -83,7 +83,9 @@ public final class KafkaAppender extends AbstractAppender {
             return syncSend;
         }
 
-        public boolean isSendEventTimestamp() { return sendEventTimestamp; }
+        public boolean isSendEventTimestamp() {
+            return sendEventTimestamp;
+        }
 
         public B setTopic(final String topic) {
             this.topic = topic;
