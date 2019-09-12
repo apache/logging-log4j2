@@ -22,5 +22,7 @@ module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins.validation;
     exports org.apache.logging.log4j.plugins.inject;
 
+    requires org.apache.logging.log4j;
+
     uses org.apache.logging.log4j.plugins.processor.PluginService;
 }
