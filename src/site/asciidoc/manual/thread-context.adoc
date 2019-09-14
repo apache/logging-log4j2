@@ -205,7 +205,7 @@ class are static.
 === Including the ThreadContext when writing logs
 
 The
-link:../log4j-api/apidocs/org/apache/logging/log4j/core/PatternLayout.html[`PatternLayout`]
+link:https://logging.apache.org/log4j/2.x/manual/layouts.html[`PatternLayout`]
 provides mechanisms to print the contents of the
 link:../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html[`ThreadContext`]
 Map and Stack.
