@@ -21,13 +21,40 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
  * PluginInjectionBuilder implementation for {@link PluginAttribute}.
  */
 public class PluginAttributeBuilder extends AbstractPluginInjectionBuilder<PluginAttribute, Object> {
+
+    private static final Map<Class<?>, Function<PluginAttribute, Object>> DEFAULT_VALUE_EXTRACTORS;
+
+    static {
+        final Map<Class<?>, Function<PluginAttribute, Object>> extractors = new ConcurrentHashMap<>();
+        extractors.put(int.class, PluginAttribute::defaultInt);
+        extractors.put(Integer.class, PluginAttribute::defaultInt);
+        extractors.put(long.class, PluginAttribute::defaultLong);
+        extractors.put(Long.class, PluginAttribute::defaultLong);
+        extractors.put(boolean.class, PluginAttribute::defaultBoolean);
+        extractors.put(Boolean.class, PluginAttribute::defaultBoolean);
+        extractors.put(float.class, PluginAttribute::defaultFloat);
+        extractors.put(Float.class, PluginAttribute::defaultFloat);
+        extractors.put(double.class, PluginAttribute::defaultDouble);
+        extractors.put(Double.class, PluginAttribute::defaultDouble);
+        extractors.put(byte.class, PluginAttribute::defaultByte);
+        extractors.put(Byte.class, PluginAttribute::defaultByte);
+        extractors.put(char.class, PluginAttribute::defaultChar);
+        extractors.put(Character.class, PluginAttribute::defaultChar);
+        extractors.put(short.class, PluginAttribute::defaultShort);
+        extractors.put(Short.class, PluginAttribute::defaultShort);
+        extractors.put(Class.class, PluginAttribute::defaultClass);
+        DEFAULT_VALUE_EXTRACTORS = Collections.unmodifiableMap(extractors);
+    }
+
     public PluginAttributeBuilder() {
         super(PluginAttribute.class);
     }
@@ -38,41 +65,17 @@ public class PluginAttributeBuilder extends AbstractPluginInjectionBuilder<Plugi
         final Map<String, String> attributes = node.getAttributes();
         final String rawValue = removeAttributeValue(attributes, name, this.aliases);
         final String replacedValue = stringSubstitutionStrategy.apply(rawValue);
-        final Object defaultValue = findDefaultValue(stringSubstitutionStrategy);
+        final Object defaultValue = findDefaultValue();
         final Object value = convert(replacedValue, defaultValue);
         final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
         StringBuilders.appendKeyDqValue(debugLog, name, debugValue);
         return value;
     }
 
-    private Object findDefaultValue(Function<String, String> substitutor) {
-        if (this.conversionType == int.class || this.conversionType == Integer.class) {
-            return this.annotation.defaultInt();
-        }
-        if (this.conversionType == long.class || this.conversionType == Long.class) {
-            return this.annotation.defaultLong();
-        }
-        if (this.conversionType == boolean.class || this.conversionType == Boolean.class) {
-            return this.annotation.defaultBoolean();
-        }
-        if (this.conversionType == float.class || this.conversionType == Float.class) {
-            return this.annotation.defaultFloat();
-        }
-        if (this.conversionType == double.class || this.conversionType == Double.class) {
-            return this.annotation.defaultDouble();
-        }
-        if (this.conversionType == byte.class || this.conversionType == Byte.class) {
-            return this.annotation.defaultByte();
-        }
-        if (this.conversionType == char.class || this.conversionType == Character.class) {
-            return this.annotation.defaultChar();
-        }
-        if (this.conversionType == short.class || this.conversionType == Short.class) {
-            return this.annotation.defaultShort();
-        }
-        if (this.conversionType == Class.class) {
-            return this.annotation.defaultClass();
-        }
-        return substitutor.apply(this.annotation.defaultString());
+    private Object findDefaultValue() {
+        return DEFAULT_VALUE_EXTRACTORS.getOrDefault(
+                conversionType,
+                pluginAttribute -> stringSubstitutionStrategy.apply(pluginAttribute.defaultString())
+        ).apply(annotation);
     }
 }
