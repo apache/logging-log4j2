@@ -18,7 +18,7 @@
 
 # Apache Log4j Java Message Service (JMS) module
 
-As of Log4j 2.11.0, JMS support has moved from the existing module logj-core to the new module log4j-jms.
+As of Log4j 2.11.0, JMS support has moved from the existing module log4j-core to the new module log4j-jms.
 
 ## Requirements
 

@@ -52,7 +52,7 @@ public class DockerLookup extends AbstractLookup {
             baseUri = props.getStringProperty(DOCKER_URI);
         }
         if (baseUri == null) {
-            LOGGER.warn("No Docker URI provided. Docker information is unavailble");
+            LOGGER.warn("No Docker URI provided. Docker information is unavailable");
         }
         Container current = null;
         try {

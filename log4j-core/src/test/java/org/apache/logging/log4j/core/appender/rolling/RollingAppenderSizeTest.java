@@ -150,7 +150,7 @@ public class RollingAppenderSizeTest {
                         in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(), fis);
                     } catch (final CompressorException ce) {
                         ce.printStackTrace();
-                        fail("Error creating intput stream from " + file.toString() + ": " + ce.getMessage());
+                        fail("Error creating input stream from " + file.toString() + ": " + ce.getMessage());
                     }
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     assertNotNull("No input stream for " + file.getName(), in);

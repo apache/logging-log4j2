@@ -59,7 +59,7 @@ The table below shows some of the results from the FileAppenderBenchmark and Fil
 classes in the log4j-perf project when configured to use 4 threads. The results show that lazily including
 the location information is about 8 times slower than not including location information. While using the
 withLocation method of LogBuilder is about 3 times faster than lazily calculating the location information
-it is still about 2.5 times slower than not including locatoin information.
+it is still about 2.5 times slower than not including location information.
 
 The tests were run on a 2018 MacBook Pro with a 2.9 GHz Intel Core i9 processor with 6 cores, 32 GB of memory
 and 1 TB of SSD storage on Java 11 using Log4j 2.13.0 and Logback 1.2.3.
@@ -73,7 +73,7 @@ image:../images/LocationPerf.png[Location Performance]
 |Logback File|159,116.538 ± 1884.969  ops/s|1,240,438.384 ± 76619.873  ops/s
 |===
 As expected, when using LogBuilder with a call to the withLocation() method logging is much faster when
-location informatoin is used in the output but significantly slower when it is not.
+location information is used in the output but significantly slower when it is not.
 
 Note: Running the tests at various times provides varying results. Although some results have been as much
 as 10% higher all results are generally affected similarly so the comparisons between them stay the same.

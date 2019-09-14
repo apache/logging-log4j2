@@ -35,7 +35,7 @@ in front of other logging implementations such as Logback. The Log4j API has sev
 . The Log4j API supports lambda expressions.
 . The Log4j API provides many more logging methods than SLF4J.
 . In addition to the "parameterized logging" format supported by SLF4J, the Log4j API also supports events using
-the java.text.MessageFormat syntax as well printf-sytle messages.
+the java.text.MessageFormat syntax as well printf-style messages.
 . The Log4j API provides a LogManager.shutdown() method. The underlying logging implementation must implement the
 Terminable interface for the method to have effect.
 . Other constructs such as Markers, log Levels, and ThreadContext (aka MDC) are fully supported.

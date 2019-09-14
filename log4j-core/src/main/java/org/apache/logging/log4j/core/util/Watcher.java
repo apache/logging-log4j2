@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.util;
 
 import java.util.List;
 
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 
@@ -40,7 +39,6 @@ public interface Watcher {
 
     /**
      * Called when the configuration has been modified.
-     * @param source The location of the configuration that was modified.
      */
     void modified();
 
@@ -52,7 +50,7 @@ public interface Watcher {
 
     /**
      * Returns the time the source was last modified or 0 if it is not available.
-     * @return the time the soruce was last modified.
+     * @return the time the source was last modified.
      */
     long getLastModified();
 

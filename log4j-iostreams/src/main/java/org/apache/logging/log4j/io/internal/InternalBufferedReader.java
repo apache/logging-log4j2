@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * Internal class that exists primiarly to allow location calculations to work.
+ * Internal class that exists primarily to allow location calculations to work.
  * @since 2.12
  */
 public class InternalBufferedReader extends BufferedReader {

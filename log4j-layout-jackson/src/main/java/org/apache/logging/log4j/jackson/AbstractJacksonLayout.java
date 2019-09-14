@@ -352,7 +352,7 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
             // This class combines LogEvent with AdditionalFields during serialization
             return createLogEventWithAdditionalFields(event, additionalFieldsMap);
         } else if (event instanceof Message) {
-            // If the LogEvent implements the Messagee interface Jackson will not treat is as a LogEvent.
+            // If the LogEvent implements the Message interface Jackson will not treat is as a LogEvent.
             return new ReadOnlyLogEventWrapper(event);
             // No additional fields, return original object
         }

@@ -86,7 +86,7 @@ is 1024. Note that when using a disruptor-style `BlockingQueue`, this
 buffer size must be a power of 2.
 
 When the application is logging faster than the underlying appender can
-keep up with for a long enough time to fill up the queue, the behavious
+keep up with for a long enough time to fill up the queue, the behaviour
 is determined by the
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`AsyncQueueFullPolicy`].
 
@@ -839,7 +839,7 @@ an embedded Flume Agent.
 == JDBCAppender
 
 As of Log4j 2.11.0, JDBC support has moved from the existing module
-`logj-core` to the new module `log4j-jdbc`.
+`log4j-core` to the new module `log4j-jdbc`.
 
 The JDBCAppender writes log events to a relational database table using
 standard JDBC. It can be configured to obtain JDBC connections using a
@@ -1248,7 +1248,7 @@ table based on a Log4j `MapMessage` instead of values from `LogEvent`s.
 
 [[JMSQueueAppender]] [[JMSTopicAppender]]
 As of Log4j 2.11.0, JPA support has moved from the existing module
-`logj-core` to the new module `log4j-jms`.
+`log4j-core` to the new module `log4j-jms`.
 
 The JMS Appender sends the formatted log event to a JMS Destination.
 
@@ -1377,7 +1377,7 @@ layout of the appender to `MessageLayout` with `<MessageLayout />`
 == JPAAppender
 
 As of Log4j 2.11.0, JPA support has moved from the existing module
-`logj-core` to the new module `log4j-jpa`.
+`log4j-core` to the new module `log4j-jpa`.
 
 The JPAAppender writes log events to a relational database table using
 the Java Persistence API 2.1. It requires the API and a provider
@@ -1636,7 +1636,7 @@ Here is a sample HttpAppender configuration snippet:
 == KafkaAppender
 
 As of Log4j 2.11.0, https://kafka.apache.org/[Apache Kafka] support has
-moved from the existing module `logj-core` to the new module
+moved from the existing module `log4j-core` to the new module
 `log4j-kafka`.
 
 The KafkaAppender logs events to an https://kafka.apache.org/[Apache
@@ -2844,7 +2844,7 @@ DirectWrite Rollover Strategy
 The DirectWriteRolloverStrategy causes log events to be written directly
 to files represented by the file pattern. With this strategy file
 renames are not performed. If the size-based triggering policy causes
-multiple files to be written durring the specified time period they will
+multiple files to be written during the specified time period they will
 be numbered starting at one and continually incremented until a
 time-based rollover occurs.
 
@@ -3432,7 +3432,7 @@ https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttri
 attribute view.
 
 |fileGroup |String a|
-File group to define whene action is executed.
+File group to define when action is executed.
 
 Underlying files system shall support
 https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
@@ -3932,7 +3932,7 @@ created as needed.
 == SMTPAppender
 
 As of Log4j 2.11.0, Simple Mail Transfer Protocol (SMTP) support has
-moved from the existing module `logj-core` to the new module
+moved from the existing module `log4j-core` to the new module
 `log4j-smtp`.
 
 Sends an e-mail when a specific logging event occurs, typically on
@@ -4460,7 +4460,7 @@ conforms with either the BSD Syslog format or the RFC 5424 format.
 == JeroMQAppender
 
 As of Log4j 2.11.0, ZeroMQ/JeroMQ support has moved from the existing
-module `logj-core` to the new module `log4j-jeromq`.
+module `log4j-core` to the new module `log4j-jeromq`.
 
 The ZeroMQ appender uses the https://github.com/zeromq/jeromq[JeroMQ]
 library to send log events to one or more ZeroMQ endpoints.

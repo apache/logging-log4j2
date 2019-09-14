@@ -37,7 +37,7 @@ public class CronRolloverApp {
             }
         } catch (final Exception e) {
             //e.printStackTrace();
-            logger.error("Excepcion general", e);
+            logger.error("Exception general", e);
         }
     }
 }

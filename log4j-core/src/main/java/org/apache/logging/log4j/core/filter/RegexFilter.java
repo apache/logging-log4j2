@@ -107,7 +107,7 @@ public final class RegexFilter extends AbstractFilter {
      * @param regex
      *        The regular expression to match.
      * @param patternFlags
-     *        An array of Stirngs where each String is a {@link Pattern#compile(String, int)} compilation flag.
+     *        An array of Strings where each String is a {@link Pattern#compile(String, int)} compilation flag.
      * @param useRawMsg
      *        If true, the raw message will be used, otherwise the formatted message will be used.
      * @param match
