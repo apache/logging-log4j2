@@ -18,6 +18,7 @@ package org.apache.logging.log4j.plugins.util;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,9 +50,7 @@ public final class TypeUtil {
     public static List<Field> getAllDeclaredFields(Class<?> cls) {
         final List<Field> fields = new ArrayList<>();
         while (cls != null) {
-            for (final Field field : cls.getDeclaredFields()) {
-                fields.add(field);
-            }
+            fields.addAll(Arrays.asList(cls.getDeclaredFields()));
             cls = cls.getSuperclass();
         }
         return fields;
