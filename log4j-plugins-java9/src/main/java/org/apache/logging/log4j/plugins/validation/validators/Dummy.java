@@ -14,19 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-module org.apache.logging.log4j.plugins {
-    exports org.apache.logging.log4j.plugins;
-    exports org.apache.logging.log4j.plugins.convert;
-    exports org.apache.logging.log4j.plugins.processor;
-    exports org.apache.logging.log4j.plugins.util;
-    exports org.apache.logging.log4j.plugins.validation;
-    exports org.apache.logging.log4j.plugins.validation.constraints;
-    exports org.apache.logging.log4j.plugins.validation.validators;
-    exports org.apache.logging.log4j.plugins.inject;
+package org.apache.logging.log4j.plugins.validation.validators;
 
-    requires org.apache.logging.log4j;
-
-    provides org.apache.logging.log4j.plugins.processor.PluginService with org.apache.logging.log4j.plugins.convert.plugins.Log4jPlugins;
-
-    uses org.apache.logging.log4j.plugins.processor.PluginService;
+/**
+ * This is a dummy class and is only here to allow module-info.java to compile. It will not
+ * be copied into the log4j-api module.
+ */
+public class Dummy {
 }

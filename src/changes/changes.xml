@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2019-xx-xx" description="GA Release 3.0.0">
+      <action issue="LOG4J2-2690" dev="rgoers" type="update">
+        Locate plugins in modules.
+      </action>
       <action issue="LOG4J2-2617" dev="mattsicker" type="update">
         Fix typo in method MergeStrategy.mergeConfigurations.
       </action>
