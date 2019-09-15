@@ -83,7 +83,7 @@ public class ListAppender extends AbstractAppender {
      *     listAppender.countDownLatch = new CountDownLatch(1);
      *
      *     Logger logger = LogManager.getLogger();
-     *     logger.info("log one event anynchronously");
+     *     logger.info("log one event asynchronously");
      *
      *     // wait for the appender to finish processing this event (wait max 1 second)
      *     listAppender.countDownLatch.await(1, TimeUnit.SECONDS);

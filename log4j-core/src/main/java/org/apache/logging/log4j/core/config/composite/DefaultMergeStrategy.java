@@ -41,7 +41,7 @@ import org.apache.logging.log4j.core.filter.CompositeFilter;
  * configurations.</li>
  * <li>Filters are aggregated under a CompositeFilter if more than one Filter is defined. Since Filters are not named
  * duplicates may be present.</li>
- * <li>Scripts and ScriptFile references are aggregated. Duplicate definiations replace those in previous
+ * <li>Scripts and ScriptFile references are aggregated. Duplicate definitions replace those in previous
  * configurations.</li>
  * <li>Appenders are aggregated. Appenders with the same name are replaced by those in later configurations, including
  * all of the Appender's subcomponents.</li>

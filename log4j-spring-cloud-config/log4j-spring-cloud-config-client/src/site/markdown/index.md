@@ -63,7 +63,7 @@ TLS can be enabled by adding the following system properties or defining them in
 | ------------- |-------|:-------------| 
 | log4j2.trustStoreLocation  | Optional | The location of the trust store. If not provided the default trust store will be used.| 
 | log4j2.trustStorePassword  | Optional | Password needed to access the trust store. |
-| log4j2.trustStorePasswordFile | Optinoal | The location of a file that contains the password for the trust store. |
+| log4j2.trustStorePasswordFile | Optional | The location of a file that contains the password for the trust store. |
 | log4j2.trustStorePasswordEnvironmentVariable | Optional | The name of the environment variable that contains the trust store password. |
 | log4j2.trustStoreKeyStoreType | Required if keystore location provided | The type of key store.  |
 | log4j2.trustStoreKeyManagerFactoryAlgorithm | Optional | Java cryptographic algorithm. |

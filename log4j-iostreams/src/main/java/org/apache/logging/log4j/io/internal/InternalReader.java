@@ -28,7 +28,7 @@ import org.apache.logging.log4j.io.CharStreamLogger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * Internal class that exists primiarly to allow location calculations to work.
+ * Internal class that exists primarly to allow location calculations to work.
  *
  * @since 2.12
  */

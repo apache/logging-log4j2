@@ -93,7 +93,7 @@ public class CronExpressionTest {
     }
 
     /**
-     * 35,45, and 55 minutes past the hour evern hour.
+     * 35,45, and 55 minutes past the hour every hour.
      */
     @Test
     public void testPrevFireTime3() throws Exception {

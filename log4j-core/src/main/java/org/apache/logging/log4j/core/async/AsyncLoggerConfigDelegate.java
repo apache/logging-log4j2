@@ -57,7 +57,7 @@ public interface AsyncLoggerConfigDelegate {
 
     /**
      * Notifies the delegate what LogEventFactory an AsyncLoggerConfig is using, so the delegate can determine
-     * whether to populate the ring buffer with mutable log events or not. This method may be invoced multiple times
+     * whether to populate the ring buffer with mutable log events or not. This method may be invoked multiple times
      * for all AsyncLoggerConfigs that use this delegate.
      *
      * @param logEventFactory the factory used

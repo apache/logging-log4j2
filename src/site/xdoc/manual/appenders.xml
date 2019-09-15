@@ -101,7 +101,7 @@
                 disruptor-style <tt>BlockingQueue</tt>, this buffer size must be a power of 2.
                 <p>
                   When the application is logging faster than the underlying appender can keep up with
-                  for a long enough time to fill up the queue, the behavious is determined by the
+                  for a long enough time to fill up the queue, the behaviour is determined by the
                   <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">AsyncQueueFullPolicy</a>.
                 </p>
               </td>
@@ -992,8 +992,8 @@ CREATE TABLE logs (
             built-in type conversion to allow for more data types (this is the same plugin as in the
             <a href="#CassandraAppender">Cassandra Appender</a>).</p>
           <p>
-            To get off the ground quickly during development, an alternative to using a connection source based on 
-            JNDI is to use the non-pooling <code>DriverManager</code> connection source. This connection source uses 
+            To get off the ground quickly during development, an alternative to using a connection source based on
+            JNDI is to use the non-pooling <code>DriverManager</code> connection source. This connection source uses
             a JDBC connection string, a user name, and a password. Optionally, you can also use properties.
           </p>
           <table>
@@ -1182,8 +1182,8 @@ CREATE TABLE logs (
             <tr>
               <td>poolName</td>
               <td>String</td>
-              <td>The pool name used to pool JDBC Connections. Defaults to <code>example</code>. You can use the JDBC 
-              connection string prefix <code>jdbc:apache:commons:dbcp:</code> followed by the pool name if you want 
+              <td>The pool name used to pool JDBC Connections. Defaults to <code>example</code>. You can use the JDBC
+              connection string prefix <code>jdbc:apache:commons:dbcp:</code> followed by the pool name if you want
               to use a pooled connection elsewhere. For example: <code>jdbc:apache:commons:dbcp:example</code>.</td>
             </tr>
             <tr>
@@ -1324,7 +1324,7 @@ CREATE TABLE logs (
               <td>
                 <p>Use this attribute to insert an expression with a parameter marker '?' in this column. The value will be included directly in
                 the insert SQL, without any quoting (which means that if you want this to be a string, your value should
-                contain single quotes around it like this: 
+                contain single quotes around it like this:
                 </p>
                 <p>
                   <code>&lt;ColumnMapping name="instant" parameter="TIMESTAMPADD('MILLISECOND', ?, TIMESTAMP '1970-01-01')"/></code>
@@ -1489,9 +1489,9 @@ public class ConnectionFactory {
             This appender is <a href="messages.html#MapMessage">MapMessage</a>-aware.
           </p>
           <p>
-            The following configuration uses a <code>MessageLayout</code> to indicate that the Appender should match 
-            the keys of a <code>MapMessage</code> to the names of <code>ColumnMapping</code>s when setting the 
-            values of the Appender's SQL INSERT statement. This let you insert rows for custom values in a 
+            The following configuration uses a <code>MessageLayout</code> to indicate that the Appender should match
+            the keys of a <code>MapMessage</code> to the names of <code>ColumnMapping</code>s when setting the
+            values of the Appender's SQL INSERT statement. This let you insert rows for custom values in a
             database table based on a Log4j <code>MapMessage</code> instead of values from <code>LogEvent</code>s.
           </p>
           <pre class="prettyprint linenums lang-xml"><![CDATA[<Configuration status="debug">
@@ -1519,7 +1519,7 @@ public class ConnectionFactory {
     </Root>
   </Loggers>
 
-</Configuration>]]></pre>          
+</Configuration>]]></pre>
         </subsection>
         <a name="JMSAppender"/>
         <!-- cool URLs don't change, so here are some old anchors -->
@@ -1710,7 +1710,7 @@ public class ConnectionFactory {
         <a name="JPAAppender"/>
         <subsection name="JPAAppender">
           <p>
-             As of Log4j 2.11.0, JPA support has moved from the existing module <code>logj-core</code> to the new module <code>log4j-jpa</code>.
+             As of Log4j 2.11.0, JPA support has moved from the existing module <code>log4j-core</code> to the new module <code>log4j-jpa</code>.
           </p>
           <p>The JPAAppender writes log events to a relational database table using the Java Persistence API 2.1.
             It requires the API and a provider implementation be on the classpath. It also requires a decorated entity
@@ -2358,7 +2358,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <subsection name="NoSQLAppender for MongoDB 2">
           <p>
             This section details specializations of the <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using
-            the MongoDB driver version 2. The NoSQLAppender Appender writes log events to a NoSQL database using an 
+            the MongoDB driver version 2. The NoSQLAppender Appender writes log events to a NoSQL database using an
             internal lightweight provider interface.
           </p>
           <table>
@@ -2481,7 +2481,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </Loggers>
 </Configuration>]]></pre>
         <p>
-          Starting in Log4j version 2.11.0, the provider element name is <code>MongoDb2</code>. 
+          Starting in Log4j version 2.11.0, the provider element name is <code>MongoDb2</code>.
           The name <code>MongoDb</code> is now a deprecated alias for <code>MongoDb2</code>.
         </p>
         </subsection>
@@ -2489,7 +2489,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <subsection name="NoSQLAppender for MongoDB 3">
           <p>
             This section details specializations of the <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using
-            the MongoDB driver version 3. The NoSQLAppender Appender writes log events to a NoSQL database using an 
+            the MongoDB driver version 3. The NoSQLAppender Appender writes log events to a NoSQL database using an
             internal lightweight provider interface.
           </p>
           <table>
@@ -3448,7 +3448,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <p>
               The DirectWriteRolloverStrategy causes log events to be written directly to files represented by the
               file pattern. With this strategy file renames are not performed. If the size-based triggering policy
-              causes multiple files to be written durring the specified time period they will be numbered starting
+              causes multiple files to be written during the specified time period they will be numbered starting
               at one and continually incremented until a time-based rollover occurs.
             </p>
             <p>
@@ -4084,7 +4084,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>fileGroup</td>
               <td>String</td>
-              <td><p>File group to define whene action is executed.</p>
+              <td><p>File group to define when action is executed.</p>
                   <p>Underlying files system shall support <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html">POSIX</a> file attribute view.</p>
               </td>
             </tr>

@@ -41,7 +41,7 @@ public class ValidatingPluginWithTypedBuilderTest {
         manager.collectPlugins();
         plugin = (PluginType<ValidatingPluginWithTypedBuilder>) manager
                 .getPluginType("ValidatingPluginWithTypedBuilder");
-        assertNotNull("Rebuild this module to make sure annotaion processing kicks in.", plugin);
+        assertNotNull("Rebuild this module to make sure annotation processing kicks in.", plugin);
         node = new Node(null, "Validator", plugin);
     }
 
