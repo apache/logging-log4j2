@@ -32,6 +32,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @InjectionStrategy(PluginElementBuilder.class)
+// TODO: this can have a default value to use reflection
 public @interface PluginElement {
 
     /**

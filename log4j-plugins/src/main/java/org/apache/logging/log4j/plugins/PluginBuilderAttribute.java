@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.TYPE})
 @InjectionStrategy(PluginBuilderAttributeBuilder.class)
-// TODO: this annotation can be combined with @PluginAttribute along with giving it a default value
+// TODO: this annotation can be combined with @PluginAttribute
 public @interface PluginBuilderAttribute {
 
     /**
