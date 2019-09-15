@@ -63,7 +63,7 @@ import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.plugins.inject.PluginInjectionBuilder;
+import org.apache.logging.log4j.plugins.inject.ConfigurationInjectionBuilder;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.time.NanoClock;
@@ -971,7 +971,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param event the LogEvent that spurred the creation of this plugin
      * @return the created plugin object or {@code null} if there was an error setting it up.
      * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
-     * @see org.apache.logging.log4j.plugins.inject.PluginInjectionBuilder
+     * @see ConfigurationInjectionBuilder
      * @see org.apache.logging.log4j.plugins.convert.TypeConverter
      */
     private Object createPluginObject(final PluginType<?> type, final Node node, final LogEvent event) {

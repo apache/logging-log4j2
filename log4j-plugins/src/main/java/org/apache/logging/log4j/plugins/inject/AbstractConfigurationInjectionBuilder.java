@@ -31,11 +31,11 @@ import java.util.function.Function;
 
 /**
  * Base class for InjectionStrategyBuilder implementations. Provides fields and setters for the builder leaving only
- * {@link PluginInjectionBuilder#build()} to be implemented.
+ * {@link ConfigurationInjectionBuilder#build()} to be implemented.
  *
  * @param <Ann> the Plugin annotation type.
  */
-public abstract class AbstractPluginInjectionBuilder<Ann extends Annotation, Cfg> implements PluginInjectionBuilder<Ann, Cfg> {
+public abstract class AbstractConfigurationInjectionBuilder<Ann extends Annotation, Cfg> implements ConfigurationInjectionBuilder<Ann, Cfg> {
 
     /** Status logger. */
     protected static final Logger LOGGER = StatusLogger.getLogger();
@@ -74,12 +74,12 @@ public abstract class AbstractPluginInjectionBuilder<Ann extends Annotation, Cfg
      *
      * @param clazz the annotation class this PluginVisitor is for.
      */
-    protected AbstractPluginInjectionBuilder(final Class<Ann> clazz) {
+    protected AbstractConfigurationInjectionBuilder(final Class<Ann> clazz) {
         this.clazz = clazz;
     }
 
     @Override
-    public PluginInjectionBuilder<Ann, Cfg> withAnnotation(final Annotation anAnnotation) {
+    public ConfigurationInjectionBuilder<Ann, Cfg> withAnnotation(final Annotation anAnnotation) {
         final Annotation a = Objects.requireNonNull(anAnnotation, "No annotation was provided");
         if (this.clazz.isInstance(a)) {
             this.annotation = clazz.cast(a);
@@ -88,43 +88,43 @@ public abstract class AbstractPluginInjectionBuilder<Ann extends Annotation, Cfg
     }
 
     @Override
-    public PluginInjectionBuilder<Ann, Cfg> withAliases(final String... someAliases) {
+    public ConfigurationInjectionBuilder<Ann, Cfg> withAliases(final String... someAliases) {
         this.aliases = someAliases;
         return this;
     }
 
     @Override
-    public PluginInjectionBuilder<Ann, Cfg> withConversionType(final Class<?> aConversionType) {
+    public ConfigurationInjectionBuilder<Ann, Cfg> withConversionType(final Class<?> aConversionType) {
         this.conversionType = Objects.requireNonNull(aConversionType, "No conversion type class was provided");
         return this;
     }
 
     @Override
-    public PluginInjectionBuilder<Ann, Cfg> withMember(final Member aMember) {
+    public ConfigurationInjectionBuilder<Ann, Cfg> withMember(final Member aMember) {
         this.member = aMember;
         return this;
     }
 
     @Override
-    public PluginInjectionBuilder<Ann, Cfg> withConfiguration(final Cfg aConfiguration) {
+    public ConfigurationInjectionBuilder<Ann, Cfg> withConfiguration(final Cfg aConfiguration) {
         this.configuration = aConfiguration;
         return this;
     }
 
     @Override
-    public PluginInjectionBuilder<Ann, Cfg> withStringSubstitutionStrategy(final Function<String, String> aStringSubstitutionStrategy) {
+    public ConfigurationInjectionBuilder<Ann, Cfg> withStringSubstitutionStrategy(final Function<String, String> aStringSubstitutionStrategy) {
         this.stringSubstitutionStrategy = aStringSubstitutionStrategy;
         return this;
     }
 
     @Override
-    public PluginInjectionBuilder<Ann, Cfg> withDebugLog(final StringBuilder aDebugLog) {
+    public ConfigurationInjectionBuilder<Ann, Cfg> withDebugLog(final StringBuilder aDebugLog) {
         this.debugLog = aDebugLog;
         return this;
     }
 
     @Override
-    public PluginInjectionBuilder<Ann, Cfg> withConfigurationNode(final Node aNode) {
+    public ConfigurationInjectionBuilder<Ann, Cfg> withConfigurationNode(final Node aNode) {
         this.node = aNode;
         return this;
     }

@@ -1,13 +1,13 @@
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.inject.AbstractPluginInjectionBuilder;
+import org.apache.logging.log4j.plugins.inject.AbstractConfigurationInjectionBuilder;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.function.Function;
 
-abstract class AbstractPluginVisitor<Ann extends Annotation, Cfg> extends AbstractPluginInjectionBuilder<Ann, Cfg> {
+abstract class AbstractPluginVisitor<Ann extends Annotation, Cfg> extends AbstractConfigurationInjectionBuilder<Ann, Cfg> {
 
     AbstractPluginVisitor(final Class<Ann> clazz) {
         super(clazz);

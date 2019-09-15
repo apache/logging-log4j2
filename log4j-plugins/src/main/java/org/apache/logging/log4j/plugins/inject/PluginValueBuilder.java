@@ -22,9 +22,9 @@ import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * PluginInjectionBuilder implementation for {@link PluginValue}.
+ * ConfigurationInjectionBuilder implementation for {@link PluginValue}.
  */
-public class PluginValueBuilder extends AbstractPluginInjectionBuilder<PluginValue, Object> {
+public class PluginValueBuilder extends AbstractConfigurationInjectionBuilder<PluginValue, Object> {
     public PluginValueBuilder() {
         super(PluginValue.class);
     }

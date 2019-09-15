@@ -26,7 +26,7 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.plugins.inject.PluginInjectionBuilder;
+import org.apache.logging.log4j.plugins.inject.ConfigurationInjectionBuilder;
 import org.apache.logging.log4j.plugins.util.Builder;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
@@ -189,7 +189,7 @@ public class PluginBuilder implements Builder<Object> {
                         a instanceof org.apache.logging.log4j.core.config.plugins.PluginAliases) {
                     continue; // already processed
                 }
-                final Object value = PluginInjectionBuilder.findBuilderForInjectionStrategy(a.annotationType())
+                final Object value = ConfigurationInjectionBuilder.findBuilderForInjectionStrategy(a.annotationType())
                         .flatMap(b -> Optional.ofNullable(b
                                 .withAliases(aliases)
                                 .withAnnotation(a)
@@ -270,7 +270,7 @@ public class PluginBuilder implements Builder<Object> {
                         a instanceof org.apache.logging.log4j.core.config.plugins.PluginAliases) {
                     continue; // already processed
                 }
-                final Object value = PluginInjectionBuilder.findBuilderForInjectionStrategy(a.annotationType())
+                final Object value = ConfigurationInjectionBuilder.findBuilderForInjectionStrategy(a.annotationType())
                         .flatMap(b -> Optional.ofNullable(b
                                 .withAliases(aliases)
                                 .withAnnotation(a)

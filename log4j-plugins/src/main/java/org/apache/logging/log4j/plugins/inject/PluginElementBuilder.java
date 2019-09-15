@@ -28,9 +28,9 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * PluginInjectionBuilder implementation for {@link PluginElement}. Supports arrays as well as singular values.
+ * ConfigurationInjectionBuilder implementation for {@link PluginElement}. Supports arrays as well as singular values.
  */
-public class PluginElementBuilder extends AbstractPluginInjectionBuilder<PluginElement, Object> {
+public class PluginElementBuilder extends AbstractConfigurationInjectionBuilder<PluginElement, Object> {
     public PluginElementBuilder() {
         super(PluginElement.class);
     }

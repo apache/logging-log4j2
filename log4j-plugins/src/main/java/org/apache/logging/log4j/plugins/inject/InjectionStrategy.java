@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 
 /**
  * Meta-annotation to denote the class name to use that implements
- * {@link PluginInjectionBuilder} for the annotated annotation.
+ * {@link ConfigurationInjectionBuilder} for the annotated annotation.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
@@ -34,9 +34,9 @@ import java.lang.annotation.Target;
 public @interface InjectionStrategy {
 
     /**
-     * The class to use that implements {@link PluginInjectionBuilder}
-     * for the given annotation. The generic annotation type in {@code PluginInjectionBuilder} should match the
+     * The class to use that implements {@link ConfigurationInjectionBuilder}
+     * for the given annotation. The generic annotation type in {@code ConfigurationInjectionBuilder} should match the
      * annotation this annotation is applied to.
      */
-    Class<? extends PluginInjectionBuilder<? extends Annotation, ?>> value();
+    Class<? extends ConfigurationInjectionBuilder<? extends Annotation, ?>> value();
 }

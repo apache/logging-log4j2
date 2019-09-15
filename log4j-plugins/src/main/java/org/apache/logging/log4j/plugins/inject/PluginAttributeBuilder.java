@@ -27,9 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
- * PluginInjectionBuilder implementation for {@link PluginAttribute}.
+ * ConfigurationInjectionBuilder implementation for {@link PluginAttribute}.
  */
-public class PluginAttributeBuilder extends AbstractPluginInjectionBuilder<PluginAttribute, Object> {
+public class PluginAttributeBuilder extends AbstractConfigurationInjectionBuilder<PluginAttribute, Object> {
 
     private static final Map<Class<?>, Function<PluginAttribute, Object>> DEFAULT_VALUE_EXTRACTORS;
 

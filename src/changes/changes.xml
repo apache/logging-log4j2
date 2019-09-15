@@ -35,7 +35,7 @@
         Fix typo in method MergeStrategy.mergeConfigurations.
       </action>
       <action issue="LOG4J2-2683" dev="mattsicker" type="update">
-        Rename PluginVisitor and related classes to PluginInjectionBuilder.
+        Rename PluginVisitor and related classes to ConfigurationInjectionBuilder.
       </action>
       <action issue="LOG4J2-2523" dev="rgoers" type="update" due-to="Romain Manni-Bucau">
         Allow web lookup to access more information.

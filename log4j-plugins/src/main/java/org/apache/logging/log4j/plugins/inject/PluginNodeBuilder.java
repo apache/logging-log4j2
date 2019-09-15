@@ -20,9 +20,9 @@ package org.apache.logging.log4j.plugins.inject;
 import org.apache.logging.log4j.plugins.PluginNode;
 
 /**
- * PluginInjectionBuilder implementation for {@link PluginNode}.
+ * ConfigurationInjectionBuilder implementation for {@link PluginNode}.
  */
-public class PluginNodeBuilder extends AbstractPluginInjectionBuilder<PluginNode, Object> {
+public class PluginNodeBuilder extends AbstractConfigurationInjectionBuilder<PluginNode, Object> {
     public PluginNodeBuilder() {
         super(PluginNode.class);
     }

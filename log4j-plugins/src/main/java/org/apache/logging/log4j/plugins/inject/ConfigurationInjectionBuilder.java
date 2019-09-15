@@ -34,22 +34,22 @@ import java.util.function.Function;
  * @param <Ann> the Annotation type.
  * @param <Cfg> the Configuration type.
  */
-public interface PluginInjectionBuilder<Ann extends Annotation, Cfg> extends Builder<Object> {
+public interface ConfigurationInjectionBuilder<Ann extends Annotation, Cfg> extends Builder<Object> {
 
     /**
-     * Creates a PluginInjectionBuilder instance for the given annotation class using metadata provided by the annotation's
+     * Creates a ConfigurationInjectionBuilder instance for the given annotation class using metadata provided by the annotation's
      * {@link InjectionStrategy} annotation. This instance must be further populated with
      * data before being {@linkplain #build() built} to be useful.
      *
-     * @param injectorType the Plugin annotation class to find a PluginInjectionBuilder for.
-     * @return a PluginInjectionBuilder instance if one could be created or empty.
+     * @param injectorType the Plugin annotation class to find a ConfigurationInjectionBuilder for.
+     * @return a ConfigurationInjectionBuilder instance if one could be created or empty.
      */
     @SuppressWarnings("unchecked")
-    static <Ann extends Annotation, Cfg> Optional<PluginInjectionBuilder<Ann, Cfg>> findBuilderForInjectionStrategy(final Class<Ann> injectorType) {
+    static <Ann extends Annotation, Cfg> Optional<ConfigurationInjectionBuilder<Ann, Cfg>> findBuilderForInjectionStrategy(final Class<Ann> injectorType) {
         return Optional.ofNullable(injectorType.getAnnotation(InjectionStrategy.class))
                 .flatMap(type -> {
                     try {
-                        return Optional.of((PluginInjectionBuilder<Ann, Cfg>) type.value().newInstance());
+                        return Optional.of((ConfigurationInjectionBuilder<Ann, Cfg>) type.value().newInstance());
                     } catch (final Exception e) {
                         StatusLogger.getLogger().error("Error loading PluginBuilder [{}] for annotation [{}].", type.value(), injectorType, e);
                         return Optional.empty();
@@ -65,7 +65,7 @@ public interface PluginInjectionBuilder<Ann extends Annotation, Cfg> extends Bui
      * @return {@code this}.
      * @throws NullPointerException if the argument is {@code null}.
      */
-    PluginInjectionBuilder<Ann, Cfg> withAnnotation(Annotation annotation);
+    ConfigurationInjectionBuilder<Ann, Cfg> withAnnotation(Annotation annotation);
 
     /**
      * Sets the list of aliases to use for this injection. No aliases are required, however.
@@ -73,17 +73,17 @@ public interface PluginInjectionBuilder<Ann extends Annotation, Cfg> extends Bui
      * @param aliases the list of aliases to use.
      * @return {@code this}.
      */
-    PluginInjectionBuilder<Ann, Cfg> withAliases(String... aliases);
+    ConfigurationInjectionBuilder<Ann, Cfg> withAliases(String... aliases);
 
     /**
      * Sets the class to convert the plugin value to for injection. This should correspond with a class obtained from
-     * a factory method or builder class field. Not all PluginInjectionBuilder implementations may need this value.
+     * a factory method or builder class field. Not all ConfigurationInjectionBuilder implementations may need this value.
      *
      * @param conversionType the type to convert the plugin string to (if applicable).
      * @return {@code this}.
      * @throws NullPointerException if the argument is {@code null}.
      */
-    PluginInjectionBuilder<Ann, Cfg> withConversionType(Class<?> conversionType);
+    ConfigurationInjectionBuilder<Ann, Cfg> withConversionType(Class<?> conversionType);
 
     /**
      * Sets the Member that this builder is being used for injection upon. For instance, this could be the Field
@@ -93,13 +93,13 @@ public interface PluginInjectionBuilder<Ann extends Annotation, Cfg> extends Bui
      * @param member the member this builder is parsing a value for.
      * @return {@code this}.
      */
-    PluginInjectionBuilder<Ann, Cfg> withMember(Member member);
+    ConfigurationInjectionBuilder<Ann, Cfg> withMember(Member member);
 
-    PluginInjectionBuilder<Ann, Cfg> withStringSubstitutionStrategy(Function<String, String> stringSubstitutionStrategy);
+    ConfigurationInjectionBuilder<Ann, Cfg> withStringSubstitutionStrategy(Function<String, String> stringSubstitutionStrategy);
 
-    PluginInjectionBuilder<Ann, Cfg> withDebugLog(StringBuilder debugLog);
+    ConfigurationInjectionBuilder<Ann, Cfg> withDebugLog(StringBuilder debugLog);
 
-    PluginInjectionBuilder<Ann, Cfg> withConfiguration(Cfg configuration);
+    ConfigurationInjectionBuilder<Ann, Cfg> withConfiguration(Cfg configuration);
 
-    PluginInjectionBuilder<Ann, Cfg> withConfigurationNode(Node node);
+    ConfigurationInjectionBuilder<Ann, Cfg> withConfigurationNode(Node node);
 }

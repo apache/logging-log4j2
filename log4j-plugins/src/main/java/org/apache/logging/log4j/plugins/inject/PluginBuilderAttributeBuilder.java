@@ -24,11 +24,11 @@ import org.apache.logging.log4j.util.StringBuilders;
 import java.util.Map;
 
 /**
- * PluginInjectionBuilder for PluginBuilderAttribute. If {@code null} is returned for the
- * {@link PluginInjectionBuilder#build()}}
+ * ConfigurationInjectionBuilder for PluginBuilderAttribute. If {@code null} is returned for the
+ * {@link ConfigurationInjectionBuilder#build()}}
  * method, then the default value of the field should remain untouched.
  */
-public class PluginBuilderAttributeBuilder extends AbstractPluginInjectionBuilder<PluginBuilderAttribute, Object> {
+public class PluginBuilderAttributeBuilder extends AbstractConfigurationInjectionBuilder<PluginBuilderAttribute, Object> {
 
     public PluginBuilderAttributeBuilder() {
         super(PluginBuilderAttribute.class);
