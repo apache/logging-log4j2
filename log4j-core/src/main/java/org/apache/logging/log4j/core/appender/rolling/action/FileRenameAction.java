@@ -138,6 +138,7 @@ public class FileRenameAction extends AbstractAction {
                                 LOGGER.error("Unable to delete file {}: {} {}", source.getAbsolutePath(),
                                         exDelete.getClass().getName(), exDelete.getMessage());
                                 try {
+                                    result = true;
                                     new PrintWriter(source.getAbsolutePath()).close();
                                     LOGGER.trace("Renamed file {} to {} with copy and truncation",
                                             source.getAbsolutePath(), destination.getAbsolutePath());

@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.13.0" date="2019-MM-DD" description="GA Release 2.13.0">
+      <action issue="LOG4J2-2680" dev="rgoers" type="fix" due-to="Guillermo Xavier Hurtado Garcia">
+        Set result of rename action to true if file was copied.
+      </action>
       <action issue="LOG4J-2672" dev="rgoers" type="fix" due-to="Stephen Colebourne">
         Add automatic module names where missing.
       </action>
