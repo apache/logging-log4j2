@@ -35,7 +35,9 @@ public final class StringBuilders {
      * @return {@code "value"}
      */
     public static StringBuilder appendDqValue(final StringBuilder sb, final Object value) {
-        return sb.append(Chars.DQUOTE).append(value).append(Chars.DQUOTE);
+        sb.append(Chars.DQUOTE);
+        appendValue(sb, value);
+        return sb.append(Chars.DQUOTE);
     }
 
     /**
@@ -58,7 +60,8 @@ public final class StringBuilders {
      * @return the specified StringBuilder
      */
     public static StringBuilder appendKeyDqValue(final StringBuilder sb, final String key, final Object value) {
-        return sb.append(key).append(Chars.EQ).append(Chars.DQUOTE).append(value).append(Chars.DQUOTE);
+        sb.append(key).append(Chars.EQ);
+        return appendDqValue(sb, value);
     }
 
     /**
