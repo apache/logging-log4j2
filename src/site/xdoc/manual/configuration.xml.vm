@@ -2143,7 +2143,7 @@ public class AwesomeTest {
       (<a name="AsyncLogger.RingBufferSize"/>AsyncLogger.RingBufferSize)
     </td>
     <td>LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE</td>
-    <td>256&#160;*&#160;1024</td>
+    <td>256&#160;*&#160;1024 or 4&#160;*&#160;1024 in garbage-free mode</td>
     <td>
       See <a href="async.html#SysPropsAllAsync">Async Logger System Properties</a> for details.
     </td>
@@ -2202,7 +2202,7 @@ public class AwesomeTest {
       (<a name="AsyncLoggerConfig.RingBufferSize"/>AsyncLoggerConfig.RingBufferSize)
     </td>
     <td>LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE</td>
-    <td>256&#160;*&#160;1024</td>
+    <td>256&#160;*&#160;1024 or 4&#160;*&#160;1024 in garbage-free mode</td>
     <td>
       See <a href="async.html#SysPropsMixedSync-Async">Mixed Async/Synchronous Logger System Properties</a> for details.
     </td>
