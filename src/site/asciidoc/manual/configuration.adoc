@@ -2021,7 +2021,7 @@ details.
 |[[asyncLoggerRingBufferSize]]log4j2.asyncLoggerRingBufferSize +
 ([[AsyncLogger.RingBufferSize]]AsyncLogger.RingBufferSize)
 |LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE
-|256 * 1024
+|256 * 1024 or 4 * 1024 in garbage-free mode
 |See
 link:async.html#SysPropsAllAsync[Async Logger System Properties] for
 details.
@@ -2060,7 +2060,7 @@ System Properties] for details.
 |[[asyncLoggerConfigRingBufferSize]]log4j2.asyncLoggerConfigRingBufferSize +
 ([[AsyncLoggerConfig.RingBufferSize]]AsyncLoggerConfig.RingBufferSize)
 |LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE
-|256 * 1024
+|256 * 1024 or 4 * 1024 in garbage-free mode
 |See
 link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
 System Properties] for details.
