@@ -37,7 +37,7 @@ public class YamlConfigurationFactory extends ConfigurationFactory {
             "com.fasterxml.jackson.databind.ObjectMapper",
             "com.fasterxml.jackson.databind.JsonNode",
             "com.fasterxml.jackson.core.JsonParser",
-            "com.fasterxml.jackson.dataformat.yaml.YAMLFactory"
+            "com.fasterxml.jackson.dataformat.yaml.YAMLMapper"
     };
 
     private final boolean isActive;

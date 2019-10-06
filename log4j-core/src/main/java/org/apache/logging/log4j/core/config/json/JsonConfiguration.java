@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.json;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -52,14 +50,12 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
 
     public JsonConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
         super(loggerContext, configSource);
-        final File configFile = configSource.getFile();
-        byte[] buffer;
         try {
+            final byte[] buffer;
             try (final InputStream configStream = configSource.getInputStream()) {
                 buffer = toByteArray(configStream);
             }
-            final InputStream is = new ByteArrayInputStream(buffer);
-            root = getObjectMapper().readTree(is);
+            root = getObjectMapper().readTree(buffer);
             if (root.size() == 1) {
                 for (final JsonNode node : root) {
                     root = node;

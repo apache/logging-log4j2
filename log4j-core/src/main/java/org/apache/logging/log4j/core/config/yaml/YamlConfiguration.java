@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.json.JsonConfiguration;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 public class YamlConfiguration extends JsonConfiguration {
 
@@ -35,7 +35,7 @@ public class YamlConfiguration extends JsonConfiguration {
 
     @Override
     protected ObjectMapper getObjectMapper() {
-        return new ObjectMapper(new YAMLFactory()).configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+        return new YAMLMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true);
     }
 
     @Override
