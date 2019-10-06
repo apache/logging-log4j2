@@ -16,24 +16,24 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
-import java.util.Date;
-import java.util.Locale;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * A configuration element for specifying a database column name mapping.
@@ -190,7 +190,7 @@ public class ColumnMapping {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }

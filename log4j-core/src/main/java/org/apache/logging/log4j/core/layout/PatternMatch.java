@@ -17,13 +17,13 @@
 
 package org.apache.logging.log4j.core.layout;
 
-import java.io.ObjectStreamException;
-import java.io.Serializable;
-
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 
 /**
  * PatternMatch configuration item.
@@ -67,7 +67,7 @@ public final class PatternMatch {
         return key + '=' + pattern;
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }

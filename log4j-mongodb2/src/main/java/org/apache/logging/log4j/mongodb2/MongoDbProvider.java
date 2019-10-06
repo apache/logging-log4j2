@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.mongodb2;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
@@ -28,21 +28,20 @@ import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.Strings;
 
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The MongoDB implementation of {@link NoSqlProvider}.
@@ -275,7 +274,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
     private static final int DEFAULT_PORT = 27017;
 
     private static final int DEFAULT_COLLECTION_SIZE = 536870912;
-    @PluginBuilderFactory
+    @PluginFactory
 	public static <B extends Builder<B>> B newBuilder() {
 		return new Builder<B>().asBuilder();
 	}

@@ -16,6 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
+import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
+import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
+import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,21 +41,6 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
-
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.appender.rolling.action.Action;
-import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
-import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
-import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
-import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * When rolling over, <code>DirectWriteRolloverStrategy</code> writes directly to the file as resolved by the file
@@ -189,7 +189,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         }
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }

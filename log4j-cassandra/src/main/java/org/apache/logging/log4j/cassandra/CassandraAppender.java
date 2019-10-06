@@ -27,8 +27,8 @@ import org.apache.logging.log4j.core.net.SocketAddress;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
 /**
@@ -45,7 +45,7 @@ public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager
         super(name, filter, null, ignoreExceptions, properties, manager);
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }

@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.dbcp2.appender;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.dbcp2.ConnectionFactory;
 import org.apache.commons.dbcp2.DriverManagerConnectionFactory;
 import org.apache.commons.dbcp2.PoolableConnection;
@@ -30,12 +25,17 @@ import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.jdbc.appender.AbstractDriverManagerConnectionSource;
 import org.apache.logging.log4j.jdbc.appender.ConnectionSource;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link ConnectionSource} that uses a JDBC connection string, a user name, and a password to call
@@ -95,7 +95,7 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
     public static final String URL_PREFIX = "jdbc:apache:commons:dbcp:";
 
     // This method is not named newBuilder() to make the compiler happy.
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newPoolingDriverConnectionSourceBuilder() {
         return new Builder<B>().asBuilder();
     }

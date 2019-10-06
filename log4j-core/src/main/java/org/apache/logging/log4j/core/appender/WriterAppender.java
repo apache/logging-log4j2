@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Writer;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldWriter;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
+import java.io.Writer;
 
 /**
  * Appends log events to a {@link Writer}.
@@ -147,7 +146,7 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
         return WriterManager.getManager(managerName, new FactoryData(writer, managerName, layout), factory);
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }

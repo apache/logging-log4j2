@@ -17,27 +17,26 @@
 
 package org.apache.logging.log4j.jms.appender;
 
-import java.io.Serializable;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
-import javax.jms.JMSException;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AbstractManager;
-import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.net.JndiManager;
+import org.apache.logging.log4j.jms.appender.JmsManager.JmsManagerConfiguration;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.net.JndiManager;
-import org.apache.logging.log4j.jms.appender.JmsManager.JmsManagerConfiguration;
+
+import javax.jms.JMSException;
+import java.io.Serializable;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Generic JMS Appender plugin for both queues and topics. This Appender replaces the previous split ones. However,
@@ -197,7 +196,7 @@ public class JmsAppender extends AbstractAppender {
 
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }

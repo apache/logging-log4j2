@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.plugins.validation;
 
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.plugins.Plugin;
 
 import java.util.Objects;
 
@@ -46,7 +45,7 @@ public class ValidatingPluginWithTypedBuilder {
         return new ValidatingPluginWithTypedBuilder(name);
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder<Integer> newBuilder() {
         return new Builder<>();
     }

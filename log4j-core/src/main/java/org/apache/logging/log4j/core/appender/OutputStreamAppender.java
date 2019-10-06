@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.OutputStream;
-import java.io.Serializable;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -28,8 +25,10 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.PluginFactory;
+
+import java.io.OutputStream;
+import java.io.Serializable;
 
 /**
  * Appends log events to a given output stream using a layout.
@@ -160,7 +159,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
         return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }

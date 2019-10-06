@@ -16,6 +16,26 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.net.Severity;
+import org.apache.logging.log4j.core.util.JsonUtils;
+import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.TriConsumer;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,26 +46,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.net.Severity;
-import org.apache.logging.log4j.core.util.JsonUtils;
-import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * Lays out events in the Graylog Extended Log Format (GELF) 1.1.
@@ -254,7 +254,7 @@ public final class GelfLayout extends AbstractStringLayout {
         }
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }

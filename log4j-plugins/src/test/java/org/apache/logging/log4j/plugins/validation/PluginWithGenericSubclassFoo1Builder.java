@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.plugins.validation;
 
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
 @Plugin(name = "PluginWithGenericSubclassFoo1Builder", category = "Test")
 public class PluginWithGenericSubclassFoo1Builder extends AbstractPluginWithGenericBuilder {
@@ -27,7 +27,7 @@ public class PluginWithGenericSubclassFoo1Builder extends AbstractPluginWithGene
     public static class Builder<B extends Builder<B>> extends AbstractPluginWithGenericBuilder.Builder<B>
             implements org.apache.logging.log4j.plugins.util.Builder<PluginWithGenericSubclassFoo1Builder> {
 
-        @PluginBuilderFactory
+        @PluginFactory
         public static <B extends Builder<B>> B newBuilder() {
             return new Builder<B>().asBuilder();
         }
@@ -52,7 +52,7 @@ public class PluginWithGenericSubclassFoo1Builder extends AbstractPluginWithGene
 
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }

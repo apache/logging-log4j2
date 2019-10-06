@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.net.Facility;
+import org.apache.logging.log4j.core.net.Priority;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.util.Chars;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -25,17 +36,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.net.Facility;
-import org.apache.logging.log4j.core.net.Priority;
-import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.util.Chars;
 
 /**
  * Formats a log event as a BSD Log record.
@@ -105,7 +105,7 @@ public final class SyslogLayout extends AbstractStringLayout {
 
     }
     
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }

@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Rolls a file over based on time.
@@ -136,7 +136,7 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         return false;
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static TimeBasedTriggeringPolicy.Builder newBuilder() {
         return new Builder();
     }

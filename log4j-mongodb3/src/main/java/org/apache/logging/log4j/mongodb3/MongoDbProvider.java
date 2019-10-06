@@ -16,16 +16,19 @@
  */
 package org.apache.logging.log4j.mongodb3;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
+import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
@@ -36,12 +39,8 @@ import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.bson.codecs.configuration.CodecRegistries;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
-import com.mongodb.client.MongoDatabase;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * The MongoDB implementation of {@link NoSqlProvider}.
@@ -291,7 +290,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }

@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.zip.Deflater;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -33,11 +27,17 @@ import org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrateg
 import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
+import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.core.net.Advertiser;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.zip.Deflater;
 
 /**
  * An appender that writes to random access files and can roll over at
@@ -273,7 +273,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         return getManager().getBufferSize();
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }

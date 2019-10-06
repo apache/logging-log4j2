@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -26,8 +24,10 @@ import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
+import java.io.Serializable;
 
 /**
  * This Appender writes logging events to a NoSQL database using a configured NoSQL provider. It requires
@@ -107,7 +107,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
         }
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }

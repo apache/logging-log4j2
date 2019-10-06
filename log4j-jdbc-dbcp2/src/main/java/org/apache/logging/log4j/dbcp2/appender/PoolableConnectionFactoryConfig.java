@@ -17,19 +17,19 @@
 
 package org.apache.logging.log4j.dbcp2.appender;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 import org.apache.commons.dbcp2.PoolableConnectionFactory;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Configures an Apache Commons DBCP {@link PoolableConnectionFactory}.
@@ -198,7 +198,7 @@ public class PoolableConnectionFactoryConfig {
 
     // ALL of these instance variables match DBCP WRT Boolean vs. boolean.
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
