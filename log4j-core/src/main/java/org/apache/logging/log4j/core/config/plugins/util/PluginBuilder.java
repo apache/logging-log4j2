@@ -24,7 +24,6 @@ import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginAliases;
-import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.bind.FactoryMethodBinder;
 import org.apache.logging.log4j.plugins.bind.FieldConfigurationBinder;
@@ -152,7 +151,7 @@ public class PluginBuilder implements Builder<Object> {
     private static Builder<?> createBuilder(final Class<?> clazz)
         throws InvocationTargetException, IllegalAccessException {
         for (final Method method : clazz.getDeclaredMethods()) {
-            if ((method.isAnnotationPresent(PluginFactory.class) || method.isAnnotationPresent(PluginBuilderFactory.class)) &&
+            if ((method.isAnnotationPresent(PluginFactory.class)) &&
                 Modifier.isStatic(method.getModifiers()) &&
                 TypeUtil.isAssignable(Builder.class, method.getReturnType())) {
                 ReflectionUtil.makeAccessible(method);

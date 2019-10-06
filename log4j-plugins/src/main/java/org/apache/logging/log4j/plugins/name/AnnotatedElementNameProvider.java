@@ -56,7 +56,7 @@ public interface AnnotatedElementNameProvider<A extends Annotation> {
             if (methodName.startsWith("with")) {
                 return Introspector.decapitalize(methodName.substring(4));
             }
-            return method.getParameters()[0].getName();
+            return methodName;
         }
 
         if (element instanceof Parameter) {

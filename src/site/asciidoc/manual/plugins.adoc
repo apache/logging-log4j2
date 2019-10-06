@@ -127,18 +127,27 @@ Custom plugins that conform to the rules laid out in the next paragraph
 may simply be referenced in the configuration, provided they are
 appropriate configured to be loaded by the PluginManager.
 
-Every Core plugin must declare a static method annotated with
-`@PluginFactory` or `@PluginBuilderFactory`. The former is used for
-static factory methods that provide all options as method parameters,
-and the latter is used to construct a new `Builder<T>` class whose
-fields are used for injecting attributes and child nodes. To allow the
-`Configuration` to pass the correct parameters to the method, every
-parameter to the method must be annotated as one of the following
-attribute types. Each attribute or element annotation must include the
+Core plugins follow a few simple dependency injection rules for binding
+`Configuration` parameters into a factory entry point. Each plugin must
+declare a static method annotated with `@PluginFactory`.
+This method can either list all options as method parameters, or it can return
+a new `Builder<T>` instance where options are available as either single-argument
+`setFoo` or `withFoo` methods or fields. There are a few different attribute types
+available to denote `Configuration` data that are injected by the plugin
+framework. These are available as annotations that can either be used on the
+method parameters to return an instance of the plugin, or they can be used on the
+returned builder class's methods or fields. Each annotation may include the
 name that must be present in the configuration in order to match the
-configuration item to its respective parameter. For plugin builders, the
-names of the fields will be used by default if no name is specified in
-the annotation. There are dozens of plugins in Log4j Core that can be
+configuration item to its respective parameter. If no name is specified, then
+the name used is as follows:
+
+* When annotated on a parameter, this will use the parameter name.
+* When annotated on a single argument method, if the method name is prefixed by
+  `set` or `with`, this will use the remainder of the method name. Otherwise, the
+  full method name is used.
+* When annotated on a field, this will used the field name.
+
+There are dozens of plugins in Log4j Core that can be
 used as examples for more complex scenarios including hierarchical
 builder classes (e.g., see `FileAppender`). See
 link:extending.html#Plugin_Builders[Extending Log4j with Plugin
@@ -167,7 +176,7 @@ link:../log4j-plugins/apidocs/org/apache/logging/log4j/plugins/PluginValue.html[
 
 === Constraint Validators
 
-Plugin factory fields and parameters can be automatically validated at
+Plugin factory fields, methods, and parameters can be automatically validated at
 runtime using constraint validators inspired by the
 http://beanvalidation.org/[Bean Validation spec]. The following
 annotations are bundled in Log4j, but custom
