@@ -22,13 +22,12 @@ import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 public class PluginNodeInjector extends AbstractConfigurationInjector<PluginNode, Object> {
     @Override
-    public Object inject(final Object target) {
+    public void inject(final Object factory) {
         if (TypeUtil.isAssignable(conversionType, node.getClass())) {
             debugLog.append("Node=").append(node.getName());
-            return configurationBinder.bindObject(target, node);
+            configurationBinder.bindObject(factory, node);
         } else {
             LOGGER.error("Element with type {} annotated with @PluginNode not compatible with type {}.", conversionType, node.getClass());
-            return target;
         }
     }
 }

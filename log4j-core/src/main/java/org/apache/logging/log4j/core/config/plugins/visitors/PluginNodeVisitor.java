@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.config.plugins.visitors;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.plugins.inject.AbstractConfigurationInjector;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 /**
  *  @deprecated Provided to support legacy plugins.
@@ -27,8 +28,12 @@ import org.apache.logging.log4j.plugins.inject.AbstractConfigurationInjector;
 // copy of PluginNodeInjector
 public class PluginNodeVisitor extends AbstractConfigurationInjector<PluginNode, Configuration> {
     @Override
-    public Object inject(final Object target) {
-        debugLog.append("Node=").append(node.getName());
-        return configurationBinder.bindObject(target, node);
+    public void inject(final Object factory) {
+        if (TypeUtil.isAssignable(conversionType, node.getClass())) {
+            debugLog.append("Node=").append(node.getName());
+            configurationBinder.bindObject(factory, node);
+        } else {
+            LOGGER.error("Element with type {} annotated with @PluginNode not compatible with type {}.", conversionType, node.getClass());
+        }
     }
 }

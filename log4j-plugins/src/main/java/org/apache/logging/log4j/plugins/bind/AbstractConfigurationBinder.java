@@ -31,6 +31,12 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 
+/**
+ * Generic configuration binder for an {@link AnnotatedElement}. This provides automatic
+ * {@linkplain TypeConverter string conversion} and {@linkplain ConstraintValidator constraint validation} support.
+ *
+ * @param <E> element type being bound
+ */
 public abstract class AbstractConfigurationBinder<E extends AnnotatedElement> implements ConfigurationBinder {
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -48,17 +54,17 @@ public abstract class AbstractConfigurationBinder<E extends AnnotatedElement> im
     }
 
     @Override
-    public Object bindString(final Object target, final String value) {
+    public void bindString(final Object factory, final String value) {
         Object convertedValue = null;
         if (value != null) {
             final TypeConverter<?> converter = TypeConverterRegistry.getInstance().findCompatibleConverter(injectionType);
             try {
                 convertedValue = converter.convert(value);
             } catch (final Exception e) {
-                LOGGER.error("Cannot convert string '{}' to type {} in option named {}. {}", value, injectionType, name, e);
+                throw new ConfigurationBindingException(name, value, e);
             }
         }
-        return bindObject(target, convertedValue);
+        bindObject(factory, convertedValue);
     }
 
     void validate(final Object value) {

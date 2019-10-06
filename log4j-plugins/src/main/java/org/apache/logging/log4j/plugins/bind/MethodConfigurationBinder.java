@@ -28,16 +28,15 @@ public class MethodConfigurationBinder extends AbstractConfigurationBinder<Metho
     }
 
     @Override
-    public Object bindObject(final Object target, final Object value) {
-        Objects.requireNonNull(target);
+    public void bindObject(final Object factory, final Object value) {
+        Objects.requireNonNull(factory);
         validate(value);
         try {
-            element.invoke(target, value);
+            element.invoke(factory, value);
         } catch (final IllegalAccessException e) {
             throw new ConfigurationBindingException(name, value, e);
         } catch (final InvocationTargetException e) {
             throw new ConfigurationBindingException(name, value, e.getCause());
         }
-        return target;
     }
 }

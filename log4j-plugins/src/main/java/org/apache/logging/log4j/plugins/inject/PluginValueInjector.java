@@ -23,7 +23,7 @@ import org.apache.logging.log4j.util.Strings;
 
 public class PluginValueInjector extends AbstractConfigurationInjector<PluginValue, Object> {
     @Override
-    public Object inject(final Object target) {
+    public void inject(final Object factory) {
         final String elementValue = node.getValue();
         final String attributeValue = node.getAttributes().get(name);
         String rawValue = null; // if neither is specified, return null (LOG4J2-1313)
@@ -39,6 +39,6 @@ public class PluginValueInjector extends AbstractConfigurationInjector<PluginVal
         }
         final String value = stringSubstitutionStrategy.apply(rawValue);
         StringBuilders.appendKeyDqValue(debugLog, name, value);
-        return configurationBinder.bindString(target, value);
+        configurationBinder.bindString(factory, value);
     }
 }

@@ -25,6 +25,7 @@ import org.apache.logging.log4j.util.Strings;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -55,26 +56,28 @@ public class PluginAttributeInjector extends AbstractConfigurationInjector<Plugi
     }
 
     @Override
-    public Object inject(final Object target) {
-        return findAndRemoveNodeAttribute()
-                .map(stringSubstitutionStrategy)
-                .map(value -> configurationBinder.bindString(target, value))
-                .orElseGet(() -> injectDefaultValue(target));
+    public void inject(final Object factory) {
+        final Optional<String> value = findAndRemoveNodeAttribute().map(stringSubstitutionStrategy);
+        if (value.isPresent()) {
+            configurationBinder.bindString(factory, value.get());
+        } else {
+            injectDefaultValue(factory);
+        }
     }
 
-    private Object injectDefaultValue(final Object target) {
+    private void injectDefaultValue(final Object factory) {
         final Function<PluginAttribute, Object> extractor = DEFAULT_VALUE_EXTRACTORS.get(conversionType);
         if (extractor != null) {
             final Object value = extractor.apply(annotation);
             debugLog(value);
-            return configurationBinder.bindObject(target, value);
+            configurationBinder.bindObject(factory, value);
+        } else {
+            final String value = stringSubstitutionStrategy.apply(annotation.defaultString());
+            if (Strings.isNotBlank(value)) {
+                debugLog(value);
+                configurationBinder.bindString(factory, value);
+            }
         }
-        final String value = stringSubstitutionStrategy.apply(annotation.defaultString());
-        if (Strings.isNotBlank(value)) {
-            debugLog(value);
-            return configurationBinder.bindString(target, value);
-        }
-        return target;
     }
 
     private void debugLog(final Object value) {

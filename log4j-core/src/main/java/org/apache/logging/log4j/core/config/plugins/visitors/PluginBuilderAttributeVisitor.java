@@ -23,20 +23,28 @@ import org.apache.logging.log4j.plugins.inject.AbstractConfigurationInjector;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 
+import java.util.Optional;
+
 /**
  * @deprecated Provided for support for PluginBuilderAttribute.
  */
 // copy of PluginBuilderAttributeInjector
 public class PluginBuilderAttributeVisitor extends AbstractConfigurationInjector<PluginBuilderAttribute, Configuration> {
     @Override
-    public Object inject(final Object target) {
-        return findAndRemoveNodeAttribute()
-                .map(stringSubstitutionStrategy)
-                .map(value -> {
-                    String debugValue = annotation.sensitive() ? NameUtil.md5(value + getClass().getName()) : value;
-                    StringBuilders.appendKeyDqValue(debugLog, name, debugValue);
-                    return configurationBinder.bindString(target, value);
-                })
-                .orElseGet(() -> configurationBinder.bindObject(target, null));
+    public void inject(final Object factory) {
+        final Optional<String> value = findAndRemoveNodeAttribute().map(stringSubstitutionStrategy);
+        if (value.isPresent()) {
+            final String str = value.get();
+            debugLog(str);
+            configurationBinder.bindString(factory, str);
+        } else {
+            debugLog.append(name).append("=null");
+            configurationBinder.bindObject(factory, null);
+        }
+    }
+
+    private void debugLog(final Object value) {
+        final Object debugValue = annotation.sensitive() ? NameUtil.md5(value + getClass().getName()) : value;
+        StringBuilders.appendKeyDqValue(debugLog, name, debugValue);
     }
 }

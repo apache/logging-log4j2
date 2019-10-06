@@ -64,12 +64,11 @@ public class FactoryMethodBinder {
         }
 
         @Override
-        public Object bindObject(final Object target, final Object value) {
+        public void bindObject(final Object factory, final Object value) {
             validate(value);
             if (value != null) {
                 boundParameters.put(element, value);
             }
-            return target;
         }
     }
 }

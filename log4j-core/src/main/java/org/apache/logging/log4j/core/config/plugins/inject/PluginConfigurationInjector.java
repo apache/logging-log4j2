@@ -24,17 +24,16 @@ import org.apache.logging.log4j.plugins.inject.AbstractConfigurationInjector;
 
 public class PluginConfigurationInjector extends AbstractConfigurationInjector<PluginConfiguration, Configuration> {
     @Override
-    public Object inject(final Object target) {
+    public void inject(final Object factory) {
         if (TypeUtil.isAssignable(conversionType, configuration.getClass())) {
             debugLog.append("Configuration");
             if (configuration.getName() != null) {
                 debugLog.append('(').append(configuration.getName()).append(')');
             }
-            return configurationBinder.bindObject(target, configuration);
+            configurationBinder.bindObject(factory, configuration);
         } else {
             LOGGER.warn("Element with type {} annotated with @PluginConfiguration is not compatible with type {}.",
                     conversionType, configuration.getClass());
-            return target;
         }
     }
 }

@@ -27,6 +27,14 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * Strategy builder for injecting configuration data into an {@link AnnotatedElement}. Configuration injection consists
+ * of {@linkplain ConfigurationBinder binding} a {@link Node} and configuration to an annotated element of a
+ * {@linkplain org.apache.logging.log4j.plugins.PluginFactory plugin factory}.
+ *
+ * @param <Ann> plugin annotation this injector uses
+ * @param <Cfg> configuration class
+ */
 public interface ConfigurationInjector<Ann extends Annotation, Cfg> {
 
     static <Cfg> Optional<ConfigurationInjector<Annotation, Cfg>> forAnnotatedElement(final AnnotatedElement element) {
@@ -61,5 +69,5 @@ public interface ConfigurationInjector<Ann extends Annotation, Cfg> {
 
     ConfigurationInjector<Ann, Cfg> withNode(final Node node);
 
-    Object inject(final Object target);
+    void inject(final Object factory);
 }

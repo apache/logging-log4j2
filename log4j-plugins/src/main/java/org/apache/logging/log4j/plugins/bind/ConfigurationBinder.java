@@ -17,8 +17,26 @@
 
 package org.apache.logging.log4j.plugins.bind;
 
+/**
+ * Strategy to bind and validate an {@linkplain org.apache.logging.log4j.plugins.inject.ConfigurationInjector injected
+ * configuration value} to a {@linkplain org.apache.logging.log4j.plugins.PluginFactory plugin factory}.
+ */
 public interface ConfigurationBinder {
-    Object bindString(final Object target, final String value);
+    /**
+     * Binds an unparsed string value to the given factory.
+     *
+     * @param factory injection factory to bind value to
+     * @param value   string representation of configuration value
+     * @throws ConfigurationBindingException if the given value is invalid
+     */
+    void bindString(final Object factory, final String value);
 
-    Object bindObject(final Object target, final Object value);
+    /**
+     * Binds an object to the given factory.
+     *
+     * @param factory injection factory to bind value to
+     * @param value   configuration value to bind
+     * @throws ConfigurationBindingException if the given value is invalid
+     */
+    void bindObject(final Object factory, final Object value);
 }

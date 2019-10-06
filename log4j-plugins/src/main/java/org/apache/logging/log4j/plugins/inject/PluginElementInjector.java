@@ -32,7 +32,7 @@ import java.util.Optional;
 
 public class PluginElementInjector extends AbstractConfigurationInjector<PluginElement, Object> {
     @Override
-    public Object inject(final Object target) {
+    public void inject(final Object factory) {
         final Optional<Class<?>> componentType = getComponentType(conversionType);
         if (componentType.isPresent()) {
             final Class<?> compType = componentType.get();
@@ -55,7 +55,8 @@ public class PluginElementInjector extends AbstractConfigurationInjector<PluginE
                         Object[] children = (Object[]) childObject;
                         debugLog.append(Arrays.toString(children)).append('}');
                         node.getChildren().removeAll(used);
-                        return configurationBinder.bindObject(target, children);
+                        configurationBinder.bindObject(factory, children);
+                        return;
                     } else {
                         debugLog.append(child.toString());
                         values.add(childObject);
@@ -65,7 +66,7 @@ public class PluginElementInjector extends AbstractConfigurationInjector<PluginE
             debugLog.append('}');
             if (!values.isEmpty() && !TypeUtil.isAssignable(compType, values.get(0).getClass())) {
                 LOGGER.error("Cannot assign element {} a list of {} as it is incompatible with {}", name, values.get(0).getClass(), compType);
-                return null;
+                return;
             }
             node.getChildren().removeAll(used);
             // using List::toArray here would cause type mismatch later on
@@ -73,17 +74,17 @@ public class PluginElementInjector extends AbstractConfigurationInjector<PluginE
             for (int i = 0; i < vals.length; i++) {
                 vals[i] = values.get(i);
             }
-            return configurationBinder.bindObject(target, vals);
+            configurationBinder.bindObject(factory, vals);
         } else {
             final Optional<Node> matchingChild = node.getChildren().stream().filter(this::isRequestedNode).findAny();
             if (matchingChild.isPresent()) {
                 final Node child = matchingChild.get();
                 debugLog.append(child.getName()).append('(').append(child.toString()).append(')');
                 node.getChildren().remove(child);
-                return configurationBinder.bindObject(target, child.getObject());
+                configurationBinder.bindObject(factory, child.getObject());
             } else {
                 debugLog.append(name).append("=null");
-                return configurationBinder.bindObject(target, null);
+                configurationBinder.bindObject(factory, null);
             }
         }
     }
