@@ -29,6 +29,6 @@ public class PluginNodeVisitor extends AbstractConfigurationInjector<PluginNode,
     @Override
     public Object inject(final Object target) {
         debugLog.append("Node=").append(node.getName());
-        return optionBinder.bindObject(target, node);
+        return configurationBinder.bindObject(target, node);
     }
 }

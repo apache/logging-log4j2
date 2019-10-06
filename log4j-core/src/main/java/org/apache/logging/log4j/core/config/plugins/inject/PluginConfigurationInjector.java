@@ -13,7 +13,7 @@ public class PluginConfigurationInjector extends AbstractConfigurationInjector<P
             if (configuration.getName() != null) {
                 debugLog.append('(').append(configuration.getName()).append(')');
             }
-            return optionBinder.bindObject(target, configuration);
+            return configurationBinder.bindObject(target, configuration);
         } else {
             LOGGER.warn("Element with type {} annotated with @PluginConfiguration is not compatible with type {}.",
                     conversionType, configuration.getClass());

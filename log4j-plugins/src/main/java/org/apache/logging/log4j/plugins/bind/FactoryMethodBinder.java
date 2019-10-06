@@ -12,17 +12,17 @@ import java.util.function.BiConsumer;
 public class FactoryMethodBinder {
 
     private final Method factoryMethod;
-    private final Map<Parameter, OptionBinder> binders = new ConcurrentHashMap<>();
+    private final Map<Parameter, ConfigurationBinder> binders = new ConcurrentHashMap<>();
     private final Map<Parameter, Object> boundParameters = new ConcurrentHashMap<>();
 
     public FactoryMethodBinder(final Method factoryMethod) {
         this.factoryMethod = Objects.requireNonNull(factoryMethod);
         for (final Parameter parameter : factoryMethod.getParameters()) {
-            binders.put(parameter, new ParameterOptionBinder(parameter));
+            binders.put(parameter, new ParameterConfigurationBinder(parameter));
         }
     }
 
-    public void forEachParameter(final BiConsumer<Parameter, OptionBinder> consumer) {
+    public void forEachParameter(final BiConsumer<Parameter, ConfigurationBinder> consumer) {
         binders.forEach(consumer);
     }
 
@@ -35,14 +35,14 @@ public class FactoryMethodBinder {
         try {
             return factoryMethod.invoke(null, args);
         } catch (final IllegalAccessException e) {
-            throw new OptionBindingException("Cannot access factory method " + factoryMethod, e);
+            throw new ConfigurationBindingException("Cannot access factory method " + factoryMethod, e);
         } catch (final InvocationTargetException e) {
             throw e.getCause();
         }
     }
 
-    private class ParameterOptionBinder extends AbstractOptionBinder<Parameter> {
-        private ParameterOptionBinder(final Parameter parameter) {
+    private class ParameterConfigurationBinder extends AbstractConfigurationBinder<Parameter> {
+        private ParameterConfigurationBinder(final Parameter parameter) {
             super(parameter, Parameter::getParameterizedType);
         }
 

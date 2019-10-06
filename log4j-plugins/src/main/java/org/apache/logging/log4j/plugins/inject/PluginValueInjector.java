@@ -22,6 +22,6 @@ public class PluginValueInjector extends AbstractConfigurationInjector<PluginVal
         }
         final String value = stringSubstitutionStrategy.apply(rawValue);
         StringBuilders.appendKeyDqValue(debugLog, name, value);
-        return optionBinder.bindString(target, value);
+        return configurationBinder.bindString(target, value);
     }
 }

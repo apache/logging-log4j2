@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 
-public abstract class AbstractOptionBinder<E extends AnnotatedElement> implements OptionBinder {
+public abstract class AbstractConfigurationBinder<E extends AnnotatedElement> implements ConfigurationBinder {
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
     final E element;
@@ -22,7 +22,7 @@ public abstract class AbstractOptionBinder<E extends AnnotatedElement> implement
     private final Type injectionType;
     private final Collection<ConstraintValidator<?>> validators;
 
-    AbstractOptionBinder(final E element, final Function<E, Type> injectionTypeExtractor) {
+    AbstractConfigurationBinder(final E element, final Function<E, Type> injectionTypeExtractor) {
         this.element = Objects.requireNonNull(element);
         this.name = AnnotatedElementNameProvider.getName(element);
         Objects.requireNonNull(injectionTypeExtractor);
@@ -55,7 +55,7 @@ public abstract class AbstractOptionBinder<E extends AnnotatedElement> implement
 //            valid = false;
 //        }
         if (!valid) {
-            throw new OptionBindingException(name, value);
+            throw new ConfigurationBindingException(name, value);
         }
     }
 

@@ -3,9 +3,9 @@ package org.apache.logging.log4j.plugins.bind;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-public class FieldOptionBinder extends AbstractOptionBinder<Field> {
+public class FieldConfigurationBinder extends AbstractConfigurationBinder<Field> {
 
-    public FieldOptionBinder(final Field field) {
+    public FieldConfigurationBinder(final Field field) {
         super(field, Field::getGenericType);
     }
 
@@ -19,7 +19,7 @@ public class FieldOptionBinder extends AbstractOptionBinder<Field> {
                 validate(defaultValue);
                 LOGGER.trace("Using default value {} for option {}", defaultValue, name);
             } catch (final IllegalAccessException e) {
-                throw new OptionBindingException("Unable to validate option " + name, e);
+                throw new ConfigurationBindingException("Unable to validate option " + name, e);
             }
             return target;
         }
@@ -29,7 +29,7 @@ public class FieldOptionBinder extends AbstractOptionBinder<Field> {
             LOGGER.trace("Using value {} for option {}", value, name);
             return target;
         } catch (final IllegalAccessException e) {
-            throw new OptionBindingException(name, value, e);
+            throw new ConfigurationBindingException(name, value, e);
         }
     }
 

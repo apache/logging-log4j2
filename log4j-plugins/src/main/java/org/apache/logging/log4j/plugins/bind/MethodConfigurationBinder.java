@@ -4,9 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
-public class MethodOptionBinder extends AbstractOptionBinder<Method> {
+public class MethodConfigurationBinder extends AbstractConfigurationBinder<Method> {
 
-    public MethodOptionBinder(final Method method) {
+    public MethodConfigurationBinder(final Method method) {
         super(method, m -> m.getGenericParameterTypes()[0]);
     }
 
@@ -17,9 +17,9 @@ public class MethodOptionBinder extends AbstractOptionBinder<Method> {
         try {
             element.invoke(target, value);
         } catch (final IllegalAccessException e) {
-            throw new OptionBindingException(name, value, e);
+            throw new ConfigurationBindingException(name, value, e);
         } catch (final InvocationTargetException e) {
-            throw new OptionBindingException(name, value, e.getCause());
+            throw new ConfigurationBindingException(name, value, e.getCause());
         }
         return target;
     }

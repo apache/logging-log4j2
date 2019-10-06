@@ -35,8 +35,8 @@ public class PluginBuilderAttributeVisitor extends AbstractConfigurationInjector
                 .map(value -> {
                     String debugValue = annotation.sensitive() ? NameUtil.md5(value + getClass().getName()) : value;
                     StringBuilders.appendKeyDqValue(debugLog, name, debugValue);
-                    return optionBinder.bindString(target, value);
+                    return configurationBinder.bindString(target, value);
                 })
-                .orElseGet(() -> optionBinder.bindObject(target, null));
+                .orElseGet(() -> configurationBinder.bindObject(target, null));
     }
 }

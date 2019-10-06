@@ -38,7 +38,7 @@ public class PluginElementInjector extends AbstractConfigurationInjector<PluginE
                         Object[] children = (Object[]) childObject;
                         debugLog.append(Arrays.toString(children)).append('}');
                         node.getChildren().removeAll(used);
-                        return optionBinder.bindObject(target, children);
+                        return configurationBinder.bindObject(target, children);
                     } else {
                         debugLog.append(child.toString());
                         values.add(childObject);
@@ -56,17 +56,17 @@ public class PluginElementInjector extends AbstractConfigurationInjector<PluginE
             for (int i = 0; i < vals.length; i++) {
                 vals[i] = values.get(i);
             }
-            return optionBinder.bindObject(target, vals);
+            return configurationBinder.bindObject(target, vals);
         } else {
             final Optional<Node> matchingChild = node.getChildren().stream().filter(this::isRequestedNode).findAny();
             if (matchingChild.isPresent()) {
                 final Node child = matchingChild.get();
                 debugLog.append(child.getName()).append('(').append(child.toString()).append(')');
                 node.getChildren().remove(child);
-                return optionBinder.bindObject(target, child.getObject());
+                return configurationBinder.bindObject(target, child.getObject());
             } else {
                 debugLog.append(name).append("=null");
-                return optionBinder.bindObject(target, null);
+                return configurationBinder.bindObject(target, null);
             }
         }
     }

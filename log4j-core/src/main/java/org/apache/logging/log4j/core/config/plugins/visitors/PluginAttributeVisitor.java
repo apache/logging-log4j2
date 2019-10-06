@@ -63,7 +63,7 @@ public class PluginAttributeVisitor extends AbstractConfigurationInjector<Plugin
     public Object inject(final Object target) {
         return findAndRemoveNodeAttribute()
                 .map(stringSubstitutionStrategy)
-                .map(value -> optionBinder.bindString(target, value))
+                .map(value -> configurationBinder.bindString(target, value))
                 .orElseGet(() -> injectDefaultValue(target));
     }
 
@@ -72,12 +72,12 @@ public class PluginAttributeVisitor extends AbstractConfigurationInjector<Plugin
         if (extractor != null) {
             final Object value = extractor.apply(annotation);
             debugLog(value);
-            return optionBinder.bindObject(target, value);
+            return configurationBinder.bindObject(target, value);
         }
         final String value = stringSubstitutionStrategy.apply(annotation.defaultString());
         if (Strings.isNotBlank(value)) {
             debugLog(value);
-            return optionBinder.bindString(target, value);
+            return configurationBinder.bindString(target, value);
         }
         return target;
     }

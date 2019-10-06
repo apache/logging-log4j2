@@ -1,7 +1,7 @@
 package org.apache.logging.log4j.plugins.inject;
 
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.bind.OptionBinder;
+import org.apache.logging.log4j.plugins.bind.ConfigurationBinder;
 import org.apache.logging.log4j.util.ReflectionUtil;
 
 import java.lang.annotation.Annotation;
@@ -34,7 +34,7 @@ public interface ConfigurationInjector<Ann extends Annotation, Cfg> {
 
     ConfigurationInjector<Ann, Cfg> withAliases(final String... aliases);
 
-    ConfigurationInjector<Ann, Cfg> withOptionBinder(final OptionBinder binder);
+    ConfigurationInjector<Ann, Cfg> withConfigurationBinder(final ConfigurationBinder binder);
 
     ConfigurationInjector<Ann, Cfg> withDebugLog(final StringBuilder debugLog);
 

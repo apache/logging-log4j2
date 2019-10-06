@@ -3,7 +3,7 @@ package org.apache.logging.log4j.plugins.inject;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginAliases;
-import org.apache.logging.log4j.plugins.bind.OptionBinder;
+import org.apache.logging.log4j.plugins.bind.ConfigurationBinder;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -27,7 +27,7 @@ public abstract class AbstractConfigurationInjector<Ann extends Annotation, Cfg>
     protected Type conversionType;
     protected String name;
     protected Collection<String> aliases = Collections.emptyList();
-    protected OptionBinder optionBinder;
+    protected ConfigurationBinder configurationBinder;
     protected StringBuilder debugLog;
     protected Function<String, String> stringSubstitutionStrategy = Function.identity();
     protected Cfg configuration;
@@ -69,8 +69,8 @@ public abstract class AbstractConfigurationInjector<Ann extends Annotation, Cfg>
     }
 
     @Override
-    public ConfigurationInjector<Ann, Cfg> withOptionBinder(final OptionBinder binder) {
-        this.optionBinder = binder;
+    public ConfigurationInjector<Ann, Cfg> withConfigurationBinder(final ConfigurationBinder binder) {
+        this.configurationBinder = binder;
         return this;
     }
 

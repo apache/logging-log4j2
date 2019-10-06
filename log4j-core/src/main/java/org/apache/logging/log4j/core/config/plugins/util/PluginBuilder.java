@@ -27,8 +27,8 @@ import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.bind.FactoryMethodBinder;
-import org.apache.logging.log4j.plugins.bind.FieldOptionBinder;
-import org.apache.logging.log4j.plugins.bind.MethodOptionBinder;
+import org.apache.logging.log4j.plugins.bind.FieldConfigurationBinder;
+import org.apache.logging.log4j.plugins.bind.MethodConfigurationBinder;
 import org.apache.logging.log4j.plugins.inject.ConfigurationInjector;
 import org.apache.logging.log4j.plugins.util.Builder;
 import org.apache.logging.log4j.plugins.util.PluginType;
@@ -178,7 +178,7 @@ public class PluginBuilder implements Builder<Object> {
                 log.append(log.length() == 0 ? simpleName(target) + "(" : ", ");
                 injector.withAliases(extractPluginAliases(field.getAnnotations()))
                         .withConversionType(field.getGenericType())
-                        .withOptionBinder(new FieldOptionBinder(field))
+                        .withConfigurationBinder(new FieldConfigurationBinder(field))
                         .withDebugLog(log)
                         .withStringSubstitutionStrategy(substitutor)
                         .withConfiguration(configuration)
@@ -195,7 +195,7 @@ public class PluginBuilder implements Builder<Object> {
                 log.append(log.length() == 0 ? simpleName(target) + "(" : ", ");
                 injector.withAliases(extractPluginAliases(method.getAnnotations()))
                         .withConversionType(method.getGenericParameterTypes()[0])
-                        .withOptionBinder(new MethodOptionBinder(method))
+                        .withConfigurationBinder(new MethodConfigurationBinder(method))
                         .withDebugLog(log)
                         .withStringSubstitutionStrategy(substitutor)
                         .withConfiguration(configuration)
@@ -242,7 +242,7 @@ public class PluginBuilder implements Builder<Object> {
             ConfigurationInjector.forAnnotatedElement(parameter).ifPresent(injector -> injector
                             .withAliases(extractPluginAliases(parameter.getAnnotations()))
                             .withConversionType(parameter.getParameterizedType())
-                            .withOptionBinder(optionBinder)
+                            .withConfigurationBinder(optionBinder)
                             .withDebugLog(log)
                             .withStringSubstitutionStrategy(substitutor)
                             .withConfiguration(configuration)
