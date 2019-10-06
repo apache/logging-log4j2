@@ -120,6 +120,20 @@
             </configuration>
           </execution>
           <execution>
+            <!-- then do a processing-only pass to generate plugins -->
+            <id>process-plugins</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>process-classes</phase>
+            <configuration>
+              <excludes>
+                <exclude>module-info.java</exclude>
+              </excludes>
+              <proc>only</proc>
+            </configuration>
+          </execution>
+          <execution>
             <!-- disable annotation processing for first pass -->
             <id>generate-test-plugins</id>
             <phase>generate-test-sources</phase>
