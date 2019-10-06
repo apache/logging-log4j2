@@ -8,7 +8,6 @@ import org.apache.logging.log4j.util.Strings;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -40,13 +39,10 @@ public class PluginAttributeInjector extends AbstractConfigurationInjector<Plugi
 
     @Override
     public Object inject(final Object target) {
-        final Optional<String> value = findAndRemoveNodeAttribute().map(stringSubstitutionStrategy);
-        if (value.isPresent()) {
-            final String s = value.get();
-            return optionBinder.bindString(target, s);
-        } else {
-            return injectDefaultValue(target);
-        }
+        return findAndRemoveNodeAttribute()
+                .map(stringSubstitutionStrategy)
+                .map(value -> optionBinder.bindString(target, value))
+                .orElseGet(() -> injectDefaultValue(target));
     }
 
     private Object injectDefaultValue(final Object target) {
