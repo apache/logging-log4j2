@@ -17,7 +17,7 @@
 
 /**
  * Injection builder classes for parsing data from a {@code Configuration} or {@link org.apache.logging.log4j.plugins.Node}
- * corresponding to an {@link org.apache.logging.log4j.plugins.inject.InjectionStrategy}-annotated annotation.
- * Injection strategies must implement {@link org.apache.logging.log4j.plugins.inject.ConfigurationInjectionBuilder}.
+ * corresponding to an {@link org.apache.logging.log4j.plugins.inject.InjectorStrategy}-annotated annotation.
+ * Injection strategies must implement {@link org.apache.logging.log4j.plugins.inject.ConfigurationInjector}.
  */
 package org.apache.logging.log4j.plugins.inject;

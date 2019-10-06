@@ -17,8 +17,10 @@
 
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.inject.InjectionStrategy;
-import org.apache.logging.log4j.plugins.inject.PluginBuilderAttributeBuilder;
+import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
+import org.apache.logging.log4j.plugins.inject.PluginBuilderAttributeInjector;
+import org.apache.logging.log4j.plugins.name.NameProvider;
+import org.apache.logging.log4j.plugins.name.PluginBuilderAttributeNameProvider;
 import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Documented;
@@ -29,12 +31,15 @@ import java.lang.annotation.Target;
 
 /**
  * Marks a field as a Plugin Attribute.
+ *
+ * @deprecated use {@link PluginAttribute}
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.TYPE})
-@InjectionStrategy(PluginBuilderAttributeBuilder.class)
-// TODO: this annotation can be combined with @PluginAttribute
+@InjectorStrategy(PluginBuilderAttributeInjector.class)
+@NameProvider(PluginBuilderAttributeNameProvider.class)
+@Deprecated
 public @interface PluginBuilderAttribute {
 
     /**

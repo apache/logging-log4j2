@@ -16,11 +16,15 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
-import org.apache.logging.log4j.plugins.inject.InjectionStrategy;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginAttributeVisitor;
+import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
 import org.apache.logging.log4j.util.Strings;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Identifies a Plugin Attribute and its default value. Note that only one of the defaultFoo attributes will be
@@ -33,7 +37,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-@InjectionStrategy(PluginAttributeVisitor.class)
+@InjectorStrategy(PluginAttributeVisitor.class)
 public @interface PluginAttribute {
 
     /**
@@ -86,7 +90,6 @@ public @interface PluginAttribute {
      */
     String defaultString() default Strings.EMPTY;
 
-    // TODO: could we allow a blank value and infer the attribute name through reflection?
     /**
      * Specifies the name of the attribute (case-insensitive) this annotation corresponds to.
      */

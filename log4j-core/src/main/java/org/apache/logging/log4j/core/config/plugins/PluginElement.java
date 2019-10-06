@@ -17,9 +17,13 @@
 package org.apache.logging.log4j.core.config.plugins;
 
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginElementVisitor;
-import org.apache.logging.log4j.plugins.inject.InjectionStrategy;
+import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Identifies a parameter as a Plugin and corresponds with an XML element (or equivalent) in configuration files.
@@ -28,7 +32,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-@InjectionStrategy(PluginElementVisitor.class)
+@InjectorStrategy(PluginElementVisitor.class)
 public @interface PluginElement {
 
     /**

@@ -25,11 +25,13 @@ import java.lang.annotation.Target;
 
 /**
  * Marks a method as a factory for custom Plugin builders.
+ *
+ * @deprecated use {@link PluginFactory}
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-// TODO: this can be combined with @PluginFactory as differentiating them by method signature is obvious
+@Deprecated
 public @interface PluginBuilderFactory {
     // empty
 }

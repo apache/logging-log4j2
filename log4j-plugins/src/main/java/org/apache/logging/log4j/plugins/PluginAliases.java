@@ -23,12 +23,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identifies a list of aliases for a Plugin, PluginAttribute, or PluginBuilderAttribute.
+ * Identifies a list of aliases for an annotated plugin element. This is supported by plugin classes and other element
+ * types supported by the annotations in this package.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.TYPE, ElementType.FIELD})
+@Target({ElementType.PARAMETER, ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 public @interface PluginAliases {
 
+    /**
+     * Aliases the annotated element can also be referred to. These aliases are case-insensitive.
+     */
     String[] value();
 }

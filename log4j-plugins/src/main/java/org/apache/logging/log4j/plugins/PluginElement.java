@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.inject.InjectionStrategy;
-import org.apache.logging.log4j.plugins.inject.PluginElementBuilder;
+import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
+import org.apache.logging.log4j.plugins.inject.PluginElementInjector;
+import org.apache.logging.log4j.plugins.name.NameProvider;
+import org.apache.logging.log4j.plugins.name.PluginElementNameProvider;
+import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -26,17 +29,28 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Identifies a Plugin Element which allows for plugins to be configured and injected into another plugin.
+ * Plugin elements can be injected as parameters to a static {@linkplain PluginFactory factory method}, or as fields and
+ * single-parameter methods in a plugin {@linkplain org.apache.logging.log4j.plugins.util.Builder builder class}.
  * Identifies a parameter as a Plugin and corresponds with an XML element (or equivalent) in configuration files.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD})
-@InjectionStrategy(PluginElementBuilder.class)
-// TODO: this can have a default value to use reflection
+@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
+@InjectorStrategy(PluginElementInjector.class)
+@NameProvider(PluginElementNameProvider.class)
 public @interface PluginElement {
 
     /**
      * Identifies the case-insensitive element name (or attribute name) this corresponds with in a configuration file.
+     * If blank, defaults to using reflection on the annotated element as such:
+     *
+     * <ul>
+     *     <li>Field: uses the field name.</li>
+     *     <li>Method: when named <code>set<var>XYZ</var></code> or <code>with<var>XYZ</var></code>, uses the rest
+     *     (<var>XYZ</var>) of the method name. Otherwise, uses the name of the first parameter.</li>
+     *     <li>Parameter: uses the parameter name.</li>
+     * </ul>
      */
-    String value();
+    String value() default Strings.EMPTY;
 }

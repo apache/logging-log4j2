@@ -17,31 +17,26 @@
 
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.inject.AbstractConfigurationInjector;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.StringBuilders;
-
-import java.util.Map;
 
 /**
  * @deprecated Provided for support for PluginBuilderAttribute.
  */
-public class PluginBuilderAttributeVisitor extends AbstractPluginVisitor<PluginBuilderAttribute, Object> {
-
-    public PluginBuilderAttributeVisitor() {
-        super(PluginBuilderAttribute.class);
-    }
-
+// copy of PluginBuilderAttributeInjector
+public class PluginBuilderAttributeVisitor extends AbstractConfigurationInjector<PluginBuilderAttribute, Configuration> {
     @Override
-    public Object build() {
-        final String overridden = this.annotation.value();
-        final String name = overridden.isEmpty() ? this.member.getName() : overridden;
-        final Map<String, String> attributes = node.getAttributes();
-        final String rawValue = removeAttributeValue(attributes, name, this.aliases);
-        final String replacedValue = stringSubstitutionStrategy.apply(rawValue);
-        final Object value = convert(replacedValue, null);
-        final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
-        StringBuilders.appendKeyDqValue(debugLog, name, debugValue);
-        return value;
+    public Object inject(final Object target) {
+        return findAndRemoveNodeAttribute()
+                .map(stringSubstitutionStrategy)
+                .map(value -> {
+                    String debugValue = annotation.sensitive() ? NameUtil.md5(value + getClass().getName()) : value;
+                    StringBuilders.appendKeyDqValue(debugLog, name, debugValue);
+                    return optionBinder.bindString(target, value);
+                })
+                .orElseGet(() -> optionBinder.bindObject(target, null));
     }
 }

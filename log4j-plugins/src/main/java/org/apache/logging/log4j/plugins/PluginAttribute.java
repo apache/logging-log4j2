@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.inject.InjectionStrategy;
-import org.apache.logging.log4j.plugins.inject.PluginAttributeBuilder;
+import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
+import org.apache.logging.log4j.plugins.inject.PluginAttributeInjector;
+import org.apache.logging.log4j.plugins.name.NameProvider;
+import org.apache.logging.log4j.plugins.name.PluginAttributeNameProvider;
 import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Documented;
@@ -27,16 +29,24 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identifies a Plugin Attribute and its default value. Note that only one of the defaultFoo attributes will be
- * used based on the type this annotation is attached to. Thus, for primitive types, the default<i>Type</i>
- * attribute will be used for some <i>Type</i>. However, for more complex types (including enums), the default
- * string value is used instead and should correspond to the string that would correctly convert to the appropriate
- * enum value using {@link Enum#valueOf(Class, String) Enum.valueOf}.
+ * Identifies a Plugin Attribute along with optional metadata. Plugin attributes can be injected as parameters to
+ * a static {@linkplain PluginFactory factory method}, or as fields and single-parameter methods in a plugin
+ * {@linkplain org.apache.logging.log4j.plugins.util.Builder builder class}.
+ *
+ * <p>Default values may be specified via one of the <code>default<var>Type</var></code> attributes depending on the
+ * annotated type. Unlisted types that are supported by a corresponding
+ * {@link org.apache.logging.log4j.plugins.convert.TypeConverter} may use the {@link #defaultString()} attribute.
+ * When annotating a field, a default value can be specified by the field's initial value instead of using one of the
+ * annotation attributes.</p>
+ *
+ * <p>Plugin attributes with sensitive data such as passwords should specify {@link #sensitive()} to avoid having
+ * their values logged in debug logs.</p>
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD})
-@InjectionStrategy(PluginAttributeBuilder.class)
+@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
+@InjectorStrategy(PluginAttributeInjector.class)
+@NameProvider(PluginAttributeNameProvider.class)
 public @interface PluginAttribute {
 
     /**
@@ -89,11 +99,18 @@ public @interface PluginAttribute {
      */
     String defaultString() default Strings.EMPTY;
 
-    // TODO: could we allow a blank value and infer the attribute name through reflection?
     /**
      * Specifies the name of the attribute (case-insensitive) this annotation corresponds to.
+     * If blank, defaults to using reflection on the annotated element as such:
+     *
+     * <ul>
+     *     <li>Field: uses the field name.</li>
+     *     <li>Method: when named <code>set<var>XYZ</var></code> or <code>with<var>XYZ</var></code>, uses the rest
+     *     (<var>XYZ</var>) of the method name. Otherwise, uses the name of the first parameter.</li>
+     *     <li>Parameter: uses the parameter name.</li>
+     * </ul>
      */
-    String value();
+    String value() default Strings.EMPTY;
 
     /**
      * Indicates that this attribute is a sensitive one that shouldn't be logged directly. Such attributes will instead

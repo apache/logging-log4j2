@@ -30,7 +30,7 @@ import java.net.InetAddress;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 @Constraint(ValidHostValidator.class)
 public @interface ValidHost {
 

@@ -26,12 +26,13 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.plugins.inject.ConfigurationInjectionBuilder;
+import org.apache.logging.log4j.plugins.bind.FactoryMethodBinder;
+import org.apache.logging.log4j.plugins.bind.FieldOptionBinder;
+import org.apache.logging.log4j.plugins.bind.MethodOptionBinder;
+import org.apache.logging.log4j.plugins.inject.ConfigurationInjector;
 import org.apache.logging.log4j.plugins.util.Builder;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
-import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
-import org.apache.logging.log4j.plugins.validation.ConstraintValidators;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -42,11 +43,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
@@ -126,26 +125,21 @@ public class PluginBuilder implements Builder<Object> {
                     pluginType.getPluginClass().getName());
             final Builder<?> builder = createBuilder(this.clazz);
             if (builder != null) {
-                injectFields(builder);
-                return builder.build();
+                return injectBuilder(builder);
             }
         } catch (final ConfigurationException e) { // LOG4J2-1908
             LOGGER.error("Could not create plugin of type {} for element {}", this.clazz, node.getName(), e);
             return null; // no point in trying the factory method
         } catch (final Exception e) {
-            LOGGER.error("Could not create plugin of type {} for element {}: {}",
-                    this.clazz, node.getName(),
-                    (e instanceof InvocationTargetException ? e.getCause() : e).toString(), e);
+            LOGGER.error("Could not create plugin of type {} for element {}: {}", clazz, node.getName(),
+                    e.toString(), e);
         }
         // or fall back to factory method if no builder class is available
         try {
-            final Method factory = findFactoryMethod(this.clazz);
-            final Object[] params = generateParameters(factory);
-            return factory.invoke(null, params);
-        } catch (final Exception e) {
-            LOGGER.error("Unable to invoke factory method in {} for element {}: {}",
-                    this.clazz, this.node.getName(),
-                    (e instanceof InvocationTargetException ? e.getCause() : e).toString(), e);
+            return injectFactoryMethod(findFactoryMethod(this.clazz));
+        } catch (final Throwable e) {
+            LOGGER.error("Could not create plugin of type {} for element {}: {}", clazz, node.getName(),
+                    e.toString(), e);
             return null;
         }
     }
@@ -158,7 +152,7 @@ public class PluginBuilder implements Builder<Object> {
     private static Builder<?> createBuilder(final Class<?> clazz)
         throws InvocationTargetException, IllegalAccessException {
         for (final Method method : clazz.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(PluginBuilderFactory.class) &&
+            if ((method.isAnnotationPresent(PluginFactory.class) || method.isAnnotationPresent(PluginBuilderFactory.class)) &&
                 Modifier.isStatic(method.getModifiers()) &&
                 TypeUtil.isAssignable(Builder.class, method.getReturnType())) {
                 ReflectionUtil.makeAccessible(method);
@@ -173,62 +167,47 @@ public class PluginBuilder implements Builder<Object> {
         return null;
     }
 
-    private void injectFields(final Builder<?> builder) throws IllegalAccessException {
+    private Object injectBuilder(final Builder<?> builder) {
         final Object target = builder instanceof BuilderWrapper ? ((BuilderWrapper) builder).getBuilder() : builder;
         final List<Field> fields = TypeUtil.getAllDeclaredFields(target.getClass());
-        AccessibleObject.setAccessible(fields.toArray(new Field[] {}), true);
+        AccessibleObject.setAccessible(fields.toArray(new Field[0]), true);
         final StringBuilder log = new StringBuilder();
-        boolean invalid = false;
-        StringBuilder reason = new StringBuilder();
+        // TODO: collect OptionBindingExceptions into a composite error message (ConfigurationException?)
         for (final Field field : fields) {
-            log.append(log.length() == 0 ? simpleName(target) + "(" : ", ");
-            final Annotation[] annotations = field.getDeclaredAnnotations();
-            final String[] aliases = extractPluginAliases(annotations);
-            for (Annotation a : annotations) {
-                if (a instanceof PluginAliases ||
-                        a instanceof org.apache.logging.log4j.core.config.plugins.PluginAliases) {
-                    continue; // already processed
+            ConfigurationInjector.forAnnotatedElement(field).ifPresent(injector -> {
+                log.append(log.length() == 0 ? simpleName(target) + "(" : ", ");
+                injector.withAliases(extractPluginAliases(field.getAnnotations()))
+                        .withConversionType(field.getGenericType())
+                        .withOptionBinder(new FieldOptionBinder(field))
+                        .withDebugLog(log)
+                        .withStringSubstitutionStrategy(substitutor)
+                        .withConfiguration(configuration)
+                        .withNode(node)
+                        .inject(target);
+            });
+        }
+        // TODO: tests
+        for (final Method method : target.getClass().getMethods()) {
+            ConfigurationInjector.forAnnotatedElement(method).ifPresent(injector -> {
+                if (method.getParameterCount() != 1) {
+                    throw new IllegalArgumentException("Cannot inject to a plugin builder method with parameter count other than 1");
                 }
-                final Object value = ConfigurationInjectionBuilder.findBuilderForInjectionStrategy(a.annotationType())
-                        .flatMap(b -> Optional.ofNullable(b
-                                .withAliases(aliases)
-                                .withAnnotation(a)
-                                .withConfiguration(configuration)
-                                .withConfigurationNode(node)
-                                .withConversionType(field.getType())
-                                .withDebugLog(log)
-                                .withMember(field)
-                                .withStringSubstitutionStrategy(substitutor)
-                                .build()))
-                        .orElse(null);
-                if (value != null) {
-                    field.set(target, value);
-                }
-            }
-            final Collection<ConstraintValidator<?>> validators =
-                ConstraintValidators.findValidators(annotations);
-            final Object value = field.get(target);
-            for (final ConstraintValidator<?> validator : validators) {
-                if (!validator.isValid(field.getName(), value)) {
-                    invalid = true;
-                    if (reason.length() > 0) {
-                        reason.append(", ");
-                    } else {
-                        reason.append("Arguments given for element ").append(node.getName())
-                            .append(" are invalid: ");
-                    }
-                    reason.append("field '").append(field.getName()).append("' has invalid value '")
-                        .append(value).append("'");
-                }
-            }
+                log.append(log.length() == 0 ? simpleName(target) + "(" : ", ");
+                injector.withAliases(extractPluginAliases(method.getAnnotations()))
+                        .withConversionType(method.getGenericParameterTypes()[0])
+                        .withOptionBinder(new MethodOptionBinder(method))
+                        .withDebugLog(log)
+                        .withStringSubstitutionStrategy(substitutor)
+                        .withConfiguration(configuration)
+                        .withNode(node)
+                        .inject(target);
+            });
         }
         log.append(log.length() == 0 ? builder.getClass().getSimpleName() + "()" : ")");
         LOGGER.debug(log.toString());
-        if (invalid) {
-            throw new ConfigurationException(reason.toString());
-        }
         checkForRemainingAttributes();
         verifyNodeChildrenUsed();
+        return builder.build();
     }
 
     /**
@@ -255,60 +234,30 @@ public class PluginBuilder implements Builder<Object> {
         throw new IllegalStateException("No factory method found for class " + clazz.getName());
     }
 
-    private Object[] generateParameters(final Method factory) {
+    private Object injectFactoryMethod(final Method factory) throws Throwable {
         final StringBuilder log = new StringBuilder();
-        final Class<?>[] types = factory.getParameterTypes();
-        final Annotation[][] annotations = factory.getParameterAnnotations();
-        final Object[] args = new Object[annotations.length];
-        boolean invalid = false;
-        for (int i = 0; i < annotations.length; i++) {
+        final FactoryMethodBinder binder = new FactoryMethodBinder(factory);
+        binder.forEachParameter((parameter, optionBinder) -> {
             log.append(log.length() == 0 ? factory.getName() + "(" : ", ");
-            final String[] aliases = extractPluginAliases(annotations[i]);
-            final Class<?> conversionType = types[i];
-            for (final Annotation a : annotations[i]) {
-                if (a instanceof PluginAliases ||
-                        a instanceof org.apache.logging.log4j.core.config.plugins.PluginAliases) {
-                    continue; // already processed
-                }
-                final Object value = ConfigurationInjectionBuilder.findBuilderForInjectionStrategy(a.annotationType())
-                        .flatMap(b -> Optional.ofNullable(b
-                                .withAliases(aliases)
-                                .withAnnotation(a)
-                                .withConfiguration(configuration)
-                                .withConfigurationNode(node)
-                                .withConversionType(conversionType)
-                                .withDebugLog(log)
-                                .withMember(factory)
-                                .withStringSubstitutionStrategy(substitutor)
-                                .build()))
-                        .orElse(null);
-                // don't overwrite existing values if the builder gives us no value to inject
-                if (value != null) {
-                    args[i] = value;
-                }
-            }
-            final Collection<ConstraintValidator<?>> validators =
-                ConstraintValidators.findValidators(annotations[i]);
-            final Object value = args[i];
-            final String argName = "arg[" + i + "](" + simpleName(value) + ")";
-            for (final ConstraintValidator<?> validator : validators) {
-                if (!validator.isValid(argName, value)) {
-                    invalid = true;
-                }
-            }
-        }
+            ConfigurationInjector.forAnnotatedElement(parameter).ifPresent(injector -> injector
+                            .withAliases(extractPluginAliases(parameter.getAnnotations()))
+                            .withConversionType(parameter.getParameterizedType())
+                            .withOptionBinder(optionBinder)
+                            .withDebugLog(log)
+                            .withStringSubstitutionStrategy(substitutor)
+                            .withConfiguration(configuration)
+                            .withNode(node)
+                            .inject(binder));
+        });
         log.append(log.length() == 0 ? factory.getName() + "()" : ")");
         checkForRemainingAttributes();
         verifyNodeChildrenUsed();
         LOGGER.debug(log.toString());
-        if (invalid) {
-            throw new ConfigurationException("Arguments given for element " + node.getName() + " are invalid");
-        }
-        return args;
+        return binder.invoke();
     }
 
     private static String[] extractPluginAliases(final Annotation... parmTypes) {
-        String[] aliases = null;
+        String[] aliases = {};
         for (final Annotation a : parmTypes) {
             if (a instanceof PluginAliases) {
                 aliases = ((PluginAliases) a).value();

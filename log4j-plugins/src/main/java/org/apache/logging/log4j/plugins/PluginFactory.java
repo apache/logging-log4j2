@@ -23,8 +23,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identifies a Method as the factory to create the plugin. This annotation should only be used on a {@code static}
- * method, and its parameters should be annotated with the appropriate Plugin annotations.
+ * Identifies a static method as a factory to create a plugin or a
+ * {@linkplain org.apache.logging.log4j.plugins.util.Builder builder class} for constructing a plugin.
+ * Factory methods should annotate their parameters with {@link PluginAttribute}, {@link PluginElement},
+ * {@link PluginValue}, or other plugin annotations annotated with
+ * {@link org.apache.logging.log4j.plugins.inject.InjectorStrategy}.
+ * If a factory method returns a builder class, this method should have no arguments; instead, the builder class should
+ * annotate its fields or single-parameter methods to inject plugin configuration data.
  * <p>
  * There can only be one factory method per class.
  * </p>

@@ -17,5 +17,8 @@
 
 /**
  * Annotations for Log4j 2 plugins.
+ *
+ * @see org.apache.logging.log4j.plugins.Plugin
+ * @see org.apache.logging.log4j.plugins.PluginFactory
  */
 package org.apache.logging.log4j.plugins;

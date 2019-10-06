@@ -17,23 +17,18 @@
 
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
+import org.apache.logging.log4j.plugins.inject.AbstractConfigurationInjector;
 
 /**
  *  @deprecated Provided to support legacy plugins.
  */
-public class PluginNodeVisitor extends AbstractPluginVisitor<PluginNode, Object> {
-    public PluginNodeVisitor() {
-        super(PluginNode.class);
-    }
-
+// copy of PluginNodeInjector
+public class PluginNodeVisitor extends AbstractConfigurationInjector<PluginNode, Configuration> {
     @Override
-    public Object build() {
-        if (this.conversionType.isInstance(node)) {
-            debugLog.append("Node=").append(node.getName());
-            return node;
-        }
-        LOGGER.warn("Variable annotated with @PluginNode is not compatible with the type {}.", node.getClass());
-        return null;
+    public Object inject(final Object target) {
+        debugLog.append("Node=").append(node.getName());
+        return optionBinder.bindObject(target, node);
     }
 }
