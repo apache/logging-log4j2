@@ -37,7 +37,7 @@ public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue> {
             final StringBuilder log) {
         final String name = this.annotation.value();
         final String elementValue = node.getValue();
-        final String attributeValue = node.getAttributes().get("value");
+        final String attributeValue = node.getAttributes().get(name);
         String rawValue = null; // if neither is specified, return null (LOG4J2-1313)
         if (Strings.isNotEmpty(elementValue)) {
             if (Strings.isNotEmpty(attributeValue)) {
@@ -47,7 +47,7 @@ public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue> {
             }
             rawValue = elementValue;
         } else {
-            rawValue = removeAttributeValue(node.getAttributes(), "value");
+            rawValue = removeAttributeValue(node.getAttributes(), name);
         }
         final String value = this.substitutor.replace(event, rawValue);
         StringBuilders.appendKeyDqValue(log, name, value);
