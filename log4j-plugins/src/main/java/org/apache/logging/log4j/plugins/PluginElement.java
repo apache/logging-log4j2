@@ -32,7 +32,6 @@ import java.lang.annotation.Target;
  * Identifies a Plugin Element which allows for plugins to be configured and injected into another plugin.
  * Plugin elements can be injected as parameters to a static {@linkplain PluginFactory factory method}, or as fields and
  * single-parameter methods in a plugin {@linkplain org.apache.logging.log4j.plugins.util.Builder builder class}.
- * Identifies a parameter as a Plugin and corresponds with an XML element (or equivalent) in configuration files.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
