@@ -110,9 +110,9 @@ public final class RegexFilter extends AbstractFilter {
      *        An array of Strings where each String is a {@link Pattern#compile(String, int)} compilation flag.
      * @param useRawMsg
      *        If true, the raw message will be used, otherwise the formatted message will be used.
-     * @param match
+     * @param onMatch
      *        The action to perform when a match occurs.
-     * @param mismatch
+     * @param onMismatch
      *        The action to perform when a mismatch occurs.
      * @return The RegexFilter.
      * @throws IllegalAccessException
@@ -122,18 +122,18 @@ public final class RegexFilter extends AbstractFilter {
     @PluginFactory
     public static RegexFilter createFilter(
             //@formatter:off
-            @PluginAttribute("regex") final String regex,
-            @PluginElement("PatternFlags") final String[] patternFlags,
-            @PluginAttribute("useRawMsg") final Boolean useRawMsg,
-            @PluginAttribute("onMatch") final Result match,
-            @PluginAttribute("onMismatch") final Result mismatch)
+            @PluginAttribute final String regex,
+            @PluginElement final String[] patternFlags,
+            @PluginAttribute final Boolean useRawMsg,
+            @PluginAttribute final Result onMatch,
+            @PluginAttribute final Result onMismatch)
             //@formatter:on
             throws IllegalArgumentException, IllegalAccessException {
         if (regex == null) {
             LOGGER.error("A regular expression must be provided for RegexFilter");
             return null;
         }
-        return new RegexFilter(useRawMsg, Pattern.compile(regex, toPatternFlags(patternFlags)), match, mismatch);
+        return new RegexFilter(useRawMsg, Pattern.compile(regex, toPatternFlags(patternFlags)), onMatch, onMismatch);
     }
 
     private static int toPatternFlags(final String[] patternFlags) throws IllegalArgumentException,

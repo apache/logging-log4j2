@@ -96,7 +96,7 @@ public final class Route {
     @PluginFactory
     public static Route createRoute(
             @PluginAttribute("ref") final String appenderRef,
-            @PluginAttribute("key") final String key,
+            @PluginAttribute final String key,
             @PluginNode final Node node) {
         if (node != null && node.hasChildren()) {
             if (appenderRef != null) {

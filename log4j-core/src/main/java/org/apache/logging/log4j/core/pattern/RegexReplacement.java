@@ -70,8 +70,8 @@ public final class RegexReplacement {
      */
     @PluginFactory
     public static RegexReplacement createRegexReplacement(
-            @PluginAttribute("regex") final Pattern regex,
-            @PluginAttribute("replacement") final String replacement) {
+            @PluginAttribute final Pattern regex,
+            @PluginAttribute final String replacement) {
         if (regex == null) {
             LOGGER.error("A regular expression is required for replacement");
             return null;

@@ -149,18 +149,18 @@ public final class StructuredDataFilter extends MapFilter {
     /**
      * Creates the StructuredDataFilter.
      * @param pairs Key and value pairs.
-     * @param oper The operator to perform. If not "or" the operation will be an "and".
-     * @param match The action to perform on a match.
-     * @param mismatch The action to perform on a mismatch.
+     * @param operator The operator to perform. If not "or" the operation will be an "and".
+     * @param onMatch The action to perform on a match.
+     * @param onMismatch The action to perform on a mismatch.
      * @return The StructuredDataFilter.
      */
     // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static StructuredDataFilter createFilter(
-            @PluginElement("Pairs") final KeyValuePair[] pairs,
-            @PluginAttribute("operator") final String oper,
-            @PluginAttribute("onMatch") final Result match,
-            @PluginAttribute("onMismatch") final Result mismatch) {
+            @PluginElement final KeyValuePair[] pairs,
+            @PluginAttribute final String operator,
+            @PluginAttribute final Result onMatch,
+            @PluginAttribute final Result onMismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("keys and values must be specified for the StructuredDataFilter");
             return null;
@@ -190,7 +190,7 @@ public final class StructuredDataFilter extends MapFilter {
             LOGGER.error("StructuredDataFilter is not configured with any valid key value pairs");
             return null;
         }
-        final boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        return new StructuredDataFilter(map, isAnd, match, mismatch);
+        final boolean isAnd = operator == null || !operator.equalsIgnoreCase("or");
+        return new StructuredDataFilter(map, isAnd, onMatch, onMismatch);
     }
 }

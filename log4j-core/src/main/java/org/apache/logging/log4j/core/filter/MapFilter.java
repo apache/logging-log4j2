@@ -224,10 +224,10 @@ public class MapFilter extends AbstractFilter {
     // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static MapFilter createFilter(
-            @PluginElement("Pairs") final KeyValuePair[] pairs,
-            @PluginAttribute("operator") final String oper,
-            @PluginAttribute("onMatch") final Result match,
-            @PluginAttribute("onMismatch") final Result mismatch) {
+            @PluginElement final KeyValuePair[] pairs,
+            @PluginAttribute final String operator,
+            @PluginAttribute final Result onMatch,
+            @PluginAttribute final Result onMismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("keys and values must be specified for the MapFilter");
             return null;
@@ -257,7 +257,7 @@ public class MapFilter extends AbstractFilter {
             LOGGER.error("MapFilter is not configured with any valid key value pairs");
             return null;
         }
-        final boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        return new MapFilter(map, isAnd, match, mismatch);
+        final boolean isAnd = operator == null || !operator.equalsIgnoreCase("or");
+        return new MapFilter(map, isAnd, onMatch, onMismatch);
     }
 }

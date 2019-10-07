@@ -71,11 +71,11 @@ public class BlockingAppender extends AbstractAppender {
 
     @PluginFactory
     public static BlockingAppender createAppender(
-            @PluginAttribute("name")
+            @PluginAttribute
             @Required(message = "No name provided for HangingAppender")
             final String name,
-            @PluginElement("Layout") final Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter) {
+            @PluginElement final Layout<? extends Serializable> layout,
+            @PluginElement final Filter filter) {
         return new BlockingAppender(name);
     }
 

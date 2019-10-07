@@ -130,9 +130,9 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
      */
     @PluginFactory
     public static PurgePolicy createPurgePolicy(
-        @PluginAttribute("timeToLive") final String timeToLive,
-        @PluginAttribute("checkInterval") final String checkInterval,
-        @PluginAttribute("timeUnit") final String timeUnit,
+        @PluginAttribute final String timeToLive,
+        @PluginAttribute final String checkInterval,
+        @PluginAttribute final String timeUnit,
         @PluginConfiguration final Configuration configuration) {
 
         if (timeToLive == null) {

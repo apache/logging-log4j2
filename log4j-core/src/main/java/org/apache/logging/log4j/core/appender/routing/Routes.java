@@ -49,13 +49,13 @@ public final class Routes {
         @PluginConfiguration 
         private Configuration configuration;
 
-        @PluginAttribute("pattern") 
+        @PluginAttribute
         private String pattern;
         
         @PluginElement("Script")
         private AbstractScript patternScript;
 
-        @PluginElement("Routes")
+        @PluginElement
         @Required
         private Route[] routes;
 

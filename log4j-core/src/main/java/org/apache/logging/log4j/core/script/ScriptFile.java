@@ -62,11 +62,11 @@ public class ScriptFile extends AbstractScript {
     @PluginFactory
     public static ScriptFile createScript(
             // @formatter:off
-            @PluginAttribute("name") String name,
-            @PluginAttribute("language") String language,
+            @PluginAttribute String name,
+            @PluginAttribute String language,
             @PluginAttribute("path") final String filePathOrUri,
-            @PluginAttribute("isWatched") final Boolean isWatched,
-            @PluginAttribute("charset") final Charset charset) {
+            @PluginAttribute final Boolean isWatched,
+            @PluginAttribute final Charset charset) {
             // @formatter:on
         if (filePathOrUri == null) {
             LOGGER.error("No script path provided for ScriptFile");

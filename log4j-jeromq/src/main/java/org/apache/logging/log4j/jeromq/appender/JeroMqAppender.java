@@ -83,33 +83,33 @@ public final class JeroMqAppender extends AbstractAppender {
     @PluginFactory
     public static JeroMqAppender createAppender(
             // @formatter:off
-            @Required(message = "No name provided for JeroMqAppender") @PluginAttribute("name") final String name,
-            @PluginElement("Layout") Layout<?> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginElement("Properties") final Property[] properties,
+            @Required(message = "No name provided for JeroMqAppender") @PluginAttribute final String name,
+            @PluginElement Layout<?> layout,
+            @PluginElement final Filter filter,
+            @PluginElement final Property[] properties,
             // Super attributes
-            @PluginAttribute("ignoreExceptions") final boolean ignoreExceptions,
+            @PluginAttribute final boolean ignoreExceptions,
             // ZMQ attributes; defaults picked from zmq.Options.
-            @PluginAttribute(value = "affinity", defaultLong = 0) final long affinity,
-            @PluginAttribute(value = "backlog", defaultLong = DEFAULT_BACKLOG) final long backlog,
-            @PluginAttribute(value = "delayAttachOnConnect") final boolean delayAttachOnConnect,
-            @PluginAttribute(value = "identity") final byte[] identity,
-            @PluginAttribute(value = "ipv4Only", defaultBoolean = true) final boolean ipv4Only,
-            @PluginAttribute(value = "linger", defaultLong = -1) final long linger,
-            @PluginAttribute(value = "maxMsgSize", defaultLong = -1) final long maxMsgSize,
-            @PluginAttribute(value = "rcvHwm", defaultLong = DEFAULT_RCV_HWM) final long rcvHwm,
-            @PluginAttribute(value = "receiveBufferSize", defaultLong = 0) final long receiveBufferSize,
-            @PluginAttribute(value = "receiveTimeOut", defaultLong = -1) final int receiveTimeOut,
-            @PluginAttribute(value = "reconnectIVL", defaultLong = DEFAULT_IVL) final long reconnectIVL,
-            @PluginAttribute(value = "reconnectIVLMax", defaultLong = 0) final long reconnectIVLMax,
-            @PluginAttribute(value = "sendBufferSize", defaultLong = 0) final long sendBufferSize,
-            @PluginAttribute(value = "sendTimeOut", defaultLong = -1) final int sendTimeOut,
-            @PluginAttribute(value = "sndHwm", defaultLong = DEFAULT_SND_HWM) final long sndHwm,
-            @PluginAttribute(value = "tcpKeepAlive", defaultInt = -1) final int tcpKeepAlive,
-            @PluginAttribute(value = "tcpKeepAliveCount", defaultLong = -1) final long tcpKeepAliveCount,
-            @PluginAttribute(value = "tcpKeepAliveIdle", defaultLong = -1) final long tcpKeepAliveIdle,
-            @PluginAttribute(value = "tcpKeepAliveInterval", defaultLong = -1) final long tcpKeepAliveInterval,
-            @PluginAttribute(value = "xpubVerbose") final boolean xpubVerbose
+            @PluginAttribute(defaultLong = 0) final long affinity,
+            @PluginAttribute(defaultLong = DEFAULT_BACKLOG) final long backlog,
+            @PluginAttribute final boolean delayAttachOnConnect,
+            @PluginAttribute final byte[] identity,
+            @PluginAttribute(defaultBoolean = true) final boolean ipv4Only,
+            @PluginAttribute(defaultLong = -1) final long linger,
+            @PluginAttribute(defaultLong = -1) final long maxMsgSize,
+            @PluginAttribute(defaultLong = DEFAULT_RCV_HWM) final long rcvHwm,
+            @PluginAttribute(defaultLong = 0) final long receiveBufferSize,
+            @PluginAttribute(defaultLong = -1) final int receiveTimeOut,
+            @PluginAttribute(defaultLong = DEFAULT_IVL) final long reconnectIVL,
+            @PluginAttribute(defaultLong = 0) final long reconnectIVLMax,
+            @PluginAttribute(defaultLong = 0) final long sendBufferSize,
+            @PluginAttribute(defaultLong = -1) final int sendTimeOut,
+            @PluginAttribute(defaultLong = DEFAULT_SND_HWM) final long sndHwm,
+            @PluginAttribute(defaultInt = -1) final int tcpKeepAlive,
+            @PluginAttribute(defaultLong = -1) final long tcpKeepAliveCount,
+            @PluginAttribute(defaultLong = -1) final long tcpKeepAliveIdle,
+            @PluginAttribute(defaultLong = -1) final long tcpKeepAliveInterval,
+            @PluginAttribute final boolean xpubVerbose
             // @formatter:on
     ) {
         if (layout == null) {

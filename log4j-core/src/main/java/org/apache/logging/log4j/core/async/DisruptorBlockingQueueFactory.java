@@ -46,7 +46,7 @@ public class DisruptorBlockingQueueFactory<E> implements BlockingQueueFactory<E>
 
     @PluginFactory
     public static <E> DisruptorBlockingQueueFactory<E> createFactory(
-        @PluginAttribute(value = "SpinPolicy", defaultString = "WAITING") final SpinPolicy spinPolicy
+        @PluginAttribute(defaultString = "WAITING") final SpinPolicy spinPolicy
     ) {
         return new DisruptorBlockingQueueFactory<>(spinPolicy);
     }

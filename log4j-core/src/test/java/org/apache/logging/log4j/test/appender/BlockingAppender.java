@@ -59,7 +59,7 @@ public class BlockingAppender extends AbstractAppender {
 
     @PluginFactory
     public static BlockingAppender createAppender(
-        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name) {
+        @PluginAttribute @Required(message = "A name for the Appender must be specified") final String name) {
         return new BlockingAppender(name);
     }
 }

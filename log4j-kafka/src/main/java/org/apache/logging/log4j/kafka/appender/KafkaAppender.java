@@ -50,13 +50,13 @@ public final class KafkaAppender extends AbstractAppender {
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.plugins.util.Builder<KafkaAppender> {
 
-        @PluginAttribute("topic")
+        @PluginAttribute
         private String topic;
 
-        @PluginAttribute("key")
+        @PluginAttribute
         private String key;
 
-        @PluginAttribute(value = "syncSend", defaultBoolean = true)
+        @PluginAttribute(defaultBoolean = true)
         private boolean syncSend;
 
         @SuppressWarnings("resource")

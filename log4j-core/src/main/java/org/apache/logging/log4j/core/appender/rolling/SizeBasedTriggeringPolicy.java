@@ -92,7 +92,7 @@ public class SizeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
      * @return A SizeBasedTriggeringPolicy.
      */
     @PluginFactory
-    public static SizeBasedTriggeringPolicy createPolicy(@PluginAttribute("size") final String size) {
+    public static SizeBasedTriggeringPolicy createPolicy(@PluginAttribute final String size) {
 
         final long maxSize = size == null ? MAX_FILE_SIZE : FileSize.parse(size, MAX_FILE_SIZE);
         return new SizeBasedTriggeringPolicy(maxSize);

@@ -208,14 +208,14 @@ public class AsyncLoggerConfig extends LoggerConfig {
      */
     @PluginFactory
     public static LoggerConfig createLogger(
-            @PluginAttribute(value = "additivity", defaultBoolean = true) final boolean additivity,
-            @PluginAttribute("level") final Level level,
+            @PluginAttribute(defaultBoolean = true) final boolean additivity,
+            @PluginAttribute final Level level,
             @Required(message = "Loggers cannot be configured without a name") @PluginAttribute("name") final String loggerName,
-            @PluginAttribute("includeLocation") final String includeLocation,
-            @PluginElement("AppenderRef") final AppenderRef[] refs,
-            @PluginElement("Properties") final Property[] properties,
+            @PluginAttribute final String includeLocation,
+            @PluginElement final AppenderRef[] refs,
+            @PluginElement final Property[] properties,
             @PluginConfiguration final Configuration config,
-            @PluginElement("Filter") final Filter filter) {
+            @PluginElement final Filter filter) {
         final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
         return new AsyncLoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
                 includeLocation(includeLocation));
@@ -237,13 +237,13 @@ public class AsyncLoggerConfig extends LoggerConfig {
          */
         @PluginFactory
         public static LoggerConfig createLogger(
-                @PluginAttribute("additivity") final String additivity,
-                @PluginAttribute("level") final Level level,
-                @PluginAttribute("includeLocation") final String includeLocation,
-                @PluginElement("AppenderRef") final AppenderRef[] refs,
-                @PluginElement("Properties") final Property[] properties,
+                @PluginAttribute final String additivity,
+                @PluginAttribute final Level level,
+                @PluginAttribute final String includeLocation,
+                @PluginElement final AppenderRef[] refs,
+                @PluginElement final Property[] properties,
                 @PluginConfiguration final Configuration config,
-                @PluginElement("Filter") final Filter filter) {
+                @PluginElement final Filter filter) {
             final List<AppenderRef> appenderRefs = Arrays.asList(refs);
             final Level actualLevel = level == null ? Level.ERROR : level;
             final boolean additive = Booleans.parseBoolean(additivity, true);

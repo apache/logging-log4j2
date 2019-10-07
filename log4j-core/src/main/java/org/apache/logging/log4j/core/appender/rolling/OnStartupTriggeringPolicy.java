@@ -103,7 +103,7 @@ public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
 
     @PluginFactory
     public static OnStartupTriggeringPolicy createPolicy(
-            @PluginAttribute(value = "minSize", defaultLong = 1) final long minSize) {
+            @PluginAttribute(defaultLong = 1) final long minSize) {
         return new OnStartupTriggeringPolicy(minSize);
     }
 }

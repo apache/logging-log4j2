@@ -71,10 +71,10 @@ public final class LoggerFields {
      */
     @PluginFactory
     public static LoggerFields createLoggerFields(
-        @PluginElement("LoggerFields") final KeyValuePair[] keyValuePairs,
-        @PluginAttribute("sdId") final String sdId,
-        @PluginAttribute("enterpriseId") final String enterpriseId,
-        @PluginAttribute(value = "discardIfAllFieldsAreEmpty") final boolean discardIfAllFieldsAreEmpty) {
+        @PluginElement final KeyValuePair[] keyValuePairs,
+        @PluginAttribute final String sdId,
+        @PluginAttribute final String enterpriseId,
+        @PluginAttribute final boolean discardIfAllFieldsAreEmpty) {
         final Map<String, String> map = new HashMap<>();
 
         for (final KeyValuePair keyValuePair : keyValuePairs) {

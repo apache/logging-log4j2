@@ -69,7 +69,7 @@ public class DeadlockAppender extends AbstractAppender {
 
     @PluginFactory
     public static DeadlockAppender createAppender(
-        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name) {
+        @PluginAttribute @Required(message = "A name for the Appender must be specified") final String name) {
         return new DeadlockAppender(name);
     }
 

@@ -125,17 +125,17 @@ public final class ScriptFilter extends AbstractFilter {
      * Creates the ScriptFilter.
      * @param script The script to run. The script must return a boolean value. Either script or scriptFile must be 
      *      provided.
-     * @param match The action to take if a match occurs.
-     * @param mismatch The action to take if no match occurs.
+     * @param onMatch The action to take if a match occurs.
+     * @param onMismatch The action to take if no match occurs.
      * @param configuration the configuration 
      * @return A ScriptFilter.
      */
     // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static ScriptFilter createFilter(
-            @PluginElement("Script") final AbstractScript script,
-            @PluginAttribute("onMatch") final Result match,
-            @PluginAttribute("onMismatch") final Result mismatch,
+            @PluginElement final AbstractScript script,
+            @PluginAttribute final Result onMatch,
+            @PluginAttribute final Result onMismatch,
             @PluginConfiguration final Configuration configuration) {
 
         if (script == null) {
@@ -149,7 +149,7 @@ public final class ScriptFilter extends AbstractFilter {
             }
         }
 
-        return new ScriptFilter(script, configuration, match, mismatch);
+        return new ScriptFilter(script, configuration, onMatch, onMismatch);
     }
 
 }

@@ -39,8 +39,8 @@ public class HostAndPort {
 
     @PluginFactory
     public static HostAndPort createPlugin(
-        @ValidHost(message = "Unit test (host)") @PluginAttribute("host") final String host,
-        @ValidPort(message = "Unit test (port)") @PluginAttribute("port") final int port) {
+        @ValidHost(message = "Unit test (host)") @PluginAttribute final String host,
+        @ValidPort(message = "Unit test (port)") @PluginAttribute final int port) {
         return new HostAndPort(new InetSocketAddress(host, port));
     }
 

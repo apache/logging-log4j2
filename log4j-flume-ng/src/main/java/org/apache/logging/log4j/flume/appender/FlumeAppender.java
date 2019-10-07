@@ -185,32 +185,32 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      * @return A Flume Avro Appender.
      */
     @PluginFactory
-    public static FlumeAppender createAppender(@PluginElement("Agents") final Agent[] agents,
-                                               @PluginElement("Properties") final Property[] properties,
-                                               @PluginAttribute("hosts") final String hosts,
-                                               @PluginAttribute("embedded") final String embedded,
-                                               @PluginAttribute("type") final String type,
-                                               @PluginAttribute("dataDir") final String dataDir,
+    public static FlumeAppender createAppender(@PluginElement final Agent[] agents,
+                                               @PluginElement final Property[] properties,
+                                               @PluginAttribute final String hosts,
+                                               @PluginAttribute final String embedded,
+                                               @PluginAttribute final String type,
+                                               @PluginAttribute final String dataDir,
                                                @PluginAliases("connectTimeout")
                                                @PluginAttribute("connectTimeoutMillis") final String connectionTimeoutMillis,
                                                @PluginAliases("requestTimeout")
-                                               @PluginAttribute("requestTimeoutMillis") final String requestTimeoutMillis,
-                                               @PluginAttribute("agentRetries") final String agentRetries,
+                                               @PluginAttribute final String requestTimeoutMillis,
+                                               @PluginAttribute final String agentRetries,
                                                @PluginAliases("maxDelay") // deprecated
-                                               @PluginAttribute("maxDelayMillis") final String maxDelayMillis,
-                                               @PluginAttribute("name") final String name,
+                                               @PluginAttribute final String maxDelayMillis,
+                                               @PluginAttribute final String name,
                                                @PluginAttribute("ignoreExceptions") final String ignore,
                                                @PluginAttribute("mdcExcludes") final String excludes,
                                                @PluginAttribute("mdcIncludes") final String includes,
                                                @PluginAttribute("mdcRequired") final String required,
-                                               @PluginAttribute("mdcPrefix") final String mdcPrefix,
-                                               @PluginAttribute("eventPrefix") final String eventPrefix,
+                                               @PluginAttribute final String mdcPrefix,
+                                               @PluginAttribute final String eventPrefix,
                                                @PluginAttribute("compress") final String compressBody,
-                                               @PluginAttribute("batchSize") final String batchSize,
-                                               @PluginAttribute("lockTimeoutRetries") final String lockTimeoutRetries,
-                                               @PluginElement("FlumeEventFactory") final FlumeEventFactory factory,
-                                               @PluginElement("Layout") Layout<? extends Serializable> layout,
-                                               @PluginElement("Filter") final Filter filter) {
+                                               @PluginAttribute final String batchSize,
+                                               @PluginAttribute final String lockTimeoutRetries,
+                                               @PluginElement final FlumeEventFactory factory,
+                                               @PluginElement Layout<? extends Serializable> layout,
+                                               @PluginElement final Filter filter) {
 
         final boolean embed = embedded != null ? Boolean.parseBoolean(embedded) :
             (agents == null || agents.length == 0 || hosts == null || hosts.isEmpty()) && properties != null && properties.length > 0;

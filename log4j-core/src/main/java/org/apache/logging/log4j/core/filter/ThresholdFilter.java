@@ -162,7 +162,7 @@ public final class ThresholdFilter extends AbstractFilter {
     // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static ThresholdFilter createFilter(
-            @PluginAttribute("level") final Level level,
+            @PluginAttribute final Level level,
             @PluginAttribute("onMatch") final Result match,
             @PluginAttribute("onMismatch") final Result mismatch) {
         final Level actualLevel = level == null ? Level.ERROR : level;

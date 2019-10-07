@@ -120,8 +120,8 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
      */
     @PluginFactory
     public static CronTriggeringPolicy createPolicy(@PluginConfiguration final Configuration configuration,
-            @PluginAttribute("evaluateOnStartup") final String evaluateOnStartup,
-            @PluginAttribute("schedule") final String schedule) {
+            @PluginAttribute final String evaluateOnStartup,
+            @PluginAttribute final String schedule) {
         CronExpression cronExpression;
         final boolean checkOnStartup = Boolean.parseBoolean(evaluateOnStartup);
         if (schedule == null) {

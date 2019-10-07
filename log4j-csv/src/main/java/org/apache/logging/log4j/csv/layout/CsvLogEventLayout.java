@@ -53,16 +53,16 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
     public static CsvLogEventLayout createLayout(
             // @formatter:off
             @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "format", defaultString = DEFAULT_FORMAT) final String format,
-            @PluginAttribute("delimiter") final Character delimiter,
-            @PluginAttribute("escape") final Character escape,
-            @PluginAttribute("quote") final Character quote,
-            @PluginAttribute("quoteMode") final QuoteMode quoteMode,
-            @PluginAttribute("nullString") final String nullString,
-            @PluginAttribute("recordSeparator") final String recordSeparator,
-            @PluginAttribute(value = "charset", defaultString = DEFAULT_CHARSET) final Charset charset,
-            @PluginAttribute("header") final String header,
-            @PluginAttribute("footer") final String footer)
+            @PluginAttribute(defaultString = DEFAULT_FORMAT) final String format,
+            @PluginAttribute final Character delimiter,
+            @PluginAttribute final Character escape,
+            @PluginAttribute final Character quote,
+            @PluginAttribute final QuoteMode quoteMode,
+            @PluginAttribute final String nullString,
+            @PluginAttribute final String recordSeparator,
+            @PluginAttribute(defaultString = DEFAULT_CHARSET) final Charset charset,
+            @PluginAttribute final String header,
+            @PluginAttribute final String footer)
             // @formatter:on
     {
 

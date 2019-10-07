@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.plugins.validation;
 
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
@@ -27,12 +27,7 @@ public class PluginWithGenericSubclassFoo1Builder extends AbstractPluginWithGene
     public static class Builder<B extends Builder<B>> extends AbstractPluginWithGenericBuilder.Builder<B>
             implements org.apache.logging.log4j.plugins.util.Builder<PluginWithGenericSubclassFoo1Builder> {
 
-        @PluginFactory
-        public static <B extends Builder<B>> B newBuilder() {
-            return new Builder<B>().asBuilder();
-        }
-
-        @PluginBuilderAttribute
+        @PluginAttribute
         @Required(message = "The foo1 given by the builder is null")
         private String foo1;
 

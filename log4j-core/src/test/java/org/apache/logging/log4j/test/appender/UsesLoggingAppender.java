@@ -45,10 +45,10 @@ public final class UsesLoggingAppender extends AbstractAppender {
 
     @PluginFactory
     public static UsesLoggingAppender createAppender(
-        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name,
+        @PluginAttribute @Required(message = "A name for the Appender must be specified") final String name,
         @PluginAttribute("ignoreExceptions") final boolean ignore,
-        @PluginElement("Layout") final Layout<?> layout,
-        @PluginElement("Filter") final Filter filter) {
+        @PluginElement final Layout<?> layout,
+        @PluginElement final Filter filter) {
         return new UsesLoggingAppender(name, filter, layout, ignore);
     }
 

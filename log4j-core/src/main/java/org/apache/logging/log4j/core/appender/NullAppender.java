@@ -35,7 +35,7 @@ public class NullAppender extends AbstractAppender {
 
     @PluginFactory
     public static NullAppender createAppender(
-            @PluginAttribute(value = "name", defaultString = "null") final String name) {
+            @PluginAttribute(defaultString = "null") final String name) {
         return new NullAppender(name);
     }
 

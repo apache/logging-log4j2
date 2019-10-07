@@ -83,14 +83,14 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
      */
     @PluginFactory
     public static CouchDbProvider createNoSqlProvider(
-            @PluginAttribute("databaseName") final String databaseName,
-            @PluginAttribute("protocol") String protocol,
-            @PluginAttribute(value = "server", defaultString = "localhost") @ValidHost final String server,
-            @PluginAttribute(value = "port", defaultString = "0") @ValidPort final String port,
-            @PluginAttribute("username") final String username,
-            @PluginAttribute(value = "password", sensitive = true) final String password,
-            @PluginAttribute("factoryClassName") final String factoryClassName,
-            @PluginAttribute("factoryMethodName") final String factoryMethodName) {
+            @PluginAttribute final String databaseName,
+            @PluginAttribute String protocol,
+            @PluginAttribute(defaultString = "localhost") @ValidHost final String server,
+            @PluginAttribute(defaultString = "0") @ValidPort final String port,
+            @PluginAttribute final String username,
+            @PluginAttribute(sensitive = true) final String password,
+            @PluginAttribute final String factoryClassName,
+            @PluginAttribute final String factoryMethodName) {
         CouchDbClient client;
         String description;
         if (Strings.isNotEmpty(factoryClassName) && Strings.isNotEmpty(factoryMethodName)) {

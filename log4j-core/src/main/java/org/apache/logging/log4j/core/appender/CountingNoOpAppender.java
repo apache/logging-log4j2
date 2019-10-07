@@ -53,7 +53,7 @@ public class CountingNoOpAppender extends AbstractAppender  {
      * Creates a CountingNoOp Appender.
      */
     @PluginFactory
-    public static CountingNoOpAppender createAppender(@PluginAttribute("name") final String name) {
+    public static CountingNoOpAppender createAppender(@PluginAttribute final String name) {
         return new CountingNoOpAppender(Objects.requireNonNull(name), null);
     }
 }

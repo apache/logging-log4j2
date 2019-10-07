@@ -59,10 +59,10 @@ public final class LevelRangeFilter extends AbstractFilter {
     @PluginFactory
     public static LevelRangeFilter createFilter(
             // @formatter:off
-            @PluginAttribute("minLevel") final Level minLevel,
-            @PluginAttribute("maxLevel") final Level maxLevel,
-            @PluginAttribute("onMatch") final Result match,
-            @PluginAttribute("onMismatch") final Result mismatch) {
+            @PluginAttribute final Level minLevel,
+            @PluginAttribute final Level maxLevel,
+            @PluginAttribute final Result match,
+            @PluginAttribute final Result mismatch) {
             // @formatter:on
         final Level actualMinLevel = minLevel == null ? Level.ERROR : minLevel;
         final Level actualMaxLevel = maxLevel == null ? Level.ERROR : maxLevel;

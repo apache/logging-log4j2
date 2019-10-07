@@ -48,7 +48,7 @@ public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
 
     @PluginFactory
     public static <E> JCToolsBlockingQueueFactory<E> createFactory(
-        @PluginAttribute(value = "WaitStrategy", defaultString = "PARK") final WaitStrategy waitStrategy) {
+        @PluginAttribute(defaultString = "PARK") final WaitStrategy waitStrategy) {
         return new JCToolsBlockingQueueFactory<>(waitStrategy);
     }
 

@@ -340,11 +340,11 @@ public final class HtmlLayout extends AbstractStringLayout {
      */
     @PluginFactory
     public static HtmlLayout createLayout(
-            @PluginAttribute(value = "locationInfo") final boolean locationInfo,
-            @PluginAttribute(value = "title", defaultString = DEFAULT_TITLE) final String title,
-            @PluginAttribute("contentType") String contentType,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
-            @PluginAttribute("fontSize") String fontSize,
+            @PluginAttribute final boolean locationInfo,
+            @PluginAttribute(defaultString = DEFAULT_TITLE) final String title,
+            @PluginAttribute String contentType,
+            @PluginAttribute(defaultString = "UTF-8") final Charset charset,
+            @PluginAttribute String fontSize,
             @PluginAttribute(value = "fontName", defaultString = DEFAULT_FONT_FAMILY) final String font) {
         final FontSize fs = FontSize.getFontSize(fontSize);
         fontSize = fs.getFontSize();

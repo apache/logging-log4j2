@@ -230,9 +230,9 @@ public class SslConfiguration {
     @PluginFactory
     public static SslConfiguration createSSLConfiguration(
             // @formatter:off
-            @PluginAttribute("protocol") final String protocol,
-            @PluginElement("KeyStore") final KeyStoreConfiguration keyStoreConfig, 
-            @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig) {
+            @PluginAttribute final String protocol,
+            @PluginElement final KeyStoreConfiguration keyStoreConfig,
+            @PluginElement final TrustStoreConfiguration trustStoreConfig) {
             // @formatter:on
         return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, false);
     }
@@ -248,10 +248,10 @@ public class SslConfiguration {
      */
     public static SslConfiguration createSSLConfiguration(
             // @formatter:off
-            @PluginAttribute("protocol") final String protocol,
-            @PluginElement("KeyStore") final KeyStoreConfiguration keyStoreConfig,
-            @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig,
-            @PluginElement("verifyHostName") final boolean verifyHostName) {
+            @PluginAttribute final String protocol,
+            @PluginElement final KeyStoreConfiguration keyStoreConfig,
+            @PluginElement final TrustStoreConfiguration trustStoreConfig,
+            @PluginElement final boolean verifyHostName) {
         // @formatter:on
         return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, verifyHostName);
     }

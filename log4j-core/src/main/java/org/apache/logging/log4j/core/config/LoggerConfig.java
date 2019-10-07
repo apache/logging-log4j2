@@ -531,14 +531,14 @@ public class LoggerConfig extends AbstractFilterable {
     @PluginFactory
     public static LoggerConfig createLogger(
          // @formatter:off
-        @PluginAttribute(value = "additivity", defaultBoolean = true) final boolean additivity,
-        @PluginAttribute("level") final Level level,
+        @PluginAttribute(defaultBoolean = true) final boolean additivity,
+        @PluginAttribute final Level level,
         @Required(message = "Loggers cannot be configured without a name") @PluginAttribute("name") final String loggerName,
-        @PluginAttribute("includeLocation") final String includeLocation,
-        @PluginElement("AppenderRef") final AppenderRef[] refs,
-        @PluginElement("Properties") final Property[] properties,
+        @PluginAttribute final String includeLocation,
+        @PluginElement final AppenderRef[] refs,
+        @PluginElement final Property[] properties,
         @PluginConfiguration final Configuration config,
-        @PluginElement("Filter") final Filter filter
+        @PluginElement final Filter filter
         // @formatter:on
     ) {
         final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
@@ -576,13 +576,13 @@ public class LoggerConfig extends AbstractFilterable {
         @PluginFactory
         public static LoggerConfig createLogger(
                 // @formatter:off
-                @PluginAttribute("additivity") final String additivity,
-                @PluginAttribute("level") final Level level,
-                @PluginAttribute("includeLocation") final String includeLocation,
-                @PluginElement("AppenderRef") final AppenderRef[] refs,
-                @PluginElement("Properties") final Property[] properties,
+                @PluginAttribute final String additivity,
+                @PluginAttribute final Level level,
+                @PluginAttribute final String includeLocation,
+                @PluginElement final AppenderRef[] refs,
+                @PluginElement final Property[] properties,
                 @PluginConfiguration final Configuration config,
-                @PluginElement("Filter") final Filter filter) {
+                @PluginElement final Filter filter) {
                 // @formatter:on
             final List<AppenderRef> appenderRefs = Arrays.asList(refs);
             final Level actualLevel = level == null ? Level.ERROR : level;

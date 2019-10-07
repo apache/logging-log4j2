@@ -59,7 +59,7 @@ public class FailOnceAppender extends AbstractAppender {
 
     @PluginFactory
     public static FailOnceAppender createAppender(
-        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name) {
+        @PluginAttribute @Required(message = "A name for the Appender must be specified") final String name) {
         return new FailOnceAppender(name);
     }
 

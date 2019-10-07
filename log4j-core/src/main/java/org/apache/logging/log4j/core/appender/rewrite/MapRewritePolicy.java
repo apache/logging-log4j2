@@ -127,7 +127,7 @@ public final class MapRewritePolicy implements RewritePolicy {
      */
     @PluginFactory
     public static MapRewritePolicy createPolicy(
-            @PluginAttribute("mode") final String mode,
+            @PluginAttribute final String mode,
             @PluginElement("KeyValuePair") final KeyValuePair[] pairs) {
         Mode op = mode == null ? op = Mode.Add : Mode.valueOf(mode);
         if (pairs == null || pairs.length == 0) {

@@ -64,7 +64,7 @@ public final class DataSourceConnectionSource extends AbstractConnectionSource {
      * @return the created connection source.
      */
     @PluginFactory
-    public static DataSourceConnectionSource createConnectionSource(@PluginAttribute("jndiName") final String jndiName) {
+    public static DataSourceConnectionSource createConnectionSource(@PluginAttribute final String jndiName) {
         if (Strings.isEmpty(jndiName)) {
             LOGGER.error("No JNDI name provided.");
             return null;

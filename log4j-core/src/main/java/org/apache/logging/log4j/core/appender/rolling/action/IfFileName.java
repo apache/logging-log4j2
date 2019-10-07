@@ -135,8 +135,8 @@ public final class IfFileName implements PathCondition {
     @PluginFactory
     public static IfFileName createNameCondition( 
             // @formatter:off
-            @PluginAttribute("glob") final String glob, 
-            @PluginAttribute("regex") final String regex, 
+            @PluginAttribute final String glob,
+            @PluginAttribute final String regex,
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {
             // @formatter:on
         return new IfFileName(glob, regex, nestedConditions);
