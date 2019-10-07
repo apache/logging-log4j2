@@ -20,7 +20,6 @@ package org.apache.logging.log4j.core.config.plugins.util;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginAliases;
@@ -117,21 +116,24 @@ public class PluginBuilder implements Builder<Object> {
     @Override
     public Object build() {
         verify();
+        LOGGER.debug("Building Plugin[name={}, class={}].", pluginType.getElementName(),
+                pluginType.getPluginClass().getName());
         substitutor = new Substitutor(event);
         // first try to use a builder class if one is available
         try {
-            LOGGER.debug("Building Plugin[name={}, class={}].", pluginType.getElementName(),
-                    pluginType.getPluginClass().getName());
             final Builder<?> builder = createBuilder(this.clazz);
             if (builder != null) {
                 return injectBuilder(builder);
             }
-        } catch (final ConfigurationException e) { // LOG4J2-1908
-            LOGGER.error("Could not create plugin of type {} for element {}", this.clazz, node.getName(), e);
+        } catch (final InvocationTargetException e) {
+            LOGGER.error("Could not create plugin builder for plugin {} and element {}", clazz, node.getName(), e.getCause());
+            return null;
+        } catch (final IllegalAccessException e) {
+            LOGGER.error("Could not access plugin builder for plugin {} and element {}", clazz, node.getName());
+            return null;
+        } catch (final RuntimeException e) { // LOG4J2-1908
+            LOGGER.error("Could not create plugin of type {} for element {}", clazz, node.getName(), e);
             return null; // no point in trying the factory method
-        } catch (final Exception e) {
-            LOGGER.error("Could not create plugin of type {} for element {}: {}", clazz, node.getName(),
-                    e.toString(), e);
         }
         // or fall back to factory method if no builder class is available
         try {
