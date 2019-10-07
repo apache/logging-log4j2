@@ -953,6 +953,7 @@
             </compilerArguments>
             <compilerId>javac-with-errorprone</compilerId>
             <forceJavacCompilerUse>true</forceJavacCompilerUse>
+            <parameters>true</parameters>
           </configuration>
           <dependencies>
             <dependency>
