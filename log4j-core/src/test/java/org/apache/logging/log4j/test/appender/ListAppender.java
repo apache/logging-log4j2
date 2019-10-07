@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
@@ -230,42 +230,38 @@ public class ListAppender extends AbstractAppender {
 
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<ListAppender> {
 
-        @PluginBuilderAttribute
-        @Required
         private String name;
-
-        @PluginBuilderAttribute
         private boolean entryPerNewLine;
-
-        @PluginBuilderAttribute
         private boolean raw;
-
-        @PluginElement("Layout")
         private Layout<? extends Serializable> layout;
-
-        @PluginElement("Filter")
         private Filter filter;
 
+        @PluginAttribute
+        @Required
         public Builder setName(final String name) {
             this.name = name;
             return this;
         }
 
+        @PluginAttribute
         public Builder setEntryPerNewLine(final boolean entryPerNewLine) {
             this.entryPerNewLine = entryPerNewLine;
             return this;
         }
 
+        @PluginAttribute
         public Builder setRaw(final boolean raw) {
             this.raw = raw;
             return this;
         }
 
+        @PluginElement
         public Builder setLayout(final Layout<? extends Serializable> layout) {
             this.layout = layout;
             return this;
         }
 
+        @PluginElement
         public Builder setFilter(final Filter filter) {
             this.filter = filter;
             return this;
