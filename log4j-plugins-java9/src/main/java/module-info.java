@@ -22,7 +22,9 @@ module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins.validation;
     exports org.apache.logging.log4j.plugins.validation.constraints;
     exports org.apache.logging.log4j.plugins.validation.validators;
+    exports org.apache.logging.log4j.plugins.bind;
     exports org.apache.logging.log4j.plugins.inject;
+    exports org.apache.logging.log4j.plugins.name;
 
     requires org.apache.logging.log4j;
 
