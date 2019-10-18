@@ -216,6 +216,10 @@ public final class PatternLayout extends AbstractStringLayout {
         return eventSerializer.toSerializable(event);
     }
 
+    public void serialize(final LogEvent event, StringBuilder stringBuilder) {
+        eventSerializer.toSerializable(event, stringBuilder);
+    }
+
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
         if (!(eventSerializer instanceof Serializer2)) {

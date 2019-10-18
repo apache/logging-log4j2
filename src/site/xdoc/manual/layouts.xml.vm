@@ -255,13 +255,36 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>Whether to include NULL byte as delimiter after each event (optional, default to false).
                   Useful for Graylog GELF TCP input. Cannot be used with compression.</td>
             </tr>
+            <tr>
+              <td>messagePattern</td>
+              <td>String</td>
+              <td>The pattern to use to format the String. If not supplied only the text derived from the logging
+              message will be used. See <a href="#PatternLayout">PatternLayout</a> for information on the pattern
+              strings.</td>
+            </tr>
+            <tr>
+              <td>threadContextExcludes</td>
+              <td>String</td>
+              <td>A comma separated list of ThreadContext attributes to exclude when formatting the event. This
+              attribute only applies when includeThreadContext="true" is specified. If threadContextIncludes
+              are also specified this attribute will be ignored.</td>
+            </tr>
+            <tr>
+              <td>threadContextIncludes</td>
+              <td>String</td>
+              <td>A comma separated list of ThreadContext attributes to include when formatting the event. This
+                attribute only applies when includeThreadContext="true" is specified. If threadContextExcludes
+                are also specified this attribute will override them. ThreadContext fields specified here that
+              have no value will be omitted.</td>
+            </tr>
             <caption align="top">GelfLayout Parameters</caption>
           </table>
           <p>
               To include any custom field in the output, use following syntax:
           </p>
               <pre class="prettyprint linenums">
-  &lt;GelfLayout&gt;
+  &lt;GelfLayout includeThreadContext="true" threadContextIncludes="loginId,requestId">
+    <MessagePattern>%d %5p [%t] %c{1} %X{loginId, requestId} - %m%n</MessagePattern>
     &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
     &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
   &lt;/GelfLayout&gt;

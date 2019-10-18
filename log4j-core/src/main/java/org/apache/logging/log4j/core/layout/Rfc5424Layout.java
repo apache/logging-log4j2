@@ -35,6 +35,9 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.TlsSyslogFrame;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.layout.internal.ExcludeChecker;
+import org.apache.logging.log4j.core.layout.internal.IncludeChecker;
+import org.apache.logging.log4j.core.layout.internal.ListChecker;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -112,7 +115,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final List<String> mdcIncludes;
     private final List<String> mdcRequired;
     private final ListChecker listChecker;
-    private final ListChecker noopChecker = new NoopChecker();
     private final boolean includeNewLine;
     private final String escapeNewLine;
     private final boolean useTlsMessageFormat;
@@ -146,15 +148,15 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         this.messageId = messageId;
         this.useTlsMessageFormat = useTLSMessageFormat;
         this.localHostName = NetUtils.getLocalHostname();
-        ListChecker c = null;
+        ListChecker checker = null;
         if (excludes != null) {
             final String[] array = excludes.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {
-                c = new ExcludeChecker();
                 mdcExcludes = new ArrayList<>(array.length);
                 for (final String str : array) {
                     mdcExcludes.add(str.trim());
                 }
+                checker = new ExcludeChecker(mdcExcludes);
             } else {
                 mdcExcludes = null;
             }
@@ -164,11 +166,11 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         if (includes != null) {
             final String[] array = includes.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {
-                c = new IncludeChecker();
                 mdcIncludes = new ArrayList<>(array.length);
                 for (final String str : array) {
                     mdcIncludes.add(str.trim());
                 }
+                checker = new IncludeChecker(mdcIncludes);
             } else {
                 mdcIncludes = null;
             }
@@ -189,7 +191,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         } else {
             mdcRequired = null;
         }
-        this.listChecker = c != null ? c : noopChecker;
+        this.listChecker = checker != null ? checker : ListChecker.NOOP_CHECKER;
         final String name = config == null ? null : config.getName();
         configName = Strings.isNotEmpty(name) ? name : null;
         this.fieldFormatters = createFieldFormatters(loggerFields, config);
@@ -513,7 +515,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         sb.append('[');
         sb.append(id);
         if (!mdcSdId.toString().equals(id)) {
-            appendMap(data.getPrefix(), data.getFields(), sb, noopChecker);
+            appendMap(data.getPrefix(), data.getFields(), sb, ListChecker.NOOP_CHECKER);
         } else {
             appendMap(data.getPrefix(), data.getFields(), sb, checker);
         }
@@ -564,43 +566,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private String escapeSDParams(final String value) {
         return PARAM_VALUE_ESCAPE_PATTERN.matcher(value).replaceAll("\\\\$0");
-    }
-
-    /**
-     * Interface used to check keys in a Map.
-     */
-    private interface ListChecker {
-        boolean check(String key);
-    }
-
-    /**
-     * Includes only the listed keys.
-     */
-    private class IncludeChecker implements ListChecker {
-        @Override
-        public boolean check(final String key) {
-            return mdcIncludes.contains(key);
-        }
-    }
-
-    /**
-     * Excludes the listed keys.
-     */
-    private class ExcludeChecker implements ListChecker {
-        @Override
-        public boolean check(final String key) {
-            return !mdcExcludes.contains(key);
-        }
-    }
-
-    /**
-     * Does nothing.
-     */
-    private class NoopChecker implements ListChecker {
-        @Override
-        public boolean check(final String key) {
-            return true;
-        }
     }
 
     @Override

@@ -33,10 +33,18 @@ Solutions for this are to:
     c. Log from Log4j directly to a logging forwarder or aggregator and bypass the docker logging driver.
 1. When logging to stdout in Docker, log events pass through Java's standard output handling which is then directed 
 to the operating system so that the output can be piped into a file. The overhead of all this is measurably slower
-than just writing directly to a file as can be seen by the performance results below where logging 
-to stdout is anywhere from 20 to 200% slower than logging directly to the file. However, these results alone
-would not be enough to argue against writing to the standard output stream as they only amount to about 20-30 
-microseconds per logging call. 
+than just writing directly to a file as can be seen in these benchmark results where logging 
+to stdout is 16-20 times slower over repeated runs than logging directly to the file. The results below were obtained by 
+running the [Output Benchmark](https://github.com/apache/logging-log4j2/blob/release-2.x/log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/OutputBenchmark.java)
+on a 2018 MacBook Pro with a 2.9GHz Intel Core i9 processor and a 1TB SSD.  However, these results alone would not be 
+enough to argue against writing to the standard output stream as they only amount to about 14-25 microseconds 
+per logging call vs 1.5 microseconds when writing to the file. 
+    ```
+    Benchmark                  Mode  Cnt       Score       Error  Units
+    OutputBenchmark.console   thrpt   20   39291.885 ±  3370.066  ops/s
+    OutputBenchmark.file      thrpt   20  654584.309 ± 59399.092  ops/s
+    OutputBenchmark.redirect  thrpt   20   70284.576 ±  7452.167  ops/s
+    ```
 1. When performing audit logging using a framework such as log4j-audit guaranteed delivery of the audit events
 is required. Many of the options for writing the output, including writing to the standard output stream, do
 not guarantee delivery. In these cases the event must be delivered to a "forwarder" that acknowledges receipt
@@ -109,6 +117,68 @@ If the log aggregator used is Apache Flume or Apache Kafka (or similar) the Appe
 being configured with a list of hosts and ports so high availability is not an issue. 
 
 ![Aggregator](../images/LoggerAggregator.png "Application Logging to an Aggregator via TCP")
+
+## <a name="ELK"></a>Logging using ElasticSearch, Logstash, and Kibana
+
+The following configurations have been tested with an ELK stack and are known to work.
+
+### Log4j Configuration
+Use a socket appender with the GELF layout. Note that if the host name used by the socket appender has more than 
+one ip address associated with its DNS entry the socket appender will fail through them all if needed.
+
+    <Socket name="Elastic" host="${sys:elastic.search.host}" port="12222" protocol="tcp" bufferedIo="true">
+      <GelfLayout includeStackTrace="true" host="${hostName}" includeThreadContext="true" includeNullDelimiter="true"
+                  compressionType="OFF">
+        <ThreadContextIncludes>requestId,sessionId,loginId,userId,ipAddress,callingHost</ThreadContextIncludes>
+        <MessagePattern>%d [%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress} %C{1.}.%M:%L - %m%n</MessagePattern>
+        <KeyValuePair key="containerId" value="${docker:containerId:-}"/>
+      </GelfLayout>
+    </Socket>
+
+### Logstash Configuration
+
+    input {
+      gelf {
+        host => "localhost"
+        use_tcp => true
+        use_udp => false
+        port => 12222
+        type => "gelf"
+      }
+    }
+
+    filter {
+      # These are GELF/Syslog logging levels as defined in RFC 3164. Map the integer level to its human readable format.
+      translate {
+        field => "[level]"
+        destination => "[levelName]"
+        dictionary => {
+          "0" => "EMERG"
+          "1" => "ALERT"
+          "2" => "CRITICAL"
+          "3" => "ERROR"
+          "4" => "WARN"
+          "5" => "NOTICE"
+          "6" => "INFO"
+          "7" => "DEBUG"
+        }
+      }
+    }
+
+    output {
+      # (Un)comment for debugging purposes
+      # stdout { codec => rubydebug }
+      # Modify the hosts value to reflect where elasticsearch is installed.
+      elasticsearch {
+        hosts => ["http://localhost:9200/"]
+        index => "app-%{application}-%{+YYYY.MM.dd}"
+      }
+    }
+
+### Kibana
+With the above configurations the message field will contain a fully formatted log event just as it would  appear in 
+a file Appender. The ThreadContext attributes, custome fields, thread name, etc. will all be available as attributes
+on each log event that can be used for filtering.
 
 ## Managing Logging Configuration
 
@@ -211,7 +281,8 @@ the same pace that log events are written.
 the performance numbers show, so long as the volume of logging is not high enough to fill up the 
 circular buffer the overhead of logging will almost be unnoticeable to the application.
 1. If overall performance is a consideration or you require multiline events such as stack traces
-be processed properly then log via TCP to a companion container that acts as a log forwarder. Use the 
+be processed properly then log via TCP to a companion container that acts as a log forwarder or directly
+to a log aggregator as shown above in [Logging with ELK](#ELK). Use the  
 Log4j Docker Lookup to add the container information to each log event.
 1. Whenever guaranteed delivery is required use Flume Avro with a batch size of 1 or another Appender such 
 as the Kafka Appender with syncSend set to true that only return control after the downstream agent 

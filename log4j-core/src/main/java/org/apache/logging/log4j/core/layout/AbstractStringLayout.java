@@ -94,10 +94,16 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     public interface Serializer {
         String toSerializable(final LogEvent event);
+
+        default StringBuilder toSerializable(final LogEvent event, final StringBuilder builder) {
+            builder.append(toSerializable(event));
+            return builder;
+        }
     }
 
     /**
      * Variation of {@link Serializer} that avoids allocating temporary objects.
+     * As of 2.13 this interface was merged into the Serializer interface.
      * @since 2.6
      */
     public interface Serializer2 {
