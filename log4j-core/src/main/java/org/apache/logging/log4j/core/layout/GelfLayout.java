@@ -20,11 +20,15 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.layout.internal.ExcludeChecker;
+import org.apache.logging.log4j.core.layout.internal.IncludeChecker;
+import org.apache.logging.log4j.core.layout.internal.ListChecker;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.util.JsonUtils;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -42,7 +46,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
@@ -97,6 +103,8 @@ public final class GelfLayout extends AbstractStringLayout {
     private final boolean includeStacktrace;
     private final boolean includeThreadContext;
     private final boolean includeNullDelimiter;
+    private final PatternLayout layout;
+    private final FieldWriter fieldWriter;
 
     public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
         implements org.apache.logging.log4j.plugins.util.Builder<GelfLayout> {
@@ -122,6 +130,15 @@ public final class GelfLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private boolean includeNullDelimiter = false;
 
+        @PluginBuilderAttribute
+        private String threadContextIncludes = null;
+
+        @PluginBuilderAttribute
+        private String threadContextExcludes = null;
+
+        @PluginBuilderAttribute
+        private String messagePattern = null;
+
         public Builder() {
             super();
             setCharset(StandardCharsets.UTF_8);
@@ -129,8 +146,39 @@ public final class GelfLayout extends AbstractStringLayout {
 
         @Override
         public GelfLayout build() {
+            ListChecker checker = null;
+            if (threadContextExcludes != null) {
+                final String[] array = threadContextExcludes.split(Patterns.COMMA_SEPARATOR);
+                if (array.length > 0) {
+                    List<String> excludes = new ArrayList<>(array.length);
+                    for (final String str : array) {
+                        excludes.add(str.trim());
+                    }
+                    checker = new ExcludeChecker(excludes);
+                }
+            }
+            if (threadContextIncludes != null) {
+                final String[] array = threadContextIncludes.split(Patterns.COMMA_SEPARATOR);
+                if (array.length > 0) {
+                    List<String> includes = new ArrayList<>(array.length);
+                    for (final String str : array) {
+                        includes.add(str.trim());
+                    }
+                    checker = new IncludeChecker(includes);
+                }
+            }
+            if (checker == null) {
+                checker = ListChecker.NOOP_CHECKER;
+            }
+            PatternLayout patternLayout = null;
+            if (messagePattern != null) {
+                patternLayout = PatternLayout.newBuilder().setPattern(messagePattern)
+                        .setAlwaysWriteExceptions(includeStacktrace)
+                        .setConfiguration(getConfiguration())
+                        .build();
+            }
             return new GelfLayout(getConfiguration(), host, additionalFields, compressionType, compressionThreshold,
-                includeStacktrace, includeThreadContext, includeNullDelimiter);
+                includeStacktrace, includeThreadContext, includeNullDelimiter, checker, patternLayout);
         }
 
         public String getHost() {
@@ -230,10 +278,42 @@ public final class GelfLayout extends AbstractStringLayout {
             this.additionalFields = additionalFields;
             return asBuilder();
         }
+
+        /**
+         * The pattern to use to format the message.
+         * @param pattern the pattern string.
+         * @return this builder
+         */
+        public B setMessagePattern(final String pattern) {
+            this.messagePattern = pattern;
+            return asBuilder();
+        }
+
+        /**
+         * A comma separated list of thread context keys to include;
+         * @param mdcIncludes the list of keys.
+         * @return this builder
+         */
+        public B setMdcIncludes(final String mdcIncludes) {
+            this.threadContextIncludes = mdcIncludes;
+            return asBuilder();
+        }
+
+        /**
+         * A comma separated list of thread context keys to include;
+         * @param mdcExcludes the list of keys.
+         * @return this builder
+         */
+        public B setMdcExcludes(final String mdcExcludes) {
+            this.threadContextExcludes = mdcExcludes;
+            return asBuilder();
+        }
     }
 
-    private GelfLayout(final Configuration config, final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
-               final int compressionThreshold, final boolean includeStacktrace, final boolean includeThreadContext, final boolean includeNullDelimiter) {
+    private GelfLayout(final Configuration config, final String host, final KeyValuePair[] additionalFields,
+            final CompressionType compressionType, final int compressionThreshold, final boolean includeStacktrace,
+            final boolean includeThreadContext, final boolean includeNullDelimiter, final ListChecker listChecker,
+            final PatternLayout patternLayout) {
         super(config, StandardCharsets.UTF_8, null, null);
         this.host = host != null ? host : NetUtils.getLocalHostname();
         this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
@@ -252,6 +332,27 @@ public final class GelfLayout extends AbstractStringLayout {
         if (includeNullDelimiter && compressionType != CompressionType.OFF) {
             throw new IllegalArgumentException("null delimiter cannot be used with compression");
         }
+        this.fieldWriter = new FieldWriter(listChecker);
+        this.layout = patternLayout;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("host=").append(host);
+        sb.append(", compressionType=").append(compressionType.toString());
+        sb.append(", compressionThreshold=").append(compressionThreshold);
+        sb.append(", includeStackTrace=").append(includeStacktrace);
+        sb.append(", includeThreadContext=").append(includeThreadContext);
+        sb.append(", includeNullDelimiter=").append(includeNullDelimiter);
+        String threadVars = fieldWriter.getChecker().toString();
+        if (threadVars.length() > 0) {
+            sb.append(", ").append(threadVars);
+        }
+        if (layout != null) {
+            sb.append(", PatternLayout{").append(layout.toString()).append("}");
+        }
+        return sb.toString();
     }
 
     @PluginFactory
@@ -342,14 +443,21 @@ public final class GelfLayout extends AbstractStringLayout {
             }
         }
         if (includeThreadContext) {
-            event.getContextData().forEach(WRITE_KEY_VALUES_INTO, builder);
+            event.getContextData().forEach(fieldWriter, builder);
         }
-        if (event.getThrown() != null) {
+
+        if (event.getThrown() != null || layout != null) {
             builder.append("\"full_message\":\"");
-            if (includeStacktrace) {
-                JsonUtils.quoteAsString(formatThrowable(event.getThrown()), builder);
+            if (layout != null) {
+                final StringBuilder messageBuffer = getMessageStringBuilder();
+                layout.serialize(event, messageBuffer);
+                JsonUtils.quoteAsString(messageBuffer, builder);
             } else {
-                JsonUtils.quoteAsString(event.getThrown().toString(), builder);
+                if (includeStacktrace) {
+                    JsonUtils.quoteAsString(formatThrowable(event.getThrown()), builder);
+                } else {
+                    JsonUtils.quoteAsString(event.getThrown().toString(), builder);
+                }
             }
             builder.append(QC);
         }
@@ -357,7 +465,7 @@ public final class GelfLayout extends AbstractStringLayout {
         builder.append("\"short_message\":\"");
         final Message message = event.getMessage();
         if (message instanceof CharSequence) {
-            JsonUtils.quoteAsString(((CharSequence)message), builder);
+            JsonUtils.quoteAsString(((CharSequence) message), builder);
         } else if (gcFree && message instanceof StringBuilderFormattable) {
             final StringBuilder messageBuffer = getMessageStringBuilder();
             try {
@@ -381,14 +489,26 @@ public final class GelfLayout extends AbstractStringLayout {
         return value != null && value.contains("${");
     }
 
-    private static final TriConsumer<String, Object, StringBuilder> WRITE_KEY_VALUES_INTO = new TriConsumer<String, Object, StringBuilder>() {
+    private static class FieldWriter implements TriConsumer<String, Object, StringBuilder> {
+        private final ListChecker checker;
+
+        FieldWriter(ListChecker checker) {
+            this.checker = checker;
+        }
+
         @Override
         public void accept(final String key, final Object value, final StringBuilder stringBuilder) {
-            stringBuilder.append(QU);
-            JsonUtils.quoteAsString(key, stringBuilder);
-            stringBuilder.append("\":\"");
-            JsonUtils.quoteAsString(toNullSafeString(String.valueOf(value)), stringBuilder);
-            stringBuilder.append(QC);
+            if (checker.check(key)) {
+                stringBuilder.append(QU);
+                JsonUtils.quoteAsString(key, stringBuilder);
+                stringBuilder.append("\":\"");
+                JsonUtils.quoteAsString(toNullSafeString(String.valueOf(value)), stringBuilder);
+                stringBuilder.append(QC);
+            }
+        }
+
+        public ListChecker getChecker() {
+            return checker;
         }
     };
 
