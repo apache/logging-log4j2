@@ -17,9 +17,13 @@
 
 -->
 <Configuration status="ERROR" monitorInterval="0">
+  <Properties>
+    <Property name="spring.application.name">sampleapp</Property>
+  </Properties>
   <Appenders>
     <Console name="console" target="SYSTEM_OUT">
       <JsonLayout properties="true" compact="true" eventEol="true" stackTraceAsString="true">
+        <KeyValuePair key="application" value="$\${spring:spring.application.name}"/>
       </JsonLayout>
     </Console>
     <Flume name="flume" ignoreExceptions="false" type="Embedded" compress="false">
@@ -36,6 +40,7 @@
         <KeyValuePair key="containerId" value="\${docker:containerId}"/>
         <KeyValuePair key="containerName" value="\${docker:containerName}"/>
         <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+        <KeyValuePair key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
       </JsonLayout>
     </Flume>
     <Flume name="avro" ignoreExceptions="false" batchSize="1" compress="false">
@@ -44,6 +49,7 @@
         <KeyValuePair key="containerId" value="\${docker:containerId}"/>
         <KeyValuePair key="containerName" value="\${docker:containerName}"/>
         <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+        <KeyValuePair key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
       </JsonLayout>
     </Flume>
     <Flume name="avroSyslog" ignoreExceptions="false" batchSize="100" compress="false">
@@ -54,6 +60,7 @@
           <KeyValuePair key="containerId" value="\${docker:containerId}"/>
           <KeyValuePair key="containerName" value="\${docker:containerName}"/>
           <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+          <KeyValuePair key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
         </LoggerFields>
       </RFC5424Layout>
     </Flume>
@@ -62,6 +69,7 @@
         <KeyValuePair key="containerId" value="\${docker:containerId}"/>
         <KeyValuePair key="containerName" value="\${docker:containerName}"/>
         <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+        <KeyValuePair key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
       </JsonLayout>
       <Property name="bootstrap.servers">host.docker.internal:9092</Property>
     </Kafka>
@@ -70,6 +78,7 @@
         <KeyValuePair key="containerId" value="\${docker:containerId}"/>
         <KeyValuePair key="containerName" value="\${docker:containerName}"/>
         <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+        <KeyValuePair key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
       </JsonLayout>
     </Socket>
     <RollingFile name="RollingFile" fileName="/var/log/sampleapp/app.log"
@@ -78,6 +87,7 @@
         <KeyValuePair key="containerId" value="\${docker:containerId}"/>
         <KeyValuePair key="containerName" value="\${docker:containerName}"/>
         <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+        <KeyValuePair key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
       </JsonLayout>
       <SizeBasedTriggeringPolicy size="10MB" />
       <DefaultRolloverStrategy max="5"/>
@@ -90,6 +100,7 @@
           <KeyValuePair key="containerId" value="\${docker:containerId}"/>
           <KeyValuePair key="containerName" value="\${docker:containerName}"/>
           <KeyValuePair key="imageName" value="\${docker:imageName}"/>
+          <KeyValuePair key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
         </LoggerFields>
       </RFC5424Layout>
       <SizeBasedTriggeringPolicy size="10MB" />

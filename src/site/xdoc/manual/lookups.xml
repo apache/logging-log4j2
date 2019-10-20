@@ -229,6 +229,19 @@
   </PatternLayout>
 </File>]]></pre>
         </subsection>
+        <a name="LowerLookup"/>
+        <subsection name="Lower Lookup">
+          <p>
+            The LowerLookup converts the passed in argument to lower case. Presumably the value will be the
+            result of a nested lookup.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${lower:{${spring:spring.application.name}} %m%n</pattern>
+  </PatternLayout>
+</File>]]></pre>
+        </subsection>
         <a name="AppMainArgsLookup"/>
         <subsection name="Main Arguments Lookup (Application)">
           <p>
@@ -420,6 +433,20 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
             the name, otherwise <code>null</code>.
           </p>
         </subsection>
+        <a name="SpringLookup"/>
+        <subsection name="Spring Boot Lookup">
+          <p>
+            The Spring Boot Lookup retrieves the values of Spring properties from the Spring configuration. This Lookup
+            will return null values until Spring Boot initializes application logging.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${spring:spring.application.name} %m%n</pattern>
+  </PatternLayout>
+</File>]]></pre>
+          <p>This Lookup requires log4j-spring-cloud-config-client be included in the application.</p>
+        </subsection>
         <a name="StructuredDataLookup"/>
         <subsection name="Structured Data Lookup">
           <p>
@@ -530,7 +557,19 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
   <File name="ApplicationLog" fileName="${web:rootDir}/app.log"/>
 </Appenders>]]></pre>
         </subsection>
-
+        <a name="UpperLookup"/>
+        <subsection name="Upper Lookup">
+          <p>
+            The UpperLookup converts the passed in argument to upper case. Presumably the value will be the
+            result of a nested lookup.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $$upper{${spring:spring.application.name}} %m%n</pattern>
+  </PatternLayout>
+</File>]]></pre>
+        </subsection>
       </section>
     </body>
 </document>

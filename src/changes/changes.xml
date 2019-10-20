@@ -30,6 +30,10 @@
          - "remove" - Removed
     -->
     <release version="2.13.0" date="2019-MM-DD" description="GA Release 2.13.0">
+      <action issue="LOG4J2-2710" dev="rgoers" type="add">
+        Allow Spring Boot application properties to be accessed in the Log4j 2 configuraiton. Add
+        lower and upper case Lookups.
+      </action>
       <action issue="LOG4J2-2709" dev="rgoers" type="update">
         Allow message portion of GELF layout to be formatted using a PatternLayout. Allow
         ThreadContext attributes to be explicitly included or excluded in the GelfLayout.

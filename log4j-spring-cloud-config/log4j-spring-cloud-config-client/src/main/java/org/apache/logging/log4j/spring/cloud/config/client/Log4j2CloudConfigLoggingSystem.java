@@ -27,7 +27,6 @@ import java.util.Properties;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -36,26 +35,37 @@ import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.springframework.boot.logging.LogFile;
 import org.springframework.boot.logging.LoggingInitializationContext;
 import org.springframework.boot.logging.log4j2.Log4J2LoggingSystem;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ResourceUtils;
 
 /**
- *
+ * Override Spring's implementation of the Log4j 2 Logging System to properly support Spring Cloud Config.
  */
 public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
-    private static final String FILE_PROTOCOL = "file";
     private static final String HTTPS = "https";
-    private Logger LOGGER = StatusLogger.getLogger();
+    public static final String ENVIRONMENT_KEY = "SpringEnvironment";
 
     public Log4j2CloudConfigLoggingSystem(ClassLoader loader) {
         super(loader);
+    }
+
+    /**
+     * Set the environment into the ExternalContext field so that it can be obtained by SpringLookup when it
+     * is constructed. Spring will replace the ExternalContext field with a String once initialization is
+     * complete.
+     * @param initializationContext The initialization context.
+     * @param configLocation The configuration location.
+     * @param logFile the log file.
+     */
+    @Override
+    public void initialize(LoggingInitializationContext initializationContext, String configLocation, LogFile logFile) {
+        getLoggerContext().putObjectIfAbsent(ENVIRONMENT_KEY, initializationContext.getEnvironment());
+        super.initialize(initializationContext, configLocation, logFile);
     }
 
     @Override
@@ -66,7 +76,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
         if (location != null) {
             List<String> list = Arrays.asList(super.getStandardConfigLocations());
             list.add(location);
-            locations = list.toArray(new String[list.size()]);
+            locations = list.toArray(new String[0]);
         }
         return locations;
     }
@@ -101,6 +111,12 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
             throw new IllegalStateException(
                 "Could not initialize Log4J2 logging from " + location, ex);
         }
+    }
+
+    @Override
+    public void cleanUp() {
+        getLoggerContext().removeObject(ENVIRONMENT_KEY);
+        super.cleanUp();
     }
 
     private ConfigurationSource getConfigurationSource(URL url) throws IOException, URISyntaxException {
