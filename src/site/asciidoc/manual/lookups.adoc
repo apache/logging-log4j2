@@ -241,6 +241,21 @@ relative to the log4j configuration file.
 </File>
 ----
 
+[#LowerLookup]
+== Lower Lookup
+
+The LowerLookup converts the passed in argument to lower case. Presumably the value will be the
+result of a nested lookup.
+
+[source,xml]
+----
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${lower:{${spring:spring.application.name}} %m%n</pattern>
+  </PatternLayout>
+</File>
+----
+
 [#AppMainArgsLookup]
 == Main Arguments Lookup (Application)
 
@@ -450,6 +465,23 @@ while "type" would have to be an item in the Map in a MapMessage.
 </Routing>
 ----
 
+[#SpringLookup]
+== Spring Boot Lookup
+
+The Spring Boot Lookup retrieves the values of Spring properties from the Spring configuration. This Lookup
+will return null values until Spring Boot initializes application logging.
+
+[source,xml]
+----
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${spring:spring.application.name} %m%n</pattern>
+  </PatternLayout>
+</File>
+----
+
+This Lookup requires log4j-spring-cloud-config-client be included in the application.
+
 [#SystemPropertiesLookup]
 == System Properties Lookup
 
@@ -475,6 +507,21 @@ when the `logPath` system property is undefined, the default value
 <Appenders>
   <File name="ApplicationLog" fileName="${sys:logPath:-/var/logs}/app.log"/>
 </Appenders>
+----
+
+[#UpperLookup]
+== Upper Lookup
+
+The LowerLookup converts the passed in argument to upper case. Presumably the value will be the
+result of a nested lookup.
+
+[source,xml]
+----
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${upper:{${spring:spring.application.name}} %m%n</pattern>
+  </PatternLayout>
+</File>
 ----
 
 [#WebLookup]

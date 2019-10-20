@@ -133,6 +133,7 @@ one ip address associated with its DNS entry the socket appender will fail throu
         <ThreadContextIncludes>requestId,sessionId,loginId,userId,ipAddress,callingHost</ThreadContextIncludes>
         <MessagePattern>%d [%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress} %C{1.}.%M:%L - %m%n</MessagePattern>
         <KeyValuePair key="containerId" value="${docker:containerId:-}"/>
+        <KeyValuePair key="application" value="$${lower:${spring:spring.application.name:-spring}}"/>
       </GelfLayout>
     </Socket>
 

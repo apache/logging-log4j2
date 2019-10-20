@@ -40,6 +40,8 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
 
     private static final String LOOKUP_KEY_DOCKER = "docker";
 
+    private static final String LOOKUP_KEY_SPRING = "spring";
+
     private static final String LOOKUP_KEY_JNDI = "jndi";
 
     private static final String LOOKUP_KEY_JVMRUNARGS = "jvmrunargs";
@@ -100,6 +102,8 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         strLookupMap.put("marker", new MarkerLookup());
         strLookupMap.put("java", new JavaLookup());
         strLookupMap.put("base64", new Base64StrLookup());
+        strLookupMap.put("lower", new LowerLookup());
+        strLookupMap.put("upper", new UpperLookup());
         // JNDI
         try {
             // [LOG4J2-703] We might be on Android
@@ -135,6 +139,12 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         } catch (final Exception ignored) {
             handleError(LOOKUP_KEY_DOCKER, ignored);
         }
+        try {
+            strLookupMap.put(LOOKUP_KEY_SPRING,
+                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.spring.cloud.config.client.SpringLookup", StrLookup.class));
+        } catch (final Exception ignored) {
+            handleError(LOOKUP_KEY_SPRING, ignored);
+        }
     }
 
     public Map<String, StrLookup> getStrLookupMap() {
@@ -160,7 +170,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
                         "available. If you want better web container support, please add the log4j-web JAR to your " +
                         "web archive or server lib directory.");
                 break;
-            case LOOKUP_KEY_DOCKER:
+            case LOOKUP_KEY_DOCKER: case LOOKUP_KEY_SPRING:
                 break;
             default:
                 LOGGER.error("Unable to create Lookup for {}", lookupKey, t);

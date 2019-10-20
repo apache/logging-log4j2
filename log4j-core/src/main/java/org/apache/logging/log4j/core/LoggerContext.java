@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
@@ -93,7 +94,8 @@ public class LoggerContext extends AbstractLifeCycle
      * reference is updated.
      */
     private volatile Configuration configuration = new DefaultConfiguration();
-    private Object externalContext;
+    private static final String EXTERNAL_CONTEXT_KEY = "__EXTERNAL_CONTEXT_KEY__";
+    private ConcurrentMap<String, Object> externalMap = new ConcurrentHashMap<>();
     private String contextName;
     private volatile URI configLocation;
     private Cancellable shutdownCallback;
@@ -128,7 +130,11 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public LoggerContext(final String name, final Object externalContext, final URI configLocn) {
         this.contextName = name;
-        this.externalContext = externalContext;
+        if (externalContext == null) {
+            externalMap.remove(EXTERNAL_CONTEXT_KEY);
+        } else {
+            externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
+        }
         this.configLocation = configLocn;
     }
 
@@ -142,7 +148,11 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public LoggerContext(final String name, final Object externalContext, final String configLocn) {
         this.contextName = name;
-        this.externalContext = externalContext;
+        if (externalContext == null) {
+            externalMap.remove(EXTERNAL_CONTEXT_KEY);
+        } else {
+            externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
+        }
         if (configLocn != null) {
             URI uri;
             try {
@@ -372,7 +382,7 @@ public class LoggerContext extends AbstractLifeCycle
             configuration = NULL_CONFIGURATION;
             updateLoggers();
             ((LifeCycle) prev).stop(timeout, timeUnit);
-            externalContext = null;
+            externalMap.clear();
             LogManager.getFactory().removeContext(this);
         } finally {
             configLock.unlock();
@@ -419,13 +429,42 @@ public class LoggerContext extends AbstractLifeCycle
     	contextName = Objects.requireNonNull(name);
     }
 
+    @Override
+    public Object getObject(String key) {
+        return externalMap.get(key);
+    }
+
+    @Override
+    public Object putObject(String key, Object value) {
+        return externalMap.put(key, value);
+    }
+
+    @Override
+    public Object putObjectIfAbsent(String key, Object value) {
+        return externalMap.putIfAbsent(key, value);
+    }
+
+    @Override
+    public Object removeObject(String key) {
+        return externalMap.remove(key);
+    }
+
+    @Override
+    public boolean removeObject(String key, Object value) {
+        return externalMap.remove(key, value);
+    }
+
     /**
      * Sets the external context.
      *
      * @param context The external context.
      */
     public void setExternalContext(final Object context) {
-        this.externalContext = context;
+        if (context != null) {
+            this.externalMap.put(EXTERNAL_CONTEXT_KEY, context);
+        } else {
+            this.externalMap.remove(EXTERNAL_CONTEXT_KEY);
+        }
     }
 
     /**
@@ -435,7 +474,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     @Override
     public Object getExternalContext() {
-        return this.externalContext;
+        return this.externalMap.get(EXTERNAL_CONTEXT_KEY);
     }
 
     /**
@@ -637,6 +676,7 @@ public class LoggerContext extends AbstractLifeCycle
      * Reconfigures the context.
      */
     private void reconfigure(final URI configURI) {
+        Object externalContext = externalMap.get(EXTERNAL_CONTEXT_KEY);
         final ClassLoader cl = ClassLoader.class.isInstance(externalContext) ? (ClassLoader) externalContext : null;
         LOGGER.debug("Reconfiguration started for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
                 contextName, configURI, this, cl);
