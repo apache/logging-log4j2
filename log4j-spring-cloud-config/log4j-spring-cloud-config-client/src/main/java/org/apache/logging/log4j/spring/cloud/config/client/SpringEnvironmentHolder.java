@@ -16,32 +16,33 @@
  */
 package org.apache.logging.log4j.spring.cloud.config.client;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.lookup.StrLookup;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.apache.logging.log4j.LogManager;
 import org.springframework.core.env.Environment;
 
 /**
- * Lookup for Spring properties.
+ * Provides access to the Spring Environment.
  */
-@Plugin(name = "spring", category = StrLookup.CATEGORY)
-public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
+public class SpringEnvironmentHolder {
 
-    public SpringLookup() {
-        getEnvironment();
-    }
+    private volatile Environment environment;
+    private Lock lock = new ReentrantLock();
 
-    @Override
-    public String lookup(String key) {
-        Environment env = getEnvironment();
-        if (env != null) {
-            return env.getProperty(key);
+
+    protected Environment getEnvironment() {
+        if (environment == null && LogManager.getFactory() != null && LogManager.getFactory().hasContext(SpringEnvironmentHolder.class.getName(), null, false)) {
+            lock.lock();
+            try {
+                if (environment == null) {
+                    Object obj = LogManager.getContext(false).getObject(Log4j2CloudConfigLoggingSystem.ENVIRONMENT_KEY);
+                    environment = obj instanceof Environment ? (Environment) obj : null;
+                }
+            } finally {
+                lock.unlock();
+            }
         }
-        return null;
-    }
-
-    @Override
-    public String lookup(LogEvent event, String key) {
-        return lookup((key));
+        return environment;
     }
 }

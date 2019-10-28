@@ -76,7 +76,7 @@
           Log4j Docker provides access to the following container attributes:
           <table>
             <tr><td>containerId</td><td>The full id assigned to the container.</td></tr>
-            <tr><td>containreName</td><td>The name assigned to the container.</td></tr>
+            <tr><td>containerName</td><td>The name assigned to the container.</td></tr>
             <tr><td>imageId</td><td>The id assigned to the image.</td></tr>
             <tr><td>imageName</td><td>The name assigned to the image.</td></tr>
             <tr><td>shortContainerId</td><td>The first 12 characters of the container id.</td></tr>
@@ -210,6 +210,59 @@
             </a>.
           </p>
           <p><strong>Java's JMX module is not available on Android or on Google App Engine.</strong></p>
+        </subsection>
+        <a name="KubernetesLookup"/>
+        <subsection name="Kubernetes Lookup">
+          <p>
+            The KubernetesLookup can be used to lookup attributes from the Kubernetes environment for the container
+            the application is running in.
+          </p>
+          Log4j Kubernetes provides access to the following container attributes:
+          <table>
+            <tr><td>accountName</td><td>The service account name</td></tr>
+            <tr><td>clusterName</td><td>The name of the cluster the application is deployed in</td></tr>
+            <tr><td>containerId</td><td>The full id assigned to the container</td></tr>
+            <tr><td>containerName</td><td>The name assigned to the container</td></tr>
+            <tr><td>host</td><td>The name assigned to the host operating system</td></tr>
+            <tr><td>hostIp</td><td>The host's ip address</td></tr>
+            <tr><td>imageId</td><td>The id assigned to the container image</td></tr>
+            <tr><td>imageName</td><td>The name assigned to the container image</td></tr>
+            <tr><td>labels</td><td>All labels formatted in a list</td></tr>
+            <tr><td>labesl.app</td><td>The application name</td></tr>
+            <tr><td>labels.podTemplateHash</td><td>The pod's template hash value</td></tr>
+            <tr><td>masterUrl</td><td>The URL used to access the API server</td></tr>
+            <tr><td>namespaceId</td><td>The id of the namespace the various kubernetes components are located within</td></tr>
+            <tr><td>namespaceName</td><td>The namespace the various kubernetes components are located within</td></tr>
+            <tr><td>podId</td><td>The pod's ip number</td></tr>
+            <tr><td>podIp</td><td>The pod's ip address</td></tr>
+            <tr><td>podName</td><td>The name of the pod</td></tr>
+          </table>
+          <pre class="prettyprint linenums"><![CDATA[
+      <GelfLayout includeStackTrace="true" host="${hostName}" includeThreadContext="true" includeNullDelimiter="true"
+                  compressionType="OFF">
+        <ThreadContextIncludes>requestId,sessionId,loginId,userId,ipAddress,callingHost</ThreadContextIncludes>
+        <MessagePattern>%d [%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress} %C{1.}.%M:%L - %m%n</MessagePattern>
+        <KeyValuePair key="docker.containerId" value="${docker:containerId:-}"/>
+        <KeyValuePair key="application" value="$${lower:${spring:spring.application.name}}"/>
+        <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
+        <KeyValuePair key="kubernetes.clusterName" value="${k8s:clusterName:-}/>
+        <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
+        <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
+        <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
+        <KeyValuePair key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
+        <KeyValuePair key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
+        <KeyValuePair key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
+        <KeyValuePair key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
+        <KeyValuePair key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
+        <KeyValuePair key="kubernetes.podID" value="${k8s:podId:-}"/>
+        <KeyValuePair key="kubernetes.podIP" value="${k8s:podIp:-}"/>
+        <KeyValuePair key="kubernetes.podName" value="${k8s:podName:-}"/>
+        <KeyValuePair key="kubernetes.imageId" value="${k8s:imageId:-}"/>
+        <KeyValuePair key="kubernetes.imageName" value="${k8s:imageName:-}"/>
+      </GelfLayout>]]></pre>
+          <p>
+            This Lookup is subject to the configuration requirements listed at <a href="../log4j-kubernetes/index.html">Log4j Kubernetes Support</a>
+          </p>
         </subsection>
         <a name="Log4jConfigLookup"/>
         <subsection name="Log4j Configuration Location Lookup">

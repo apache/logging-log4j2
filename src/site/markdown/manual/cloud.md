@@ -133,6 +133,20 @@ one ip address associated with its DNS entry the socket appender will fail throu
         <MessagePattern>%d [%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress} %C{1.}.%M:%L - %m%n</MessagePattern>
         <KeyValuePair key="containerId" value="${docker:containerId:-}"/>
         <KeyValuePair key="application" value="$${lower:${spring:spring.application.name:-spring}}"/>
+        <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
+        <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
+        <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
+        <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
+        <KeyValuePair key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
+        <KeyValuePair key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
+        <KeyValuePair key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
+        <KeyValuePair key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
+        <KeyValuePair key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
+        <KeyValuePair key="kubernetes.podID" value="${k8s:podId:-}"/>
+        <KeyValuePair key="kubernetes.podIP" value="${k8s:podIp:-}"/>
+        <KeyValuePair key="kubernetes.podName" value="${k8s:podName:-}"/>
+        <KeyValuePair key="kubernetes.imageId" value="${k8s:imageId:-}"/>
+        <KeyValuePair key="kubernetes.imageName" value="${k8s:imageName:-}"/>
       </GelfLayout>
     </Socket>
 
@@ -217,6 +231,13 @@ attributes in the formatted log event as described at
 [Customize Log Driver Output](https://docs.docker.com/config/containers/logging/log_tags/). Log4j 
 provides similar functionality via the [Docker Lookup](lookups.html#DockerLookup). More information on
 Log4j's Docker support may also be found at [Log4j-Docker](../log4j-docker/index.html). 
+
+## Integration with Kubernetes
+
+Applications managed by Kubernetes can bypass the Docker/Kubernetes logging infrastructure and log directly to 
+either a sidecar forwarder or a logging aggragator cluster while still including all the kubernetes 
+attributes by using the Log4j 2 [Kubernetes Lookup](lookups.html#KubernetesLookup). More information on
+Log4j's Kubernetes support may also be found at [Log4j-Kubernetes](../log4j-kubernetes/index.html). 
 
 ## Appender Performance
 The numbers in the table below represent how much time in seconds was required for the application to 

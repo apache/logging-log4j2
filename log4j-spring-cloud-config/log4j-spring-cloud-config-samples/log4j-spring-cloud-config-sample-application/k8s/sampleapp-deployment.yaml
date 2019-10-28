@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sampleapp
+  labels:
+    app: sampleapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sampleapp
+  template:
+    metadata:
+      labels:
+        app: sampleapp
+    spec:
+      containers:
+        - name: sampleapp
+          image: localhost:5000/sampleapp:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+            - containerPort: 5005
+          env:
+            - name: JAVA_OPTS
+              value: "-Delastic.search.host=host.docker.internal"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sampleapp
+spec:
+  type: NodePort
+  selector:
+    app: sampleapp
+  ports:
+    - protocol: TCP
+      port: 8080
+      nodePort: 30011
+      name: http
+    - protocol: TCP
+      port: 5005
+      nodePort: 30012
+      name: debug

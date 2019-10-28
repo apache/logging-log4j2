@@ -283,6 +283,27 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         return ctx;
     }
 
+    @Override
+    public void shutdown(String fqcn, ClassLoader loader, boolean currentContext, boolean allContexts) {
+        if (selector.hasContext(fqcn, loader, currentContext)) {
+            selector.shutdown(fqcn, loader, currentContext, allContexts);
+        }
+    }
+
+    /**
+     * Checks to see if a LoggerContext is installed.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param loader The ClassLoader to use or null.
+     * @param currentContext If true returns the current Context, if false returns the Context appropriate
+     * for the caller if a more appropriate Context can be determined.
+     * @return true if a LoggerContext has been installed, false otherwise.
+     * @since 3.0
+     */
+    @Override
+    public boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {
+        return selector.hasContext(fqcn, loader, currentContext);
+    }
+
     /**
      * Returns the ContextSelector.
      * @return The ContextSelector.

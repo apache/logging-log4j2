@@ -19,6 +19,9 @@ package org.apache.logging.log4j.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -155,6 +158,24 @@ public final class PropertiesUtil {
     }
 
     /**
+     * Retrieves a property that may be prefixed by more than one string.
+     * @param prefixes The array of prefixes.
+     * @param key The key to locate.
+     * @param supplier The method to call to derive the default value. If the value is null, null will be returned
+     * if no property is found.
+     * @return The value or null if it is not found.
+     * @since 2.13.0
+     */
+    public Boolean getBooleanProperty(final String[] prefixes, String key, Supplier<Boolean> supplier) {
+        for (String prefix : prefixes) {
+            if (hasProperty(prefix + key)) {
+                return getBooleanProperty(prefix + key);
+            }
+        }
+        return supplier != null ? supplier.get() : null;
+    }
+
+    /**
      * Gets the named property as a Charset value.
      *
      * @param name the name of the property to look up
@@ -232,6 +253,24 @@ public final class PropertiesUtil {
     }
 
     /**
+     * Retrieves a property that may be prefixed by more than one string.
+     * @param prefixes The array of prefixes.
+     * @param key The key to locate.
+     * @param supplier The method to call to derive the default value. If the value is null, null will be returned
+     * if no property is found.
+     * @return The value or null if it is not found.
+     * @since 2.13.0
+     */
+    public Integer getIntegerProperty(final String[] prefixes, String key, Supplier<Integer> supplier) {
+        for (String prefix : prefixes) {
+            if (hasProperty(prefix + key)) {
+                return getIntegerProperty(prefix + key, 0);
+            }
+        }
+        return supplier != null ? supplier.get() : null;
+    }
+
+    /**
      * Gets the named property as a long.
      *
      * @param name         the name of the property to look up
@@ -248,6 +287,77 @@ public final class PropertiesUtil {
             }
         }
         return defaultValue;
+    }
+
+    /**
+     * Retrieves a property that may be prefixed by more than one string.
+     * @param prefixes The array of prefixes.
+     * @param key The key to locate.
+     * @param supplier The method to call to derive the default value. If the value is null, null will be returned
+     * if no property is found.
+     * @return The value or null if it is not found.
+     * @since 2.13.0
+     */
+    public Long getLongProperty(final String[] prefixes, String key, Supplier<Long> supplier) {
+        for (String prefix : prefixes) {
+            if (hasProperty(prefix + key)) {
+                return getLongProperty(prefix + key, 0);
+            }
+        }
+        return supplier != null ? supplier.get() : null;
+    }
+
+    /**
+     * Retrieves a Duration where the String is of the format nnn[unit] where nnn represents an integer value
+     * and unit represents a time unit.
+     * @param name The property name.
+     * @param defaultValue The default value.
+     * @return The value of the String as a Duration or the default value, which may be null.
+     * @since 2.13.0
+     */
+    public Duration getDurationProperty(final String name, Duration defaultValue) {
+        final String prop = getStringProperty(name);
+        if (prop != null) {
+            return TimeUnit.getDuration(prop);
+        }
+        return defaultValue;
+    }
+
+    /**
+     * Retrieves a property that may be prefixed by more than one string.
+     * @param prefixes The array of prefixes.
+     * @param key The key to locate.
+     * @param supplier The method to call to derive the default value. If the value is null, null will be returned
+     * if no property is found.
+     * @return The value or null if it is not found.
+     * @since 2.13.0
+     */
+    public Duration getDurationProperty(final String[] prefixes, String key, Supplier<Duration> supplier) {
+        for (String prefix : prefixes) {
+            if (hasProperty(prefix + key)) {
+                return getDurationProperty(prefix + key, null);
+            }
+        }
+        return supplier != null ? supplier.get() : null;
+    }
+
+    /**
+     * Retrieves a property that may be prefixed by more than one string.
+     * @param prefixes The array of prefixes.
+     * @param key The key to locate.
+     * @param supplier The method to call to derive the default value. If the value is null, null will be returned
+     * if no property is found.
+     * @return The value or null if it is not found.
+     * @since 2.13.0
+     */
+    public String getStringProperty(final String[] prefixes, String key, Supplier<String> supplier) {
+        for (String prefix : prefixes) {
+            String result = getStringProperty(prefix + key);
+            if (result != null) {
+                return result;
+            }
+        }
+        return supplier != null ? supplier.get() : null;
     }
 
     /**
@@ -387,6 +497,11 @@ public final class PropertiesUtil {
             if (hasSystemProperty(key)) {
                 return System.getProperty(key);
             }
+            for (final PropertySource source : sources) {
+                if (source.containsProperty(key)) {
+                    return source.getProperty(key);
+                }
+            }
             return tokenized.get(PropertySource.Util.tokenize(key));
         }
 
@@ -463,4 +578,40 @@ public final class PropertiesUtil {
         return getStringProperty("os.name", "").startsWith("Windows");
     }
 
+    private enum TimeUnit {
+        NANOS("ns,nano,nanos,nanosecond,nanoseconds", ChronoUnit.NANOS),
+        MICROS("us,micro,micros,microsecond,microseconds", ChronoUnit.MICROS),
+        MILLIS("ms,milli,millis,millsecond,milliseconds", ChronoUnit.MILLIS),
+        SECONDS("s,second,seconds", ChronoUnit.SECONDS),
+        MINUTES("m,minute,minutes", ChronoUnit.MINUTES),
+        HOURS("h,hour,hours", ChronoUnit.HOURS),
+        DAYS("d,day,days", ChronoUnit.DAYS);
+
+        private final String[] descriptions;
+        private final ChronoUnit timeUnit;
+
+        TimeUnit(String descriptions, ChronoUnit timeUnit) {
+            this.descriptions = descriptions.split(",");
+            this.timeUnit = timeUnit;
+        }
+
+        ChronoUnit getTimeUnit() {
+            return this.timeUnit;
+        }
+
+        static Duration getDuration(String time) {
+            String value = time.trim();
+            TemporalUnit temporalUnit = ChronoUnit.MILLIS;
+            long timeVal = 0;
+            for (TimeUnit timeUnit : values()) {
+                for (String suffix : timeUnit.descriptions) {
+                    if (value.endsWith(suffix)) {
+                        temporalUnit = timeUnit.timeUnit;
+                        timeVal = Long.parseLong(value.substring(0, value.length() - suffix.length()));
+                    }
+                }
+            }
+            return Duration.of(timeVal, temporalUnit);
+        }
+    }
 }

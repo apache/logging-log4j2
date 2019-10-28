@@ -192,6 +192,7 @@
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.9.9</jackson2Version>
     <springVersion>3.2.18.RELEASE</springVersion>
+    <kubernetes-client.version>4.6.1</kubernetes-client.version>
     <flumeVersion>1.7.0</flumeVersion> <!-- Version 1.8.0 requires Java 8 -->
     <disruptorVersion>3.4.2</disruptorVersion>
     <conversantDisruptorVersion>1.2.10</conversantDisruptorVersion> <!-- Version 1.2.11 requires Java 8 -->
@@ -728,6 +729,11 @@
         <version>${springVersion}</version>
       </dependency>
       <dependency>
+        <groupId>io.fabric8</groupId>
+        <artifactId>kubernetes-client</artifactId>
+        <version>${kubernetes-client.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
         <version>2.3.5</version>
@@ -1209,6 +1215,7 @@
             <exclude>**/README.md</exclude>
             <exclude>RELEASE-NOTES.md</exclude>
             <exclude>**/*.yml</exclude>
+            <exclude>**/*.yaml</exclude>
             <exclude>**/*.json</exclude>
             <excllude>**/images/*.drawio</excllude>
             <exclude>**/fluent-bit.conf</exclude>
@@ -1341,6 +1348,7 @@
             <exclude>**/README.md</exclude>
             <exclude>RELEASE-NOTES.md</exclude>
             <exclude>**/*.yml</exclude>
+            <exclude>**/*.yaml</exclude>
             <exclude>**/*.json</exclude>
             <excllude>**/images/*.drawio</excllude>
             <exclude>**/fluent-bit.conf</exclude>
@@ -1389,6 +1397,7 @@
     <module>log4j-appserver</module>
     <module>log4j-osgi</module>
     <module>log4j-docker</module>
+    <module>log4j-kubernetes</module>
     <module>log4j-spring-cloud-config</module>
   </modules>
   <profiles>
@@ -1508,6 +1517,7 @@
                 <exclude>**/README.md</exclude>
                 <exclude>RELEASE-NOTES.md</exclude>
                 <exclude>**/*.yml</exclude>
+                <exclude>**/*.yaml</exclude>
                 <exclude>**/*.json</exclude>
                 <excllude>**/images/*.drawio</excllude>
                 <exclude>**/fluent-bit.conf</exclude>

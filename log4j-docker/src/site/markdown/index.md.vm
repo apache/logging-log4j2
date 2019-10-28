@@ -48,7 +48,7 @@ Attributes may be accessed by adding
 ```
 $D$container
 ```
-to the configuration. Note that docker variables are only resolved once during logging initializaton so they
+to the configuration. Note that docker variables are only resolved once during logging initialization so they
 shouldn't be referenced with more than one '$' character.
 
 $h2 Requirements

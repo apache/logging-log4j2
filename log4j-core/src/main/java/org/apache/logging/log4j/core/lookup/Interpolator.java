@@ -40,6 +40,8 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
 
     private static final String LOOKUP_KEY_DOCKER = "docker";
 
+    private static final String LOOKUP_KEY_KUBERNETES = "kubernetes";
+
     private static final String LOOKUP_KEY_SPRING = "spring";
 
     private static final String LOOKUP_KEY_JNDI = "jndi";
@@ -144,6 +146,14 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         } catch (final Exception ignored) {
             handleError(LOOKUP_KEY_SPRING, ignored);
         }
+        try {
+            strLookupMap.put(LOOKUP_KEY_KUBERNETES,
+                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.kubernetes.KubernetesLookup", StrLookup.class));
+        } catch (final Exception ignored) {
+            handleError(LOOKUP_KEY_KUBERNETES, ignored);
+        } catch (final NoClassDefFoundError error) {
+            handleError(LOOKUP_KEY_KUBERNETES, error);
+        }
     }
 
     public Map<String, StrLookup> getStrLookupMap() {
@@ -170,6 +180,11 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
                         "web archive or server lib directory.");
                 break;
             case LOOKUP_KEY_DOCKER: case LOOKUP_KEY_SPRING:
+                break;
+            case LOOKUP_KEY_KUBERNETES:
+                if (t instanceof NoClassDefFoundError) {
+                    LOGGER.warn("Unable to create Kubernetes lookup due to missing dependency: {}", t.getMessage());
+                }
                 break;
             default:
                 LOGGER.error("Unable to create Lookup for {}", lookupKey, t);

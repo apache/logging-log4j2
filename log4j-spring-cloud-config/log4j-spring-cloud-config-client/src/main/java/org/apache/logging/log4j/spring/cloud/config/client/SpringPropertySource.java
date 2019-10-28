@@ -16,32 +16,39 @@
  */
 package org.apache.logging.log4j.spring.cloud.config.client;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.util.PropertySource;
 import org.springframework.core.env.Environment;
 
 /**
- * Lookup for Spring properties.
+ * Returns properties from Spring.
  */
-@Plugin(name = "spring", category = StrLookup.CATEGORY)
-public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
+public class SpringPropertySource extends SpringEnvironmentHolder implements PropertySource {
 
-    public SpringLookup() {
-        getEnvironment();
+    /**
+     * System properties take precendence followed by properties in Log4j properties files. Spring properties
+     * follow.
+     * @return This PropertySource's priority.
+     */
+    @Override
+    public int getPriority() {
+        return -50;
     }
 
     @Override
-    public String lookup(String key) {
-        Environment env = getEnvironment();
-        if (env != null) {
-            return env.getProperty(key);
+    public String getProperty(String key) {
+        Environment environment = getEnvironment();
+        if (environment != null) {
+            return environment.getProperty(key);
         }
         return null;
     }
 
     @Override
-    public String lookup(LogEvent event, String key) {
-        return lookup((key));
+    public boolean containsProperty(String key) {
+        Environment environment = getEnvironment();
+        if (environment != null) {
+            return environment.containsProperty(key);
+        }
+        return false;
     }
 }
