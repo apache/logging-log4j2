@@ -31,8 +31,7 @@ public interface LoggerContextFactory {
      * @param currentContext If true shuts down the current Context, if false shuts down the Context appropriate
      * for the caller if a more appropriate Context can be determined.
      * @param allContexts if true all LoggerContexts that can be located will be shutdown.
-     * @return true if a LoggerContext has been installed, false otherwise.
-     * @since 3.0
+     * @since 2.13.0
      */
     default void shutdown(String fqcn, ClassLoader loader, boolean currentContext, boolean allContexts) {
         if (hasContext(fqcn, loader, currentContext)) {
@@ -50,7 +49,7 @@ public interface LoggerContextFactory {
      * @param currentContext If true returns the current Context, if false returns the Context appropriate
      * for the caller if a more appropriate Context can be determined.
      * @return true if a LoggerContext has been installed, false otherwise.
-     * @since 3.0
+     * @since 2.13.0
      */
     default boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {
         return false;

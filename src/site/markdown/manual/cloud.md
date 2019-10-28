@@ -45,7 +45,6 @@ per logging call vs 1.5 microseconds when writing to the file.
     OutputBenchmark.file      thrpt   20  654584.309 ± 59399.092  ops/s
     OutputBenchmark.redirect  thrpt   20   70284.576 ±  7452.167  ops/s
     ```
-
 1. When performing audit logging using a framework such as log4j-audit guaranteed delivery of the audit events
 is required. Many of the options for writing the output, including writing to the standard output stream, do
 not guarantee delivery. In these cases the event must be delivered to a "forwarder" that acknowledges receipt
@@ -134,6 +133,20 @@ one ip address associated with its DNS entry the socket appender will fail throu
         <MessagePattern>%d [%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress} %C{1.}.%M:%L - %m%n</MessagePattern>
         <KeyValuePair key="containerId" value="${docker:containerId:-}"/>
         <KeyValuePair key="application" value="$${lower:${spring:spring.application.name:-spring}}"/>
+        <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
+        <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
+        <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
+        <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
+        <KeyValuePair key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
+        <KeyValuePair key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
+        <KeyValuePair key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
+        <KeyValuePair key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
+        <KeyValuePair key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
+        <KeyValuePair key="kubernetes.podID" value="${k8s:podId:-}"/>
+        <KeyValuePair key="kubernetes.podIP" value="${k8s:podIp:-}"/>
+        <KeyValuePair key="kubernetes.podName" value="${k8s:podName:-}"/>
+        <KeyValuePair key="kubernetes.imageId" value="${k8s:imageId:-}"/>
+        <KeyValuePair key="kubernetes.imageName" value="${k8s:imageName:-}"/>
       </GelfLayout>
     </Socket>
 
@@ -182,12 +195,11 @@ With the above configurations the message field will contain a fully formatted l
 a file Appender. The ThreadContext attributes, custome fields, thread name, etc. will all be available as attributes
 on each log event that can be used for filtering.
 
-
 ## Managing Logging Configuration
 
 Spring Boot provides another least common denominator approach to logging configuration. It will let you set the 
 log level for various Loggers within an application which can be dynamically updated via REST endpoints provided 
-by Spring. While this works in a lot of cases it does not support any of the more advanced filtering features of
+by Spring. While this works in a lot of cases it does not support any of the more advanced filtering features of 
 Log4j. For example, since it cannot add or modify any Filters other than the log level of a logger, changes cannot be made to allow 
 all log events for a specific user or customer to temporarily be logged 
 (see [DynamicThresholdFilter](filters.html#DynamicThresholdFilter) or 
@@ -220,13 +232,20 @@ attributes in the formatted log event as described at
 provides similar functionality via the [Docker Lookup](lookups.html#DockerLookup). More information on
 Log4j's Docker support may also be found at [Log4j-Docker](../log4j-docker/index.html). 
 
+## Integration with Kubernetes
+
+Applications managed by Kubernetes can bypass the Docker/Kubernetes logging infrastructure and log directly to 
+either a sidecar forwarder or a logging aggragator cluster while still including all the kubernetes 
+attributes by using the Log4j 2 [Kubernetes Lookup](lookups.html#KubernetesLookup). More information on
+Log4j's Kubernetes support may also be found at [Log4j-Kubernetes](../log4j-kubernetes/index.html). 
+
 ## Appender Performance
-The numbers in the table below represent how much time in seconds was required for the application to
-call logger.debug 100,000 times. These numbers only include the time taken to deliver to the specifically
-noted endpoint and many not include the actual time required before they are available for viewing. All
+The numbers in the table below represent how much time in seconds was required for the application to 
+call logger.debug 100,000 times. These numbers only include the time taken to deliver to the specifically 
+noted endpoint and many not include the actual time required before they are available for viewing. All 
 measurements were performed on a MacBook Pro with a 2.9GHz Intel Core I9 processor with 6 physical and 12 
 logical cores, 32GB of 2400 MHz DDR4 RAM, and 1TB of Apple SSD storage. The VM used by Docker was managed 
-by VMWare Fusion and had 4 CPUs and 2 GB of RAM. These number should be used for relative performance comparisons
+by VMWare Fusion and had 4 CPUs and 2 GB of RAM. These number should be used for relative performance comparisons 
 as the results on another system may vary considerably.
 
 The sample application used can be found under the log4j-spring-cloud-config/log4j-spring-cloud-config-samples
@@ -285,9 +304,9 @@ the performance numbers show, so long as the volume of logging is not high enoug
 circular buffer the overhead of logging will almost be unnoticeable to the application.
 1. If overall performance is a consideration or you require multiline events such as stack traces
 be processed properly then log via TCP to a companion container that acts as a log forwarder or directly
-to a log aggregator as shown above in [Logging with ELK](#ELK). Use the 
+to a log aggregator as shown above in [Logging with ELK](#ELK). Use the  
 Log4j Docker Lookup to add the container information to each log event.
-1. Whenever guaranteed delivery is required use Flume Avro with a batch size of 1 or another Appender such
+1. Whenever guaranteed delivery is required use Flume Avro with a batch size of 1 or another Appender such 
 as the Kafka Appender with syncSend set to true that only return control after the downstream agent 
 acknowledges receipt of the event. Beware that using an Appender that writes each event individually should 
 be kept to a minimum since it is much slower than sending buffered events. 

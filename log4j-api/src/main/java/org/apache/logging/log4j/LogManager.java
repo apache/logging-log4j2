@@ -404,7 +404,7 @@ public class LogManager {
      *            used and if the caller is a class in the container's classpath then a different LoggerContext may
      *            be used.
      * @param allContexts if true all LoggerContexts that can be located will be shutdown.
-     * @since 3.0
+     * @since 2.13.0
      */
     public static void shutdown(final boolean currentContext, final boolean allContexts) {
         factory.shutdown(FQCN, null, currentContext, allContexts);

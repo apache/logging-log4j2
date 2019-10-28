@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.spring.cloud.config.client;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -24,7 +25,6 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -68,7 +68,6 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
         super.initialize(initializationContext, configLocation, logFile);
     }
 
-
     @Override
     protected String[] getStandardConfigLocations() {
         String[] locations = super.getStandardConfigLocations();
@@ -77,7 +76,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
         if (location != null) {
             List<String> list = Arrays.asList(super.getStandardConfigLocations());
             list.add(location);
-            locations = list.toArray(new String[list.size()]);
+            locations = list.toArray(new String[0]);
         }
         return locations;
     }

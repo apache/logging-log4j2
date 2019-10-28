@@ -299,7 +299,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * @param currentContext If true returns the current Context, if false returns the Context appropriate
      * for the caller if a more appropriate Context can be determined.
      * @return true if a LoggerContext has been installed, false otherwise.
-     * @since 3.0
+     * @since 2.13.0
      */
     @Override
     public boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {

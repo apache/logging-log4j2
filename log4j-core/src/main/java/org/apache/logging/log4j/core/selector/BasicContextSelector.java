@@ -39,7 +39,8 @@ public class BasicContextSelector implements ContextSelector {
 
     @Override
     public boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {
-        return ContextAnchor.THREAD_CONTEXT.get() != null;
+        LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+        return ctx != null && ctx.isStarted();
     }
 
     @Override

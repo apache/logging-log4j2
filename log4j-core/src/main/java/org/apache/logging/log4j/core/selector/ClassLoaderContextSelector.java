@@ -83,17 +83,20 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
 
     @Override
     public boolean hasContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+        LoggerContext ctx;
         if (currentContext) {
-            return ContextAnchor.THREAD_CONTEXT.get() != null;
+            ctx = ContextAnchor.THREAD_CONTEXT.get();
         } else if (loader != null) {
-            return findContext(loader) != null;
+            ctx = findContext(loader);
         } else {
             final Class<?> clazz = StackLocatorUtil.getCallerClass(fqcn);
             if (clazz != null) {
-                return findContext(clazz.getClassLoader()) != null;
+                ctx = findContext(clazz.getClassLoader());
+            } else {
+                ctx = ContextAnchor.THREAD_CONTEXT.get();
             }
-            return ContextAnchor.THREAD_CONTEXT.get() != null;
         }
+        return ctx != null && ctx.isStarted();
     }
 
     private LoggerContext findContext(ClassLoader loaderOrNull) {

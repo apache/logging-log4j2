@@ -77,8 +77,6 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
                 }
             }
         }
-
-
     }
 
     private LoggerContext getLoggerContext(final Bundle bundle) {
@@ -97,7 +95,7 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
     @Override
     public boolean hasContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         if (currentContext && ContextAnchor.THREAD_CONTEXT.get() != null) {
-            return true;
+            return ContextAnchor.THREAD_CONTEXT.get().isStarted();
         }
         if (loader instanceof BundleReference) {
             return hasContext(((BundleReference) loader).getBundle());
@@ -106,7 +104,7 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
         if (callerClass != null) {
             return hasContext(FrameworkUtil.getBundle(callerClass));
         }
-        return ContextAnchor.THREAD_CONTEXT.get() != null;
+        return ContextAnchor.THREAD_CONTEXT.get() != null && ContextAnchor.THREAD_CONTEXT.get().isStarted();
     }
 
     @Override
@@ -134,7 +132,7 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
     private static boolean hasContext(final Bundle bundle) {
         final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
         final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
-        return ref != null && ref.get() != null;
+        return ref != null && ref.get() != null && ref.get().get() != null && ref.get().get().isStarted();
     }
 
     private static LoggerContext locateContext(final Bundle bundle, final URI configLocation) {

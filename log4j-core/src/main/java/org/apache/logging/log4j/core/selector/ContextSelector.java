@@ -35,7 +35,7 @@ public interface ContextSelector {
      * @param loader The ClassLoader to use or null.
      * @param currentContext If true returns the current Context, if false returns the Context appropriate
      * @param allContexts if true all LoggerContexts that can be located will be shutdown.
-     * @since 3.0
+     * @since 2.13.0
      */
     default void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext,
                           final boolean allContexts) {
@@ -51,7 +51,7 @@ public interface ContextSelector {
      * @param currentContext If true returns the current Context, if false returns the Context appropriate
      * for the caller if a more appropriate Context can be determined.
      * @return true if a LoggerContext has been installed, false otherwise.
-     * @since 3.0
+     * @since 2.13.0
      */
     default boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {
         return false;

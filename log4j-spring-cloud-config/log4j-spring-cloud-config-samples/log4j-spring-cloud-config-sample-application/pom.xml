@@ -92,6 +92,11 @@
       <artifactId>log4j-docker</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-kubernetes</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <!-- Required for Async Loggers -->
     <dependency>
       <groupId>com.lmax</groupId>

@@ -109,14 +109,15 @@ public class JndiContextSelector implements NamedContextSelector {
 
     @Override
     public boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {
-        if (ContextAnchor.THREAD_CONTEXT.get() != null) {
-            return true;
+        LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+        if (ctx == null) {
+            String loggingContextName = getContextName();
+            if (loggingContextName == null) {
+                return false;
+            }
+            ctx = CONTEXT_MAP.get(loggingContextName);
         }
-        String loggingContextName = getContextName();
-        if (loggingContextName == null) {
-            return false;
-        }
-        return CONTEXT_MAP.containsKey(loggingContextName);
+        return ctx != null && ctx.isStarted();
     }
 
     @Override

@@ -28,3 +28,6 @@ spring:
     port: 5672
     username: guest
     password: guest
+
+log4j2:
+  debug: true

@@ -157,6 +157,10 @@
       </action>
     </release>
     <release version="2.13.0" date="2019-MM-DD" description="GA Release 2.13.0">
+      <action issue="LOG4J2-2716" dev="rgoers" type="add">
+        Add the ability to lookup Kubernetes attributes in the Log4j configuration. Allow Log4j properties to
+        be retrieved from the Spring environment if it is available.
+      </action>
       <action issue="LOG4J2-2710" dev="rgoers" type="add">
         Allow Spring Boot application properties to be accessed in the Log4j 2 configuraiton. Add
         lower and upper case Lookups.
