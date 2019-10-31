@@ -221,8 +221,7 @@
     <jxr.plugin.version>2.5</jxr.plugin.version>
     <revapi.plugin.version>0.10.5</revapi.plugin.version>
     <revapi.skip>true</revapi.skip>
-    <!-- Maven site 3.7 uses the wrong stylesheet? -->
-    <site.plugin.version>3.4</site.plugin.version>
+    <site.plugin.version>3.8.2</site.plugin.version>
     <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
     <!-- See https://maven.apache.org/plugins/maven-site-plugin/migrate.html -->
     <velocity.plugin.version>1.5</velocity.plugin.version>
@@ -1152,15 +1151,28 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.12</version>
+        <executions>
+          <execution>
+            <id>timestamp-property</id>
+            <goals>
+              <goal>timestamp-property</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <name>currentYear</name>
+              <pattern>yyyy</pattern>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>${site.plugin.version}</version>
         <dependencies>
-          <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>${velocity.plugin.version}</version>
-          </dependency>
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-ssh</artifactId>
@@ -1181,8 +1193,6 @@
           <moduleExcludes>
             <xdoc>navigation.xml,changes.xml</xdoc>
           </moduleExcludes>
-          <templateDirectory>${log4jParentDir}/src/site</templateDirectory>
-          <template>site.vm</template>
           <asciidoc>
             <attributes>
               <!-- copy any site properties wanted in asciidoc files -->

@@ -40,10 +40,10 @@ on a 2018 MacBook Pro with a 2.9GHz Intel Core i9 processor and a 1TB SSD.  Howe
 enough to argue against writing to the standard output stream as they only amount to about 14-25 microseconds 
 per logging call vs 1.5 microseconds when writing to the file. 
     ```
-    Benchmark                  Mode  Cnt       Score       Error  Units
-    OutputBenchmark.console   thrpt   20   39291.885 ±  3370.066  ops/s
-    OutputBenchmark.file      thrpt   20  654584.309 ± 59399.092  ops/s
-    OutputBenchmark.redirect  thrpt   20   70284.576 ±  7452.167  ops/s
+        Benchmark                  Mode  Cnt       Score       Error  Units
+        OutputBenchmark.console   thrpt   20   39291.885 ±  3370.066  ops/s
+        OutputBenchmark.file      thrpt   20  654584.309 ± 59399.092  ops/s
+        OutputBenchmark.redirect  thrpt   20   70284.576 ±  7452.167  ops/s
     ```
 1. When performing audit logging using a framework such as log4j-audit guaranteed delivery of the audit events
 is required. Many of the options for writing the output, including writing to the standard output stream, do
