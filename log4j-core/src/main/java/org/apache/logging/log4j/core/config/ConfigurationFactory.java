@@ -174,22 +174,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     // see above comments about double-checked locking
                     //noinspection NonThreadSafeLazyInitialization
                     factories = Collections.unmodifiableList(list);
-                    final String authClass = props.getStringProperty(AUTHORIZATION_PROVIDER);
-                    if (authClass != null) {
-                        try {
-                            Object obj = LoaderUtil.newInstanceOf(authClass);
-                            if (obj instanceof AuthorizationProvider) {
-                                authorizationProvider = (AuthorizationProvider) obj;
-                            } else {
-                                LOGGER.warn("{} is not an AuthorizationProvider, using default", obj.getClass().getName());
-                            }
-                        } catch (Exception ex) {
-                            LOGGER.warn("Unable to create {}, using default: {}", authClass, ex.getMessage());
-                        }
-                    }
-                    if (authorizationProvider == null) {
-                        authorizationProvider = new BasicAuthorizationProvider(props);
-                    }
+                    authorizationProvider = authorizationProvider(props);
+
                 }
             } finally {
                 LOCK.unlock();
@@ -199,6 +185,28 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         LOGGER.debug("Using configurationFactory {}", configFactory);
         return configFactory;
     }
+
+    public static AuthorizationProvider authorizationProvider(PropertiesUtil props) {
+        final String authClass = props.getStringProperty(AUTHORIZATION_PROVIDER);
+        AuthorizationProvider provider = null;
+        if (authClass != null) {
+            try {
+                Object obj = LoaderUtil.newInstanceOf(authClass);
+                if (obj instanceof AuthorizationProvider) {
+                    provider = (AuthorizationProvider) obj;
+                } else {
+                    LOGGER.warn("{} is not an AuthorizationProvider, using default", obj.getClass().getName());
+                }
+            } catch (Exception ex) {
+                LOGGER.warn("Unable to create {}, using default: {}", authClass, ex.getMessage());
+            }
+        }
+        if (provider == null) {
+            provider = new BasicAuthorizationProvider(props);
+        }
+        return provider;
+    }
+
 
     public static AuthorizationProvider getAuthorizationProvider() {
         return authorizationProvider;

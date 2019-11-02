@@ -46,16 +46,55 @@ running on the same hose outside of the docker container. Note that in accordanc
 practices but the application, profile, and label should be specified in the url.
 
 The Spring Cloud Config support also allows connections using TLS and/or basic authentication. When using basic 
-authentication the userid and password may be specified as system properties or in log4j2.component.properties as
+authentication the userid and password may be specified as system properties, log4j2.component.properties or Spring
+Boot's bootstrap.yml. The table below shows the alternate names that may be used to specify the properties. Any of
+the alternatives may be used in any configuration location.
+
+| Property | Alias  | Spring-like alias | Purpose |
+|----------|---------|---------|---------|
+| log4j2.configurationUserName | log4j2.config.username | logging.auth.username | User name for basic authentication |
+| log4j2.configurationPassword | log4j2.config.password | logging.auth.password | Password for basic authentication |
+| log4j2.authorizationProvider | log4j2.config.authorizationProvider | logging.auth.authorizationProvider | Class used to create HTTP Authorization header |
 
 ```
 log4j2.configurationUserName=guest
 log4j2.configurationPassword=guest
 ```
-Note that Log4j currently does not support encrypting the password. 
+As noted above, Log4j supports accessing logging configuration from bootstrap.yml. As an example, to configure reading 
+from a Spring Cloud Configuration service using basic authoriztion you can do:
+```
+spring:
+  application:
+    name: myApp
+  cloud:
+    config:
+      uri: https://spring-configuration-server.mycorp.com
+      username: appuser
+      password: changeme
 
-If more extensive authentication is required an ```AuthorizationProvider``` can be implemented and defined in
-the log4j2.authorizationProvider system property or in log4j2.component.properties.
+logging:
+  config: classpath:log4j2.xml
+  label: ${spring.cloud.config.label}
+
+---
+spring:
+  profiles: dev
+
+logging:
+  config: https://spring-configuration-server.mycorp.com/myApp/default/${logging.label}/log4j2-dev.xml
+  auth:
+    username: appuser
+    password: changeme
+```
+
+Note that Log4j currently does not directly support encrypting the password. However, Log4j does use Spring's 
+standard APIs to access properties in the Spring configuration so any customizations made to Spring's property
+handling would apply to the properties Log4j uses as well.
+
+If more extensive authentication is required an ```AuthorizationProvider``` can be implemented and the fully
+qualified class name in
+the ```log4j2.authorizationProvider``` system property, in log4j2.component.properties or in Spring's bootstrap.yml
+using either the ```log4j2.authorizationProvider``` key or with the key ```logging.auth.authorizationProvider```.
 
 TLS can be enabled by adding the following system properties or defining them in log4j2.component.properties
 
@@ -65,7 +104,7 @@ TLS can be enabled by adding the following system properties or defining them in
 | log4j2.trustStorePassword  | Optional | Password needed to access the trust store. |
 | log4j2.trustStorePasswordFile | Optional | The location of a file that contains the password for the trust store. |
 | log4j2.trustStorePasswordEnvironmentVariable | Optional | The name of the environment variable that contains the trust store password. |
-| log4j2.trustStorePeyStoreType | Required if keystore location provided | The type of key store.  |
+| log4j2.trustStoreKeyStoreType | Required if keystore location provided | The type of key store.  |
 | log4j2.trustStoreKeyManagerFactoryAlgorithm | Optional | Java cryptographic algorithm. |
 | log4j2.keyStoreLocation | Optional | The location of the key store. If not provided the default key store will be used.|
 | log4j2.keyStorePassword | Optional | Password needed to access the key store. | 
