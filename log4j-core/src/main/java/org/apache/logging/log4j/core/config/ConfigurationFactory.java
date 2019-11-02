@@ -174,7 +174,6 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     // see above comments about double-checked locking
                     //noinspection NonThreadSafeLazyInitialization
                     factories = Collections.unmodifiableList(list);
-                    final String authClass = props.getStringProperty(AUTHORIZATION_PROVIDER);
                     authorizationProvider = authorizationProvider(props);
                 }
             } finally {
