@@ -16,10 +16,24 @@
  */
 package org.apache.log4j.spi;
 
+import org.apache.log4j.bridge.FilterAdapter;
+
 /**
  * @since 0.9.0
  */
 public abstract class Filter {
+    private final FilterAdapter adapter;
+
+    public Filter() {
+        FilterAdapter filterAdapter = null;
+        try {
+            Class.forName("org.apache.logging.log4j.core.Filter");
+            filterAdapter = new FilterAdapter(this);
+        } catch(ClassNotFoundException ex) {
+            // Ignore the exception. Log4j Core is not present.
+        }
+        this.adapter = filterAdapter;
+    }
 
     /**
      * The log event must be dropped immediately without consulting

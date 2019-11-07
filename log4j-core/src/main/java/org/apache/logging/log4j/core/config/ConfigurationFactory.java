@@ -255,6 +255,14 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     protected abstract String[] getSupportedTypes();
 
+    protected String getTestPrefix() {
+        return TEST_PREFIX;
+    }
+
+    protected String getDefaultPrefix() {
+        return DEFAULT_PREFIX;
+    }
+
     protected boolean isActive() {
         return true;
     }
@@ -478,7 +486,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
             for (final ConfigurationFactory factory : getFactories()) {
                 String configName;
-                final String prefix = isTest ? TEST_PREFIX : DEFAULT_PREFIX;
+                final String prefix = isTest ? factory.getTestPrefix() : factory.getDefaultPrefix();
                 final String [] types = factory.getSupportedTypes();
                 if (types == null) {
                     continue;

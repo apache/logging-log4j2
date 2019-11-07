@@ -17,9 +17,13 @@
 package org.apache.log4j;
 
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.legacy.core.ContextUtil;
+import org.apache.log4j.or.ObjectRenderer;
+import org.apache.log4j.or.RendererSupport;
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
@@ -146,7 +150,15 @@ public final class LogManager {
     /**
      * The Repository.
      */
-    private static class Repository implements LoggerRepository {
+    private static class Repository implements LoggerRepository, RendererSupport {
+
+        private final Map<Class<?>, ObjectRenderer> rendererMap = new HashMap<>();
+
+        @Override
+        public Map<Class<?>, ObjectRenderer> getRendererMap() {
+            return rendererMap;
+        }
+
         @Override
         public void addHierarchyEventListener(final HierarchyEventListener listener) {
 

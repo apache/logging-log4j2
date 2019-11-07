@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +25,12 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Initializes and configure the Logging system. This class provides several ways to construct a LoggerContext using
@@ -224,6 +224,19 @@ public final class Configurator {
                     configuration.getName(), ex);
         }
         return null;
+    }
+
+    public static void reconfigure(final Configuration configuration) {
+        try {
+            final Log4jContextFactory factory = getFactory();
+            if (factory != null) {
+                factory.getContext(FQCN, null, null, false)
+                        .reconfigure(configuration);
+            }
+        } catch (final Exception ex) {
+            LOGGER.error("There was a problem initializing the LoggerContext using configuration {}",
+                    configuration.getName(), ex);
+        }
     }
 
     /**

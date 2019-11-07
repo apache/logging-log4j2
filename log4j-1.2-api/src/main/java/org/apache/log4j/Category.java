@@ -25,6 +25,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.legacy.core.CategoryUtil;
+import org.apache.log4j.or.ObjectRenderer;
+import org.apache.log4j.or.RendererSupport;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.spi.ExtendedLogger;
@@ -50,6 +52,7 @@ public class Category {
 
     private static final boolean isCoreAvailable;
 
+    private final Map<Class<?>, ObjectRenderer> rendererMap;
 
     static {
         boolean available;
@@ -76,6 +79,7 @@ public class Category {
      */
     protected Category(final LoggerContext context, final String name) {
         this.logger = context.getLogger(name);
+        rendererMap = ((RendererSupport) LogManager.getLoggerRepository()).getRendererMap();
     }
 
     /**
@@ -88,6 +92,7 @@ public class Category {
 
     private Category(final org.apache.logging.log4j.Logger logger) {
         this.logger = logger;
+        rendererMap = ((RendererSupport) LogManager.getLoggerRepository()).getRendererMap();
     }
 
     public static Category getInstance(final String name) {
@@ -373,10 +378,11 @@ public class Category {
     public static void shutdown() {
     }
 
-
     public void forcedLog(final String fqcn, final Priority level, final Object message, final Throwable t) {
         final org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
-        final Message msg = message instanceof Message ? (Message) message : new ObjectMessage(message);
+        ObjectRenderer renderer = get(message.getClass());
+        final Message msg = message instanceof Message ? (Message) message : renderer != null ?
+            new RenderedMessage(renderer, message) : new ObjectMessage(message);
         if (logger instanceof ExtendedLogger) {
             ((ExtendedLogger) logger).logMessage(fqcn, lvl, null, new ObjectMessage(message), t);
         } else {
@@ -529,6 +535,37 @@ public class Category {
 
     private boolean isEnabledFor(final org.apache.logging.log4j.Level level) {
         return logger.isEnabled(level);
+    }
+
+    private ObjectRenderer get(Class clazz) {
+        ObjectRenderer renderer = null;
+        for(Class c = clazz; c != null; c = c.getSuperclass()) {
+            renderer = rendererMap.get(c);
+            if (renderer != null) {
+                return renderer;
+            }
+            renderer = searchInterfaces(c);
+            if (renderer != null) {
+                return renderer;
+            }
+        }
+        return null;
+    }
+
+    ObjectRenderer searchInterfaces(Class c) {
+        ObjectRenderer renderer = rendererMap.get(c);
+        if(renderer != null) {
+            return renderer;
+        } else {
+            Class[] ia = c.getInterfaces();
+            for (Class clazz : ia) {
+                renderer = searchInterfaces(clazz);
+                if (renderer != null) {
+                    return renderer;
+                }
+            }
+        }
+        return null;
     }
 
 }

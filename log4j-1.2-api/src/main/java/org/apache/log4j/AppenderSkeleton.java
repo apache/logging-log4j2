@@ -114,6 +114,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
      */
     @Override
     public void doAppend(final LoggingEvent event) {
+        append(event);
     }
 
     /**

@@ -42,7 +42,7 @@ import org.openjdk.jmh.annotations.State;
  * </p>
  *
  * <pre>
- *     java -jar benchmarks.jar ".*ReflectionBenchmark.*" -i 5 -f 1 -wi 5 -bm Throughput -tu ms
+ *     T
  * </pre>
  */
 public class ReflectionBenchmark {
