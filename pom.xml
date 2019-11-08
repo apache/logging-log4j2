@@ -347,6 +347,11 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j--1.2-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-plugins</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>

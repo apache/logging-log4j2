@@ -18,6 +18,8 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -49,6 +51,7 @@ import org.openjdk.jmh.annotations.State;
 public class ThreadsafeDateFormatBenchmark {
 
     private final Date date = new Date();
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     private final ThreadLocal<SimpleDateFormat> threadLocalSDFormat = new ThreadLocal<SimpleDateFormat>() {
         @Override
@@ -158,6 +161,14 @@ public class ThreadsafeDateFormatBenchmark {
             }
             return cachedTime;
         }
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String dateTimeFormatter() {
+        final LocalDateTime now = LocalDateTime.now();
+        return dateTimeFormatter.format(now);
     }
 
     @Benchmark

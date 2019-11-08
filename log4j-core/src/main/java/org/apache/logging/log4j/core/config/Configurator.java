@@ -227,6 +227,24 @@ public final class Configurator {
     }
 
     /**
+     * Reconfigure using an already constructed Configuration.
+     * @param configuration The configuration.
+     * @since 2.13.0
+     */
+    public static void reconfigure(final Configuration configuration) {
+        try {
+            final Log4jContextFactory factory = getFactory();
+            if (factory != null) {
+                factory.getContext(FQCN, null, null, false)
+                        .reconfigure(configuration);
+            }
+        } catch (final Exception ex) {
+            LOGGER.error("There was a problem initializing the LoggerContext using configuration {}",
+                    configuration.getName(), ex);
+        }
+    }
+
+    /**
      * Reload the existing reconfiguration.
      * @since 2.12.0
      */

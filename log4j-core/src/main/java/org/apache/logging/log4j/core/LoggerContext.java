@@ -704,6 +704,17 @@ public class LoggerContext extends AbstractLifeCycle
         reconfigure(configLocation);
     }
 
+    public void reconfigure(Configuration configuration) {
+        setConfiguration(configuration);
+        ConfigurationSource source = configuration.getConfigurationSource();
+        if (source != null) {
+            URI uri = source.getURI();
+            if (uri != null) {
+                configLocation = uri;
+            }
+        }
+    }
+
     /**
      * Causes all Loggers to be updated against the current Configuration.
      */
