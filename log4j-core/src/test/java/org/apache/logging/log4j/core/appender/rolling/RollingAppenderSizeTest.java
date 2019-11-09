@@ -75,6 +75,7 @@ public class RollingAppenderSizeTest {
                 // @formatter:off
                {"log4j-rolling-gz-lazy.xml", ".gz", true},
                {"log4j-rolling-gz.xml", ".gz", false},
+               {"log4j-rolling-numbered-gz.xml", ".gz", false},
                {"log4j-rolling-zip-lazy.xml", ".zip", true},
                {"log4j-rolling-zip.xml", ".zip", false},
                 // Apache Commons Compress
