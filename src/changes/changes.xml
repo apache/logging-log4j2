@@ -157,6 +157,10 @@
       </action>
     </release>
     <release version="2.13.0" date="2019-MM-DD" description="GA Release 2.13.0">
+      <action issue="LOG4J2-2712" dev="rgoers" type="fix">
+        The rolling file appenders would fail to compress the file after rollover if the file name matched the
+        file pattern.
+      </action>
       <action issue="LOG4J2-2716" dev="rgoers" type="add">
         Add the ability to lookup Kubernetes attributes in the Log4j configuration. Allow Log4j properties to
         be retrieved from the Spring environment if it is available.

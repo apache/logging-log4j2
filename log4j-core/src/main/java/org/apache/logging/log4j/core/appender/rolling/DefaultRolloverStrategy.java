@@ -413,6 +413,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         // Retrieve the files in descending order, so the highest key will be first.
         final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager, false);
         final int maxFiles = highIndex - lowIndex + 1;
+        LOGGER.debug("Eligible files: {}", eligibleFiles);
 
         while (eligibleFiles.size() >= maxFiles) {
             try {

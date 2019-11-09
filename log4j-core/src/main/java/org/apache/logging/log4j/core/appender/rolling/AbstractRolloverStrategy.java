@@ -91,14 +91,16 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         final StringBuilder buf = new StringBuilder();
         final String pattern = manager.getPatternProcessor().getPattern();
         manager.getPatternProcessor().formatFileName(strSubstitutor, buf, NotANumber.NAN);
-        return getEligibleFiles(buf.toString(), pattern, isAscending);
+        final String fileName = manager.isDirectWrite() ? "" : manager.getFileName();
+        return getEligibleFiles(fileName, buf.toString(), pattern, isAscending);
     }
 
     protected SortedMap<Integer, Path> getEligibleFiles(final String path, final String pattern) {
-        return getEligibleFiles(path, pattern, true);
+        return getEligibleFiles("", path, pattern, true);
     }
 
-    protected SortedMap<Integer, Path> getEligibleFiles(final String path, final String logfilePattern, final boolean isAscending) {
+    protected SortedMap<Integer, Path> getEligibleFiles(final String currentFile, final String path,
+            final String logfilePattern, final boolean isAscending) {
         final TreeMap<Integer, Path> eligibleFiles = new TreeMap<>();
         final File file = new File(path);
         File parent = file.getParentFile();
@@ -118,11 +120,13 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         }
         final String filePattern = fileName.replace(NotANumber.VALUE, "(\\d+)");
         final Pattern pattern = Pattern.compile(filePattern);
+        final Path current = currentFile.length() > 0 ? new File(currentFile).toPath() : null;
+        LOGGER.debug("Current file: {}", currentFile);
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
             for (final Path entry: stream) {
                 final Matcher matcher = pattern.matcher(entry.toFile().getName());
-                if (matcher.matches()) {
+                if (matcher.matches() && !entry.equals(current)) {
                     final Integer index = Integer.parseInt(matcher.group(1));
                     eligibleFiles.put(index, entry);
                 }

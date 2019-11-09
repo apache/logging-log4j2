@@ -70,6 +70,7 @@ public class RollingFileManager extends FileManager {
     private volatile boolean initialized = false;
     private volatile String fileName;
     private final FileExtension fileExtension;
+    private final boolean directWrite;
 
     /* This executor pool will create a new Thread for every work async action to be performed. Using it allows
        us to make sure all the Threads are completed when the Manager is stopped. */
@@ -103,6 +104,7 @@ public class RollingFileManager extends FileManager {
         this.patternProcessor = new PatternProcessor(pattern);
         this.patternProcessor.setPrevFileTime(initialTime);
         this.fileName = fileName;
+        this.directWrite = rolloverStrategy instanceof DirectWriteRolloverStrategy;
         this.fileExtension = FileExtension.lookupForFile(pattern);
     }
 
@@ -115,7 +117,7 @@ public class RollingFileManager extends FileManager {
             if (triggeringPolicy instanceof LifeCycle) {
                 ((LifeCycle) triggeringPolicy).start();
             }
-            if (rolloverStrategy instanceof DirectFileRolloverStrategy) {
+            if (directWrite) {
                 // LOG4J2-2485: Initialize size from the most recently written file.
                 File file = new File(getFileName());
                 if (file.exists()) {
@@ -169,10 +171,14 @@ public class RollingFileManager extends FileManager {
      */
     @Override
     public String getFileName() {
-        if (rolloverStrategy instanceof DirectFileRolloverStrategy) {
+        if (directWrite) {
             fileName = ((DirectFileRolloverStrategy) rolloverStrategy).getCurrentFileName(this);
         }
         return fileName;
+    }
+
+    public boolean isDirectWrite() {
+        return directWrite;
     }
 
     public FileExtension getFileExtension() {
