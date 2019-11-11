@@ -55,6 +55,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.core.lookup.StrMatcher;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.script.AbstractScript;
@@ -128,7 +129,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private List<CustomLevelConfig> customLevels = Collections.emptyList();
     private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<>();
     private final StrLookup tempLookup = new Interpolator(properties);
-    private final StrSubstitutor subst = new StrSubstitutor(tempLookup);
+    private final StrSubstitutor subst;
     private LoggerConfig root = new LoggerConfig();
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
     private final ConfigurationSource configurationSource;
@@ -142,15 +143,33 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Constructor.
      */
     protected AbstractConfiguration(final LoggerContext loggerContext, final ConfigurationSource configurationSource) {
+        this(loggerContext, configurationSource, null);
+    }
+    protected AbstractConfiguration(final LoggerContext loggerContext, final ConfigurationSource configurationSource, final Map<String,String> rootAttrs) {
         this.loggerContext = new WeakReference<>(loggerContext);
         // The loggerContext is null for the NullConfiguration class.
         // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
+        String varPrefix = null;
+        String varSuffix = null;
+        String varEscape = null;
+        if (rootAttrs != null) {
+            varPrefix = rootAttrs.get("variableResolverPrefix");
+            varSuffix = rootAttrs.get("variableResolverSuffix");
+            varEscape = rootAttrs.get("variableResolverEscape");
+        }
+        subst = new StrSubstitutor(tempLookup, isEmpty(varPrefix) ? StrSubstitutor.DEFAULT_PREFIX : StrMatcher.stringMatcher(varPrefix)
+            , isEmpty(varSuffix) ? StrSubstitutor.DEFAULT_SUFFIX : StrMatcher.stringMatcher(varSuffix)
+            , isEmpty(varEscape) ? StrSubstitutor.DEFAULT_ESCAPE : varEscape.charAt(0));
         pluginManager = new PluginManager(Node.CATEGORY);
         rootNode = new Node();
         setState(State.INITIALIZING);
 
+    }
+
+    private static boolean isEmpty(final String str) {
+        return str == null || str.isEmpty();
     }
 
     @Override

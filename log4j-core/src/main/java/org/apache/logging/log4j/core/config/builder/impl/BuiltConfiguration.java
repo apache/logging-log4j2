@@ -52,7 +52,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
     private String contentType = "text";
 
     public BuiltConfiguration(final LoggerContext loggerContext, final ConfigurationSource source, final Component rootComponent) {
-        super(loggerContext, source);
+        super(loggerContext, source, rootComponent.getAttributes());
         statusConfig = new StatusConfiguration().setVerboseClasses(VERBOSE_CLASSES).setStatus(getDefaultStatus());
         for (final Component component : rootComponent.getComponents()) {
             switch (component.getPluginType()) {
@@ -82,6 +82,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
                 }
             }
         }
+        
         this.rootComponent = rootComponent;
     }
 
