@@ -78,7 +78,7 @@ public final class UuidUtil {
         for (int i = 2; i < NODE_SIZE; ++i) {
             node[i] = 0;
         }
-        System.arraycopy(mac, index, node, index + 2, length);
+        System.arraycopy(mac, index, node, 2, length);
         final ByteBuffer buf = ByteBuffer.wrap(node);
         long rand = INITIAL_UUID_SEQNO;
         String assigned = PropertiesUtil.getProperties().getStringProperty(ASSIGNED_SEQUENCES);
