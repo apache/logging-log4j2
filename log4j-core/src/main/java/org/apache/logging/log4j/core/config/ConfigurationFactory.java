@@ -91,6 +91,10 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      */
     public static final String CONFIGURATION_FILE_PROPERTY = "log4j.configurationFile";
 
+    public static final String LOG4J1_CONFIGURATION_FILE_PROPERTY = "log4j.configuration";
+
+    public static final String LOG4J1_EXPERIMENTAL = "log4j1.experimental";
+
     public static final String AUTHORIZATION_PROVIDER = "log4j2.authorizationProvider";
 
     /**
@@ -115,6 +119,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      * File name prefix for standard configurations.
      */
     protected static final String DEFAULT_PREFIX = "log4j2";
+
+    protected static final String LOG4J1_VERSION = "1";
+    protected static final String LOG4J2_VERSION = "2";
 
     /**
      * The name of the classloader URI scheme.
@@ -263,6 +270,10 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         return DEFAULT_PREFIX;
     }
 
+    protected String getVersion() {
+        return LOG4J2_VERSION;
+    }
+
     protected boolean isActive() {
         return true;
     }
@@ -397,6 +408,13 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                         return new CompositeConfiguration(configs);
                     }
                     return getConfiguration(loggerContext, configLocationStr);
+                } else {
+                    final String log4j1ConfigStr = this.substitutor.replace(PropertiesUtil.getProperties()
+                            .getStringProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY));
+                    if (log4j1ConfigStr != null) {
+                        System.setProperty(LOG4J1_EXPERIMENTAL, "true");
+                        return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr);
+                    }
                 }
                 for (final ConfigurationFactory factory : getFactories()) {
                     final String[] types = factory.getSupportedTypes();
@@ -442,7 +460,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             if (config != null) {
                 return config;
             }
-            LOGGER.error("No Log4j 2 configuration file found. " +
+            LOGGER.warn("No Log4j 2 configuration file found. " +
                     "Using default configuration (logging only errors to the console), " +
                     "or user programmatically provided configurations. " +
                     "Set system property 'log4j2.debug' " +
@@ -452,6 +470,11 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         }
 
         private Configuration getConfiguration(final LoggerContext loggerContext, final String configLocationStr) {
+            return getConfiguration(null, loggerContext, configLocationStr);
+        }
+
+        private Configuration getConfiguration(String requiredVersion, final LoggerContext loggerContext,
+                final String configLocationStr) {
             ConfigurationSource source = null;
             try {
                 source = ConfigurationSource.fromUri(NetUtils.toURI(configLocationStr));
@@ -465,6 +488,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             }
             if (source != null) {
                 for (final ConfigurationFactory factory : getFactories()) {
+                    if (requiredVersion != null && !factory.getVersion().equals(requiredVersion)) {
+                        continue;
+                    }
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {

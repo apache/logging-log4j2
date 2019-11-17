@@ -17,38 +17,40 @@
 package org.apache.log4j.builders.filter;
 
 import org.apache.log4j.bridge.FilterWrapper;
+import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.builders.BooleanHolder;
 import org.apache.log4j.builders.Holder;
+import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
-import org.apache.log4j.xml.XmlConfigurationFactory;
-import org.apache.logging.log4j.Level;
+import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.filter.LevelMatchFilter;
 import org.apache.logging.log4j.core.filter.StringMatchFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
+import java.util.Properties;
+
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfigurationFactory.*;
+import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
  * Build a String match filter.
  */
 @Plugin(name = "org.apache.log4j.varia.StringMatchFilter", category = CATEGORY)
-public class StringMatchFilterBuilder implements FilterBuilder {
+public class StringMatchFilterBuilder extends AbstractBuilder implements FilterBuilder {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static final String STRING_TO_MATCH = "stringtomatch";
-    private static final String ACCEPT_ON_MATCH = "acceptonmatch";
+    private static final String STRING_TO_MATCH = "StringToMatch";
+    private static final String ACCEPT_ON_MATCH = "AcceptOnMatch";
 
     @Override
-    public Filter parseFilter(Element filterElement, XmlConfigurationFactory factory) {
+    public Filter parseFilter(Element filterElement, XmlConfiguration config) {
         final Holder<Boolean> acceptOnMatch = new BooleanHolder();
         final Holder<String> text = new Holder<>();
         forEachElement(filterElement.getElementsByTagName("param"), (currentElement) -> {
             if (currentElement.getTagName().equals("param")) {
-                switch (currentElement.getAttribute(NAME_ATTR).toLowerCase()) {
+                switch (currentElement.getAttribute(NAME_ATTR)) {
                     case STRING_TO_MATCH:
                         text.set(currentElement.getAttribute(VALUE_ATTR));
                         break;
@@ -59,15 +61,26 @@ public class StringMatchFilterBuilder implements FilterBuilder {
                 }
             }
         });
-        if (text.get() == null) {
+        return createFilter(text.get(), acceptOnMatch.get());
+    }
+
+    @Override
+    public Filter parseFilter(PropertiesConfiguration config) {
+        String text = getProperty(STRING_TO_MATCH);
+        boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);
+        return createFilter(text, acceptOnMatch);
+    }
+
+    private Filter createFilter(String text, boolean acceptOnMatch) {
+        if (text == null) {
             LOGGER.warn("No text provided for StringMatchFilter");
             return null;
         }
-        org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch.get() != null && acceptOnMatch.get()
+        org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
                 ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
                 : org.apache.logging.log4j.core.Filter.Result.DENY;
         return new FilterWrapper(StringMatchFilter.newBuilder()
-                .setMatchString(text.get())
+                .setMatchString(text)
                 .setOnMatch(onMatch)
                 .setOnMismatch(org.apache.logging.log4j.core.Filter.Result.NEUTRAL)
                 .build());

@@ -226,6 +226,11 @@ public final class Configurator {
         return null;
     }
 
+    /**
+     * Reconfigure using an already constructed Configuration.
+     * @param configuration The configuration.
+     * @since 2.13.0
+     */
     public static void reconfigure(final Configuration configuration) {
         try {
             final Log4jContextFactory factory = getFactory();

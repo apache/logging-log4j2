@@ -23,12 +23,14 @@ import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.bridge.LayoutAdapter;
 import org.apache.log4j.bridge.LayoutWrapper;
+import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.builders.BooleanHolder;
 import org.apache.log4j.builders.Holder;
+import org.apache.log4j.config.Log4j1Configuration;
+import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
-import org.apache.log4j.xml.XmlConfigurationFactory;
+import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
@@ -38,19 +40,35 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
+import java.util.Properties;
+
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfigurationFactory.*;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
 
 /**
  * Build a Daily Rolling File Appender
  */
 @Plugin(name = "org.apache.log4j.DailyRollingFileAppender", category = CATEGORY)
-public class DailyRollingFileAppenderBuilder implements AppenderBuilder {
+public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
+    public DailyRollingFileAppenderBuilder() {
+    }
+
+    public DailyRollingFileAppenderBuilder(String prefix, Properties props) {
+        super(prefix, props);
+    }
+
+
     @Override
-    public Appender parseAppender(Element appenderElement, XmlConfigurationFactory factory) {
+    public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
         String name = appenderElement.getAttribute(NAME_ATTR);
         Holder<Layout> layout = new Holder<>();
         Holder<Filter> filter = new Holder<>();
@@ -62,13 +80,13 @@ public class DailyRollingFileAppenderBuilder implements AppenderBuilder {
         forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
-                    layout.set(factory.parseLayout(currentElement));
+                    layout.set(config.parseLayout(currentElement));
                     break;
                 case FILTER_TAG:
-                    filter.set(factory.parseFilters(currentElement));
+                    filter.set(config.parseFilters(currentElement));
                     break;
                 case PARAM_TAG: {
-                    switch (currentElement.getAttribute(NAME_ATTR).toLowerCase()) {
+                    switch (currentElement.getAttribute(NAME_ATTR)) {
                         case FILE_PARAM:
                             fileName.set(currentElement.getAttribute(VALUE_ATTR));
                             break;
@@ -103,41 +121,63 @@ public class DailyRollingFileAppenderBuilder implements AppenderBuilder {
                 }
             }
         });
+        return createAppender(name, layout.get(), filter.get(), fileName.get(), append.get(), immediateFlush.get(),
+                bufferedIo.get(), bufferSize.get(), config);
+    }
+
+    @Override
+    public Appender parseAppender(final String name, final String layoutPrefix, final String filterPrefix,
+            final Properties props, final PropertiesConfiguration configuration) {
+        Layout layout = configuration.parseLayout(layoutPrefix, name, props);
+        Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
+        String fileName = getProperty(FILE_PARAM);
+        boolean append = getBooleanProperty(APPEND_PARAM);
+        boolean immediateFlush = false;
+        boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM);
+        int bufferSize = Integer.parseInt(getProperty(BUFFER_SIZE_PARAM, "8192"));
+        return createAppender(name, layout, filter, fileName, append, immediateFlush,
+                bufferedIo, bufferSize, configuration);
+    }
+
+    private <T extends Log4j1Configuration> Appender createAppender(final String name, final Layout layout,
+            final Filter filter, final String fileName, final boolean append, boolean immediateFlush,
+            final boolean bufferedIo, final int bufferSize, final T configuration) {
 
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
         org.apache.logging.log4j.core.Filter fileFilter = null;
-        if (bufferedIo.get()) {
-            immediateFlush.set(Boolean.TRUE);
+        if (bufferedIo) {
+            immediateFlush = true;
         }
-        if (layout.get() instanceof LayoutWrapper) {
-            fileLayout = ((LayoutWrapper) layout.get()).getLayout();
-        } else if (layout.get() != null) {
-            fileLayout = new LayoutAdapter(layout.get());
+        if (layout instanceof LayoutWrapper) {
+            fileLayout = ((LayoutWrapper) layout).getLayout();
+        } else if (layout != null) {
+            fileLayout = new LayoutAdapter(layout);
         }
-        if (filter.get() != null) {
-            if (filter.get() instanceof FilterWrapper) {
-                fileFilter = ((FilterWrapper) filter.get()).getFilter();
+        if (filter != null) {
+            if (filter instanceof FilterWrapper) {
+                fileFilter = ((FilterWrapper) filter).getFilter();
             } else {
-                fileFilter = new FilterAdapter(filter.get());
+                fileFilter = new FilterAdapter(filter);
             }
         }
-        if (fileName.get() == null) {
+        if (fileName == null) {
             LOGGER.warn("Unable to create File Appender, no file name provided");
             return null;
         }
-        String filePattern = fileName.get() +"%d{yyy-MM-dd}";
+        String filePattern = fileName +"%d{yyy-MM-dd}";
         TriggeringPolicy policy = TimeBasedTriggeringPolicy.newBuilder().withModulate(true).build();
         RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
-                .withConfig(factory.getConfiguration())
+                .withConfig(configuration)
                 .withMax(Integer.toString(Integer.MAX_VALUE))
                 .build();
         return new AppenderWrapper(RollingFileAppender.newBuilder()
                 .setName(name)
-                .setConfiguration(factory.getConfiguration())
+                .setConfiguration(configuration)
                 .setLayout(fileLayout)
                 .setFilter(fileFilter)
-                .withFileName(fileName.get())
-                .withImmediateFlush(immediateFlush.get())
+                .withFileName(fileName)
+                .withBufferSize(bufferSize)
+                .withImmediateFlush(immediateFlush)
                 .withFilePattern(filePattern)
                 .withPolicy(policy)
                 .withStrategy(strategy)
