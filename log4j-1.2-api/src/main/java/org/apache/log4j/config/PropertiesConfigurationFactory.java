@@ -15,25 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.xml;
+package org.apache.log4j.config;
 
-import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * Constructs a Configuration usable in Log4j 2 from a Log4j 1 configuration file.
+ * Configures Log4j from a log4j 1 format properties file.
  */
-@Plugin(name = "Log4j1XmlConfigurationFactory", category = ConfigurationFactory.CATEGORY)
+@Plugin(name = "Log4j1PropertiesConfigurationFactory", category = ConfigurationFactory.CATEGORY)
 @Order(2)
-public class XmlConfigurationFactory extends ConfigurationFactory {
-    private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
+public class PropertiesConfigurationFactory extends ConfigurationFactory {
+
 
     /**
      * File name prefix for test configurations.
@@ -50,13 +48,13 @@ public class XmlConfigurationFactory extends ConfigurationFactory {
         if (!PropertiesUtil.getProperties().getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
             return null;
         }
-        return new String[] {".xml"};
+        return new String[] {".properties"};
     }
 
     @Override
     public Configuration getConfiguration(LoggerContext loggerContext, ConfigurationSource source) {
         int interval = PropertiesUtil.getProperties().getIntegerProperty(Log4j1Configuration.MONITOR_INTERVAL, 0);
-        return new XmlConfiguration(loggerContext, source, interval);
+        return new PropertiesConfiguration(loggerContext, source, interval);
     }
 
     @Override

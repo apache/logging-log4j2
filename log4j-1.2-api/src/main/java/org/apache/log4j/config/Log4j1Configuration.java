@@ -27,16 +27,16 @@ import org.apache.logging.log4j.core.config.Reconfigurable;
  */
 public class Log4j1Configuration extends AbstractConfiguration implements Reconfigurable {
 
+    public static final String MONITOR_INTERVAL = "log4j1.monitorInterval";
+
+    public static final String INHERITED = "inherited";
+
+    public static final String NULL = "null";
+
     public Log4j1Configuration(final LoggerContext loggerContext, final ConfigurationSource source,
             int monitorIntervalSeconds) {
         super(loggerContext, source);
         initializeWatchers(this, source, monitorIntervalSeconds);
-    }
-
-    @Override
-    protected void doConfigure() {
-        super.getScheduler().start();
-
     }
 
     /**
@@ -44,6 +44,8 @@ public class Log4j1Configuration extends AbstractConfiguration implements Reconf
      */
     @Override
     public void initialize() {
+        getStrSubstitutor().setConfiguration(this);
+        super.getScheduler().start();
         doConfigure();
         setState(State.INITIALIZED);
         LOGGER.debug("Configuration {} initialized", this);
