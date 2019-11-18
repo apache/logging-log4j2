@@ -93,7 +93,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     public static final String LOG4J1_CONFIGURATION_FILE_PROPERTY = "log4j.configuration";
 
-    public static final String LOG4J1_EXPERIMENTAL = "log4j1.experimental";
+    public static final String LOG4J1_EXPERIMENTAL = "log4j1.compatibility";
 
     public static final String AUTHORIZATION_PROVIDER = "log4j2.authorizationProvider";
 

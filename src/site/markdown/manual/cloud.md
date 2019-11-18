@@ -224,6 +224,15 @@ REST endpoints will be lost if Log4j reconfigures itself do to changes in the lo
 Further information regarding integration of the log4j-spring-cloud-config-client can be found at 
 [Log4j Spring Cloud Config Client](../log4j-spring-cloud-config/log4j-spring-cloud-config-client/index.html).
 
+## Integration with Spring Boot
+
+Log4j integrates with Spring Boot in 2 ways:
+
+1. A Spring Lookup can be used to access the Spring application configuration from Log4j configuration files.
+1. Log4j will access the Spring configuration when it is trying to resolve log4j system properties.
+
+Both of these require that the log4j-spring-cloud-client jar is included in the application.
+
 ## Integration with Docker
 
 Applications within a Docker container that log using a Docker logging driver can include special 
