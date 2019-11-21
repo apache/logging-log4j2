@@ -16,8 +16,9 @@
  */
 package org.apache.log4j.builders.filter;
 
+import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
-import org.apache.log4j.xml.XmlConfigurationFactory;
+import org.apache.log4j.xml.XmlConfiguration;
 import org.w3c.dom.Element;
 
 /**
@@ -25,6 +26,8 @@ import org.w3c.dom.Element;
  */
 public interface FilterBuilder {
 
-    Filter parseFilter(Element element, XmlConfigurationFactory factory);
+    Filter parseFilter(Element element, XmlConfiguration config);
+
+    Filter parseFilter(PropertiesConfiguration config);
 
 }

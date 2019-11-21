@@ -22,13 +22,15 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.spi.LoggerContext;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -36,21 +38,29 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Test configuration from XML.
+ * Test configuration from Properties.
  */
-public class AutoConfigTest {
+public class PropertiesConfigurationTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, "true");
+    @Test
+    public void testProperties() throws Exception {
+        configure("target/test-classes/log4j1-file.properties");
+        Logger logger = LogManager.getLogger("test");
+        logger.debug("This is a test of the root logger");
+        File file = new File("target/temp.A1");
+        assertTrue("File A1 was not created", file.exists());
+        assertTrue("File A1 is empty", file.length() > 0);
+        file = new File("target/temp.A2");
+        assertTrue("File A2 was not created", file.exists());
+        assertTrue("File A2 is empty", file.length() > 0);
     }
 
     @Test
-    public void testListAppender() {
+    public void testListAppender() throws Exception {
+        LoggerContext loggerContext = configure("target/test-classes/log4j1-list.properties");
         Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
-        LoggerContext loggerContext = org.apache.logging.log4j.LogManager.getContext(false);
-        Configuration configuration = ((org.apache.logging.log4j.core.LoggerContext) loggerContext).getConfiguration();
+        Configuration configuration = loggerContext.getConfiguration();
         Map<String, Appender> appenders = configuration.getAppenders();
         ListAppender eventAppender = null;
         ListAppender messageAppender = null;
@@ -67,6 +77,17 @@ public class AutoConfigTest {
         assertTrue("No events", events != null && events.size() > 0);
         List<String> messages = messageAppender.getMessages();
         assertTrue("No messages", messages != null && messages.size() > 0);
+    }
+
+    private LoggerContext configure(String configLocation) throws Exception {
+        File file = new File(configLocation);
+        InputStream is = new FileInputStream(file);
+        ConfigurationSource source = new ConfigurationSource(is, file);
+        LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
+        Configuration configuration = new PropertiesConfigurationFactory().getConfiguration(context, source);
+        assertNotNull("No configuration created", configuration);
+        Configurator.reconfigure(configuration);
+        return context;
     }
 
 }

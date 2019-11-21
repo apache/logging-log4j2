@@ -18,7 +18,6 @@
 package org.apache.log4j.helpers;
 
 import org.apache.log4j.Level;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -330,6 +329,51 @@ public class OptionConverter {
                     i = k + DELIM_STOP_LEN;
                 }
             }
+        }
+    }
+
+    public static org.apache.logging.log4j.Level convertLevel(String level,
+            org.apache.logging.log4j.Level defaultLevel) {
+        Level l = toLevel(level, null);
+        return l != null ? convertLevel(l) : defaultLevel;
+    }
+
+    public static  org.apache.logging.log4j.Level convertLevel(Level level) {
+        if (level == null) {
+            return org.apache.logging.log4j.Level.ERROR;
+        }
+        if (level.isGreaterOrEqual(Level.FATAL)) {
+            return org.apache.logging.log4j.Level.FATAL;
+        } else if (level.isGreaterOrEqual(Level.ERROR)) {
+            return org.apache.logging.log4j.Level.ERROR;
+        } else if (level.isGreaterOrEqual(Level.WARN)) {
+            return org.apache.logging.log4j.Level.WARN;
+        } else if (level.isGreaterOrEqual(Level.INFO)) {
+            return org.apache.logging.log4j.Level.INFO;
+        } else if (level.isGreaterOrEqual(Level.DEBUG)) {
+            return org.apache.logging.log4j.Level.DEBUG;
+        } else if (level.isGreaterOrEqual(Level.TRACE)) {
+            return org.apache.logging.log4j.Level.TRACE;
+        }
+        return org.apache.logging.log4j.Level.ALL;
+    }
+
+    /**
+     * Find the value corresponding to <code>key</code> in
+     * <code>props</code>. Then perform variable substitution on the
+     * found value.
+     */
+    public static String findAndSubst(String key, Properties props) {
+        String value = props.getProperty(key);
+        if (value == null) {
+            return null;
+        }
+
+        try {
+            return substVars(value, props);
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Bad option value [{}].", value, e);
+            return value;
         }
     }
     

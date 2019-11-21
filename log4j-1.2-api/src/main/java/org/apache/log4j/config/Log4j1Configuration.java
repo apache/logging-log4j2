@@ -23,9 +23,17 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 
 /**
- * Class Description goes here.
+ * Base Configuration for Log4j 1.
  */
 public class Log4j1Configuration extends AbstractConfiguration implements Reconfigurable {
+
+    public static final String MONITOR_INTERVAL = "log4j1.monitorInterval";
+    public static final String APPENDER_REF_TAG = "appender-ref";
+    public static final String THRESHOLD_PARAM = "Threshold";
+
+    public static final String INHERITED = "inherited";
+
+    public static final String NULL = "null";
 
     public Log4j1Configuration(final LoggerContext loggerContext, final ConfigurationSource source,
             int monitorIntervalSeconds) {
@@ -33,17 +41,13 @@ public class Log4j1Configuration extends AbstractConfiguration implements Reconf
         initializeWatchers(this, source, monitorIntervalSeconds);
     }
 
-    @Override
-    protected void doConfigure() {
-        super.getScheduler().start();
-
-    }
-
     /**
      * Initialize the configuration.
      */
     @Override
     public void initialize() {
+        getStrSubstitutor().setConfiguration(this);
+        super.getScheduler().start();
         doConfigure();
         setState(State.INITIALIZED);
         LOGGER.debug("Configuration {} initialized", this);

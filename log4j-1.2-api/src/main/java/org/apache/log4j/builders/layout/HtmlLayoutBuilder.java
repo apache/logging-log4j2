@@ -18,43 +18,68 @@ package org.apache.log4j.builders.layout;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
+import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.builders.BooleanHolder;
 import org.apache.log4j.builders.Holder;
-import org.apache.log4j.xml.XmlConfigurationFactory;
+import org.apache.log4j.config.PropertiesConfiguration;
+import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
+import java.util.Properties;
+
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfigurationFactory.*;
+import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
  * Build a Pattern Layout
  */
 @Plugin(name = "org.apache.log4j.HTMLLayout", category = CATEGORY)
-public class HtmlLayoutBuilder implements LayoutBuilder {
+public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
+    private static final String TITLE = "Title";
+    private static final String LOCATION_INFO = "LocationInfo";
+
+    public HtmlLayoutBuilder() {
+    }
+
+    public HtmlLayoutBuilder(String prefix, Properties props) {
+        super(prefix, props);
+    }
+
 
     @Override
-    public Layout parseLayout(Element layoutElement, XmlConfigurationFactory factory) {
+    public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
         final Holder<String> title = new Holder<>();
         final Holder<Boolean> locationInfo = new BooleanHolder();
         forEachElement(layoutElement.getElementsByTagName("param"), (currentElement) -> {
-            if (currentElement.getTagName().equals("param")) {
-                if ("title".equalsIgnoreCase(currentElement.getAttribute("name"))) {
+            if (currentElement.getTagName().equals(PARAM_TAG)) {
+                if (TITLE.equalsIgnoreCase(currentElement.getAttribute("name"))) {
                     title.set(currentElement.getAttribute("value"));
-                } else if ("locationInfo".equalsIgnoreCase(currentElement.getAttribute("name"))) {
+                } else if (LOCATION_INFO.equalsIgnoreCase(currentElement.getAttribute("name"))) {
                     locationInfo.set(Boolean.parseBoolean(currentElement.getAttribute("value")));
                 }
             }
         });
+        return createLayout(title.get(), locationInfo.get());
+    }
+
+    @Override
+    public Layout parseLayout(PropertiesConfiguration config) {
+        String title = getProperty(TITLE);
+        boolean locationInfo = getBooleanProperty(LOCATION_INFO);
+        return createLayout(title, locationInfo);
+    }
+
+    private Layout createLayout(String title, boolean locationInfo) {
         return new LayoutWrapper(HtmlLayout.newBuilder()
-                .setTitle(title.get())
-                .setLocationInfo(locationInfo.get())
+                .setTitle(title)
+                .setLocationInfo(locationInfo)
                 .build());
     }
 }

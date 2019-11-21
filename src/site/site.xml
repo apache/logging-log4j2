@@ -86,6 +86,7 @@
     <menu name="Manual" inherit="top" img="img/glyphicons/book.png">
       <item name="Introduction" href="/manual/index.html"/>
       <item name="Architecture" href="/manual/architecture.html"/>
+      <item name="Log4j 1.x Compatibility" href="manual/compatibility.html"/>
       <item name="Log4j 1.x Migration" href="manual/migration.html"/>
 
       <item name="Java API" href="/manual/api.html" collapse="true">

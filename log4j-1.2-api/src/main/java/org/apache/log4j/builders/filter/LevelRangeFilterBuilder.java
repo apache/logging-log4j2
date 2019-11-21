@@ -17,10 +17,12 @@
 package org.apache.log4j.builders.filter;
 
 import org.apache.log4j.bridge.FilterWrapper;
+import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.builders.BooleanHolder;
 import org.apache.log4j.builders.Holder;
+import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
-import org.apache.log4j.xml.XmlConfigurationFactory;
+import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -29,28 +31,37 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
 
+import java.util.Properties;
+
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfigurationFactory.*;
+import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
  * Build a Level match failter.
  */
 @Plugin(name = "org.apache.log4j.varia.LevelRangeFilter", category = CATEGORY)
-public class LevelRangeFilterBuilder implements FilterBuilder {
+public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBuilder {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static final String LEVEL_MAX = "levelmax";
-    private static final String LEVEL_MIN = "levelmin";
-    private static final String ACCEPT_ON_MATCH = "acceptonmatch";
+    private static final String LEVEL_MAX = "LevelMax";
+    private static final String LEVEL_MIN = "LevelMin";
+    private static final String ACCEPT_ON_MATCH = "AcceptOnMatch";
+
+    public LevelRangeFilterBuilder() {
+    }
+
+    public LevelRangeFilterBuilder(String prefix, Properties props) {
+        super(prefix, props);
+    }
 
     @Override
-    public Filter parseFilter(Element filterElement, XmlConfigurationFactory factory) {
+    public Filter parseFilter(Element filterElement, XmlConfiguration config) {
         final Holder<String> levelMax = new Holder<>();
         final Holder<String> levelMin = new Holder<>();
         final Holder<Boolean> acceptOnMatch = new BooleanHolder();
         forEachElement(filterElement.getElementsByTagName("param"), (currentElement) -> {
             if (currentElement.getTagName().equals("param")) {
-                switch (currentElement.getAttribute(NAME_ATTR).toLowerCase()) {
+                switch (currentElement.getAttribute(NAME_ATTR)) {
                     case LEVEL_MAX:
                         levelMax.set(currentElement.getAttribute(VALUE_ATTR));
                         break;
@@ -63,15 +74,27 @@ public class LevelRangeFilterBuilder implements FilterBuilder {
                 }
             }
         });
+        return createFilter(levelMax.get(), levelMin.get(), acceptOnMatch.get());
+    }
+
+    @Override
+    public Filter parseFilter(PropertiesConfiguration config) {
+        String levelMax = getProperty(LEVEL_MAX);
+        String levelMin = getProperty(LEVEL_MIN);
+        boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);
+        return createFilter(levelMax, levelMin, acceptOnMatch);
+    }
+
+    private Filter createFilter(String levelMax, String levelMin, boolean acceptOnMatch) {
         Level max = Level.FATAL;
         Level min = Level.TRACE;
-        if (levelMax.get() != null) {
-            max = Level.toLevel(levelMax.get(), Level.FATAL);
+        if (levelMax != null) {
+            max = Level.toLevel(levelMax, Level.FATAL);
         }
-        if (levelMin.get() != null) {
-            min = Level.toLevel(levelMin.get(), Level.DEBUG);
+        if (levelMin != null) {
+            min = Level.toLevel(levelMin, Level.DEBUG);
         }
-        org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch.get() != null && acceptOnMatch.get()
+        org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
                 ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
                 : org.apache.logging.log4j.core.Filter.Result.NEUTRAL;
 
