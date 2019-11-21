@@ -65,6 +65,20 @@ public final class UuidUtil {
 
     static {
         byte[] mac = NetUtils.getMacAddress();
+        LEAST = initialize(mac);
+    }
+
+    /* This class cannot be instantiated */
+    private UuidUtil() {
+    }
+
+    /**
+     * Initializes this class
+     * 
+     * @param mac MAC address
+     * @return Least
+     */
+    static long initialize(byte[] mac) {
         final Random randomGenerator = new SecureRandom();
         if (mac == null || mac.length == 0) {
             mac = new byte[6];
@@ -114,12 +128,7 @@ public final class UuidUtil {
         assigned = assigned == null ? Long.toString(rand) : assigned + ',' + Long.toString(rand);
         System.setProperty(ASSIGNED_SEQUENCES, assigned);
 
-        LEAST = buf.getLong() | rand << SHIFT_6;
-    }
-
-
-    /* This class cannot be instantiated */
-    private UuidUtil() {
+        return buf.getLong() | rand << SHIFT_6;
     }
 
     /**
