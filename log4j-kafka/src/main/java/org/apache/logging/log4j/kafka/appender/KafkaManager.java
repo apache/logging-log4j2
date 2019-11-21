@@ -58,13 +58,25 @@ public class KafkaManager extends AbstractManager {
      * The Constructor should have been declared private as all Managers are create by the internal factory;
      */
     private KafkaManager(final LoggerContext loggerContext, final String name, final String topic, final boolean syncSend,
-                        final Property[] properties, final String key) {
+                        final Property[] properties, final String key, final String retryCount) {
         super(loggerContext, name);
         this.topic = Objects.requireNonNull(topic, "topic");
         this.syncSend = syncSend;
         config.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         config.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         config.setProperty("batch.size", "0");
+        
+        if(retryCount!=null) {
+        	try {
+        		Integer.parseInt(retryCount);
+        		config.setProperty("retries", retryCount);
+        	}catch(NumberFormatException numberFormatException) {
+        		
+        	}
+        	
+        	
+        }
+        
         for (final Property property : properties) {
             config.setProperty(property.getName(), property.getValue());
         }
@@ -142,12 +154,12 @@ public class KafkaManager extends AbstractManager {
     }
 
     public static KafkaManager getManager(final LoggerContext loggerContext, final String name, final String topic,
-            final boolean syncSend, final Property[] properties, final String key) {
+            final boolean syncSend, final Property[] properties, final String key, final String retryCount) {
         StringBuilder sb = new StringBuilder(name);
         for (Property prop: properties) {
             sb.append(" ").append(prop.getName()).append("=").append(prop.getValue());
         }
-        return getManager(sb.toString(), factory, new FactoryData(loggerContext, topic, syncSend, properties, key));
+        return getManager(sb.toString(), factory, new FactoryData(loggerContext, topic, syncSend, properties, key, retryCount));
     }
 
     private static class FactoryData {
@@ -156,14 +168,16 @@ public class KafkaManager extends AbstractManager {
         private final boolean syncSend;
         private final Property[] properties;
         private final String key;
+        private final String retryCount;
 
         public FactoryData(final LoggerContext loggerContext, final String topic, final boolean syncSend,
-                final Property[] properties, final String key) {
+                final Property[] properties, final String key, final String retryCount) {
             this.loggerContext = loggerContext;
             this.topic = topic;
             this.syncSend = syncSend;
             this.properties = properties;
             this.key = key;
+            this.retryCount = retryCount;
         }
 
     }
@@ -171,7 +185,7 @@ public class KafkaManager extends AbstractManager {
     private static class KafkaManagerFactory implements ManagerFactory<KafkaManager, FactoryData> {
         @Override
         public KafkaManager createManager(String name, FactoryData data) {
-            return new KafkaManager(data.loggerContext, name, data.topic, data.syncSend, data.properties, data.key);
+            return new KafkaManager(data.loggerContext, name, data.topic, data.syncSend, data.properties, data.key, data.retryCount);
         }
     }
 
