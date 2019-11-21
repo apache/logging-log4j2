@@ -49,11 +49,6 @@ public final class KafkaAppender extends AbstractAppender {
      */
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.plugins.util.Builder<KafkaAppender> {
-    	
-    	
-    	
-    	@PluginAttribute
-		private String retryCount;
 
         @PluginAttribute
         private String topic;
@@ -73,7 +68,7 @@ public final class KafkaAppender extends AbstractAppender {
                 return null;
             }
             final KafkaManager kafkaManager = KafkaManager.getManager(getConfiguration().getLoggerContext(),
-                    getName(), topic, syncSend, getPropertyArray(), key, retryCount);
+                    getName(), topic, syncSend, getPropertyArray(), key);
             return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), getPropertyArray(), kafkaManager);
         }
 
