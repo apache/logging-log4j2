@@ -52,8 +52,6 @@ public final class UuidUtil {
     private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
     private static final long INITIAL_UUID_SEQNO = PropertiesUtil.getProperties().getLongProperty(UUID_SEQUENCE, 0);
 
-    private static final long LEAST;
-
     private static final long LOW_MASK = 0xffffffffL;
     private static final long MID_MASK = 0xffff00000000L;
     private static final long HIGH_MASK = 0xfff000000000000L;
@@ -63,10 +61,7 @@ public final class UuidUtil {
     private static final int SHIFT_6 = 48;
     private static final int HUNDRED_NANOS_PER_MILLI = 10000;
 
-    static {
-        byte[] mac = NetUtils.getMacAddress();
-        LEAST = initialize(mac);
-    }
+    private static final long LEAST = initialize(NetUtils.getMacAddress());
 
     /* This class cannot be instantiated */
     private UuidUtil() {

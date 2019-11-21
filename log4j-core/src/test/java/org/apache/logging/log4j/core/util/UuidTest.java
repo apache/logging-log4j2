@@ -65,6 +65,9 @@ public class UuidTest {
 
     @Test
     public void testInitialize() {
+        // Test if no ArrayIndexOutOfBoundsException is thrown when Mac address array is null
+        UuidUtil.initialize(null);
+
         // Test if no ArrayIndexOutOfBoundsException is thrown for different Mac address lengths
         for (int i=0; i < 10; i++) {
             // Create MAC address byte array with i as size
