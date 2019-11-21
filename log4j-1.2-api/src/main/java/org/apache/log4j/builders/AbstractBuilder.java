@@ -16,13 +16,26 @@
  */
 package org.apache.log4j.builders;
 
+import org.apache.log4j.bridge.FilterAdapter;
+import org.apache.log4j.bridge.FilterWrapper;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.Filter;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.status.StatusLogger;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
- * Class Description goes here.
+ * Base class for Log4j 1 component builders.
  */
 public abstract class AbstractBuilder {
 
+    private static Logger LOGGER = StatusLogger.getLogger();
     protected static final String FILE_PARAM = "File";
     protected static final String APPEND_PARAM = "Append";
     protected static final String BUFFERED_IO_PARAM = "BufferedIO";
@@ -54,5 +67,54 @@ public abstract class AbstractBuilder {
 
     public boolean getBooleanProperty(String key) {
         return Boolean.parseBoolean(props.getProperty(prefix + key, Boolean.FALSE.toString()));
+    }
+
+    public int getIntegerProperty(String key, int defaultValue) {
+        String value = props.getProperty(key);
+        try {
+            if (value != null) {
+                return Integer.parseInt(value);
+            }
+        } catch (Exception ex) {
+            LOGGER.warn("Error converting value {} of {} to an integer: {}", value, key, ex.getMessage());
+        }
+        return defaultValue;
+    }
+
+    public Properties getProperties() {
+        return props;
+    }
+
+
+    protected org.apache.logging.log4j.core.Filter buildFilters(String level, Filter filter) {
+        if (level != null && filter != null) {
+            List<org.apache.logging.log4j.core.Filter> filterList = new ArrayList<>();
+            org.apache.logging.log4j.core.Filter thresholdFilter =
+                    ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
+                            org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
+                            org.apache.logging.log4j.core.Filter.Result.DENY);
+            filterList.add(thresholdFilter);
+            Filter f = filter;
+            while (f != null) {
+                if (filter instanceof FilterWrapper) {
+                    filterList.add(((FilterWrapper) f).getFilter());
+                } else {
+                    filterList.add(new FilterAdapter(f));
+                }
+                f = f.next;
+            }
+            return CompositeFilter.createFilters(filterList.toArray(new org.apache.logging.log4j.core.Filter[0]));
+        } else if (level != null) {
+            return ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
+                    org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
+                    org.apache.logging.log4j.core.Filter.Result.DENY);
+        } else if (filter != null) {
+            if (filter instanceof FilterWrapper) {
+                return ((FilterWrapper) filter).getFilter();
+            } else {
+                return new FilterAdapter(filter);
+            }
+        }
+        return null;
     }
 }

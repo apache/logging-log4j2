@@ -65,7 +65,6 @@ public class XmlConfiguration extends Log4j1Configuration {
     private static final String OLD_CONFIGURATION_TAG = "configuration";
     private static final String RENDERER_TAG = "renderer";
     private static final String APPENDER_TAG = "appender";
-    private static final String APPENDER_REF_TAG = "appender-ref";
     public  static final String PARAM_TAG = "param";
     public static final String LAYOUT_TAG = "layout";
     private static final String CATEGORY = "category";
@@ -80,7 +79,7 @@ public class XmlConfiguration extends Log4j1Configuration {
     private static final String PRIORITY_TAG = "priority";
     public static final String FILTER_TAG = "filter";
     private static final String ERROR_HANDLER_TAG = "errorHandler";
-    private static final String REF_ATTR = "ref";
+    public static final String REF_ATTR = "ref";
     private static final String ADDITIVITY_ATTR = "additivity";
     private static final String CONFIG_DEBUG_ATTR = "configDebug";
     private static final String INTERNAL_DEBUG_ATTR = "debug";
@@ -112,6 +111,10 @@ public class XmlConfiguration extends Log4j1Configuration {
         super(loggerContext, source, monitorIntervalSeconds);
         appenderMap = new HashMap<>();
         manager = new BuilderManager();
+    }
+
+    public void addAppenderIfAbsent(Appender appender) {
+        appenderMap.putIfAbsent(appender.getName(), appender);
     }
 
     /**
@@ -328,7 +331,7 @@ public class XmlConfiguration extends Log4j1Configuration {
     /**
      * Used internally to parse appenders by IDREF element.
      */
-    private Appender findAppenderByReference(Element appenderRef) {
+    public Appender findAppenderByReference(Element appenderRef) {
         String appenderName = subst(appenderRef.getAttribute(REF_ATTR));
         Document doc = appenderRef.getOwnerDocument();
         return findAppenderByName(doc, appenderName);
@@ -337,7 +340,7 @@ public class XmlConfiguration extends Log4j1Configuration {
     /**
      * Used internally to parse an appender element.
      */
-    private Appender parseAppender(Element appenderElement) {
+    public Appender parseAppender(Element appenderElement) {
         String className = subst(appenderElement.getAttribute(CLASS_ATTR));
         LOGGER.debug("Class name: [" + className + ']');
         Appender appender = manager.parseAppender(className, appenderElement, this);

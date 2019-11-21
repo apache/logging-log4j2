@@ -23,11 +23,13 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 
 /**
- * Class Description goes here.
+ * Base Configuration for Log4j 1.
  */
 public class Log4j1Configuration extends AbstractConfiguration implements Reconfigurable {
 
     public static final String MONITOR_INTERVAL = "log4j1.monitorInterval";
+    public static final String APPENDER_REF_TAG = "appender-ref";
+    public static final String THRESHOLD_PARAM = "Threshold";
 
     public static final String INHERITED = "inherited";
 
