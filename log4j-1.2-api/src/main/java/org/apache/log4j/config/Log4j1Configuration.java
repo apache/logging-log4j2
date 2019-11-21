@@ -29,6 +29,8 @@ import org.apache.logging.log4j.core.config.Reconfigurable;
 public class Log4j1Configuration extends AbstractConfiguration implements Reconfigurable {
 
     public static final String MONITOR_INTERVAL = "log4j1.monitorInterval";
+    public static final String APPENDER_REF_TAG = "appender-ref";
+    public static final String THRESHOLD_PARAM = "Threshold";
 
     public static final String INHERITED = "inherited";
 

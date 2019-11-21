@@ -45,6 +45,7 @@ import org.w3c.dom.Element;
 import java.util.Properties;
 
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
 import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
 import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
 import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
@@ -80,6 +81,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         Holder<Integer> bufferSize = new Holder<>(8192);
         Holder<String> maxSize = new Holder<>();
         Holder<String> maxBackups = new Holder<>();
+        Holder<String> level = new Holder<>();
         forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
@@ -138,13 +140,22 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                             }
                             break;
                         }
+                        case THRESHOLD_PARAM: {
+                            String value = currentElement.getAttribute(VALUE_ATTR);
+                            if (value == null) {
+                                LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
+                            } else {
+                                level.set(value);
+                            }
+                            break;
+                        }
                     }
                     break;
                 }
             }
         });
         return createAppender(name, config, layout.get(), filter.get(), bufferedIo.get(), immediateFlush.get(),
-                fileName.get(), maxSize.get(), maxBackups.get());
+                fileName.get(), level.get(), maxSize.get(), maxBackups.get());
     }
 
 
@@ -154,19 +165,19 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String fileName = getProperty(FILE_PARAM);
+        String level = getProperty(THRESHOLD_PARAM);
         boolean immediateFlush = false;
         boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM);
         String maxSize = getProperty(MAX_SIZE_PARAM);
         String maxBackups = getProperty(MAX_BACKUP_INDEX);
-        return createAppender(name, configuration, layout, filter, bufferedIo, immediateFlush, fileName, maxSize,
+        return createAppender(name, configuration, layout, filter, bufferedIo, immediateFlush, fileName, level, maxSize,
                 maxBackups);
     }
 
     private Appender createAppender(final String name, final Log4j1Configuration config, final Layout layout,
             final Filter filter, final boolean bufferedIo, boolean immediateFlush, final String fileName,
-            final String maxSize, final String maxBackups) {
+            final String level, final String maxSize, final String maxBackups) {
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
-        org.apache.logging.log4j.core.Filter fileFilter = null;
         if (bufferedIo) {
             immediateFlush = true;
         }
@@ -175,13 +186,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         } else if (layout != null) {
             fileLayout = new LayoutAdapter(layout);
         }
-        if (filter != null) {
-            if (filter instanceof FilterWrapper) {
-                fileFilter = ((FilterWrapper) filter).getFilter();
-            } else {
-                fileFilter = new FilterAdapter(filter);
-            }
-        }
+        org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
         if (fileName == null) {
             LOGGER.warn("Unable to create File Appender, no file name provided");
             return null;

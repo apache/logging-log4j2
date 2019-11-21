@@ -43,6 +43,7 @@ import org.w3c.dom.Element;
 import java.util.Properties;
 
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
 import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
 import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
 import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
@@ -73,6 +74,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         Holder<Layout> layout = new Holder<>();
         Holder<Filter> filter = new Holder<>();
         Holder<String> fileName = new Holder<>();
+        Holder<String> level = new Holder<>();
         Holder<Boolean> immediateFlush = new BooleanHolder();
         Holder<Boolean> append = new BooleanHolder();
         Holder<Boolean> bufferedIo = new BooleanHolder();
@@ -108,7 +110,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                             }
                             break;
                         }
-                        case BUFFER_SIZE_PARAM:
+                        case BUFFER_SIZE_PARAM: {
                             String size = currentElement.getAttribute(VALUE_ATTR);
                             if (size != null) {
                                 bufferSize.set(Integer.parseInt(size));
@@ -116,13 +118,23 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                                 LOGGER.warn("No value provide for bufferSize parameter");
                             }
                             break;
+                        }
+                        case THRESHOLD_PARAM: {
+                            String value = currentElement.getAttribute(VALUE_ATTR);
+                            if (value == null) {
+                                LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
+                            } else {
+                                level.set(value);
+                            }
+                            break;
+                        }
                     }
                     break;
                 }
             }
         });
         return createAppender(name, layout.get(), filter.get(), fileName.get(), append.get(), immediateFlush.get(),
-                bufferedIo.get(), bufferSize.get(), config);
+                level.get(), bufferedIo.get(), bufferSize.get(), config);
     }
 
     @Override
@@ -131,20 +143,20 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String fileName = getProperty(FILE_PARAM);
+        String level = getProperty(THRESHOLD_PARAM);
         boolean append = getBooleanProperty(APPEND_PARAM);
         boolean immediateFlush = false;
         boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM);
         int bufferSize = Integer.parseInt(getProperty(BUFFER_SIZE_PARAM, "8192"));
         return createAppender(name, layout, filter, fileName, append, immediateFlush,
-                bufferedIo, bufferSize, configuration);
+                level, bufferedIo, bufferSize, configuration);
     }
 
     private <T extends Log4j1Configuration> Appender createAppender(final String name, final Layout layout,
             final Filter filter, final String fileName, final boolean append, boolean immediateFlush,
-            final boolean bufferedIo, final int bufferSize, final T configuration) {
+            final String level, final boolean bufferedIo, final int bufferSize, final T configuration) {
 
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
-        org.apache.logging.log4j.core.Filter fileFilter = null;
         if (bufferedIo) {
             immediateFlush = true;
         }
@@ -153,13 +165,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         } else if (layout != null) {
             fileLayout = new LayoutAdapter(layout);
         }
-        if (filter != null) {
-            if (filter instanceof FilterWrapper) {
-                fileFilter = ((FilterWrapper) filter).getFilter();
-            } else {
-                fileFilter = new FilterAdapter(filter);
-            }
-        }
+        org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
         if (fileName == null) {
             LOGGER.warn("Unable to create File Appender, no file name provided");
             return null;
