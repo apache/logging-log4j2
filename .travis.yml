@@ -13,7 +13,7 @@
 language: java
 dist: trusty
 jdk:
-  - oraclejdk11
+  - openjdk11
 
 env:
   global:
@@ -26,13 +26,13 @@ before_cache:
   - rm -rf $HOME/.m2/repository/org/apache/logging/log4j
 
 install:
-  - jdk_switcher use openjdk7
+  - jdk_switcher use openjdk8
   - mvn -t .travis-toolchains.xml install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 script:
-  - jdk_switcher use openjdk7
+  - jdk_switcher use openjdk8
   - mvn -t .travis-toolchains.xml test -B -V
 
 after_success:
-  - jdk_switcher use openjdk7
+  - jdk_switcher use openjdk8
   - mvn -t .travis-toolchains.xml -pl !log4j-bom jacoco:prepare-agent test jacoco:report coveralls:report -B -V
