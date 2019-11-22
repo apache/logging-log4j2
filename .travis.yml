@@ -30,6 +30,7 @@ install:
   - mvn -t .travis-toolchains.xml install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 script:
+  - $TRAVIS_BUILD_DIR/install-jdk.sh --install openjdk11 --target /home/travis/openjdk11
   - jdk_switcher use openjdk8
   - mvn -t .travis-toolchains.xml test -B -V
 
