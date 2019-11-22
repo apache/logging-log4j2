@@ -42,7 +42,6 @@
     <javac.target>1.7</javac.target>
     <uberjar.name>benchmarks</uberjar.name>
     <revapi.skip>true</revapi.skip>
-    <newrelic.agent.version>4.8.0</newrelic.agent.version>
   </properties>
 
   <dependencies>
@@ -56,11 +55,6 @@
       <artifactId>jmh-generator-annprocess</artifactId>
       <version>${jmh.version}</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.newrelic.agent.java</groupId>
-      <artifactId>newrelic-api</artifactId>
-      <version>${newrelic.agent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -168,7 +162,7 @@
         <configuration>
           <toolchains>
             <jdk>
-              <version>9</version>
+              <version>[9, )</version>
             </jdk>
           </toolchains>
         </configuration>
