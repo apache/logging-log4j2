@@ -42,7 +42,7 @@
         be retrieved from the Spring environment if it is available.
       </action>
       <action issue="LOG4J2-2710" dev="rgoers" type="add">
-        Allow Spring Boot application properties to be accessed in the Log4j 2 configuraiton. Add
+        Allow Spring Boot application properties to be accessed in the Log4j 2 configuration. Add
         lower and upper case Lookups.
       </action>
       <action issue="LOG4J2-2709" dev="rgoers" type="update">
