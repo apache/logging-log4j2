@@ -21,10 +21,10 @@ import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.AppenderWrapper;
-import org.apache.log4j.builders.BuilderManager;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.rewrite.RewritePolicy;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
@@ -99,8 +99,6 @@ public class XmlConfiguration extends Log4j1Configuration {
      */
     protected static final String DEFAULT_PREFIX = "log4j";
 
-    private final BuilderManager manager;
-
     // key: appenderName, value: appender
     private Map<String, Appender> appenderMap;
 
@@ -110,7 +108,6 @@ public class XmlConfiguration extends Log4j1Configuration {
             int monitorIntervalSeconds) {
         super(loggerContext, source, monitorIntervalSeconds);
         appenderMap = new HashMap<>();
-        manager = new BuilderManager();
     }
 
     public void addAppenderIfAbsent(Appender appender) {
@@ -411,6 +408,45 @@ public class XmlConfiguration extends Log4j1Configuration {
                 Thread.currentThread().interrupt();
             }
             LOGGER.error("Could not create an Appender. Reported error follows.", oops);
+        }
+        return null;
+    }
+
+
+    public RewritePolicy parseRewritePolicy(Element rewritePolicyElement) {
+
+        String className = subst(rewritePolicyElement.getAttribute(CLASS_ATTR));
+        LOGGER.debug("Class name: [" + className + ']');
+        RewritePolicy policy = manager.parseRewritePolicy(className, rewritePolicyElement, this);
+        if (policy == null) {
+            policy = buildRewritePolicy(className, rewritePolicyElement);
+        }
+        return policy;
+    }
+
+    private RewritePolicy buildRewritePolicy(String className, Element element) {
+        try {
+            RewritePolicy policy = LoaderUtil.newInstanceOf(className);
+            PropertySetter propSetter = new PropertySetter(policy);
+
+            forEachElement(element.getChildNodes(), (currentElement) -> {
+                if (currentElement.getTagName().equalsIgnoreCase(PARAM_TAG)) {
+                    setParameter(currentElement, propSetter);
+                }
+            });
+            propSetter.activate();
+            return policy;
+        } catch (ConsumerException ex) {
+            Throwable t = ex.getCause();
+            if (t instanceof InterruptedException || t instanceof InterruptedIOException) {
+                Thread.currentThread().interrupt();
+            }
+            LOGGER.error("Could not create an RewritePolicy. Reported error follows.", t);
+        } catch (Exception oops) {
+            if (oops instanceof InterruptedException || oops instanceof InterruptedIOException) {
+                Thread.currentThread().interrupt();
+            }
+            LOGGER.error("Could not create an RewritePolicy. Reported error follows.", oops);
         }
         return null;
     }

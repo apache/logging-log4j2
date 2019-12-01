@@ -16,8 +16,6 @@
  */
 package org.apache.log4j.bridge;
 
-import java.lang.reflect.Method;
-
 import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.LocationInfo;
@@ -28,6 +26,10 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Converts a Log4j 2 LogEvent into the components needed by a Log4j 1.x LoggingEvent.
@@ -43,13 +45,47 @@ public class LogEventAdapter extends LoggingEvent {
         this.event = event;
     }
 
+    /**
+     * Returns the time when the application started, in milliseconds
+     * elapsed since 01.01.1970.
+     */
+    public static long getStartTime() {
+        return JVM_START_TIME;
+    }
+
+    /**
+     * Returns the result of {@code ManagementFactory.getRuntimeMXBean().getStartTime()},
+     * or the current system time if JMX is not available.
+     */
+    private static long initStartTime() {
+        // We'd like to call ManagementFactory.getRuntimeMXBean().getStartTime(),
+        // but Google App Engine throws a java.lang.NoClassDefFoundError
+        // "java.lang.management.ManagementFactory is a restricted class".
+        // The reflection is necessary because without it, Google App Engine
+        // will refuse to initialize this class.
+        try {
+            final Class<?> factoryClass = Loader.loadSystemClass("java.lang.management.ManagementFactory");
+            final Method getRuntimeMXBean = factoryClass.getMethod("getRuntimeMXBean");
+            final Object runtimeMXBean = getRuntimeMXBean.invoke(null);
+
+            final Class<?> runtimeMXBeanClass = Loader.loadSystemClass("java.lang.management.RuntimeMXBean");
+            final Method getStartTime = runtimeMXBeanClass.getMethod("getStartTime");
+            return (Long) getStartTime.invoke(runtimeMXBean);
+        } catch (final Throwable t) {
+            StatusLogger.getLogger().error("Unable to call ManagementFactory.getRuntimeMXBean().getStartTime(), "
+                    + "using system time for OnStartupTriggeringPolicy", t);
+            // We have little option but to declare "now" as the beginning of time.
+            return System.currentTimeMillis();
+        }
+    }
+
     public LogEvent getEvent() {
         return this.event;
     }
 
     /**
-     Set the location information for this logging event. The collected
-     information is cached for future use.
+     * Set the location information for this logging event. The collected
+     * information is cached for future use.
      */
     @Override
     public LocationInfo getLocationInformation() {
@@ -58,7 +94,8 @@ public class LogEventAdapter extends LoggingEvent {
 
     /**
      * Return the level of this event. Use this form instead of directly
-     * accessing the <code>level</code> field.  */
+     * accessing the <code>level</code> field.
+     */
     @Override
     public Level getLevel() {
         switch (StandardLevel.getStandardLevel(event.getLevel().intLevel())) {
@@ -70,8 +107,6 @@ public class LogEventAdapter extends LoggingEvent {
                 return Level.INFO;
             case WARN:
                 return Level.WARN;
-            case ERROR:
-                return Level.ERROR;
             case FATAL:
                 return Level.FATAL;
             case OFF:
@@ -104,27 +139,23 @@ public class LogEventAdapter extends LoggingEvent {
      Return the message for this logging event.
     */
     @Override
-    public
-    Object getMessage() {
-        return event.getMessage().getFormattedMessage();
+    public Object getMessage() {
+        return event.getMessage();
     }
 
     /*
      * This method returns the NDC for this event.
      */
     @Override
-    public
-    String getNDC() {
+    public String getNDC() {
         return event.getContextStack().toString();
     }
-
 
     /*
      Returns the the context corresponding to the <code>key</code> parameter.
      */
     @Override
-    public
-    Object getMDC(String key) {
+    public Object getMDC(String key) {
         if (event.getContextData() != null) {
             return event.getContextData().getValue(key);
         } else {
@@ -133,44 +164,34 @@ public class LogEventAdapter extends LoggingEvent {
     }
 
     /**
-     Obtain a copy of this thread's MDC prior to serialization or
-     asynchronous logging.
+     * Obtain a copy of this thread's MDC prior to serialization or
+     * asynchronous logging.
      */
     @Override
-    public
-    void getMDCCopy() {
+    public void getMDCCopy() {
     }
 
     @Override
-    public
-    String getRenderedMessage() {
+    public String getRenderedMessage() {
         return event.getMessage().getFormattedMessage();
     }
 
-    /**
-     Returns the time when the application started, in milliseconds
-     elapsed since 01.01.1970.  */
-    public static long getStartTime() {
-        return JVM_START_TIME;
-    }
-
     @Override
-    public
-    String getThreadName() {
+    public String getThreadName() {
         return event.getThreadName();
     }
 
     /**
-     Returns the throwable information contained within this
-     event. May be <code>null</code> if there is no such information.
-
-     <p>Note that the {@link Throwable} object contained within a
-     {@link ThrowableInformation} does not survive serialization.
-
-     @since 1.1 */
+     * Returns the throwable information contained within this
+     * event. May be <code>null</code> if there is no such information.
+     *
+     * <p>Note that the {@link Throwable} object contained within a
+     * {@link ThrowableInformation} does not survive serialization.
+     *
+     * @since 1.1
+     */
     @Override
-    public
-    ThrowableInformation getThrowableInformation() {
+    public ThrowableInformation getThrowableInformation() {
         if (event.getThrown() != null) {
             return new ThrowableInformation(event.getThrown());
         }
@@ -178,40 +199,28 @@ public class LogEventAdapter extends LoggingEvent {
     }
 
     /**
-     Return this event's throwable's string[] representaion.
+     * Return this event's throwable's string[] representaion.
      */
     @Override
-    public
-    String[] getThrowableStrRep() {
+    public String[] getThrowableStrRep() {
         if (event.getThrown() != null) {
             return Throwables.toStringList(event.getThrown()).toArray(new String[0]);
         }
         return null;
     }
 
-    /**
-     * Returns the result of {@code ManagementFactory.getRuntimeMXBean().getStartTime()},
-     * or the current system time if JMX is not available.
-     */
-    private static long initStartTime() {
-        // We'd like to call ManagementFactory.getRuntimeMXBean().getStartTime(),
-        // but Google App Engine throws a java.lang.NoClassDefFoundError
-        // "java.lang.management.ManagementFactory is a restricted class".
-        // The reflection is necessary because without it, Google App Engine
-        // will refuse to initialize this class.
-        try {
-            final Class<?> factoryClass = Loader.loadSystemClass("java.lang.management.ManagementFactory");
-            final Method getRuntimeMXBean = factoryClass.getMethod("getRuntimeMXBean");
-            final Object runtimeMXBean = getRuntimeMXBean.invoke(null);
+    @Override
+    public String getProperty(final String key) {
+        return event.getContextData().getValue(key);
+    }
 
-            final Class<?> runtimeMXBeanClass = Loader.loadSystemClass("java.lang.management.RuntimeMXBean");
-            final Method getStartTime = runtimeMXBeanClass.getMethod("getStartTime");
-            return (Long) getStartTime.invoke(runtimeMXBean);
-        } catch (final Throwable t) {
-            StatusLogger.getLogger().error("Unable to call ManagementFactory.getRuntimeMXBean().getStartTime(), "
-                + "using system time for OnStartupTriggeringPolicy", t);
-            // We have little option but to declare "now" as the beginning of time.
-            return System.currentTimeMillis();
-        }
+    @Override
+    public Set getPropertyKeySet() {
+        return event.getContextData().toMap().keySet();
+    }
+
+    @Override
+    public Map getProperties() {
+        return event.getContextData().toMap();
     }
 }

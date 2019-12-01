@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.config;
 
+import org.apache.log4j.builders.BuilderManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -35,10 +36,17 @@ public class Log4j1Configuration extends AbstractConfiguration implements Reconf
 
     public static final String NULL = "null";
 
+    protected final BuilderManager manager;
+
     public Log4j1Configuration(final LoggerContext loggerContext, final ConfigurationSource source,
             int monitorIntervalSeconds) {
         super(loggerContext, source);
+        manager = new BuilderManager();
         initializeWatchers(this, source, monitorIntervalSeconds);
+    }
+
+    public BuilderManager getBuilderManager() {
+        return manager;
     }
 
     /**
