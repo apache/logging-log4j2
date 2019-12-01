@@ -110,8 +110,8 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
 
 
     @Override
-    public Appender parseAppender(final String name, final String layoutPrefix, final String filterPrefix,
-            final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
+            final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         String level = getProperty(THRESHOLD_PARAM);

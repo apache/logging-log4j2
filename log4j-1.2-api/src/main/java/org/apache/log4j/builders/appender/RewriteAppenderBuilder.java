@@ -17,17 +17,19 @@
 package org.apache.log4j.builders.appender;
 
 import org.apache.log4j.Appender;
-import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.AppenderWrapper;
+import org.apache.log4j.bridge.RewritePolicyAdapter;
+import org.apache.log4j.bridge.RewritePolicyWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.BooleanHolder;
 import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.rewrite.RewritePolicy;
+import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.AsyncAppender;
+import org.apache.logging.log4j.core.appender.rewrite.RewriteAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -38,29 +40,28 @@ import java.util.List;
 import java.util.Properties;
 
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.REF_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 
 /**
  * Build an Asynch Appender
  */
-@Plugin(name = "org.apache.log4j.AsyncAppender", category = CATEGORY)
-public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
+@Plugin(name = "org.apache.log4j.rewrite.RewriteAppender", category = CATEGORY)
+public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static final String BLOCKING_PARAM = "Blocking";
-    private static final String INCLUDE_LOCATION_PARAM = "IncludeLocation";
+    private static final String REWRITE_POLICY_TAG = "rewritePolicy";
 
-    public AsyncAppenderBuilder() {
+    public RewriteAppenderBuilder() {
     }
 
-    public AsyncAppenderBuilder(String prefix, Properties props) {
+    public RewriteAppenderBuilder(String prefix, Properties props) {
         super(prefix, props);
     }
 
@@ -68,10 +69,9 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
         String name = appenderElement.getAttribute(NAME_ATTR);
         Holder<List<String>> appenderRefs = new Holder<>(new ArrayList<>());
-        Holder<Boolean> blocking = new BooleanHolder();
-        Holder<Boolean> includeLocation = new BooleanHolder();
-        Holder<String> level = new Holder<>("trace");
-        Holder<Integer> bufferSize = new Holder<>(1024);
+        Holder<RewritePolicy> rewritePolicyHolder = new Holder<>();
+        Holder<String> level = new Holder<>();
+        Holder<Filter> filter = new Holder<>();
         forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
             switch (currentElement.getTagName()) {
                 case APPENDER_REF_TAG:
@@ -80,61 +80,44 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
                         appenderRefs.get().add(appender.getName());
                     }
                     break;
+                case REWRITE_POLICY_TAG: {
+                    RewritePolicy policy = config.parseRewritePolicy(currentElement);
+                    if (policy != null) {
+                        rewritePolicyHolder.set(policy);
+                    }
+                    break;
+                }
+                case FILTER_TAG: {
+                    filter.set(config.parseFilters(currentElement));
+                    break;
+                }
                 case PARAM_TAG: {
-                    switch (currentElement.getAttribute(NAME_ATTR)) {
-                        case BUFFER_SIZE_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for BufferSize parameter. Defaulting to 1024.");
-                            } else {
-                                bufferSize.set(Integer.parseInt(value));
-                            }
-                            break;
-                        }
-                        case BLOCKING_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for Blocking parameter. Defaulting to false.");
-                            } else {
-                                blocking.set(Boolean.parseBoolean(value));
-                            }
-                            break;
-                        }
-                        case INCLUDE_LOCATION_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for IncludeLocation parameter. Defaulting to false.");
-                            } else {
-                                includeLocation.set(Boolean.parseBoolean(value));
-                            }
-                            break;
-                        }
-                        case THRESHOLD_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
-                            } else {
-                                level.set(value);
-                            }
-                            break;
+                    if (currentElement.getAttribute(NAME_ATTR).equalsIgnoreCase(THRESHOLD_PARAM)) {
+                        String value = currentElement.getAttribute(VALUE_ATTR);
+                        if (value == null) {
+                            LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
+                        } else {
+                            level.set(value);
                         }
                     }
                     break;
                 }
             }
         });
-        return createAppender(name, level.get(), appenderRefs.get().toArray(new String[0]), blocking.get(),
-                bufferSize.get(), includeLocation.get(), config);
+        return createAppender(name, level.get(), appenderRefs.get().toArray(new String[0]), rewritePolicyHolder.get(),
+                filter.get(), config);
     }
 
     @Override
     public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
             final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
         String appenderRef = getProperty(APPENDER_REF_TAG);
-        boolean blocking = getBooleanProperty(BLOCKING_PARAM);
-        boolean includeLocation = getBooleanProperty(INCLUDE_LOCATION_PARAM);
+        Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
+        String policyPrefix = appenderPrefix + ".rewritePolicy";
+        String className = getProperty(policyPrefix);
+        RewritePolicy policy = configuration.getBuilderManager().parseRewritePolicy(className, policyPrefix,
+                props, configuration);
         String level = getProperty(THRESHOLD_PARAM);
-        int bufferSize = getIntegerProperty(BUFFER_SIZE_PARAM, 1024);
         if (appenderRef == null) {
             LOGGER.warn("No appender references configured for AsyncAppender {}", name);
             return null;
@@ -144,13 +127,11 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
             LOGGER.warn("Cannot locate Appender {}", appenderRef);
             return null;
         }
-        return createAppender(name, level, new String[] {appenderRef}, blocking, bufferSize, includeLocation,
-                configuration);
+        return createAppender(name, level, new String[] {appenderRef}, policy, filter, configuration);
     }
 
     private <T extends Log4j1Configuration> Appender createAppender(String name, String level,
-            String[] appenderRefs, boolean blocking, int bufferSize, boolean includeLocation,
-            T configuration) {
+            String[] appenderRefs, RewritePolicy policy, Filter filter, T configuration) {
         org.apache.logging.log4j.Level logLevel = OptionConverter.convertLevel(level,
                 org.apache.logging.log4j.Level.TRACE);
         AppenderRef[] refs = new AppenderRef[appenderRefs.length];
@@ -158,13 +139,14 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
         for (String appenderRef : appenderRefs) {
             refs[index++] = AppenderRef.createAppenderRef(appenderRef, logLevel, null);
         }
-        return new AppenderWrapper(AsyncAppender.newBuilder()
-                .setName(name)
-                .setAppenderRefs(refs)
-                .setBlocking(blocking)
-                .setBufferSize(bufferSize)
-                .setIncludeLocation(includeLocation)
-                .setConfiguration(configuration)
-                .build());
+        org.apache.logging.log4j.core.Filter rewriteFilter = buildFilters(level, filter);
+        org.apache.logging.log4j.core.appender.rewrite.RewritePolicy rewritePolicy;
+        if (policy instanceof RewritePolicyWrapper) {
+            rewritePolicy = ((RewritePolicyWrapper) policy).getPolicy();
+        } else {
+            rewritePolicy = new RewritePolicyAdapter(policy);
+        }
+        return new AppenderWrapper(RewriteAppender.createAppender(name, "true", refs, configuration,
+                rewritePolicy, rewriteFilter));
     }
 }

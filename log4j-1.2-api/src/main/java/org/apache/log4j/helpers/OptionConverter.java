@@ -358,6 +358,30 @@ public class OptionConverter {
         return org.apache.logging.log4j.Level.ALL;
     }
 
+    public static Level convertLevel(org.apache.logging.log4j.Level level) {
+        if (level == null) {
+            return Level.ERROR;
+        }
+        switch (level.getStandardLevel()) {
+            case FATAL:
+                return Level.FATAL;
+            case WARN:
+                return Level.WARN;
+            case INFO:
+                return Level.INFO;
+            case DEBUG:
+                return Level.DEBUG;
+            case TRACE:
+                return Level.TRACE;
+            case ALL:
+                return Level.ALL;
+            case OFF:
+                return Level.OFF;
+            default:
+                return Level.ERROR;
+        }
+    }
+
     /**
      * Find the value corresponding to <code>key</code> in
      * <code>props</code>. Then perform variable substitution on the

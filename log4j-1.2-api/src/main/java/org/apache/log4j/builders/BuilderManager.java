@@ -21,7 +21,9 @@ import org.apache.log4j.Layout;
 import org.apache.log4j.builders.appender.AppenderBuilder;
 import org.apache.log4j.builders.filter.FilterBuilder;
 import org.apache.log4j.builders.layout.LayoutBuilder;
+import org.apache.log4j.builders.rewrite.RewritePolicyBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
+import org.apache.log4j.rewrite.RewritePolicy;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
@@ -72,7 +74,7 @@ public class BuilderManager {
         if (plugin != null) {
             AppenderBuilder builder = createBuilder(plugin, prefix, props);
             if (builder != null) {
-                return builder.parseAppender(name, layoutPrefix, filterPrefix, props, config);
+                return builder.parseAppender(name, prefix, layoutPrefix, filterPrefix, props, config);
             }
         }
         return null;
@@ -122,6 +124,30 @@ public class BuilderManager {
             LayoutBuilder builder = createBuilder(plugin, layoutPrefix, props);
             if (builder != null) {
                 return builder.parseLayout(config);
+            }
+        }
+        return null;
+    }
+
+    public RewritePolicy parseRewritePolicy(String className, Element rewriteElement, XmlConfiguration config) {
+        PluginType<?> plugin = plugins.get(className.toLowerCase());
+        if (plugin != null) {
+            try {
+                @SuppressWarnings("unchecked")
+                RewritePolicyBuilder builder = (RewritePolicyBuilder) LoaderUtil.newInstanceOf(plugin.getPluginClass());
+                return builder.parseRewritePolicy(rewriteElement, config);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+                LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
+            }
+        }
+        return null;
+    }
+    public RewritePolicy parseRewritePolicy(String className, String policyPrefix, Properties props, PropertiesConfiguration config) {
+        PluginType<?> plugin = plugins.get(className.toLowerCase());
+        if (plugin != null) {
+            RewritePolicyBuilder builder = createBuilder(plugin, policyPrefix, props);
+            if (builder != null) {
+                return builder.parseRewritePolicy(config);
             }
         }
         return null;

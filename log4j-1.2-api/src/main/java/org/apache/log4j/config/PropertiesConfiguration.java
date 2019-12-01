@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
-import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 import java.io.InputStream;
@@ -66,8 +65,6 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
 
     private final Map<String, Appender> registry;
 
-    private final BuilderManager manager;
-
     /**
      * No argument constructor.
      */
@@ -75,7 +72,6 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
             int monitorIntervalSeconds) {
         super(loggerContext, source, monitorIntervalSeconds);
         registry = new HashMap<>();
-        manager = new BuilderManager();
     }
 
     public void doConfigure() {
