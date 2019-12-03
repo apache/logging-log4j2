@@ -43,6 +43,8 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 == English
 
+* [A guide to logging in Java](https://www.marcobehler.com/guides/a-guide-to-logging-in-java)
+(June 23, 2019)
 * [Exploring the Secrets of Java Logs: Log4j 2 Log System](https://www.alibabacloud.com/blog/exploring-the-secrets-of-java-logs-log4j-2-log-system_594821)
 (May 17, 2019)
 * https://howtodoinjava.com/log4j2[Log4j2 Tutorial]

@@ -113,7 +113,13 @@ Version 2.10.0 introduces a the module log4j-appserver to improve integration wi
 Version 2.12.0 introduces support for accessing Docker container information via a Lookup and for accessing
 and updating the Log4j configuration through Spring Cloud Configuration. This support was enhanced in
 version 2.13.0 to add support for accessing Spring Boot properties as well as Kubernetes information.
-See [Logging in the Cloud](manual/cloud.html) for details.
+See link:manual/cloud.html[Logging in the Cloud] for details.
+
+=== Compatible with Log4j 1.x
+
+The Log4j-1.2-api module of Log4j 2 provides compatiblity for applications using the Log4j 1 logging methods. As
+of Log4j 2.13.0 Log4j 2 also provides experimental support for Log4j 1.x configuration files. See
+link:manual/compatiblity.html[Log4j 2 Compatiblity with Log4j 1] for more information.
 
 == Documentation
 
