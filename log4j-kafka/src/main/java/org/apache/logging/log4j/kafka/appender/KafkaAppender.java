@@ -85,6 +85,11 @@ public final class KafkaAppender extends AbstractAppender {
             return asBuilder();
         }
 
+        public B setKey(final String key) {
+            this.key = key;
+            return asBuilder();
+        }
+
         public B setSyncSend(final boolean syncSend) {
             this.syncSend = syncSend;
             return asBuilder();
