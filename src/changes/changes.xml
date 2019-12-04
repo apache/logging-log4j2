@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.13.0" date="2019-MM-DD" description="GA Release 2.13.0">
+      <action issue="LOG4J2-2701" dev="rgoers" type="update">
+        Update Jackson to 2.9.10.
+      </action>
       <action issue="LOG4J2-2727" dev="rogers" type="fix" due-to="Clément Mathieu">
         Add setKey method to Kafka Appender Builder.
       </action>
