@@ -91,6 +91,11 @@ public final class KafkaAppender extends AbstractAppender {
             return asBuilder();
         }
 
+        public B setKey(final String key) {
+            this.key = key;
+            return asBuilder();
+        }
+
     }
 
     @Deprecated
