@@ -1665,6 +1665,23 @@ defaultPattern attribute, which is used when other criteria don't match,
 and a set of PatternMatch elements that identify the various patterns
 that can be selected.
 
+[#LevelPatternSelector]
+==== LevelPatternSelector
+
+The LevelPatternSelector selects patterns based on the log level of
+the log event. If the Level in the log event is equal to (ignoring case)
+ the name specified on the PatternMatch key attribute, then
+the pattern specified on that PatternMatch element will be used.
+
+[source,xml]
+----
+<PatternLayout>
+  <MarkerPatternSelector defaultPattern="[%-5level] %c{1.} %msg%n">
+    <PatternMatch key="FLOW" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
+  </MarkerPatternSelector>
+</PatternLayout>
+----
+
 [#MarkerPatternSelector]
 ==== MarkerPatternSelector
 

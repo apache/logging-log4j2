@@ -160,6 +160,9 @@
       </action>
     </release>
     <release version="2.13.0" date="2019-MM-DD" description="GA Release 2.13.0">
+      <action issue="LOG4J2-2731" dev="rgoers" type="add">
+        Add a Level Patttern Selector.
+      </action>
       <action issue="LOG4J2-2727" dev="rogers" type="fix" due-to="Clément Mathieu">
         Add setKey method to Kafka Appender Builder.
       </action>
