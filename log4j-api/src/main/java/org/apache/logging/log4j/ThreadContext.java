@@ -247,6 +247,23 @@ public final class ThreadContext {
     }
 
     /**
+     * Puts a context value (the <code>value</code> parameter) as identified with the <code>key</code> parameter into
+     * the current thread's context map if the key does not exist.
+     *
+     * <p>
+     * If the current thread does not have a context map it is created as a side effect.
+     * </p>
+     *
+     * @param key The key name.
+     * @param value The key value.
+     */
+    public static void putIfNull(final String key, final String value) {
+        if(!contextMap.contains(key)) {
+            contextMap.put(key, value);
+        }
+    }
+
+    /**
      * Puts all given context map entries into the current thread's
      * context map.
      *
