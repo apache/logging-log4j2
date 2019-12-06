@@ -258,7 +258,7 @@ public final class ThreadContext {
      * @param value The key value.
      */
     public static void putIfNull(final String key, final String value) {
-        if(!contextMap.contains(key)) {
+        if(!contextMap.containsKey(key)) {
             contextMap.put(key, value);
         }
     }
