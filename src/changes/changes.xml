@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.13.0" date="2019-MM-DD" description="GA Release 2.13.0">
+      <action issue="LOG4J2-2635" dev="rgoers" type="fix" due-to="Filipp Gunbin">
+        Wrong java version check in ThreadNameCachingStrategy.
+      </action>
       <action issue="LOG4J2-2674" dev="rgoers" type="fix" due-to="Anton Korenkov">
         Use a less confusing name for the CompositeConfiguration source.
       </action>
