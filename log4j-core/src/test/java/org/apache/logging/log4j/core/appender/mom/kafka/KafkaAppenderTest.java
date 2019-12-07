@@ -59,6 +59,8 @@ public class KafkaAppenderTest {
 
     private static final String LOG_MESSAGE = "Hello, world!";
     private static final String TOPIC_NAME = "kafka-topic";
+    private static final int RETRY_COUNT = 3;
+
 
     private static Log4jLogEvent createLogEvent() {
         return Log4jLogEvent.newBuilder()
@@ -159,6 +161,17 @@ public class KafkaAppenderTest {
         assertArrayEquals(item.key(), keyValue);
         assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
     }
+    
+    @Test
+	public void testAppendWithRetryCount() {
+		final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithRetryCount");
+		final LogEvent logEvent = createLogEvent();
+		appender.append(logEvent);
+
+		final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
+		assertEquals(RETRY_COUNT, history.size());
+	}
+
 
 
     private LogEvent deserializeLogEvent(final byte[] data) throws IOException, ClassNotFoundException {
