@@ -256,6 +256,7 @@ public final class ThreadContext {
      *
      * @param key The key name.
      * @param value The key value.
+     * @since 2.13.0
      */
     public static void putIfNull(final String key, final String value) {
         if(!contextMap.containsKey(key)) {
