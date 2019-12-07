@@ -42,12 +42,16 @@ public class RingBufferLogEventHandler implements
     @Override
     public void onEvent(final RingBufferLogEvent event, final long sequence,
             final boolean endOfBatch) throws Exception {
-        event.execute(endOfBatch);
-        event.clear();
-        // notify the BatchEventProcessor that the sequence has progressed.
-        // Without this callback the sequence would not be progressed
-        // until the batch has completely finished.
-        notifyCallback(sequence);
+        try {
+            event.execute(endOfBatch);
+        }
+        finally {
+            event.clear();
+            // notify the BatchEventProcessor that the sequence has progressed.
+            // Without this callback the sequence would not be progressed
+            // until the batch has completely finished.
+            notifyCallback(sequence);
+        }
     }
 
     private void notifyCallback(long sequence) {
