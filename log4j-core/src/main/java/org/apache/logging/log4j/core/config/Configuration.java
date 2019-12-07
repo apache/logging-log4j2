@@ -132,12 +132,14 @@ public interface Configuration extends Filterable {
 
     ConfigurationScheduler getScheduler();
 
-	/**
-	 * Returns the source of this configuration.
-	 *
-	 * @return the source of this configuration, never {@code null}, but may be
-	 * {@link org.apache.logging.log4j.core.config.ConfigurationSource#NULL_SOURCE}.
-	 */
+    /**
+     * Returns the source of this configuration.
+     *
+     * @return the source of this configuration, never {@code null}, but may be
+     * {@link org.apache.logging.log4j.core.config.ConfigurationSource#NULL_SOURCE}
+     * or
+     * {@link org.apache.logging.log4j.core.config.ConfigurationSource#COMPOSITE_SOURCE}
+     */
     ConfigurationSource getConfigurationSource();
 
     /**
