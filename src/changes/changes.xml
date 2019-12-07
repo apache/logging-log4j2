@@ -209,6 +209,9 @@
       <action issue="LOG4J2-2673" dev="ggregory" type="fix" due-to="Yuichi Sugimura">
         OutputStreamAppender.Builder ignores setFilter().
       </action>
+      <action issue="LOG4J2-2725" dev="ckozak" type="fix" due-to="Dzmitry Anikechanka">
+        Prevent a memory leak when async loggers throw errors.
+      </action>
     </release>
     <release version="2.12.1" date="2019-08-06" description="GA Release 2.12.1">
       <action issue="LOG4J2-1946" dev="rgoers" type="fix" due-to="Igor Perelyotov">
