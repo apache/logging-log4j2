@@ -160,6 +160,13 @@
       </action>
     </release>
     <release version="2.13.0" date="2019-MM-DD" description="GA Release 2.13.0">
+      <action issue="LOG4J2-2058" dev="rgoers" type="fix">
+        Prevent recursive calls to java.util.LogManager.getLogger().
+      </action>
+      <action issue="LOG4J2-2725" dev="ckozak" type="fix" due-to="Dzmitry Anikechanka">
+        LOG4J2-2725 - Added try/finally around event.execute() for RingBufferLogEventHandler to clear memory
+        correctly in case of exception/error
+      </action>
       <action issue="LOG4J2-2635" dev="rgoers" type="fix" due-to="Filipp Gunbin">
         Wrong java version check in ThreadNameCachingStrategy.
       </action>
