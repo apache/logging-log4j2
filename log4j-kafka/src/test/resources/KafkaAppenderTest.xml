@@ -37,12 +37,18 @@
       <Property name="timeout.ms">1000</Property>
       <Property name="bootstrap.servers">localhost:9092</Property>
     </Kafka>
+    <Kafka name="KafkaAppenderNoEventTimestamp" topic="kafka-topic" key="key" eventTimestamp="false">
+      <PatternLayout pattern="%m"/>
+      <Property name="timeout.ms">1000</Property>
+      <Property name="bootstrap.servers">localhost:9092</Property>
+    </Kafka>
   </Appenders>
   <Loggers>
     <Root level="info">
       <AppenderRef ref="KafkaAppenderWithLayout"/>
       <AppenderRef ref="AsyncKafkaAppender"/>
       <AppenderRef ref="KafkaAppenderWithKey"/>
+      <AppenderRef ref="KafkaAppenderNoEventTimestamp"/>
     </Root>
   </Loggers>
 </Configuration>
