@@ -116,6 +116,26 @@ public final class KafkaAppender extends AbstractAppender {
             true, properties, key, retryCount);
         return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager, null);
     }
+    
+    @Deprecated
+    public static KafkaAppender createAppender(
+            final Layout<? extends Serializable> layout,
+            final Filter filter,
+            final String name,
+            final boolean ignoreExceptions,
+            final String topic,
+            final Property[] properties,
+            final Configuration configuration,
+            final String key) {
+
+        if (layout == null) {
+            AbstractLifeCycle.LOGGER.error("No layout provided for KafkaAppender");
+            return null;
+        }
+        final KafkaManager kafkaManager = KafkaManager.getManager(configuration.getLoggerContext(), name, topic,
+            true, properties, key);
+        return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager, null);
+    }
 
     /**
      * Creates a builder for a KafkaAppender.
@@ -131,6 +151,7 @@ public final class KafkaAppender extends AbstractAppender {
     private KafkaAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final boolean ignoreExceptions, final KafkaManager manager, final Property[] properties) {
         super(name, filter, layout, ignoreExceptions, properties);
+//    	super(name, filter, layout, ignoreExceptions, manager.conf);
         this.manager = Objects.requireNonNull(manager, "manager");
     }
 

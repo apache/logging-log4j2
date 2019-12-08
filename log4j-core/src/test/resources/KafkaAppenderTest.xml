@@ -17,7 +17,7 @@
   -->
 <Configuration name="KafkaAppenderTest" status="OFF">
   <Appenders>
-    <Kafka name="KafkaAppenderWithLayout" topic="kafka-topic">
+   <!-- <Kafka name="KafkaAppenderWithLayout" topic="kafka-topic">
       <PatternLayout pattern="[%m]"/>
       <Property name="bootstrap.servers">localhost:9092</Property>
       <Property name="timeout.ms">1000</Property>
@@ -41,8 +41,8 @@
       <PatternLayout pattern="%m"/>
       <Property name="timeout.ms">1000</Property>
       <Property name="bootstrap.servers">localhost:9092</Property>
-    </Kafka>
-	<Kafka name="KafkaAppenderWithRetryCount" topic="kafka-topic" retryCount="3" \>
+    </Kafka>-->
+	<Kafka name="KafkaAppenderWithRetryCount" topic="kafka-topic" retryCount="3" >
       <PatternLayout pattern="%m"/>
       <Property name="timeout.ms">1000</Property>
       <Property name="bootstrap.servers">fakeLoclhost:9092</Property>
@@ -50,10 +50,10 @@
   </Appenders>
   <Loggers>
     <Root level="info">
-      <AppenderRef ref="KafkaAppenderWithLayout"/>
+      <!--<AppenderRef ref="KafkaAppenderWithLayout"/>
       <AppenderRef ref="KafkaAppenderWithSerializedLayout"/>
       <AppenderRef ref="AsyncKafkaAppender"/>
-      <AppenderRef ref="KafkaAppenderWithKey"/>
+      <AppenderRef ref="KafkaAppenderWithKey"/> -->
 	  <AppenderRef ref="KafkaAppenderWithRetryCount"/>
     </Root>
   </Loggers>

@@ -83,6 +83,25 @@ public class KafkaManager extends AbstractManager {
 
 		this.timeoutMillis = Integer.parseInt(config.getProperty("timeout.ms", DEFAULT_TIMEOUT_MILLIS));
 	}
+	
+	public KafkaManager(final LoggerContext loggerContext, final String name, final String topic,
+			final boolean syncSend, final Property[] properties, final String key) {
+		super(loggerContext, name);
+		this.topic = Objects.requireNonNull(topic, "topic");
+		this.syncSend = syncSend;
+		config.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
+		config.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
+		config.setProperty("batch.size", "0");		
+
+		for (final Property property : properties) {
+			config.setProperty(property.getName(), property.getValue());
+		}
+		
+
+		this.key = key;
+
+		this.timeoutMillis = Integer.parseInt(config.getProperty("timeout.ms", DEFAULT_TIMEOUT_MILLIS));
+	}
 
 	@Override
 	public boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
@@ -152,14 +171,24 @@ public class KafkaManager extends AbstractManager {
 	public String getTopic() {
 		return topic;
 	}
-
+	
 	public static KafkaManager getManager(final LoggerContext loggerContext, final String name, final String topic,
 			final boolean syncSend, final Property[] properties, final String key, final String retryCount) {
 		StringBuilder sb = new StringBuilder(name);
 		for (Property prop : properties) {
 			sb.append(" ").append(prop.getName()).append("=").append(prop.getValue());
 		}
+		
 		return getManager(sb.toString(), factory, new FactoryData(loggerContext, topic, syncSend, properties, key, retryCount));
+	}
+
+	public static KafkaManager getManager(final LoggerContext loggerContext, final String name, final String topic,
+			final boolean syncSend, final Property[] properties, final String key) {
+		StringBuilder sb = new StringBuilder(name);
+		for (Property prop : properties) {
+			sb.append(" ").append(prop.getName()).append("=").append(prop.getValue());
+		}
+		return getManager(sb.toString(), factory, new FactoryData(loggerContext, topic, syncSend, properties, key));
 	}
 
 	private static class FactoryData {
@@ -168,7 +197,7 @@ public class KafkaManager extends AbstractManager {
 		private final boolean syncSend;
 		private final Property[] properties;
 		private final String key;
-		private final String retryCount;
+		private String retryCount;
 
 		public FactoryData(final LoggerContext loggerContext, final String topic, final boolean syncSend,
 				final Property[] properties, final String key, final String retryCount) {
@@ -177,7 +206,13 @@ public class KafkaManager extends AbstractManager {
 			this.syncSend = syncSend;
 			this.properties = properties;
 			this.key = key;
-			this.retryCount = retryCount;
+			this.retryCount = retryCount;			
+		}
+		
+		public FactoryData(final LoggerContext loggerContext, final String topic, final boolean syncSend,
+				final Property[] properties, final String key) {
+			
+			this(loggerContext, topic, syncSend, properties, key, null);
 		}
 
 	}
