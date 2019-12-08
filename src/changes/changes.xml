@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2019-xx-xx" description="GA Release 3.0.0">
+      <actino issue="LOG4J2-2688" dev="rgoers" type="add" due-to="Romain Manni-Bucau">
+        Allow web lookup of session attributes.
+      </actino>
       <action issue="LOG4J2-2701" dev="rgoers" type="update">
         Update Jackson from 2.9.x to 2.10.1.
       </action>
