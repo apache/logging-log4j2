@@ -29,7 +29,7 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.13.0" date="2019-MM-DD" description="GA Release 2.13.0">
+    <release version="2.13.0" date="2019-12-08" description="GA Release 2.13.0">
       <action issue="LOG4J2-2058" dev="rgoers" type="fix">
         Prevent recursive calls to java.util.LogManager.getLogger().
       </action>
