@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.logging.Logger;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -41,6 +42,7 @@ public class LogManager extends java.util.logging.LogManager {
 
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
     private final AbstractLoggerAdapter loggerAdapter;
+    private final ThreadLocal<Boolean> recursive = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
     public LogManager() {
         super();
@@ -86,7 +88,16 @@ public class LogManager extends java.util.logging.LogManager {
     @Override
     public Logger getLogger(final String name) {
         LOGGER.trace("Call to LogManager.getLogger({})", name);
-        return loggerAdapter.getLogger(name);
+        if (recursive.get()) {
+            LOGGER.warn("Recursive call to getLogger for {} ignored.", name);
+            return new NoOpLogger(name);
+        }
+        recursive.set(Boolean.TRUE);
+        try {
+            return loggerAdapter.getLogger(name);
+        } finally {
+            recursive.set(Boolean.FALSE);
+        }
     }
 
     @Override
