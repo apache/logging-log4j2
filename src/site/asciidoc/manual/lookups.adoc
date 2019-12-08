@@ -629,6 +629,9 @@ retrieved:
 |session.id
 |Returns the HttpSession id or null if none is started - requires Log4jServletFilter
 
+|session.attr._name_
+|Returns the HttpSession attribute value (using _toString()_ if not null) or null if absent - requires Log4jServletFilter
+
 |contextPath
 |The context path of the web application
 
