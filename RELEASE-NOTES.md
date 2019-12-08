@@ -56,6 +56,10 @@ The Log4j 2.13.0 API, as well as many core components, maintains binary compatib
 Changes in this version include:
 
 ### New Features
+* [LOG4J2-2732](https://issues.apache.org/jira/browse/LOG4J2-2732):
+Add ThreadContext.putIfNotNull method. Thanks to Matt Pavlovich.
+* [LOG4J2-2731](https://issues.apache.org/jira/browse/LOG4J2-2731):
+Add a Level Patttern Selector.
 * [LOG4J2-63](https://issues.apache.org/jira/browse/LOG4J2-63):
 Add experimental support for Log4j 1 configuration files.
 * [LOG4J2-2716](https://issues.apache.org/jira/browse/LOG4J2-2716):
@@ -68,6 +72,19 @@ Allow Spring Boot application properties to be accessed in the Log4j 2 configura
 Add builder pattern to Logger interface.
 
 ### Fixed Bugs
+* [LOG4J2-2058](https://issues.apache.org/jira/browse/LOG4J2-2058):
+Prevent recursive calls to java.util.LogManager.getLogger().
+* [LOG4J2-2725](https://issues.apache.org/jira/browse/LOG4J2-2725):
+LOG4J2-2725 - Added try/finally around event.execute() for RingBufferLogEventHandler to clear memory
+        correctly in case of exception/error Thanks to Dzmitry Anikechanka.
+* [LOG4J2-2635](https://issues.apache.org/jira/browse/LOG4J2-2635):
+Wrong java version check in ThreadNameCachingStrategy. Thanks to Filipp Gunbin.
+* [LOG4J2-2674](https://issues.apache.org/jira/browse/LOG4J2-2674):
+Use a less confusing name for the CompositeConfiguration source. Thanks to Anton Korenkov.
+* [LOG4J2-2727](https://issues.apache.org/jira/browse/LOG4J2-2727):
+Add setKey method to Kafka Appender Builder. Thanks to Clément Mathieu.
+* [LOG4J2-2707](https://issues.apache.org/jira/browse/LOG4J2-2707):
+ArrayIndexOutOfBoundsException could occur with MAC address longer than 6 bytes. Thanks to Christian Frank.
 * [LOG4J2-2712](https://issues.apache.org/jira/browse/LOG4J2-2712):
 The rolling file appenders would fail to compress the file after rollover if the file name matched the
         file pattern.
@@ -81,8 +98,12 @@ Set result of rename action to true if file was copied. Thanks to Guillermo Xavi
 Add automatic module names where missing. Thanks to Stephen Colebourne.
 * [LOG4J2-2673](https://issues.apache.org/jira/browse/LOG4J2-2673):
 OutputStreamAppender.Builder ignores setFilter(). Thanks to Yuichi Sugimura.
+* [LOG4J2-2725](https://issues.apache.org/jira/browse/LOG4J2-2725):
+Prevent a memory leak when async loggers throw errors. Thanks to Dzmitry Anikechanka.
 
 ### Changes
+* [LOG4J2-2701](https://issues.apache.org/jira/browse/LOG4J2-2701):
+Update Jackson to 2.9.10.
 * [LOG4J2-2709](https://issues.apache.org/jira/browse/LOG4J2-2709):
 Allow message portion of GELF layout to be formatted using a PatternLayout. Allow
         ThreadContext attributes to be explicitly included or excluded in the GelfLayout.
