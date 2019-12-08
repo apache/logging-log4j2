@@ -19,6 +19,7 @@ package org.apache.logging.log4j.web;
 // this comment if no longer relevant
 
 import java.security.Principal;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.servlet.ServletContext;
@@ -34,6 +35,7 @@ import org.apache.logging.log4j.util.Strings;
 
 @Plugin(name = "web", category = "Lookup")
 public class WebLookup extends AbstractLookup {
+    private static final String SESSION_ATTR_PREFIX = "session.attr.";
     private static final String REQUEST_ATTR_PREFIX = "request.attr.";
     private static final String REQUEST_HEADER_PREFIX = "header.";
     private static final String REQUEST_COOKIE_PREFIX = "cookie.";
@@ -89,6 +91,18 @@ public class WebLookup extends AbstractLookup {
             final ServletRequest req = getRequest();
             return HttpServletRequest.class.isInstance(req) ?
                     HttpServletRequest.class.cast(req).getParameter(name) : null;
+        }
+
+        if (key.startsWith(SESSION_ATTR_PREFIX)) {
+            final ServletRequest req = getRequest();
+            if (HttpServletRequest.class.isInstance(req)) {
+                final HttpSession session = HttpServletRequest.class.cast(req).getSession(false);
+                if (session != null) {
+                    final String name = key.substring(SESSION_ATTR_PREFIX.length());
+                    return Objects.toString(session.getAttribute(name), null);
+                }
+            }
+            return null;
         }
 
         if ("request.method".equals(key)) {
