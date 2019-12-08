@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2019-xx-xx" description="GA Release 3.0.0">
+      <action issue="LOG4J2-2678" dev="rgoers" type="update" due-to="Federico D'Ambrosio">
+        Add LogEvent timestamp to ProducerRecord in KafkaAppender.
+      </action>
       <actino issue="LOG4J2-2688" dev="rgoers" type="add" due-to="Romain Manni-Bucau">
         Allow web lookup of session attributes.
       </actino>

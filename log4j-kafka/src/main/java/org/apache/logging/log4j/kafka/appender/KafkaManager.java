@@ -51,6 +51,7 @@ public class KafkaManager extends AbstractManager {
     private final String topic;
     private final String key;
     private final boolean syncSend;
+    private final boolean sendTimestamp;
 
     private static final KafkaManagerFactory factory = new KafkaManagerFactory();
 
@@ -58,10 +59,11 @@ public class KafkaManager extends AbstractManager {
      * The Constructor should have been declared private as all Managers are create by the internal factory;
      */
     private KafkaManager(final LoggerContext loggerContext, final String name, final String topic, final boolean syncSend,
-                        final Property[] properties, final String key) {
+                        final boolean sendTimestamp, final Property[] properties, final String key) {
         super(loggerContext, name);
         this.topic = Objects.requireNonNull(topic, "topic");
         this.syncSend = syncSend;
+        this.sendTimestamp = sendTimestamp;
         config.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         config.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         config.setProperty("batch.size", "0");
@@ -106,9 +108,10 @@ public class KafkaManager extends AbstractManager {
         }
     }
 
-    public void send(final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
+    public void send(final byte[] msg, final Long eventTimestamp) throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
             byte[] newKey = null;
+            Long timestamp = null;
 
             if(key != null && key.contains("${")) {
                 newKey = getLoggerContext().getConfiguration().getStrSubstitutor().replace(key).getBytes(StandardCharsets.UTF_8);
@@ -116,7 +119,11 @@ public class KafkaManager extends AbstractManager {
                 newKey = key.getBytes(StandardCharsets.UTF_8);
             }
 
-            final ProducerRecord<byte[], byte[]> newRecord = new ProducerRecord<>(topic, newKey, msg);
+            if(sendTimestamp) {
+                timestamp = eventTimestamp;
+            }
+
+            final ProducerRecord<byte[], byte[]> newRecord = new ProducerRecord<>(topic, null, timestamp, newKey, msg);
             if (syncSend) {
                 final Future<RecordMetadata> response = producer.send(newRecord);
                 response.get(timeoutMillis, TimeUnit.MILLISECONDS);
@@ -142,26 +149,28 @@ public class KafkaManager extends AbstractManager {
     }
 
     public static KafkaManager getManager(final LoggerContext loggerContext, final String name, final String topic,
-            final boolean syncSend, final Property[] properties, final String key) {
+            final boolean syncSend, final boolean sendTimestamp, final Property[] properties, final String key) {
         StringBuilder sb = new StringBuilder(name);
         for (Property prop: properties) {
             sb.append(" ").append(prop.getName()).append("=").append(prop.getValue());
         }
-        return getManager(sb.toString(), factory, new FactoryData(loggerContext, topic, syncSend, properties, key));
+        return getManager(sb.toString(), factory, new FactoryData(loggerContext, topic, syncSend, sendTimestamp, properties, key));
     }
 
     private static class FactoryData {
         private final LoggerContext loggerContext;
         private final String topic;
         private final boolean syncSend;
+        private final boolean sendTimestamp;
         private final Property[] properties;
         private final String key;
 
         public FactoryData(final LoggerContext loggerContext, final String topic, final boolean syncSend,
-                final Property[] properties, final String key) {
+                final boolean sendTimestamp, final Property[] properties, final String key) {
             this.loggerContext = loggerContext;
             this.topic = topic;
             this.syncSend = syncSend;
+            this.sendTimestamp = sendTimestamp;
             this.properties = properties;
             this.key = key;
         }
@@ -171,7 +180,7 @@ public class KafkaManager extends AbstractManager {
     private static class KafkaManagerFactory implements ManagerFactory<KafkaManager, FactoryData> {
         @Override
         public KafkaManager createManager(String name, FactoryData data) {
-            return new KafkaManager(data.loggerContext, name, data.topic, data.syncSend, data.properties, data.key);
+            return new KafkaManager(data.loggerContext, name, data.topic, data.syncSend, data.sendTimestamp, data.properties, data.key);
         }
     }
 
