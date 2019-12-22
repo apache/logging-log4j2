@@ -18,11 +18,14 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -131,5 +134,27 @@ public class DeletingVisitorTest {
 
         final Path child = Paths.get("/a/b/c/relative");
         visitor.visitFile(child, null);
+    }
+
+    @Test
+    public void testNoSuchFileFailure() throws IOException {
+        final DeletingVisitorHelper visitor =
+                new DeletingVisitorHelper(Paths.get("/a/b/c"), Collections.emptyList(), true);
+        assertEquals(
+                FileVisitResult.CONTINUE,
+                visitor.visitFileFailed(Paths.get("doesNotExist"), new NoSuchFileException("doesNotExist")));
+    }
+
+    @Test
+    public void testIOException() {
+        final DeletingVisitorHelper visitor =
+                new DeletingVisitorHelper(Paths.get("/a/b/c"), Collections.emptyList(), true);
+        IOException exception = new IOException();
+        try {
+            visitor.visitFileFailed(Paths.get("doesNotExist"), exception);
+            fail();
+        } catch (IOException e) {
+            assertSame(exception, e);
+        }
     }
 }
