@@ -29,6 +29,11 @@
          - "update" - Change
          - "remove" - Removed
     -->
+    <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
+      <action issue="LOG4J2-2415" dev="ckozak" type="fix" due-to="Andrey Turbanov">
+        Fix lock contention in the classloader using new versions of slf4j without EventData on slf4j logger creation.
+      </action>
+    </release>
     <release version="2.13.0" date="2019-12-11" description="GA Release 2.13.0">
       <action issue="LOG4J2-2058" dev="rgoers" type="fix">
         Prevent recursive calls to java.util.LogManager.getLogger().
