@@ -42,16 +42,16 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
 
     private static final long serialVersionUID = 7869000638091304316L;
     private static final Marker EVENT_MARKER = MarkerFactory.getMarker("EVENT");
+    private static final EventDataConverter CONVERTER = createConverter();
+
     private final boolean eventLogger;
     private transient ExtendedLogger logger;
     private final String name;
-    private transient EventDataConverter converter;
 
     public Log4jLogger(final ExtendedLogger logger, final String name) {
         this.logger = logger;
         this.eventLogger = "EventLogger".equals(name);
         this.name = name;
-        this.converter = createConverter();
     }
 
     @Override
@@ -363,8 +363,8 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
             return;
         }
         final Message msg;
-        if (eventLogger && marker != null && marker.contains(EVENT_MARKER) && converter != null) {
-            msg = converter.convertEvent(message, params, throwable);
+        if (CONVERTER != null && eventLogger && marker != null && marker.contains(EVENT_MARKER)) {
+            msg = CONVERTER.convertEvent(message, params, throwable);
         } else if (params == null) {
             msg = new SimpleMessage(message);
         } else {
@@ -400,7 +400,6 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
         // always perform the default de-serialization first
         aInputStream.defaultReadObject();
         logger = LogManager.getContext().getLogger(name);
-        converter = createConverter();
     }
 
     /**
