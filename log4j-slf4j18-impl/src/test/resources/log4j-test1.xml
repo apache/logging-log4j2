@@ -6,9 +6,6 @@
   <ThresholdFilter level="trace"/>
 
   <Appenders>
-    <List name="EventLogger">
-      <PatternLayout pattern="%C{1.} %m%n"/>
-    </List>
     <Console name="STDOUT">
       <PatternLayout pattern="%C{1.} %m MDC%X%n"/>
     </Console>
@@ -24,10 +21,6 @@
   </Appenders>
 
   <Loggers>
-    <Logger name="EventLogger" level="info" additivity="false">
-      <AppenderRef ref="EventLogger"/>
-    </Logger>>
-
     <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
       <AppenderRef ref="File"/>
     </Logger>
