@@ -45,6 +45,9 @@
       <action issue="LOG4J2-2747" dev="ckozak" type="fix">
         Fix a memory leak using fully asynchronous logging when the queue is full using the 'discard' asynchronous queue full strategy.
       </action>
+      <action issue="LOG4J2-2739" dev="ckozak" type="fix">
+        Fix erroneous log4j-jul recursive logger detection resulting in some no-op JUL loggers and 'WARN Recursive call to getLogger' being reported by the status logger.
+      </action>
     </release>
     <release version="2.13.0" date="2019-12-11" description="GA Release 2.13.0">
       <action issue="LOG4J2-2058" dev="rgoers" type="fix">
