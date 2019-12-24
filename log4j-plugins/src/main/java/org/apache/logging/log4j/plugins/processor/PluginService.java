@@ -31,12 +31,9 @@ public abstract class PluginService {
         PluginEntry[] entries = getEntries();
         for (PluginEntry entry : entries) {
             String category = entry.getCategory().toLowerCase();
-            if (!categories.containsKey(category)) {
-                categories.put(category, new LinkedList<>());
-            }
             try {
                 Class<?> clazz = this.getClass().getClassLoader().loadClass(entry.getClassName());
-                List<PluginType<?>> list = categories.get(category);
+                List<PluginType<?>> list = categories.computeIfAbsent(category, ignored -> new LinkedList<>());
                 PluginType<?> type = new PluginType<>(entry, clazz, entry.getName());
                 list.add(type);
             } catch (ClassNotFoundException ex) {
