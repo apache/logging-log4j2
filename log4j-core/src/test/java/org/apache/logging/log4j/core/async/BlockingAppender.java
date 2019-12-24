@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 @Plugin(name = "Blocking", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class BlockingAppender extends AbstractAppender {
     private static final long serialVersionUID = 1L;
+    // logEvents may be nulled to disable event tracking, this is useful in scenarios testing garbage collection.
     public List<LogEvent> logEvents = new CopyOnWriteArrayList<>();
     public CountDownLatch countDownLatch = null;
 
@@ -56,7 +57,10 @@ public class BlockingAppender extends AbstractAppender {
         event.getMessage().getFormattedMessage();
 
         // may be a reusable event, make a copy, don't keep a reference to the original event
-        logEvents.add(Log4jLogEvent.createMemento(event));
+        List<LogEvent> events = logEvents;
+        if (events != null) {
+            events.add(Log4jLogEvent.createMemento(event));
+        }
 
         if (countDownLatch == null) {
             return;

@@ -178,6 +178,9 @@
       <action issue="LOG4J2-2745" dev="ckozak" type="update">
         Update log4j-slf4j18-impl slf4j version to 1.8.0-beta4 from 1.8.0-alpha2.
       </action>
+      <action issue="LOG4J2-2747" dev="ckozak" type="fix">
+        Fix a memory leak using fully asynchronous logging when the queue is full using the 'discard' asynchronous queue full strategy.
+      </action>
     </release>
     <release version="2.13.0" date="2019-12-11" description="GA Release 2.13.0">
       <action issue="LOG4J2-2058" dev="rgoers" type="fix">

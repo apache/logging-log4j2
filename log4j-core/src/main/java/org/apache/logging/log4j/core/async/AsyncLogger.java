@@ -238,6 +238,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             AsyncQueueFullMessageUtil.logWarningToStatusLogger();
             logMessageInCurrentThread(translator.fqcn, translator.level, translator.marker, translator.message,
                     translator.thrown);
+            translator.clear();
             return;
         }
         final EventRoute eventRoute = loggerDisruptor.getEventRoute(translator.level);
@@ -248,8 +249,10 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             case SYNCHRONOUS:
                 logMessageInCurrentThread(translator.fqcn, translator.level, translator.marker, translator.message,
                         translator.thrown);
+                translator.clear();
                 break;
             case DISCARD:
+                translator.clear();
                 break;
             default:
                 throw new IllegalStateException("Unknown EventRoute " + eventRoute);

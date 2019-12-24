@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 public final class GarbageCollectionHelper implements Closeable, Runnable {
     private static final OutputStream sink = ByteStreams.nullOutputStream();
-    public final AtomicBoolean running = new AtomicBoolean();
+    private final AtomicBoolean running = new AtomicBoolean();
     private final CountDownLatch latch = new CountDownLatch(1);
     private final Thread gcThread = new Thread(new Runnable() {
         @Override
