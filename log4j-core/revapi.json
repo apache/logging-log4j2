@@ -107,6 +107,18 @@
         "new": "method <B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>> B org.apache.logging.log4j.core.appender.WriterAppender::newBuilder()",
         "typeParameter": "B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
         "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter java.nio.file.FileVisitResult java.nio.file.SimpleFileVisitor<T>::visitFileFailed(===T===, java.io.IOException) throws java.io.IOException @ org.apache.logging.log4j.core.appender.rolling.action.DeletingVisitor",
+        "new": "parameter java.nio.file.FileVisitResult org.apache.logging.log4j.core.appender.rolling.action.DeletingVisitor::visitFileFailed(===java.nio.file.Path===, java.io.IOException) throws java.io.IOException",
+        "justification": "Class overrides a type with generics, in practice there is no change."
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter java.nio.file.FileVisitResult java.nio.file.SimpleFileVisitor<T>::visitFileFailed(===T===, java.io.IOException) throws java.io.IOException @ org.apache.logging.log4j.core.appender.rolling.action.SortingVisitor",
+        "new": "parameter java.nio.file.FileVisitResult org.apache.logging.log4j.core.appender.rolling.action.SortingVisitor::visitFileFailed(===java.nio.file.Path===, java.io.IOException) throws java.io.IOException",
+        "justification": "Class overrides a type with generics, in practice there is no change."
       }
     ]
   }
