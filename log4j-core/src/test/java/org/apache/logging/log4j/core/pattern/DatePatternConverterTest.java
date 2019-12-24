@@ -163,6 +163,22 @@ public class DatePatternConverterTest {
     }
 
     @Test
+    public void testFormatDateStringBuilderIso8601WithPeriodMicroseconds() {
+        final String[] pattern = {FixedDateFormat.FixedFormat.ISO8601_PERIOD_MICROS.name(), "Z"};
+        final DatePatternConverter converter = DatePatternConverter.newInstance(pattern);
+        final StringBuilder sb = new StringBuilder();
+        MutableInstant instant = new MutableInstant();
+        instant.initFromEpochMilli(
+                1577225134559L,
+                // One microsecond
+                1000);
+        converter.format(instant, sb);
+
+        final String expected = "2019-12-24T22:05:34.559001";
+        assertEquals(expected, sb.toString());
+    }
+
+    @Test
     public void testFormatDateStringBuilderOriginalPattern() {
         final String[] pattern = {"yyyy/MM/dd HH-mm-ss.SSS"};
         final DatePatternConverter converter = DatePatternConverter.newInstance(pattern);
