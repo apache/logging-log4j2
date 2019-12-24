@@ -172,6 +172,12 @@
       <action issue="LOG4J2-2677" dev="ckozak" type="fix">
         Rollover handles parallel file deletion gracefully.
       </action>
+      <action issue="LOG4J2-2744" dev="ckozak" type="fix">
+        Remove unnecessary EventLogger references from log4j-slf4j18-impl due to removal from slf4j.
+      </action>
+      <action issue="LOG4J2-2745" dev="ckozak" type="update">
+        Update log4j-slf4j18-impl slf4j version to 1.8.0-beta4 from 1.8.0-alpha2.
+      </action>
     </release>
     <release version="2.13.0" date="2019-12-11" description="GA Release 2.13.0">
       <action issue="LOG4J2-2058" dev="rgoers" type="fix">
