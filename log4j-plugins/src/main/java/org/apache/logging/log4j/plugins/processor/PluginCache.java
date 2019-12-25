@@ -25,15 +25,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  *
  */
 public class PluginCache {
     private final Map<String, Map<String, PluginEntry>> categories =
-        new LinkedHashMap<>();
+        new TreeMap<>();
 
     /**
      * Returns all categories of plugins in this cache.
@@ -54,7 +54,7 @@ public class PluginCache {
     public Map<String, PluginEntry> getCategory(final String category) {
         final String key = category.toLowerCase();
         if (!categories.containsKey(key)) {
-            categories.put(key, new LinkedHashMap<String, PluginEntry>());
+            categories.put(key, new TreeMap<String, PluginEntry>());
         }
         return categories.get(key);
     }
