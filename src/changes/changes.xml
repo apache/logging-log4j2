@@ -51,6 +51,9 @@
       <action issue="LOG4J2-2748" dev="ckozak" type="add">
         Implement ISO8601_PERIOD_MICROS fixed date format matching ISO8601_PERIOD with support for microsecond precision.
       </action>
+      <action issue="LOG4J-2735" dev="ckozak" type="fix" due-to="Andy Wilkinson">
+        PluginCache output is reproducible allowing the annotation processor to produce deterministic results.
+      </action>
     </release>
     <release version="2.13.0" date="2019-12-11" description="GA Release 2.13.0">
       <action issue="LOG4J2-2058" dev="rgoers" type="fix">
