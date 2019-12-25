@@ -15,16 +15,15 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.config.plugins.processor;
+package org.apache.logging.log4j.plugins.processor;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +46,7 @@ public class PluginCacheTest {
         assertEquals(cacheB.getAllCategories().size(), 2);
         assertEquals(cacheB.getAllCategories().get("one").size(), 3);
         assertEquals(cacheB.getAllCategories().get("two").size(), 3);
-        assertArrayEquals(cacheData(cacheA), cacheData(cacheB));
+        assertEquals(Objects.toString(cacheA.getAllCategories()), Objects.toString(cacheB.getAllCategories()));
     }
 
     private void createCategory(PluginCache cache, String categoryName, List<String> entryNames) {
@@ -60,12 +59,6 @@ public class PluginCacheTest {
             entry.setCategory(categoryName);
             category.put(entryName, entry);
         }
-    }
-
-    private byte[] cacheData(PluginCache cache) throws IOException {
-        ByteArrayOutputStream outputB = new ByteArrayOutputStream();
-        cache.writeCache(outputB);
-        return outputB.toByteArray();
     }
 
 }
