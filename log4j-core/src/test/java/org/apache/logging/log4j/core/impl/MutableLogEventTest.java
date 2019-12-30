@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
+import org.apache.logging.log4j.message.ReusableSimpleMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -189,6 +190,10 @@ public class MutableLogEventTest {
     @Test
     public void testClear() {
         final MutableLogEvent mutable = new MutableLogEvent();
+        // initialize the event with an empty message
+        ReusableSimpleMessage simpleMessage = new ReusableSimpleMessage();
+        simpleMessage.set("");
+        mutable.setMessage(simpleMessage);
         assertEquals("context data", 0, mutable.getContextData().size());
         assertNull("context stack", mutable.getContextStack());
         assertFalse("end of batch", mutable.isEndOfBatch());
