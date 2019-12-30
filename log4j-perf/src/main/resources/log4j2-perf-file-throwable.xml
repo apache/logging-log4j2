@@ -33,9 +33,9 @@
         <Logger name="RAFExtendedException" level="debug" additivity="false">
             <AppenderRef ref="RAFExtendedException"/>
         </Logger>
-        <Logger name="async.RAFExtendedException" level="debug" additivity="false">
+        <AsyncLogger name="async.RAFExtendedException" level="debug" additivity="false">
             <AppenderRef ref="RAFExtendedException"/>
-        </Logger>
+        </AsyncLogger>
         <Logger name="RAFSimpleException" level="debug" additivity="false">
             <AppenderRef ref="RAFSimpleException"/>
         </Logger>
