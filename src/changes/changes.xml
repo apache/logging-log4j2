@@ -54,6 +54,9 @@
       <action issue="LOG4J2-2735" dev="ckozak" type="fix" due-to="Andy Wilkinson">
         PluginCache output is reproducible allowing the annotation processor to produce deterministic results.
       </action>
+      <action issue="LOG4J2-2751" dev="ckozak" type="fix">
+        Fix StackLocator.getCallerClass performance in cases where Reflection.getCallerClass is not accessible.
+      </action>
     </release>
     <release version="2.13.0" date="2019-12-11" description="GA Release 2.13.0">
       <action issue="LOG4J2-2058" dev="rgoers" type="fix">
