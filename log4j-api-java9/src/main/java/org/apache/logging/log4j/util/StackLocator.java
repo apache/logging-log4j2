@@ -60,7 +60,6 @@ public class StackLocator {
     }
 
     public Class<?> getCallerClass(final int depth) {
-        ;
         return walker.walk(s -> s.skip(depth).findFirst()).map(StackWalker.StackFrame::getDeclaringClass).orElse(null);
     }
 
