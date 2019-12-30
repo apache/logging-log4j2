@@ -69,7 +69,8 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     transient boolean reserved = false;
 
     public MutableLogEvent() {
-        this(new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE), new Object[10]);
+        // messageText and the parameter array are lazily initialized
+        this(null, null);
     }
 
     public MutableLogEvent(final StringBuilder msgText, final Object[] replacementParameters) {
@@ -148,9 +149,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
 
         if (parameters != null) {
-            for (int i = 0; i < parameters.length; i++) {
-                parameters[i] = null;
-            }
+            Arrays.fill(parameters, null);
         }
 
         // primitive fields that cannot be cleared:
@@ -214,10 +213,8 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
             final ReusableMessage reusable = (ReusableMessage) msg;
             reusable.formatTo(getMessageTextForWriting());
             this.messageFormat = msg.getFormat();
-            if (parameters != null) {
-                parameters = reusable.swapParameters(parameters);
-                parameterCount = reusable.getParameterCount();
-            }
+            parameters = reusable.swapParameters(parameters == null ? new Object[10] : parameters);
+            parameterCount = reusable.getParameterCount();
         } else {
             this.message = InternalAsyncUtil.makeMessageImmutable(msg);
         }
@@ -225,8 +222,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
 
     private StringBuilder getMessageTextForWriting() {
         if (messageText == null) {
-            // Should never happen:
-            // only happens if user logs a custom reused message when Constants.ENABLE_THREADLOCALS is false
+            // Happens the first time messageText is requested
             messageText = new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE);
         }
         messageText.setLength(0);
