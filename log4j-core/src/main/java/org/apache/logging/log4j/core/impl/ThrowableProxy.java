@@ -27,7 +27,6 @@ import java.util.Stack;
 
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
-import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -105,7 +104,7 @@ public class ThrowableProxy implements Serializable {
         this.message = throwable.getMessage();
         this.localizedMessage = throwable.getLocalizedMessage();
         final Map<String, ThrowableProxyHelper.CacheEntry> map = new HashMap<>();
-        final Stack<Class<?>> stack = StackLocatorUtil.getCurrentStackTrace();
+        final Stack<Class<?>> stack = ThrowableProxyHelper.getCurrentStackTrace();
         this.extendedStackTrace = ThrowableProxyHelper.toExtendedStackTrace(this, stack, map, null, throwable.getStackTrace());
         final Throwable throwableCause = throwable.getCause();
         final Set<Throwable> causeVisited = new HashSet<>(1);

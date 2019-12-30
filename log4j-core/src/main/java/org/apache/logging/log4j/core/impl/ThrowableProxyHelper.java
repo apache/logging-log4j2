@@ -16,13 +16,16 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,10 +38,19 @@ import java.util.Stack;
  */
 class ThrowableProxyHelper {
 
+    private static final ExtendedClassInfo UNKNOWN_EXTENDED_CLASS_INFO = new ExtendedClassInfo(false, "?", "?");
     static final ThrowableProxy[] EMPTY_THROWABLE_PROXY_ARRAY = new ThrowableProxy[0];
 
     private ThrowableProxyHelper() {
         // Utility Class
+    }
+
+    /** Delegates to StackLocatorUtil unless class loading is disabled, in which case an empty stack is used. */
+    static Stack<Class<?>> getCurrentStackTrace() {
+        if (Constants.ENABLE_EXTENDED_THROWABLE_CLASS_LOADING) {
+            return StackLocatorUtil.getCurrentStackTrace();
+        }
+        return EmptyStack.INSTANCE;
     }
 
     /**
@@ -91,6 +103,10 @@ class ThrowableProxyHelper {
         ClassLoader lastLoader = null;
         for (int i = stackLength - 1; i >= 0; --i) {
             final StackTraceElement stackTraceElement = stackTrace[i];
+            if (!Constants.ENABLE_EXTENDED_THROWABLE_CLASS_LOADING) {
+                extStackTrace[i] = new ExtendedStackTraceElement(stackTraceElement, UNKNOWN_EXTENDED_CLASS_INFO);
+                continue;
+            }
             final String className = stackTraceElement.getClassName();
             // The stack returned from getCurrentStack may be missing entries for java.lang.reflect.Method.invoke()
             // and its implementation. The Throwable might also contain stack entries that are no longer
@@ -202,6 +218,9 @@ class ThrowableProxyHelper {
      * @return The Class object for the Class or null if it could not be located.
      */
     private static Class<?> loadClass(final ClassLoader lastLoader, final String className) {
+        if (!Constants.ENABLE_EXTENDED_THROWABLE_CLASS_LOADING) {
+            return null;
+        }
         // XXX: this is overly complicated
         Class<?> clazz;
         if (lastLoader != null) {
@@ -229,6 +248,35 @@ class ThrowableProxyHelper {
             return Loader.loadClass(className, ThrowableProxyHelper.class.getClassLoader());
         } catch (final ClassNotFoundException | NoClassDefFoundError | SecurityException e) {
             return null;
+        }
+    }
+
+    private static final class EmptyStack extends Stack<Class<?>> {
+        private static final EmptyStack INSTANCE = new EmptyStack();
+
+        @Override
+        public boolean empty() {
+            return true;
+        }
+
+        @Override
+        public Class<?> push(Class<?> item) {
+            throw new UnsupportedOperationException("EmptyStack is immutable");
+        }
+
+        @Override
+        public Class<?> pop() {
+            throw new EmptyStackException();
+        }
+
+        @Override
+        public Class<?> peek() {
+            throw new EmptyStackException();
+        }
+
+        @Override
+        public int size() {
+            return 0;
         }
     }
 }
