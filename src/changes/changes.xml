@@ -196,6 +196,9 @@
       <action issue="LOG4J2-2752" dev="ckozak" type="fix">
         MutableLogEvent and RingBufferLogEvent avoid StringBuffer and parameter array allocation unless reusable messages are used.
       </action>
+      <action issue="LOG4J2-2754" dev="ckozak" type="fix">
+        LoaderUtil.getClassLoaders may discover additional loaders and no longer erroneously returns a result with a null element in some environments.
+      </action>
     </release>
     <release version="2.13.0" date="2019-12-11" description="GA Release 2.13.0">
       <action issue="LOG4J2-2058" dev="rgoers" type="fix">

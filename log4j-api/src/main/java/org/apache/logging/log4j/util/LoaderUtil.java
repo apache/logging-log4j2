@@ -21,11 +21,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -149,30 +147,31 @@ public final class LoaderUtil {
     }
 
     public static ClassLoader[] getClassLoaders() {
-        List<ClassLoader> classLoaders = new ArrayList<>();
-        ClassLoader tcl = getThreadContextClassLoader();
-        classLoaders.add(tcl);
-        if (!isForceTccl()) {
-            // Some implementations may use null to represent the bootstrap class loader.
-            ClassLoader current = LoaderUtil.class.getClassLoader();
-            if (current != null && current != tcl) {
-                classLoaders.add(current);
-                ClassLoader parent = current.getParent();
-                while (parent != null && !classLoaders.contains(parent)) {
-                    classLoaders.add(parent);
-                }
-            }
-            ClassLoader parent = tcl == null ? null : tcl.getParent();
-            while (parent != null && !classLoaders.contains(parent)) {
-                classLoaders.add(parent);
-                parent = parent.getParent();
-            }
-            ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-            if (!classLoaders.contains(systemClassLoader)) {
+        final Collection<ClassLoader> classLoaders = new LinkedHashSet<>();
+        final ClassLoader tcl = getThreadContextClassLoader();
+        if (tcl != null) {
+            classLoaders.add(tcl);
+        }
+	if (!isForceTccl()) {
+            accumulateClassLoaders(LoaderUtil.class.getClassLoader(), classLoaders);
+            accumulateClassLoaders(tcl == null ? null : tcl.getParent(), classLoaders);
+            final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+            if (systemClassLoader != null) {
                 classLoaders.add(systemClassLoader);
             }
         }
         return classLoaders.toArray(new ClassLoader[classLoaders.size()]);
+    }
+
+    /**
+     * Adds the provided loader to the loaders collection, and traverses up the tree until either a null
+     * value or a classloader which has already been added is encountered.
+     */
+    private static void accumulateClassLoaders(ClassLoader loader, Collection<ClassLoader> loaders) {
+        // Some implementations may use null to represent the bootstrap class loader.
+        if (loader != null && loaders.add(loader)) {
+            accumulateClassLoaders(loader.getParent(), loaders);
+        }
     }
 
     /**
@@ -208,10 +207,13 @@ public final class LoaderUtil {
             return Class.forName(className);
         }
         try {
-            return getThreadContextClassLoader().loadClass(className);
+            ClassLoader tccl = getThreadContextClassLoader();
+            if (tccl != null) {
+                return tccl.loadClass(className);
+            }
         } catch (final Throwable ignored) {
-            return Class.forName(className);
         }
+        return Class.forName(className);
     }
 
     /**
