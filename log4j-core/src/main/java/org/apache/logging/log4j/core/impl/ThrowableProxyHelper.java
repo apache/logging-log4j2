@@ -23,6 +23,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,8 @@ import java.util.Stack;
  */
 class ThrowableProxyHelper {
 
+    private static final ExtendedClassInfo UNKNOWN_EXTENDED_CLASS_INFO = new ExtendedClassInfo(false, "?", "?");
+    private static final CacheEntry UNKNOWN_CACHE_ENTRY = new CacheEntry(UNKNOWN_EXTENDED_CLASS_INFO, null);
     static final ThrowableProxy[] EMPTY_THROWABLE_PROXY_ARRAY = new ThrowableProxy[0];
 
     private ThrowableProxyHelper() {
@@ -69,7 +72,8 @@ class ThrowableProxyHelper {
      */
     static ExtendedStackTraceElement[] toExtendedStackTrace(
             final ThrowableProxy src,
-            final Stack<Class<?>> stack, final Map<String, CacheEntry> map,
+            final Stack<Class<?>> stack,
+            final Map<String, CacheEntry> map,
             final StackTraceElement[] rootTrace,
             final StackTraceElement[] stackTrace) {
         int stackLength;
@@ -87,7 +91,6 @@ class ThrowableProxyHelper {
             stackLength = stackTrace.length;
         }
         final ExtendedStackTraceElement[] extStackTrace = new ExtendedStackTraceElement[stackLength];
-        Class<?> clazz = stack.isEmpty() ? null : stack.peek();
         ClassLoader lastLoader = null;
         for (int i = stackLength - 1; i >= 0; --i) {
             final StackTraceElement stackTraceElement = stackTrace[i];
@@ -96,32 +99,44 @@ class ThrowableProxyHelper {
             // and its implementation. The Throwable might also contain stack entries that are no longer
             // present as those methods have returned.
             ExtendedClassInfo extClassInfo;
-            if (clazz != null && className.equals(clazz.getName())) {
-                final CacheEntry entry = toCacheEntry(clazz, true);
-                extClassInfo = entry.element;
-                lastLoader = entry.loader;
-                stack.pop();
-                clazz = stack.isEmpty() ? null : stack.peek();
+            boolean avoidClassLoading = avoidClassLoading(className);
+            final CacheEntry cacheEntry = avoidClassLoading ? null : map.get(className);
+            if (cacheEntry != null) {
+                extClassInfo = cacheEntry.element;
+                if (cacheEntry.loader != null) {
+                    lastLoader = cacheEntry.loader;
+                }
+            } else if (avoidClassLoading) {
+                extClassInfo = UNKNOWN_EXTENDED_CLASS_INFO;
             } else {
-                final CacheEntry cacheEntry = map.get(className);
-                if (cacheEntry != null) {
-                    final CacheEntry entry = cacheEntry;
-                    extClassInfo = entry.element;
-                    if (entry.loader != null) {
-                        lastLoader = entry.loader;
-                    }
-                } else {
-                    final CacheEntry entry = toCacheEntry(ThrowableProxyHelper.loadClass(lastLoader, className), false);
-                    extClassInfo = entry.element;
-                    map.put(className, entry);
-                    if (entry.loader != null) {
-                        lastLoader = entry.loader;
-                    }
+                final CacheEntry entry = toCacheEntry(loadClass(lastLoader, className), false);
+                extClassInfo = entry.element;
+                map.put(className, entry);
+                if (entry.loader != null) {
+                    lastLoader = entry.loader;
                 }
             }
             extStackTrace[i] = new ExtendedStackTraceElement(stackTraceElement, extClassInfo);
         }
         return extStackTrace;
+    }
+
+    /**
+     * Returns whether or not class loading should be attempted for a given name.
+     *
+     * Proxies do not provide location information, though they can be loaded it isn't relevant for
+     * ThrowableProxy.
+     * Lambda classes cannot be loaded, nor can generated method accessors.
+     * Class loading is expensive, but failure to load classes is significantly more expensive.
+     */
+    private static boolean avoidClassLoading(String className) {
+        // Lambdas and proxies do not provide location information
+        // attempt to avoid anything that does not provide information, class loader
+        // misses are expensive and incur synchronization.
+        return className.contains("$Lambda$")
+                || className.contains(".$Proxy")
+                // covers both jdk.internal and sun class names depending on the JVM version
+                || className.contains("reflect.GeneratedMethodAccessor");
     }
 
     static ThrowableProxy[] toSuppressedProxies(final Throwable thrown, Set<Throwable> suppressedVisited) {
@@ -145,6 +160,17 @@ class ThrowableProxyHelper {
             StatusLogger.getLogger().error(e);
         }
         return null;
+    }
+
+    static Map<String, CacheEntry> createCacheFromStack(Stack<Class<?>> callerStack) {
+        Map<String, CacheEntry> cache = new HashMap<>();
+        for (Class<?> callerClass : callerStack) {
+            String className = callerClass.getName();
+            if (!avoidClassLoading(className) && !cache.containsKey(className)) {
+                cache.put(className, toCacheEntry(callerClass, true));
+            }
+        }
+        return cache;
     }
 
     /**
@@ -189,8 +215,9 @@ class ThrowableProxyHelper {
             } catch (final SecurityException e) {
                 lastLoader = null;
             }
+            return new CacheEntry(new ExtendedClassInfo(exact, location, version), lastLoader);
         }
-        return new CacheEntry(new ExtendedClassInfo(exact, location, version), lastLoader);
+        return UNKNOWN_CACHE_ENTRY;
     }
 
 
