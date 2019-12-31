@@ -19,12 +19,16 @@ package org.apache.logging.log4j.perf.jmh;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.async.AsyncLoggerContext;
+import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
+import org.apache.logging.log4j.core.util.Constants;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -48,15 +52,28 @@ import java.util.logging.Level;
  */
 // HOW TO RUN THIS TEST
 // java -jar target/benchmarks.jar ".*FileAppenderThrowableBenchmark.*" -f 1 -i 10 -wi 20 -bm sample -tu ns
-@State(Scope.Thread)
+@State(Scope.Benchmark)
 @Threads(1)
 @Fork(1)
 @Warmup(iterations = 3, time = 3)
 @Measurement(iterations = 3, time = 3)
 public class FileAppenderThrowableBenchmark {
+    static {
+        // log4j2
+        System.setProperty("log4j2.is.webapp", "false");
+        System.setProperty("log4j.configurationFile", "log4j2-perf-file-throwable.xml");
+        // log4j 1.2
+        System.setProperty("log4j.configuration", "log4j12-perf-file-throwable.xml");
+        // logback
+        System.setProperty("logback.configurationFile", "logback-perf-file-throwable.xml");
+    }
 
     private static final Throwable THROWABLE = getSimpleThrowable();
     private static final Throwable COMPLEX_THROWABLE = getComplexThrowable();
+
+    @SuppressWarnings("unused") // Set by JMH
+    @Param
+    private LoggingConfiguration loggingConfiguration;
 
     private static Throwable getSimpleThrowable() {
         return new IllegalStateException("Test Throwable");
@@ -136,43 +153,16 @@ public class FileAppenderThrowableBenchmark {
         throw new IllegalStateException("Failed to create throwable");
     }
 
-    private FileHandler julFileHandler;
-    Logger log4j2ExtendedThrowable;
-    Logger log4j2ExtendedThrowableAsync;
-    Logger log4j2SimpleThrowable;
-    Logger log4j2SimpleThrowableAsync;
-    org.slf4j.Logger slf4jLogger;
-    org.apache.log4j.Logger log4j1Logger;
-    java.util.logging.Logger julLogger;
 
     @Setup
     public void setUp() throws Exception {
         deleteLogFiles();
-        System.setProperty("log4j2.is.webapp", "false");
-        System.setProperty("log4j.configurationFile", "log4j2-perf-file-throwable.xml");
-        System.setProperty("log4j.configuration", "log4j12-perf-file-throwable.xml");
-        System.setProperty("logback.configurationFile", "logback-perf-file-throwable.xml");
-
-        log4j2ExtendedThrowable = LogManager.getLogger("RAFExtendedException");
-        log4j2ExtendedThrowableAsync = LogManager.getLogger("async.RAFExtendedException");
-        log4j2SimpleThrowable = LogManager.getLogger("RAFSimpleException");
-        log4j2SimpleThrowableAsync = LogManager.getLogger("async.RAFSimpleException");
-        slf4jLogger = LoggerFactory.getLogger(getClass());
-        log4j1Logger = org.apache.log4j.Logger.getLogger(getClass());
-
-        julFileHandler = new FileHandler("target/testJulLog.log");
-        julLogger = java.util.logging.Logger.getLogger(getClass().getName());
-        julLogger.setUseParentHandlers(false);
-        julLogger.addHandler(julFileHandler);
-        julLogger.setLevel(Level.ALL);
+        loggingConfiguration.setUp();
     }
 
     @TearDown
-    public void tearDown() {
-        System.clearProperty("log4j2.is.webapp");
-        System.clearProperty("log4j.configurationFile");
-        System.clearProperty("log4j.configuration");
-        System.clearProperty("logback.configurationFile");
+    public void tearDown() throws Exception{
+        loggingConfiguration.tearDown();
         deleteLogFiles();
     }
 
@@ -189,81 +179,198 @@ public class FileAppenderThrowableBenchmark {
         julFile.delete();
     }
 
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    @Benchmark
-    public void log4j1() {
-        log4j1Logger.error("Caught an exception", THROWABLE);
+    @SuppressWarnings("unused") // Used by JMH
+    public enum LoggingConfiguration {
+        LOG4J2_EXTENDED_THROWABLE() {
+            Logger logger;
+            @Override
+            void setUp() throws Exception {
+                logger = LogManager.getLogger("RAFExtendedException");
+            }
+
+            @Override
+            void tearDown() throws Exception {
+
+            }
+
+            @Override
+            void log(String message, Throwable throwable) {
+                logger.error(message, throwable);
+            }
+        },
+        LOG4J2_EXTENDED_THROWABLE_ASYNC() {
+            Logger logger;
+            @Override
+            void setUp() throws Exception {
+                System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+                        AsyncLoggerContextSelector.class.getName());
+                logger = LogManager.getLogger("RAFExtendedException");
+                if (!AsyncLoggerContext.class.equals(LogManager.getContext(false).getClass())) {
+                    throw new IllegalStateException("Expected an AsyncLoggerContext");
+                }
+            }
+
+            @Override
+            void tearDown() throws Exception {
+
+            }
+
+            @Override
+            void log(String message, Throwable throwable) {
+                logger.error(message, throwable);
+            }
+        },
+        LOG4J2_EXTENDED_THROWABLE_ASYNC_CONFIG() {
+            Logger logger;
+            @Override
+            void setUp() throws Exception {
+                logger = LogManager.getLogger("async.RAFExtendedException");
+            }
+
+            @Override
+            void tearDown() throws Exception {
+
+            }
+
+            @Override
+            void log(String message, Throwable throwable) {
+                logger.error(message, throwable);
+            }
+        },
+        LOG4J2_THROWABLE() {
+            Logger logger;
+            @Override
+            void setUp() throws Exception {
+                logger = LogManager.getLogger("RAFSimpleException");
+            }
+
+            @Override
+            void tearDown() throws Exception {
+
+            }
+
+            @Override
+            void log(String message, Throwable throwable) {
+                logger.error(message, throwable);
+            }
+        },
+        LOG4J2_THROWABLE_ASYNC() {
+            Logger logger;
+            @Override
+            void setUp() throws Exception {
+                System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+                        AsyncLoggerContextSelector.class.getName());
+                logger = LogManager.getLogger("RAFSimpleException");
+                if (!AsyncLoggerContext.class.equals(LogManager.getContext(false).getClass())) {
+                    throw new IllegalStateException("Expected an AsyncLoggerContext");
+                }
+            }
+
+            @Override
+            void tearDown() throws Exception {
+
+            }
+
+            @Override
+            void log(String message, Throwable throwable) {
+                logger.error(message, throwable);
+            }
+        },
+        LOG4J2_THROWABLE_ASYNC_CONFIG() {
+            Logger logger;
+            @Override
+            void setUp() throws Exception {
+                logger = LogManager.getLogger("async.RAFSimpleException");
+            }
+
+            @Override
+            void tearDown() throws Exception {
+
+            }
+
+            @Override
+            void log(String message, Throwable throwable) {
+                logger.error(message, throwable);
+            }
+        },
+        LOG4J1() {
+            org.apache.log4j.Logger logger;
+            @Override
+            void setUp() throws Exception {
+                logger = org.apache.log4j.Logger.getLogger(FileAppenderThrowableBenchmark.class);
+            }
+
+            @Override
+            void tearDown() throws Exception {
+
+            }
+
+            @Override
+            void log(String message, Throwable throwable) {
+                logger.error(message, throwable);
+            }
+        },
+        LOGBACK() {
+            org.slf4j.Logger logger;
+
+            @Override
+            void setUp() throws Exception {
+                logger = LoggerFactory.getLogger(FileAppenderThrowableBenchmark.class);
+            }
+
+            @Override
+            void tearDown() throws Exception {
+
+            }
+
+            @Override
+            void log(String message, Throwable throwable) {
+                logger.error(message, throwable);
+            }
+        },
+        JUL() {
+            private FileHandler julFileHandler;
+            private java.util.logging.Logger logger;
+
+            @Override
+            void setUp() throws Exception {
+                julFileHandler = new FileHandler("target/testJulLog.log");
+                logger = java.util.logging.Logger.getLogger(getClass().getName());
+                logger.setUseParentHandlers(false);
+                logger.addHandler(julFileHandler);
+                logger.setLevel(Level.ALL);
+            }
+
+            @Override
+            void tearDown() throws Exception {
+                julFileHandler.close();
+            }
+
+            @Override
+            void log(String message, Throwable throwable) {
+                // must specify sourceClass or JUL will look it up by walking the stack trace!
+                logger.logp(Level.SEVERE, FileAppenderThrowableBenchmark.class.getName(), "param1JulFile", message, throwable);
+            }
+        };
+
+        abstract void setUp() throws Exception;
+
+        abstract void tearDown() throws Exception;
+
+        abstract void log(String message, Throwable throwable);
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void complexLog4j1() {
-        log4j1Logger.error("Caught an exception", COMPLEX_THROWABLE);
+    public void simpleThrowable() {
+        loggingConfiguration.log("Caught an exception", THROWABLE);
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Benchmark
-    public void log4j2Throwable() {
-        log4j2SimpleThrowable.error("Caught an exception", THROWABLE);
-    }
-
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    @Benchmark
-    public void complexLog4j2Throwable() {
-        log4j2SimpleThrowable.error("Caught an exception", COMPLEX_THROWABLE);
-    }
-
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    @Benchmark
-    public void complexLog4j2ThrowableAsync() {
-        log4j2SimpleThrowableAsync.error("Caught an exception", COMPLEX_THROWABLE);
-    }
-
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    @Benchmark
-    public void log4j2ExtendedThrowable() {
-        log4j2ExtendedThrowable.error("Caught an exception", THROWABLE);
-    }
-
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    @Benchmark
-    public void complexLog4j2ExtendedThrowable() {
-        log4j2ExtendedThrowable.error("Caught an exception", COMPLEX_THROWABLE);
-    }
-
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    @Benchmark
-    public void complexLog4j2ExtendedThrowableAsync() {
-        log4j2ExtendedThrowableAsync.error("Caught an exception", COMPLEX_THROWABLE);
-    }
-
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    @Benchmark
-    public void logbackFile() {
-        slf4jLogger.error("Caught an exception", THROWABLE);
-    }
-
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    @Benchmark
-    public void complexLogbackFile() {
-        slf4jLogger.error("Caught an exception", COMPLEX_THROWABLE);
-    }
-
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    @Benchmark
-    public void julFile() {
-        // must specify sourceClass or JUL will look it up by walking the stack trace!
-        julLogger.logp(Level.SEVERE, getClass().getName(), "param1JulFile", "Caught an exception", THROWABLE);
+    public void complexThrowable() {
+        loggingConfiguration.log("Caught an exception", COMPLEX_THROWABLE);
     }
 }
