@@ -44,6 +44,12 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 ## English
 
+* [Getting the most out of the Log4j 2 API](https://www.ralphgoers.com/post/getting-the-most-out-of-the-log4j-2-api)
+(January 1, 2020)
+* [Log4j 1 Compatiblity in Log4j 2](https://www.ralphgoers.com/post/log4j-1-compatibility-in-log4j-2)
+(December 22, 2019)
+* [Why was Log4j 2 created](https://www.ralphgoers.com/post/why-was-log4j-2-created)
+(December 14, 2019)
 * [A Guide to Logging in Java](https://www.marcobehler.com/guides/a-guide-to-logging-in-java)
 (June 23, 2019)
 * [Exploring the Secrets of Java Logs: Log4j 2 Log System](https://www.alibabacloud.com/blog/exploring-the-secrets-of-java-logs-log4j-2-log-system_594821)
