@@ -29,7 +29,73 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.13.0" date="2019-MM-DD" description="GA Release 2.13.0">
+    <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
+      <action issue="LOG4J2-2415" dev="ckozak" type="fix" due-to="Andrey Turbanov">
+        Fix lock contention in the classloader using new versions of slf4j without EventData on slf4j logger creation.
+      </action>
+      <action issue="LOG4J2-2677" dev="ckozak" type="fix">
+        Rollover handles parallel file deletion gracefully.
+      </action>
+      <action issue="LOG4J2-2744" dev="ckozak" type="fix">
+        Remove unnecessary EventLogger references from log4j-slf4j18-impl due to removal from slf4j.
+      </action>
+      <action issue="LOG4J2-2745" dev="ckozak" type="update">
+        Update log4j-slf4j18-impl slf4j version to 1.8.0-beta4 from 1.8.0-alpha2.
+      </action>
+      <action issue="LOG4J2-2747" dev="ckozak" type="fix">
+        Fix a memory leak using fully asynchronous logging when the queue is full using the 'discard' asynchronous queue full strategy.
+      </action>
+      <action issue="LOG4J2-2739" dev="ckozak" type="fix">
+        Fix erroneous log4j-jul recursive logger detection resulting in some no-op JUL loggers and 'WARN Recursive call to getLogger' being reported by the status logger.
+      </action>
+      <action issue="LOG4J2-2748" dev="ckozak" type="add">
+        Implement ISO8601_PERIOD_MICROS fixed date format matching ISO8601_PERIOD with support for microsecond precision.
+      </action>
+      <action issue="LOG4J2-2735" dev="ckozak" type="fix" due-to="Andy Wilkinson">
+        PluginCache output is reproducible allowing the annotation processor to produce deterministic results.
+      </action>
+      <action issue="LOG4J2-2751" dev="ckozak" type="fix">
+        Fix StackLocator.getCallerClass performance in cases where Reflection.getCallerClass is not accessible.
+      </action>
+      <action issue="LOG4J2-2752" dev="ckozak" type="fix">
+        MutableLogEvent and RingBufferLogEvent avoid StringBuffer and parameter array allocation unless reusable messages are used.
+      </action>
+      <action issue="LOG4J2-2754" dev="ckozak" type="fix">
+        LoaderUtil.getClassLoaders may discover additional loaders and no longer erroneously returns a result with a null element in some environments.
+      </action>
+    </release>
+    <release version="2.13.0" date="2019-12-11" description="GA Release 2.13.0">
+      <action issue="LOG4J2-2058" dev="rgoers" type="fix">
+        Prevent recursive calls to java.util.LogManager.getLogger().
+      </action>
+      <action issue="LOG4J2-2725" dev="ckozak" type="fix" due-to="Dzmitry Anikechanka">
+        LOG4J2-2725 - Added try/finally around event.execute() for RingBufferLogEventHandler to clear memory
+        correctly in case of exception/error
+      </action>
+      <action issue="LOG4J2-2635" dev="rgoers" type="fix" due-to="Filipp Gunbin">
+        Wrong java version check in ThreadNameCachingStrategy.
+      </action>
+      <action issue="LOG4J2-2674" dev="rgoers" type="fix" due-to="Anton Korenkov">
+        Use a less confusing name for the CompositeConfiguration source.
+      </action>
+      <action issue="LOG4J2-2732" dev="rgoers" type="add" due-to="Matt Pavlovich">
+        Add ThreadContext.putIfNotNull method.
+      </action>
+      <action issue="LOG4J2-2731" dev="rgoers" type="add">
+        Add a Level Patttern Selector.
+      </action>
+      <action issue="LOG4J2-2701" dev="rgoers" type="update">
+        Update Jackson to 2.9.10.
+      </action>
+      <action issue="LOG4J2-2727" dev="rogers" type="fix" due-to="Clément Mathieu">
+        Add setKey method to Kafka Appender Builder.
+      </action>
+      <action issue="LOG4J2-2707" dev="rgoers" type="fix" due-to="Christian Frank">
+        ArrayIndexOutOfBoundsException could occur with MAC address longer than 6 bytes.
+      </action>
+      <action issue="LOG4J2-63" dev="rgoers" type="add">
+        Add experimental support for Log4j 1 configuration files.
+      </action>
       <action issue="LOG4J2-2712" dev="rgoers" type="fix">
         The rolling file appenders would fail to compress the file after rollover if the file name matched the
         file pattern.
@@ -39,7 +105,7 @@
         be retrieved from the Spring environment if it is available.
       </action>
       <action issue="LOG4J2-2710" dev="rgoers" type="add">
-        Allow Spring Boot application properties to be accessed in the Log4j 2 configuraiton. Add
+        Allow Spring Boot application properties to be accessed in the Log4j 2 configuration. Add
         lower and upper case Lookups.
       </action>
       <action issue="LOG4J2-2709" dev="rgoers" type="update">
@@ -63,6 +129,9 @@
       </action>
       <action issue="LOG4J2-2673" dev="ggregory" type="fix" due-to="Yuichi Sugimura">
         OutputStreamAppender.Builder ignores setFilter().
+      </action>
+      <action issue="LOG4J2-2725" dev="ckozak" type="fix" due-to="Dzmitry Anikechanka">
+        Prevent a memory leak when async loggers throw errors.
       </action>
     </release>
     <release version="2.12.1" date="2019-08-06" description="GA Release 2.12.1">

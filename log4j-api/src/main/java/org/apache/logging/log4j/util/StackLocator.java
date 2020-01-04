@@ -104,6 +104,9 @@ public final class StackLocator {
         if (depth < 0) {
             throw new IndexOutOfBoundsException(Integer.toString(depth));
         }
+        if (GET_CALLER_CLASS == null) {
+            return null;
+        }
         // note that we need to add 1 to the depth value to compensate for this method, but not for the Method.invoke
         // since Reflection.getCallerClass ignores the call to Method.invoke()
         try {

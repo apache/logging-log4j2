@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -73,6 +74,18 @@ public class DeletingVisitor extends SimpleFileVisitor<Path> {
             delete(file);
         }
         return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult visitFileFailed(Path file, IOException ioException) throws IOException {
+        // LOG4J2-2677: Appenders may rollover and purge in parallel. SimpleVisitor rethrows exceptions from
+        // failed attempts to load file attributes.
+        if (ioException instanceof NoSuchFileException) {
+            LOGGER.info("File {} could not be accessed, it has likely already been deleted", file, ioException);
+            return FileVisitResult.CONTINUE;
+        } else {
+            return super.visitFileFailed(file, ioException);
+        }
     }
 
     /**

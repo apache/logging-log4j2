@@ -128,7 +128,7 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
     }
 
     @Override
-    public Appender parseAppender(final String name, final String layoutPrefix,
+    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
             final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
         String appenderRef = getProperty(APPENDER_REF_TAG);
         boolean blocking = getBooleanProperty(BLOCKING_PARAM);

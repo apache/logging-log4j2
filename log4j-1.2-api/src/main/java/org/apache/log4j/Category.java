@@ -29,6 +29,7 @@ import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererSupport;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.message.LocalizedMessage;
@@ -380,12 +381,15 @@ public class Category {
 
     public void forcedLog(final String fqcn, final Priority level, final Object message, final Throwable t) {
         final org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
-        ObjectRenderer renderer = get(message.getClass());
-        final Message msg = message instanceof Message ? (Message) message : renderer != null ?
-            new RenderedMessage(renderer, message) : new ObjectMessage(message);
         if (logger instanceof ExtendedLogger) {
-            ((ExtendedLogger) logger).logMessage(fqcn, lvl, null, new ObjectMessage(message), t);
+            @SuppressWarnings("unchecked")
+            Message msg = message instanceof Message ? (Message) message : message instanceof Map ?
+                    new MapMessage((Map) message) : new ObjectMessage(message);
+            ((ExtendedLogger) logger).logMessage(fqcn, lvl, null, msg, t);
         } else {
+            ObjectRenderer renderer = get(message.getClass());
+            final Message msg = message instanceof Message ? (Message) message : renderer != null ?
+                    new RenderedMessage(renderer, message) : new ObjectMessage(message);
             logger.log(lvl, msg, t);
         }
     }
@@ -475,14 +479,16 @@ public class Category {
 
     public void log(final Priority priority, final Object message, final Throwable t) {
         if (isEnabledFor(priority)) {
-            final Message msg = new ObjectMessage(message);
+            @SuppressWarnings("unchecked")
+            final Message msg = message instanceof Map ? new MapMessage((Map) message) : new ObjectMessage(message);
             forcedLog(FQCN, priority, msg, t);
         }
     }
 
     public void log(final Priority priority, final Object message) {
         if (isEnabledFor(priority)) {
-            final Message msg = new ObjectMessage(message);
+            @SuppressWarnings("unchecked")
+            final Message msg = message instanceof Map ? new MapMessage((Map) message) : new ObjectMessage(message);
             forcedLog(FQCN, priority, msg, null);
         }
     }
@@ -497,10 +503,12 @@ public class Category {
     private void maybeLog(final String fqcn, final org.apache.logging.log4j.Level level,
             final Object message, final Throwable throwable) {
         if (logger.isEnabled(level)) {
+            @SuppressWarnings("unchecked")
+            Message msg = message instanceof Map ? new MapMessage((Map) message) : new ObjectMessage(message);
             if (logger instanceof ExtendedLogger) {
-                ((ExtendedLogger) logger).logMessage(fqcn, level, null, new ObjectMessage(message), throwable);
+                ((ExtendedLogger) logger).logMessage(fqcn, level, null, msg, throwable);
             } else {
-                logger.log(level, message, throwable);
+                logger.log(level, msg, throwable);
             }
         }
     }
