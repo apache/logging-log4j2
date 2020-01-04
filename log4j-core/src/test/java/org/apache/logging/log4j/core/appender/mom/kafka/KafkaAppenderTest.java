@@ -17,6 +17,11 @@
 
 package org.apache.logging.log4j.core.appender.mom.kafka;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -25,11 +30,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.log4j.MDC;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.Appender;
@@ -44,141 +53,178 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
-
 @Category(Appenders.Kafka.class)
 public class KafkaAppenderTest {
 
-    private static final MockProducer<byte[], byte[]> kafka = new MockProducer<byte[], byte[]>(true, null, null) {
+	private static final MockProducer<byte[], byte[]> kafka = new MockProducer<byte[], byte[]>(true, null, null) {
 
-        @Override
-        public void close(final long timeout, final TimeUnit timeUnit) {
-        }
+		@Override
+		public synchronized Future<RecordMetadata> send(ProducerRecord<byte[], byte[]> record) {
 
-    };
+			Future<RecordMetadata> retVal = super.send(record);
 
-    private static final String LOG_MESSAGE = "Hello, world!";
-    private static final String TOPIC_NAME = "kafka-topic";
-    private static final int RETRY_COUNT = 3;
+			boolean isRetryTest = "true".equals(MDC.get("KafkaAppenderWithRetryCount"));
+			if (isRetryTest) {
+				try {
+					throw new TimeoutException();
+				} catch (TimeoutException e) {
+					// TODO Auto-generated catch block
+					throw new RuntimeException(e);
+				}
+			}
 
+			return retVal;
+		};
 
-    private static Log4jLogEvent createLogEvent() {
-        return Log4jLogEvent.newBuilder()
-            .setLoggerName(KafkaAppenderTest.class.getName())
-            .setLoggerFqcn(KafkaAppenderTest.class.getName())
-            .setLevel(Level.INFO)
-            .setMessage(new SimpleMessage(LOG_MESSAGE))
-            .build();
-    }
+		@Override
+		public void close(final long timeout, final TimeUnit timeUnit) {
+		}
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        KafkaManager.producerFactory = new KafkaProducerFactory() {
-            @Override
-            public Producer<byte[], byte[]> newKafkaProducer(final Properties config) {
-                return kafka;
-            }
-        };
-    }
+	};
 
-    @Rule
-    public LoggerContextRule ctx = new LoggerContextRule("KafkaAppenderTest.xml");
+	private static final String LOG_MESSAGE = "Hello, world!";
+	private static final String TOPIC_NAME = "kafka-topic";
+	private static final int RETRY_COUNT = 3;
 
-    @Before
-    public void setUp() throws Exception {
-        kafka.clear();
-    }
-
-//    @Test
-//    public void testAppendWithLayout() throws Exception {
-//        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithLayout");
-//        appender.append(createLogEvent());
-//        final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
-//        assertEquals(1, history.size());
-//        final ProducerRecord<byte[], byte[]> item = history.get(0);
-//        assertNotNull(item);
-//        assertEquals(TOPIC_NAME, item.topic());
-//        assertNull(item.key());
-//        assertEquals("[" + LOG_MESSAGE + "]", new String(item.value(), StandardCharsets.UTF_8));
-//    }
-//
-//    @Test
-//    public void testAppendWithSerializedLayout() throws Exception {
-//        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithSerializedLayout");
-//        final LogEvent logEvent = createLogEvent();
-//        appender.append(logEvent);
-//        final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
-//        assertEquals(1, history.size());
-//        final ProducerRecord<byte[], byte[]> item = history.get(0);
-//        assertNotNull(item);
-//        assertEquals(TOPIC_NAME, item.topic());
-//        assertNull(item.key());
-//        assertEquals(LOG_MESSAGE, deserializeLogEvent(item.value()).getMessage().getFormattedMessage());
-//    }
-//
-//    @Test
-//    public void testAsyncAppend() throws Exception {
-//        final Appender appender = ctx.getRequiredAppender("AsyncKafkaAppender");
-//        appender.append(createLogEvent());
-//        final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
-//        assertEquals(1, history.size());
-//        final ProducerRecord<byte[], byte[]> item = history.get(0);
-//        assertNotNull(item);
-//        assertEquals(TOPIC_NAME, item.topic());
-//        assertNull(item.key());
-//        assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
-//    }
-//
-//    @Test
-//    public void testAppendWithKey() throws Exception {
-//        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithKey");
-//        final LogEvent logEvent = createLogEvent();
-//        appender.append(logEvent);
-//        final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
-//        assertEquals(1, history.size());
-//        final ProducerRecord<byte[], byte[]> item = history.get(0);
-//        assertNotNull(item);
-//        assertEquals(TOPIC_NAME, item.topic());
-//        final String msgKey = item.key().toString();
-//        final byte[] keyValue = "key".getBytes(StandardCharsets.UTF_8);
-//        assertArrayEquals(item.key(), keyValue);
-//        assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
-//    }
-//
-//    @Test
-//    public void testAppendWithKeyLookup() throws Exception {
-//        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithKeyLookup");
-//        final LogEvent logEvent = createLogEvent();
-//        final Date date = new Date();
-//        final SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-//        appender.append(logEvent);
-//        final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
-//        assertEquals(1, history.size());
-//        final ProducerRecord<byte[], byte[]> item = history.get(0);
-//        assertNotNull(item);
-//        assertEquals(TOPIC_NAME, item.topic());
-//        final byte[] keyValue = format.format(date).getBytes(StandardCharsets.UTF_8);
-//        assertArrayEquals(item.key(), keyValue);
-//        assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
-//    }
-    
-    @Test
-	public void testAppendWithRetryCount() {
-		final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithRetryCount");
-		final LogEvent logEvent = createLogEvent();
-		appender.append(logEvent);
-
-		final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
-		assertEquals(RETRY_COUNT, history.size());
+	private static Log4jLogEvent createLogEvent() {
+		return Log4jLogEvent.newBuilder().setLoggerName(KafkaAppenderTest.class.getName())
+				.setLoggerFqcn(KafkaAppenderTest.class.getName()).setLevel(Level.INFO)
+				.setMessage(new SimpleMessage(LOG_MESSAGE)).build();
 	}
 
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		KafkaManager.producerFactory = new KafkaProducerFactory() {
+			@Override
+			public Producer<byte[], byte[]> newKafkaProducer(final Properties config) {
+				return kafka;
+			}
+		};
+	}
 
+	@Rule
+	public LoggerContextRule ctx = new LoggerContextRule("KafkaAppenderTest.xml");
 
-    private LogEvent deserializeLogEvent(final byte[] data) throws IOException, ClassNotFoundException {
-        final ByteArrayInputStream bis = new ByteArrayInputStream(data);
-        try (ObjectInput ois = new FilteredObjectInputStream(bis)) {
-            return (LogEvent) ois.readObject();
-        }
-    }
+	@Before
+	public void setUp() throws Exception {
+		kafka.clear();
+	}
+
+	@Test
+	public void testAppendWithLayout() throws Exception {
+		final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithLayout");
+		appender.append(createLogEvent());
+		final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
+		assertEquals(1, history.size());
+		final ProducerRecord<byte[], byte[]> item = history.get(0);
+		assertNotNull(item);
+		assertEquals(TOPIC_NAME, item.topic());
+		assertNull(item.key());
+		assertEquals("[" + LOG_MESSAGE + "]", new String(item.value(), StandardCharsets.UTF_8));
+	}
+
+	@Test
+	public void testAppendWithSerializedLayout() throws Exception {
+		final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithSerializedLayout");
+		final LogEvent logEvent = createLogEvent();
+		appender.append(logEvent);
+		final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
+		assertEquals(1, history.size());
+		final ProducerRecord<byte[], byte[]> item = history.get(0);
+		assertNotNull(item);
+		assertEquals(TOPIC_NAME, item.topic());
+		assertNull(item.key());
+		assertEquals(LOG_MESSAGE, deserializeLogEvent(item.value()).getMessage().getFormattedMessage());
+	}
+
+	@Test
+	public void testAsyncAppend() throws Exception {
+		final Appender appender = ctx.getRequiredAppender("AsyncKafkaAppender");
+		appender.append(createLogEvent());
+		final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
+		assertEquals(1, history.size());
+		final ProducerRecord<byte[], byte[]> item = history.get(0);
+		assertNotNull(item);
+		assertEquals(TOPIC_NAME, item.topic());
+		assertNull(item.key());
+		assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
+	}
+
+	@Test
+	public void testAppendWithKey() throws Exception {
+		final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithKey");
+		final LogEvent logEvent = createLogEvent();
+		appender.append(logEvent);
+		final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
+		assertEquals(1, history.size());
+		final ProducerRecord<byte[], byte[]> item = history.get(0);
+		assertNotNull(item);
+		assertEquals(TOPIC_NAME, item.topic());
+		final String msgKey = item.key().toString();
+		final byte[] keyValue = "key".getBytes(StandardCharsets.UTF_8);
+		assertArrayEquals(item.key(), keyValue);
+		assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
+	}
+
+	@Test
+	public void testAppendWithKeyLookup() throws Exception {
+		final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithKeyLookup");
+		final LogEvent logEvent = createLogEvent();
+		final Date date = new Date();
+		final SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+		appender.append(logEvent);
+		final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
+		assertEquals(1, history.size());
+		final ProducerRecord<byte[], byte[]> item = history.get(0);
+		assertNotNull(item);
+		assertEquals(TOPIC_NAME, item.topic());
+		final byte[] keyValue = format.format(date).getBytes(StandardCharsets.UTF_8);
+		assertArrayEquals(item.key(), keyValue);
+		assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
+	}
+
+	@Test
+	public void testAppendWithRetryCount() {
+		try {
+			MDC.put("KafkaAppenderWithRetryCount", "true");
+			final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithRetryCount");
+			final LogEvent logEvent = createLogEvent();
+			appender.append(logEvent);
+
+			final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
+			assertEquals(RETRY_COUNT + 1, history.size());
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			MDC.clear();
+		}
+
+	}
+
+	private LogEvent deserializeLogEvent(final byte[] data) throws IOException, ClassNotFoundException {
+		final ByteArrayInputStream bis = new ByteArrayInputStream(data);
+		try (ObjectInput ois = new FilteredObjectInputStream(bis)) {
+			return (LogEvent) ois.readObject();
+		}
+	}
+
+//    public void shouldRetryWhenTimeoutExceptionOccursOnSend() throws Exception {
+//        final AtomicInteger attempt = new AtomicInteger(0);
+//        final RecordCollectorImpl collector = new RecordCollectorImpl(
+//                new MockProducer(cluster, true, new DefaultPartitioner(), byteArraySerializer, byteArraySerializer) {
+//                    @Override
+//                    public synchronized Future<RecordMetadata> send(final ProducerRecord record, final Callback callback) {
+//                        if (attempt.getAndIncrement() == 0) {
+//                            throw new TimeoutException();
+//                        }
+//                        return super.send(record, callback);
+//                    }
+//                },
+//                "test");
+//
+//        collector.send("topic1", "3", "0", null, stringSerializer, stringSerializer, streamPartitioner);
+//        final Long offset = collector.offsets().get(new TopicPartition("topic1", 0));
+//        assertEquals(Long.valueOf(0L), offset);
+//    }
 
 }
