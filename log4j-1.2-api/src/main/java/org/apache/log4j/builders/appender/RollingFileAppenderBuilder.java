@@ -160,7 +160,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
 
 
     @Override
-    public Appender parseAppender(final String name, final String layoutPrefix,
+    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
             final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
         Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);

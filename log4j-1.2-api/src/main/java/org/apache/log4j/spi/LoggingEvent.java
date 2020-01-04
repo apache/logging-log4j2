@@ -20,6 +20,9 @@ import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 import org.apache.log4j.bridge.LogEventAdapter;
 
+import java.util.Map;
+import java.util.Set;
+
 /**
  *  No-op version of Log4j 1.2 LoggingEvent. This class is not directly used by Log4j 1.x clients but is used by
  *  the Log4j 2 LogEvent adapter to be compatible with Log4j 1.x components.
@@ -47,6 +50,14 @@ public class LoggingEvent {
      */
     public String getLoggerName() {
         return null;
+    }
+
+    public String getFQNOfLoggerClass() {
+        return null;
+    }
+
+    public final long getTimeStamp() {
+        return 0;
     }
 
     /**
@@ -128,4 +139,24 @@ public class LoggingEvent {
         return null;
     }
 
+    public void setProperty(final String propName,
+            final String propValue) {
+
+    }
+
+    public String getProperty(final String key) {
+        return null;
+    }
+
+    public Set getPropertyKeySet() {
+        return null;
+    }
+
+    public Map getProperties() {
+        return null;
+    }
+
+    public Object removeProperty(String propName) {
+        return null;
+    }
 }

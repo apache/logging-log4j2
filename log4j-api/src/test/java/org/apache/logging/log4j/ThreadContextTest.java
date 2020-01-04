@@ -108,6 +108,18 @@ public class ThreadContextTest {
     }
 
     @Test
+    public void testPutIfNotNull() {
+        ThreadContext.clearMap();
+        assertNull(ThreadContext.get("testKey"));
+        ThreadContext.put("testKey", "testValue");
+        assertEquals("testValue", ThreadContext.get("testKey"));
+        assertEquals("Incorrect value in test key", "testValue", ThreadContext.get("testKey"));
+        ThreadContext.putIfNull("testKey", "new Value");
+        assertEquals("Incorrect value in test key", "testValue", ThreadContext.get("testKey"));
+        ThreadContext.clearMap();
+    }
+
+    @Test
     public void testPutAll() {
         assertTrue(ThreadContext.isEmpty());
         assertFalse(ThreadContext.containsKey("key"));

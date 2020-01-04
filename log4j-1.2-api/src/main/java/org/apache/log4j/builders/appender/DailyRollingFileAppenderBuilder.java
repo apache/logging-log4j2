@@ -138,8 +138,8 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
     }
 
     @Override
-    public Appender parseAppender(final String name, final String layoutPrefix, final String filterPrefix,
-            final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
+            final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
         Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String fileName = getProperty(FILE_PARAM);

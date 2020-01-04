@@ -421,10 +421,10 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           </p>
           <h4>Pretty vs. compact JSON</h4>
           <p>
-          By default, the JSON layout is not compact (a.k.a. not "pretty") with <code>compact="false"</code>, which
-          means the appender uses end-of-line characters and indents lines to format the text. If
-          <code>compact="true"</code>,  then no end-of-line or indentation is used. Message content may contain,
-          of course, escaped end-of-lines.
+            The compact attribute determines whether the output will be "pretty" or not. The default value is "false",
+            which means the appender uses end-of-line characters and indents lines to format the text. If
+            <code>compact="true"</code>,  then no end-of-line or indentation is used, which will cause the output
+            to take less space. Of course, the message content may contain, escaped end-of-lines.
           </p>
           <table>
             <tr>
@@ -2011,6 +2011,14 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           attribute, which is used when other criteria don't match, and a set of PatternMatch elements that identify
           the various patterns that can be selected.
         </p>
+
+         <h5>LevelPatternSelector</h5>
+          <p>
+          The LevelPatternSelector selects patterns based on the log level of
+          the log event. If the Level in the log event is equal to (ignoring case)
+          the name specified on the PatternMatch key attribute, then
+          the pattern specified on that PatternMatch element will be used.
+          </p>
           <h5>MarkerPatternSelector</h5>
           <p>
             The MarkerPatternSelector selects patterns based on the Marker included in the log event. If the Marker in

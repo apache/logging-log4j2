@@ -18,6 +18,7 @@ package org.apache.log4j.helpers;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.spi.AppenderAttachable;
+import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -66,5 +67,21 @@ public class AppenderAttachableImpl implements AppenderAttachable {
     @Override
     public void removeAppender(String name) {
         appenders.remove(name);
+    }
+
+    /**
+     * Call the <code>doAppend</code> method on all attached appenders.
+     */
+    public int appendLoopOnAppenders(LoggingEvent event) {
+        for (Appender appender : appenders.values()) {
+            appender.doAppend(event);
+        }
+        return appenders.size();
+    }
+
+    public void close() {
+        for (Appender appender : appenders.values()) {
+            appender.close();
+        }
     }
 }

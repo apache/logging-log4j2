@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -34,8 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
-import org.slf4j.ext.EventData;
-import org.slf4j.ext.EventLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
@@ -145,23 +142,6 @@ public class LoggerTest {
         verify("List", "o.a.l.s.LoggerTest Hello, Log4j Log4j {} MDC{}" + Strings.LINE_SEPARATOR);
     }
 
-    @Test
-    public void testEventLogger() {
-        MDC.put("loginId", "JohnDoe");
-        MDC.put("ipAddress", "192.168.0.120");
-        MDC.put("locale", Locale.US.getDisplayName());
-        final EventData data = new EventData();
-        data.setEventType("Transfer");
-        data.setEventId("Audit@18060");
-        data.setMessage("Transfer Complete");
-        data.put("ToAccount", "123456");
-        data.put("FromAccount", "123457");
-        data.put("Amount", "200.00");
-        EventLogger.logEvent(data);
-        MDC.clear();
-        verify("EventLogger", "o.a.l.s.LoggerTest Transfer [Audit@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete" + Strings.LINE_SEPARATOR);
-    }
-
     private void verify(final String name, final String expected) {
         final ListAppender listApp = ctx.getListAppender(name);
         assertNotNull("Missing Appender", listApp);
@@ -177,6 +157,5 @@ public class LoggerTest {
     public void cleanup() {
         MDC.clear();
         ctx.getListAppender("List").clear();
-        ctx.getListAppender("EventLogger").clear();
     }
 }

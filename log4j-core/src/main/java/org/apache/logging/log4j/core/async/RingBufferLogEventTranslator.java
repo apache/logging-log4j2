@@ -69,7 +69,7 @@ public class RingBufferLogEventTranslator implements
     /**
      * Release references held by this object to allow objects to be garbage-collected.
      */
-    private void clear() {
+    void clear() {
         setBasicValues(null, // asyncLogger
                 null, // loggerName
                 null, // marker

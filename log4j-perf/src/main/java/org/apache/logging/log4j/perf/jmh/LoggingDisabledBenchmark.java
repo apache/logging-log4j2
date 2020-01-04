@@ -31,7 +31,7 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.slf4j.LoggerFactory;
 
-import com.newrelic.api.agent.Trace;
+//import com.newrelic.api.agent.Trace;
 
 /**
  * Benchmark logging with logging disabled.
@@ -90,12 +90,16 @@ public class LoggingDisabledBenchmark {
     public void baseline() {
     }
 
+    /*
+      This benchmark tests the overhead of NewRelic on method calls. It is commented out so
+      that we don't have to include the dependency during a "normal" build. Uncomment and add
+      the New Relic Agent client dependency if you would like to test this.
     @Benchmark
     @BenchmarkMode(Mode.AverageTime) @OutputTimeUnit(TimeUnit.NANOSECONDS)
     @Trace(dispatcher = true)
     public void log4j2NewRelic() {
         log4j2Logger.debug("This won't be logged");
-    }
+    } */
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime) @OutputTimeUnit(TimeUnit.NANOSECONDS)

@@ -20,7 +20,7 @@
   <parent>
     <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
-    <version>2.13.0-SNAPSHOT</version>
+    <version>2.13.1-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -42,7 +42,6 @@
     <javac.target>1.7</javac.target>
     <uberjar.name>benchmarks</uberjar.name>
     <revapi.skip>true</revapi.skip>
-    <newrelic.agent.version>4.8.0</newrelic.agent.version>
   </properties>
 
   <dependencies>
@@ -58,11 +57,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.newrelic.agent.java</groupId>
-      <artifactId>newrelic-api</artifactId>
-      <version>${newrelic.agent.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
     </dependency>
@@ -73,7 +67,7 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-jpa</artifactId>
-      <version>2.13.0-SNAPSHOT</version>
+      <version>2.13.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -168,7 +162,7 @@
         <configuration>
           <toolchains>
             <jdk>
-              <version>9</version>
+              <version>[9, )</version>
             </jdk>
           </toolchains>
         </configuration>

@@ -134,8 +134,8 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
 
 
     @Override
-    public Appender parseAppender(final String name, final String layoutPrefix, final String filterPrefix,
-            final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
+            final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
         Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String level = getProperty(THRESHOLD_PARAM);

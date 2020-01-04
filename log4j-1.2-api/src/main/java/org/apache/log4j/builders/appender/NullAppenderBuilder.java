@@ -46,7 +46,7 @@ public class NullAppenderBuilder implements AppenderBuilder {
 
 
     @Override
-    public Appender parseAppender(final String name, final String layoutPrefix,
+    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
             final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
         return new AppenderWrapper(NullAppender.createAppender(name));
     }

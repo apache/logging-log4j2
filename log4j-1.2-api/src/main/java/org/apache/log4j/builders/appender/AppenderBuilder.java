@@ -30,7 +30,7 @@ public interface AppenderBuilder {
 
     Appender parseAppender(Element element, XmlConfiguration configuration);
 
-    Appender parseAppender(String name, String layoutPrefix, String filterPrefix, Properties props,
-            PropertiesConfiguration configuration);
+    Appender parseAppender(String name, String appenderPrefix, String layoutPrefix, String filterPrefix,
+            Properties props, PropertiesConfiguration configuration);
 
 }
