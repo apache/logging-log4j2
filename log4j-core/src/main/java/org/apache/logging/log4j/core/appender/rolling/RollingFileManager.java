@@ -104,7 +104,7 @@ public class RollingFileManager extends FileManager {
         this.patternProcessor = new PatternProcessor(pattern);
         this.patternProcessor.setPrevFileTime(initialTime);
         this.fileName = fileName;
-        this.directWrite = rolloverStrategy instanceof DirectWriteRolloverStrategy;
+        this.directWrite = rolloverStrategy instanceof DirectFileRolloverStrategy;
         this.fileExtension = FileExtension.lookupForFile(pattern);
     }
 
