@@ -13,7 +13,7 @@
 language: java
 dist: xenial
 jdk:
-  - openjdk11
+  - openjdk8
 
 env:
   global:
@@ -25,8 +25,9 @@ cache:
 before_cache:
   - rm -rf $HOME/.m2/repository/org/apache/logging/log4j
 
+install: skip
+
 script:
-  - jdk_switcher use openjdk8
   - mvn -t .travis-toolchains.xml install -B -V
 
 after_success:
