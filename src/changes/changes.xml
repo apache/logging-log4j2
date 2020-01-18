@@ -66,6 +66,9 @@
       <action issue="LOG4J2-2575" dev="rgoers" type="fix" due-to="Nathan Friess">
         CronExpression.getBeforeTime() would sometimes return incorrect result.
       </action>
+      <action issue="LOG4J2-2762" dev="ggregory" type="fix" due-to="Gary Gregory">
+        [JDBC] MS-SQL Server JDBC driver throws SQLServerException when inserting a null value for a VARBINARY column.
+      </action>
     </release>
     <release version="2.13.0" date="2019-12-11" description="GA Release 2.13.0">
       <action issue="LOG4J2-2058" dev="rgoers" type="fix">

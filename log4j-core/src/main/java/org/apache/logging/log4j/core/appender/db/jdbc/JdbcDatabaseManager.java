@@ -747,7 +747,13 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * Sets the given Object in the prepared statement. The value is truncated if needed.
      */
     private void setStatementObject(final int j, final String nameKey, final Object value) throws SQLException {
-        statement.setObject(j, truncate(nameKey, value));
+        if (value == null) {
+            // [LOG4J2-2762] [JDBC] MS-SQL Server JDBC driver throws SQLServerException when inserting a null value for a VARBINARY column.
+            // Calling setNull() instead of setObject() for null values fixes [LOG4J2-2762]. 
+            this.statement.setNull(j, columnMetaData.get(nameKey).getType());
+        } else {
+            statement.setObject(j, truncate(nameKey, value));
+        }
     }
 
     @Override
@@ -818,13 +824,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                             } else {
                                 final Object value = TypeConverters.convert(layout.toSerializable(event),
                                         mapping.getType(), null);
-                                if (value == null) {
-                                    // TODO We might need to always initialize the columnMetaData to specify the
-                                    // type.
-                                    this.statement.setNull(j++, Types.NULL);
-                                } else {
-                                    setStatementObject(j++, mapping.getNameKey(), value);
-                                }
+                                setStatementObject(j++, mapping.getNameKey(), value);
                             }
                         }
                     }
