@@ -69,6 +69,9 @@
       <action issue="LOG4J2-2762" dev="ggregory" type="fix" due-to="Gary Gregory">
         [JDBC] MS-SQL Server JDBC driver throws SQLServerException when inserting a null value for a VARBINARY column.
       </action>
+      <action issue="LOG4J2-2763" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update dependencies.
+      </action>
     </release>
     <release version="2.13.0" date="2019-12-11" description="GA Release 2.13.0">
       <action issue="LOG4J2-2058" dev="rgoers" type="fix">

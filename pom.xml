@@ -190,14 +190,14 @@
     <slf4jVersion>1.7.25</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.9.10</jackson2Version>
+    <jackson2Version>2.10.2</jackson2Version>
     <springVersion>3.2.18.RELEASE</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
     <flumeVersion>1.7.0</flumeVersion> <!-- Version 1.8.0 requires Java 8 -->
     <disruptorVersion>3.4.2</disruptorVersion>
     <conversantDisruptorVersion>1.2.10</conversantDisruptorVersion> <!-- Version 1.2.11 requires Java 8 -->
     <mongodb2.version>2.14.3</mongodb2.version>
-    <mongodb3.version>3.10.2</mongodb3.version>
+    <mongodb3.version>3.12.1</mongodb3.version>
     <groovy.version>2.5.6</groovy.version>
     <compiler.plugin.version>3.8.1</compiler.plugin.version>
     <pmd.plugin.version>3.10.0</pmd.plugin.version>
@@ -236,7 +236,7 @@
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
     <osgi.api.version>4.3.1</osgi.api.version>
     <!-- Version 5.15.0 requires Java 8 -->
-    <activemq.version>5.14.5</activemq.version>
+    <activemq.version>5.15.11</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
@@ -297,17 +297,17 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
-        <version>3.6.0</version>
+        <version>3.6.3</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
-        <version>1.12</version>
+        <version>1.14</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.7</version>
+        <version>3.9</version>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -741,7 +741,7 @@
       <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>1.4.199</version>
+        <version>1.4.200</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
@@ -819,7 +819,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.18</version>
+        <version>1.19</version>
       </dependency>
       <dependency>
         <groupId>org.tukaani</groupId>
@@ -831,7 +831,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-csv</artifactId>
-        <version>1.6</version>
+        <version>1.7</version>
       </dependency>
       <!-- GC-free -->
       <dependency>
