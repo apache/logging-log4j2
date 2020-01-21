@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
@@ -48,14 +49,13 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Ignore;
+import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-
-@Ignore("Fails often on Windows")
 
 /* Fails often on Windows, for example:
 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.20.1:test (default-test) on project log4j-core: There are test failures.
@@ -131,6 +131,11 @@ public class HttpAppenderTest {
 
     private static final String LOG_MESSAGE = "Hello, world!";
 
+    @BeforeClass
+    public static void setupClass() {
+        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+    }
+    
     private static Log4jLogEvent createLogEvent() {
         return Log4jLogEvent.newBuilder()
             .setLoggerName(HttpAppenderTest.class.getName())
