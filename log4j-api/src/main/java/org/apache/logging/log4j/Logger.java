@@ -4209,7 +4209,7 @@ public interface Logger {
     }
 
     /**
-     * Constuct a trace log event.
+     * Construct a trace log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -4217,7 +4217,7 @@ public interface Logger {
         return LogBuilder.NOOP;
     }
     /**
-     * Constuct a trace log event.
+     * Construct a trace log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -4225,7 +4225,7 @@ public interface Logger {
         return LogBuilder.NOOP;
     }
     /**
-     * Constuct a trace log event.
+     * Construct a trace log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -4233,7 +4233,7 @@ public interface Logger {
         return LogBuilder.NOOP;
     }
     /**
-     * Constuct a trace log event.
+     * Construct a trace log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -4241,7 +4241,7 @@ public interface Logger {
         return LogBuilder.NOOP;
     }
     /**
-     * Constuct a trace log event.
+     * Construct a trace log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -4249,7 +4249,7 @@ public interface Logger {
         return LogBuilder.NOOP;
     }
     /**
-     * Constuct a trace log event.
+     * Construct a trace log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -4257,7 +4257,7 @@ public interface Logger {
         return LogBuilder.NOOP;
     }
     /**
-     * Constuct a log event that will alwways be logged.
+     * Construct a log event that will always be logged.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -4265,7 +4265,7 @@ public interface Logger {
         return LogBuilder.NOOP;
     }
     /**
-     * Constuct a log event.
+     * Construct a log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
