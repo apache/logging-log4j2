@@ -187,7 +187,7 @@
     <slf4jVersion>1.7.25</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.10.1</jackson2Version>
+    <jackson2Version>2.10.2</jackson2Version>
     <springVersion>3.2.18.RELEASE</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
@@ -682,6 +682,12 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.12</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.14.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -1500,6 +1506,7 @@
     <module>log4j-core</module>
     <module>log4j-layout-jackson</module>
     <module>log4j-layout-jackson-json</module>
+    <module>log4j-layout-jackson-json-template</module>
     <module>log4j-layout-jackson-xml</module>
     <module>log4j-layout-jackson-yaml</module>
     <module>log4j-core-its</module>

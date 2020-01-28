@@ -1,0 +1,10 @@
+{
+  "version": "1.1",
+  "host": "${hostName}",
+  "short_message": "${json:message}",
+  "full_message": "${json:exception:stackTrace:text}",
+  "timestamp": "${json:timestamp:epoch:divisor=1e9}",
+  "level": "${json:level:severity:code}",
+  "_logger": "${json:logger:name}",
+  "_thread": "${json:thread:name}"
+}

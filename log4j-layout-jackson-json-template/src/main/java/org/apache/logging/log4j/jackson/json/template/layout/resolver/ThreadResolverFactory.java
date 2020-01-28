@@ -14,19 +14,26 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.jackson.json.parser;
+package org.apache.logging.log4j.jackson.json.template.layout.resolver;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.parser.AbstractJacksonLogEventParser;
-import org.apache.logging.log4j.jackson.json.Log4jJsonObjectMapper;
+final class ThreadResolverFactory implements EventResolverFactory<ThreadResolver> {
 
-/**
- * Parses the output from XmlLayout layout into instances of {@link LogEvent}.
- */
-public class JsonLogEventParser extends AbstractJacksonLogEventParser {
+    private static final ThreadResolverFactory INSTANCE = new ThreadResolverFactory();
 
-    public JsonLogEventParser() {
-        super(new Log4jJsonObjectMapper());
+    private ThreadResolverFactory() {}
+
+    static ThreadResolverFactory getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public String getName() {
+        return ThreadResolver.getName();
+    }
+
+    @Override
+    public ThreadResolver create(final EventResolverContext context, final String key) {
+        return new ThreadResolver(context, key);
     }
 
 }

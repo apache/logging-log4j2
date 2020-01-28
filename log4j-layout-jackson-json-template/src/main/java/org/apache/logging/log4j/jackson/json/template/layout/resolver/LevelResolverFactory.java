@@ -14,21 +14,26 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.jackson.json.template.layout.resolver;
 
-package org.apache.logging.log4j.jackson.json;
+final class LevelResolverFactory implements EventResolverFactory<LevelResolver> {
 
-import org.apache.logging.log4j.categories.Layouts;
-import org.apache.logging.log4j.jackson.LevelMixInTest;
-import org.junit.experimental.categories.Category;
+    private static final LevelResolverFactory INSTANCE = new LevelResolverFactory();
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+    private LevelResolverFactory() {}
 
-@Category(Layouts.Json.class)
-public class LevelMixInJsonTest extends LevelMixInTest {
+    static LevelResolverFactory getInstance() {
+        return INSTANCE;
+    }
 
     @Override
-    protected ObjectMapper newObjectMapper() {
-        return new Log4jJsonObjectMapper(false, true, false, false);
+    public String getName() {
+        return LevelResolver.getName();
+    }
+
+    @Override
+    public LevelResolver create(final EventResolverContext context, final String key) {
+        return new LevelResolver(key);
     }
 
 }

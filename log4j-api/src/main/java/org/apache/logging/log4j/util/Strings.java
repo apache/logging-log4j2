@@ -286,4 +286,23 @@ public final class Strings {
         return buf.toString();
     }
 
+    /**
+     * Creates a new string repeating given {@code str} {@code count} times.
+     * @param str input string
+     * @param count the repetition count
+     * @return the new string
+     * @throws IllegalArgumentException if either {@code str} is null or {@code count} is negative
+     */
+    public static String repeat(final String str, final int count) {
+        Objects.requireNonNull(str, "str");
+        if (count < 0) {
+            throw new IllegalArgumentException("count");
+        }
+        StringBuilder sb = new StringBuilder(str.length() * count);
+        for (int index = 0; index < count; index++) {
+            sb.append(str);
+        }
+        return sb.toString();
+    }
+
 }

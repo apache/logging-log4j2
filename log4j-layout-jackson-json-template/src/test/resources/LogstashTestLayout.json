@@ -1,0 +1,23 @@
+{
+  "mdc": "${json:mdc}",
+  "ndc": "${json:ndc}",
+  "exception_class": "${json:exception:className}",
+  "exception_message": "${json:exception:message}",
+  "stacktrace": "${json:exception:stackTrace:text}",
+  "line_number": "${json:source:lineNumber}",
+  "class": "${json:source:className}",
+  "@version": 1,
+  "source_host": "${hostName}",
+  "message": "${json:message}",
+  "thread_id": "${json:thread:id}",
+  "thread_name": "${json:thread:name}",
+  "thread_priority": "${json:thread:priority}",
+  "@timestamp": "${json:timestamp}",
+  "level": "${json:level}",
+  "file": "${json:source:fileName}",
+  "method": "${json:source:methodName}",
+  "logger_fqcn": "${json:logger:fqcn}",
+  "logger_name": "${json:logger:name}",
+  "end_of_batch": "${json:endOfBatch}",
+  "lookup_test_key": "${sys:lookup_test_key}"
+}
