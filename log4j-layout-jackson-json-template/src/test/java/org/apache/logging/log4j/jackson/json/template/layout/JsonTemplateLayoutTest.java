@@ -77,7 +77,7 @@ public class JsonTemplateLayoutTest {
     private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFixture.getObjectMapper();
 
     private static final SimpleDateFormat CUSTOM_OBJECT_MAPPER_DATE_FORMAT =
-            new SimpleDateFormat("'year='YYYY', month='MM', day='dd");
+            new SimpleDateFormat("'year='yyyy', month='MM', day='dd");
 
     private static final ObjectMapper CUSTOM_OBJECT_MAPPER =
             new ObjectMapper().setDateFormat(CUSTOM_OBJECT_MAPPER_DATE_FORMAT);
