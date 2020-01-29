@@ -1483,7 +1483,7 @@ public class JsonTemplateLayoutTest {
                 .setConfiguration(configuration)
                 .setEventTemplate(eventTemplate)
                 .setTimeZone(timeZone)
-                .setDateTimeFormatPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                .setTimestampFormatPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
                 .build();
 
         // Check the serialized 1st event.

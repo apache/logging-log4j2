@@ -1,17 +1,18 @@
 /*
- * Copyright 2017-2020 Volkan Yazıcı
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permits and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
 package org.apache.logging.log4j.jackson.json.template.layout;
 
@@ -47,7 +48,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
@@ -138,10 +138,10 @@ public class JsonTemplateLayout implements StringLayout {
         final int writerCapacity = builder.maxStringLength > 0
                 ? builder.maxStringLength
                 : builder.maxByteCount;
-        final Locale locale = readLocale(builder.locale);
+        final Locale locale = builder.locale;
         final FastDateFormat timestampFormat =
                 FastDateFormat.getInstance(
-                        builder.dateTimeFormatPattern, builder.timeZone, locale);
+                        builder.timestampFormatPattern, builder.timeZone, locale);
         final EventResolverContext resolverContext = EventResolverContext
                 .newBuilder()
                 .setObjectMapper(objectMapper)
@@ -195,19 +195,6 @@ public class JsonTemplateLayout implements StringLayout {
         return Strings.isBlank(template)
                 ? Uris.readUri(templateUri, charset)
                 : template;
-    }
-
-    private static Locale readLocale(final String locale) {
-        if (locale == null) {
-            return Locale.getDefault();
-        }
-        final String[] localeFields = locale.split("_", 3);
-        switch (localeFields.length) {
-            case 1: return new Locale(localeFields[0]);
-            case 2: return new Locale(localeFields[0], localeFields[1]);
-            case 3: return new Locale(localeFields[0], localeFields[1], localeFields[2]);
-        }
-        throw new IllegalArgumentException("invalid locale: " + locale);
     }
 
     @Override
@@ -338,68 +325,75 @@ public class JsonTemplateLayout implements StringLayout {
         private Configuration configuration;
 
         @PluginBuilderAttribute
-        private Charset charset = StandardCharsets.UTF_8;
+        private Charset charset = JsonTemplateLayoutDefaults.getCharset();
 
         @PluginBuilderAttribute("prettyPrint")
-        private boolean prettyPrintEnabled = false;
+        private boolean prettyPrintEnabled =
+                JsonTemplateLayoutDefaults.isPrettyPrintEnabled();
 
         @PluginBuilderAttribute("locationInfo")
-        private boolean locationInfoEnabled = false;
+        private boolean locationInfoEnabled =
+                JsonTemplateLayoutDefaults.isLocationInfoEnabled();
 
         @PluginBuilderAttribute("stackTrace")
-        private boolean stackTraceEnabled = true;
+        private boolean stackTraceEnabled =
+                JsonTemplateLayoutDefaults.isStackTraceEnabled();
 
         @PluginBuilderAttribute("blankPropertyExclusion")
-        private boolean blankPropertyExclusionEnabled = false;
+        private boolean blankPropertyExclusionEnabled =
+                JsonTemplateLayoutDefaults.isBlankPropertyExclusionEnabled();
 
         @PluginBuilderAttribute
-        private String dateTimeFormatPattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZ";
+        private String timestampFormatPattern =
+                JsonTemplateLayoutDefaults.getTimestampFormatPattern();
 
         @PluginBuilderAttribute
-        private TimeZone timeZone = TimeZone.getDefault();
+        private TimeZone timeZone = JsonTemplateLayoutDefaults.getTimeZone();
 
         @PluginBuilderAttribute
-        private String locale = null;
+        private Locale locale = JsonTemplateLayoutDefaults.getLocale();
 
         @PluginBuilderAttribute
-        private String eventTemplate = null;
+        private String eventTemplate = JsonTemplateLayoutDefaults.getEventTemplate();
 
         @PluginBuilderAttribute
         private String eventTemplateUri =
-                "classpath:LogstashJsonEventLayoutV1.json";
+                JsonTemplateLayoutDefaults.getEventTemplateUri();
 
         @PluginElement("EventTemplateAdditionalFields")
         private EventTemplateAdditionalFields eventTemplateAdditionalFields
                 = EventTemplateAdditionalFields.EMPTY;
 
         @PluginBuilderAttribute
-        private String stackTraceElementTemplate = null;
+        private String stackTraceElementTemplate =
+                JsonTemplateLayoutDefaults.getStackTraceElementTemplate();
 
         @PluginBuilderAttribute
         private String stackTraceElementTemplateUri =
-                "classpath:StackTraceElementLayout.json";
+                JsonTemplateLayoutDefaults.getStackTraceElementTemplateUri();
 
         @PluginBuilderAttribute
-        private String mdcKeyPattern;
+        private String mdcKeyPattern = JsonTemplateLayoutDefaults.getMdcKeyPattern();
 
         @PluginBuilderAttribute
-        private String ndcPattern;
+        private String ndcPattern = JsonTemplateLayoutDefaults.getNdcPattern();
 
         @PluginBuilderAttribute
-        private String eventDelimiter = System.lineSeparator();
+        private String eventDelimiter = JsonTemplateLayoutDefaults.getEventDelimiter();
 
         @PluginBuilderAttribute
-        private int maxByteCount = 1024 * 16;  // 16 KiB
+        private int maxByteCount = JsonTemplateLayoutDefaults.getMaxByteCount();
 
         @PluginBuilderAttribute
-        private int maxStringLength = 0;
+        private int maxStringLength = JsonTemplateLayoutDefaults.getMaxStringLength();
 
         @PluginBuilderAttribute
         private String objectMapperFactoryMethod =
-                "com.fasterxml.jackson.databind.ObjectMapper.new";
+                JsonTemplateLayoutDefaults.getObjectMapperFactoryMethod();
 
         @PluginBuilderAttribute
-        private boolean mapMessageFormatterIgnored = true;
+        private boolean mapMessageFormatterIgnored =
+                JsonTemplateLayoutDefaults.isMapMessageFormatterIgnored();
 
         private Builder() {
             // Do nothing.
@@ -459,12 +453,12 @@ public class JsonTemplateLayout implements StringLayout {
             return this;
         }
 
-        public String getDateTimeFormatPattern() {
-            return dateTimeFormatPattern;
+        public String getTimestampFormatPattern() {
+            return timestampFormatPattern;
         }
 
-        public Builder setDateTimeFormatPattern(final String dateTimeFormatPattern) {
-            this.dateTimeFormatPattern = dateTimeFormatPattern;
+        public Builder setTimestampFormatPattern(final String timestampFormatPattern) {
+            this.timestampFormatPattern = timestampFormatPattern;
             return this;
         }
 
@@ -477,11 +471,11 @@ public class JsonTemplateLayout implements StringLayout {
             return this;
         }
 
-        public String getLocale() {
+        public Locale getLocale() {
             return locale;
         }
 
-        public Builder setLocale(final String locale) {
+        public Builder setLocale(final Locale locale) {
             this.locale = locale;
             return this;
         }
@@ -607,7 +601,7 @@ public class JsonTemplateLayout implements StringLayout {
 
         private void validate() {
             Objects.requireNonNull(configuration, "config");
-            if (Strings.isBlank(dateTimeFormatPattern)) {
+            if (Strings.isBlank(timestampFormatPattern)) {
                 throw new IllegalArgumentException("dateTimeFormatPattern");
             }
             Objects.requireNonNull(timeZone, "timeZone");
