@@ -38,6 +38,8 @@ public class JsonTemplateLayoutConcurrentEncodeTest {
 
     private static class ConcurrentAccessError extends RuntimeException {
 
+        public static final long serialVersionUID = 0;
+
         private ConcurrentAccessError(final int concurrentAccessCount) {
             super("concurrentAccessCount=" + concurrentAccessCount);
         }
