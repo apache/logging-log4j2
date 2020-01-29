@@ -58,7 +58,7 @@ public final class Throwables {
             }
             advanceSlowPointer = !advanceSlowPointer; // only advance every other iteration
         }
-        return throwable;
+        return parent;
 
     }
 
