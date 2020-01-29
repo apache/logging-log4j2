@@ -50,6 +50,14 @@ public interface LogBuilder {
     default void log(String message) {
     }
 
+    /**
+     * Logs a message with parameters.
+     *
+     * @param message the message to log; the format depends on the message factory.
+     * @param params parameters to the message.
+     *
+     * @see org.apache.logging.log4j.util.Unbox
+     */
     default void log(String message, Object... params) {
     }
 
