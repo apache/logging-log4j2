@@ -13,11 +13,11 @@
  * See the License for the specific language governing permits and
  * limitations under the License.
  */
-
 package org.apache.logging.log4j.jackson.json.template.layout;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
@@ -40,6 +40,7 @@ import org.apache.logging.log4j.jackson.json.template.layout.util.ByteBufferOutp
 import org.apache.logging.log4j.jackson.json.template.layout.util.Uris;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
 import java.io.IOException;
@@ -59,6 +60,8 @@ import java.util.function.Supplier;
         elementType = Layout.ELEMENT_TYPE,
         printObject = true)
 public class JsonTemplateLayout implements StringLayout {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final Map<String, String> CONTENT_FORMAT = Collections.singletonMap("version", "1");
 
@@ -263,8 +266,7 @@ public class JsonTemplateLayout implements StringLayout {
         try {
             oldContext.close();
         } catch (final Exception error) {
-            System.err.println("context close attempt suppressing the error:");
-            cause.printStackTrace(System.err);
+            LOGGER.error("failed context close attempt suppressing the parent error", cause);
             throw new RuntimeException(error);
         }
         if (Constants.ENABLE_THREADLOCALS) {
