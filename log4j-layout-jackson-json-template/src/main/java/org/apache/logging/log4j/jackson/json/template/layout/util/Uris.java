@@ -17,51 +17,62 @@
 package org.apache.logging.log4j.jackson.json.template.layout.util;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public enum Uris {;
 
-    public static String readUri(final String spec) {
+    public static String readUri(final String spec, final Charset charset) {
         try {
-            return unsafeReadUri(spec);
+            return unsafeReadUri(spec, charset);
         } catch (final Exception error) {
-            final String message = String.format("failed reading URI (spec=%s)", spec);
+            final String message = String.format(
+                    "failed reading URI (spec=%s, charset=%s)",
+                    spec, charset);
             throw new RuntimeException(message, error);
         }
     }
 
-    private static String unsafeReadUri(final String spec) throws Exception {
+    private static String unsafeReadUri(
+            final String spec,
+            final Charset charset)
+            throws Exception {
         final URI uri = new URI(spec);
         final String uriScheme = uri.getScheme().toLowerCase();
         switch (uriScheme) {
             case "classpath":
-                return readClassPathUri(uri);
+                return readClassPathUri(uri, charset);
             case "file":
-                return readFileUri(uri);
+                return readFileUri(uri, charset);
             default: {
-                final String message = String.format("unknown URI scheme (spec='%s')", spec);
+                final String message = String.format("unknown URI scheme (spec=%s)", spec);
                 throw new IllegalArgumentException(message);
             }
         }
 
     }
 
-    private static String readFileUri(final URI uri) throws IOException {
-        final File file = new File(uri);
-        try (final FileReader fileReader = new FileReader(file)) {
+    private static String readFileUri(
+            final URI uri,
+            final Charset charset)
+            throws IOException {
+        final Path path = Paths.get(uri);
+        try (final BufferedReader fileReader = Files.newBufferedReader(path, charset)) {
             return consumeReader(fileReader);
         }
     }
 
-    private static String readClassPathUri(final URI uri) throws IOException {
+    private static String readClassPathUri(
+            final URI uri,
+            final Charset charset)
+            throws IOException {
         final String spec = uri.toString();
         final String path = spec.substring("classpath:".length());
         final URL resource = Uris.class.getClassLoader().getResource(path);
@@ -71,20 +82,18 @@ public enum Uris {;
             throw new RuntimeException(message);
         }
         try (final InputStream inputStream = resource.openStream()) {
-            try (final InputStreamReader reader =
-                         new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
-                return consumeReader(reader);
+            try (final InputStreamReader reader = new InputStreamReader(inputStream, charset);
+                 final BufferedReader bufferedReader = new BufferedReader(reader)) {
+                return consumeReader(bufferedReader);
             }
         }
     }
 
-    private static String consumeReader(final Reader reader) throws IOException {
+    private static String consumeReader(final BufferedReader reader) throws IOException {
         final StringBuilder builder = new StringBuilder();
-        try (final BufferedReader bufferedReader = new BufferedReader(reader)) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                builder.append(line);
-            }
+        String line;
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
         }
         return builder.toString();
     }

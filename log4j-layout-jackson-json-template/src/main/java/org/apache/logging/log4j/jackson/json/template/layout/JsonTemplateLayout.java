@@ -175,16 +175,25 @@ public class JsonTemplateLayout implements StringLayout {
     }
 
     private static String readEventTemplate(final Builder builder) {
-        return readTemplate(builder.eventTemplate, builder.eventTemplateUri);
+        return readTemplate(
+                builder.eventTemplate,
+                builder.eventTemplateUri,
+                builder.charset);
     }
 
     private static String readStackTraceElementTemplate(final Builder builder) {
-        return readTemplate(builder.stackTraceElementTemplate, builder.stackTraceElementTemplateUri);
+        return readTemplate(
+                builder.stackTraceElementTemplate,
+                builder.stackTraceElementTemplateUri,
+                builder.charset);
     }
 
-    private static String readTemplate(final String template, final String templateUri) {
+    private static String readTemplate(
+            final String template,
+            final String templateUri,
+            final Charset charset) {
         return Strings.isBlank(template)
-                ? Uris.readUri(templateUri)
+                ? Uris.readUri(templateUri, charset)
                 : template;
     }
 
@@ -368,7 +377,7 @@ public class JsonTemplateLayout implements StringLayout {
 
         @PluginBuilderAttribute
         private String stackTraceElementTemplateUri =
-                "classpath:Log4j2StackTraceElementLayout.json";
+                "classpath:StackTraceElementLayout.json";
 
         @PluginBuilderAttribute
         private String mdcKeyPattern;
