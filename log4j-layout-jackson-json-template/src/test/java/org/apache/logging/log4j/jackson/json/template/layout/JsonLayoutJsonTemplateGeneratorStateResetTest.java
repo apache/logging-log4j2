@@ -31,7 +31,6 @@ import org.junit.Test;
 import java.nio.Buffer;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 public class JsonLayoutJsonTemplateGeneratorStateResetTest {
 
@@ -56,7 +55,7 @@ public class JsonLayoutJsonTemplateGeneratorStateResetTest {
 
     private static LogEvent createLogEventExceedingMaxByteCount() {
         final byte[] messageBytes = generateRandomBytes(MAX_BYTE_COUNT);
-        final String messageText = new String(messageBytes);
+        final String messageText = new String(messageBytes, JsonTemplateLayoutDefaults.getCharset());
         final SimpleMessage message = new SimpleMessage(messageText);
         return Log4jLogEvent
                 .newBuilder()
@@ -81,7 +80,7 @@ public class JsonLayoutJsonTemplateGeneratorStateResetTest {
     public void test_toSerializable() throws Exception {
         test_serializer_recover_after_buffer_overflow((final LogEvent logEvent) -> {
             final String serializableLogEvent = LAYOUT.toSerializable(logEvent);
-            return serializableLogEvent.getBytes(StandardCharsets.UTF_8);
+            return serializableLogEvent.getBytes(JsonTemplateLayoutDefaults.getCharset());
         });
     }
 
@@ -112,7 +111,7 @@ public class JsonLayoutJsonTemplateGeneratorStateResetTest {
     }
 
     private void test_jsonBytes(final byte[] jsonBytes) {
-        final String json = new String(jsonBytes, StandardCharsets.UTF_8);
+        final String json = new String(jsonBytes, JsonTemplateLayoutDefaults.getCharset());
         Assertions
                 .assertThatCode(() -> {
                     final JsonParser parser = JSON_FACTORY.createParser(json);
