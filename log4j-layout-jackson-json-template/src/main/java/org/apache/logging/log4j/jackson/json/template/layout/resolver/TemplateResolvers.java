@@ -80,19 +80,17 @@ public enum TemplateResolvers {;
     private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofNode(
             final C context,
             final JsonNode node) {
-
         // Check for known types.
         final JsonNodeType nodeType = node.getNodeType();
         switch (nodeType) {
             case ARRAY: return ofArrayNode(context, node);
             case OBJECT: return ofObjectNode(context, node);
             case STRING: return ofStringNode(context, node);
+            // Otherwise, create constant resolver for the JSON.
+            default:
+                return (final V ignored, final JsonGenerator jsonGenerator) ->
+                        jsonGenerator.writeTree(node);
         }
-
-        // Create constant resolver for the JSON.
-        return (final V ignored, final JsonGenerator jsonGenerator) ->
-                jsonGenerator.writeTree(node);
-
     }
 
     private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofArrayNode(
