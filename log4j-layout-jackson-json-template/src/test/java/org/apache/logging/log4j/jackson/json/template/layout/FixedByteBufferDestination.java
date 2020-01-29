@@ -35,6 +35,7 @@ class FixedByteBufferDestination implements ByteBufferDestination {
     }
 
     @Override
+    @SuppressWarnings("ReferenceEquality")
     public ByteBuffer drain(final ByteBuffer sourceByteBuffer) {
         if (byteBuffer != sourceByteBuffer) {
             sourceByteBuffer.flip();
