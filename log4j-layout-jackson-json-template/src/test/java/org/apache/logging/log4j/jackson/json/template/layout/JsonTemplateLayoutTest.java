@@ -38,7 +38,6 @@ import org.apache.logging.log4j.core.lookup.MainMapLookup;
 import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
@@ -326,7 +325,7 @@ public class JsonTemplateLayoutTest {
                 .build();
 
         // Create the log event with a MapMessage.
-        final MapMessage mapMessage = new MapMessage()
+        final StringMapMessage mapMessage = new StringMapMessage()
                 .with("key1", "val1")
                 .with("key2", "val2")
                 .with("key3", Collections.singletonMap("foo", "bar"));
@@ -366,7 +365,7 @@ public class JsonTemplateLayoutTest {
                 .build();
 
         // Create the log event with a MapMessage.
-        final MapMessage mapMessage = new MapMessage()
+        final StringMapMessage mapMessage = new StringMapMessage()
                 .with("key1", "val1")
                 .with("key2", 0xDEADBEEF)
                 .with("key3", Collections.singletonMap("key3.1", "val3.1"));
@@ -717,7 +716,7 @@ public class JsonTemplateLayoutTest {
     public void test_MapResolver() throws IOException {
 
         // Create the log event.
-        final MapMessage message = new MapMessage().with("key1", "val1");
+        final StringMapMessage message = new StringMapMessage().with("key1", "val1");
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
                 .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
