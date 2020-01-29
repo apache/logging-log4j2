@@ -104,7 +104,7 @@ public class JsonTemplateLayout implements StringLayout {
             final String methodName = objectMapperFactoryMethod.substring(splitterIndex + 1);
             final Class<?> clazz = Class.forName(className);
             if ("new".equals(methodName)) {
-                return (ObjectMapper) clazz.newInstance();
+                return (ObjectMapper) clazz.getDeclaredConstructor().newInstance();
             } else {
                 final Method method = clazz.getMethod(methodName);
                 return (ObjectMapper) method.invoke(null);
