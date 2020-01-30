@@ -53,19 +53,9 @@ import java.util.List;
 @State(Scope.Benchmark)
 public class ThreadLocalVsPoolBenchmark {
 
-    private static final int CPU_COUNT = findCpuCount();
-
     private static final LogEvent LOG_EVENT = createLogEvent();
 
     private static final List<PatternFormatter> FORMATTERS = createFormatters();
-
-    private static int findCpuCount() {
-        final int cpuCount = Runtime.getRuntime().availableProcessors();
-        if (cpuCount < 2) {
-            throw new IllegalArgumentException("2+ CPUs are required, found: " + cpuCount);
-        }
-        return cpuCount;
-    }
 
     private static LogEvent createLogEvent() {
         final String loggerName = "name(ignored)";
@@ -97,14 +87,14 @@ public class ThreadLocalVsPoolBenchmark {
         abstract void release(StringBuilder stringBuilder);
 
         StringBuilder createStringBuilder() {
-            return new StringBuilder(1024);
+            return new StringBuilder(1024 * 32);
         }
 
     }
 
-    private static final class NoOpPool extends StringBuilderPool {
+    private static final class AllocatePool extends StringBuilderPool {
 
-        private static final NoOpPool INSTANCE = new NoOpPool();
+        private static final AllocatePool INSTANCE = new AllocatePool();
 
         @Override
         public StringBuilder acquire() {
@@ -137,9 +127,28 @@ public class ThreadLocalVsPoolBenchmark {
 
     private static final class JcPool extends StringBuilderPool {
 
-        private static final JcPool UNDER_PROVISIONED_INSTANCE = new JcPool(2); // MPMC requires the capacity >= 2.
+        private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
 
-        private static final JcPool RIGHT_PROVISIONED_INSTANCE = new JcPool(CPU_COUNT);
+        private static final int MPMC_REQUIRED_MIN_CAPACITY = 2;
+
+        // Putting the under-provisioned instance to a wrapper class to prevent
+        // the initialization of JcPool itself when there are insufficient CPU
+        // cores.
+        private enum UnderProvisionedInstanceHolder {;
+
+            private static final JcPool INSTANCE = createInstance();
+
+            private static JcPool createInstance() {
+                if (CPU_COUNT <= MPMC_REQUIRED_MIN_CAPACITY) {
+                    throw new IllegalArgumentException("insufficient CPU cores");
+                }
+                return new JcPool(MPMC_REQUIRED_MIN_CAPACITY);
+            }
+
+        }
+
+        private static final JcPool RIGHT_PROVISIONED_INSTANCE =
+                new JcPool(Math.max(MPMC_REQUIRED_MIN_CAPACITY, CPU_COUNT));
 
         private final MpmcArrayQueue<StringBuilder> stringBuilders;
 
@@ -164,23 +173,23 @@ public class ThreadLocalVsPoolBenchmark {
     }
 
     @Benchmark
-    public int findSerializedLengthViaNoOp() {
-        return findSerializedLength(NoOpPool.INSTANCE);
+    public int allocate() {
+        return findSerializedLength(AllocatePool.INSTANCE);
     }
 
     @Benchmark
-    public int findSerializedLengthViaThreadLocal() {
+    public int threadLocal() {
         return findSerializedLength(ThreadLocalPool.INSTANCE);
     }
 
     @Benchmark
-    public int findSerializedLengthViaRightProvisionedJc() {
+    public int rightProvedJc() {
         return findSerializedLength(JcPool.RIGHT_PROVISIONED_INSTANCE);
     }
 
     @Benchmark
-    public int findSerializedLengthViaUnderProvisionedJc() {
-        return findSerializedLength(JcPool.UNDER_PROVISIONED_INSTANCE);
+    public int underProvedJc() {
+        return findSerializedLength(JcPool.UnderProvisionedInstanceHolder.INSTANCE);
     }
 
     private int findSerializedLength(final StringBuilderPool pool) {
