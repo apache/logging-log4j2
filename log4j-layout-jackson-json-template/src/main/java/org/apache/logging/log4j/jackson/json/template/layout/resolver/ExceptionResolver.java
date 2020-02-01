@@ -47,8 +47,8 @@ class ExceptionResolver implements EventResolver {
                         if (exception != null) {
                             String exceptionMessage = exception.getMessage();
                             boolean exceptionMessageExcluded =
-                                    context.isBlankPropertyExclusionEnabled() &&
-                                            Strings.isEmpty(exceptionMessage);
+                                    context.isBlankFieldExclusionEnabled() &&
+                                            Strings.isBlank(exceptionMessage);
                             if (!exceptionMessageExcluded) {
                                 jsonGenerator.writeString(exceptionMessage);
                                 return;

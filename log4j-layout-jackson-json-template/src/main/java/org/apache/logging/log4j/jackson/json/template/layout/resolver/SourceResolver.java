@@ -55,8 +55,8 @@ final class SourceResolver implements EventResolver {
             if (logEventSource != null) {
                 final String sourceClassName = logEventSource.getClassName();
                 final boolean sourceClassNameExcluded =
-                        context.isBlankPropertyExclusionEnabled() &&
-                                Strings.isEmpty(sourceClassName);
+                        context.isBlankFieldExclusionEnabled() &&
+                                Strings.isBlank(sourceClassName);
                 if (!sourceClassNameExcluded) {
                     jsonGenerator.writeString(sourceClassName);
                     return;
@@ -72,8 +72,8 @@ final class SourceResolver implements EventResolver {
             if (logEventSource != null) {
                 final String sourceFileName = logEventSource.getFileName();
                 final boolean sourceFileNameExcluded =
-                        context.isBlankPropertyExclusionEnabled() &&
-                                Strings.isEmpty(sourceFileName);
+                        context.isBlankFieldExclusionEnabled() &&
+                                Strings.isBlank(sourceFileName);
                 if (!sourceFileNameExcluded) {
                     jsonGenerator.writeString(sourceFileName);
                     return;
@@ -101,8 +101,8 @@ final class SourceResolver implements EventResolver {
             if (logEventSource != null) {
                 final String sourceMethodName = logEventSource.getMethodName();
                 final boolean sourceMethodNameExcluded =
-                        context.isBlankPropertyExclusionEnabled() &&
-                                Strings.isEmpty(sourceMethodName);
+                        context.isBlankFieldExclusionEnabled() &&
+                                Strings.isBlank(sourceMethodName);
                 if (!sourceMethodNameExcluded) {
                     jsonGenerator.writeString(sourceMethodName);
                     return;

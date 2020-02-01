@@ -42,7 +42,7 @@ public class JsonLayoutJsonTemplateGeneratorStateResetTest {
             .setEventTemplate("{\"message\": \"${json:message}\"}")
             .setStackTraceEnabled(true)
             .setLocationInfoEnabled(true)
-            .setBlankPropertyExclusionEnabled(true)
+            .setBlankFieldExclusionEnabled(true)
             .build();
 
     private static final JsonFactory JSON_FACTORY = ObjectMapperFixture.getObjectMapper().getFactory();

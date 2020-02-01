@@ -48,7 +48,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
     private final TemplateResolver<Throwable> stackTraceObjectResolver;
 
-    private final boolean blankPropertyExclusionEnabled;
+    private final boolean blankFieldExclusionEnabled;
 
     private final Pattern mdcKeyPattern;
 
@@ -70,7 +70,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         this.stackTraceObjectResolver = stackTraceEnabled
                 ? new StackTraceObjectResolver(builder.stackTraceElementObjectResolver)
                 : null;
-        this.blankPropertyExclusionEnabled = builder.blankPropertyExclusionEnabled;
+        this.blankFieldExclusionEnabled = builder.blankFieldExclusionEnabled;
         this.mdcKeyPattern = builder.mdcKeyPattern == null ? null : Pattern.compile(builder.mdcKeyPattern);
         this.ndcPattern = builder.ndcPattern == null ? null : Pattern.compile(builder.ndcPattern);
         this.additionalFields = builder.eventTemplateAdditionalFields;
@@ -126,8 +126,8 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
     }
 
     @Override
-    public boolean isBlankPropertyExclusionEnabled() {
-        return blankPropertyExclusionEnabled;
+    public boolean isBlankFieldExclusionEnabled() {
+        return blankFieldExclusionEnabled;
     }
 
     Pattern getMdcKeyPattern() {
@@ -170,7 +170,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         private TemplateResolver<StackTraceElement> stackTraceElementObjectResolver;
 
-        private boolean blankPropertyExclusionEnabled;
+        private boolean blankFieldExclusionEnabled;
 
         private String mdcKeyPattern;
 
@@ -230,9 +230,9 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             return this;
         }
 
-        public Builder setBlankPropertyExclusionEnabled(
-                final boolean blankPropertyExclusionEnabled) {
-            this.blankPropertyExclusionEnabled = blankPropertyExclusionEnabled;
+        public Builder setBlankFieldExclusionEnabled(
+                final boolean blankFieldExclusionEnabled) {
+            this.blankFieldExclusionEnabled = blankFieldExclusionEnabled;
             return this;
         }
 

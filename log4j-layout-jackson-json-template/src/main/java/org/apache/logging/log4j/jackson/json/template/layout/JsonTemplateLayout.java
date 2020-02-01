@@ -123,7 +123,7 @@ public class JsonTemplateLayout implements StringLayout {
                         .newBuilder()
                         .setObjectMapper(objectMapper)
                         .setSubstitutor(substitutor)
-                        .setBlankPropertyExclusionEnabled(builder.blankPropertyExclusionEnabled)
+                        .setBlankFieldExclusionEnabled(builder.blankFieldExclusionEnabled)
                         .build();
         final String stackTraceElementTemplate = readStackTraceElementTemplate(builder);
         return TemplateResolvers.ofTemplate(stackTraceElementObjectResolverContext, stackTraceElementTemplate);
@@ -153,7 +153,7 @@ public class JsonTemplateLayout implements StringLayout {
                 .setLocationInfoEnabled(builder.locationInfoEnabled)
                 .setStackTraceEnabled(builder.stackTraceEnabled)
                 .setStackTraceElementObjectResolver(stackTraceElementObjectResolver)
-                .setBlankPropertyExclusionEnabled(builder.blankPropertyExclusionEnabled)
+                .setBlankFieldExclusionEnabled(builder.blankFieldExclusionEnabled)
                 .setMdcKeyPattern(builder.mdcKeyPattern)
                 .setNdcPattern(builder.ndcPattern)
                 .setEventTemplateAdditionalFields(builder.eventTemplateAdditionalFields.additionalFields)
@@ -170,7 +170,7 @@ public class JsonTemplateLayout implements StringLayout {
                 objectMapper,
                 builder.maxByteCount,
                 builder.prettyPrintEnabled,
-                builder.blankPropertyExclusionEnabled,
+                builder.blankFieldExclusionEnabled,
                 builder.maxStringLength);
     }
 
@@ -327,21 +327,21 @@ public class JsonTemplateLayout implements StringLayout {
         @PluginBuilderAttribute
         private Charset charset = JsonTemplateLayoutDefaults.getCharset();
 
-        @PluginBuilderAttribute("prettyPrint")
+        @PluginBuilderAttribute
         private boolean prettyPrintEnabled =
                 JsonTemplateLayoutDefaults.isPrettyPrintEnabled();
 
-        @PluginBuilderAttribute("locationInfo")
+        @PluginBuilderAttribute
         private boolean locationInfoEnabled =
                 JsonTemplateLayoutDefaults.isLocationInfoEnabled();
 
-        @PluginBuilderAttribute("stackTrace")
+        @PluginBuilderAttribute
         private boolean stackTraceEnabled =
                 JsonTemplateLayoutDefaults.isStackTraceEnabled();
 
-        @PluginBuilderAttribute("blankPropertyExclusion")
-        private boolean blankPropertyExclusionEnabled =
-                JsonTemplateLayoutDefaults.isBlankPropertyExclusionEnabled();
+        @PluginBuilderAttribute
+        private boolean blankFieldExclusionEnabled =
+                JsonTemplateLayoutDefaults.isBlankFieldExclusionEnabled();
 
         @PluginBuilderAttribute
         private String timestampFormatPattern =
@@ -444,12 +444,12 @@ public class JsonTemplateLayout implements StringLayout {
             return this;
         }
 
-        public boolean isBlankPropertyExclusionEnabled() {
-            return blankPropertyExclusionEnabled;
+        public boolean isBlankFieldExclusionEnabled() {
+            return blankFieldExclusionEnabled;
         }
 
-        public Builder setBlankPropertyExclusionEnabled(final boolean blankPropertyExclusionEnabled) {
-            this.blankPropertyExclusionEnabled = blankPropertyExclusionEnabled;
+        public Builder setBlankFieldExclusionEnabled(final boolean blankFieldExclusionEnabled) {
+            this.blankFieldExclusionEnabled = blankFieldExclusionEnabled;
             return this;
         }
 

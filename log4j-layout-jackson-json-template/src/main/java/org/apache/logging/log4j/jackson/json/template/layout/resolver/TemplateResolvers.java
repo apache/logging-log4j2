@@ -174,8 +174,8 @@ public enum TemplateResolvers {;
         // Short-circuit if content is blank and not allowed.
         final String fieldValue = textNode.asText();
         final boolean fieldValueExcluded =
-                context.isBlankPropertyExclusionEnabled() &&
-                        Strings.isEmpty(fieldValue);
+                context.isBlankFieldExclusionEnabled() &&
+                        Strings.isBlank(fieldValue);
         if (fieldValueExcluded) {
             @SuppressWarnings("unchecked")
             final TemplateResolver<V> nullNodeResolver = (TemplateResolver<V>) NULL_NODE_RESOLVER;
@@ -208,8 +208,8 @@ public enum TemplateResolvers {;
                     final LogEvent logEvent = (LogEvent) value;
                     final String replacedText = context.getSubstitutor().replace(logEvent, fieldValue);
                     final boolean replacedTextExcluded =
-                            context.isBlankPropertyExclusionEnabled() &&
-                                    Strings.isEmpty(replacedText);
+                            context.isBlankFieldExclusionEnabled() &&
+                                    Strings.isBlank(replacedText);
                     if (replacedTextExcluded) {
                         jsonGenerator.writeNull();
                     } else {
@@ -221,8 +221,8 @@ public enum TemplateResolvers {;
                 return (final V value, final JsonGenerator jsonGenerator) -> {
                     final String replacedText = context.getSubstitutor().replace(null, fieldValue);
                     final boolean replacedTextExcluded =
-                            context.isBlankPropertyExclusionEnabled() &&
-                                    Strings.isEmpty(replacedText);
+                            context.isBlankFieldExclusionEnabled() &&
+                                    Strings.isBlank(replacedText);
                     if (replacedTextExcluded) {
                         jsonGenerator.writeNull();
                     } else {

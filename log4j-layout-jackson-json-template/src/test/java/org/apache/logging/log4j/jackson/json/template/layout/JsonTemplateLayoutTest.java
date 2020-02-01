@@ -315,7 +315,7 @@ public class JsonTemplateLayoutTest {
                 .newBuilder()
                 .setConfiguration(configuration)
                 .setEventTemplate(eventTemplate)
-                .setBlankPropertyExclusionEnabled(true)
+                .setBlankFieldExclusionEnabled(true)
                 .build();
 
         // Create the log event with a MapMessage.
@@ -731,7 +731,7 @@ public class JsonTemplateLayoutTest {
                 .newBuilder()
                 .setConfiguration(configuration)
                 .setEventTemplate(eventTemplate)
-                .setBlankPropertyExclusionEnabled(true)
+                .setBlankFieldExclusionEnabled(true)
                 .build();
 
         // Check serialized event.
@@ -743,7 +743,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_emptyPropertyExclusionEnabled() throws IOException {
+    public void test_blankFieldExclusionEnabled() throws IOException {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World!");
@@ -763,8 +763,8 @@ public class JsonTemplateLayoutTest {
         // Create event template node with empty property and MDC fields.
         final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
         final String mdcFieldName = "mdc";
-        final String emptyProperty1Name = "property1Name";
-        eventTemplateRootNode.put(emptyProperty1Name, "${" + emptyProperty1Name + "}");
+        final String blankField1Name = "property1Name";
+        eventTemplateRootNode.put(blankField1Name, "${" + blankField1Name + "}");
         eventTemplateRootNode.put(mdcFieldName, "${json:mdc}");
         eventTemplateRootNode.put(mdcEmptyKey1, String.format("${json:mdc:%s}", mdcEmptyKey1));
         eventTemplateRootNode.put(mdcEmptyKey2, String.format("${json:mdc:%s}", mdcEmptyKey2));
@@ -788,22 +788,22 @@ public class JsonTemplateLayoutTest {
         // Create the layout configuration.
         final Configuration config = ConfigurationBuilderFactory
                 .newConfigurationBuilder()
-                .addProperty(emptyProperty1Name, "")
+                .addProperty(blankField1Name, "")
                 .build();
 
-        for (final boolean emptyPropertyExclusionEnabled : new boolean[]{true, false}) {
+        for (final boolean blankFieldExclusionEnabled : new boolean[]{true, false}) {
 
             // Create the layout.
             final JsonTemplateLayout layout = JsonTemplateLayout
                     .newBuilder()
                     .setConfiguration(config)
                     .setEventTemplate(eventTemplate)
-                    .setBlankPropertyExclusionEnabled(emptyPropertyExclusionEnabled)
+                    .setBlankFieldExclusionEnabled(blankFieldExclusionEnabled)
                     .build();
 
             // Check serialized event.
             final String serializedLogEvent = layout.toSerializable(logEvent);
-            if (emptyPropertyExclusionEnabled) {
+            if (blankFieldExclusionEnabled) {
                 assertThat(serializedLogEvent).isEqualTo("{}" + System.lineSeparator());
             } else {
 
@@ -814,7 +814,7 @@ public class JsonTemplateLayoutTest {
                 assertThat(point(rootNode, mdcFieldName)).isInstanceOf(ObjectNode.class);
                 assertThat(point(rootNode, mdcFieldName, mdcEmptyKey1).asText()).isEmpty();
                 assertThat(point(rootNode, mdcFieldName, mdcEmptyKey2)).isInstanceOf(NullNode.class);
-                assertThat(point(rootNode, emptyProperty1Name).asText()).isEmpty();
+                assertThat(point(rootNode, blankField1Name).asText()).isEmpty();
 
                 // Check "blankObject": {"emptyArray": []} field.
                 assertThat(point(rootNode, blankObjectFieldName, emptyArrayFieldName).isArray()).isTrue();

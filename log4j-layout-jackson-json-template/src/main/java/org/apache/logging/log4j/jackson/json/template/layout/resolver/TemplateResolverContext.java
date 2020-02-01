@@ -31,6 +31,6 @@ interface TemplateResolverContext<V, C extends TemplateResolverContext<V, C>> {
 
     StrSubstitutor getSubstitutor();
 
-    boolean isBlankPropertyExclusionEnabled();
+    boolean isBlankFieldExclusionEnabled();
 
 }

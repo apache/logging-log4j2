@@ -31,22 +31,22 @@ public enum JsonTemplateLayoutDefaults {;
 
     private static final boolean PRETTY_PRINT_ENABLED =
             PROPERTIES.getBooleanProperty(
-                    "log4j.layout.jsonTemplate.prettyPrint",
+                    "log4j.layout.jsonTemplate.prettyPrintEnabled",
                     false);
 
     private static final boolean LOCATION_INFO_ENABLED =
             PROPERTIES.getBooleanProperty(
-                    "log4j.layout.jsonTemplate.locationInfo",
+                    "log4j.layout.jsonTemplate.locationInfoEnabled",
                     false);
 
     private static final boolean STACK_TRACE_ENABLED =
             PROPERTIES.getBooleanProperty(
-                    "log4j.layout.jsonTemplate.stackTrace",
+                    "log4j.layout.jsonTemplate.stackTraceEnabled",
                     true);
 
-    private static final boolean BLANK_PROPERTY_EXCLUSION_ENABLED =
+    private static final boolean BLANK_FIELD_EXCLUSION_ENABLED =
             PROPERTIES.getBooleanProperty(
-                    "log4j.layout.jsonTemplate.blankPropertyExclusion",
+                    "log4j.layout.jsonTemplate.blankFieldExclusionEnabled",
                     false);
 
     private static final String TIMESTAMP_FORMAT_PATTERN =
@@ -152,8 +152,8 @@ public enum JsonTemplateLayoutDefaults {;
         return STACK_TRACE_ENABLED;
     }
 
-    public static boolean isBlankPropertyExclusionEnabled() {
-        return BLANK_PROPERTY_EXCLUSION_ENABLED;
+    public static boolean isBlankFieldExclusionEnabled() {
+        return BLANK_FIELD_EXCLUSION_ENABLED;
     }
 
     public static String getTimestampFormatPattern() {

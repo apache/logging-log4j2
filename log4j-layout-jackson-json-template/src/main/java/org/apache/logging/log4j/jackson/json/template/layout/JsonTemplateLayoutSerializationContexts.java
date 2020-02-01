@@ -42,7 +42,7 @@ enum JsonTemplateLayoutSerializationContexts {;
             final ObjectMapper objectMapper,
             final int maxByteCount,
             final boolean prettyPrintEnabled,
-            final boolean emptyPropertyExclusionEnabled,
+            final boolean blankFieldExclusionEnabled,
             final int maxStringLength) {
         final JsonFactory jsonFactory = new JsonFactory(objectMapper);
         return () -> {
@@ -51,7 +51,7 @@ enum JsonTemplateLayoutSerializationContexts {;
                     jsonFactory,
                     outputStream,
                     prettyPrintEnabled,
-                    emptyPropertyExclusionEnabled,
+                    blankFieldExclusionEnabled,
                     maxStringLength);
             return new JsonTemplateLayoutSerializationContext() {
 
@@ -83,7 +83,7 @@ enum JsonTemplateLayoutSerializationContexts {;
             final JsonFactory jsonFactory,
             final OutputStream outputStream,
             final boolean prettyPrintEnabled,
-            final boolean emptyPropertyExclusionEnabled,
+            final boolean blankFieldExclusionEnabled,
             final int maxStringLength) {
         try {
             JsonGenerator jsonGenerator = jsonFactory.createGenerator(outputStream);
@@ -91,7 +91,7 @@ enum JsonTemplateLayoutSerializationContexts {;
             if (prettyPrintEnabled) {
                 jsonGenerator.setPrettyPrinter(PRETTY_PRINTER);
             }
-            if (emptyPropertyExclusionEnabled) {
+            if (blankFieldExclusionEnabled) {
                 jsonGenerator = new FilteringGeneratorDelegate(
                         jsonGenerator, NullExcludingTokenFilter.INSTANCE, true, true);
             }

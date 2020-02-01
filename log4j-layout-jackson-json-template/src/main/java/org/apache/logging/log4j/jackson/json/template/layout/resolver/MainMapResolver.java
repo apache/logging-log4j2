@@ -47,8 +47,8 @@ final class MainMapResolver implements EventResolver {
             throws IOException {
         final String value = MAIN_MAP_LOOKUP.lookup(key);
         final boolean valueExcluded =
-                context.isBlankPropertyExclusionEnabled() &&
-                        Strings.isEmpty(value);
+                context.isBlankFieldExclusionEnabled() &&
+                        Strings.isBlank(value);
         if (valueExcluded) {
             jsonGenerator.writeNull();
         } else {

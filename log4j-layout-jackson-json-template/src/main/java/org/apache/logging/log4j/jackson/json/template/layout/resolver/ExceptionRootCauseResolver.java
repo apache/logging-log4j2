@@ -50,8 +50,8 @@ final class ExceptionRootCauseResolver implements EventResolver {
                             final Throwable rootCause = Throwables.getRootCause(exception);
                             final String rootCauseMessage = rootCause.getMessage();
                             boolean rootCauseMessageExcluded =
-                                    context.isBlankPropertyExclusionEnabled() &&
-                                            Strings.isEmpty(rootCauseMessage);
+                                    context.isBlankFieldExclusionEnabled() &&
+                                            Strings.isBlank(rootCauseMessage);
                             if (!rootCauseMessageExcluded) {
                                 jsonGenerator.writeString(rootCauseMessage);
                                 return;

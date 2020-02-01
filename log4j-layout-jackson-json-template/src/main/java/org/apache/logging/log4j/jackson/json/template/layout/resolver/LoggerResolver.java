@@ -60,8 +60,8 @@ final class LoggerResolver implements EventResolver {
             final String text)
             throws IOException {
         final boolean textExcluded =
-                context.isBlankPropertyExclusionEnabled() &&
-                        Strings.isEmpty(text);
+                context.isBlankFieldExclusionEnabled() &&
+                        Strings.isBlank(text);
         if (textExcluded) {
             jsonGenerator.writeNull();
         } else {

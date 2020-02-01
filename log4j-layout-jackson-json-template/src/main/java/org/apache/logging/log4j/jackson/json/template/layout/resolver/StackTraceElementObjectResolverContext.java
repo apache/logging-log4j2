@@ -29,12 +29,12 @@ public final class StackTraceElementObjectResolverContext
 
     private final StrSubstitutor substitutor;
 
-    private final boolean blankPropertyExclusionEnabled;
+    private final boolean blankFieldExclusionEnabled;
 
     private StackTraceElementObjectResolverContext(final Builder builder) {
         this.objectMapper = builder.objectMapper;
         this.substitutor = builder.substitutor;
-        this.blankPropertyExclusionEnabled = builder.blankPropertyExclusionEnabled;
+        this.blankFieldExclusionEnabled = builder.blankFieldExclusionEnabled;
     }
 
     @Override
@@ -58,8 +58,8 @@ public final class StackTraceElementObjectResolverContext
     }
 
     @Override
-    public boolean isBlankPropertyExclusionEnabled() {
-        return blankPropertyExclusionEnabled;
+    public boolean isBlankFieldExclusionEnabled() {
+        return blankFieldExclusionEnabled;
     }
 
     public static Builder newBuilder() {
@@ -72,7 +72,7 @@ public final class StackTraceElementObjectResolverContext
 
         private StrSubstitutor substitutor;
 
-        private boolean blankPropertyExclusionEnabled;
+        private boolean blankFieldExclusionEnabled;
 
         private Builder() {
             // Do nothing.
@@ -88,9 +88,9 @@ public final class StackTraceElementObjectResolverContext
             return this;
         }
 
-        public Builder setBlankPropertyExclusionEnabled(
-                final boolean blankPropertyExclusionEnabled) {
-            this.blankPropertyExclusionEnabled = blankPropertyExclusionEnabled;
+        public Builder setBlankFieldExclusionEnabled(
+                final boolean blankFieldExclusionEnabled) {
+            this.blankFieldExclusionEnabled = blankFieldExclusionEnabled;
             return this;
         }
 

@@ -77,8 +77,8 @@ final class MessageResolver implements EventResolver {
     private String resolveText(final Message message) {
         final String formattedMessage = message.getFormattedMessage();
         final boolean messageExcluded =
-                context.isBlankPropertyExclusionEnabled() &&
-                        Strings.isEmpty(formattedMessage);
+                context.isBlankFieldExclusionEnabled() &&
+                        Strings.isBlank(formattedMessage);
         return messageExcluded ? null : formattedMessage;
     }
 
@@ -121,8 +121,8 @@ final class MessageResolver implements EventResolver {
         // Write message.
         final String formattedMessage = simpleMessage.getFormattedMessage();
         final boolean messageExcluded =
-                context.isBlankPropertyExclusionEnabled() &&
-                        Strings.isEmpty(formattedMessage);
+                context.isBlankFieldExclusionEnabled() &&
+                        Strings.isBlank(formattedMessage);
         if (messageExcluded) {
             jsonGenerator.writeNull();
         } else {
@@ -235,7 +235,7 @@ final class MessageResolver implements EventResolver {
 
     private boolean isNodeExcluded(final JsonNode jsonNode) {
 
-        if (!context.isBlankPropertyExclusionEnabled()) {
+        if (!context.isBlankFieldExclusionEnabled()) {
             return false;
         }
 
@@ -243,7 +243,7 @@ final class MessageResolver implements EventResolver {
             return true;
         }
 
-        if (jsonNode.isTextual() && Strings.isEmpty(jsonNode.asText())) {
+        if (jsonNode.isTextual() && Strings.isBlank(jsonNode.asText())) {
             return true;
         }
 

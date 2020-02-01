@@ -45,8 +45,8 @@ final class ThreadResolver implements EventResolver {
         return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
             final String threadName = logEvent.getThreadName();
             final boolean threadNameExcluded =
-                    context.isBlankPropertyExclusionEnabled() &&
-                            Strings.isEmpty(threadName);
+                    context.isBlankFieldExclusionEnabled() &&
+                            Strings.isBlank(threadName);
             if (threadNameExcluded) {
                 jsonGenerator.writeNull();
             } else {

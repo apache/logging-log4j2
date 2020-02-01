@@ -125,7 +125,7 @@ final class ContextDataResolver implements EventResolver {
     private static boolean isValueExcluded(
             final EventResolverContext context,
             final Object value) {
-        return context.isBlankPropertyExclusionEnabled() &&
+        return context.isBlankFieldExclusionEnabled() &&
                 (value == null || (value instanceof String && ((String) value).isEmpty()));
     }
 
