@@ -141,12 +141,15 @@ public class ConfigurationSource {
     }
 
     private ConfigurationSource(final byte[] data, final URL url, long lastModified) {
-        this.data = Objects.requireNonNull(data, "data is null");
+        Objects.requireNonNull(data, "data is null");
         this.stream = new ByteArrayInputStream(data);
         this.file = null;
         this.url = url;
         this.location = null;
         this.lastModified = lastModified;
+        if ( url == null ) {
+        	this.data = data;
+        }
     }
 
     /**
