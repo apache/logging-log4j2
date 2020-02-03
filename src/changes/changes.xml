@@ -75,6 +75,9 @@
       <action issue="LOG4J2-2763" dev="ggregory" type="update">
         Update dependencies.
       </action>
+      <action issue="LOG4J2-2770" dev="ggregory" type="fix" due-to="Bill Kuker">
+        CronExpression.getBeforeTime() would sometimes return incorrect result.
+      </action>
     </release>
     <release version="2.13.0" date="2019-12-11" description="GA Release 2.13.0">
       <action issue="LOG4J2-2058" dev="rgoers" type="fix">

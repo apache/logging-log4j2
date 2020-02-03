@@ -43,16 +43,18 @@ import org.apache.logging.log4j.util.LoaderUtil;
  */
 public class ConfigurationSource {
 
+    /** Empty byte array singleton. */
+    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
     /**
      * ConfigurationSource to use with Configurations that do not require a "real" configuration source.
      */
-    public static final ConfigurationSource NULL_SOURCE = new ConfigurationSource(new byte[0], null, 0);
+    public static final ConfigurationSource NULL_SOURCE = new ConfigurationSource(EMPTY_BYTE_ARRAY, null, 0);
+
     /**
      * ConfigurationSource to use with {@link org.apache.logging.log4j.core.config.composite.CompositeConfiguration}.
      */
-    public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(new byte[0], null, 0);
-    private static final String HTTPS = "https";
-    private static final String HTTP = "http";
+    public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(EMPTY_BYTE_ARRAY, null, 0);
 
     private final File file;
     private final URL url;
@@ -141,7 +143,7 @@ public class ConfigurationSource {
     }
 
     private ConfigurationSource(final byte[] data, final URL url, long lastModified) {
-        Objects.requireNonNull(data, "data is null");
+        this.data = Objects.requireNonNull(data, "data is null");
         this.stream = new ByteArrayInputStream(data);
         this.file = null;
         this.url = url;
