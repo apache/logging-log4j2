@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
+      <action issue="LOG4J2-2767" dev="rgoers" type="fix">
+        Warn if pattern is missing on Routes element. Use default route.
+      </action>
       <action issue="LOG4J2-2415" dev="ckozak" type="fix" due-to="Andrey Turbanov">
         Fix lock contention in the classloader using new versions of slf4j without EventData on slf4j logger creation.
       </action>
@@ -66,10 +69,10 @@
       <action issue="LOG4J2-2575" dev="rgoers" type="fix" due-to="Nathan Friess">
         CronExpression.getBeforeTime() would sometimes return incorrect result.
       </action>
-      <action issue="LOG4J2-2762" dev="ggregory" type="fix" due-to="Gary Gregory">
+      <action issue="LOG4J2-2762" dev="ggregory" type="fix">
         [JDBC] MS-SQL Server JDBC driver throws SQLServerException when inserting a null value for a VARBINARY column.
       </action>
-      <action issue="LOG4J2-2763" dev="ggregory" type="update" due-to="Gary Gregory">
+      <action issue="LOG4J2-2763" dev="ggregory" type="update">
         Update dependencies.
       </action>
     </release>
