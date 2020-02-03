@@ -166,6 +166,9 @@
       </action>
     </release>
     <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
+      <action issue="LOG4J2-2767" dev="rgoers" type="fix">
+        Warn if pattern is missing on Routes element. Use default route.
+      </action>
       <action issue="LOG4J2-2415" dev="ckozak" type="fix" due-to="Andrey Turbanov">
         Fix lock contention in the classloader using new versions of slf4j without EventData on slf4j logger creation.
       </action>

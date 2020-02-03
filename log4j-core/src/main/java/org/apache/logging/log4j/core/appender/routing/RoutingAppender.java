@@ -238,7 +238,8 @@ public final class RoutingAppender extends AbstractAppender {
             event = rewritePolicy.rewrite(event);
         }
         final String pattern = routes.getPattern(event, scriptStaticVariables);
-        final String key = pattern != null ? configuration.getStrSubstitutor().replace(event, pattern) : defaultRoute.getKey();
+        final String key = pattern != null ? configuration.getStrSubstitutor().replace(event, pattern) :
+                defaultRoute.getKey() != null ? defaultRoute.getKey() : DEFAULT_KEY;
         final RouteAppenderControl control = getControl(key, event);
         if (control != null) {
             try {

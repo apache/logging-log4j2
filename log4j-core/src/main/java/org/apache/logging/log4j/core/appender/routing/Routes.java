@@ -65,7 +65,7 @@ public final class Routes {
                 LOGGER.error("No Routes configured.");
                 return null;
             }
-            if (patternScript != null && pattern != null) {
+            if ((patternScript != null && pattern != null) || (patternScript == null && pattern == null)) {
                 LOGGER.warn("In a Routes element, you must configure either a Script element or a pattern attribute.");
             }
             if (patternScript != null) {
