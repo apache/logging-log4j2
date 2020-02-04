@@ -286,7 +286,7 @@ public class RollingFileManager extends FileManager {
 	}
 
     public synchronized void rollover() {
-        if (!hasOutputStream()) {
+        if (!hasOutputStream() && !isCreateOnDemand()) {
             return;
         }
         if (rollover(rolloverStrategy)) {
@@ -619,8 +619,8 @@ public class RollingFileManager extends FileManager {
                 final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
                 final OutputStream os = data.createOnDemand  || data.fileName == null ? null :
                         new FileOutputStream(data.fileName, data.append);
-                final long initialTime = data.createOnDemand || file == null ?
-                        0 : initialFileTime(file); // LOG4J2-531 create file first so time has valid value
+                // LOG4J2-531 create file first so time has valid value.
+                final long initialTime = file == null || !file.exists() ? 0 : initialFileTime(file);
 
                 final RollingFileManager rm = new RollingFileManager(data.getLoggerContext(), data.fileName, data.pattern, os,
                     data.append, data.createOnDemand, size, initialTime, data.policy, data.strategy, data.advertiseURI,
