@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
+      <action issue="LOG4J2-2759" dev="rgoers" type="fix">
+        RollingFileAppender was not rolling on startup if createOnDemand was set to true.
+      </action>
       <action issue="LOG4J2-2767" dev="rgoers" type="fix">
         Warn if pattern is missing on Routes element. Use default route.
       </action>
