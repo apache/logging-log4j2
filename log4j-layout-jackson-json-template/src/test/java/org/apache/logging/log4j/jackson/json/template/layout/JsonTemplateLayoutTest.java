@@ -1038,6 +1038,7 @@ public class JsonTemplateLayoutTest {
                 ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
+                .setEventTemplateUri("classpath:LogstashJsonEventLayoutV1.json")
                 .setConfiguration(configuration)
                 .setStackTraceEnabled(true)
                 .build();

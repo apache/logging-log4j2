@@ -76,9 +76,7 @@ in combination with the below `log4j2.xml` configuration:
 [source,xml]
 ----
 <JsonTemplateLayout timestampFormatPattern="yyyy-MM-dd'T'HH:mm:ss.SSSZZZ"
-                    eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"
-                    prettyPrintEnabled="true"
-                    locationInfoEnabled="true"/>
+                    eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"/>
 ----
 
 or with the below `log4j2.properties` configuration:
@@ -181,8 +179,8 @@ appender.console.json.prettyPrintEnabled = true
 
 | eventTemplateUri
 | String
-| JSON template for rendering ``LogEvent``s (defaults to `classpath:JsonLayout.json`
-  set by `log4j.layout.jsonTemplate.eventTemplateUri` property)
+| URI pointing to the JSON template for rendering ``LogEvent``s (defaults to
+  `null` set by `log4j.layout.jsonTemplate.eventTemplateUri` property)
 
 | eventTemplateAdditionalFields
 | KeyValuePair[]

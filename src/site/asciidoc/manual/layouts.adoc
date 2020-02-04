@@ -527,9 +527,7 @@ in combination with the below Log4j configuration:
 [source,xml]
 ----
 <JsonTemplateLayout timestampFormatPattern="yyyy-MM-dd'T'HH:mm:ss.SSSZZZ"
-                    eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"
-                    prettyPrintEnabled="true"
-                    locationInfoEnabled="true"/>
+                    eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"/>
 ----
 
 JSON Template Layout will render JSON documents as follows:
