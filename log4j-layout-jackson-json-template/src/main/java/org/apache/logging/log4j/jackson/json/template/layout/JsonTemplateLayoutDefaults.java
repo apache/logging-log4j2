@@ -64,8 +64,8 @@ public enum JsonTemplateLayoutDefaults {;
 
     private static final String EVENT_TEMPLATE_URI =
             PROPERTIES.getStringProperty(
-                    "log4j.layout.jsonTemplate.eventElementTemplateUri",
-                    "classpath:LogstashJsonEventLayoutV1.json");
+                    "log4j.layout.jsonTemplate.eventTemplateUri",
+                    "classpath:JsonLayout.json");
 
     private static final String STACK_TRACE_ELEMENT_TEMPLATE =
             PROPERTIES.getStringProperty(

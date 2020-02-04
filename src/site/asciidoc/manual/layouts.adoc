@@ -15,7 +15,7 @@
     limitations under the License.
 ////
 = Layouts
-Ralph Goers <rgoers@apache.org>; Gary Gregory <ggregory@apache.org>
+Ralph Goers <rgoers@apache.org>; Gary Gregory <ggregory@apache.org>; Volkan Yazıcı <vy@apache.org>
 
 An Appender uses a Layout to format a LogEvent into a form that meets
 the needs of whatever will be consuming the log event. In Log4j 1.x and
@@ -489,6 +489,75 @@ values support link:lookups.html[lookups].
 
 Additional link:../runtime-dependencies.html[runtime dependencies] are
 required for using JsonLayout.
+
+[#JSONTemplateLayout]
+== JSON Template Layout
+
+`JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON
+emitting layout. It encodes ``LogEvent``s according to the structure described
+by the JSON template provided. For instance, given the following JSON template
+modelling the https://github.com/logstash/log4j-jsonevent-layout[the official
+Logstash `JSONEventLayoutV1`]
+
+[source,json]
+----
+{
+  "mdc": "${json:mdc}",
+  "exception": {
+    "exception_class": "${json:exception:className}",
+    "exception_message": "${json:exception:message}",
+    "stacktrace": "${json:exception:stackTrace:text}"
+  },
+  "line_number": "${json:source:lineNumber}",
+  "class": "${json:source:className}",
+  "@version": 1,
+  "source_host": "${hostName}",
+  "message": "${json:message}",
+  "thread_name": "${json:thread:name}",
+  "@timestamp": "${json:timestamp}",
+  "level": "${json:level}",
+  "file": "${json:source:fileName}",
+  "method": "${json:source:methodName}",
+  "logger_name": "${json:logger:name}"
+}
+----
+
+in combination with the below Log4j configuration:
+
+[source,xml]
+----
+<JsonTemplateLayout timestampFormatPattern="yyyy-MM-dd'T'HH:mm:ss.SSSZZZ"
+                    eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"
+                    prettyPrintEnabled="true"
+                    locationInfoEnabled="true"/>
+----
+
+JSON Template Layout will render JSON documents as follows:
+
+[source,json]
+----
+{
+  "exception": {
+    "exception_class": "java.lang.RuntimeException",
+    "exception_message": "test",
+    "stacktrace": "java.lang.RuntimeException: test\n\tat org.apache.logging.log4j.JsonTemplateLayoutDemo.main(JsonTemplateLayoutDemo.java:11)\n"
+  },
+  "line_number": 12,
+  "class": "org.apache.logging.log4j.JsonTemplateLayoutDemo",
+  "@version": 1,
+  "source_host": "varlik",
+  "message": "Hello, error!",
+  "thread_name": "main",
+  "@timestamp": "2017-05-25T19:56:23.370+02:00",
+  "level": "ERROR",
+  "file": "JsonTemplateLayoutDemo.java",
+  "method": "main",
+  "logger_name": "org.apache.logging.log4j.JsonTemplateLayoutDemo"
+}
+----
+
+See link:json-template-layout.html[JSON Template Layout] page for the complete
+documentation.
 
 [#PatternLayout]
 == Pattern Layout
