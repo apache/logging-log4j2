@@ -1,7 +1,7 @@
 {
   "instant": {
-    "epochSecond": "${json:timestamp:epoch:divisor=1e9,integral}",
-    "nanoOfSecond": 0
+    "epochSecond": "${json:timestamp:epoch:secs,integral}",
+    "nanoOfSecond": "${json:timestamp:epoch:secs.nanos}"
   },
   "thread": "${json:thread:name}",
   "level": "${json:level}",

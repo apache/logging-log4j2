@@ -180,7 +180,8 @@ appender.console.json.prettyPrintEnabled = true
 | eventTemplateUri
 | String
 | URI pointing to the JSON template for rendering ``LogEvent``s (defaults to
-  `null` set by `log4j.layout.jsonTemplate.eventTemplateUri` property)
+  `classpath:JsonLayout.json` set by `log4j.layout.jsonTemplate.eventTemplateUri`
+  property)
 
 | eventTemplateAdditionalFields
 | KeyValuePair[]
@@ -268,8 +269,8 @@ artifact:
 ----
 {
   "instant": {
-    "epochSecond": "${json:timestamp:epoch:divisor=1e9,integral}",
-    "nanoOfSecond": 0
+    "epochSecond": "${json:timestamp:epoch:secs,integral}",
+    "nanoOfSecond": "${json:timestamp:epoch:secs.nanos}"
   },
   "thread": "${json:thread:name}",
   "level": "${json:level}",
@@ -414,16 +415,74 @@ Below is the list of supported event template variables:
 | `logEvent.getTimeMillis()` formatted using `timestampFormatPattern`,
   `timeZone`, and `locale`
 
-| timestamp:epoch
-| epoch nanoseconds derived from `logEvent.getInstant()`
+| timestamp:epoch:nanos
+| epoch nanoseconds (of type `long`) derived from `logEvent.getInstant()`
 
-| timestamp:epoch:divisor=<divisor>
-| epoch nanoseconds derived from `logEvent.getInstant()` divided by provided
-  `divisor` (of type `double`)
+| timestamp:epoch:<secs\|micros\|millis>[,integral]
+| epoch seconds, microseconds, or milliseconds (of type `double`) derived from
+  `logEvent.getInstant()` and, if `integral` is provided, cast to `long`
 
-| timestamp:epoch:divisor=<divisor>,integral
-| epoch nanoseconds derived from `logEvent.getInstant()` divided by provided
-  `divisor` (of type `double`) and casted to `long`
+| timestamp:epoch:secs.<micros\|millis\|nanos>
+.3+| epoch fractions (of type `long`) derived from `logEvent.getInstant()`;
+  `secs.micros` denotes the "fractional part of epoch seconds, in microseconds",
+  `micros.millis` denotes the "fractional part of epoch microseconds, in
+milliseconds", etc.
+
+| timestamp:epoch:micros.<millis\|nanos>
+
+| timestamp:epoch:millis.nanos
+|===
+
+In the following table, timestamp template variables are illustrated by
+examples:
+
+.`timestamp` template variable examples
+[cols="1m,4m"]
+|===
+| Variable Name
+| Output
+
+|timestamp
+|2020-02-07T13:38:47.982123456Z
+
+|timestamp:epoch:secs
+|1581082727.982123456
+
+|timestamp:epoch:secs,integral
+|1581082727
+
+|timestamp:epoch:millis
+|1581082727982.123456
+
+|timestamp:epoch:millis,integral
+|1581082727982
+
+|timestamp:epoch:micros
+|1581082727982123.456
+
+|timestamp:epoch:millis,integral
+|1581082727982123
+
+|timestamp:epoch:nanos
+|1581082727982123456
+
+|timestamp:epoch:secs.millis
+|0000000000982
+
+|timestamp:epoch:secs.micros
+|0000000000982123
+
+|timestamp:epoch:secs.nanos
+|0000000000982123456
+
+|timestamp:epoch:millis.micros
+|0000000000000123
+
+|timestamp:epoch:millis.nanos
+|0000000000000123456
+
+|timestamp:epoch:micros.nanos
+|0000000000000000456
 |===
 
 [#stack-trace-element-templates]

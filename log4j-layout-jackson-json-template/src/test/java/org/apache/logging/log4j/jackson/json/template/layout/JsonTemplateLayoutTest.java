@@ -1305,14 +1305,15 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_timestamp_divisor() throws IOException {
+    @SuppressWarnings("FloatingPointLiteralPrecision")
+    public void test_timestamp_epoch_accessor() throws IOException {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World!");
         final Level level = Level.ERROR;
         final MutableInstant instant = new MutableInstant();
-        final long instantEpochSecond = 1_577_393_196L;
-        final int instantEpochSecondNano = 123_456_789;
+        final long instantEpochSecond = 1581082727L;
+        final int instantEpochSecondNano = 982123456;
         instant.initFromEpochSecond(instantEpochSecond, instantEpochSecondNano);
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
@@ -1325,17 +1326,22 @@ public class JsonTemplateLayoutTest {
         // Create the event template.
         final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
         final ObjectNode epochSecsNode = eventTemplateRootNode.putObject("epochSecs");
-        epochSecsNode.put("double", "${json:timestamp:epoch:divisor=1e9}");
-        epochSecsNode.put("long", "${json:timestamp:epoch:divisor=1e9,integral}");
-        final ObjectNode epochMicrosNode = eventTemplateRootNode.putObject("epochMicros");
-        epochMicrosNode.put("double", "${json:timestamp:epoch:divisor=1e6}");
-        epochMicrosNode.put("long", "${json:timestamp:epoch:divisor=1e6,integral}");
+        epochSecsNode.put("double", "${json:timestamp:epoch:secs}");
+        epochSecsNode.put("long", "${json:timestamp:epoch:secs,integral}");
+        epochSecsNode.put("nanos", "${json:timestamp:epoch:secs.nanos}");
+        epochSecsNode.put("micros", "${json:timestamp:epoch:secs.micros}");
+        epochSecsNode.put("millis", "${json:timestamp:epoch:secs.millis}");
         final ObjectNode epochMillisNode = eventTemplateRootNode.putObject("epochMillis");
-        epochMillisNode.put("double", "${json:timestamp:epoch:divisor=1e3}");
-        epochMillisNode.put("long", "${json:timestamp:epoch:divisor=1e3,integral}");
+        epochMillisNode.put("double", "${json:timestamp:epoch:millis}");
+        epochMillisNode.put("long", "${json:timestamp:epoch:millis,integral}");
+        epochMillisNode.put("nanos", "${json:timestamp:epoch:millis.nanos}");
+        epochMillisNode.put("micros", "${json:timestamp:epoch:millis.micros}");
+        final ObjectNode epochMicrosNode = eventTemplateRootNode.putObject("epochMicros");
+        epochMicrosNode.put("double", "${json:timestamp:epoch:micros}");
+        epochMicrosNode.put("long", "${json:timestamp:epoch:micros,integral}");
+        epochMicrosNode.put("nanos", "${json:timestamp:epoch:micros.nanos}");
         final ObjectNode epochNanosNode = eventTemplateRootNode.putObject("epochNanos");
-        epochNanosNode.put("double", "${json:timestamp:epoch:divisor=1e0}");
-        epochNanosNode.put("long", "${json:timestamp:epoch:divisor=1e0,integral}");
+        epochNanosNode.put("long", "${json:timestamp:epoch:nanos}");
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
@@ -1350,27 +1356,33 @@ public class JsonTemplateLayoutTest {
         // Check the serialized event.
         final String serializedLogEvent = layout.toSerializable(logEvent);
         final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
-        final double expectedEpochSecs = instantEpochSecond * 1e0 + instantEpochSecondNano / 1e9;
-        final double expectedEpochMicros = instantEpochSecond * 1e3 + instantEpochSecondNano / 1e6;
-        final double expectedEpochMillis = instantEpochSecond * 1e6 + instantEpochSecondNano / 1e3;
-        final double expectedEpochNanos = instantEpochSecond * 1e9 + instantEpochSecondNano / 1e0;
         final Percentage errorMargin = Percentage.withPercentage(0.001D);
         assertThat(point(rootNode, "epochSecs", "double").asDouble())
-                .isCloseTo(expectedEpochSecs, errorMargin);
+                .isCloseTo(1581082727.982123456D, errorMargin);
         assertThat(point(rootNode, "epochSecs", "long").asLong())
-                .isCloseTo((long) expectedEpochSecs, errorMargin);
-        assertThat(point(rootNode, "epochMicros", "double").asDouble())
-                .isCloseTo(expectedEpochMicros, errorMargin);
-        assertThat(point(rootNode, "epochMicros", "long").asLong())
-                .isCloseTo((long) expectedEpochMicros, errorMargin);
+                .isEqualTo(1581082727L);
+        assertThat(point(rootNode, "epochSecs", "nanos").asInt())
+                .isEqualTo(982123456L);
+        assertThat(point(rootNode, "epochSecs", "micros").asInt())
+                .isEqualTo(982123L);
+        assertThat(point(rootNode, "epochSecs", "millis").asInt())
+                .isEqualTo(982L);
         assertThat(point(rootNode, "epochMillis", "double").asDouble())
-                .isCloseTo(expectedEpochMillis, errorMargin);
+                .isCloseTo(1581082727982.123456D, errorMargin);
         assertThat(point(rootNode, "epochMillis", "long").asLong())
-                .isCloseTo((long) expectedEpochMillis, errorMargin);
-        assertThat(point(rootNode, "epochNanos", "double").asDouble())
-                .isCloseTo(expectedEpochNanos, errorMargin);
+                .isEqualTo(1581082727982L);
+        assertThat(point(rootNode, "epochMillis", "nanos").asInt())
+                .isEqualTo(123456);
+        assertThat(point(rootNode, "epochMillis", "micros").asInt())
+                .isEqualTo(123);
+        assertThat(point(rootNode, "epochMicros", "double").asDouble())
+                .isCloseTo(1581082727982123.456D, errorMargin);
+        assertThat(point(rootNode, "epochMicros", "long").asLong())
+                .isEqualTo(1581082727982123L);
+        assertThat(point(rootNode, "epochMicros", "nanos").asInt())
+                .isEqualTo(456);
         assertThat(point(rootNode, "epochNanos", "long").asLong())
-                .isCloseTo((long) expectedEpochNanos, errorMargin);
+                .isEqualTo(1581082727982123456L);
 
     }
 

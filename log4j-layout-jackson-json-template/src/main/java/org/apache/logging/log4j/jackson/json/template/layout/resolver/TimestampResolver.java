@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.jackson.json.template.layout.util.JsonGenerators;
+import org.apache.logging.log4j.util.Strings;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -29,8 +30,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 final class TimestampResolver implements EventResolver {
 
@@ -43,47 +42,13 @@ final class TimestampResolver implements EventResolver {
     private static EventResolver createInternalResolver(
             final EventResolverContext eventResolverContext,
             final String key) {
-
-        // Fallback to date-time formatting if key is empty.
-        if (key == null || key.isEmpty()) {
+        if (Strings.isEmpty(key)) {
             return createFormatResolver(eventResolverContext);
         }
-
-        // Parse key.
-        final Matcher matcher =
-                Pattern.compile("^epoch(:divisor=([^,]+)(,integral)?)?$").matcher(key);
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException("unknown key: " + key);
+        if (key.startsWith("epoch:")) {
+            return createEpochResolver(key);
         }
-
-        // Otherwise, read fields.
-        final String divisorString = matcher.group(2);
-        final String integralString = matcher.group(3);
-        double divisor;
-        boolean integral;
-        if (divisorString == null) {
-            divisor = 1e0;
-            integral = false;
-        } else {
-
-            // Read divisor.
-            try {
-                divisor = Double.parseDouble(divisorString);
-            } catch (final NumberFormatException error) {
-                throw new IllegalArgumentException("invalid divisor: " + divisorString, error);
-            }
-            if (Double.compare(0D, divisor) == 0) {
-                throw new IllegalArgumentException("invalid divisor: " + divisorString);
-            }
-
-            // Read integral.
-            integral = integralString != null;
-
-        }
-
-        // Create the divisor resolver.
-        return createDivisorResolver(divisor, integral);
-
+        throw new IllegalArgumentException("unknown timestamp key: " + key);
     }
 
     /**
@@ -227,30 +192,38 @@ final class TimestampResolver implements EventResolver {
                 : new LockingFormatResolver(eventResolverContext);
     }
 
-    private static final EventResolver SECS_LONG_RESOLVER =
+    private static final int MICROS_PER_SEC = 1_000_000;
+
+    private static final int NANOS_PER_SEC = 1_000_000_000;
+
+    private static final int NANOS_PER_MILLI = 1_000_000;
+
+    private static final int NANOS_PER_MICRO = 1_000;
+
+    private static final EventResolver EPOCH_NANOS_RESOLVER =
             (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
-                final Instant logEventInstant = logEvent.getInstant();
-                final long epochSecs = logEventInstant.getEpochSecond();
-                jsonGenerator.writeNumber(epochSecs);
+                final long nanos = epochNanos(logEvent.getInstant());
+                jsonGenerator.writeNumber(nanos);
             };
 
-    private static final EventResolver SECS_DOUBLE_RESOLVER =
+    private static final EventResolver EPOCH_MICROS_DOUBLE_RESOLVER =
             (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
                 final Instant logEventInstant = logEvent.getInstant();
-                JsonGenerators.writeDouble(
-                        jsonGenerator,
-                        logEventInstant.getEpochSecond(),
-                        logEventInstant.getNanoOfSecond());
+                final long secs = logEventInstant.getEpochSecond();
+                final int nanosOfSecs = logEventInstant.getNanoOfSecond();
+                final long micros = MICROS_PER_SEC * secs + nanosOfSecs / NANOS_PER_MICRO;
+                final int nanosOfMicros = nanosOfSecs - nanosOfSecs % NANOS_PER_MICRO;
+                JsonGenerators.writeDouble(jsonGenerator, micros, nanosOfMicros);
             };
 
-    private static final EventResolver MILLIS_LONG_RESOLVER =
+    private static final EventResolver EPOCH_MICROS_LONG_RESOLVER =
             (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
-                final Instant logEventInstant = logEvent.getInstant();
-                final long epochMillis = logEventInstant.getEpochMillisecond();
-                jsonGenerator.writeNumber(epochMillis);
+                final long nanos = epochNanos(logEvent.getInstant());
+                final long micros = nanos / NANOS_PER_MICRO;
+                jsonGenerator.writeNumber(micros);
             };
 
-    private static final EventResolver MILLIS_DOUBLE_RESOLVER =
+    private static final EventResolver EPOCH_MILLIS_DOUBLE_RESOLVER =
             (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
                 final Instant logEventInstant = logEvent.getInstant();
                 JsonGenerators.writeDouble(
@@ -259,57 +232,109 @@ final class TimestampResolver implements EventResolver {
                         logEventInstant.getNanoOfMillisecond());
             };
 
-    private static final EventResolver NANOS_RESOLVER =
+    private static final EventResolver EPOCH_MILLIS_LONG_RESOLVER =
+            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                final long nanos = epochNanos(logEvent.getInstant());
+                final long millis = nanos / NANOS_PER_MILLI;
+                jsonGenerator.writeNumber(millis);
+            };
+
+    private static final EventResolver EPOCH_SECS_DOUBLE_RESOLVER =
             (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
                 final Instant logEventInstant = logEvent.getInstant();
-                final long epochNanos = Math.multiplyExact(1_000_000_000L, logEventInstant.getEpochSecond());
-                final long number = Math.addExact(epochNanos, logEventInstant.getNanoOfSecond());
-                jsonGenerator.writeNumber(number);
+                JsonGenerators.writeDouble(
+                        jsonGenerator,
+                        logEventInstant.getEpochSecond(),
+                        logEventInstant.getNanoOfSecond());
             };
 
-    private static EventResolver createDivisorResolver(
-            final double divisor,
-            final boolean integral) {
-
-        // Resolve to seconds?
-        if (Double.compare(1e9D, divisor) == 0) {
-            return integral
-                    ? SECS_LONG_RESOLVER
-                    : SECS_DOUBLE_RESOLVER;
-        }
-
-        // Resolve to milliseconds?
-        else if (Double.compare(1e6D, divisor) == 0) {
-            return integral
-                    ? MILLIS_LONG_RESOLVER
-                    : MILLIS_DOUBLE_RESOLVER;
-        }
-
-        // Resolve to nanoseconds?
-        else if (Double.compare(1e0D, divisor) == 0) {
-            return NANOS_RESOLVER;
-        }
-
-        // Unknown divisor, divide as is then.
-        else {
-            return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+    private static final EventResolver EPOCH_SECS_LONG_RESOLVER =
+            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
                 final Instant logEventInstant = logEvent.getInstant();
-                double quotient =
-                        // According to Herbie[1], transforming ((x * 1e9) + y) / z
-                        // equation to 1e9 * (x / z) + y / z reduces the average
-                        // error error from 0.7 to 0.3, yay!
-                        // [1] http://herbie.uwplse.org
-                        1e9F * (logEventInstant.getEpochSecond() / divisor) +
-                                logEventInstant.getNanoOfSecond() / divisor;
-                if (integral) {
-                    final long integralQuotient = (long) quotient;
-                    jsonGenerator.writeNumber(integralQuotient);
-                } else {
-                    jsonGenerator.writeNumber(quotient);
-                }
+                final long epochSecs = logEventInstant.getEpochSecond();
+                jsonGenerator.writeNumber(epochSecs);
             };
-        }
 
+    private static final EventResolver EPOCH_MICROS_NANOS_RESOLVER =
+            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                final Instant logEventInstant = logEvent.getInstant();
+                final int nanosOfSecs = logEventInstant.getNanoOfSecond();
+                final int nanosOfMicros = nanosOfSecs % NANOS_PER_MICRO;
+                jsonGenerator.writeNumber(nanosOfMicros);
+            };
+
+    private static final EventResolver EPOCH_MILLIS_NANOS_RESOLVER =
+            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                final Instant logEventInstant = logEvent.getInstant();
+                jsonGenerator.writeNumber(logEventInstant.getNanoOfMillisecond());
+            };
+
+    private static final EventResolver EPOCH_MILLIS_MICROS_RESOLVER =
+            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                final Instant logEventInstant = logEvent.getInstant();
+                final int nanosOfMillis = logEventInstant.getNanoOfMillisecond();
+                final int microsOfMillis = nanosOfMillis / NANOS_PER_MICRO;
+                jsonGenerator.writeNumber(microsOfMillis);
+            };
+
+    private static final EventResolver EPOCH_SECS_NANOS_RESOLVER =
+            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                final Instant logEventInstant = logEvent.getInstant();
+                jsonGenerator.writeNumber(logEventInstant.getNanoOfSecond());
+            };
+
+    private static final EventResolver EPOCH_SECS_MICROS_RESOLVER =
+            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                final Instant logEventInstant = logEvent.getInstant();
+                final int nanosOfSecs = logEventInstant.getNanoOfSecond();
+                final int microsOfSecs = nanosOfSecs / NANOS_PER_MICRO;
+                jsonGenerator.writeNumber(microsOfSecs);
+            };
+
+    private static final EventResolver EPOCH_SECS_MILLIS_RESOLVER =
+            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                final Instant logEventInstant = logEvent.getInstant();
+                final int nanosOfSecs = logEventInstant.getNanoOfSecond();
+                final int millisOfSecs = nanosOfSecs / NANOS_PER_MILLI;
+                jsonGenerator.writeNumber(millisOfSecs);
+            };
+
+    private static long epochNanos(Instant instant) {
+        return NANOS_PER_SEC * instant.getEpochSecond() + instant.getNanoOfSecond();
+    }
+
+    private static EventResolver createEpochResolver(final String key) {
+        switch (key) {
+            case "epoch:nanos":
+                return EPOCH_NANOS_RESOLVER;
+            case "epoch:micros":
+                return EPOCH_MICROS_DOUBLE_RESOLVER;
+            case "epoch:micros,integral":
+                return EPOCH_MICROS_LONG_RESOLVER;
+            case "epoch:millis":
+                return EPOCH_MILLIS_DOUBLE_RESOLVER;
+            case "epoch:millis,integral":
+                return EPOCH_MILLIS_LONG_RESOLVER;
+            case "epoch:secs":
+                return EPOCH_SECS_DOUBLE_RESOLVER;
+            case "epoch:secs,integral":
+                return EPOCH_SECS_LONG_RESOLVER;
+            case "epoch:micros.nanos":
+                return EPOCH_MICROS_NANOS_RESOLVER;
+            case "epoch:millis.nanos":
+                return EPOCH_MILLIS_NANOS_RESOLVER;
+            case "epoch:millis.micros":
+                return EPOCH_MILLIS_MICROS_RESOLVER;
+            case "epoch:secs.nanos":
+                return EPOCH_SECS_NANOS_RESOLVER;
+            case "epoch:secs.micros":
+                return EPOCH_SECS_MICROS_RESOLVER;
+            case "epoch:secs.millis":
+                return EPOCH_SECS_MILLIS_RESOLVER;
+            default:
+                throw new IllegalArgumentException(
+                        "was expecting an epoch key, found: " + key);
+        }
     }
 
     static String getName() {
