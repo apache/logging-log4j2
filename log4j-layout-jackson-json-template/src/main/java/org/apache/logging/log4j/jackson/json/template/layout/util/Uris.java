@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.jackson.json.template.layout.util;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,10 +30,24 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public enum Uris {;
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
+    /**
+     * Reads {@link URI}s of scheme <tt>classpath</tt> and <tt>file</tt>.
+     *
+     * @param spec the {@link URI} spec, e.g., <tt>file:/holy/cow.txt</tt> or
+     *             <tt>classpath:/holy/cat.txt</tt>
+     * @param charset used {@link Charset} for decoding the file
+     */
     public static String readUri(final String spec, final Charset charset) {
+        Objects.requireNonNull(spec, "spec");
+        Objects.requireNonNull(charset, "charset");
         try {
             return unsafeReadUri(spec, charset);
         } catch (final Exception error) {
@@ -75,11 +93,18 @@ public enum Uris {;
             throws IOException {
         final String spec = uri.toString();
         final String path = spec.substring("classpath:".length());
-        final URL resource = Uris.class.getClassLoader().getResource(path);
-        if (resource == null) {
+        final List<URL> resources = new ArrayList<>(LoaderUtil.findResources(path));
+        if (resources.isEmpty()) {
             final String message = String.format(
                     "could not locate classpath resource (path=%s)", path);
             throw new RuntimeException(message);
+        }
+        final URL resource = resources.get(0);
+        if (resources.size() > 1) {
+            final String message = String.format(
+                    "for URI %s found %d resources, using the first one: %s",
+                    uri, resources.size(), resource);
+            LOGGER.warn(message);
         }
         try (final InputStream inputStream = resource.openStream()) {
             try (final InputStreamReader reader = new InputStreamReader(inputStream, charset);
