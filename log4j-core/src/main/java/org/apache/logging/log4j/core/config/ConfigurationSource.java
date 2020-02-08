@@ -149,6 +149,9 @@ public class ConfigurationSource {
         this.url = url;
         this.location = null;
         this.lastModified = lastModified;
+        if ( url == null ) {
+        	this.data = data;
+        }
     }
 
     /**
