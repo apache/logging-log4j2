@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
+      <action issue="LOG4J2-2770" dev="rgoers" type="fix" due-to="Bill Kuker">
+        Fixed NullPointerException after reconfiguring via JMX.
+      </action>
       <action issue="LOG4J2-2759" dev="rgoers" type="fix">
         RollingFileAppender was not rolling on startup if createOnDemand was set to true.
       </action>
