@@ -144,6 +144,79 @@ public class DefaultLogBuilder implements LogBuilder {
         }
     }
 
+    @Override
+    public void log(String message, Object p0) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message, p0));
+        }
+    }
+
+    @Override
+    public void log(String message, Object p0, Object p1) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message, p0, p1));
+        }
+    }
+
+    @Override
+    public void log(String message, Object p0, Object p1, Object p2) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2));
+        }
+    }
+
+    @Override
+    public void log(String message, Object p0, Object p1, Object p2, Object p3) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3));
+        }
+    }
+
+    @Override
+    public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4));
+        }
+    }
+
+    @Override
+    public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5));
+        }
+    }
+
+    @Override
+    public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6));
+        }
+    }
+
+    @Override
+    public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+            Object p7) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7));
+        }
+    }
+
+    @Override
+    public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+            Object p7, Object p8) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8));
+        }
+    }
+
+    @Override
+    public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+            Object p7, Object p8, Object p9) {
+        if (isValid()) {
+            logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+        }
+    }
+
     private void logMessage(Message message) {
         try {
             logger.logMessage(level, marker, FQCN, location, message, throwable);
