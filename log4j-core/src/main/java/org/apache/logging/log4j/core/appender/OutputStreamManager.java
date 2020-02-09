@@ -164,6 +164,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     protected OutputStream getOutputStream() throws IOException {
         if (outputStream == null) {
             outputStream = createOutputStream();
+            setOutputStream(outputStream); // Needed so the header will be written
         }
         return outputStream;
     }
