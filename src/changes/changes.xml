@@ -30,6 +30,10 @@
          - "remove" - Removed
     -->
     <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
+      <action issue="LOG4J2-2776" dev="rgoers" type="fix" due-to="Christoph Kaser">
+        An error message in RollingFileAppender uses a placeholder for the name but does not specify the name
+        argument in the logging call
+      </action>
       <action issue="LOG4J2-2758" dev="rgoers" type="fix" due-to="Christoph Kaser">
         NullPointerException when using a custom DirectFileRolloverStrategy without a file name.
       </action>
