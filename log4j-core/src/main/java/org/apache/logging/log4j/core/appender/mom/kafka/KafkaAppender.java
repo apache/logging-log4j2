@@ -97,6 +97,11 @@ public final class KafkaAppender extends AbstractAppender {
 			return asBuilder();
 		}
 
+		public B setKey(final String key) {
+			this.key = key;
+			return asBuilder();
+		}
+
 		public Integer getRetryCount() {
 			Integer intRetryCount = null;
 			try {
@@ -113,7 +118,8 @@ public final class KafkaAppender extends AbstractAppender {
 	@Deprecated
 	public static KafkaAppender createAppender(final Layout<? extends Serializable> layout, final Filter filter,
 			final String name, final boolean ignoreExceptions, final String topic, final Property[] properties,
-			final Configuration configuration, final String key, final Integer retryCount) {
+            final Configuration configuration,
+            final String key) {
 
 		if (layout == null) {
 			AbstractLifeCycle.LOGGER.error("No layout provided for KafkaAppender");
@@ -121,7 +127,7 @@ public final class KafkaAppender extends AbstractAppender {
 		}
 		final KafkaManager kafkaManager = KafkaManager.getManager(configuration.getLoggerContext(), name, topic, true,
 				properties, key);
-		return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager, null, retryCount);
+		return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager, null, null);
 	}
 
 	/**
