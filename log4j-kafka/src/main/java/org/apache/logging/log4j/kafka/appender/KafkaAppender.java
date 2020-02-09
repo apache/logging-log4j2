@@ -109,6 +109,21 @@ public final class KafkaAppender extends AbstractAppender {
             this.sendEventTimestamp = sendEventTimestamp;
             return asBuilder();
         }
+
+        public Integer getRetryCount() {
+            Integer intRetryCount = null;
+            try {
+                intRetryCount = Integer.valueOf(retryCount);
+            } catch (NumberFormatException e) {
+
+            }
+            return intRetryCount;
+        }
+
+        public B setRetryCount(final String retryCount) {
+            this.retryCount = retryCount;
+            return asBuilder();
+        }
     }
 
     /**
