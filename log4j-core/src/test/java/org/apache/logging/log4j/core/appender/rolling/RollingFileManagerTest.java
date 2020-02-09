@@ -66,11 +66,11 @@ public class RollingFileManagerTest {
             file.deleteOnExit();
 
             final RollingFileAppender appender = RollingFileAppender.newBuilder()
-                    .setFilePattern("FilePattern")
+                    .withFilePattern("FilePattern")
                     .setName("RollingFileAppender")
                     .setConfiguration(config)
-                    .setStrategy(new CustomDirectFileRolloverStrategy(file, config.getStrSubstitutor()))
-                    .setPolicy(new SizeBasedTriggeringPolicy(100))
+                    .withStrategy(new CustomDirectFileRolloverStrategy(file, config.getStrSubstitutor()))
+                    .withPolicy(new SizeBasedTriggeringPolicy(100))
                     .build();
 
             Assert.assertNotNull(appender);

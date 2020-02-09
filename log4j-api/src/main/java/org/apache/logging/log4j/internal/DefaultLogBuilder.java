@@ -34,6 +34,8 @@ import org.apache.logging.log4j.util.Supplier;
  * Collects data for a log event and then logs it. This class should be considered private.
  */
 public class DefaultLogBuilder implements LogBuilder, Serializable {
+
+    private static final long serialVersionUID = 8851553895299192531L;
     private static Message EMPTY_MESSAGE = new SimpleMessage("");
     private static final String FQCN = DefaultLogBuilder.class.getName();
     private static final Logger LOGGER = StatusLogger.getLogger();

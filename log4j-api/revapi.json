@@ -36,6 +36,19 @@
         "new": "field org.apache.logging.log4j.spi.AbstractLogger.serialVersionUID",
         "serialVersionUID": "2",
         "justification": "LOG4J2-2639 - Add builder pattern to Logger interface"
+      },
+      {
+        "code": "java.field.serialVersionUIDChanged",
+        "new": "field org.apache.logging.log4j.internal.DefaultLogBuilder.serialVersionUID",
+        "oldSerialVersionUID": "-4931273176502023439",
+        "newSerialVersionUID": "8851553895299192531",
+        "justification": "New overloaded methods added",
+        "package": "org.apache.logging.log4j.internal",
+        "classQualifiedName": "org.apache.logging.log4j.internal.DefaultLogBuilder",
+        "classSimpleName": "DefaultLogBuilder",
+        "fieldName": "serialVersionUID",
+        "newArchive": "org.apache.logging.log4j:log4j-api:jar:2.13.1-SNAPSHOT",
+        "elementKind": "field"
       }
     ]
   }
