@@ -30,6 +30,10 @@
          - "remove" - Removed
     -->
     <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
+      <action issue="LOG4J2-2760" dev="rgoers" type="fix" due-to="Christoph Kaser">
+        Always write header on a new OutputStream.
+      </action>
+      <action issue=
       <action issue="LOG4J2-2777" dev="rgoers" type="update" due-to="joongs4">
         Add a retry count attribute to the KafkaAppender.
       </action>

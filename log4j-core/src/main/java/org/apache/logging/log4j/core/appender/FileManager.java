@@ -196,6 +196,7 @@ public class FileManager extends OutputStreamManager {
             } catch (Exception ex) {
                 LOGGER.warn("Unable to set current file tiem for {}", filename);
             }
+            writeHeader(fos);
         }
         defineAttributeView(Paths.get(filename));
         return fos;

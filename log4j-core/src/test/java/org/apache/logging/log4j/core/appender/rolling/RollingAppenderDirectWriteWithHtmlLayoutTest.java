@@ -16,13 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.util.IOUtils;
-import org.apache.logging.log4j.junit.CleanFolders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.hamcrest.Matchers;
@@ -34,7 +32,6 @@ import org.junit.rules.RuleChain;
 import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
@@ -70,13 +67,11 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
         Configuration config = loggerContextRule.getConfiguration();
         RollingFileAppender appender = RollingFileAppender.newBuilder()
                 .setName("RollingHtml")
-                .setFilePattern(DIR + "/" + prefix + "_-%d{MM-dd-yy-HH-mm}-%i.html")
-                .setPolicy(new SizeBasedTriggeringPolicy(500))
-                .setStrategy(DirectWriteRolloverStrategy.newBuilder()
-                        .setConfig(config)
-                        .build())
+                .withFilePattern(DIR + "/" + prefix + "_-%d{MM-dd-yy-HH-mm}-%i.html")
+                .withPolicy(new SizeBasedTriggeringPolicy(500))
+                .withStrategy(DirectWriteRolloverStrategy.newBuilder().withConfig(config).build())
                 .setLayout(HtmlLayout.createDefaultLayout())
-                .setAppend(append)
+                .withAppend(append)
                 .build();
         boolean stopped = false;
         try {

@@ -647,12 +647,9 @@ public class RollingFileManager extends FileManager {
         @Override
         public RollingFileManager createManager(final String name, final FactoryData data) {
             long size = 0;
-            boolean writeHeader = !data.append;
             File file = null;
             if (data.fileName != null) {
                 file = new File(data.fileName);
-                // LOG4J2-1140: check writeHeader before creating the file
-                writeHeader = !data.append || !file.exists();
 
                 try {
                     FileUtils.makeParentDirs(file);
@@ -672,6 +669,7 @@ public class RollingFileManager extends FileManager {
                         new FileOutputStream(data.fileName, data.append);
                 // LOG4J2-531 create file first so time has valid value.
                 final long initialTime = file == null || !file.exists() ? 0 : initialFileTime(file);
+                final boolean writeHeader = file != null && file.exists() && file.length() == 0;
 
                 final RollingFileManager rm = new RollingFileManager(data.getLoggerContext(), data.fileName, data.pattern, os,
                     data.append, data.createOnDemand, size, initialTime, data.policy, data.strategy, data.advertiseURI,
