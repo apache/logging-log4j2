@@ -68,7 +68,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     /**
      * Writes the layout's header to the file if it exists.
      */
-    private void writeHeader() {
+    protected void writeHeader() {
         if (layout == null) {
             return;
         }

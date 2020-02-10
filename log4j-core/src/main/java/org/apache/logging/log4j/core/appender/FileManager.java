@@ -43,6 +43,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 
 /**
@@ -146,6 +147,7 @@ public class FileManager extends OutputStreamManager {
             } catch (Exception ex) {
                 LOGGER.warn("Unable to set current file tiem for {}", filename);
             }
+            writeHeader(fos);
         }
         defineAttributeView(Paths.get(filename));
         return fos;
@@ -377,10 +379,10 @@ public class FileManager extends OutputStreamManager {
             final File file = new File(name);
             try {
                 FileUtils.makeParentDirs(file);
-                final boolean writeHeader = !data.append || !file.exists();
                 final int actualSize = data.bufferedIo ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
                 final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[actualSize]);
                 final FileOutputStream fos = data.createOnDemand ? null : new FileOutputStream(file, data.append);
+                final boolean writeHeader = file.exists() && file.length() == 0;
                 final FileManager fm = new FileManager(data.getLoggerContext(), name, fos, data.append, data.locking,
                         data.createOnDemand, data.advertiseURI, data.layout,
                         data.filePermissions, data.fileOwner, data.fileGroup, writeHeader, byteBuffer);
