@@ -143,7 +143,7 @@ class JdkMapAdapterStringMap implements StringMap {
         sortedKeys = null;
     }
 
-    private static TriConsumer<String, String, Map<String, String>> PUT_ALL = new TriConsumer<String, String, Map<String, String>>() {
+    private static final TriConsumer<String, String, Map<String, String>> PUT_ALL = new TriConsumer<String, String, Map<String, String>>() {
         @Override
         public void accept(final String key, final String value, final Map<String, String> stringStringMap) {
             stringStringMap.put(key, value);

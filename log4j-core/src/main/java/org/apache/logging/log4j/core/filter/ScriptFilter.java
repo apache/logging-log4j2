@@ -43,7 +43,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "ScriptFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class ScriptFilter extends AbstractFilter {
 
-    private static org.apache.logging.log4j.Logger logger = StatusLogger.getLogger();
+    private static final org.apache.logging.log4j.Logger logger = StatusLogger.getLogger();
 
     private final AbstractScript script;
     private final Configuration configuration;

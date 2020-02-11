@@ -44,7 +44,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class Category {
 
-    private static PrivateAdapter adapter = new PrivateAdapter();
+    private static final PrivateAdapter adapter = new PrivateAdapter();
 
     private static final Map<LoggerContext, ConcurrentMap<String, Logger>> CONTEXT_MAP =
         new WeakHashMap<>();

@@ -183,8 +183,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
     }
     
-    private static final int DEFAULT_BUFFER_SIZE = 8192;
-    
     @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();

@@ -54,8 +54,8 @@ public class KubernetesLookup extends AbstractLookup {
     private static final String SPRING_ENVIRONMENT_KEY = "SpringEnvironment";
 
     private static volatile KubernetesInfo kubernetesInfo;
-    private static Lock initLock = new ReentrantLock();
-    private static boolean isSpringIncluded =
+    private static final Lock initLock = new ReentrantLock();
+    private static final boolean isSpringIncluded =
             LoaderUtil.isClassAvailable("org.apache.logging.log4j.spring.cloud.config.client.SpringEnvironmentHolder");
 
     private boolean initialize() {

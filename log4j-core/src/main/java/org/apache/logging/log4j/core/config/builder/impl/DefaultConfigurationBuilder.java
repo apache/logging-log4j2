@@ -60,12 +60,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private static final String EOL = System.lineSeparator();
     
     private final Component root = new Component();
-    private Component loggers;
-    private Component appenders;
-    private Component filters;
-    private Component properties;
-    private Component customLevels;
-    private Component scripts;
+    private final Component loggers;
+    private final Component appenders;
+    private final Component filters;
+    private final Component properties;
+    private final Component customLevels;
+    private final Component scripts;
     private final Class<T> clazz;
     private ConfigurationSource source;
     private int monitorInterval;

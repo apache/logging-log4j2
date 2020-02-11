@@ -41,7 +41,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
     private static final String IN_MEMORY = "InMemory";
 
-    private static FlumeManagerFactory factory = new FlumeManagerFactory();
+    private static final FlumeManagerFactory factory = new FlumeManagerFactory();
 
     private final EmbeddedAgent agent;
 

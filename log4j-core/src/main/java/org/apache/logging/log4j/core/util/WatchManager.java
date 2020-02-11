@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class WatchManager extends AbstractLifeCycle {
 
-    private static Logger logger = StatusLogger.getLogger();
+    private static final Logger logger = StatusLogger.getLogger();
     private final ConcurrentMap<Source, ConfigurationMonitor> watchers = new ConcurrentHashMap<>();
     private int intervalSeconds = 0;
     private ScheduledFuture<?> future;

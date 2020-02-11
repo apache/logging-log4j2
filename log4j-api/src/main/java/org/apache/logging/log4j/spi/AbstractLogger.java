@@ -109,7 +109,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected final String name;
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
-    private static ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
+    private static final ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
     protected final transient ThreadLocal<DefaultLogBuilder> logBuilder;
 
 
@@ -2864,7 +2864,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     private class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {
-        private AbstractLogger logger;
+        private final AbstractLogger logger;
         LocalLogBuilder(AbstractLogger logger) {
             this.logger = logger;
         }

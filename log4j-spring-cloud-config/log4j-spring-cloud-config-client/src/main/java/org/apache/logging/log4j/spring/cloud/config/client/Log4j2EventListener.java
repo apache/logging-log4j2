@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 @EnableBinding(SpringCloudBusClient.class)
 @ConditionalOnProperty(value = "spring.cloud.config.watch.enabled")
 public class Log4j2EventListener {
-    private static Logger LOGGER = LogManager.getLogger(Log4j2EventListener.class);
+    private static final Logger LOGGER = LogManager.getLogger(Log4j2EventListener.class);
 
     @EventListener(classes = RemoteApplicationEvent.class)
     public void acceptLocal(RemoteApplicationEvent event) {

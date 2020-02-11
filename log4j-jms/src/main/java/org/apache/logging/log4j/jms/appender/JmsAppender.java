@@ -201,7 +201,7 @@ public class JmsAppender extends AbstractAppender {
         return new Builder();
     }
 
-    private volatile JmsManager manager;
+    private final JmsManager manager;
 
     /**
      * @param name The Appender's name.

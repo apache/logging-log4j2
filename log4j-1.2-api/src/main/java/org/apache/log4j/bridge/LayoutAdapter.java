@@ -27,7 +27,7 @@ import java.util.Map;
  * Class Description goes here.
  */
 public class LayoutAdapter implements org.apache.logging.log4j.core.Layout<String> {
-    private Layout layout;
+    private final Layout layout;
 
     public LayoutAdapter(Layout layout) {
         this.layout = layout;

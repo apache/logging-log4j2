@@ -85,7 +85,7 @@ public class Log4jLogEvent implements LogEvent {
         private String loggerName;
         private Message message;
         private Throwable thrown;
-        private MutableInstant instant = new MutableInstant();
+        private final MutableInstant instant = new MutableInstant();
         private ThrowableProxy thrownProxy;
         private StringMap contextData = createContextData((List<Property>) null);
         private ThreadContext.ContextStack contextStack = ThreadContext.getImmutableStack();

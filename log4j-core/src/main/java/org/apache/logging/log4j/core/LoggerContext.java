@@ -95,7 +95,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     private volatile Configuration configuration = new DefaultConfiguration();
     private static final String EXTERNAL_CONTEXT_KEY = "__EXTERNAL_CONTEXT_KEY__";
-    private ConcurrentMap<String, Object> externalMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Object> externalMap = new ConcurrentHashMap<>();
     private String contextName;
     private volatile URI configLocation;
     private Cancellable shutdownCallback;

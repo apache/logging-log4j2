@@ -153,7 +153,7 @@ public final class RoutingAppender extends AbstractAppender {
     private final PurgePolicy purgePolicy;
     private final AbstractScript defaultRouteScript;
     private final ConcurrentMap<Object, Object> scriptStaticVariables = new ConcurrentHashMap<>();
-    private Boolean requiresLocation;
+    private final Boolean requiresLocation;
 
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
             final RewritePolicy rewritePolicy, final Configuration configuration, final PurgePolicy purgePolicy,

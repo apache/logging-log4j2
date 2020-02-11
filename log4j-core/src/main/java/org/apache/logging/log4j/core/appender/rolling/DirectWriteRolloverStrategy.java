@@ -204,7 +204,6 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
     private volatile String currentFileName;
     private int nextIndex = -1;
     private final PatternProcessor tempCompressedFilePattern;
-    private volatile boolean usePrevTime = false;
 
     /**
      * Constructs a new instance.

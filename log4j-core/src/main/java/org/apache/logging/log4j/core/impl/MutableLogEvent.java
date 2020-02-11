@@ -47,7 +47,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
 
     private int threadPriority;
     private long threadId;
-    private MutableInstant instant = new MutableInstant();
+    private final MutableInstant instant = new MutableInstant();
     private long nanoTime;
     private short parameterCount;
     private boolean includeLocation;

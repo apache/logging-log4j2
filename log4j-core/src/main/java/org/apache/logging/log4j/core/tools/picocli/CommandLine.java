@@ -139,11 +139,11 @@ public class CommandLine {
     private String commandName = Help.DEFAULT_COMMAND_NAME;
     private boolean overwrittenOptionsAllowed = false;
     private boolean unmatchedArgumentsAllowed = false;
-    private List<String> unmatchedArguments = new ArrayList<String>();
+    private final List<String> unmatchedArguments = new ArrayList<String>();
     private CommandLine parent;
     private boolean usageHelpRequested;
     private boolean versionHelpRequested;
-    private List<String> versionLines = new ArrayList<String>();
+    private final List<String> versionLines = new ArrayList<String>();
 
     /**
      * Constructs a new {@code CommandLine} interpreter with the specified annotated object.

@@ -35,10 +35,10 @@ public class Timer implements Serializable, StringBuilderFormattable
     private Status status; // The timer's status
     private long elapsedTime;         // The elapsed time
     private final int iterations;
-    private static long NANO_PER_SECOND = 1000000000L;
-    private static long NANO_PER_MINUTE = NANO_PER_SECOND * 60;
-    private static long NANO_PER_HOUR = NANO_PER_MINUTE * 60;
-    private ThreadLocal<Long> startTime = new ThreadLocal<Long>() {
+    private static final long NANO_PER_SECOND = 1000000000L;
+    private static final long NANO_PER_MINUTE = NANO_PER_SECOND * 60;
+    private static final long NANO_PER_HOUR = NANO_PER_MINUTE * 60;
+    private final ThreadLocal<Long> startTime = new ThreadLocal<Long>() {
             @Override protected Long initialValue() {
                 return 0L;
             }

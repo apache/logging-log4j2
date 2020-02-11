@@ -100,9 +100,9 @@ public class XmlConfiguration extends Log4j1Configuration {
     protected static final String DEFAULT_PREFIX = "log4j";
 
     // key: appenderName, value: appender
-    private Map<String, Appender> appenderMap;
+    private final Map<String, Appender> appenderMap;
 
-    private Properties props = null;
+    private final Properties props = null;
 
     public XmlConfiguration(final LoggerContext loggerContext, final ConfigurationSource source,
             int monitorIntervalSeconds) {

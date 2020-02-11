@@ -46,7 +46,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
     private static final int MAX_LENGTH = 255;
     private static final int DEFAULT_PORT = 4555;
 
-    private static Object jmDNS = initializeJmDns();
+    private static final Object jmDNS = initializeJmDns();
     private static Class<?> jmDNSClass;
     private static Class<?> serviceInfoClass;
 

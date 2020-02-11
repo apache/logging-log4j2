@@ -46,7 +46,7 @@ public class BuilderManager {
     public static final String CATEGORY = "Log4j Builder";
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final Map<String, PluginType<?>> plugins;
-    private static Class<?>[] constructorParams = new Class[] { String.class, Properties.class};
+    private static final Class<?>[] constructorParams = new Class[] { String.class, Properties.class};
 
     public BuilderManager() {
         final PluginManager manager = new PluginManager(CATEGORY);

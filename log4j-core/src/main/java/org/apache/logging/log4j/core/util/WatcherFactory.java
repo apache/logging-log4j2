@@ -36,8 +36,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class WatcherFactory {
 
-    private static Logger LOGGER = StatusLogger.getLogger();
-    private static PluginManager pluginManager = new PluginManager(Watcher.CATEGORY);
+    private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final PluginManager pluginManager = new PluginManager(Watcher.CATEGORY);
 
     private static volatile WatcherFactory factory = null;
 

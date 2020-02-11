@@ -42,9 +42,9 @@ import org.apache.logging.log4j.status.StatusLogger;
 @PluginAliases("https")
 public class HttpWatcher extends AbstractWatcher {
 
-    private Logger LOGGER = StatusLogger.getLogger();
+    private final Logger LOGGER = StatusLogger.getLogger();
 
-    private SslConfiguration sslConfiguration;
+    private final SslConfiguration sslConfiguration;
     private URL url;
     private volatile long lastModifiedMillis;
     private static final int NOT_MODIFIED = 304;
