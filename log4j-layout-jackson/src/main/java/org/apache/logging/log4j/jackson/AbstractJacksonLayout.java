@@ -202,10 +202,10 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
      */
     public static class LogEventWithAdditionalFields {
 
-        private final Object logEvent;
+        private final LogEvent logEvent;
         private final Map<String, String> additionalFields;
 
-        public LogEventWithAdditionalFields(final Object logEvent, final Map<String, String> additionalFields) {
+        public LogEventWithAdditionalFields(final LogEvent logEvent, final Map<String, String> additionalFields) {
             this.logEvent = logEvent;
             this.additionalFields = additionalFields;
         }
@@ -214,7 +214,7 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
             return additionalFields;
         }
 
-        public Object getLogEvent() {
+        public LogEvent getLogEvent() {
             return logEvent;
         }
     }

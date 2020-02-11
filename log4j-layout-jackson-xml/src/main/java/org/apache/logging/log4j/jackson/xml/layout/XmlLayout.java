@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.jackson.xml.layout;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -84,8 +85,15 @@ public final class XmlLayout extends AbstractJacksonLayout {
     @JacksonXmlRootElement(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_EVENT)
     public static class XmlLogEventWithAdditionalFields extends LogEventWithAdditionalFields {
 
-        public XmlLogEventWithAdditionalFields(final Object logEvent, final Map<String, String> additionalFields) {
+        public XmlLogEventWithAdditionalFields(final LogEvent logEvent, final Map<String, String> additionalFields) {
             super(logEvent, additionalFields);
+
+        }
+
+        @Override
+        @JsonSerialize(as = LogEvent.class)
+        public LogEvent getLogEvent() {
+            return super.getLogEvent();
         }
 
     }
