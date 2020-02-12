@@ -127,7 +127,7 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
 
 | prettyPrintEnabled
 | boolean
-| enables pretty-printer (defaults to `false` set by
+| *[experimental]* enables pretty-printer (defaults to `false` set by
   `log4j.layout.jsonTemplate.prettyPrintEnabled` property)
 
 | locationInfoEnabled
@@ -142,7 +142,7 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
 
 | blankFieldExclusionEnabled
 | boolean
-| exclude empty and null properties (defaults to `false` set by
+| *[experimental]* exclude empty and null properties (defaults to `false` set by
   `log4j.layout.jsonTemplate.blankFieldExclusionEnabled` property)
 
 | mdcKeyPattern
