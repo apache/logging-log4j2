@@ -60,7 +60,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -75,6 +74,8 @@ public class JsonTemplateLayoutTest {
 
     private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFixture.getObjectMapper();
 
+    private static final String LOGGER_NAME = JsonTemplateLayoutTest.class.getSimpleName();
+
     @Test
     public void test_serialized_event() throws IOException {
         final String lookupTestKey = "lookup_test_key";
@@ -88,6 +89,7 @@ public class JsonTemplateLayoutTest {
 
     private void checkLogEvent(
             final LogEvent logEvent,
+            @SuppressWarnings("SameParameterValue")
             final String lookupTestKey,
             final String lookupTestVal) throws IOException {
         final Set<String> mdcKeys = logEvent.getContextData().toMap().keySet();
@@ -259,7 +261,7 @@ public class JsonTemplateLayoutTest {
                 .getTime();
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(message)
                 .setTimeMillis(timeMillis)
@@ -267,7 +269,7 @@ public class JsonTemplateLayoutTest {
 
         // Create the event template.
         final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
-        eventTemplateRootNode.put("@timestamp", "${json:timestamp}");
+        eventTemplateRootNode.put("@timestamp", "${json:timestamp:timeZone=Europe/Amsterdam}");
         final String staticFieldName = "staticFieldName";
         final String staticFieldValue = "staticFieldValue";
         eventTemplateRootNode.put(staticFieldName, staticFieldValue);
@@ -276,12 +278,10 @@ public class JsonTemplateLayoutTest {
         // Create the layout.
         final BuiltConfiguration configuration =
                 ConfigurationBuilderFactory.newConfigurationBuilder().build();
-        final TimeZone timeZone = TimeZone.getTimeZone("Europe/Amsterdam");
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
                 .setConfiguration(configuration)
                 .setEventTemplate(eventTemplate)
-                .setTimeZone(timeZone)
                 .build();
 
         // Check the serialized event.
@@ -325,7 +325,7 @@ public class JsonTemplateLayoutTest {
                 .with("key3", Collections.singletonMap("foo", "bar"));
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(mapMessage)
                 .setTimeMillis(System.currentTimeMillis())
@@ -365,7 +365,7 @@ public class JsonTemplateLayoutTest {
                 .with("key3", Collections.singletonMap("key3.1", "val3.1"));
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(mapMessage)
                 .setTimeMillis(System.currentTimeMillis())
@@ -387,7 +387,7 @@ public class JsonTemplateLayoutTest {
         final SimpleMessage message = new SimpleMessage("Hello, World");
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(message)
                 .build();
@@ -425,7 +425,7 @@ public class JsonTemplateLayoutTest {
         final RuntimeException exception = new RuntimeException("failure for test purposes");
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.ERROR)
                 .setMessage(message)
                 .setThrown(exception)
@@ -478,7 +478,7 @@ public class JsonTemplateLayoutTest {
         final RuntimeException exception = new RuntimeException("failure for test purposes", exceptionCause);
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.ERROR)
                 .setMessage(message)
                 .setThrown(exception)
@@ -531,7 +531,7 @@ public class JsonTemplateLayoutTest {
         final Marker marker = MarkerManager.getMarker(markerName);
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.ERROR)
                 .setMessage(message)
                 .setMarker(marker)
@@ -569,7 +569,7 @@ public class JsonTemplateLayoutTest {
         final SimpleMessage message = new SimpleMessage("Hello, World!");
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(message)
                 .build();
@@ -616,7 +616,7 @@ public class JsonTemplateLayoutTest {
         final SimpleMessage message = new SimpleMessage("Hello, World!");
         final LogEvent logEvent = Log4jLogEvent
             .newBuilder()
-            .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+            .setLoggerName(LOGGER_NAME)
             .setLevel(Level.INFO)
             .setMessage(message)
             .build();
@@ -667,7 +667,7 @@ public class JsonTemplateLayoutTest {
         contextData.putValue(mdcDirectlyAccessedNullPropertyKey, mdcDirectlyAccessedNullPropertyValue);
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(message)
                 .setContextData(contextData)
@@ -713,7 +713,7 @@ public class JsonTemplateLayoutTest {
         final StringMapMessage message = new StringMapMessage().with("key1", "val1");
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(message)
                 .build();
@@ -754,7 +754,7 @@ public class JsonTemplateLayoutTest {
         contextData.putValue(mdcEmptyKey2, null);
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(message)
                 .setContextData(contextData)
@@ -839,7 +839,7 @@ public class JsonTemplateLayoutTest {
         message.put("bottle", "Kickapoo Joy Juice");
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(message)
                 .build();
@@ -874,7 +874,7 @@ public class JsonTemplateLayoutTest {
         final SimpleMessage message = new SimpleMessage("Hello, World!");
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(message)
                 .build();
@@ -926,7 +926,7 @@ public class JsonTemplateLayoutTest {
         final ObjectMessage message = new ObjectMessage(attachment);
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(message)
                 .build();
@@ -999,7 +999,7 @@ public class JsonTemplateLayoutTest {
         final RuntimeException exception = new RuntimeException("failure for test purposes", exceptionCause);
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.ERROR)
                 .setMessage(message)
                 .setThrown(exception)
@@ -1105,7 +1105,7 @@ public class JsonTemplateLayoutTest {
         final Throwable thrown = new RuntimeException();
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(message)
                 .setThrown(thrown)
@@ -1179,7 +1179,7 @@ public class JsonTemplateLayoutTest {
         final RuntimeException exception = NonAsciiUtf8MethodNameContainingException.INSTANCE;
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.ERROR)
                 .setMessage(message)
                 .setThrown(exception)
@@ -1216,7 +1216,7 @@ public class JsonTemplateLayoutTest {
         final ObjectMessage message = new ObjectMessage(logEventDate);
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(message)
                 .setTimeMillis(logEventDate.getTime())
@@ -1265,7 +1265,7 @@ public class JsonTemplateLayoutTest {
         final Level level = Level.ERROR;
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(level)
                 .setMessage(message)
                 .setThrown(exception)
@@ -1317,7 +1317,7 @@ public class JsonTemplateLayoutTest {
         instant.initFromEpochSecond(instantEpochSecond, instantEpochSecondNano);
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setLevel(level)
                 .setMessage(message)
                 .setInstant(instant)
@@ -1410,7 +1410,7 @@ public class JsonTemplateLayoutTest {
             final SimpleMessage message = new SimpleMessage("Hello, World!");
             final LogEvent logEvent = Log4jLogEvent
                     .newBuilder()
-                    .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                    .setLoggerName(LOGGER_NAME)
                     .setLevel(level)
                     .setMessage(message)
                     .build();
@@ -1435,7 +1435,7 @@ public class JsonTemplateLayoutTest {
         final SimpleMessage message = new SimpleMessage("Hello, World!");
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setMessage(message)
                 .build();
 
@@ -1485,19 +1485,21 @@ public class JsonTemplateLayoutTest {
 
         // Create the event template.
         final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
-        eventTemplateRootNode.put("timestamp", "${json:timestamp}");
+        eventTemplateRootNode.put(
+                "timestamp",
+                "${json:timestamp:" +
+                        "pattern=yyyy-MM-dd'T'HH:mm:ss'Z'," +
+                        "timeZone=UTC" +
+                        "}");
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
         final BuiltConfiguration configuration =
                 ConfigurationBuilderFactory.newConfigurationBuilder().build();
-        final TimeZone timeZone = TimeZone.getTimeZone("UTC");
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
                 .setConfiguration(configuration)
                 .setEventTemplate(eventTemplate)
-                .setTimeZone(timeZone)
-                .setTimestampFormatPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
                 .build();
 
         // Check the serialized 1st event.
@@ -1529,7 +1531,7 @@ public class JsonTemplateLayoutTest {
         instant.initFromEpochMilli(instantEpochMillis, 0);
         return Log4jLogEvent
                 .newBuilder()
-                .setLoggerName(JsonTemplateLayoutTest.class.getSimpleName())
+                .setLoggerName(LOGGER_NAME)
                 .setMessage(message)
                 .setInstant(instant)
                 .build();

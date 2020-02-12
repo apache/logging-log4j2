@@ -21,8 +21,8 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.jackson.json.template.layout.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.jackson.json.template.layout.util.JsonGenerators;
-import org.apache.logging.log4j.util.Strings;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -35,20 +35,14 @@ final class TimestampResolver implements EventResolver {
 
     private final EventResolver internalResolver;
 
-    TimestampResolver(final EventResolverContext context, final String key) {
-        this.internalResolver = createInternalResolver(context, key);
+    TimestampResolver(final String key) {
+        this.internalResolver = createInternalResolver(key);
     }
 
-    private static EventResolver createInternalResolver(
-            final EventResolverContext eventResolverContext,
-            final String key) {
-        if (Strings.isEmpty(key)) {
-            return createFormatResolver(eventResolverContext);
-        }
-        if (key.startsWith("epoch:")) {
-            return createEpochResolver(key);
-        }
-        throw new IllegalArgumentException("unknown timestamp key: " + key);
+    private static EventResolver createInternalResolver(final String key) {
+        return (key != null && key.startsWith("epoch:"))
+                ? createEpochResolver(key)
+                : createFormatResolver(key);
     }
 
     /**
@@ -77,12 +71,96 @@ final class TimestampResolver implements EventResolver {
             formattedTimestampBuilder.getChars(0, formattedTimestampLength, formattedTimestampBuffer, 0);
         }
 
-        private static FormatResolverContext fromEventResolverContext(
-                final EventResolverContext eventResolverContext) {
-            return new FormatResolverContext(
-                    eventResolverContext.getTimeZone(),
-                    eventResolverContext.getLocale(),
-                    eventResolverContext.getTimestampFormat());
+        private static FormatResolverContext fromKey(final String key) {
+            String pattern = JsonTemplateLayoutDefaults.getTimestampFormatPattern();
+            boolean patternProvided = false;
+            TimeZone timeZone = JsonTemplateLayoutDefaults.getTimeZone();
+            boolean timeZoneProvided = false;
+            Locale locale = JsonTemplateLayoutDefaults.getLocale();
+            boolean localeProvided = false;
+            final String[] pairs = key != null
+                    ? key.split("\\s*,\\s*", 3)
+                    : new String[0];
+            for (final String pair : pairs) {
+                final String[] nameAndValue = pair.split("\\s*=\\s*", 2);
+                if (nameAndValue.length != 2) {
+                    throw new IllegalArgumentException("illegal timestamp key: " + key);
+                }
+                final String name = nameAndValue[0];
+                final String value = nameAndValue[1];
+                switch (name) {
+
+                    case "pattern": {
+                        if (patternProvided) {
+                            throw new IllegalArgumentException(
+                                    "multiple occurrences of pattern in timestamp key: " + key);
+                        }
+                        try {
+                            FastDateFormat.getInstance(value);
+                        } catch (final IllegalArgumentException error) {
+                            throw new IllegalArgumentException(
+                                    "invalid pattern in timestamp key: " + key,
+                                    error);
+                        }
+                        patternProvided = true;
+                        pattern = value;
+                        break;
+                    }
+
+                    case "timeZone": {
+                        if (timeZoneProvided) {
+                            throw new IllegalArgumentException(
+                                    "multiple occurrences of time zone in timestamp key: " + key);
+                        }
+                        boolean found = false;
+                        for (final String availableTimeZone : TimeZone.getAvailableIDs()) {
+                            if (availableTimeZone.equalsIgnoreCase(value)) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            throw new IllegalArgumentException(
+                                    "invalid time zone in timestamp key: " + key);
+                        }
+                        timeZoneProvided = true;
+                        timeZone = TimeZone.getTimeZone(value);
+                        break;
+                    }
+
+                    case "locale": {
+                        if (localeProvided) {
+                            throw new IllegalArgumentException(
+                                    "multiple occurrences of locale in timestamp key: " + key);
+                        }
+                        final String[] localeFields = value.split("_", 3);
+                        switch (localeFields.length) {
+                            case 1:
+                                locale = new Locale(localeFields[0]);
+                                break;
+                            case 2:
+                                locale = new Locale(localeFields[0], localeFields[1]);
+                                break;
+                            case 3:
+                                locale = new Locale(localeFields[0], localeFields[1], localeFields[2]);
+                                break;
+                            default:
+                                throw new IllegalArgumentException(
+                                        "invalid locale in timestamp key: " + key);
+                        }
+                        localeProvided = true;
+                        break;
+                    }
+
+                    default:
+                        throw new IllegalArgumentException(
+                                "invalid timestamp key: " + key);
+
+                }
+            }
+            final FastDateFormat fastDateFormat =
+                    FastDateFormat.getInstance(pattern, timeZone, locale);
+            return new FormatResolverContext(timeZone, locale, fastDateFormat);
         }
 
     }
@@ -143,9 +221,9 @@ final class TimestampResolver implements EventResolver {
 
         private final ThreadLocal<FormatResolverContext> formatResolverContextRef;
 
-        private ThreadLocalFormatResolver(final EventResolverContext eventResolverContext) {
+        private ThreadLocalFormatResolver(final String key) {
             this.formatResolverContextRef = ThreadLocal.withInitial(
-                    () -> FormatResolverContext.fromEventResolverContext(eventResolverContext));
+                    () -> FormatResolverContext.fromKey(key));
         }
 
         @Override
@@ -167,9 +245,8 @@ final class TimestampResolver implements EventResolver {
 
         private final Lock lock = new ReentrantLock();
 
-        private LockingFormatResolver(final EventResolverContext eventResolverContext) {
-            this.formatResolverContext =
-                    FormatResolverContext.fromEventResolverContext(eventResolverContext);
+        private LockingFormatResolver(final String key) {
+            this.formatResolverContext = FormatResolverContext.fromKey(key);
         }
 
         @Override
@@ -185,11 +262,10 @@ final class TimestampResolver implements EventResolver {
 
     }
 
-    private static EventResolver createFormatResolver(
-            final EventResolverContext eventResolverContext) {
+    private static EventResolver createFormatResolver(final String key) {
         return Constants.ENABLE_THREADLOCALS
-                ? new ThreadLocalFormatResolver(eventResolverContext)
-                : new LockingFormatResolver(eventResolverContext);
+                ? new ThreadLocalFormatResolver(key)
+                : new LockingFormatResolver(key);
     }
 
     private static final int MICROS_PER_SEC = 1_000_000;

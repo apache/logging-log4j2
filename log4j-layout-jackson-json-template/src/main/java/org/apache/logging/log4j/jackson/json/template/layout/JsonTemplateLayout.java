@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.jackson.json.template.layout.resolver.EventResolverContext;
@@ -49,10 +48,8 @@ import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Collections;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TimeZone;
 import java.util.function.Supplier;
 
 @Plugin(name = "JsonTemplateLayout",
@@ -138,18 +135,11 @@ public class JsonTemplateLayout implements StringLayout {
         final int writerCapacity = builder.maxStringLength > 0
                 ? builder.maxStringLength
                 : builder.maxByteCount;
-        final Locale locale = builder.locale;
-        final FastDateFormat timestampFormat =
-                FastDateFormat.getInstance(
-                        builder.timestampFormatPattern, builder.timeZone, locale);
         final EventResolverContext resolverContext = EventResolverContext
                 .newBuilder()
                 .setObjectMapper(objectMapper)
                 .setSubstitutor(substitutor)
                 .setWriterCapacity(writerCapacity)
-                .setTimeZone(builder.timeZone)
-                .setLocale(locale)
-                .setTimestampFormat(timestampFormat)
                 .setLocationInfoEnabled(builder.locationInfoEnabled)
                 .setStackTraceEnabled(builder.stackTraceEnabled)
                 .setStackTraceElementObjectResolver(stackTraceElementObjectResolver)
@@ -344,16 +334,6 @@ public class JsonTemplateLayout implements StringLayout {
                 JsonTemplateLayoutDefaults.isBlankFieldExclusionEnabled();
 
         @PluginBuilderAttribute
-        private String timestampFormatPattern =
-                JsonTemplateLayoutDefaults.getTimestampFormatPattern();
-
-        @PluginBuilderAttribute
-        private TimeZone timeZone = JsonTemplateLayoutDefaults.getTimeZone();
-
-        @PluginBuilderAttribute
-        private Locale locale = JsonTemplateLayoutDefaults.getLocale();
-
-        @PluginBuilderAttribute
         private String eventTemplate = JsonTemplateLayoutDefaults.getEventTemplate();
 
         @PluginBuilderAttribute
@@ -450,33 +430,6 @@ public class JsonTemplateLayout implements StringLayout {
 
         public Builder setBlankFieldExclusionEnabled(final boolean blankFieldExclusionEnabled) {
             this.blankFieldExclusionEnabled = blankFieldExclusionEnabled;
-            return this;
-        }
-
-        public String getTimestampFormatPattern() {
-            return timestampFormatPattern;
-        }
-
-        public Builder setTimestampFormatPattern(final String timestampFormatPattern) {
-            this.timestampFormatPattern = timestampFormatPattern;
-            return this;
-        }
-
-        public TimeZone getTimeZone() {
-            return timeZone;
-        }
-
-        public Builder setTimeZone(final TimeZone timeZone) {
-            this.timeZone = timeZone;
-            return this;
-        }
-
-        public Locale getLocale() {
-            return locale;
-        }
-
-        public Builder setLocale(final Locale locale) {
-            this.locale = locale;
             return this;
         }
 
@@ -601,10 +554,6 @@ public class JsonTemplateLayout implements StringLayout {
 
         private void validate() {
             Objects.requireNonNull(configuration, "config");
-            if (Strings.isBlank(timestampFormatPattern)) {
-                throw new IllegalArgumentException("dateTimeFormatPattern");
-            }
-            Objects.requireNonNull(timeZone, "timeZone");
             if (Strings.isBlank(eventTemplate) && Strings.isBlank(eventTemplateUri)) {
                     throw new IllegalArgumentException(
                             "both eventTemplate and eventTemplateUri are blank");
