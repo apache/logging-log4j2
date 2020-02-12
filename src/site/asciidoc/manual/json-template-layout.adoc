@@ -205,11 +205,9 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
 
 | mapMessageFormatterIgnored
 | boolean
-| temporary work around for
-  https://issues.apache.org/jira/browse/LOG4J2-2703[LOG4J2-2703] and enables
-  serialization of `MapMessage`s using Jackson rather than
-  `MapMessage#getFormattedMessage()` (defaults to `true` set by
-  `log4j.layout.jsonTemplate.mapMessageFormatterIgnored` property)
+| *[experimental]* employ Jackson serialization for messages of type
+  `MapMessage` rather `MapMessage#getFormattedMessage()` (defaults to `true` set
+  by `log4j.layout.jsonTemplate.mapMessageFormatterIgnored` property)
 |===
 
 [#additional-event-template-fields]
