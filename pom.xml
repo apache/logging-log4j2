@@ -1506,9 +1506,9 @@
     <module>log4j-core</module>
     <module>log4j-layout-jackson</module>
     <module>log4j-layout-jackson-json</module>
-    <module>log4j-layout-jackson-json-template</module>
     <module>log4j-layout-jackson-xml</module>
     <module>log4j-layout-jackson-yaml</module>
+    <module>log4j-layout-json-template</module>
     <module>log4j-core-its</module>
     <module>log4j-1.2-api</module>
     <module>log4j-slf4j-impl</module>
