@@ -20,11 +20,11 @@ import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 
 import java.nio.ByteBuffer;
 
-public class BlackHoleByteBufferDestination implements ByteBufferDestination {
+class BlackHoleByteBufferDestination implements ByteBufferDestination {
 
     private final ByteBuffer byteBuffer;
 
-    public BlackHoleByteBufferDestination(final int maxByteCount) {
+    BlackHoleByteBufferDestination(final int maxByteCount) {
         this.byteBuffer = ByteBuffer.allocate(maxByteCount);
     }
 
