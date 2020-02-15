@@ -166,6 +166,9 @@
       </action>
     </release>
     <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
+      <action issue="LOG4J@-2781" dev="rgiers" type="fix" due-to="qxo">
+        ServletContainerInitializer was obtaining the StatusLogger too soon.
+      </action>
       <action issue="LOG4J2-2703" dev="goers" type="fix" due-to="Volkan Yazici">
         MapMessage.getFormattedMesssage() would incorrectly format objects.
       </action>
