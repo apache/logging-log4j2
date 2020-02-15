@@ -22,6 +22,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.AfterClass;
@@ -79,16 +82,10 @@ public class RollingAppenderOnStartupTest {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        long size = 0;
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {
-                if (size == 0) {
-                    size = Files.size(path);
-                } else {
-                    final long fileSize = Files.size(path);
-                    assertTrue("Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize,
-                        size == fileSize);
-                }
+                List<String> lines = Files.lines(path).collect(Collectors.toList());
+                assertTrue("No header present for " + path.toFile().getName(), lines.get(0).startsWith("<!DOCTYPE HTML"));
                 Files.delete(path);
             }
             Files.delete(Paths.get("target/onStartup"));

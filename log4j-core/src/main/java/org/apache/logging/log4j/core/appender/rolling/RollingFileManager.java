@@ -142,7 +142,7 @@ public class RollingFileManager extends FileManager {
             final String filePermissions, final String fileOwner, final String fileGroup,
             final boolean writeHeader, final ByteBuffer buffer) {
         super(loggerContext, fileName != null ? fileName : pattern, os, append, false, createOnDemand,
-			advertiseURI, layout, filePermissions, fileOwner, fileGroup, false, buffer);
+			advertiseURI, layout, filePermissions, fileOwner, fileGroup, writeHeader, buffer);
         this.size = size;
         this.initialTime = initialTime;
         this.triggeringPolicy = triggeringPolicy;
