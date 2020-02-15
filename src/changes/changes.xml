@@ -30,7 +30,10 @@
          - "remove" - Removed
     -->
     <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
-      <action issue="LOG4J2-2703" dev="goers" type="fix" due-to="Volkan Yazici">
+      <action issue="LOG4J2-2676" dev="rgoers" type="fix" due-to="Gregg Donovan">
+        PluginProcessor should use Messager instead of System.out.
+      </action>
+      <action issue="LOG4J2-2703" dev="rgoers" type="fix" due-to="Volkan Yazici">
         MapMessage.getFormattedMesssage() would incorrectly format objects.
       </action>
       <action issue="LOG4J2-2760" dev="rgoers" type="fix" due-to="Christoph Kaser">
