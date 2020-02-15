@@ -66,7 +66,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     private int threadPriority;
     private long threadId;
-    private MutableInstant instant = new MutableInstant();
+    private final MutableInstant instant = new MutableInstant();
     private long nanoTime;
     private short parameterCount;
     private boolean includeLocation;

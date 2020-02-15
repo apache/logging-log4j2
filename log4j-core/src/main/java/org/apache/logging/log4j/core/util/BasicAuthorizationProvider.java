@@ -36,7 +36,7 @@ public class BasicAuthorizationProvider implements AuthorizationProvider {
     public static final String CONFIG_PASSWORD = "log4j2.configurationPassword";
     public static final String PASSWORD_DECRYPTOR = "log4j2.passwordDecryptor";
 
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Base64.Encoder encoder = Base64.getEncoder();
 
     private String authString = null;

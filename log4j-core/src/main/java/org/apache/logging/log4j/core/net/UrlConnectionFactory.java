@@ -33,9 +33,9 @@ import org.apache.logging.log4j.core.util.AuthorizationProvider;
  */
 public class UrlConnectionFactory {
 
-    private static int DEFAULT_TIMEOUT = 60000;
-    private static int connectTimeoutMillis = DEFAULT_TIMEOUT;
-    private static int readTimeoutMillis = DEFAULT_TIMEOUT;
+    private static final int DEFAULT_TIMEOUT = 60000;
+    private static final int connectTimeoutMillis = DEFAULT_TIMEOUT;
+    private static final int readTimeoutMillis = DEFAULT_TIMEOUT;
     private static final String JSON = "application/json";
     private static final String XML = "application/xml";
     private static final String PROPERTIES = "text/x-java-properties";

@@ -50,7 +50,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
         private boolean follow = false;
 
-        private Layout<? extends Serializable> layout = PatternLayout.createDefaultLayout();
+        private final Layout<? extends Serializable> layout = PatternLayout.createDefaultLayout();
 
         private OutputStream target;
 
@@ -115,7 +115,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
         }
     }
 
-    private static OutputStreamManagerFactory factory = new OutputStreamManagerFactory();
+    private static final OutputStreamManagerFactory factory = new OutputStreamManagerFactory();
 
     /**
      * Creates an OutputStream Appender.

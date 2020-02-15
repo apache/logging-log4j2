@@ -34,7 +34,6 @@ import org.apache.logging.log4j.util.Supplier;
 public class DefaultLogBuilder implements LogBuilder {
 
     private static final long serialVersionUID = 8851553895299192531L;
-    private static Message EMPTY_MESSAGE = new SimpleMessage("");
     private static final String FQCN = DefaultLogBuilder.class.getName();
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -44,7 +43,7 @@ public class DefaultLogBuilder implements LogBuilder {
     private Throwable throwable;
     private StackTraceElement location;
     private volatile boolean inUse;
-    private long threadId;
+    private final long threadId;
 
     public DefaultLogBuilder(Logger logger, Level level) {
         this.logger = logger;

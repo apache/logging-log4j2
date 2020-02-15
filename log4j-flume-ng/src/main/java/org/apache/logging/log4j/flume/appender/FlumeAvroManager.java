@@ -33,7 +33,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
     private static final int MAX_RECONNECTS = 3;
     private static final int MINIMUM_TIMEOUT = 1000;
 
-    private static AvroManagerFactory factory = new AvroManagerFactory();
+    private static final AvroManagerFactory factory = new AvroManagerFactory();
 
     private final Agent[] agents;
 

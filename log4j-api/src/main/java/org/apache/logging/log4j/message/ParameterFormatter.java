@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -65,8 +62,6 @@ final class ParameterFormatter {
     private static final char ESCAPE_CHAR = '\\';
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").withZone(ZoneId.systemDefault());
-
-    private static ThreadLocal<SimpleDateFormat> threadLocalSimpleDateFormat = new ThreadLocal<>();
 
     private ParameterFormatter() {
     }

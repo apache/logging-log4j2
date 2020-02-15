@@ -262,8 +262,6 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
     }
     
-    private static final int DEFAULT_BUFFER_SIZE = 8192;
-
     private final String fileName;
     private final String filePattern;
     private Object advertisement;

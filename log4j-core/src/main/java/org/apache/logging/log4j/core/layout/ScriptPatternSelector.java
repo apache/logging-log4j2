@@ -139,7 +139,7 @@ public class ScriptPatternSelector implements PatternSelector {
 
     private final String defaultPattern;
 
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
     private final AbstractScript script;
     private final Configuration configuration;
     private final boolean requiresLocation;

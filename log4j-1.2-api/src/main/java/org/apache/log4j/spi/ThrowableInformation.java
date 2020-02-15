@@ -30,7 +30,7 @@ public class ThrowableInformation implements java.io.Serializable {
     static final long serialVersionUID = -4748765566864322735L;
 
     private transient Throwable throwable;
-    private Method toStringList;
+    private final Method toStringList;
 
     @SuppressWarnings("unchecked")
     public

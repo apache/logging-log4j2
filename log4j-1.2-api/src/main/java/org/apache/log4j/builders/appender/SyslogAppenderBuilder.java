@@ -56,7 +56,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String FACILITY_PARAM = "Facility";
     private static final String SYSLOG_HOST_PARAM = "SyslogHost";
-    private static int SYSLOG_PORT = 512;
+    private static final int SYSLOG_PORT = 512;
 
     public SyslogAppenderBuilder() {
     }

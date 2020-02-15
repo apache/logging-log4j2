@@ -35,7 +35,7 @@ import java.util.Properties;
  */
 public abstract class AbstractBuilder {
 
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
     protected static final String FILE_PARAM = "File";
     protected static final String APPEND_PARAM = "Append";
     protected static final String BUFFERED_IO_PARAM = "BufferedIO";

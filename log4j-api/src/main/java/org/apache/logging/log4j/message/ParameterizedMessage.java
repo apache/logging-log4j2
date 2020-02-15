@@ -69,7 +69,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     private static final int HASHVAL = 31;
 
     // storing JDK classes in ThreadLocals does not cause memory leaks in web apps, so this is okay
-    private static ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
+    private static final ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
 
     private String messagePattern;
     private transient Object[] argArray;

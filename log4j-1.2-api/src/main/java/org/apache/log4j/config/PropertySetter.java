@@ -56,7 +56,7 @@ import java.util.Properties;
  * Otherwise an {@link IntrospectionException} are thrown.
  */
 public class PropertySetter {
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
     protected Object obj;
     protected PropertyDescriptor[] props;
 

@@ -46,7 +46,7 @@ import org.apache.logging.log4j.util.StringBuilders;
 public final class StructuredDataFilter extends MapFilter {
 
     private static final int MAX_BUFFER_SIZE = 2048;
-    private static ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
+    private static final ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
 
     private StructuredDataFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch,
                                  final Result onMismatch) {

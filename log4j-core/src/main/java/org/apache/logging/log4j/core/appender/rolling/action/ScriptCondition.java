@@ -43,7 +43,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "ScriptCondition", category = Core.CATEGORY_NAME, printObject = true)
 public class ScriptCondition {
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final AbstractScript script;
     private final Configuration configuration;

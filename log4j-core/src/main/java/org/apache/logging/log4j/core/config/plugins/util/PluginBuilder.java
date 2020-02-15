@@ -63,7 +63,7 @@ public class PluginBuilder implements Builder<Object> {
     private Node node;
     private LogEvent event;
     private Substitutor substitutor;
-    private ConcurrentMap<String, Boolean> aliases = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Boolean> aliases = new ConcurrentHashMap<>();
 
     /**
      * Constructs a PluginBuilder for a given PluginType.

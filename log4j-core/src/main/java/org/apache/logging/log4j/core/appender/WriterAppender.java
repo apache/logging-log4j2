@@ -104,7 +104,7 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
         }
     }
 
-    private static WriterManagerFactory factory = new WriterManagerFactory();
+    private static final WriterManagerFactory factory = new WriterManagerFactory();
 
     /**
      * Creates a WriterAppender.

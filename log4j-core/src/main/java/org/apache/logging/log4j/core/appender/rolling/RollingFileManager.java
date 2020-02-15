@@ -54,7 +54,7 @@ import org.apache.logging.log4j.core.util.Log4jThreadFactory;
  */
 public class RollingFileManager extends FileManager {
 
-    private static RollingFileManagerFactory factory = new RollingFileManagerFactory();
+    private static final RollingFileManagerFactory factory = new RollingFileManagerFactory();
     private static final int MAX_TRIES = 3;
     private static final int MIN_DURATION = 100;
     private static final FileTime EPOCH = FileTime.fromMillis(0);

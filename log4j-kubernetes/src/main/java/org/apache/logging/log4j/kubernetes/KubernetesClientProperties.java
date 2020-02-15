@@ -54,7 +54,7 @@ public class KubernetesClientProperties {
     private static final String WATCH_RECONNECT_INTERVAL = "watchReconnectInterval";
     private static final String WATCH_RECONNECT_LIMIT = "watchReconnectLimit";
 
-    private PropertiesUtil props = PropertiesUtil.getProperties();
+    private final PropertiesUtil props = PropertiesUtil.getProperties();
     private final Config base;
 
     public KubernetesClientProperties(Config base) {

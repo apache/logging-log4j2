@@ -62,7 +62,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
 
     private final FlumeEventFactory factory;
 
-    private Timer timer = new Timer("FlumeEvent", 5000);
+    private final Timer timer = new Timer("FlumeEvent", 5000);
     private volatile long count = 0;
 
     /**
