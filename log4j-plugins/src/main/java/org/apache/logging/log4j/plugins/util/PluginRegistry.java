@@ -39,6 +39,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static org.apache.logging.log4j.util.Unbox.box;
+
 /**
  * Registry singleton for PluginType maps partitioned by source type and then by category names.
  */
@@ -211,10 +213,12 @@ public class PluginRegistry {
             }
         }
         final long endTime = System.nanoTime();
-        final DecimalFormat numFormat = new DecimalFormat("#0.000000");
-        final double seconds = (endTime - startTime) * 1e-9;
-        LOGGER.debug("Took {} seconds to load {} plugins from {}",
-                numFormat.format(seconds), pluginCount, classLoader);
+        if (LOGGER.isDebugEnabled()) {
+            final DecimalFormat numFormat = new DecimalFormat("#0.000000");
+            final double seconds = (endTime - startTime) * 1e-9;
+            LOGGER.debug("Took {} seconds to load {} plugins from {}",
+                    numFormat.format(seconds), box(pluginCount), classLoader);
+        }
     }
 
     private Map<String, List<PluginType<?>>> decodeCacheFiles(final ClassLoader loader) {
@@ -253,10 +257,12 @@ public class PluginRegistry {
         }
 
         final long endTime = System.nanoTime();
-        final DecimalFormat numFormat = new DecimalFormat("#0.000000");
-        final double seconds = (endTime - startTime) * 1e-9;
-        LOGGER.debug("Took {} seconds to load {} plugins from {}",
-            numFormat.format(seconds), pluginCount, loader);
+        if (LOGGER.isDebugEnabled()) {
+            final DecimalFormat numFormat = new DecimalFormat("#0.000000");
+            final double seconds = (endTime - startTime) * 1e-9;
+            LOGGER.debug("Took {} seconds to load {} plugins from {}",
+                    numFormat.format(seconds), box(pluginCount), loader);
+        }
         return newPluginsByCategory;
     }
 
@@ -320,10 +326,12 @@ public class PluginRegistry {
         }
 
         final long endTime = System.nanoTime();
-        final DecimalFormat numFormat = new DecimalFormat("#0.000000");
-        final double seconds = (endTime - startTime) * 1e-9;
-        LOGGER.debug("Took {} seconds to load {} plugins from package {}",
-            numFormat.format(seconds), resolver.getClasses().size(), pkg);
+        if (LOGGER.isDebugEnabled()) {
+            final DecimalFormat numFormat = new DecimalFormat("#0.000000");
+            final double seconds = (endTime - startTime) * 1e-9;
+            LOGGER.debug("Took {} seconds to load {} plugins from package {}",
+                    numFormat.format(seconds), box(resolver.getClasses().size()), pkg);
+        }
 
         // Note multiple threads could be calling this method concurrently. Both will do the work,
         // but only one will be allowed to store the result in the outer map.
