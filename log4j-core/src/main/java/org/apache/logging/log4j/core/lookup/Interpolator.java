@@ -36,6 +36,9 @@ import org.apache.logging.log4j.util.Constants;
  */
 public class Interpolator extends AbstractConfigurationAwareLookup {
 
+    /** Constant for the prefix separator. */
+    public static final char PREFIX_SEPARATOR = ':';
+
     private static final String LOOKUP_KEY_WEB = "web";
 
     private static final String LOOKUP_KEY_DOCKER = "docker";
@@ -49,9 +52,6 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     private static final String LOOKUP_KEY_JVMRUNARGS = "jvmrunargs";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-
-    /** Constant for the prefix separator. */
-    private static final char PREFIX_SEPARATOR = ':';
 
     private final Map<String, StrLookup> strLookupMap = new HashMap<>();
 

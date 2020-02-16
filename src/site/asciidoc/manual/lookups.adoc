@@ -331,6 +331,11 @@ configuration. The key that follows the `main:` prefix can either be a
 `${main:myString}` is substituted with the value that follows `myString`
 in the main argument list.
 
+Note: Many applications use leading dashes to identify command arguments. Specifying
+`${main:--file}` would result in the lookup failing because it would look for a variable
+named "main" with a default value of "-file". To avoid this the ":" separating the Lookup name from the
+key must be followed by a backslash as an escape character as in `${main:\--file}`.
+
 For example, suppose the static void main String[] arguments are:
 
 ....
@@ -358,14 +363,18 @@ Then the following substitutions are possible:
 |${main:4}
 |bar
 
-|${main:--file}
+|${main:\--file}
 |foo.txt
 
-|${main:-x}
+|${main:\-x}
 |bar
 
 |${main:bar}
 |null
+|===
+
+|${main:\--quiet:-true}
+|true
 |===
 
 Example usage:
