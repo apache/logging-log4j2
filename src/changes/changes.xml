@@ -166,6 +166,9 @@
       </action>
     </release>
     <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
+      <action issue="LOG4J2-2649" dev="rgoers" type="fix">
+        GraalVM does not allow use of MethodHandles.
+      </action>
       <action issue="LOG4J2-2211" dev="rgoers" type="fix">
         Allow Lookup keys with leading dashes by using a slash as an escape character.
       </action>
