@@ -24,8 +24,7 @@ import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.util.FileUtils;
@@ -44,7 +43,7 @@ public class StatusConfiguration {
     private static final Level DEFAULT_STATUS = Level.ERROR;
     private static final Verbosity DEFAULT_VERBOSITY = Verbosity.QUIET;
 
-    private final Collection<String> errorMessages = Collections.synchronizedCollection(new LinkedList<String>());
+    private final Collection<String> errorMessages = new LinkedBlockingQueue<String>();
     private final StatusLogger logger = StatusLogger.getLogger();
 
     private volatile boolean initialized = false;
