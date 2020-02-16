@@ -315,6 +315,10 @@ public static void main(String args[]) {
           or a string, where <code>${main:myString}</code> is substituted with the value that follows
           <code>myString</code> in the main argument list.
         </p>
+          Note: Many applications use leading dashes to identify command arguments. Specifying
+          <code>${main:--file}</code> would result in the lookup failing because it would look for a variable
+          named "main" with a default value of "-file". To avoid this the ":" separating the Lookup name from the
+          key must be followed by a backslash as an escape character as in <code>${main:\--file}</code>
         <p>
           For example, suppose the static void main String[] arguments are:
         </p>
@@ -358,13 +362,13 @@ public static void main(String args[]) {
             </td>
           </tr>
           <tr>
-            <td>${main:--file}</td>
+            <td>${main:\--file}</td>
             <td>
               <p><code>foo.txt</code></p>
             </td>
           </tr>
           <tr>
-            <td>${main:-x}</td>
+            <td>${main:\-x}</td>
             <td>
               <p><code>bar</code></p>
             </td>
@@ -373,6 +377,12 @@ public static void main(String args[]) {
             <td>${main:bar}</td>
             <td>
               <p><code>null</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:\--quiet:-true}</td>
+            <td>
+              <p><code>true</code></p>
             </td>
           </tr>
         </table>

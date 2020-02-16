@@ -28,11 +28,11 @@ import org.apache.logging.log4j.core.config.Configurator;
  *
  * @since 2.4
  */
-public class MainInputArgumentsLookupTest {
+public class MainInputArgumentsLookupApp {
 
     public static void main(final String[] args) {
         MainMapLookup.setMainArguments(args);
-        try (final LoggerContext ctx = Configurator.initialize(MainInputArgumentsLookupTest.class.getName(),
+        try (final LoggerContext ctx = Configurator.initialize(MainInputArgumentsLookupApp.class.getName(),
                 "target/test-classes/log4j-lookup-main.xml")) {
             LogManager.getLogger().error("this is an error message");
         }

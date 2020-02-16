@@ -1073,6 +1073,13 @@ rootLogger.appenderRef.stdout.ref = STDOUT
           the "contextName" with is the value of the current logging context. See many places
           a Properties element is used in this section for examples.
           </p>
+          <p>
+            Default properties may also be specified in the Lookup by using the syntax <code>${dollar}{lookupName:key:-defaultValue}</code>.
+            In some cases the key might contain a leading '-'. When this is the case an escape character must be
+            included, such as <code>${dollar}{main:\--file:-app.properties}</code>. This would use the
+            <code>MainMapLookup</code> for a key named <code>--file</code>. If the key is not found then
+            <code>app.properties</code> would be used as the default value.
+          </p>
         </subsection>
         <a name="RuntimeLookup"/>
         <subsection name="Lookup Variables with Multiple Leading '$' Characters">
