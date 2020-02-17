@@ -67,7 +67,9 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             if (clazz != null) {
                 ctx = findContext(clazz.getClassLoader());
             }
-            ctx = ContextAnchor.THREAD_CONTEXT.get();
+            if (ctx == null) {
+                ctx = ContextAnchor.THREAD_CONTEXT.get();
+            }
         }
         if (ctx != null) {
             ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
