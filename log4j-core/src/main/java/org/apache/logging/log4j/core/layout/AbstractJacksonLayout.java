@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.jackson.XmlConstants;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -280,6 +281,13 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         }
     }
 
+    private static LogEvent convertMutableToLog4jEvent(final LogEvent event) {
+        // TODO Jackson-based layouts have certain filters set up for Log4jLogEvent.
+        // TODO Need to set up the same filters for MutableLogEvent but don't know how...
+        // This is a workaround.
+        return event instanceof Log4jLogEvent ? event : Log4jLogEvent.createMemento(event);
+    }
+
     protected Object wrapLogEvent(final LogEvent event) {
         if (additionalFields.length > 0) {
             // Construct map for serialization - note that we are intentionally using original LogEvent
@@ -316,7 +324,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     public void toSerializable(final LogEvent event, final Writer writer)
             throws JsonGenerationException, JsonMappingException, IOException {
-        objectWriter.writeValue(writer, wrapLogEvent(event));
+        objectWriter.writeValue(writer, wrapLogEvent(convertMutableToLog4jEvent(event)));
         writer.write(eol);
         if (includeNullDelimiter) {
             writer.write('\0');
