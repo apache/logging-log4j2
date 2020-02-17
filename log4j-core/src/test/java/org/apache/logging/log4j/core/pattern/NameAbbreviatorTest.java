@@ -50,6 +50,7 @@ public class NameAbbreviatorTest {
                 { "3", "core.pattern.NameAbbreviatorTest" },
                 { "1.", "o.a.l.l.c.p.NameAbbreviatorTest" },
                 { "1.1.~", "o.a.~.~.~.~.NameAbbreviatorTest" },
+                { "1.1.1.*", "o.a.l.log4j.core.pattern.NameAbbreviatorTest" },
                 { ".", "......NameAbbreviatorTest" }
             }
         );
