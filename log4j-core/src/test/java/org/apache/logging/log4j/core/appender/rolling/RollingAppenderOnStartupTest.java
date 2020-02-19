@@ -97,6 +97,8 @@ public class RollingAppenderOnStartupTest {
                 List<String> lines = Files.lines(path).collect(Collectors.toList());
                 assertTrue("No header present for " + path.toFile().getName(), lines.get(0).startsWith("<!DOCTYPE HTML"));
                 Files.delete(path);
+                System.out.println(path.toFile().toString() + " was deleted");
+                System.out.println(path.toFile().toString() + (path.toFile().exists() ? " exists" : " does not exist"));
             }
             assertTrue("File did not roll", rolled);
         }
