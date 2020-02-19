@@ -300,6 +300,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         }
         try {
             stream.close();
+            LOGGER.debug("OutputStream closed");
         } catch (final IOException ex) {
             logError("Unable to close stream", ex);
             return false;
