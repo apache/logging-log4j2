@@ -189,7 +189,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
         try {
             jmDNSClass = LoaderUtil.loadClass("javax.jmdns.JmDNS");
             serviceInfoClass = LoaderUtil.loadClass("javax.jmdns.ServiceInfo");
-            // if version 3 is available, use it to constuct a serviceInfo instance, otherwise support the version1 API
+            // if version 3 is available, use it to construct a serviceInfo instance, otherwise support the version1 API
             boolean isVersion3 = false;
             try {
                 // create method is in version 3, not version 1

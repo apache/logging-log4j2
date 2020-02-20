@@ -2767,7 +2767,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     /**
-     * Constuct a trace log event.
+     * Construct a trace log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -2776,7 +2776,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         return atLevel(Level.TRACE);
     }
     /**
-     * Constuct a debug log event.
+     * Construct a debug log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -2785,7 +2785,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         return atLevel(Level.DEBUG);
     }
     /**
-     * Constuct an informational log event.
+     * Construct an informational log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -2794,7 +2794,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         return atLevel(Level.INFO);
     }
     /**
-     * Constuct a warning log event.
+     * Construct a warning log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -2803,7 +2803,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         return atLevel(Level.WARN);
     }
     /**
-     * Constuct an error log event.
+     * Construct an error log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -2812,7 +2812,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         return atLevel(Level.ERROR);
     }
     /**
-     * Constuct a fatal log event.
+     * Construct a fatal log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -2821,7 +2821,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         return atLevel(Level.FATAL);
     }
     /**
-     * Constuct a fatal log event.
+     * Construct a fatal log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -2834,7 +2834,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         return builder.reset(Level.OFF);
     }
     /**
-     * Constuct a log event.
+     * Construct a log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
