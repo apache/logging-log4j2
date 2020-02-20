@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -94,11 +95,11 @@ public class RollingAppenderOnStartupTest {
                 if (!path.toFile().getName().endsWith(FILENAME)) {
                     rolled = true;
                 }
-                List<String> lines = Files.lines(path).collect(Collectors.toList());
-                assertTrue("No header present for " + path.toFile().getName(), lines.get(0).startsWith("<!DOCTYPE HTML"));
+                try (Stream<String> stream = Files.lines(path)) {
+                    List<String> lines = stream.collect(Collectors.toList());
+                    assertTrue("No header present for " + path.toFile().getName(), lines.get(0).startsWith("<!DOCTYPE HTML"));
+                }
                 Files.delete(path);
-                System.out.println(path.toFile().toString() + " was deleted");
-                System.out.println(path.toFile().toString() + (path.toFile().exists() ? " exists" : " does not exist"));
             }
             assertTrue("File did not roll", rolled);
         }
