@@ -27,10 +27,9 @@ import org.junit.rules.RuleChain;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.FileTime;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.temporal.ChronoUnit;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
@@ -38,7 +37,6 @@ import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  *
@@ -58,8 +56,8 @@ public class RollingAppenderRestartTest {
         File file = new File("target/rolling-restart/test.log");
         Files.createDirectories(file.toPath().getParent());
         Files.write(file.toPath(), "Hello, world".getBytes(), StandardOpenOption.CREATE);
-        long old = Instant.now().minus(2, ChronoUnit.DAYS).toEpochMilli();
-        assertTrue("Unable to set last modified time", file.setLastModified(old));
+        FileTime newTime = FileTime.from(Instant.now().minus(2, ChronoUnit.DAYS));
+        Files.getFileAttributeView(file.toPath(), BasicFileAttributeView.class).setTimes(newTime, newTime, newTime);
     }
 
     @Test
