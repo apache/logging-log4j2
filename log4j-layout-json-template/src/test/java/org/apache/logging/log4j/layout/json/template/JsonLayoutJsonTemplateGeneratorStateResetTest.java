@@ -124,7 +124,7 @@ public class JsonLayoutJsonTemplateGeneratorStateResetTest {
 
     private void test_JsonGenerator_state_reset() {
         final JsonTemplateLayoutSerializationContext serializationContext =
-                LAYOUT.getSerializationContext();
+                LAYOUT.acquireSerializationContext();
         final ByteBuffer byteBuffer = serializationContext.getOutputStream().getByteBuffer();
         final JsonGenerator jsonGenerator = serializationContext.getJsonGenerator();
         final JsonStreamContext outputContext = jsonGenerator.getOutputContext();

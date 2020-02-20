@@ -64,7 +64,7 @@ final class ExceptionRootCauseResolver implements EventResolver {
                 @Override
                 EventResolver createStackTraceTextResolver(final EventResolverContext context) {
                     final StackTraceTextResolver stackTraceTextResolver =
-                            new StackTraceTextResolver(context.getWriterCapacity());
+                            new StackTraceTextResolver(context);
                     return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
                         final Throwable exception = logEvent.getThrown();
                         if (exception == null) {

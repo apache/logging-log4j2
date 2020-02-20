@@ -20,29 +20,29 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.layout.json.template.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.layout.json.template.util.JsonGenerators;
+import org.apache.logging.log4j.layout.json.template.util.Recycler;
+import org.apache.logging.log4j.layout.json.template.util.RecyclerFactory;
 
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 
 final class TimestampResolver implements EventResolver {
 
     private final EventResolver internalResolver;
 
-    TimestampResolver(final String key) {
-        this.internalResolver = createInternalResolver(key);
-    }
-
-    private static EventResolver createInternalResolver(final String key) {
-        return (key != null && key.startsWith("epoch:"))
+    TimestampResolver(
+            final EventResolverContext eventResolverContext,
+            final String key) {
+        this.internalResolver = (key != null && key.startsWith("epoch:"))
                 ? createEpochResolver(key)
-                : createFormatResolver(key);
+                : createFormatResolver(
+                        eventResolverContext.getRecyclerFactory(),
+                        key);
     }
 
     /**
@@ -168,11 +168,14 @@ final class TimestampResolver implements EventResolver {
     /**
      * GC-free formatted timestamp resolver.
      */
-    private static abstract class ContextualFormatResolver implements EventResolver {
+    private static final class FormatResolver implements EventResolver {
 
-        abstract FormatResolverContext acquireContext();
+        private final Recycler<FormatResolverContext> formatResolverContextRecycler;
 
-        abstract void releaseContext();
+        private FormatResolver(
+                final Recycler<FormatResolverContext> formatResolverContextRecycler) {
+            this.formatResolverContextRecycler = formatResolverContextRecycler;
+        }
 
         @Override
         public void resolve(
@@ -180,7 +183,7 @@ final class TimestampResolver implements EventResolver {
                 final JsonGenerator jsonGenerator)
                 throws IOException {
             final long timestampMillis = logEvent.getTimeMillis();
-            final FormatResolverContext formatResolverContext = acquireContext();
+            final FormatResolverContext formatResolverContext = formatResolverContextRecycler.acquire();
             try {
 
                 // Format timestamp if it doesn't match the last cached one.
@@ -208,64 +211,20 @@ final class TimestampResolver implements EventResolver {
                         formatResolverContext.formattedTimestampBuilder.length());
 
             } finally {
-                releaseContext();
+                formatResolverContextRecycler.release(formatResolverContext);
             }
         }
 
     }
 
-    /**
-     * GC-free formatted timestamp resolver by means of thread locals.
-     */
-    private static final class ThreadLocalFormatResolver extends ContextualFormatResolver {
-
-        private final ThreadLocal<FormatResolverContext> formatResolverContextRef;
-
-        private ThreadLocalFormatResolver(final String key) {
-            this.formatResolverContextRef = ThreadLocal.withInitial(
-                    () -> FormatResolverContext.fromKey(key));
-        }
-
-        @Override
-        FormatResolverContext acquireContext() {
-            return formatResolverContextRef.get();
-        }
-
-        @Override
-        void releaseContext() {}
-
-    }
-
-    /**
-     * GC-free formatted timestamp resolver by means of a shared context.
-     */
-    private static final class LockingFormatResolver extends ContextualFormatResolver {
-
-        private final FormatResolverContext formatResolverContext;
-
-        private final Lock lock = new ReentrantLock();
-
-        private LockingFormatResolver(final String key) {
-            this.formatResolverContext = FormatResolverContext.fromKey(key);
-        }
-
-        @Override
-        FormatResolverContext acquireContext() {
-            lock.lock();
-            return formatResolverContext;
-        }
-
-        @Override
-        void releaseContext() {
-            lock.unlock();
-        }
-
-    }
-
-    private static EventResolver createFormatResolver(final String key) {
-        return Constants.ENABLE_THREADLOCALS
-                ? new ThreadLocalFormatResolver(key)
-                : new LockingFormatResolver(key);
+    private static EventResolver createFormatResolver(
+            final RecyclerFactory recyclerFactory,
+            final String key) {
+        final Recycler<FormatResolverContext> formatResolverContextRecycler =
+                recyclerFactory.create(
+                        () -> FormatResolverContext.fromKey(key),
+                        Function.identity());
+        return new FormatResolver(formatResolverContextRecycler);
     }
 
     private static final int MICROS_PER_SEC = 1_000_000;

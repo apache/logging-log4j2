@@ -18,42 +18,38 @@ package org.apache.logging.log4j.layout.json.template.resolver;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.layout.json.template.util.BufferedPrintWriter;
-import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.layout.json.template.util.Recycler;
 
 import java.io.IOException;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 final class StackTraceTextResolver implements StackTraceResolver {
 
-    private final Supplier<BufferedPrintWriter> writerSupplier;
+    private final Recycler<BufferedPrintWriter> writerRecycler;
 
-    private final ThreadLocal<BufferedPrintWriter> writerRef;
-
-    StackTraceTextResolver(final int writerCapacity) {
-        this.writerSupplier = () -> BufferedPrintWriter.ofCapacity(writerCapacity);
-        this.writerRef = Constants.ENABLE_THREADLOCALS
-                ? ThreadLocal.withInitial(writerSupplier)
-                : null;
+    StackTraceTextResolver(final EventResolverContext context) {
+        final Supplier<BufferedPrintWriter> writerSupplier =
+                () -> BufferedPrintWriter.ofCapacity(context.getWriterCapacity());
+        final Function<BufferedPrintWriter, BufferedPrintWriter> writerCleaner =
+                writer -> {
+                    writer.close();
+                    return writer;
+                };
+        this.writerRecycler = context.getRecyclerFactory().create(writerSupplier, writerCleaner);
     }
 
     @Override
     public void resolve(
             final Throwable throwable,
             final JsonGenerator jsonGenerator) throws IOException {
-        final BufferedPrintWriter writer = getResetWriter();
-        throwable.printStackTrace(writer);
-        jsonGenerator.writeString(writer.getBuffer(), 0, writer.getPosition());
-    }
-
-    private BufferedPrintWriter getResetWriter() {
-        BufferedPrintWriter writer;
-        if (Constants.ENABLE_THREADLOCALS) {
-            writer = writerRef.get();
-            writer.close();
-        } else {
-            writer = writerSupplier.get();
+        final BufferedPrintWriter writer = writerRecycler.acquire();
+        try {
+            throwable.printStackTrace(writer);
+            jsonGenerator.writeString(writer.getBuffer(), 0, writer.getPosition());
+        } finally {
+            writerRecycler.release(writer);
         }
-        return writer;
     }
 
 }

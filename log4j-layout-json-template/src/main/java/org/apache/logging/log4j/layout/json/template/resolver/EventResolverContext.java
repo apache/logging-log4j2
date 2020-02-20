@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.layout.json.template.util.RecyclerFactory;
 
 import java.util.Map;
 import java.util.Objects;
@@ -30,6 +31,8 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
     private final ObjectMapper objectMapper;
 
     private final StrSubstitutor substitutor;
+
+    private final RecyclerFactory recyclerFactory;
 
     private final int writerCapacity;
 
@@ -52,6 +55,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
     private EventResolverContext(final Builder builder) {
         this.objectMapper = builder.objectMapper;
         this.substitutor = builder.substitutor;
+        this.recyclerFactory = builder.recyclerFactory;
         this.writerCapacity = builder.writerCapacity;
         this.locationInfoEnabled = builder.locationInfoEnabled;
         this.stackTraceEnabled = builder.stackTraceEnabled;
@@ -83,6 +87,10 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
     @Override
     public StrSubstitutor getSubstitutor() {
         return substitutor;
+    }
+
+    RecyclerFactory getRecyclerFactory() {
+        return recyclerFactory;
     }
 
     int getWriterCapacity() {
@@ -132,6 +140,8 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         private StrSubstitutor substitutor;
 
+        private RecyclerFactory recyclerFactory;
+
         private int writerCapacity;
 
         private boolean locationInfoEnabled;
@@ -161,6 +171,11 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         public Builder setSubstitutor(final StrSubstitutor substitutor) {
             this.substitutor = substitutor;
+            return this;
+        }
+
+        public Builder setRecyclerFactory(final RecyclerFactory recyclerFactory) {
+            this.recyclerFactory = recyclerFactory;
             return this;
         }
 
@@ -221,6 +236,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         private void validate() {
             Objects.requireNonNull(objectMapper, "objectMapper");
             Objects.requireNonNull(substitutor, "substitutor");
+            Objects.requireNonNull(recyclerFactory, "recyclerFactory");
             if (writerCapacity <= 0) {
                 throw new IllegalArgumentException(
                         "writerCapacity requires a non-zero positive integer");

@@ -208,6 +208,11 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
 | *[experimental]* employ Jackson serialization for messages of type
   `MapMessage` rather `MapMessage#getFormattedMessage()` (defaults to `true` set
   by `log4j.layout.jsonTemplate.mapMessageFormatterIgnored` property)
+
+| recyclerFactory
+| RecyclerFactory
+| recycling strategy that can either be `dummy`, `threadLocal`, or `queue`
+  (set by `log4j.layout.jsonTemplate.recyclerFactory` property)
 |===
 
 [#additional-event-template-fields]
@@ -225,6 +230,42 @@ One can configure additional event template fields via
     </EventTemplateAdditionalFields>
 </JsonTemplateLayout>
 ----
+
+[#recycling-strategy]
+=== Recycling strategy
+
+`RecyclerFactory` plays a crucial role for determining the memory footprint of
+the layout. Template resolvers employ it to create recyclers for objects that
+they can reuse. The function of each `RecyclerFactory` and when one should
+prefer one over another is explained below:
+
+* `dummy` performs no recycling, hence each recycling attempt will result in a
+new instance. This will obviously create a load on the garbage-collector. It
+is a good choice for applications with low and medium log rate.
+
+* `threadLocal` performs the best, since every instance is stored in TLAB and
+accessed without any synchronization cost. Though this might not be a
+desirable option for applications running with hundreds of threads or more,
+e.g., a web servlet.
+
+* `queue` is the best of both worlds. It allows recycling of objects up to a
+certain number (`capacity`). When this limit is exceeded, it starts
+allocating. `queue` is a good strategy where `threadLocal` is not desirable.
++
+`queue` also accepts optional `supplier` (of type `java.util.Queue`, defaults to
+  `org.jctools.queues.MpmcArrayQueue.new` if JCTools is in the classpath;
+otherwise `java.util.concurrent.ArrayBlockingQueue.new`) and `capacity` (of
+type `int`, defaults to `max(8,2*cpuCount+1)`) parameters:
++
+[source]
+----
+queue:supplier=org.jctools.queues.MpmcArrayQueue.new
+queue:capacity=10
+queue:supplier=java.util.concurrent.ArrayBlockingQueue.new,capacity=50
+----
+
+The default `RecyclerFactory` is `threadLocal`, if
+`log4j2.enable.threadlocals=true`; otherwise, `queue`.
 
 [#template-config]
 == Template Configuration
@@ -627,7 +668,7 @@ profiles are employed:
 full:: `LogEvent` contains MDC, NDC, and an exception
 lite:: `LogEvent` has no MDC, NDC, or exception attachment
 
-To give an idea, we ran the benchmark with the following settings:
+We ran the benchmark with the following settings:
 
 * **CPU:** Intel i7 2.70GHz (x86-64, confined `java` process to a single core
   using http://www.man7.org/linux/man-pages/man1/taskset.1.html[`taskset -c 0`])
@@ -746,20 +787,15 @@ object keys and values, and this operation does not leave any trace behind.
 one should always rely on `maxByteCount` for a hard limit. For instance,
 consider a JSON template with 1,000 fields where each does not exceed
 `maxStringLength`, but the emitted final JSON string will certainly violate the
-`maxStringLength` constraint.
-
-[#faq-tla]
-=== How can one enable thread-local allocations?
-
-For performance reasons, it is highly recommended to turn TLAs on. For this
-purpose, you need to make sure `log4j2.enable.threadlocals=true` and
-`log4j2.is.webapp=false`.
+`maxByteCount` constraint.
 
 [#faq-garbage-free]
 === Is `JsonTemplateLayout` garbage-free?
 
-When <<#faq-tla,thread-local allocation is enabled>>, `JsonTemplateLayout` is
-garbage-free with the following exceptions:
+`JsonTemplateLayout` is garbage-free with the following exceptions:
+
+* When recycling strategy is either `dummy` or `queue` but access concurrency
+  exceeds the configured `capacity`, then the recycler is not garbage-free.
 
 * Since `Throwable#getStackTrace()` clones the original `StackTraceElement[]`,
   access to (and hence rendering of) stack traces are not garbage-free.

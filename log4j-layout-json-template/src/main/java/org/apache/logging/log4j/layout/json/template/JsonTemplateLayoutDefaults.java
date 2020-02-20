@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.layout.json.template;
 
+import org.apache.logging.log4j.layout.json.template.util.RecyclerFactories;
+import org.apache.logging.log4j.layout.json.template.util.RecyclerFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.nio.charset.Charset;
@@ -105,6 +107,8 @@ public enum JsonTemplateLayoutDefaults {;
                     "log4j.layout.jsonTemplate.mapMessageFormatterIgnored",
                     true);
 
+    private static final RecyclerFactory RECYCLER_FACTORY = readRecyclerFactory();
+
     private static Charset readCharset() {
         final String charsetName =
                 PROPERTIES.getStringProperty("log4j.layout.jsonTemplate.charset");
@@ -134,6 +138,12 @@ public enum JsonTemplateLayoutDefaults {;
             case 3: return new Locale(localeFields[0], localeFields[1], localeFields[2]);
             default: throw new IllegalArgumentException("invalid locale: " + locale);
         }
+    }
+
+    private static RecyclerFactory readRecyclerFactory() {
+        final String recyclerFactorySpec = PROPERTIES.getStringProperty(
+                "log4j.layout.jsonTemplate.recyclerFactory");
+        return RecyclerFactories.ofSpec(recyclerFactorySpec);
     }
 
     public static Charset getCharset() {
@@ -210,6 +220,10 @@ public enum JsonTemplateLayoutDefaults {;
 
     public static boolean isMapMessageFormatterIgnored() {
         return MAP_MESSAGE_FORMATTER_IGNORED;
+    }
+
+    public static RecyclerFactory getRecyclerFactory() {
+        return RECYCLER_FACTORY;
     }
 
 }

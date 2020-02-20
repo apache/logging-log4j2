@@ -15,20 +15,24 @@
   ~ See the license for the specific language governing permissions and
   ~ limitations under the license.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>log4j-layout-json-template</artifactId>
   <name>Apache Log4j Layout for JSON template</name>
   <description>
     Apache Log4j Layout for JSON template.
   </description>
+
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Layout for JSON Template Documentation</docLabel>
@@ -37,27 +41,40 @@
   </properties>
 
   <dependencies>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
     </dependency>
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
-    <!-- Test Dependencies -->
+
+    <dependency>
+      <groupId>org.jctools</groupId>
+      <artifactId>jctools-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <build>
     <plugins>
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -68,6 +85,7 @@
           </instructions>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -96,10 +114,79 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+          <!-- Enforcing a non-UTF-8 encoding to check that the layout
+               indeed handles everything in UTF-8 without implicitly
+               relying on the system defaults. -->
+          <argLine>-Dfile.encoding=US-ASCII</argLine>
+        </configuration>
+        <executions>
+          <!-- Dummy recycler execution -->
+          <execution>
+            <id>recycler-dummy</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <skip>${maven.test.skip}</skip>
+              <systemPropertyVariables>
+                <log4j2.layout.jsonTemplate.recyclerFactory>threadLocal</log4j2.layout.jsonTemplate.recyclerFactory>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+          <!-- Thread-Local recycler execution -->
+          <execution>
+            <id>recycler-tl</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <skip>${maven.test.skip}</skip>
+              <systemPropertyVariables>
+                <log4j2.layout.jsonTemplate.recyclerFactory>threadLocal</log4j2.layout.jsonTemplate.recyclerFactory>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+          <!-- ArrayBlockingQueue recycler execution -->
+          <execution>
+            <id>recycler-abq</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <skip>${maven.test.skip}</skip>
+              <systemPropertyVariables>
+                <log4j2.layout.jsonTemplate.recyclerFactory>queue:supplier=java.util.concurrent.ArrayBlockingQueue.new</log4j2.layout.jsonTemplate.recyclerFactory>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+          <!-- MpmcArrayQueue recycler execution -->
+          <execution>
+            <id>recycler-mpmc</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <skip>${maven.test.skip}</skip>
+              <systemPropertyVariables>
+                <log4j2.layout.jsonTemplate.recyclerFactory>queue:supplier=org.jctools.queues.MpmcArrayQueue.new</log4j2.layout.jsonTemplate.recyclerFactory>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
+
   <reporting>
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
@@ -116,6 +203,7 @@
           <useJql>true</useJql>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -129,6 +217,7 @@
           <propertyExpansion>licensedir=${log4jParentDir}/checkstyle-header.txt</propertyExpansion>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -150,6 +239,7 @@
           </reportSet>
         </reportSets>
       </plugin>
+
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
@@ -161,6 +251,7 @@
           <excludeFilterFile>${log4jParentDir}/spotbugs-exclude-filter.xml</excludeFilterFile>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
@@ -180,6 +271,7 @@
           </reportSet>
         </reportSets>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
@@ -188,6 +280,8 @@
           <targetJdk>${maven.compiler.target}</targetJdk>
         </configuration>
       </plugin>
+
     </plugins>
   </reporting>
+
 </project>
