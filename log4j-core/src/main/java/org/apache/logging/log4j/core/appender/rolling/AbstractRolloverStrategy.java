@@ -127,8 +127,13 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
             for (final Path entry: stream) {
                 final Matcher matcher = pattern.matcher(entry.toFile().getName());
                 if (matcher.matches() && !entry.equals(current)) {
-                    final Integer index = Integer.parseInt(matcher.group(1));
-                    eligibleFiles.put(index, entry);
+                    try {
+                        final Integer index = Integer.parseInt(matcher.group(1));
+                        eligibleFiles.put(index, entry);
+                    } catch (NumberFormatException ex) {
+                        LOGGER.debug("Ignoring file {} which matches pattern but the index is invalid.",
+                                entry.toFile().getName());
+                    }
                 }
             }
         } catch (final IOException ioe) {

@@ -166,6 +166,9 @@
       </action>
     </release>
     <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
+      <action issue="LOG4J2-2039" dev="rgoers" type="fix">
+        RolloverFails then file matches pattern but index is too large.
+      </action>
       <action issue="LOG4J2-2784" dev="rgoers" type="fix">
         Counter stuck at 10 and overwriting files when leading zeros used in the file pattern count.
       </action>
