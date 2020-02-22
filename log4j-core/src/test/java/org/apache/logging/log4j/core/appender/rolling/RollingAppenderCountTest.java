@@ -30,6 +30,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
@@ -39,9 +40,11 @@ import static org.junit.Assert.assertEquals;
  */
 public class RollingAppenderCountTest {
 
+    private static final String SOURCE = "src/test/resources/__files";
     private static final String DIR = "target/rolling_count";
     private static final String CONFIG = "log4j-rolling-count.xml";
-    private static final String FILENAME = "rolling_test.log";
+    private static final String FILENAME = "onStartup.log";
+    private static final String TARGET = "rolling_test.log.";
 
     private Logger logger;
 
@@ -59,7 +62,7 @@ public class RollingAppenderCountTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        if (Files.exists(Paths.get("target/onStartup"))) {
+        if (Files.exists(Paths.get(DIR))) {
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
                 for (final Path path : directoryStream) {
                     Files.delete(path);
@@ -67,12 +70,18 @@ public class RollingAppenderCountTest {
                 Files.delete(Paths.get(DIR));
             }
         }
+        File dir = new File(DIR);
+        if (!dir.exists()) {
+            Files.createDirectory(new File(DIR).toPath());
+        }
+        Path target = Paths.get(DIR, TARGET + System.currentTimeMillis());
+        Files.copy(Paths.get(SOURCE, FILENAME), target, StandardCopyOption.COPY_ATTRIBUTES);
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
         int count = Objects.requireNonNull(new File(DIR).listFiles()).length;
-        assertEquals("Expected 16 files, got " + count, 16, count);
+        assertEquals("Expected 17 files, got " + count, 17, count);
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {
                 Files.delete(path);
