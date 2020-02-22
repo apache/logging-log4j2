@@ -118,7 +118,7 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         if (suffixLength > 0) {
             fileName = fileName.substring(0, fileName.length() - suffixLength) + ".*";
         }
-        final String filePattern = fileName.replace(NotANumber.VALUE, "(\\d+)");
+        final String filePattern = fileName.replaceFirst("0?\\u0000", "(0?\\\\d+)");
         final Pattern pattern = Pattern.compile(filePattern);
         final Path current = currentFile.length() > 0 ? new File(currentFile).toPath() : null;
         LOGGER.debug("Current file: {}", currentFile);

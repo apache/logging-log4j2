@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<Configuration status="error" name="XmlProperties">
+  <Properties>
+    <Property name="baseFilename">target/rolling_count/rolling_test.log</Property>
+    <Property name="pattern">%d{HH:mm:ss.SSS} [%t] %-5level %logger{1.} - %msg%n</Property>
+  </Properties>
+
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+    <RollingFile name="RollingFile" fileName="${baseFilename}" filePattern="${baseFilename}.%02i" immediateFlush="true" append="true">
+      <PatternLayout pattern="${pattern}"/>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="1 KB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="15"/>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Logger name="LogTest" level="trace"/>
+    <Logger name="org.apache.logging.log4j.status" level="trace"/>
+    <Root level="info">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
