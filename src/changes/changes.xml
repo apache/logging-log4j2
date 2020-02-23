@@ -37,7 +37,7 @@
         Do not log an error if Files.move does not work.
       </action>
       <action issue="LOG4J2-2039" dev="rgoers" type="fix">
-        RolloverFails when file matches pattern but index is too large.
+        Rollover fails when file matches pattern but index is too large.
       </action>
       <action issue="LOG4J2-2784" dev="rgoers" type="fix">
         Counter stuck at 10 and overwriting files when leading zeros used in the file pattern count.
@@ -69,7 +69,6 @@
       <action issue="LOG4J2-2760" dev="rgoers" type="fix" due-to="Christoph Kaser">
         Always write header on a new OutputStream.
       </action>
-      <action issue=
       <action issue="LOG4J2-2777" dev="rgoers" type="update" due-to="joongs4">
         Add a retry count attribute to the KafkaAppender.
       </action>
