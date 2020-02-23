@@ -2857,7 +2857,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         return atLevel(Level.DEBUG);
     }
     /**
-     * Constuct an informational log event.
+     * Construct an informational log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -2875,7 +2875,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         return atLevel(Level.WARN);
     }
     /**
-     * Constuct an error log event.
+     * Construct an error log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -2884,7 +2884,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         return atLevel(Level.ERROR);
     }
     /**
-     * Constuct a fatal log event.
+     * Construct a fatal log event.
      * @return a LogBuilder.
      * @since 2.13.0
      */
