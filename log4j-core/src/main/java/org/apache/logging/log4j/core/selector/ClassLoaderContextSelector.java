@@ -203,10 +203,8 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
                 }
             }
             LoggerContext ctx = createContext(name, configLocation);
-            final AtomicReference<WeakReference<LoggerContext>> r = new AtomicReference<>();
-            r.set(new WeakReference<>(ctx));
-            CONTEXT_MAP.putIfAbsent(name, r);
-            LoggerContext newContext = CONTEXT_MAP.get(name).get().get();
+            LoggerContext newContext = CONTEXT_MAP.computeIfAbsent(name,
+                    k -> new AtomicReference<>(new WeakReference<>(ctx))).get().get();
             if (newContext != null && newContext == ctx) {
                 newContext.addShutdownListener(this);
             }
