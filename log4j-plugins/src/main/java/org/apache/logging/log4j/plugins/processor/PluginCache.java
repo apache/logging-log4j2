@@ -76,16 +76,7 @@ public class PluginCache {
                         final String name = in.readUTF();
                         final boolean printable = in.readBoolean();
                         final boolean defer = in.readBoolean();
-                        m.computeIfAbsent(key, k -> {
-                            final PluginEntry entry = new PluginEntry();
-                            entry.setKey(k);
-                            entry.setClassName(className);
-                            entry.setName(name);
-                            entry.setPrintable(printable);
-                            entry.setDefer(defer);
-                            entry.setCategory(category);
-                            return entry;
-                        });
+                        m.computeIfAbsent(key, k -> new PluginEntry(k, className, name, printable, defer, category));
                     }
                 }
             }
