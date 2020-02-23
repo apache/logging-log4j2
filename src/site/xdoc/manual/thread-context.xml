@@ -155,7 +155,7 @@ for( final Session session : sessions ) {
             <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/ThreadLocal.html">ThreadLocal</a>
             by default. The Map can be configured to use an
             <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>
-            by setting system property <tt>log4j2.isThreadContextMapInheritable</tt> to <tt>true</tt>.
+            (see the <a href="#Configuration">Configuration</a> section).
             When configured this way, the contents of the Map will be passed to child threads. However, as
             discussed in the
             <a href="http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()">Executors</a>
@@ -169,6 +169,15 @@ for( final Session session : sessions ) {
             <a href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a>
             class are static.
           </p>
+          <a name="Configuration"/>
+          <h4>Configuration</h4>
+          <ul>
+            <li>Set the system property `disableThreadContextMap` to `true` to disable the Thread Context Map.</li>
+            <li>Set the system property `disableThreadContextStack` to `true` to disable the Thread Context Stack.</li>
+            <li>Set the system property `disableThreadContext` to `true` to disable both the Thread Context Map and Stack.</li>
+            <li>Set the system property `log4j2.isThreadContextMapInheritable` to `true` to enable child threads to inherit the Thread
+              Context Map.</li>
+          </ul>
           <h4>Including the ThreadContext when writing logs</h4>
           <p>
             The <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>
