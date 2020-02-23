@@ -189,12 +189,16 @@ public class PluginRegistry {
                 }
             }
         }
-
-        final long endTime = System.nanoTime();
-        final DecimalFormat numFormat = new DecimalFormat("#0.000000");
-        final double seconds = (endTime - startTime) * 1e-9;
-        LOGGER.debug("Took {} seconds to load {} plugins from {}",
-            numFormat.format(seconds), pluginCount, loader);
+        final int numPlugins = pluginCount;
+        LOGGER.debug(() -> {
+            final long endTime = System.nanoTime();
+            StringBuilder sb = new StringBuilder("Took ");
+            final DecimalFormat numFormat = new DecimalFormat("#0.000000");
+            sb.append(numFormat.format((endTime - startTime) * 1e-9));
+            sb.append(" seconds to load ").append(numPlugins);
+            sb.append(" plugins from ").append(loader);
+            return sb.toString();
+        });
         return newPluginsByCategory;
     }
 
@@ -256,12 +260,15 @@ public class PluginRegistry {
                 }
             }
         }
-
-        final long endTime = System.nanoTime();
-        final DecimalFormat numFormat = new DecimalFormat("#0.000000");
-        final double seconds = (endTime - startTime) * 1e-9;
-        LOGGER.debug("Took {} seconds to load {} plugins from package {}",
-            numFormat.format(seconds), resolver.getClasses().size(), pkg);
+        LOGGER.debug(() -> {
+            final long endTime = System.nanoTime();
+            StringBuilder sb = new StringBuilder("Took ");
+            final DecimalFormat numFormat = new DecimalFormat("#0.000000");
+            sb.append(numFormat.format((endTime - startTime) * 1e-9));
+            sb.append(" seconds to load ").append(resolver.getClasses().size());
+            sb.append(" plugins from package ").append(pkg);
+            return sb.toString();
+        });
 
         // Note multiple threads could be calling this method concurrently. Both will do the work,
         // but only one will be allowed to store the result in the outer map.

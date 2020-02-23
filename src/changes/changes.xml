@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
+      <action issue="LOG4J2-2789" dev="rgeors" type="update" due-to="Marius Volkhart">
+        Conditionally perform status logging calculations in PluginRegistry.
+      </action>
       <action issue="LOG4J2-2756" dev="rgoers" type="fix">
         Prevent LoggerContext from being garbage collected while being created.
       </action>
