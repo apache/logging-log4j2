@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.selector;
 
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.ArrayList;
@@ -203,11 +204,12 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
                 }
             }
             LoggerContext ctx = createContext(name, configLocation);
-            final AtomicReference<WeakReference<LoggerContext>> r = new AtomicReference<>();
-            r.set(new WeakReference<>(ctx));
-            CONTEXT_MAP.putIfAbsent(name, r);
-            ctx = CONTEXT_MAP.get(name).get().get();
-            return ctx;
+            LoggerContext newContext = CONTEXT_MAP.computeIfAbsent(name,
+                    k -> new AtomicReference<>(new WeakReference<>(ctx))).get().get();
+            if (newContext == ctx) {
+                ctx.addShutdownListener(this);
+            }
+            return newContext;
         }
         final WeakReference<LoggerContext> weakRef = ref.get();
         LoggerContext ctx = weakRef.get();
