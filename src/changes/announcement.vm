@@ -65,20 +65,7 @@ temporary objects) while logging. In addition, Log4j 2 will not lose events whil
 
 The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/download.html.
 
-This release contains bugfixes and minor enhancements. Some of the new features in this release are:
-
-1. Log4j 2 now requires Java 8 or higher to build and run.
-1. Experimental support for Log4j 1 configuration files. See
-[Log4j 2 Compatiblity with Log4j 1](${project.url}/manual/compatiblity.html).
-1. The Logger API has been enhanced to support a builder pattern. This can dramatically improve the overhead of
-capturing location information. See [Log Builder](${project.url}/manual/logbuilder.html).
-1. Better integration with Spring Boot by providing access to Spring variables in Log4j 2 configuration files and
-allowing Log4j 2 system properties to be defined in the Spring configuration.
-See [Logging in the Cloud](manual/cloud.html#Managing_Logging_Configuration).
-1. Support for accessing Kubernetes information via a Log4j 2 Lookup.
-1. The Gelf Layout now allows the message to be formatted using a PatternLayout pattern.
-[Logging in the Cloud](${project.url}/manual/cloud.html#Log4j_Configuration) provides an example of this, as well
-as the use of the Spring and Kubernetes Lookups.
+This release contains bugfixes and very minor enhancements.
 
 Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
 log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and

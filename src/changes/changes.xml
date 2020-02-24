@@ -29,7 +29,7 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.13.1" date="2019-MM-DD" description="GA Release 2.13.1">
+    <release version="2.13.1" date="2019-02-23" description="GA Release 2.13.1">
       <action issue="LOG4J2-2717" dev="rgoers" type="fix">
         Slow initialization on Windows due to accessing network interfaces.
       </action>
