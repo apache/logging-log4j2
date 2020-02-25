@@ -131,8 +131,9 @@ The Log4j 2 User's Guide is available on this [site](manual/index.html) or as a 
 
 $h2 Requirements
 
-Log4j 2.4 and greater requires Java 7, versions 2.0-alpha1 to 2.3 required Java 6. Some features require optional
-dependencies; the documentation for these features specifies the dependencies.
+Log4j 2.13.0 and greater require Java 8. Version 2.4 through 2.12.1 required Java 7 and versions 2.0-alpha1 to 2.3
+required Java 6. Some features require optional dependencies; the documentation for these features specifies the
+dependencies.
 
 $h2 News
 

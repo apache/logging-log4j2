@@ -69,23 +69,23 @@ Log4j 2.12.1 was the last 2.x release to support Java 7. Those artifacts can be 
 
 | Distribution                   | Mirrors                                                  | Checksum                                                        | Signature                                                       |
 | ------------------------------ | -------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
-| Apache Log4j 2 binary (tar.gz) | [apache-log4j-2.12.1-bin.tar.gz][bintar] | [apache-log4j-2.12.1-bin.tar.gz.sha512][bintarsha512] | [apache-log4j-2.12.1-bin.tar.gz.asc][bintarasc] |
-| Apache Log4j 2 binary (zip)    | [apache-log4j-2.12.1-bin.zip][binzip]    | [apache-log4j-2.12.1-bin.zip.sha512][binzipsha512]    | [apache-log4j-2.12.1-bin.zip.asc][binzipasc]    |
-| Apache Log4j 2 source (tar.gz) | [apache-log4j-2.12.1-src.tar.gz][srctar] | [apache-log4j-2.12.1-src.tar.gz.sha512][srctarsha512] | [apache-log4j-2.12.1-src.tar.gz.asc][srctarasc] |
-| Apache Log4j 2 source (zip)    | [apache-log4j-2.12.1-src.zip][srczip]    | [apache-log4j-2.12.1-src.zip.sha512][srczipsha512]    | [apache-log4j-2.12.1-src.zip.asc][srczipasc]    |
+| Apache Log4j 2 binary (tar.gz) | [apache-log4j-2.12.1-bin.tar.gz][bintar-jdk7] | [apache-log4j-2.12.1-bin.tar.gz.sha512][bintarsha512-jdk7] | [apache-log4j-2.12.1-bin.tar.gz.asc][bintarasc-jdk7] |
+| Apache Log4j 2 binary (zip)    | [apache-log4j-2.12.1-bin.zip][binzip-jdk7]    | [apache-log4j-2.12.1-bin.zip.sha512][binzipsha512-jdk7]    | [apache-log4j-2.12.1-bin.zip.asc][binzipasc-jdk7]    |
+| Apache Log4j 2 source (tar.gz) | [apache-log4j-2.12.1-src.tar.gz][srctar-jdk7] | [apache-log4j-2.12.1-src.tar.gz.sha512][srctarsha512-jdk7] | [apache-log4j-2.12.1-src.tar.gz.asc][srctarasc-jdk7] |
+| Apache Log4j 2 source (zip)    | [apache-log4j-2.12.1-src.zip][srczip-jdk7]    | [apache-log4j-2.12.1-src.zip.sha512][srczipsha512-jdk7]    | [apache-log4j-2.12.1-src.zip.asc][srczipasc-jdk7]    |
 
-[bintar]: https://www.apache.org/dyn/closer.lua/logging/log4j/2.12.1/apache-log4j-2.12.1-bin.tar.gz
-[bintarsha512]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-bin.tar.gz.sha512
-[bintarasc]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-bin.tar.gz.asc
-[binzip]: https://www.apache.org/dyn/closer.lua/logging/log4j/2.12.1/apache-log4j-2.12.1-bin.zip
-[binzipsha512]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-bin.zip.sha512
-[binzipasc]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-bin.zip.asc
-[srctar]: https://www.apache.org/dyn/closer.lua/logging/log4j/2.12.1/apache-log4j-2.12.1-src.tar.gz
-[srctarsha512]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-src.tar.gz.sha512
-[srctarasc]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-src.tar.gz.asc
-[srczip]: https://www.apache.org/dyn/closer.lua/logging/log4j/2.12.1/apache-log4j-2.12.1-src.zip
-[srczipsha512]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-src.zip.sha512
-[srczipasc]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-src.zip.asc
+[bintar-jdk7]: https://www.apache.org/dyn/closer.lua/logging/log4j/2.12.1/apache-log4j-2.12.1-bin.tar.gz
+[bintarsha512-jdk7]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-bin.tar.gz.sha512
+[bintarasc-jdk7]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-bin.tar.gz.asc
+[binzip-jdk7]: https://www.apache.org/dyn/closer.lua/logging/log4j/2.12.1/apache-log4j-2.12.1-bin.zip
+[binzipsha512-jdk7]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-bin.zip.sha512
+[binzipasc-jdk7]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-bin.zip.asc
+[srctar-jdk7]: https://www.apache.org/dyn/closer.lua/logging/log4j/2.12.1/apache-log4j-2.12.1-src.tar.gz
+[srctarsha512-jdk7]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-src.tar.gz.sha512
+[srctarasc-jdk7]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-src.tar.gz.asc
+[srczip-jdk7]: https://www.apache.org/dyn/closer.lua/logging/log4j/2.12.1/apache-log4j-2.12.1-src.zip
+[srczipsha512-jdk7]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-src.zip.sha512
+[srczipasc-jdk7]: https://www.apache.org/dist/logging/log4j/2.12.1/apache-log4j-2.12.1-src.zip.asc
 
 
 Log4j 2.3 was the last 2.x release to support Java 6. Those artifacts can be found at:
