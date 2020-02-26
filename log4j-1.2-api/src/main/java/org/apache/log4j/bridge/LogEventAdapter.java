@@ -48,6 +48,7 @@ public class LogEventAdapter extends LoggingEvent {
     /**
      * Returns the time when the application started, in milliseconds
      * elapsed since 01.01.1970.
+     * @return the time when the JVM started.
      */
     public static long getStartTime() {
         return JVM_START_TIME;

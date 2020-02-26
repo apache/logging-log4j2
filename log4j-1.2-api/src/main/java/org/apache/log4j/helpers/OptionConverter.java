@@ -111,6 +111,9 @@ public class OptionConverter {
      * returned.
      *
      * <p>Case of value is unimportant.
+     * @param value The value to convert.
+     * @param dEfault The default value.
+     * @return the value of the result.
      */
     public static boolean toBoolean(String value, boolean dEfault) {
         if (value == null) {
@@ -144,6 +147,9 @@ public class OptionConverter {
      *
      * <p> Case of <code>value</code> is insignificant for the level level, but is
      * significant for the class name part, if present.
+     * @param value The value to convert.
+     * @param defaultValue The default value.
+     * @return the value of the result.
      *
      * @since 1.1
      */
@@ -227,6 +233,7 @@ public class OptionConverter {
      * @param className    The fully qualified class name of the object to instantiate.
      * @param superClass   The class to which the new object should belong.
      * @param defaultValue The object to return in case of non-fulfillment
+     * @return The created object.
      */
     public static Object instantiateByClassName(String className, Class<?> superClass,
             Object defaultValue) {
@@ -278,9 +285,11 @@ public class OptionConverter {
      * <code>val</code> contains a start delimeter "${" which is not
      * balanced by a stop delimeter "}". </p>
      *
-     * <p><b>Author</b> Avy Sharell</a></p>
+     * <p><b>Author</b> Avy Sharell</p>
      *
      * @param val The string on which variable substitution is performed.
+     * @param props The properties to use for the substitution.
+     * @return The substituted string.
      * @throws IllegalArgumentException if <code>val</code> is malformed.
      */
     public static String substVars(String val, Properties props) throws IllegalArgumentException {
@@ -386,6 +395,9 @@ public class OptionConverter {
      * Find the value corresponding to <code>key</code> in
      * <code>props</code>. Then perform variable substitution on the
      * found value.
+     * @param key The key used to locate the substitution string.
+     * @param props The properties to use in the substitution.
+     * @return The substituted string.
      */
     public static String findAndSubst(String key, Properties props) {
         String value = props.getProperty(key);

@@ -100,13 +100,15 @@ public class PropertySetter {
     /**
      * Set the properites for the object that match the
      * <code>prefix</code> passed as parameter.
+     * @param properties The properties.
+     * @param prefix The prefix of the properties to use.
      */
     public void setProperties(Properties properties, String prefix) {
         int len = prefix.length();
 
         for (String key : properties.stringPropertyNames()) {
 
-            // handle only properties that start with the desired frefix.
+            // handle only properties that start with the desired prefix.
             if (key.startsWith(prefix)) {
 
 
@@ -197,6 +199,7 @@ public class PropertySetter {
      *              of the property to set.
      * @param name  The named of the property to set.
      * @param value The value of the property.
+     * @throws PropertySetterException if no setter is available.
      */
     public void setProperty(PropertyDescriptor prop, String name, String value)
             throws PropertySetterException {
@@ -204,7 +207,7 @@ public class PropertySetter {
         if (setter == null) {
             throw new PropertySetterException("No setter for property [" + name + "].");
         }
-        Class[] paramTypes = setter.getParameterTypes();
+        Class<?>[] paramTypes = setter.getParameterTypes();
         if (paramTypes.length != 1) {
             throw new PropertySetterException("#params for setter != 1");
         }
@@ -238,8 +241,11 @@ public class PropertySetter {
     /**
      * Convert <code>val</code> a String parameter to an object of a
      * given type.
+     * @param val The value to convert.
+     * @param type The type of the value to convert to.
+     * @return The result of the conversion.
      */
-    protected Object convertArg(String val, Class type) {
+    protected Object convertArg(String val, Class<?> type) {
         if (val == null) {
             return null;
         }

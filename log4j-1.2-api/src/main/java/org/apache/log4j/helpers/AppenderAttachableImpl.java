@@ -71,6 +71,8 @@ public class AppenderAttachableImpl implements AppenderAttachable {
 
     /**
      * Call the <code>doAppend</code> method on all attached appenders.
+     * @param event The event to log.
+     * @return The number of appenders.
      */
     public int appendLoopOnAppenders(LoggingEvent event) {
         for (Appender appender : appenders.values()) {
