@@ -95,6 +95,7 @@ public class WriterAppender extends AppenderSkeleton {
 
     /**
      * Returns value of the <b>ImmediateFlush</b> option.
+     * @return the value of the immediate flush setting.
      */
     public boolean getImmediateFlush() {
         return immediateFlush;
@@ -113,6 +114,8 @@ public class WriterAppender extends AppenderSkeleton {
      * skipped, then it is likely that the last few log events will not
      * be recorded on disk when the application exits. This is a high
      * price to pay even for a 20% performance gain.
+     *
+     * @param value the value to set the immediate flush setting to.
      */
     public void setImmediateFlush(boolean value) {
         immediateFlush = value;
@@ -159,6 +162,7 @@ public class WriterAppender extends AppenderSkeleton {
      * <p>It checks whether there is a set output target and also if
      * there is a set layout. If these checks fail, then the boolean
      * value <code>false</code> is returned.
+     * @return true if appending is allowed, false otherwise.
      */
     protected boolean checkEntryConditions() {
         if (this.closed) {
@@ -222,6 +226,8 @@ public class WriterAppender extends AppenderSkeleton {
      * <code>encoding</code> property.  If the encoding value is
      * specified incorrectly the writer will be opened using the default
      * system encoding (an error message will be printed to the LOGGER.
+     * @param os The OutputStream.
+     * @return The OutputStreamWriter.
      */
     protected OutputStreamWriter createWriter(OutputStream os) {
         OutputStreamWriter retval = null;
@@ -295,6 +301,7 @@ public class WriterAppender extends AppenderSkeleton {
      *
      * <p>Most subclasses of <code>WriterAppender</code> will need to
      * override this method.
+     * @param event The event to log.
      *
      * @since 0.9.0
      */
@@ -369,6 +376,8 @@ public class WriterAppender extends AppenderSkeleton {
     /**
      * Determines whether the writer should be flushed after
      * this event is written.
+     * @param event The event to log.
+     * @return true if the writer should be flushed.
      *
      * @since 1.2.16
      */

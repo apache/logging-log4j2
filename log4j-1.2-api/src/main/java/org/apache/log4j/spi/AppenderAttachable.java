@@ -28,16 +28,20 @@ public interface AppenderAttachable {
 
     /**
      * Add an appender.
+     * @param newAppender The Appender to add.
      */
     void addAppender(Appender newAppender);
 
     /**
      * Get all previously added appenders as an Enumeration.
+     * @return The Enumeration of the Appenders.
      */
-    Enumeration getAllAppenders();
+    Enumeration<Appender> getAllAppenders();
 
     /**
      * Get an appender by name.
+     * @param name The name of the Appender.
+     * @return The Appender.
      */
     Appender getAppender(String name);
 
@@ -45,6 +49,8 @@ public interface AppenderAttachable {
     /**
      * Returns <code>true</code> if the specified appender is in list of
      * attached attached, <code>false</code> otherwise.
+     * @param appender The Appender to check.
+     * @return true if the Appender is attached.
      *
      * @since 1.2
      */
@@ -58,6 +64,7 @@ public interface AppenderAttachable {
 
     /**
      * Remove the appender passed as parameter from the list of appenders.
+     * @param appender The Appender to remove.
      */
     void removeAppender(Appender appender);
 
@@ -65,6 +72,7 @@ public interface AppenderAttachable {
     /**
      * Remove the appender with the name passed as parameter from the
      * list of appenders.
+     * @param name The name of the Appender to remove.
      */
     void removeAppender(String name);
 }
