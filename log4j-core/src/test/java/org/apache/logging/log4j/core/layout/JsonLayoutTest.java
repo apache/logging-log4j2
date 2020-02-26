@@ -546,6 +546,32 @@ public class JsonLayoutTest {
     }
 
     @Test
+    public void testInstantSortsBeforeMessage() {
+        final String str = prepareJSONForEventWithTimeAsInstant();
+        assertTrue(str, str.startsWith("{\"instant\":{\"epochSecond\":0,\"nanoOfSecond\":1000000},"));
+        assertTrue(str, str.contains("\"message\":\"message\""));
+    }
+
+    private String prepareJSONForEventWithTimeAsInstant() {
+        final TestClass testClass = new TestClass();
+        // @formatter:off
+        final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
+                .setLoggerName("a.B")
+                .setLoggerFqcn("f.q.c.n")
+                .setLevel(Level.DEBUG)
+                .setMessage(new SimpleMessage("message"))
+                .setThreadName("threadName")
+                .setTimeMillis(1)
+                .build();
+        // @formatter:off
+        final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setCompact(true)
+                .build();
+        // @formatter:off
+        return layout.toSerializable(expected);
+    }
+
+    @Test
     public void testIncludeNullDelimiterTrue() throws Exception {
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
                 .setCompact(true)

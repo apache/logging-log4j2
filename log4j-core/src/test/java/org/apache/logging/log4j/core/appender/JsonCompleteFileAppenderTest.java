@@ -89,16 +89,16 @@ public class JsonCompleteFileAppenderTest {
         final String[] expected = {
                 "[", // equals
                 "{", // equals
+                "  \"instant\" : {", //
+                "    \"epochSecond\" : 1234567,", //
+                "    \"nanoOfSecond\" : 890000000", //
+                "  },", //
                 "  \"thread\" : \"main\",", //
                 "  \"level\" : \"INFO\",", //
                 "  \"loggerName\" : \"com.foo.Bar\",", //
                 "  \"message\" : \"Message flushed with immediate flush=true\",", //
                 "  \"endOfBatch\" : false,", //
                 "  \"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLogger\",", //
-                "  \"instant\" : {", //
-                "    \"epochSecond\" : 1234567,", //
-                "    \"nanoOfSecond\" : 890000000", //
-                "  },", //
         };
         for (int i = 0; i < expected.length; i++) {
             final String line = lines.get(i);
