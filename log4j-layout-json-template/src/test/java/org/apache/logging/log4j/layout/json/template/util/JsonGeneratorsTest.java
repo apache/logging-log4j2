@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.layout.json.template.util;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import org.apache.logging.log4j.layout.json.template.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.layout.json.template.ObjectMapperFixture;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -26,10 +27,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public class JsonGeneratorsTest {
 
     private static final class WriteDoubleTestCase {
+
+        private static final Recycler<JsonGenerators.DoubleWriterContext> RECYCLER =
+                JsonTemplateLayoutDefaults
+                        .getRecyclerFactory()
+                        .create(JsonGenerators.DoubleWriterContext::new,
+                                Function.identity());
 
         private final long integralPart;
 
@@ -48,7 +56,7 @@ public class JsonGeneratorsTest {
                          .getObjectMapper()
                          .getFactory()
                          .createGenerator(outputStream)) {
-                JsonGenerators.writeDouble(jsonGenerator, integralPart, fractionalPart);
+                JsonGenerators.writeDouble(RECYCLER, jsonGenerator, integralPart, fractionalPart);
                 jsonGenerator.flush();
                 return outputStream.toString(StandardCharsets.UTF_8.name());
             }

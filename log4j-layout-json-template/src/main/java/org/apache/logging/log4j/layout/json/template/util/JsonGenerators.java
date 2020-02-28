@@ -17,14 +17,13 @@
 package org.apache.logging.log4j.layout.json.template.util;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import org.apache.logging.log4j.core.util.Constants;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 
 public enum JsonGenerators {;
 
-    private static final class DoubleWriterContext {
+    public static final class DoubleWriterContext {
 
         private static final int MAX_BUFFER_LENGTH =
                 String.format("%d.%d", Long.MAX_VALUE, Integer.MAX_VALUE).length()
@@ -34,14 +33,12 @@ public enum JsonGenerators {;
 
         private char[] buffer = new char[MAX_BUFFER_LENGTH];
 
+        public DoubleWriterContext() {}
+
     }
 
-    private static final ThreadLocal<DoubleWriterContext> DOUBLE_WRITER_CONTEXT_REF =
-            Constants.ENABLE_THREADLOCALS
-                    ? ThreadLocal.withInitial(DoubleWriterContext::new)
-                    : null;
-
     public static void writeDouble(
+            final Recycler<DoubleWriterContext> recycler,
             final JsonGenerator jsonGenerator,
             final long integralPart,
             final int fractionalPart)
@@ -50,20 +47,21 @@ public enum JsonGenerators {;
             throw new IllegalArgumentException("negative fraction");
         } else if (fractionalPart == 0) {
             jsonGenerator.writeNumber(integralPart);
-        } else if (Constants.ENABLE_THREADLOCALS) {
-            final DoubleWriterContext context = DOUBLE_WRITER_CONTEXT_REF.get();
-            context.builder.setLength(0);
-            context.builder.append(integralPart);
-            context.builder.append('.');
-            context.builder.append(fractionalPart);
-            final int length = context.builder.length();
-            context.builder.getChars(0, length, context.buffer, 0);
-            // jackson-core version >=2.10.2 is required for the following line
-            // to avoid FasterXML/jackson-core#588 bug.
-            jsonGenerator.writeRawValue(context.buffer, 0, length);
         } else {
-            final String formattedNumber = "" + integralPart + '.' + fractionalPart;
-            jsonGenerator.writeNumber(formattedNumber);
+            final DoubleWriterContext context = recycler.acquire();
+            try {
+                context.builder.setLength(0);
+                context.builder.append(integralPart);
+                context.builder.append('.');
+                context.builder.append(fractionalPart);
+                final int length = context.builder.length();
+                context.builder.getChars(0, length, context.buffer, 0);
+                // jackson-core version >=2.10.2 is required for the following line
+                // to avoid FasterXML/jackson-core#588 bug.
+                jsonGenerator.writeRawValue(context.buffer, 0, length);
+            } finally {
+                recycler.release(context);
+            }
         }
     }
 
