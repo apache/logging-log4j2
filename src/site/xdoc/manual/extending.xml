@@ -70,6 +70,7 @@
               </li>
             </ol>
           </subsection>
+          <a name="ContextSelector"/>
           <subsection name="ContextSelector">
             <p>
               ContextSelectors are called by the
@@ -99,6 +100,7 @@
               call. This is enabled by default in OSGi environments.</dd>
             </dl>
           </subsection>
+          <a name="ConfigurationFactory"/>
           <subsection name="ConfigurationFactory">
             <p>
               Modifying the way in which logging can be configured is usually one of the areas with the most
@@ -151,6 +153,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
     }
 }</pre>
           </subsection>
+          <a name="LoggerConfig"/>
           <subsection name="LoggerConfig">
             <p>
               LoggerConfig objects are where Loggers created by applications tie into the configuration. The Log4j
@@ -177,6 +180,7 @@ public static class RootLogger extends LoggerConfig {
     }
 }]]></pre>
           </subsection>
+          <a name="LogEventFactory"/>
           <subsection name="LogEventFactory">
             <p>A LogEventFactory is used to generate LogEvents. Applications may replace the standard LogEventFactory
               by setting the value of the system property Log4jLogEventFactory to the name of the custom
@@ -184,6 +188,7 @@ public static class RootLogger extends LoggerConfig {
             <p>Note: When log4j is configured to have <a href="async.html#AllAsync">all loggers asynchronous</a>,
               log events are pre-allocated in a ring buffer and the LogEventFactory is not used.</p>
           </subsection>
+        <a name="MessageFactory"/>
         <subsection name="MessageFactory">
           <p>A MessageFactory is used to generate Message objects. Applications may replace the standard
             ParameterizedMessageFactory (or ReusableMessageFactory in garbage-free mode)
@@ -194,6 +199,7 @@ public static class RootLogger extends LoggerConfig {
             log4j2.flowMessageFactory to the name of the custom FlowMessageFactory class.
           </p>
         </subsection>
+        <a name="Lookups"/>
           <subsection name="Lookups">
             <p>
               Lookups are the means in which parameter substitution is performed. During Configuration initialization
@@ -232,6 +238,7 @@ public class SystemPropertiesLookup implements StrLookup {
     }
 }</pre>
           </subsection>
+          <a name="Filters"/>
           <subsection name="Filters">
             <p>
               As might be expected, Filters are the used to reject or accept log events as they pass through the
@@ -298,6 +305,7 @@ public final class ThresholdFilter extends AbstractFilter {
     }
 }</pre>
           </subsection>
+          <a name="Appenders"/>
           <subsection name="Appenders">
             <p>
               Appenders are passed an event, (usually) invoke a Layout to format the event, and then "publish"
@@ -352,6 +360,7 @@ public final class StubAppender extends AbstractOutputStreamAppender<StubManager
     }
 }]]></pre>
           </subsection>
+          <a name="Layouts"/>
           <subsection name="Layouts">
             <p>
               Layouts perform the formatting of events into the printable text that is written by Appenders to
@@ -384,6 +393,7 @@ public class SampleLayout extends AbstractStringLayout {
     }
 }</pre>
           </subsection>
+        <a name="PatternConverters"/>
           <subsection name="PatternConverters">
             <p>
               PatternConverters are used by the PatternLayout to format the log event into a printable String. Each
@@ -419,6 +429,7 @@ public final class QueryConverter extends LogEventPatternConverter {
     }
 }</pre>
           </subsection>
+        <a name="Plugin_Builders"/>
           <subsection name="Plugin Builders">
             <p>
               Some plugins take a lot of optional configuration options. When a plugin takes many options, it is more
@@ -529,23 +540,20 @@ ListAppender list1 = ListAppender.createAppender("List1", true, false, null, nul
 ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLine(true).build();
 ]]></pre>
           </subsection>
-        <subsection name="Custom ContextDataInjector">
+        <a name="ContextDataProvider"/>
+        <subsection name="Custom ContextDataProvider">
           <p>
-            The <code>ContextDataInjector</code> (introduced in Log4j 2.7) is responsible for
-            populating the LogEvent's
-            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/LogEvent.html#getContextData()">context data</a>
-            with key-value pairs or replacing it completely.
-            The default implementation is ThreadContextDataInjector, which obtains context attributes from the ThreadContext.
-          </p><p>
-          Applications may replace the default ContextDataInjector by setting the value of the system property
-          <tt>log4j2.contextDataInjector</tt> to the name of the custom ContextDataInjector class.
-        </p><p>
-          Implementors should be aware there are some subtleties related to thread-safety and implementing a
-          context data injector in a garbage-free manner.
-          See the <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/ContextDataInjector.html">ContextDataInjector</a>
-          javadoc for detail.
-        </p>
+            The <code>ContextDataProvider</code> (introduced in Log4j 2.13.2)
+            is an interface applications and libraries can use to inject additional key-value pairs into the LogEvent's
+            context data. Log4j's <code>ThreadContextDataInjector</code> uses <code>java.util.ServiceLoader</code>
+            to locate and load <code>ContextDataProvider</code> instances. Log4j itself adds the ThreadContextData to
+            the LogEvent using <code>org.apache.logging.log4j.core.impl.ThreadContextDataProvider</code>. Custom
+            implementations should implement the <code>org.apache.logging.log4j.core.util.ContextDataProvider</code>
+            interface and declare it as a service by defining the implmentation class in a file named
+            <code>META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider</code>.
+          </p>
         </subsection>
+        <a name="ThreadContextMap"/>
         <subsection name="Custom ThreadContextMap implementations">
           <p>
             A garbage-free StringMap-based context map can be installed by setting system property <tt>log4j2.garbagefreeThreadContextMap</tt>
@@ -559,7 +567,7 @@ ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLi
             method.
           </p>
         </subsection>
-          <subsection name="Custom Plugins">
+          <subsection name="Custom_Plugins">
             <p>See the <a href="plugins.html">Plugins</a> section of the manual.</p>
 <!-- TODO: some documentation here! -->
           </subsection>
