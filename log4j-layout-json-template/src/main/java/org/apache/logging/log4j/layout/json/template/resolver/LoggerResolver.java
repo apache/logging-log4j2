@@ -16,57 +16,35 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.util.Strings;
-
-import java.io.IOException;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
 final class LoggerResolver implements EventResolver {
 
+    private static final EventResolver NAME_RESOLVER =
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+                final String loggerName = logEvent.getLoggerName();
+                jsonWriter.writeString(loggerName);
+            };
+
+    private static final EventResolver FQCN_RESOLVER =
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+                final String loggerFqcn = logEvent.getLoggerFqcn();
+                jsonWriter.writeString(loggerFqcn);
+            };
+
     private final EventResolver internalResolver;
 
-    LoggerResolver(final EventResolverContext context, final String key) {
-        this.internalResolver = createInternalResolver(context, key);
+    LoggerResolver(final String key) {
+        this.internalResolver = createInternalResolver(key);
     }
 
-    private static EventResolver createInternalResolver(
-            final EventResolverContext context,
-            final String key) {
+    private static EventResolver createInternalResolver(final String key) {
         switch (key) {
-            case "name": return createNameResolver(context);
-            case "fqcn": return createFqcnResolver(context);
+            case "name": return NAME_RESOLVER;
+            case "fqcn": return FQCN_RESOLVER;
         }
         throw new IllegalArgumentException("unknown key: " + key);
-    }
-
-    private static EventResolver createNameResolver(final EventResolverContext context) {
-        return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
-            final String loggerName = logEvent.getLoggerName();
-            writeText(jsonGenerator, context, loggerName);
-        };
-    }
-
-    private static EventResolver createFqcnResolver(final EventResolverContext context) {
-        return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
-            final String loggerFqcn = logEvent.getLoggerFqcn();
-            writeText(jsonGenerator, context, loggerFqcn);
-        };
-    }
-
-    private static void writeText(
-            final JsonGenerator jsonGenerator,
-            final EventResolverContext context,
-            final String text)
-            throws IOException {
-        final boolean textExcluded =
-                context.isBlankFieldExclusionEnabled() &&
-                        Strings.isBlank(text);
-        if (textExcluded) {
-            jsonGenerator.writeNull();
-        } else {
-            jsonGenerator.writeString(text);
-        }
     }
 
     static String getName() {
@@ -76,9 +54,8 @@ final class LoggerResolver implements EventResolver {
     @Override
     public void resolve(
             final LogEvent logEvent,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
-        internalResolver.resolve(logEvent, jsonGenerator);
+            final JsonWriter jsonWriter) {
+        internalResolver.resolve(logEvent, jsonWriter);
     }
 
 }

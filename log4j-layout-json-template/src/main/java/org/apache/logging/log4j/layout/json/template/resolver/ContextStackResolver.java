@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
-import java.io.IOException;
 import java.util.regex.Pattern;
 
 /**
@@ -41,29 +40,32 @@ final class ContextStackResolver implements EventResolver {
     @Override
     public void resolve(
             final LogEvent logEvent,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
+            final JsonWriter jsonWriter) {
         final ThreadContext.ContextStack contextStack = logEvent.getContextStack();
         if (contextStack.getDepth() == 0) {
-            jsonGenerator.writeNull();
+            jsonWriter.writeNull();
             return;
         }
         final Pattern itemPattern = context.getNdcPattern();
         boolean arrayStarted = false;
         for (final String contextStackItem : contextStack.asList()) {
-            final boolean matched = itemPattern == null || itemPattern.matcher(contextStackItem).matches();
+            final boolean matched =
+                    itemPattern == null ||
+                            itemPattern.matcher(contextStackItem).matches();
             if (matched) {
-                if (!arrayStarted) {
-                    jsonGenerator.writeStartArray();
+                if (arrayStarted) {
+                    jsonWriter.writeSeparator();
+                } else {
+                    jsonWriter.writeArrayStart();
                     arrayStarted = true;
                 }
-                jsonGenerator.writeString(contextStackItem);
+                jsonWriter.writeString(contextStackItem);
             }
         }
         if (arrayStarted) {
-            jsonGenerator.writeEndArray();
+            jsonWriter.writeArrayEnd();
         } else {
-            jsonGenerator.writeNull();
+            jsonWriter.writeNull();
         }
     }
 

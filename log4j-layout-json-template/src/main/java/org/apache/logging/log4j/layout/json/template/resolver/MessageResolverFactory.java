@@ -33,7 +33,7 @@ final class MessageResolverFactory implements EventResolverFactory<MessageResolv
 
     @Override
     public MessageResolver create(final EventResolverContext context, final String key) {
-        return new MessageResolver(context, key);
+        return new MessageResolver(key);
     }
 
 }

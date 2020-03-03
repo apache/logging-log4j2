@@ -16,27 +16,25 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-
-import java.io.IOException;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
 final class StackTraceElementObjectResolver implements TemplateResolver<StackTraceElement> {
 
     private static final TemplateResolver<StackTraceElement> CLASS_NAME_RESOLVER =
-            (final StackTraceElement stackTraceElement, final JsonGenerator jsonGenerator) ->
-                    jsonGenerator.writeString(stackTraceElement.getClassName());
+            (final StackTraceElement stackTraceElement, final JsonWriter jsonWriter) ->
+                    jsonWriter.writeString(stackTraceElement.getClassName());
 
     private static final TemplateResolver<StackTraceElement> METHOD_NAME_RESOLVER =
-            (final StackTraceElement stackTraceElement, final JsonGenerator jsonGenerator) ->
-                    jsonGenerator.writeString(stackTraceElement.getMethodName());
+            (final StackTraceElement stackTraceElement, final JsonWriter jsonWriter) ->
+                    jsonWriter.writeString(stackTraceElement.getMethodName());
 
     private static final TemplateResolver<StackTraceElement> FILE_NAME_RESOLVER =
-            (final StackTraceElement stackTraceElement, final JsonGenerator jsonGenerator) ->
-                    jsonGenerator.writeString(stackTraceElement.getFileName());
+            (final StackTraceElement stackTraceElement, final JsonWriter jsonWriter) ->
+                    jsonWriter.writeString(stackTraceElement.getFileName());
 
     private static final TemplateResolver<StackTraceElement> LINE_NUMBER_RESOLVER =
-            (final StackTraceElement stackTraceElement, final JsonGenerator jsonGenerator) ->
-                    jsonGenerator.writeNumber(stackTraceElement.getLineNumber());
+            (final StackTraceElement stackTraceElement, final JsonWriter jsonWriter) ->
+                    jsonWriter.writeNumber(stackTraceElement.getLineNumber());
 
     private final TemplateResolver<StackTraceElement> internalResolver;
 
@@ -61,9 +59,8 @@ final class StackTraceElementObjectResolver implements TemplateResolver<StackTra
     @Override
     public void resolve(
             final StackTraceElement stackTraceElement,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
-        internalResolver.resolve(stackTraceElement, jsonGenerator);
+            final JsonWriter jsonWriter) {
+        internalResolver.resolve(stackTraceElement, jsonWriter);
     }
 
 }

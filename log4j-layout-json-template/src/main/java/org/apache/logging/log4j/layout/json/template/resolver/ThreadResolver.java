@@ -16,57 +16,42 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.util.Strings;
-
-import java.io.IOException;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
 final class ThreadResolver implements EventResolver {
 
+    private static final EventResolver NAME_RESOLVER =
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+                final String threadName = logEvent.getThreadName();
+                jsonWriter.writeString(threadName);
+            };
+
+    private static final EventResolver ID_RESOLVER =
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+                final long threadId = logEvent.getThreadId();
+                jsonWriter.writeNumber(threadId);
+            };
+
+    private static final EventResolver PRIORITY_RESOLVER =
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+                final int threadPriority = logEvent.getThreadPriority();
+                jsonWriter.writeNumber(threadPriority);
+            };
+
     private final EventResolver internalResolver;
 
-    ThreadResolver(final EventResolverContext context, final String key) {
-        this.internalResolver = createInternalResolver(context, key);
+    ThreadResolver(final String key) {
+        this.internalResolver = createInternalResolver(key);
     }
 
-    private static EventResolver createInternalResolver(
-            final EventResolverContext context,
-            final String key) {
+    private static EventResolver createInternalResolver(final String key) {
         switch (key) {
-            case "name": return createNameResolver(context);
-            case "id": return createIdResolver();
-            case "priority": return createPriorityResolver();
+            case "name": return NAME_RESOLVER;
+            case "id": return ID_RESOLVER;
+            case "priority": return PRIORITY_RESOLVER;
         }
         throw new IllegalArgumentException("unknown key: " + key);
-    }
-
-    private static EventResolver createNameResolver(final EventResolverContext context) {
-        return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
-            final String threadName = logEvent.getThreadName();
-            final boolean threadNameExcluded =
-                    context.isBlankFieldExclusionEnabled() &&
-                            Strings.isBlank(threadName);
-            if (threadNameExcluded) {
-                jsonGenerator.writeNull();
-            } else {
-                jsonGenerator.writeString(threadName);
-            }
-        };
-    }
-
-    private static EventResolver createIdResolver() {
-        return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
-            final long threadId = logEvent.getThreadId();
-            jsonGenerator.writeNumber(threadId);
-        };
-    }
-
-    private static EventResolver createPriorityResolver() {
-        return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
-            final int threadPriority = logEvent.getThreadPriority();
-            jsonGenerator.writeNumber(threadPriority);
-        };
     }
 
     static String getName() {
@@ -76,9 +61,8 @@ final class ThreadResolver implements EventResolver {
     @Override
     public void resolve(
             final LogEvent logEvent,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
-        internalResolver.resolve(logEvent, jsonGenerator);
+            final JsonWriter jsonWriter) {
+        internalResolver.resolve(logEvent, jsonWriter);
     }
 
 }

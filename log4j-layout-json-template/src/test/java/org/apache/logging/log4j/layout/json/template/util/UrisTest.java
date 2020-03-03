@@ -38,21 +38,21 @@ public class UrisTest {
                 "classpath:JsonLayout.json",
                 StandardCharsets.US_ASCII);
         Assert.assertTrue(
-                "was expecting content to start with '{', found: " + content,
+                "was expecting content to start with '{': " + content,
                 content.startsWith("{"));
     }
 
     @Test
     public void testFilePathResource() throws IOException {
-        final String nonAsciiUtf8Text = "அஆஇฬ๘";
+        final String nonAsciiUtfText = "அஆஇฬ๘";
         final File file = Files.createTempFile("log4j-UriUtilTest-", ".txt").toFile();
         try {
             try (final OutputStream outputStream = new FileOutputStream(file)) {
-                outputStream.write(nonAsciiUtf8Text.getBytes(StandardCharsets.UTF_8));
+                outputStream.write(nonAsciiUtfText.getBytes(StandardCharsets.UTF_8));
             }
             final String uri = String.format("file:%s", file.getAbsoluteFile());
             final String content = Uris.readUri(uri, StandardCharsets.UTF_8);
-            Assert.assertEquals(nonAsciiUtf8Text, content);
+            Assert.assertEquals(nonAsciiUtfText, content);
         } finally {
             final boolean deleted = file.delete();
             if (!deleted) {

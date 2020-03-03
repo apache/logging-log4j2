@@ -42,6 +42,55 @@ public final class BufferedWriter extends Writer {
     }
 
     @Override
+    public void write(final int c) {
+        buffer[position++] = (char) c;
+    }
+
+    @Override
+    public void write(final char[] source) {
+        write(source, 0, source.length);
+    }
+
+    @Override
+    public void write(final String string) {
+        final int length = string.length();
+        string.getChars(0, length, buffer, position);
+        position += length;
+    }
+
+    @Override
+    public void write(
+            final String string,
+            final int offset,
+            final int length) {
+        string.getChars(offset, offset + length, buffer, position);
+        position += length;
+    }
+
+    @Override
+    public Writer append(final CharSequence seq) {
+        return append(seq, 0, seq.length());
+    }
+
+    @Override
+    public Writer append(
+            final CharSequence seq,
+            final int start,
+            final int end) {
+        for (int i = start; i < end; i++) {
+            final char c = seq.charAt(i);
+            write(c);
+        }
+        return this;
+    }
+
+    @Override
+    public Writer append(char c) {
+        write(c);
+        return this;
+    }
+
+    @Override
     public void write(final char[] source, final int offset, final int length) {
         System.arraycopy(source, offset, buffer, position, length);
         position += length;

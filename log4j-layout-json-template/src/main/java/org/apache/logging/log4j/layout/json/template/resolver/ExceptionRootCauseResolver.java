@@ -16,12 +16,9 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.util.Strings;
-
-import java.io.IOException;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
 final class ExceptionRootCauseResolver implements EventResolver {
 
@@ -30,34 +27,29 @@ final class ExceptionRootCauseResolver implements EventResolver {
 
                 @Override
                 EventResolver createClassNameResolver() {
-                    return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                    return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                         final Throwable exception = logEvent.getThrown();
                         if (exception == null) {
-                            jsonGenerator.writeNull();
+                            jsonWriter.writeNull();
                         } else {
                             final Throwable rootCause = Throwables.getRootCause(exception);
                             final String rootCauseClassName = rootCause.getClass().getCanonicalName();
-                            jsonGenerator.writeString(rootCauseClassName);
+                            jsonWriter.writeString(rootCauseClassName);
                         }
                     };
                 }
 
                 @Override
                 EventResolver createMessageResolver(final EventResolverContext context) {
-                    return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                    return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                         final Throwable exception = logEvent.getThrown();
-                        if (exception != null) {
+                        if (exception == null) {
+                            jsonWriter.writeNull();
+                        } else {
                             final Throwable rootCause = Throwables.getRootCause(exception);
                             final String rootCauseMessage = rootCause.getMessage();
-                            boolean rootCauseMessageExcluded =
-                                    context.isBlankFieldExclusionEnabled() &&
-                                            Strings.isBlank(rootCauseMessage);
-                            if (!rootCauseMessageExcluded) {
-                                jsonGenerator.writeString(rootCauseMessage);
-                                return;
-                            }
+                            jsonWriter.writeString(rootCauseMessage);
                         }
-                        jsonGenerator.writeNull();
                     };
                 }
 
@@ -65,26 +57,26 @@ final class ExceptionRootCauseResolver implements EventResolver {
                 EventResolver createStackTraceTextResolver(final EventResolverContext context) {
                     final StackTraceTextResolver stackTraceTextResolver =
                             new StackTraceTextResolver(context);
-                    return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                    return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                         final Throwable exception = logEvent.getThrown();
                         if (exception == null) {
-                            jsonGenerator.writeNull();
+                            jsonWriter.writeNull();
                         } else {
                             final Throwable rootCause = Throwables.getRootCause(exception);
-                            stackTraceTextResolver.resolve(rootCause, jsonGenerator);
+                            stackTraceTextResolver.resolve(rootCause, jsonWriter);
                         }
                     };
                 }
 
                 @Override
                 EventResolver createStackTraceObjectResolver(EventResolverContext context) {
-                    return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                    return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                         final Throwable exception = logEvent.getThrown();
                         if (exception == null) {
-                            jsonGenerator.writeNull();
+                            jsonWriter.writeNull();
                         } else {
                             final Throwable rootCause = Throwables.getRootCause(exception);
-                            context.getStackTraceObjectResolver().resolve(rootCause, jsonGenerator);
+                            context.getStackTraceObjectResolver().resolve(rootCause, jsonWriter);
                         }
                     };
                 }
@@ -104,9 +96,8 @@ final class ExceptionRootCauseResolver implements EventResolver {
     @Override
     public void resolve(
             final LogEvent logEvent,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
-        internalResolver.resolve(logEvent, jsonGenerator);
+            final JsonWriter jsonWriter) {
+        internalResolver.resolve(logEvent, jsonWriter);
     }
 
 }

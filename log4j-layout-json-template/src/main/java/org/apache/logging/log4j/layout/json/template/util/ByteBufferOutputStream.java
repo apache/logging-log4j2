@@ -59,4 +59,12 @@ public class ByteBufferOutputStream extends OutputStream {
         return new String(byteBuffer.array(), 0, byteBuffer.position(), charset);
     }
 
+    @Override
+    public void flush() {}
+
+    @Override
+    public void close() {
+        byteBuffer.clear();
+    }
+
 }

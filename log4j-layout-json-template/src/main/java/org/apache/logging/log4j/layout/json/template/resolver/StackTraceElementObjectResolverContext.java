@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 import java.util.Map;
@@ -25,16 +24,10 @@ import java.util.Objects;
 public final class StackTraceElementObjectResolverContext
         implements TemplateResolverContext<StackTraceElement, StackTraceElementObjectResolverContext> {
 
-    private final ObjectMapper objectMapper;
-
     private final StrSubstitutor substitutor;
 
-    private final boolean blankFieldExclusionEnabled;
-
     private StackTraceElementObjectResolverContext(final Builder builder) {
-        this.objectMapper = builder.objectMapper;
         this.substitutor = builder.substitutor;
-        this.blankFieldExclusionEnabled = builder.blankFieldExclusionEnabled;
     }
 
     @Override
@@ -48,18 +41,8 @@ public final class StackTraceElementObjectResolverContext
     }
 
     @Override
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
-    }
-
-    @Override
     public StrSubstitutor getSubstitutor() {
         return substitutor;
-    }
-
-    @Override
-    public boolean isBlankFieldExclusionEnabled() {
-        return blankFieldExclusionEnabled;
     }
 
     public static Builder newBuilder() {
@@ -68,29 +51,14 @@ public final class StackTraceElementObjectResolverContext
 
     public static class Builder {
 
-        private ObjectMapper objectMapper;
-
         private StrSubstitutor substitutor;
-
-        private boolean blankFieldExclusionEnabled;
 
         private Builder() {
             // Do nothing.
         }
 
-        public Builder setObjectMapper(final ObjectMapper objectMapper) {
-            this.objectMapper = objectMapper;
-            return this;
-        }
-
         public Builder setSubstitutor(final StrSubstitutor substitutor) {
             this.substitutor = substitutor;
-            return this;
-        }
-
-        public Builder setBlankFieldExclusionEnabled(
-                final boolean blankFieldExclusionEnabled) {
-            this.blankFieldExclusionEnabled = blankFieldExclusionEnabled;
             return this;
         }
 
@@ -100,7 +68,6 @@ public final class StackTraceElementObjectResolverContext
         }
 
         private void validate() {
-            Objects.requireNonNull(objectMapper, "objectMapper");
             Objects.requireNonNull(substitutor, "substitutor");
         }
 

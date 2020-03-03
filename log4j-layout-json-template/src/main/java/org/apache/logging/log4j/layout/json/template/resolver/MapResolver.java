@@ -16,19 +16,14 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.lookup.MapLookup;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.message.MapMessage;
-import org.apache.logging.log4j.util.Strings;
-
-import java.io.IOException;
 
 final class MapResolver implements EventResolver {
 
     private static final MapLookup MAP_LOOKUP = new MapLookup();
-
-    private final EventResolverContext context;
 
     private final String key;
 
@@ -36,34 +31,25 @@ final class MapResolver implements EventResolver {
         return "map";
     }
 
-    MapResolver(final EventResolverContext context, final String key) {
-        this.context = context;
+    MapResolver(final String key) {
         this.key = key;
     }
 
     @Override
     public void resolve(
             final LogEvent logEvent,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
+            final JsonWriter jsonWriter) {
 
         // If the event message is not of type MapMessage, then do not even try
         // to perform the map lookup.
         if (!(logEvent.getMessage() instanceof MapMessage)) {
-            jsonGenerator.writeNull();
+            jsonWriter.writeNull();
         }
 
         // Perform the map lookup against Log4j.
         else {
             final String resolvedValue = MAP_LOOKUP.lookup(logEvent, key);
-            final boolean valueExcluded =
-                    context.isBlankFieldExclusionEnabled() &&
-                            Strings.isBlank(resolvedValue);
-            if (valueExcluded) {
-                jsonGenerator.writeNull();
-            } else {
-                jsonGenerator.writeObject(resolvedValue);
-            }
+            jsonWriter.writeString(resolvedValue);
         }
 
     }

@@ -16,19 +16,12 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.layout.json.template.util.JsonGenerators;
-import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.TriConsumer;
-
-import java.io.IOException;
 
 final class MessageResolver implements EventResolver {
 
@@ -36,12 +29,9 @@ final class MessageResolver implements EventResolver {
 
     private static final String[] FORMATS = { "JSON" };
 
-    private final EventResolverContext context;
-
     private final String key;
 
-    MessageResolver(final EventResolverContext context, final String key) {
-        this.context = context;
+    MessageResolver(final String key) {
         this.key = key;
     }
 
@@ -52,65 +42,49 @@ final class MessageResolver implements EventResolver {
     @Override
     public void resolve(
             final LogEvent logEvent,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
+            final JsonWriter jsonWriter) {
         final Message message = logEvent.getMessage();
         if (FORMATS[0].equalsIgnoreCase(key)) {
-            resolveJson(message, jsonGenerator);
+            resolveJson(message, jsonWriter);
         } else {
-            resolveText(message, jsonGenerator);
+            resolveText(message, jsonWriter);
         }
     }
 
     private void resolveText(
             final Message message,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
-        final String formattedMessage = resolveText(message);
-        if (formattedMessage == null) {
-            jsonGenerator.writeNull();
-        } else {
-            jsonGenerator.writeString(formattedMessage);
-        }
-    }
-
-    private String resolveText(final Message message) {
+            final JsonWriter jsonWriter) {
         final String formattedMessage = message.getFormattedMessage();
-        final boolean messageExcluded =
-                context.isBlankFieldExclusionEnabled() &&
-                        Strings.isBlank(formattedMessage);
-        return messageExcluded ? null : formattedMessage;
+        jsonWriter.writeString(formattedMessage);
     }
 
     private void resolveJson(
             final Message message,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
+            final JsonWriter jsonWriter) {
 
         // Try SimpleMessage serializer.
-        if (writeSimpleMessage(jsonGenerator, message)) {
+        if (writeSimpleMessage(jsonWriter, message)) {
             return;
         }
 
         // Try MultiformatMessage serializer.
-        if (writeMultiformatMessage(jsonGenerator, message)) {
+        if (writeMultiformatMessage(jsonWriter, message)) {
             return;
         }
 
         // Try ObjectMessage serializer.
-        if (writeObjectMessage(jsonGenerator, message)) {
+        if (writeObjectMessage(jsonWriter, message)) {
             return;
         }
 
         // Fallback to plain Object write.
-        writeObject(message, jsonGenerator);
+        writeFormattedMessageObject(message, jsonWriter);
 
     }
 
     private boolean writeSimpleMessage(
-            final JsonGenerator jsonGenerator,
-            final Message message)
-            throws IOException {
+            final JsonWriter jsonWriter,
+            final Message message) {
 
         // Check type.
         if (!(message instanceof SimpleMessage)) {
@@ -120,41 +94,20 @@ final class MessageResolver implements EventResolver {
 
         // Write message.
         final String formattedMessage = simpleMessage.getFormattedMessage();
-        final boolean messageExcluded =
-                context.isBlankFieldExclusionEnabled() &&
-                        Strings.isBlank(formattedMessage);
-        if (messageExcluded) {
-            jsonGenerator.writeNull();
-        } else {
-            jsonGenerator.writeString(formattedMessage);
-        }
+        jsonWriter.writeString(formattedMessage);
         return true;
 
     }
 
     private boolean writeMultiformatMessage(
-            final JsonGenerator jsonGenerator,
-            final Message message)
-            throws IOException {
+            final JsonWriter jsonWriter,
+            final Message message) {
 
         // Check type.
         if (!(message instanceof MultiformatMessage)) {
             return false;
         }
         final MultiformatMessage multiformatMessage = (MultiformatMessage) message;
-
-        // As described in LOG4J2-2703, MapMessage#getFormattedMessage() is
-        // incorrectly formatting Object's. Hence, we will temporarily work
-        // around the problem by serializing it ourselves rather than using the
-        // default provided formatter.
-
-        // Override the provided MapMessage formatter.
-        if (context.isMapMessageFormatterIgnored() && message instanceof MapMessage) {
-            @SuppressWarnings("unchecked")
-            final MapMessage<?, Object> mapMessage = (MapMessage) message;
-            writeMapMessage(jsonGenerator, mapMessage);
-            return true;
-        }
 
         // Check formatter's JSON support.
         boolean jsonSupported = false;
@@ -166,100 +119,41 @@ final class MessageResolver implements EventResolver {
             }
         }
 
-        // Get the formatted message, if there is any.
-        if (!jsonSupported) {
-            writeObject(message, jsonGenerator);
+        // Write the formatted JSON, if supported.
+        if (jsonSupported) {
+            final String messageJson = multiformatMessage.getFormattedMessage(FORMATS);
+            jsonWriter.writeRawString(messageJson);
             return true;
         }
 
-        // Write the formatted JSON.
-        final String messageJson = multiformatMessage.getFormattedMessage(FORMATS);
-        final JsonNode jsonNode = readMessageJson(context, messageJson);
-        final boolean nodeExcluded = isNodeExcluded(jsonNode);
-        if (nodeExcluded) {
-            jsonGenerator.writeNull();
-        } else {
-            jsonGenerator.writeTree(jsonNode);
-        }
+        // Fallback to the default message formatter.
+        writeFormattedMessageObject(message, jsonWriter);
         return true;
 
     }
 
-    private static void writeMapMessage(
-            final JsonGenerator jsonGenerator,
-            final MapMessage<?, Object> mapMessage)
-            throws IOException {
-        jsonGenerator.writeStartObject();
-        mapMessage.forEach(MAP_MESSAGE_ENTRY_WRITER, jsonGenerator);
-        jsonGenerator.writeEndObject();
-    }
-
-    private static TriConsumer<String, Object, JsonGenerator> MAP_MESSAGE_ENTRY_WRITER =
-            (final String key, final Object value, final JsonGenerator jsonGenerator) -> {
-                try {
-                    jsonGenerator.writeFieldName(key);
-                    JsonGenerators.writeObject(jsonGenerator, value);
-                } catch (final IOException error) {
-                    throw new RuntimeException("MapMessage entry serialization failure", error);
-                }
-            };
-
-    private static JsonNode readMessageJson(
-            final EventResolverContext context,
-            final String messageJson) {
-        try {
-            return context.getObjectMapper().readTree(messageJson);
-        } catch (final IOException error) {
-            throw new RuntimeException("JSON message read failure", error);
-        }
-    }
-
-    private void writeObject(
+    private void writeFormattedMessageObject(
             final Message message,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
+            final JsonWriter jsonWriter) {
 
         // Resolve text node.
-        final String formattedMessage = resolveText(message);
+        final String formattedMessage = message.getFormattedMessage();
         if (formattedMessage == null) {
-            jsonGenerator.writeNull();
+            jsonWriter.writeNull();
             return;
         }
 
         // Put textual representation of the message in an object.
-        jsonGenerator.writeStartObject();
-        jsonGenerator.writeObjectField(NAME, formattedMessage);
-        jsonGenerator.writeEndObject();
-
-    }
-
-    private boolean isNodeExcluded(final JsonNode jsonNode) {
-
-        if (!context.isBlankFieldExclusionEnabled()) {
-            return false;
-        }
-
-        if (jsonNode.isNull()) {
-            return true;
-        }
-
-        if (jsonNode.isTextual() && Strings.isBlank(jsonNode.asText())) {
-            return true;
-        }
-
-        // noinspection RedundantIfStatement
-        if (jsonNode.isContainerNode() && jsonNode.size() == 0) {
-            return true;
-        }
-
-        return false;
+        jsonWriter.writeObjectStart();
+        jsonWriter.writeObjectKey(NAME);
+        jsonWriter.writeString(formattedMessage);
+        jsonWriter.writeObjectEnd();
 
     }
 
     private boolean writeObjectMessage(
-            final JsonGenerator jsonGenerator,
-            final Message message)
-            throws IOException {
+            final JsonWriter jsonWriter,
+            final Message message) {
 
         // Check type.
         if (!(message instanceof ObjectMessage)) {
@@ -269,7 +163,7 @@ final class MessageResolver implements EventResolver {
         // Serialize object.
         final ObjectMessage objectMessage = (ObjectMessage) message;
         final Object object = objectMessage.getParameter();
-        JsonGenerators.writeObject(jsonGenerator, object);
+        jsonWriter.writeValue(object);
         return true;
 
     }

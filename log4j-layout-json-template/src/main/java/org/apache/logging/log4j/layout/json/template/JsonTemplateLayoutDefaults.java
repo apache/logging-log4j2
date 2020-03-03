@@ -31,11 +31,6 @@ public enum JsonTemplateLayoutDefaults {;
 
     private static final Charset CHARSET = readCharset();
 
-    private static final boolean PRETTY_PRINT_ENABLED =
-            PROPERTIES.getBooleanProperty(
-                    "log4j.layout.jsonTemplate.prettyPrintEnabled",
-                    false);
-
     private static final boolean LOCATION_INFO_ENABLED =
             PROPERTIES.getBooleanProperty(
                     "log4j.layout.jsonTemplate.locationInfoEnabled",
@@ -45,11 +40,6 @@ public enum JsonTemplateLayoutDefaults {;
             PROPERTIES.getBooleanProperty(
                     "log4j.layout.jsonTemplate.stackTraceEnabled",
                     true);
-
-    private static final boolean BLANK_FIELD_EXCLUSION_ENABLED =
-            PROPERTIES.getBooleanProperty(
-                    "log4j.layout.jsonTemplate.blankFieldExclusionEnabled",
-                    false);
 
     private static final String TIMESTAMP_FORMAT_PATTERN =
             PROPERTIES.getStringProperty(
@@ -89,23 +79,19 @@ public enum JsonTemplateLayoutDefaults {;
                     "log4j.layout.jsonTemplate.eventDelimiter",
                     System.lineSeparator());
 
-    private static final int MAX_BYTE_COUNT =
-            PROPERTIES.getIntegerProperty(
-                    "log4j.layout.jsonTemplate.maxByteCount",
-                    512 * 1024);    // 512 KiB
+    static final int MIN_BYTE_COUNT = 512;
+
+    private static final int MAX_BYTE_COUNT = readMaxByteCount();
 
     private static final int MAX_STRING_LENGTH =
             PROPERTIES.getIntegerProperty(
                     "log4j.layout.jsonTemplate.maxStringLength",
                     0);
 
-    private static final String OBJECT_MAPPER_FACTORY_METHOD =
-            "com.fasterxml.jackson.databind.ObjectMapper.new";
-
-    private static final boolean MAP_MESSAGE_FORMATTER_IGNORED =
-            PROPERTIES.getBooleanProperty(
-                    "log4j.layout.jsonTemplate.mapMessageFormatterIgnored",
-                    true);
+    private static final String TRUNCATED_STRING_SUFFIX =
+            PROPERTIES.getStringProperty(
+                    "log4j.layout.jsonTemplate.truncatedStringSuffix",
+                    "…");
 
     private static final RecyclerFactory RECYCLER_FACTORY = readRecyclerFactory();
 
@@ -140,6 +126,19 @@ public enum JsonTemplateLayoutDefaults {;
         }
     }
 
+    private static int readMaxByteCount() {
+        final String name = "log4j.layout.jsonTemplate.maxByteCount";
+        final int maxByteCount = PROPERTIES.getIntegerProperty(
+                name,
+                512 * 1024);    // 512 KiB
+        if (maxByteCount < MIN_BYTE_COUNT) {
+            throw new IllegalArgumentException(
+                    "was expecting " + name + " property to be >= " +
+                            MIN_BYTE_COUNT + ": " + maxByteCount);
+        }
+        return maxByteCount;
+    }
+
     private static RecyclerFactory readRecyclerFactory() {
         final String recyclerFactorySpec = PROPERTIES.getStringProperty(
                 "log4j.layout.jsonTemplate.recyclerFactory");
@@ -150,20 +149,12 @@ public enum JsonTemplateLayoutDefaults {;
         return CHARSET;
     }
 
-    public static boolean isPrettyPrintEnabled() {
-        return PRETTY_PRINT_ENABLED;
-    }
-
     public static boolean isLocationInfoEnabled() {
         return LOCATION_INFO_ENABLED;
     }
 
     public static boolean isStackTraceEnabled() {
         return STACK_TRACE_ENABLED;
-    }
-
-    public static boolean isBlankFieldExclusionEnabled() {
-        return BLANK_FIELD_EXCLUSION_ENABLED;
     }
 
     public static String getTimestampFormatPattern() {
@@ -214,12 +205,8 @@ public enum JsonTemplateLayoutDefaults {;
         return MAX_STRING_LENGTH;
     }
 
-    public static String getObjectMapperFactoryMethod() {
-        return OBJECT_MAPPER_FACTORY_METHOD;
-    }
-
-    public static boolean isMapMessageFormatterIgnored() {
-        return MAP_MESSAGE_FORMATTER_IGNORED;
+    public static String getTruncatedStringSuffix() {
+        return TRUNCATED_STRING_SUFFIX;
     }
 
     public static RecyclerFactory getRecyclerFactory() {

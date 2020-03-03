@@ -33,7 +33,7 @@ final class ThreadResolverFactory implements EventResolverFactory<ThreadResolver
 
     @Override
     public ThreadResolver create(final EventResolverContext context, final String key) {
-        return new ThreadResolver(context, key);
+        return new ThreadResolver(key);
     }
 
 }

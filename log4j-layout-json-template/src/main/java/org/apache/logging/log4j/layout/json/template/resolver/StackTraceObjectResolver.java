@@ -16,9 +16,7 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-
-import java.io.IOException;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
 final class StackTraceObjectResolver implements StackTraceResolver {
 
@@ -31,21 +29,22 @@ final class StackTraceObjectResolver implements StackTraceResolver {
     @Override
     public void resolve(
             final Throwable throwable,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
+            final JsonWriter jsonWriter) {
         final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
         if (stackTraceElements.length  == 0) {
-            jsonGenerator.writeNull();
+            jsonWriter.writeNull();
         } else {
-            jsonGenerator.writeStartArray();
-            // noinspection ForLoopReplaceableByForEach (avoid iterator instantiation)
+            jsonWriter.writeArrayStart();
             for (int stackTraceElementIndex = 0;
                  stackTraceElementIndex < stackTraceElements.length;
                  stackTraceElementIndex++) {
+                if (stackTraceElementIndex > 0) {
+                    jsonWriter.writeSeparator();
+                }
                 final StackTraceElement stackTraceElement = stackTraceElements[stackTraceElementIndex];
-                stackTraceElementResolver.resolve(stackTraceElement, jsonGenerator);
+                stackTraceElementResolver.resolve(stackTraceElement, jsonWriter);
             }
-            jsonGenerator.writeEndArray();
+            jsonWriter.writeArrayEnd();
         }
     }
 

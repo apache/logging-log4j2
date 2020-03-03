@@ -16,12 +16,10 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.layout.json.template.util.BufferedPrintWriter;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.layout.json.template.util.Recycler;
 
-import java.io.IOException;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 final class StackTraceTextResolver implements StackTraceResolver {
@@ -29,24 +27,22 @@ final class StackTraceTextResolver implements StackTraceResolver {
     private final Recycler<BufferedPrintWriter> writerRecycler;
 
     StackTraceTextResolver(final EventResolverContext context) {
+        final int writerCapacity = context.getMaxByteCount() / Character.BYTES;
         final Supplier<BufferedPrintWriter> writerSupplier =
-                () -> BufferedPrintWriter.ofCapacity(context.getWriterCapacity());
-        final Function<BufferedPrintWriter, BufferedPrintWriter> writerCleaner =
-                writer -> {
-                    writer.close();
-                    return writer;
-                };
-        this.writerRecycler = context.getRecyclerFactory().create(writerSupplier, writerCleaner);
+                () -> BufferedPrintWriter.ofCapacity(writerCapacity);
+        this.writerRecycler = context
+                .getRecyclerFactory()
+                .create(writerSupplier, BufferedPrintWriter::close);
     }
 
     @Override
     public void resolve(
             final Throwable throwable,
-            final JsonGenerator jsonGenerator) throws IOException {
+            final JsonWriter jsonWriter) {
         final BufferedPrintWriter writer = writerRecycler.acquire();
         try {
             throwable.printStackTrace(writer);
-            jsonGenerator.writeString(writer.getBuffer(), 0, writer.getPosition());
+            jsonWriter.writeString(writer.getBuffer(), 0, writer.getPosition());
         } finally {
             writerRecycler.release(writer);
         }

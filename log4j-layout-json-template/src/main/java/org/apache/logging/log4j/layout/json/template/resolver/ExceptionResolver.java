@@ -16,11 +16,8 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.util.Strings;
-
-import java.io.IOException;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
 class ExceptionResolver implements EventResolver {
 
@@ -29,32 +26,27 @@ class ExceptionResolver implements EventResolver {
 
                 @Override
                 EventResolver createClassNameResolver() {
-                    return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                    return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                         final Throwable exception = logEvent.getThrown();
                         if (exception == null) {
-                            jsonGenerator.writeNull();
+                            jsonWriter.writeNull();
                         } else {
                             String exceptionClassName = exception.getClass().getCanonicalName();
-                            jsonGenerator.writeString(exceptionClassName);
+                            jsonWriter.writeString(exceptionClassName);
                         }
                     };
                 }
 
                 @Override
                 EventResolver createMessageResolver(final EventResolverContext context) {
-                    return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                    return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                         final Throwable exception = logEvent.getThrown();
-                        if (exception != null) {
+                        if (exception == null) {
+                            jsonWriter.writeNull();
+                        } else {
                             String exceptionMessage = exception.getMessage();
-                            boolean exceptionMessageExcluded =
-                                    context.isBlankFieldExclusionEnabled() &&
-                                            Strings.isBlank(exceptionMessage);
-                            if (!exceptionMessageExcluded) {
-                                jsonGenerator.writeString(exceptionMessage);
-                                return;
-                            }
+                            jsonWriter.writeString(exceptionMessage);
                         }
-                        jsonGenerator.writeNull();
                     };
                 }
 
@@ -62,24 +54,24 @@ class ExceptionResolver implements EventResolver {
                 EventResolver createStackTraceTextResolver(final EventResolverContext context) {
                     StackTraceTextResolver stackTraceTextResolver =
                             new StackTraceTextResolver(context);
-                    return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                    return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                         final Throwable exception = logEvent.getThrown();
                         if (exception == null) {
-                            jsonGenerator.writeNull();
+                            jsonWriter.writeNull();
                         } else {
-                            stackTraceTextResolver.resolve(exception, jsonGenerator);
+                            stackTraceTextResolver.resolve(exception, jsonWriter);
                         }
                     };
                 }
 
                 @Override
                 EventResolver createStackTraceObjectResolver(final EventResolverContext context) {
-                    return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+                    return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                         final Throwable exception = logEvent.getThrown();
                         if (exception == null) {
-                            jsonGenerator.writeNull();
+                            jsonWriter.writeNull();
                         } else {
-                            context.getStackTraceObjectResolver().resolve(exception, jsonGenerator);
+                            context.getStackTraceObjectResolver().resolve(exception, jsonWriter);
                         }
                     };
                 }
@@ -99,9 +91,8 @@ class ExceptionResolver implements EventResolver {
     @Override
     public void resolve(
             final LogEvent logEvent,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
-        internalResolver.resolve(logEvent, jsonGenerator);
+            final JsonWriter jsonWriter) {
+        internalResolver.resolve(logEvent, jsonWriter);
     }
 
 }

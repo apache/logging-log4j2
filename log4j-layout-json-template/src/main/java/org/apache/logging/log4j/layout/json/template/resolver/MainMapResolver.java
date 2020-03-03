@@ -16,18 +16,13 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
-import org.apache.logging.log4j.util.Strings;
-
-import java.io.IOException;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
 final class MainMapResolver implements EventResolver {
 
     private static final MainMapLookup MAIN_MAP_LOOKUP = new MainMapLookup();
-
-    private final EventResolverContext context;
 
     private final String key;
 
@@ -35,25 +30,16 @@ final class MainMapResolver implements EventResolver {
         return "main";
     }
 
-    MainMapResolver(final EventResolverContext context, final String key) {
-        this.context = context;
+    MainMapResolver(final String key) {
         this.key = key;
     }
 
     @Override
     public void resolve(
             final LogEvent logEvent,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
+            final JsonWriter jsonWriter) {
         final String value = MAIN_MAP_LOOKUP.lookup(key);
-        final boolean valueExcluded =
-                context.isBlankFieldExclusionEnabled() &&
-                        Strings.isBlank(value);
-        if (valueExcluded) {
-            jsonGenerator.writeNull();
-        } else {
-            jsonGenerator.writeObject(value);
-        }
+        jsonWriter.writeString(value);
     }
 
 }

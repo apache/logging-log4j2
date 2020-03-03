@@ -28,6 +28,10 @@ public final class BufferedPrintWriter extends PrintWriter {
     }
 
     public static BufferedPrintWriter ofCapacity(final int capacity) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException(
+                    "was expecting a non-negative capacity: " + capacity);
+        }
         final BufferedWriter bufferedWriter = new BufferedWriter(capacity);
         return new BufferedPrintWriter(bufferedWriter);
     }

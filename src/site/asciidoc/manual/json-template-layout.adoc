@@ -125,11 +125,6 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
 | Charset
 | `Charset` used for `String` encoding
 
-| prettyPrintEnabled
-| boolean
-| *[experimental]* enables pretty-printer (defaults to `false` set by
-  `log4j.layout.jsonTemplate.prettyPrintEnabled` property)
-
 | locationInfoEnabled
 | boolean
 | includes the filename and line number in the output (defaults to `false` set
@@ -139,11 +134,6 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
 | boolean
 | includes stack traces (defaults to `true` set by
   `log4j.layout.jsonTemplate.stackTraceEnabled` property)
-
-| blankFieldExclusionEnabled
-| boolean
-| *[experimental]* exclude empty and null properties (defaults to `false` set by
-  `log4j.layout.jsonTemplate.blankFieldExclusionEnabled` property)
 
 | mdcKeyPattern
 | String
@@ -197,17 +187,10 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
 | truncate string values longer than the specified limit (defaults to 0 set by
   `log4j.layout.jsonTemplate.maxStringLength` property)
 
-| objectMapperFactoryMethod
+| truncatedStringSuffix
 | String
-| custom Jackson `ObjectMapper` factory method (defaults to
-  `com.fasterxml.jackson.databind.ObjectMapper.new` set by
-  `log4j.layout.jsonTemplate.objectMapperFactoryMethod` property)
-
-| mapMessageFormatterIgnored
-| boolean
-| *[experimental]* employ Jackson serialization for messages of type
-  `MapMessage` rather `MapMessage#getFormattedMessage()` (defaults to `true` set
-  by `log4j.layout.jsonTemplate.mapMessageFormatterIgnored` property)
+| suffix to append to the truncated strings (defaults to `…` set by
+  `log4j.layout.jsonTemplate.truncatedStringSuffix` property)
 
 | recyclerFactory
 | RecyclerFactory
@@ -249,8 +232,10 @@ desirable option for applications running with hundreds of threads or more,
 e.g., a web servlet.
 
 * `queue` is the best of both worlds. It allows recycling of objects up to a
-certain number (`capacity`). When this limit is exceeded, it starts
-allocating. `queue` is a good strategy where `threadLocal` is not desirable.
+certain number (`capacity`). When this limit is exceeded due to excessive
+concurrent load (e.g., `capacity` is 50 but there are 51 threads concurrently
+trying to log), it starts allocating. `queue` is a good strategy where
+`threadLocal` is not desirable.
 +
 `queue` also accepts optional `supplier` (of type `java.util.Queue`, defaults to
   `org.jctools.queues.MpmcArrayQueue.new` if JCTools is in the classpath;
@@ -478,10 +463,10 @@ examples:
 | Output
 
 |timestamp
-|2020-02-07T13:38:47.982123456Z
+|2020-02-07T13:38:47.098+02:00
 
-|timestamp:pattern=yyyy-MM-dd'T'HH:mm:ss'Z',timeZone=UTC,locale=en_US
-|2020-02-07T13:38:47Z
+|timestamp:pattern=yyyy-MM-dd'T'HH:mm:ss.SSS'Z',timeZone=UTC,locale=en_US
+|2020-02-07T13:38:47.098Z
 
 |timestamp:epoch:secs
 |1581082727.982123456
@@ -598,7 +583,7 @@ alternatives.
 | 6
 
 | Dependencies
-| Jackson
+| None
 | Jackson
 | None
 | None
@@ -625,7 +610,7 @@ alternatives.
 | ✓
 | ✕
 | ✕
-| ✓footnote:[Only for ``ObjectMessage``s and if Jackson is in the classpath.]
+| ?footnote:[Only for ``ObjectMessage``s and if Jackson is in the classpath.]
 
 | Custom typed `MDC` value serialization?
 | ✓
@@ -639,8 +624,8 @@ alternatives.
 | ✕
 | ✓
 
-| Enabling/Disabling JSON pretty print?
-| ✓
+| JSON pretty print?
+| ✕
 | ✓
 | ✕
 | ✕
@@ -782,12 +767,11 @@ follows. (Note that the reported values are 99^th^ percentiles.)
 === `maxStringLength` versus `maxByteCount`
 
 Note that string value truncation via `maxStringLength` can take place both in
-object keys and values, and this operation does not leave any trace behind.
-`maxStringLength` is intended as a soft protection against excessive input and
-one should always rely on `maxByteCount` for a hard limit. For instance,
-consider a JSON template with 1,000 fields where each does not exceed
-`maxStringLength`, but the emitted final JSON string will certainly violate the
-`maxByteCount` constraint.
+object keys and values. `maxStringLength` is intended as a soft protection
+against excessive input and one should always rely on `maxByteCount` for a hard
+limit. For instance, consider a JSON template with 1,000 fields where each does
+not exceed `maxStringLength`, but the emitted final JSON string will certainly
+violate the `maxByteCount` constraint.
 
 [#faq-garbage-free]
 === Is `JsonTemplateLayout` garbage-free?
@@ -801,11 +785,10 @@ consider a JSON template with 1,000 fields where each does not exceed
   access to (and hence rendering of) stack traces are not garbage-free.
 
 * Given `-Dlog4j2.garbagefreeThreadContextMap=true`, serialization of context
-  data (that is, MDC) field values is garbage-free if the value is either
-  `null`, or of type `String`, `Short`, `Integer`, `Long`, or `byte[]`.
+  data (that is, MDC) is garbage-free.
 
-* Serialization of ``ObjectMessage``s via `${json:message:json}` is not
-  garbage-free.
+* Serialization of ``ObjectMessage``s via `${json:message:json}` is mostly
+  garbage-free except for certain types (e.g., `BigDecimal`, `BigInteger`).
 
 * link:lookups.html[Lookups] (that is, `${...}` variables, excluding
   `${json:...}` ones) are not garbage-free.

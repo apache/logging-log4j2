@@ -16,21 +16,19 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
-
-import java.io.IOException;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
 final class MarkerResolver implements EventResolver {
 
     private static final TemplateResolver<LogEvent> NAME_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final Marker marker = logEvent.getMarker();
                 if (marker == null) {
-                    jsonGenerator.writeNull();
+                    jsonWriter.writeNull();
                 } else {
-                    jsonGenerator.writeString(marker.getName());
+                    jsonWriter.writeString(marker.getName());
                 }
             };
 
@@ -54,9 +52,8 @@ final class MarkerResolver implements EventResolver {
     @Override
     public void resolve(
             final LogEvent logEvent,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
-        internalResolver.resolve(logEvent, jsonGenerator);
+            final JsonWriter jsonWriter) {
+        internalResolver.resolve(logEvent, jsonWriter);
     }
 
 }

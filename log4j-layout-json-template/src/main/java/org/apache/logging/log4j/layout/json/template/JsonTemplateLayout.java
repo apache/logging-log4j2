@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.layout.json.template;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
@@ -35,18 +32,15 @@ import org.apache.logging.log4j.layout.json.template.resolver.EventResolverConte
 import org.apache.logging.log4j.layout.json.template.resolver.StackTraceElementObjectResolverContext;
 import org.apache.logging.log4j.layout.json.template.resolver.TemplateResolver;
 import org.apache.logging.log4j.layout.json.template.resolver.TemplateResolvers;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.layout.json.template.util.ByteBufferOutputStream;
 import org.apache.logging.log4j.layout.json.template.util.Recycler;
 import org.apache.logging.log4j.layout.json.template.util.RecyclerFactory;
 import org.apache.logging.log4j.layout.json.template.util.Uris;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -59,8 +53,6 @@ import java.util.function.Supplier;
         elementType = Layout.ELEMENT_TYPE,
         printObject = true)
 public class JsonTemplateLayout implements StringLayout {
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final Map<String, String> CONTENT_FORMAT =
             Collections.singletonMap("version", "1");
@@ -75,59 +67,32 @@ public class JsonTemplateLayout implements StringLayout {
 
     private final byte[] eventDelimiterBytes;
 
-    private final Recycler<JsonTemplateLayoutSerializationContext> serializationContextRecycler;
+    private final Recycler<JsonWriter> jsonWriterRecycler;
 
     private JsonTemplateLayout(final Builder builder) {
         this.charset = builder.charset;
         this.contentType = "application/json; charset=" + charset;
         this.emptyObjectJsonBytes = "{}".getBytes(charset);
         this.eventDelimiterBytes = builder.eventDelimiter.getBytes(charset);
-        final ObjectMapper objectMapper = createObjectMapper(builder.objectMapperFactoryMethod);
         final StrSubstitutor substitutor = builder.configuration.getStrSubstitutor();
         final TemplateResolver<StackTraceElement> stackTraceElementObjectResolver =
                 builder.stackTraceEnabled
-                        ? createStackTraceElementResolver(builder, objectMapper, substitutor)
+                        ? createStackTraceElementResolver(builder, substitutor)
                         : null;
         this.eventResolver = createEventResolver(
                 builder,
-                objectMapper,
                 substitutor,
                 stackTraceElementObjectResolver);
-        this.serializationContextRecycler =
-                createSerializationContextRecycler(builder, objectMapper);
-    }
-
-    private static ObjectMapper createObjectMapper(final String objectMapperFactoryMethod) {
-        final int splitterIndex = objectMapperFactoryMethod.lastIndexOf('.');
-        if (splitterIndex < 0) {
-            throw new IllegalArgumentException(
-                    "invalid ObjectMapper factory method: " + objectMapperFactoryMethod);
-        }
-        final String className = objectMapperFactoryMethod.substring(0, splitterIndex);
-        final String methodName = objectMapperFactoryMethod.substring(splitterIndex + 1);
-        try {
-            final Class<?> clazz = LoaderUtil.loadClass(className);
-            if ("new".equals(methodName)) {
-                return (ObjectMapper) clazz.getDeclaredConstructor().newInstance();
-            } else {
-                final Method method = clazz.getMethod(methodName);
-                return (ObjectMapper) method.invoke(null);
-            }
-        } catch (final Exception error) {
-            throw new RuntimeException(error);
-        }
+        this.jsonWriterRecycler = createJsonWriterRecycler(builder);
     }
 
     private static TemplateResolver<StackTraceElement> createStackTraceElementResolver(
             final Builder builder,
-            final ObjectMapper objectMapper,
             final StrSubstitutor substitutor) {
         final StackTraceElementObjectResolverContext stackTraceElementObjectResolverContext =
                 StackTraceElementObjectResolverContext
                         .newBuilder()
-                        .setObjectMapper(objectMapper)
                         .setSubstitutor(substitutor)
-                        .setBlankFieldExclusionEnabled(builder.blankFieldExclusionEnabled)
                         .build();
         final String stackTraceElementTemplate = readStackTraceElementTemplate(builder);
         return TemplateResolvers.ofTemplate(stackTraceElementObjectResolverContext, stackTraceElementTemplate);
@@ -135,27 +100,20 @@ public class JsonTemplateLayout implements StringLayout {
 
     private TemplateResolver<LogEvent> createEventResolver(
             final Builder builder,
-            final ObjectMapper objectMapper,
             final StrSubstitutor substitutor,
             final TemplateResolver<StackTraceElement> stackTraceElementObjectResolver) {
         final String eventTemplate = readEventTemplate(builder);
-        final int writerCapacity = builder.maxStringLength > 0
-                ? builder.maxStringLength
-                : builder.maxByteCount;
         final EventResolverContext resolverContext = EventResolverContext
                 .newBuilder()
-                .setObjectMapper(objectMapper)
                 .setSubstitutor(substitutor)
                 .setRecyclerFactory(builder.recyclerFactory)
-                .setWriterCapacity(writerCapacity)
+                .setMaxByteCount(builder.maxByteCount)
                 .setLocationInfoEnabled(builder.locationInfoEnabled)
                 .setStackTraceEnabled(builder.stackTraceEnabled)
                 .setStackTraceElementObjectResolver(stackTraceElementObjectResolver)
-                .setBlankFieldExclusionEnabled(builder.blankFieldExclusionEnabled)
                 .setMdcKeyPattern(builder.mdcKeyPattern)
                 .setNdcPattern(builder.ndcPattern)
                 .setEventTemplateAdditionalFields(builder.eventTemplateAdditionalFields.additionalFields)
-                .setMapMessageFormatterIgnored(builder.mapMessageFormatterIgnored)
                 .build();
         return TemplateResolvers.ofTemplate(resolverContext, eventTemplate);
     }
@@ -183,106 +141,69 @@ public class JsonTemplateLayout implements StringLayout {
                 : template;
     }
 
-    private static Recycler<JsonTemplateLayoutSerializationContext>
-    createSerializationContextRecycler(
-            final Builder builder,
-            final ObjectMapper objectMapper) {
-        final Supplier<JsonTemplateLayoutSerializationContext> supplier =
-                createSerializationContextSupplier(builder, objectMapper);
+    private static Recycler<JsonWriter> createJsonWriterRecycler(
+            final Builder builder) {
+        final Supplier<JsonWriter> supplier = createJsonWriterSupplier(builder);
         return builder
                 .recyclerFactory
-                .create(supplier, JsonTemplateLayout::cleanSerializationContext);
+                .create(supplier, JsonWriter::close);
     }
 
-    private static Supplier<JsonTemplateLayoutSerializationContext>
-    createSerializationContextSupplier(
-            final Builder builder,
-            final ObjectMapper objectMapper) {
-        return JsonTemplateLayoutSerializationContexts.createSupplier(
-                objectMapper,
-                builder.maxByteCount,
-                builder.prettyPrintEnabled,
-                builder.blankFieldExclusionEnabled,
-                builder.maxStringLength);
-    }
-
-    private static JsonTemplateLayoutSerializationContext
-    cleanSerializationContext(
-            final JsonTemplateLayoutSerializationContext serializationContext) {
-        serializationContext.reset();
-        return serializationContext;
+    private static Supplier<JsonWriter>
+    createJsonWriterSupplier(final Builder builder) {
+        return () -> JsonWriter
+                .newBuilder()
+                .setCharset(builder.getCharset())
+                .setMaxByteCount(builder.maxByteCount)
+                .setMaxStringLength(builder.maxStringLength)
+                .setTruncatedStringSuffix(builder.truncatedStringSuffix)
+                .build();
     }
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final JsonTemplateLayoutSerializationContext context = acquireSerializationContext();
-        try {
-            encode(event, context);
-            final String encodedEvent = context.getOutputStream().toString(charset);
-            serializationContextRecycler.release(context);
+        try (final JsonWriter jsonWriter = acquireJsonWriter()) {
+            encode(event, jsonWriter);
+            final String encodedEvent = jsonWriter.getOutputStream().toString(charset);
+            jsonWriterRecycler.release(jsonWriter);
             return encodedEvent;
-        } catch (final Exception error) {
-            destroySerializationContext(error, context);
-            throw new RuntimeException("failed serializing JSON", error);
         }
     }
 
     @Override
     public byte[] toByteArray(final LogEvent event) {
-        final JsonTemplateLayoutSerializationContext context = acquireSerializationContext();
-        try {
-            encode(event, context);
-            final byte[] encodedEvent = context.getOutputStream().toByteArray();
-            serializationContextRecycler.release(context);
+        try (final JsonWriter jsonWriter = acquireJsonWriter()) {
+            encode(event, jsonWriter);
+            final byte[] encodedEvent = jsonWriter.getOutputStream().toByteArray();
+            jsonWriterRecycler.release(jsonWriter);
             return encodedEvent;
-        } catch (final Exception error) {
-            destroySerializationContext(error, context);
-            throw new RuntimeException("failed serializing JSON", error);
         }
     }
 
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
-        final JsonTemplateLayoutSerializationContext context = acquireSerializationContext();
-        try {
-            encode(event, context);
-            final ByteBuffer byteBuffer = context.getOutputStream().getByteBuffer();
+        try (final JsonWriter jsonWriter = acquireJsonWriter()) {
+            encode(event, jsonWriter);
+            final ByteBuffer byteBuffer = jsonWriter.getOutputStream().getByteBuffer();
             byteBuffer.flip();
             // noinspection SynchronizationOnLocalVariableOrMethodParameter
             synchronized (destination) {
                 ByteBufferDestinationHelper.writeToUnsynchronized(byteBuffer, destination);
             }
-            serializationContextRecycler.release(context);
-        } catch (final Exception error) {
-            destroySerializationContext(error, context);
-            throw new RuntimeException("failed serializing JSON", error);
+            jsonWriterRecycler.release(jsonWriter);
         }
     }
 
     // Visible for tests.
-    JsonTemplateLayoutSerializationContext acquireSerializationContext() {
-        return serializationContextRecycler.acquire();
-    }
-
-    private void destroySerializationContext(
-            final Exception cause,
-            final JsonTemplateLayoutSerializationContext oldContext) {
-        try {
-            oldContext.close();
-        } catch (final Exception error) {
-            LOGGER.error("failed context close attempt suppressing the parent error", cause);
-            throw new RuntimeException(error);
-        }
+    JsonWriter acquireJsonWriter() {
+        return jsonWriterRecycler.acquire();
     }
 
     private void encode(
             final LogEvent event,
-            final JsonTemplateLayoutSerializationContext context)
-            throws IOException {
-        final JsonGenerator jsonGenerator = context.getJsonGenerator();
-        eventResolver.resolve(event, jsonGenerator);
-        jsonGenerator.flush();
-        ByteBufferOutputStream outputStream = context.getOutputStream();
+            final JsonWriter jsonWriter) {
+        eventResolver.resolve(event, jsonWriter);
+        ByteBufferOutputStream outputStream = jsonWriter.getOutputStream();
         if (outputStream.getByteBuffer().position() == 0) {
             outputStream.write(emptyObjectJsonBytes);
         }
@@ -331,20 +252,12 @@ public class JsonTemplateLayout implements StringLayout {
         private Charset charset = JsonTemplateLayoutDefaults.getCharset();
 
         @PluginBuilderAttribute
-        private boolean prettyPrintEnabled =
-                JsonTemplateLayoutDefaults.isPrettyPrintEnabled();
-
-        @PluginBuilderAttribute
         private boolean locationInfoEnabled =
                 JsonTemplateLayoutDefaults.isLocationInfoEnabled();
 
         @PluginBuilderAttribute
         private boolean stackTraceEnabled =
                 JsonTemplateLayoutDefaults.isStackTraceEnabled();
-
-        @PluginBuilderAttribute
-        private boolean blankFieldExclusionEnabled =
-                JsonTemplateLayoutDefaults.isBlankFieldExclusionEnabled();
 
         @PluginBuilderAttribute
         private String eventTemplate = JsonTemplateLayoutDefaults.getEventTemplate();
@@ -381,12 +294,8 @@ public class JsonTemplateLayout implements StringLayout {
         private int maxStringLength = JsonTemplateLayoutDefaults.getMaxStringLength();
 
         @PluginBuilderAttribute
-        private String objectMapperFactoryMethod =
-                JsonTemplateLayoutDefaults.getObjectMapperFactoryMethod();
-
-        @PluginBuilderAttribute
-        private boolean mapMessageFormatterIgnored =
-                JsonTemplateLayoutDefaults.isMapMessageFormatterIgnored();
+        private String truncatedStringSuffix =
+                JsonTemplateLayoutDefaults.getTruncatedStringSuffix();
 
         @PluginBuilderAttribute
         private RecyclerFactory recyclerFactory =
@@ -414,15 +323,6 @@ public class JsonTemplateLayout implements StringLayout {
             return this;
         }
 
-        public boolean isPrettyPrintEnabled() {
-            return prettyPrintEnabled;
-        }
-
-        public Builder setPrettyPrintEnabled(final boolean prettyPrintEnabled) {
-            this.prettyPrintEnabled = prettyPrintEnabled;
-            return this;
-        }
-
         public boolean isLocationInfoEnabled() {
             return locationInfoEnabled;
         }
@@ -438,15 +338,6 @@ public class JsonTemplateLayout implements StringLayout {
 
         public Builder setStackTraceEnabled(final boolean stackTraceEnabled) {
             this.stackTraceEnabled = stackTraceEnabled;
-            return this;
-        }
-
-        public boolean isBlankFieldExclusionEnabled() {
-            return blankFieldExclusionEnabled;
-        }
-
-        public Builder setBlankFieldExclusionEnabled(final boolean blankFieldExclusionEnabled) {
-            this.blankFieldExclusionEnabled = blankFieldExclusionEnabled;
             return this;
         }
 
@@ -543,23 +434,12 @@ public class JsonTemplateLayout implements StringLayout {
             return this;
         }
 
-        public String getObjectMapperFactoryMethod() {
-            return objectMapperFactoryMethod;
+        public String getTruncatedStringSuffix() {
+            return truncatedStringSuffix;
         }
 
-        public Builder setObjectMapperFactoryMethod(
-                final String objectMapperFactoryMethod) {
-            this.objectMapperFactoryMethod = objectMapperFactoryMethod;
-            return this;
-        }
-
-        public boolean isMapMessageFormatterIgnored() {
-            return mapMessageFormatterIgnored;
-        }
-
-        public Builder setMapMessageFormatterIgnored(
-                final boolean mapMessageFormatterIgnored) {
-            this.mapMessageFormatterIgnored = mapMessageFormatterIgnored;
+        public Builder setTruncatedStringSuffix(final String truncatedStringSuffix) {
+            this.truncatedStringSuffix = truncatedStringSuffix;
             return this;
         }
 
@@ -591,15 +471,13 @@ public class JsonTemplateLayout implements StringLayout {
                 throw new IllegalArgumentException(
                         "both stackTraceElementTemplate and stackTraceElementTemplateUri are blank");
             }
-            if (maxByteCount <= 0) {
+            if (maxByteCount < JsonTemplateLayoutDefaults.MIN_BYTE_COUNT) {
                 throw new IllegalArgumentException(
-                        "maxByteCount requires a non-zero positive integer");
+                        "was expecting maxByteCount >= " +
+                                JsonTemplateLayoutDefaults.MIN_BYTE_COUNT +
+                                ":" + maxByteCount);
             }
-            if (maxStringLength < 0) {
-                throw new IllegalArgumentException(
-                        "maxStringLength requires a positive integer");
-            }
-            Objects.requireNonNull(objectMapperFactoryMethod, "objectMapperFactoryMethod");
+            Objects.requireNonNull(truncatedStringSuffix, "truncatedStringSuffix");
             Objects.requireNonNull(recyclerFactory, "recyclerFactory");
         }
 
@@ -634,9 +512,7 @@ public class JsonTemplateLayout implements StringLayout {
             @PluginElement("AdditionalField")
             private KeyValuePair[] additionalFields;
 
-            private Builder() {
-                // Do nothing.
-            }
+            private Builder() {}
 
             public KeyValuePair[] getAdditionalFields() {
                 return additionalFields;

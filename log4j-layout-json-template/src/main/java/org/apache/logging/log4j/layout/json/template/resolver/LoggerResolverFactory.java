@@ -33,7 +33,7 @@ final class LoggerResolverFactory implements EventResolverFactory<LoggerResolver
 
     @Override
     public LoggerResolver create(final EventResolverContext context, final String key) {
-        return new LoggerResolver(context, key);
+        return new LoggerResolver(key);
     }
 
 }

@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.layout.json.template;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -57,7 +56,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -72,7 +71,7 @@ public class JsonTemplateLayoutTest {
 
     private static final JsonNodeFactory JSON_NODE_FACTORY = JsonNodeFactory.instance;
 
-    private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFixture.getObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = JacksonFixture.getObjectMapper();
 
     private static final String LOGGER_NAME = JsonTemplateLayoutTest.class.getSimpleName();
 
@@ -315,7 +314,6 @@ public class JsonTemplateLayoutTest {
                 .newBuilder()
                 .setConfiguration(configuration)
                 .setEventTemplate(eventTemplate)
-                .setBlankFieldExclusionEnabled(true)
                 .build();
 
         // Create the log event with a MapMessage.
@@ -336,7 +334,7 @@ public class JsonTemplateLayoutTest {
         final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
         assertThat(point(rootNode, "mapValue1").asText()).isEqualTo("val1");
         assertThat(point(rootNode, "mapValue2").asText()).isEqualTo("val2");
-        assertThat(point(rootNode, "nestedLookupEmptyValue")).isInstanceOf(MissingNode.class);
+        assertThat(point(rootNode, "nestedLookupEmptyValue").asText()).isEmpty();
         assertThat(point(rootNode, "nestedLookupStaticValue").asText()).isEqualTo("Static Value");
 
     }
@@ -373,6 +371,7 @@ public class JsonTemplateLayoutTest {
 
         // Check the serialized event.
         final String serializedLogEvent = layout.toSerializable(logEvent);
+        System.out.println(serializedLogEvent);
         final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
         assertThat(point(rootNode, "message", "key1").asText()).isEqualTo("val1");
         assertThat(point(rootNode, "message", "key2").asLong()).isEqualTo(0xDEADBEEF);
@@ -591,7 +590,6 @@ public class JsonTemplateLayoutTest {
                 .newBuilder()
                 .setConfiguration(config)
                 .setEventTemplateUri("classpath:LogstashJsonEventLayoutV1.json")
-                .setPrettyPrintEnabled(prettyPrintEnabled)
                 .build();
 
         // Check the serialized event.
@@ -731,102 +729,13 @@ public class JsonTemplateLayoutTest {
                 .newBuilder()
                 .setConfiguration(configuration)
                 .setEventTemplate(eventTemplate)
-                .setBlankFieldExclusionEnabled(true)
                 .build();
 
         // Check serialized event.
         final String serializedLogEvent = layout.toSerializable(logEvent);
         final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
         assertThat(point(rootNode, "mapValue1").asText()).isEqualTo("val1");
-        assertThat(point(rootNode, "mapValue2")).isInstanceOf(MissingNode.class);
-
-    }
-
-    @Test
-    public void test_blankFieldExclusionEnabled() throws IOException {
-
-        // Create the log event.
-        final SimpleMessage message = new SimpleMessage("Hello, World!");
-        final StringMap contextData = new SortedArrayStringMap();
-        final String mdcEmptyKey1 = "mdcKey1";
-        final String mdcEmptyKey2 = "mdcKey2";
-        contextData.putValue(mdcEmptyKey1, "");
-        contextData.putValue(mdcEmptyKey2, null);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setLoggerName(LOGGER_NAME)
-                .setLevel(Level.INFO)
-                .setMessage(message)
-                .setContextData(contextData)
-                .build();
-
-        // Create event template node with empty property and MDC fields.
-        final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
-        final String mdcFieldName = "mdc";
-        final String blankField1Name = "property1Name";
-        eventTemplateRootNode.put(blankField1Name, "${" + blankField1Name + "}");
-        eventTemplateRootNode.put(mdcFieldName, "${json:mdc}");
-        eventTemplateRootNode.put(mdcEmptyKey1, String.format("${json:mdc:%s}", mdcEmptyKey1));
-        eventTemplateRootNode.put(mdcEmptyKey2, String.format("${json:mdc:%s}", mdcEmptyKey2));
-
-        // Put a "blankObject": {"emptyArray": []} field into event template.
-        final String blankObjectFieldName = "blankObject";
-        final ObjectNode blankObjectNode = JSON_NODE_FACTORY.objectNode();
-        final String emptyArrayFieldName = "emptyArray";
-        final ArrayNode emptyArrayNode = JSON_NODE_FACTORY.arrayNode();
-        blankObjectNode.set(emptyArrayFieldName, emptyArrayNode);
-        eventTemplateRootNode.set(blankObjectFieldName, blankObjectNode);
-
-        // Put an "emptyObject": {} field into the event template.
-        final String emptyObjectFieldName = "emptyObject";
-        final ObjectNode emptyObjectNode = JSON_NODE_FACTORY.objectNode();
-        eventTemplateRootNode.set(emptyObjectFieldName, emptyObjectNode);
-
-        // Render the event template.
-        final String eventTemplate = eventTemplateRootNode.toString();
-
-        // Create the layout configuration.
-        final Configuration config = ConfigurationBuilderFactory
-                .newConfigurationBuilder()
-                .addProperty(blankField1Name, "")
-                .build();
-
-        for (final boolean blankFieldExclusionEnabled : new boolean[]{true, false}) {
-
-            // Create the layout.
-            final JsonTemplateLayout layout = JsonTemplateLayout
-                    .newBuilder()
-                    .setConfiguration(config)
-                    .setEventTemplate(eventTemplate)
-                    .setBlankFieldExclusionEnabled(blankFieldExclusionEnabled)
-                    .build();
-
-            // Check serialized event.
-            final String serializedLogEvent = layout.toSerializable(logEvent);
-            if (blankFieldExclusionEnabled) {
-                assertThat(serializedLogEvent).isEqualTo("{}" + System.lineSeparator());
-            } else {
-
-                // Check property and MDC fields.
-                final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
-                assertThat(point(rootNode, mdcEmptyKey1).asText()).isEmpty();
-                assertThat(point(rootNode, mdcEmptyKey2)).isInstanceOf(NullNode.class);
-                assertThat(point(rootNode, mdcFieldName)).isInstanceOf(ObjectNode.class);
-                assertThat(point(rootNode, mdcFieldName, mdcEmptyKey1).asText()).isEmpty();
-                assertThat(point(rootNode, mdcFieldName, mdcEmptyKey2)).isInstanceOf(NullNode.class);
-                assertThat(point(rootNode, blankField1Name).asText()).isEmpty();
-
-                // Check "blankObject": {"emptyArray": []} field.
-                assertThat(point(rootNode, blankObjectFieldName, emptyArrayFieldName).isArray()).isTrue();
-                assertThat(point(rootNode, blankObjectFieldName, emptyArrayFieldName).size()).isZero();
-
-                // Check "emptyObject": {} field.
-                assertThat(point(rootNode, emptyObjectFieldName).isObject()).isTrue();
-                assertThat(point(rootNode, emptyObjectFieldName).size()).isZero();
-
-            }
-
-        }
+        assertThat(point(rootNode, "mapValue2")).isInstanceOf(NullNode.class);
 
     }
 
@@ -901,28 +810,16 @@ public class JsonTemplateLayoutTest {
 
     }
 
-    private static final class ObjectMessageAttachment {
-
-        @JsonProperty
-        private final int id;
-
-        @JsonProperty
-        private final String name;
-
-        private ObjectMessageAttachment(final int id, final String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-    }
-
     @Test
     public void test_message_object() throws IOException {
 
         // Create the log event.
-        final int id = Math.abs((int) (Math.random() * Integer.MAX_VALUE));
+        final int id = 0xDEADBEEF;
         final String name = "name-" + id;
-        final ObjectMessageAttachment attachment = new ObjectMessageAttachment(id, name);
+        final Object attachment = new LinkedHashMap<String, Object>() {{
+            put("id", id);
+            put("name", name);
+        }};
         final ObjectMessage message = new ObjectMessage(attachment);
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
@@ -948,8 +845,8 @@ public class JsonTemplateLayoutTest {
         // Check the serialized event.
         final String serializedLogEvent = layout.toSerializable(logEvent);
         final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
-        assertThat(point(rootNode, "message", "id").asInt()).isEqualTo(attachment.id);
-        assertThat(point(rootNode, "message", "name").asText()).isEqualTo(attachment.name);
+        assertThat(point(rootNode, "message", "id").asInt()).isEqualTo(id);
+        assertThat(point(rootNode, "message", "name").asText()).isEqualTo(name);
 
     }
 
@@ -1100,8 +997,8 @@ public class JsonTemplateLayoutTest {
 
         // Create the log event.
         final int maxStringLength = 30;
-        final String truncatedMessage = Strings.repeat("m", maxStringLength);
-        final SimpleMessage message = new SimpleMessage(truncatedMessage + 'M');
+        final String excessiveMessageString = Strings.repeat("m", maxStringLength) + 'M';
+        final SimpleMessage message = new SimpleMessage(excessiveMessageString);
         final Throwable thrown = new RuntimeException();
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
@@ -1115,9 +1012,9 @@ public class JsonTemplateLayoutTest {
         final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
         final String messageKey = "message";
         eventTemplateRootNode.put(messageKey, "${json:message}");
-        final String truncatedKey = Strings.repeat("k", maxStringLength);
-        final String truncatedValue = Strings.repeat("v", maxStringLength);
-        eventTemplateRootNode.put(truncatedKey + "K", truncatedValue + "V");
+        final String excessiveKey = Strings.repeat("k", maxStringLength) + 'K';
+        final String excessiveValue = Strings.repeat("v", maxStringLength) + 'V';
+        eventTemplateRootNode.put(excessiveKey, excessiveValue);
         final String nullValueKey = "nullValueKey";
         eventTemplateRootNode.put(nullValueKey, "${json:exception:message}");
         final String eventTemplate = eventTemplateRootNode.toString();
@@ -1135,7 +1032,18 @@ public class JsonTemplateLayoutTest {
         // Check serialized event.
         final String serializedLogEvent = layout.toSerializable(logEvent);
         final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
-        assertThat(point(rootNode, messageKey).asText()).isEqualTo(truncatedMessage);
+        final String truncatedStringSuffix =
+                JsonTemplateLayoutDefaults.getTruncatedStringSuffix();
+        final String truncatedMessageString =
+                excessiveMessageString.substring(0, maxStringLength) +
+                        truncatedStringSuffix;
+        assertThat(point(rootNode, messageKey).asText()).isEqualTo(truncatedMessageString);
+        final String truncatedKey =
+                excessiveKey.substring(0, maxStringLength) +
+                        truncatedStringSuffix;
+        final String truncatedValue =
+                excessiveValue.substring(0, maxStringLength) +
+                        truncatedStringSuffix;
         assertThat(point(rootNode, truncatedKey).asText()).isEqualTo(truncatedValue);
         assertThat(point(rootNode, nullValueKey).isNull()).isTrue();
 
@@ -1206,54 +1114,6 @@ public class JsonTemplateLayoutTest {
         assertThat(point(rootNode, "ex_stacktrace").asText())
                 .contains(NonAsciiUtf8MethodNameContainingException.NON_ASCII_UTF8_TEXT);
 
-    }
-
-    @Test
-    public void test_custom_ObjectMapper_factory_method() throws IOException {
-
-        // Create the log event.
-        final Date logEventDate = new Date();
-        final ObjectMessage message = new ObjectMessage(logEventDate);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setLoggerName(LOGGER_NAME)
-                .setLevel(Level.INFO)
-                .setMessage(message)
-                .setTimeMillis(logEventDate.getTime())
-                .build();
-
-        // Create the event template.
-        final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
-        eventTemplateRootNode.put("message", "${json:message:json}");
-        final String eventTemplate = eventTemplateRootNode.toString();
-
-        // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
-                .setObjectMapperFactoryMethod(
-                        "org.apache.logging.log4j.layout.json.template.JsonTemplateLayoutTest.getCustomObjectMapper")
-                .setConfiguration(configuration)
-                .setEventTemplate(eventTemplate)
-                .build();
-
-        // Check the serialized event.
-        final String serializedLogEvent = layout.toSerializable(logEvent);
-        final String expectedTimestamp = getCustomObjectMapperDateFormat().format(logEventDate);
-        final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
-        assertThat(point(rootNode, "message").asText()).isEqualTo(expectedTimestamp);
-
-    }
-
-    @SuppressWarnings("unused")
-    public static ObjectMapper getCustomObjectMapper() {
-        SimpleDateFormat dateFormat = getCustomObjectMapperDateFormat();
-        return new ObjectMapper().setDateFormat(dateFormat);
-    }
-
-    private static SimpleDateFormat getCustomObjectMapperDateFormat() {
-        return new SimpleDateFormat("'year='yyyy', month='MM', day='dd");
     }
 
     @Test

@@ -16,10 +16,8 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.core.LogEvent;
-
-import java.io.IOException;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
 final class EndOfBatchResolver implements EventResolver {
 
@@ -38,10 +36,9 @@ final class EndOfBatchResolver implements EventResolver {
     @Override
     public void resolve(
             final LogEvent logEvent,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
+            final JsonWriter jsonWriter) {
         final boolean endOfBatch = logEvent.isEndOfBatch();
-        jsonGenerator.writeBoolean(endOfBatch);
+        jsonWriter.writeBoolean(endOfBatch);
     }
 
 }

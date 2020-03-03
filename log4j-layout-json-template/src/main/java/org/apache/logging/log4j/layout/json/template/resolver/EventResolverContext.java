@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.KeyValuePair;
@@ -28,13 +27,11 @@ import java.util.regex.Pattern;
 
 public final class EventResolverContext implements TemplateResolverContext<LogEvent, EventResolverContext> {
 
-    private final ObjectMapper objectMapper;
-
     private final StrSubstitutor substitutor;
 
     private final RecyclerFactory recyclerFactory;
 
-    private final int writerCapacity;
+    private final int maxByteCount;
 
     private final boolean locationInfoEnabled;
 
@@ -42,31 +39,24 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
     private final TemplateResolver<Throwable> stackTraceObjectResolver;
 
-    private final boolean blankFieldExclusionEnabled;
-
     private final Pattern mdcKeyPattern;
 
     private final Pattern ndcPattern;
 
     private final KeyValuePair[] additionalFields;
 
-    private final boolean mapMessageFormatterIgnored;
-
     private EventResolverContext(final Builder builder) {
-        this.objectMapper = builder.objectMapper;
         this.substitutor = builder.substitutor;
         this.recyclerFactory = builder.recyclerFactory;
-        this.writerCapacity = builder.writerCapacity;
+        this.maxByteCount = builder.maxByteCount;
         this.locationInfoEnabled = builder.locationInfoEnabled;
         this.stackTraceEnabled = builder.stackTraceEnabled;
         this.stackTraceObjectResolver = stackTraceEnabled
                 ? new StackTraceObjectResolver(builder.stackTraceElementObjectResolver)
                 : null;
-        this.blankFieldExclusionEnabled = builder.blankFieldExclusionEnabled;
         this.mdcKeyPattern = builder.mdcKeyPattern == null ? null : Pattern.compile(builder.mdcKeyPattern);
         this.ndcPattern = builder.ndcPattern == null ? null : Pattern.compile(builder.ndcPattern);
         this.additionalFields = builder.eventTemplateAdditionalFields;
-        this.mapMessageFormatterIgnored = builder.mapMessageFormatterIgnored;
     }
 
     @Override
@@ -80,11 +70,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
     }
 
     @Override
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
-    }
-
-    @Override
     public StrSubstitutor getSubstitutor() {
         return substitutor;
     }
@@ -93,8 +78,8 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         return recyclerFactory;
     }
 
-    int getWriterCapacity() {
-        return writerCapacity;
+    int getMaxByteCount() {
+        return maxByteCount;
     }
 
     boolean isLocationInfoEnabled() {
@@ -109,11 +94,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         return stackTraceObjectResolver;
     }
 
-    @Override
-    public boolean isBlankFieldExclusionEnabled() {
-        return blankFieldExclusionEnabled;
-    }
-
     Pattern getMdcKeyPattern() {
         return mdcKeyPattern;
     }
@@ -126,23 +106,17 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         return additionalFields;
     }
 
-    boolean isMapMessageFormatterIgnored() {
-        return mapMessageFormatterIgnored;
-    }
-
     public static Builder newBuilder() {
         return new Builder();
     }
 
     public static class Builder {
 
-        private ObjectMapper objectMapper;
-
         private StrSubstitutor substitutor;
 
         private RecyclerFactory recyclerFactory;
 
-        private int writerCapacity;
+        private int maxByteCount;
 
         private boolean locationInfoEnabled;
 
@@ -150,23 +124,14 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         private TemplateResolver<StackTraceElement> stackTraceElementObjectResolver;
 
-        private boolean blankFieldExclusionEnabled;
-
         private String mdcKeyPattern;
 
         private String ndcPattern;
 
         private KeyValuePair[] eventTemplateAdditionalFields;
 
-        private boolean mapMessageFormatterIgnored;
-
         private Builder() {
             // Do nothing.
-        }
-
-        public Builder setObjectMapper(final ObjectMapper objectMapper) {
-            this.objectMapper = objectMapper;
-            return this;
         }
 
         public Builder setSubstitutor(final StrSubstitutor substitutor) {
@@ -179,8 +144,8 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             return this;
         }
 
-        public Builder setWriterCapacity(final int writerCapacity) {
-            this.writerCapacity = writerCapacity;
+        public Builder setMaxByteCount(final int maxByteCount) {
+            this.maxByteCount = maxByteCount;
             return this;
         }
 
@@ -200,12 +165,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             return this;
         }
 
-        public Builder setBlankFieldExclusionEnabled(
-                final boolean blankFieldExclusionEnabled) {
-            this.blankFieldExclusionEnabled = blankFieldExclusionEnabled;
-            return this;
-        }
-
         public Builder setMdcKeyPattern(final String mdcKeyPattern) {
             this.mdcKeyPattern = mdcKeyPattern;
             return this;
@@ -222,27 +181,23 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             return this;
         }
 
-        public Builder setMapMessageFormatterIgnored(
-                final boolean mapMessageFormatterIgnored) {
-            this.mapMessageFormatterIgnored = mapMessageFormatterIgnored;
-            return this;
-        }
-
         public EventResolverContext build() {
             validate();
             return new EventResolverContext(this);
         }
 
         private void validate() {
-            Objects.requireNonNull(objectMapper, "objectMapper");
             Objects.requireNonNull(substitutor, "substitutor");
             Objects.requireNonNull(recyclerFactory, "recyclerFactory");
-            if (writerCapacity <= 0) {
+            if (maxByteCount <= 0) {
                 throw new IllegalArgumentException(
-                        "writerCapacity requires a non-zero positive integer");
+                        "was expecting maxByteCount > 0: " +
+                                maxByteCount);
             }
             if (stackTraceEnabled) {
-                Objects.requireNonNull(stackTraceElementObjectResolver, "stackTraceElementObjectResolver");
+                Objects.requireNonNull(
+                        stackTraceElementObjectResolver,
+                        "stackTraceElementObjectResolver");
             }
         }
 

@@ -16,47 +16,43 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.layout.json.template.util.JsonReader;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public enum TemplateResolvers {;
 
     private static final TemplateResolver<?> EMPTY_ARRAY_RESOLVER =
-            (final Object ignored, final JsonGenerator jsonGenerator) -> {
-                jsonGenerator.writeStartArray();
-                jsonGenerator.writeEndArray();
+            (final Object ignored, final JsonWriter jsonWriter) -> {
+                jsonWriter.writeArrayStart();
+                jsonWriter.writeArrayEnd();
             };
 
     private static final TemplateResolver<?> EMPTY_OBJECT_RESOLVER =
-            (final Object ignored, final JsonGenerator jsonGenerator) -> {
-                jsonGenerator.writeStartObject();
-                jsonGenerator.writeEndObject();
+            (final Object ignored, final JsonWriter jsonWriter) -> {
+                jsonWriter.writeObjectStart();
+                jsonWriter.writeObjectEnd();
             };
 
-    private static final TemplateResolver<?> NULL_NODE_RESOLVER =
-            (final Object ignored, final JsonGenerator jsonGenerator) ->
-                    jsonGenerator.writeNull();
+    private static final TemplateResolver<?> NULL_RESOLVER =
+            (final Object ignored, final JsonWriter jsonWriter) ->
+                    jsonWriter.writeNull();
 
     public static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofTemplate(
             final C context,
             final String template) {
 
         // Read the template.
-        ObjectNode node;
+        final Object node;
         try {
-            node = context.getObjectMapper().readValue(template, ObjectNode.class);
-        } catch (final IOException error) {
+            node = JsonReader.read(template);
+        } catch (final Exception error) {
             final String message = String.format("failed parsing template (template=%s)", template);
             throw new RuntimeException(message, error);
         }
@@ -66,83 +62,112 @@ public enum TemplateResolvers {;
             final EventResolverContext eventResolverContext = (EventResolverContext) context;
             final KeyValuePair[] additionalFields = eventResolverContext.getAdditionalFields();
             if (additionalFields != null) {
-                for (final KeyValuePair additionalField : additionalFields) {
-                    node.put(additionalField.getKey(), additionalField.getValue());
+
+                // Check that the root is an object node.
+                final Map<String, Object> objectNode;
+                try {
+                    @SuppressWarnings("unchecked")
+                    final Map<String, Object> map = (Map<String, Object>) node;
+                    objectNode = map;
+                } catch (final ClassCastException error) {
+                    final String message = String.format(
+                            "was expecting an object to merge additional fields (class=%s)",
+                            node.getClass().getName());
+                    throw new IllegalArgumentException(message);
                 }
+
+                // Merge additional fields.
+                for (final KeyValuePair additionalField : additionalFields) {
+                    objectNode.put(additionalField.getKey(), additionalField.getValue());
+                }
+
             }
         }
 
         // Resolve the template.
-        return ofNode(context, node);
+        return ofObject(context, node);
 
     }
 
-    private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofNode(
+    private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofObject(
             final C context,
-            final JsonNode node) {
-        // Check for known types.
-        final JsonNodeType nodeType = node.getNodeType();
-        switch (nodeType) {
-            case ARRAY: return ofArrayNode(context, node);
-            case OBJECT: return ofObjectNode(context, node);
-            case STRING: return ofStringNode(context, node);
-            // Otherwise, create constant resolver for the JSON.
-            default:
-                return (final V ignored, final JsonGenerator jsonGenerator) ->
-                        jsonGenerator.writeTree(node);
+            final Object object) {
+        if (object == null) {
+            @SuppressWarnings("unchecked")
+            final TemplateResolver<V> nullResolver = (TemplateResolver<V>) NULL_RESOLVER;
+            return nullResolver;
+        } else if (object instanceof List) {
+            @SuppressWarnings("unchecked")
+            final List<Object> list = (List<Object>) object;
+            return ofList(context, list);
+        } else if (object instanceof Map) {
+            @SuppressWarnings("unchecked")
+            final Map<String, Object> map = (Map<String, Object>) object;
+            return ofMap(context, map);
+        } else if (object instanceof String) {
+            final String string = (String) object;
+            return ofString(context, string);
+        } else if (object instanceof Number) {
+            final Number number = (Number) object;
+            return ofNumber(number);
+        } else if (object instanceof Boolean) {
+            final boolean value = (boolean) object;
+            return ofBoolean(value);
+        } else {
+            final String message = String.format(
+                    "invalid JSON node type (class=%s)",
+                    object.getClass().getName());
+            throw new IllegalArgumentException(message);
         }
     }
 
-    private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofArrayNode(
+    private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofList(
             final C context,
-            final JsonNode arrayNode) {
+            final List<Object> list) {
 
         // Create resolver for each children.
-        final List<TemplateResolver<V>> itemResolvers = new ArrayList<>();
-        for (int itemIndex = 0; itemIndex < arrayNode.size(); itemIndex++) {
-            final JsonNode itemNode = arrayNode.get(itemIndex);
-            final TemplateResolver<V> itemResolver = ofNode(context, itemNode);
-            itemResolvers.add(itemResolver);
-        }
+        final List<TemplateResolver<V>> itemResolvers = list
+                .stream()
+                .map(item -> ofObject(context, item))
+                .collect(Collectors.toList());
 
         // Short-circuit if the array is empty.
         if (itemResolvers.isEmpty()) {
             @SuppressWarnings("unchecked")
-            final TemplateResolver<V> emptyArrayResolver = (TemplateResolver<V>) EMPTY_ARRAY_RESOLVER;
+            final TemplateResolver<V> emptyArrayResolver =
+                    (TemplateResolver<V>) EMPTY_ARRAY_RESOLVER;
             return emptyArrayResolver;
         }
 
         // Create a parent resolver collecting each child resolver execution.
-        return (final V value, final JsonGenerator jsonGenerator) -> {
-            jsonGenerator.writeStartArray();
-            // noinspection ForLoopReplaceableByForEach (avoid iterator instantiation)
+        return (final V value, final JsonWriter jsonWriter) -> {
+            jsonWriter.writeArrayStart();
             for (int itemResolverIndex = 0;
                  itemResolverIndex < itemResolvers.size();
                  itemResolverIndex++) {
+                if (itemResolverIndex > 0) {
+                    jsonWriter.writeSeparator();
+                }
                 final TemplateResolver<V> itemResolver = itemResolvers.get(itemResolverIndex);
-                itemResolver.resolve(value, jsonGenerator);
+                itemResolver.resolve(value, jsonWriter);
             }
-            jsonGenerator.writeEndArray();
+            jsonWriter.writeArrayEnd();
         };
 
     }
 
-    private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofObjectNode(
+    private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofMap(
             final C context,
-            final JsonNode srcNode) {
+            final Map<String, Object> map) {
 
         // Create resolver for each object field.
         final List<String> fieldNames = new ArrayList<>();
         final List<TemplateResolver<V>> fieldResolvers = new ArrayList<>();
-        final Iterator<Map.Entry<String, JsonNode>> srcNodeFieldIterator = srcNode.fields();
-        while (srcNodeFieldIterator.hasNext()) {
-            final Map.Entry<String, JsonNode> srcNodeField = srcNodeFieldIterator.next();
-            final String fieldName = srcNodeField.getKey();
-            final JsonNode fieldValue = srcNodeField.getValue();
-            final TemplateResolver<V> fieldResolver = ofNode(context, fieldValue);
+        map.forEach((fieldName, fieldValue) -> {
+            final TemplateResolver<V> fieldResolver = ofObject(context, fieldValue);
             fieldNames.add(fieldName);
             fieldResolvers.add(fieldResolver);
-        }
+        });
 
         // Short-circuit if the object is empty.
         final int fieldCount = fieldNames.size();
@@ -154,33 +179,25 @@ public enum TemplateResolvers {;
         }
 
         // Create a parent resolver collecting each object field resolver execution.
-        return (final V value, final JsonGenerator jsonGenerator) -> {
-            jsonGenerator.writeStartObject();
+        return (final V value, final JsonWriter jsonWriter) -> {
+            jsonWriter.writeObjectStart();
             for (int fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
                 final String fieldName = fieldNames.get(fieldIndex);
                 final TemplateResolver<V> fieldResolver = fieldResolvers.get(fieldIndex);
-                jsonGenerator.writeFieldName(fieldName);
-                fieldResolver.resolve(value, jsonGenerator);
+                if (fieldIndex > 0) {
+                    jsonWriter.writeSeparator();
+                }
+                jsonWriter.writeObjectKey(fieldName);
+                fieldResolver.resolve(value, jsonWriter);
             }
-            jsonGenerator.writeEndObject();
+            jsonWriter.writeObjectEnd();
         };
 
     }
 
-    private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofStringNode(
+    private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofString(
             final C context,
-            final JsonNode textNode) {
-
-        // Short-circuit if content is blank and not allowed.
-        final String fieldValue = textNode.asText();
-        final boolean fieldValueExcluded =
-                context.isBlankFieldExclusionEnabled() &&
-                        Strings.isBlank(fieldValue);
-        if (fieldValueExcluded) {
-            @SuppressWarnings("unchecked")
-            final TemplateResolver<V> nullNodeResolver = (TemplateResolver<V>) NULL_NODE_RESOLVER;
-            return nullNodeResolver;
-        }
+            final String fieldValue) {
 
         // Try to resolve the directive as a ${json:xxx} parameter.
         final TemplateResolverRequest resolverRequest = readResolverRequest(fieldValue);
@@ -196,7 +213,7 @@ public enum TemplateResolvers {;
         // substitution to Log4j. This will be the case for every template value
         // that does not use directives of pattern ${json:xxx}. This
         // additionally serves as a mechanism to resolve values at runtime when
-        // this library misses certain resolvers.
+        // this layout misses certain resolvers.
 
         // Check if substitution needed at all. (Copied logic from
         // AbstractJacksonLayout.valueNeedsLookup() method.)
@@ -204,36 +221,30 @@ public enum TemplateResolvers {;
         if (substitutionNeeded) {
             if (EventResolverContext.class.isAssignableFrom(context.getContextClass())) {
                 // Use Log4j substitutor with LogEvent.
-                return (final V value, final JsonGenerator jsonGenerator) -> {
+                return (final V value, final JsonWriter jsonWriter) -> {
                     final LogEvent logEvent = (LogEvent) value;
                     final String replacedText = context.getSubstitutor().replace(logEvent, fieldValue);
-                    final boolean replacedTextExcluded =
-                            context.isBlankFieldExclusionEnabled() &&
-                                    Strings.isBlank(replacedText);
-                    if (replacedTextExcluded) {
-                        jsonGenerator.writeNull();
+                    if (replacedText == null) {
+                        jsonWriter.writeNull();
                     } else {
-                        jsonGenerator.writeString(replacedText);
+                        jsonWriter.writeString(replacedText);
                     }
                 };
             } else {
                 // Use standalone Log4j substitutor.
-                return (final V value, final JsonGenerator jsonGenerator) -> {
+                return (final V value, final JsonWriter jsonWriter) -> {
                     final String replacedText = context.getSubstitutor().replace(null, fieldValue);
-                    final boolean replacedTextExcluded =
-                            context.isBlankFieldExclusionEnabled() &&
-                                    Strings.isBlank(replacedText);
-                    if (replacedTextExcluded) {
-                        jsonGenerator.writeNull();
+                    if (replacedText == null) {
+                        jsonWriter.writeNull();
                     } else {
-                        jsonGenerator.writeString(replacedText);
+                        jsonWriter.writeString(replacedText);
                     }
                 };
             }
         } else {
             // Write the field value as is. (Blank value check has already been done at the top.)
-            return (final V value, final JsonGenerator jsonGenerator) ->
-                    jsonGenerator.writeString(fieldValue);
+            return (final V value, final JsonWriter jsonWriter) ->
+                    jsonWriter.writeString(fieldValue);
         }
 
     }
@@ -264,7 +275,7 @@ public enum TemplateResolvers {;
 
     }
 
-    private static class TemplateResolverRequest {
+    private static final class TemplateResolverRequest {
 
         private final String resolverName;
 
@@ -275,6 +286,17 @@ public enum TemplateResolvers {;
             this.resolverKey = resolverKey;
         }
 
+    }
+
+    private static <V> TemplateResolver<V> ofNumber(final Number number) {
+        final String numberString = String.valueOf(number);
+        return (final V ignored, final JsonWriter jsonWriter) ->
+                jsonWriter.writeRawString(numberString);
+    }
+
+    private static <V> TemplateResolver<V> ofBoolean(final boolean value) {
+        return (final V ignored, final JsonWriter jsonWriter) ->
+                jsonWriter.writeBoolean(value);
     }
 
 }

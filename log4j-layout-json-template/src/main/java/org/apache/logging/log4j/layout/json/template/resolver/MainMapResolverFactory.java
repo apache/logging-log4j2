@@ -33,7 +33,7 @@ final class MainMapResolverFactory implements EventResolverFactory<MainMapResolv
 
     @Override
     public MainMapResolver create(final EventResolverContext context, final String key) {
-        return new MainMapResolver(context, key);
+        return new MainMapResolver(key);
     }
 
 }

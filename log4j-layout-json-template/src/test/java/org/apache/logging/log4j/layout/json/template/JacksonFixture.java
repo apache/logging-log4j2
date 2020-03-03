@@ -16,15 +16,21 @@
  */
 package org.apache.logging.log4j.layout.json.template;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import org.apache.logging.log4j.layout.json.template.util.ByteBufferOutputStream;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-interface JsonTemplateLayoutSerializationContext extends AutoCloseable {
+public enum JacksonFixture {;
 
-    ByteBufferOutputStream getOutputStream();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    JsonGenerator getJsonGenerator();
+    private static final JsonFactory JSON_FACTORY = OBJECT_MAPPER.getFactory();
 
-    void reset();
+    public static ObjectMapper getObjectMapper() {
+        return OBJECT_MAPPER;
+    }
+
+    public static JsonFactory getJsonFactory() {
+        return JSON_FACTORY;
+    }
 
 }

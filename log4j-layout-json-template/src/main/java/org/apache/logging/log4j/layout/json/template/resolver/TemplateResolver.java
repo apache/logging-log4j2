@@ -16,12 +16,10 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-
-import java.io.IOException;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
 public interface TemplateResolver<V> {
 
-    void resolve(V value, JsonGenerator jsonGenerator) throws IOException;
+    void resolve(V value, JsonWriter jsonWriter);
 
 }

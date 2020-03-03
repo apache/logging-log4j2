@@ -16,30 +16,28 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.net.Severity;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
-import java.io.IOException;
-
-class LevelResolver implements EventResolver {
+final class LevelResolver implements EventResolver {
 
     private static final EventResolver NAME_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final String levelName = logEvent.getLevel().name();
-                jsonGenerator.writeString(levelName);
+                jsonWriter.writeString(levelName);
             };
 
     private static final EventResolver SEVERITY_NAME_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final String severityName = Severity.getSeverity(logEvent.getLevel()).name();
-                jsonGenerator.writeString(severityName);
+                jsonWriter.writeString(severityName);
             };
 
     private static final EventResolver SEVERITY_CODE_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final int severityCode = Severity.getSeverity(logEvent.getLevel()).getCode();
-                jsonGenerator.writeNumber(severityCode);
+                jsonWriter.writeNumber(severityCode);
             };
 
     private final EventResolver internalResolver;
@@ -63,9 +61,8 @@ class LevelResolver implements EventResolver {
     @Override
     public void resolve(
             final LogEvent logEvent,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
-        internalResolver.resolve(logEvent, jsonGenerator);
+            final JsonWriter jsonWriter) {
+        internalResolver.resolve(logEvent, jsonWriter);
     }
 
 }

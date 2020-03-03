@@ -16,13 +16,11 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.layout.json.template.util.JsonGenerators;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
-import java.io.IOException;
 import java.util.regex.Pattern;
 
 /**
@@ -46,87 +44,75 @@ final class ContextDataResolver implements EventResolver {
     @Override
     public void resolve(
             final LogEvent logEvent,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
+            final JsonWriter jsonWriter) {
 
         // Retrieve context data.
         final ReadOnlyStringMap contextData = logEvent.getContextData();
         if (contextData == null || contextData.isEmpty()) {
-            jsonGenerator.writeNull();
+            jsonWriter.writeNull();
             return;
         }
 
         // Check if key matches.
         if (key != null) {
             final Object value = contextData.getValue(key);
-            final boolean valueExcluded = isValueExcluded(context, value);
-            if (valueExcluded) {
-                jsonGenerator.writeNull();
-            } else {
-                JsonGenerators.writeObject(jsonGenerator, value);
-            }
+            jsonWriter.writeValue(value);
             return;
         }
 
         // Otherwise return all context data matching the MDC key pattern.
         final Pattern keyPattern = context.getMdcKeyPattern();
-        jsonGenerator.writeStartObject();
-        if (contextData instanceof IndexedStringMap) {  // First, try access-by-id, which is GC free.
-            resolveIndexedMap(jsonGenerator, (IndexedStringMap) contextData, keyPattern);
+        jsonWriter.writeObjectStart();
+        if (contextData instanceof IndexedStringMap) {  // First, try access-by-id, which is garbage-free.
+            resolveIndexedMap(jsonWriter, (IndexedStringMap) contextData, keyPattern);
         } else {                                        // Otherwise, fallback to ReadOnlyStringMap#forEach().
-            resolveGenericMap(jsonGenerator, contextData, keyPattern);
+            resolveGenericMap(jsonWriter, contextData, keyPattern);
         }
-        jsonGenerator.writeEndObject();
+        jsonWriter.writeObjectEnd();
 
     }
 
     private void resolveIndexedMap(
-            final JsonGenerator jsonGenerator,
+            final JsonWriter jsonWriter,
             final IndexedStringMap contextData,
             final Pattern keyPattern) {
+        final boolean[] firstEntry = {true};
         for (int entryIndex = 0; entryIndex < contextData.size(); entryIndex++) {
             final String key = contextData.getKeyAt(entryIndex);
             final Object value = contextData.getValueAt(entryIndex);
-            final boolean keyMatches = keyPattern == null || keyPattern.matcher(key).matches();
-            resolveEntry(jsonGenerator, key, value, keyMatches);
+            final boolean keyMatched =
+                    keyPattern == null || keyPattern.matcher(key).matches();
+            resolveEntry(jsonWriter, firstEntry, key, value, keyMatched);
         }
     }
 
     private void resolveGenericMap(
-            final JsonGenerator jsonGenerator,
+            final JsonWriter jsonWriter,
             final ReadOnlyStringMap contextData,
             final Pattern keyPattern) {
+        final boolean[] firstEntry = {true};
         contextData.forEach((final String key, final Object value) -> {
-            final boolean keyMatched = keyPattern == null || keyPattern.matcher(key).matches();
-            resolveEntry(jsonGenerator, key, value, keyMatched);
+            final boolean keyMatched =
+                    keyPattern == null || keyPattern.matcher(key).matches();
+            resolveEntry(jsonWriter, firstEntry, key, value, keyMatched);
         });
     }
 
     private void resolveEntry(
-            final JsonGenerator jsonGenerator,
+            final JsonWriter jsonWriter,
+            final boolean[] firstEntry,
             final String key,
             final Object value,
             final boolean keyMatched) {
         if (keyMatched) {
-            final boolean valueExcluded = isValueExcluded(context, value);
-            if (!valueExcluded) {
-                try {
-                    jsonGenerator.writeFieldName(key);
-                    JsonGenerators.writeObject(jsonGenerator, value);
-                } catch (IOException error) {
-                    final String message = String.format(
-                            "failed to append MDC field (key=%s, value=%s)", key, value);
-                    throw new RuntimeException(message, error);
-                }
+            if (firstEntry[0]) {
+                firstEntry[0] = false;
+            } else {
+                jsonWriter.writeSeparator();
             }
+            jsonWriter.writeObjectKey(key);
+            jsonWriter.writeValue(value);
         }
-    }
-
-    private static boolean isValueExcluded(
-            final EventResolverContext context,
-            final Object value) {
-        return context.isBlankFieldExclusionEnabled() &&
-                (value == null || (value instanceof String && ((String) value).isEmpty()));
     }
 
 }

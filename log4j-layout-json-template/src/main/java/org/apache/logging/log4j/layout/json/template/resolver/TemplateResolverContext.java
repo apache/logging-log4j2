@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 import java.util.Map;
@@ -27,10 +26,6 @@ interface TemplateResolverContext<V, C extends TemplateResolverContext<V, C>> {
 
     Map<String, TemplateResolverFactory<V, C, ? extends TemplateResolver<V>>> getResolverFactoryByName();
 
-    ObjectMapper getObjectMapper();
-
     StrSubstitutor getSubstitutor();
-
-    boolean isBlankFieldExclusionEnabled();
 
 }

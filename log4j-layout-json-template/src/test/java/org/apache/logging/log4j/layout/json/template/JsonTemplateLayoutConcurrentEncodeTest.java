@@ -138,17 +138,13 @@ public class JsonTemplateLayoutConcurrentEncodeTest {
 
     @Test
     public void test_concurrent_encode() {
-        final int threadCount = 10;
-        final int maxAppendCount = 1_000;
         final AtomicReference<Exception> encodeFailureRef = new AtomicReference<>(null);
-        produce(threadCount, maxAppendCount, encodeFailureRef);
+        produce(encodeFailureRef);
         Assertions.assertThat(encodeFailureRef.get()).isNull();
     }
 
-    private void produce(
-            final int threadCount,
-            final int maxEncodeCount,
-            final AtomicReference<Exception> encodeFailureRef) {
+    private void produce(final AtomicReference<Exception> encodeFailureRef) {
+        final int threadCount = 10;
         final int maxByteCount = JsonTemplateLayout.newBuilder().getMaxByteCount();
         final JsonTemplateLayout layout = createLayout(maxByteCount);
         final ByteBufferDestination destination =
@@ -161,7 +157,6 @@ public class JsonTemplateLayoutConcurrentEncodeTest {
                                 layout,
                                 destination,
                                 encodeFailureRef,
-                                maxEncodeCount,
                                 encodeCounter,
                                 threadIndex))
                 .collect(Collectors.toList());
@@ -184,7 +179,6 @@ public class JsonTemplateLayoutConcurrentEncodeTest {
                 .setEventTemplate("{\"message\": \"${json:message}\"}")
                 .setStackTraceEnabled(false)
                 .setLocationInfoEnabled(false)
-                .setPrettyPrintEnabled(false)
                 .build();
     }
 
@@ -192,9 +186,9 @@ public class JsonTemplateLayoutConcurrentEncodeTest {
             final JsonTemplateLayout layout,
             final ByteBufferDestination destination,
             final AtomicReference<Exception> encodeFailureRef,
-            final int maxEncodeCount,
             final AtomicLong encodeCounter,
             final int threadIndex) {
+        final int maxEncodeCount = 1_000;
         final String threadName = String.format("Worker-%d", threadIndex);
         return new Thread(
                 () -> {

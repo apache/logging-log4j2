@@ -16,20 +16,17 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.layout.json.template.JsonTemplateLayoutDefaults;
-import org.apache.logging.log4j.layout.json.template.util.JsonGenerators;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.layout.json.template.util.Recycler;
 import org.apache.logging.log4j.layout.json.template.util.RecyclerFactory;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.function.Function;
 
 final class TimestampResolver implements EventResolver {
 
@@ -40,7 +37,7 @@ final class TimestampResolver implements EventResolver {
             final String key) {
         final RecyclerFactory recyclerFactory = eventResolverContext.getRecyclerFactory();
         this.internalResolver = (key != null && key.startsWith("epoch:"))
-                ? createEpochResolver(recyclerFactory, key)
+                ? createEpochResolver(key)
                 : createFormatResolver(recyclerFactory, key);
     }
 
@@ -179,8 +176,7 @@ final class TimestampResolver implements EventResolver {
         @Override
         public void resolve(
                 final LogEvent logEvent,
-                final JsonGenerator jsonGenerator)
-                throws IOException {
+                final JsonWriter jsonWriter) {
             final long timestampMillis = logEvent.getTimeMillis();
             final FormatResolverContext formatResolverContext = formatResolverContextRecycler.acquire();
             try {
@@ -204,7 +200,7 @@ final class TimestampResolver implements EventResolver {
                 }
 
                 // Write the formatted timestamp.
-                jsonGenerator.writeString(
+                jsonWriter.writeString(
                         formatResolverContext.formattedTimestampBuffer,
                         0,
                         formatResolverContext.formattedTimestampBuilder.length());
@@ -220,9 +216,7 @@ final class TimestampResolver implements EventResolver {
             final RecyclerFactory recyclerFactory,
             final String key) {
         final Recycler<FormatResolverContext> formatResolverContextRecycler =
-                recyclerFactory.create(
-                        () -> FormatResolverContext.fromKey(key),
-                        Function.identity());
+                recyclerFactory.create(() -> FormatResolverContext.fromKey(key));
         return new FormatResolver(formatResolverContextRecycler);
     }
 
@@ -235,136 +229,120 @@ final class TimestampResolver implements EventResolver {
     private static final int NANOS_PER_MICRO = 1_000;
 
     private static final EventResolver EPOCH_NANOS_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final long nanos = epochNanos(logEvent.getInstant());
-                jsonGenerator.writeNumber(nanos);
+                jsonWriter.writeNumber(nanos);
             };
 
-    private static EventResolver createEpochMicrosDoubleResolver(
-            final Recycler<JsonGenerators.DoubleWriterContext> recycler) {
-        return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
-            final Instant logEventInstant = logEvent.getInstant();
-            final long secs = logEventInstant.getEpochSecond();
-            final int nanosOfSecs = logEventInstant.getNanoOfSecond();
-            final long micros = MICROS_PER_SEC * secs + nanosOfSecs / NANOS_PER_MICRO;
-            final int nanosOfMicros = nanosOfSecs - nanosOfSecs % NANOS_PER_MICRO;
-            JsonGenerators.writeDouble(recycler, jsonGenerator, micros, nanosOfMicros);
-        };
-    }
+    private static final EventResolver EPOCH_MICROS_DOUBLE_RESOLVER =
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+                final Instant logEventInstant = logEvent.getInstant();
+                final long secs = logEventInstant.getEpochSecond();
+                final int nanosOfSecs = logEventInstant.getNanoOfSecond();
+                final long micros = MICROS_PER_SEC * secs + nanosOfSecs / NANOS_PER_MICRO;
+                final int nanosOfMicros = nanosOfSecs - nanosOfSecs % NANOS_PER_MICRO;
+                jsonWriter.writeNumber(micros, nanosOfMicros);
+            };
 
     private static final EventResolver EPOCH_MICROS_LONG_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final long nanos = epochNanos(logEvent.getInstant());
                 final long micros = nanos / NANOS_PER_MICRO;
-                jsonGenerator.writeNumber(micros);
+                jsonWriter.writeNumber(micros);
             };
 
-    private static EventResolver createEpochMillisDoubleResolver(
-            final Recycler<JsonGenerators.DoubleWriterContext> recycler) {
-        return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
-            final Instant logEventInstant = logEvent.getInstant();
-            JsonGenerators.writeDouble(
-                    recycler,
-                    jsonGenerator,
-                    logEventInstant.getEpochMillisecond(),
-                    logEventInstant.getNanoOfMillisecond());
-        };
-    }
+    private static final EventResolver EPOCH_MILLIS_DOUBLE_RESOLVER =
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+                final Instant logEventInstant = logEvent.getInstant();
+                jsonWriter.writeNumber(
+                        logEventInstant.getEpochMillisecond(),
+                        logEventInstant.getNanoOfMillisecond());
+            };
 
     private static final EventResolver EPOCH_MILLIS_LONG_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final long nanos = epochNanos(logEvent.getInstant());
                 final long millis = nanos / NANOS_PER_MILLI;
-                jsonGenerator.writeNumber(millis);
+                jsonWriter.writeNumber(millis);
             };
 
-    private static EventResolver createEpochSecsDoubleResolver(
-            final Recycler<JsonGenerators.DoubleWriterContext> recycler) {
-        return (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
-            final Instant logEventInstant = logEvent.getInstant();
-            JsonGenerators.writeDouble(
-                    recycler,
-                    jsonGenerator,
-                    logEventInstant.getEpochSecond(),
-                    logEventInstant.getNanoOfSecond());
-        };
-    }
+    private static final EventResolver EPOCH_SECS_DOUBLE_RESOLVER =
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+                final Instant logEventInstant = logEvent.getInstant();
+                jsonWriter.writeNumber(
+                        logEventInstant.getEpochSecond(),
+                        logEventInstant.getNanoOfSecond());
+            };
 
     private static final EventResolver EPOCH_SECS_LONG_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final Instant logEventInstant = logEvent.getInstant();
                 final long epochSecs = logEventInstant.getEpochSecond();
-                jsonGenerator.writeNumber(epochSecs);
+                jsonWriter.writeNumber(epochSecs);
             };
 
     private static final EventResolver EPOCH_MICROS_NANOS_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final Instant logEventInstant = logEvent.getInstant();
                 final int nanosOfSecs = logEventInstant.getNanoOfSecond();
                 final int nanosOfMicros = nanosOfSecs % NANOS_PER_MICRO;
-                jsonGenerator.writeNumber(nanosOfMicros);
+                jsonWriter.writeNumber(nanosOfMicros);
             };
 
     private static final EventResolver EPOCH_MILLIS_NANOS_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final Instant logEventInstant = logEvent.getInstant();
-                jsonGenerator.writeNumber(logEventInstant.getNanoOfMillisecond());
+                jsonWriter.writeNumber(logEventInstant.getNanoOfMillisecond());
             };
 
     private static final EventResolver EPOCH_MILLIS_MICROS_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final Instant logEventInstant = logEvent.getInstant();
                 final int nanosOfMillis = logEventInstant.getNanoOfMillisecond();
                 final int microsOfMillis = nanosOfMillis / NANOS_PER_MICRO;
-                jsonGenerator.writeNumber(microsOfMillis);
+                jsonWriter.writeNumber(microsOfMillis);
             };
 
     private static final EventResolver EPOCH_SECS_NANOS_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final Instant logEventInstant = logEvent.getInstant();
-                jsonGenerator.writeNumber(logEventInstant.getNanoOfSecond());
+                jsonWriter.writeNumber(logEventInstant.getNanoOfSecond());
             };
 
     private static final EventResolver EPOCH_SECS_MICROS_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final Instant logEventInstant = logEvent.getInstant();
                 final int nanosOfSecs = logEventInstant.getNanoOfSecond();
                 final int microsOfSecs = nanosOfSecs / NANOS_PER_MICRO;
-                jsonGenerator.writeNumber(microsOfSecs);
+                jsonWriter.writeNumber(microsOfSecs);
             };
 
     private static final EventResolver EPOCH_SECS_MILLIS_RESOLVER =
-            (final LogEvent logEvent, final JsonGenerator jsonGenerator) -> {
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                 final Instant logEventInstant = logEvent.getInstant();
                 final int nanosOfSecs = logEventInstant.getNanoOfSecond();
                 final int millisOfSecs = nanosOfSecs / NANOS_PER_MILLI;
-                jsonGenerator.writeNumber(millisOfSecs);
+                jsonWriter.writeNumber(millisOfSecs);
             };
 
     private static long epochNanos(Instant instant) {
         return NANOS_PER_SEC * instant.getEpochSecond() + instant.getNanoOfSecond();
     }
 
-    private static EventResolver createEpochResolver(
-            final RecyclerFactory recyclerFactory,
-            final String key) {
-        final Recycler<JsonGenerators.DoubleWriterContext> recycler =
-                recyclerFactory.create(
-                        JsonGenerators.DoubleWriterContext::new,
-                        Function.identity());
+    private static EventResolver createEpochResolver(final String key) {
         switch (key) {
             case "epoch:nanos":
                 return EPOCH_NANOS_RESOLVER;
             case "epoch:micros":
-                return createEpochMicrosDoubleResolver(recycler);
+                return EPOCH_MICROS_DOUBLE_RESOLVER;
             case "epoch:micros,integral":
                 return EPOCH_MICROS_LONG_RESOLVER;
             case "epoch:millis":
-                return createEpochMillisDoubleResolver(recycler);
+                return EPOCH_MILLIS_DOUBLE_RESOLVER;
             case "epoch:millis,integral":
                 return EPOCH_MILLIS_LONG_RESOLVER;
             case "epoch:secs":
-                return createEpochSecsDoubleResolver(recycler);
+                return EPOCH_SECS_DOUBLE_RESOLVER;
             case "epoch:secs,integral":
                 return EPOCH_SECS_LONG_RESOLVER;
             case "epoch:micros.nanos":
@@ -381,7 +359,7 @@ final class TimestampResolver implements EventResolver {
                 return EPOCH_SECS_MILLIS_RESOLVER;
             default:
                 throw new IllegalArgumentException(
-                        "was expecting an epoch key, found: " + key);
+                        "was expecting an epoch key: " + key);
         }
     }
 
@@ -392,9 +370,8 @@ final class TimestampResolver implements EventResolver {
     @Override
     public void resolve(
             final LogEvent logEvent,
-            final JsonGenerator jsonGenerator)
-            throws IOException {
-        internalResolver.resolve(logEvent, jsonGenerator);
+            final JsonWriter jsonWriter) {
+        internalResolver.resolve(logEvent, jsonWriter);
     }
 
 }
