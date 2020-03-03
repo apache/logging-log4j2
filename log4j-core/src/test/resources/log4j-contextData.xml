@@ -15,10 +15,10 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="WARN">
+<Configuration status="WARN" name="Context Data Test">
   <Appenders>
     <List name="List">
-      <PatternLayout pattern="[%-5level] %c{1.} %msg%n" />
+      <PatternLayout pattern="[%-5level] ThreadContext%X %c{1.} %msg%n" />
     </List>
   </Appenders>
   <Loggers>
