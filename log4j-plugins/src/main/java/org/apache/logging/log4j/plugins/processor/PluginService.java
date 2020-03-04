@@ -18,7 +18,11 @@ package org.apache.logging.log4j.plugins.processor;
 
 import org.apache.logging.log4j.plugins.util.PluginType;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Class Description goes here.
@@ -31,15 +35,9 @@ public abstract class PluginService {
         PluginEntry[] entries = getEntries();
         for (PluginEntry entry : entries) {
             String category = entry.getCategory().toLowerCase();
-            try {
-                Class<?> clazz = this.getClass().getClassLoader().loadClass(entry.getClassName());
-                List<PluginType<?>> list = categories.computeIfAbsent(category, ignored -> new LinkedList<>());
-                PluginType<?> type = new PluginType<>(entry, clazz, entry.getName());
-                list.add(type);
-            } catch (ClassNotFoundException ex) {
-                throw new IllegalStateException("No class named " + entry.getClassName() +
-                        " located for element " + entry.getName(), ex);
-            }
+            List<PluginType<?>> list = categories.computeIfAbsent(category, ignored -> new LinkedList<>());
+            PluginType<?> type = new PluginType<>(entry, entry.getPluginClass(), entry.getName());
+            list.add(type);
         }
     }
 

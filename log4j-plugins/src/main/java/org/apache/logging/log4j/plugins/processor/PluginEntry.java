@@ -27,6 +27,7 @@ public class PluginEntry implements Serializable {
 
     private String key;
     private String className;
+    private Class<?> pluginClass;
     private String name;
     private boolean printable;
     private boolean defer;
@@ -38,6 +39,16 @@ public class PluginEntry implements Serializable {
     public PluginEntry(String key, String className, String name, boolean printable, boolean defer, String category) {
         this.key = key;
         this.className = className;
+        this.name = name;
+        this.printable = printable;
+        this.defer = defer;
+        this.category = category;
+    }
+
+    public PluginEntry(String key, Class<?> pluginClass, String name, boolean printable, boolean defer, String category) {
+        this.key = key;
+        this.className = pluginClass.getName();
+        this.pluginClass = pluginClass;
         this.name = name;
         this.printable = printable;
         this.defer = defer;
@@ -58,6 +69,14 @@ public class PluginEntry implements Serializable {
 
     public void setClassName(final String className) {
         this.className = className;
+    }
+
+    public Class<?> getPluginClass() {
+        return pluginClass;
+    }
+
+    public void setPluginClass(Class<?> pluginClass) {
+        this.pluginClass = pluginClass;
     }
 
     public String getName() {

@@ -32,7 +32,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -195,19 +202,14 @@ public class PluginRegistry {
         for (final PluginService pluginService : serviceLoader) {
             PluginEntry[] entries = pluginService.getEntries();
             for (PluginEntry entry : entries) {
-                try {
-                    final Class<?> clazz = classLoader.loadClass(entry.getClassName());
-                    final PluginType<?> type = new PluginType<>(entry, clazz, entry.getName());
-                    String category = entry.getCategory().toLowerCase();
-                    if (!map.containsKey(category)) {
-                        map.put(category, new ArrayList<>());
-                    }
-                    List<PluginType<?>> list = map.get(category);
-                    list.add(type);
-                    ++pluginCount;
-                } catch (final ClassNotFoundException e) {
-                    LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", entry.getClassName(), e);
+                final PluginType<?> type = new PluginType<>(entry, entry.getPluginClass(), entry.getName());
+                String category = entry.getCategory().toLowerCase();
+                if (!map.containsKey(category)) {
+                    map.put(category, new ArrayList<>());
                 }
+                List<PluginType<?>> list = map.get(category);
+                list.add(type);
+                ++pluginCount;
             }
         }
         final int numPlugins = pluginCount;

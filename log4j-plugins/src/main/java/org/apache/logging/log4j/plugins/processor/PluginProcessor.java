@@ -174,8 +174,8 @@ public class PluginProcessor extends AbstractProcessor {
             for (int i = 0; i < list.size(); ++i) {
                 PluginEntry entry = list.get(i);
                 sb.append("        ").append("new PluginEntry(\"");
-                sb.append(entry.getKey()).append("\", \"");
-                sb.append(entry.getClassName()).append("\", \"");
+                sb.append(entry.getKey()).append("\", ");
+                sb.append(entry.getClassName().replace('$', '.')).append(".class, \"");
                 sb.append(entry.getName()).append("\", ");
                 sb.append(entry.isPrintable()).append(", ");
                 sb.append(entry.isDefer()).append(", \"");
