@@ -202,7 +202,7 @@ public class PluginRegistry {
         for (final PluginService pluginService : serviceLoader) {
             PluginEntry[] entries = pluginService.getEntries();
             for (PluginEntry entry : entries) {
-                final PluginType<?> type = new PluginType<>(entry, entry.getPluginClass(), entry.getName());
+                final PluginType<?> type = new PluginType<>(entry, classLoader);
                 String category = entry.getCategory().toLowerCase();
                 if (!map.containsKey(category)) {
                     map.put(category, new ArrayList<>());
@@ -246,16 +246,9 @@ public class PluginRegistry {
             for (final Map.Entry<String, PluginEntry> inner : outer.getValue().entrySet()) {
                 final PluginEntry entry = inner.getValue();
                 final String className = entry.getClassName();
-                try {
-                    final Class<?> clazz = loader.loadClass(className);
-                    final PluginType<?> type = new PluginType<>(entry, clazz, entry.getName());
-                    types.add(type);
-                    ++pluginCount;
-                } catch (final ClassNotFoundException e) {
-                    LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", className, e);
-                } catch (final LinkageError e) {
-                    LOGGER.info("Plugin [{}] could not be loaded due to linkage error.", className, e);
-                }
+                final PluginType<?> type = new PluginType<>(entry, loader);
+                types.add(type);
+                ++pluginCount;
             }
         }
         final int numPlugins = pluginCount;

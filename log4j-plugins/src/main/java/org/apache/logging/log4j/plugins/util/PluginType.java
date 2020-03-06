@@ -28,7 +28,8 @@ import org.apache.logging.log4j.plugins.processor.PluginEntry;
 public class PluginType<T> {
 
     private final PluginEntry pluginEntry;
-    private final Class<T> pluginClass;
+    private volatile Class<T> pluginClass;
+    private final ClassLoader classLoader;
     private final String elementName;
 
     /**
@@ -38,13 +39,36 @@ public class PluginType<T> {
         this.pluginEntry = pluginEntry;
         this.pluginClass = pluginClass;
         this.elementName = elementName;
+        this.classLoader = null;
     }
+
+    /**
+     * @since 3.0
+     * @param pluginEntry The PluginEntry.
+     * @param classLoader The ClassLoader to use to load the Plugin.
+     */
+    public PluginType(final PluginEntry pluginEntry, final ClassLoader classLoader) {
+        this.pluginEntry = pluginEntry;
+        this.classLoader = classLoader;
+        this.elementName = pluginEntry.getName();
+        this.pluginClass = null;
+    }
+
 
     public PluginEntry getPluginEntry() {
         return this.pluginEntry;
     }
 
+    @SuppressWarnings("unchecked")
     public Class<T> getPluginClass() {
+        if (pluginClass == null) {
+            try {
+                pluginClass = (Class<T>) this.classLoader.loadClass(pluginEntry.getClassName());
+            } catch (ClassNotFoundException | LinkageError ex) {
+                throw new IllegalStateException("No class named " + pluginEntry.getClassName() +
+                        " located for element " + elementName, ex);
+            }
+        }
         return this.pluginClass;
     }
 

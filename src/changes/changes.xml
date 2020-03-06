@@ -31,8 +31,8 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2019-xx-xx" description="GA Release 3.0.0">
-      <action issue="LOG4J2-2783" dev="rgoers" type="update">
-        PluginService should use classes in their definition instead of class names.
+      <action issue="LOG4J2-2795" dev="rgoers" type="fix">
+        Reduce Log4j 2 initialization time by deferring loading Plugin classes.
       </action>
       <action issue="LOG4J2-2678" dev="rgoers" type="update" due-to="Federico D'Ambrosio">
         Add LogEvent timestamp to ProducerRecord in KafkaAppender.

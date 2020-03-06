@@ -36,7 +36,7 @@ public abstract class PluginService {
         for (PluginEntry entry : entries) {
             String category = entry.getCategory().toLowerCase();
             List<PluginType<?>> list = categories.computeIfAbsent(category, ignored -> new LinkedList<>());
-            PluginType<?> type = new PluginType<>(entry, entry.getPluginClass(), entry.getName());
+            PluginType<?> type = new PluginType<>(entry, this.getClass().getClassLoader());
             list.add(type);
         }
     }
