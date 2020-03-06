@@ -43,6 +43,8 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 (Undated)
 
 ## English
+* [Spring Boot Logging Using Log4j 2](https://techblogstation.com/spring-boot/spring-boot-logging/)
+(March 6, 2020)
 
 * [Getting the most out of the Log4j 2 API](https://www.ralphgoers.com/post/getting-the-most-out-of-the-log4j-2-api)
 (January 1, 2020)
