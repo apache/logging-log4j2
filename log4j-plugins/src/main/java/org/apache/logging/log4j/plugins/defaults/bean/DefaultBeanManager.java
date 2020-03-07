@@ -159,7 +159,7 @@ public class DefaultBeanManager implements BeanManager {
             for (final MetaParameter<?> parameter : method.getParameters()) {
                 if (parameter.isAnnotationPresent(Disposes.class)) {
                     disposesMethods.add(new DisposesMethod<>(
-                            parameter.getTypeClosure(), elementManager.getQualifiers(parameter), bean, method));
+                            parameter.getBaseType(), elementManager.getQualifiers(parameter), bean, method));
                 }
             }
         }
@@ -425,11 +425,6 @@ public class DefaultBeanManager implements BeanManager {
         scopes.clear();
     }
 
-    private static boolean areCollectionsIsomorphic(final Collection<?> left, final Collection<?> right) {
-        // isomorphism assumes .equals() is implemented according to the normal .equals() contract
-        return (left.isEmpty() && right.isEmpty()) || (left.size() == right.size() && left.containsAll(right));
-    }
-
     private static Optional<Bean<?>> findNonPrototypeScopedDependent(final InitializationContext<?> context) {
         return context.getParentContext().flatMap(parentContext ->
                 parentContext.getScoped()
@@ -440,14 +435,14 @@ public class DefaultBeanManager implements BeanManager {
     }
 
     private static class DisposesMethod<D> {
-        private final Collection<Type> types;
+        private final Type type;
         private final Qualifiers qualifiers;
         private final Bean<D> declaringBean;
         private final MetaMethod<D, ?> disposesMethod;
 
-        private DisposesMethod(final Collection<Type> types, final Qualifiers qualifiers,
+        private DisposesMethod(final Type type, final Qualifiers qualifiers,
                                final Bean<D> declaringBean, final MetaMethod<D, ?> disposesMethod) {
-            this.types = types;
+            this.type = type;
             this.qualifiers = qualifiers;
             this.declaringBean = declaringBean;
             this.disposesMethod = disposesMethod;
@@ -455,7 +450,7 @@ public class DefaultBeanManager implements BeanManager {
 
         boolean matches(final Variable<?> variable, final Bean<?> declaringBean) {
             return Objects.equals(declaringBean, this.declaringBean) &&
-                    areCollectionsIsomorphic(types, variable.getTypes()) &&
+                    variable.hasMatchingType(type) &&
                     qualifiers.equals(variable.getQualifiers());
         }
     }
