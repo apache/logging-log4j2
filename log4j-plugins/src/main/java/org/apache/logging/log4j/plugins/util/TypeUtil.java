@@ -405,8 +405,8 @@ public final class TypeUtil {
         return TYPE_CLOSURE_CACHE.get(type);
     }
 
-    private static final Cache<Type, Collection<Type>> TYPE_CLOSURE_CACHE = new WeakCache<>(
-            type -> WeakLazyValue.forSupplier(() -> new TypeResolver(type).types.values()));
+    private static final Cache<Type, Collection<Type>> TYPE_CLOSURE_CACHE =
+            WeakCache.newWeakRefCache(type -> new TypeResolver(type).types.values());
 
     private static class TypeResolver {
         private final Map<TypeVariable<?>, Type> resolvedTypeVariables = new HashMap<>();

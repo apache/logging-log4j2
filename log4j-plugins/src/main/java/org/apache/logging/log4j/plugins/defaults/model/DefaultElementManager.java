@@ -35,9 +35,7 @@ import org.apache.logging.log4j.plugins.spi.model.MetaParameter;
 import org.apache.logging.log4j.plugins.spi.model.Qualifier;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
 import org.apache.logging.log4j.plugins.util.Cache;
-import org.apache.logging.log4j.plugins.util.LazyValue;
 import org.apache.logging.log4j.plugins.util.WeakCache;
-import org.apache.logging.log4j.plugins.util.WeakLazyValue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -54,28 +52,26 @@ public class DefaultElementManager implements ElementManager {
         QUALIFIER, SCOPE, STEREOTYPE, UNKNOWN
     }
 
-    private final Cache<Class<?>, MetaClass<?>> classCache = new WeakCache<>(clazz ->
-            WeakLazyValue.forSupplier(DefaultMetaClass.newMetaClassSupplier(clazz)));
+    private final Cache<Class<?>, MetaClass<?>> classCache = WeakCache.newWeakRefCache(DefaultMetaClass::newMetaClass);
 
-    private final Cache<Class<? extends Annotation>, AnnotationType> annotationTypeCache = new WeakCache<>(clazz ->
-            LazyValue.forSupplier(() -> {
-                for (final Annotation annotation : clazz.getAnnotations()) {
-                    Class<? extends Annotation> type = annotation.annotationType();
-                    if (type == AliasFor.class) {
-                        type = ((AliasFor) annotation).value();
-                    }
-                    if (type == QualifierType.class) {
-                        return AnnotationType.QUALIFIER;
-                    }
-                    if (type == ScopeType.class) {
-                        return AnnotationType.SCOPE;
-                    }
-                    if (type == Stereotype.class) {
-                        return AnnotationType.STEREOTYPE;
-                    }
-                }
-                return AnnotationType.UNKNOWN;
-            }));
+    private final Cache<Class<? extends Annotation>, AnnotationType> annotationTypeCache = WeakCache.newCache(clazz -> {
+        for (final Annotation annotation : clazz.getAnnotations()) {
+            Class<? extends Annotation> type = annotation.annotationType();
+            if (type == AliasFor.class) {
+                type = ((AliasFor) annotation).value();
+            }
+            if (type == QualifierType.class) {
+                return AnnotationType.QUALIFIER;
+            }
+            if (type == ScopeType.class) {
+                return AnnotationType.SCOPE;
+            }
+            if (type == Stereotype.class) {
+                return AnnotationType.STEREOTYPE;
+            }
+        }
+        return AnnotationType.UNKNOWN;
+    });
 
     @Override
     public <T> MetaClass<T> getMetaClass(final Class<T> clazz) {

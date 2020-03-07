@@ -23,6 +23,14 @@ import java.util.function.Function;
 
 public class WeakCache<K, V> implements Cache<K, V> {
 
+    public static <K, V> WeakCache<K, V> newCache(final Function<K, V> function) {
+        return new WeakCache<>(key -> LazyValue.forSupplier(() -> function.apply(key)));
+    }
+
+    public static <K, V> WeakCache<K, V> newWeakRefCache(final Function<K, V> function) {
+        return new WeakCache<>(key -> WeakLazyValue.forSupplier(() -> function.apply(key)));
+    }
+
     private final long maxSize;
     private final Function<K, Value<? extends V>> valueFunction;
     private final Map<K, Value<? extends V>> map = new WeakHashMap<>();

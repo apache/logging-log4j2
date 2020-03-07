@@ -33,13 +33,12 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 class DefaultMetaClass<T> implements MetaClass<T> {
 
-    static <T> Supplier<MetaClass<T>> newMetaClassSupplier(final Class<T> javaClass) {
-        return () -> newMetaClass(javaClass, javaClass, javaClass.getAnnotations());
+    static <T> MetaClass<T> newMetaClass(final Class<T> javaClass) {
+        return newMetaClass(javaClass, javaClass, javaClass.getAnnotations());
     }
 
     static <T> MetaClass<T> newMetaClass(final Type baseType, final Class<T> javaClass, final Annotation... annotations) {
