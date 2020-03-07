@@ -18,24 +18,23 @@
 package org.apache.logging.log4j.plugins.defaults.model;
 
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
-import org.apache.logging.log4j.plugins.spi.model.MetaElement;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
+import org.apache.logging.log4j.plugins.spi.model.MetaElement;
 import org.apache.logging.log4j.plugins.spi.model.MetaMember;
-import org.apache.logging.log4j.plugins.spi.model.Qualifier;
+import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
 class DefaultInjectionPoint<T> implements InjectionPoint<T> {
     private final Type type;
-    private final Collection<Qualifier> qualifiers;
+    private final Qualifiers qualifiers;
     private final Bean<?> bean;
     private final MetaMember<?, ?> member;
     private final MetaElement<T> element;
 
-    DefaultInjectionPoint(final Type type, final Collection<Qualifier> qualifiers, final Bean<?> bean,
+    DefaultInjectionPoint(final Type type, final Qualifiers qualifiers, final Bean<?> bean,
                           final MetaMember<?, ?> member, final MetaElement<T> element) {
         this.type = type;
         this.qualifiers = qualifiers;
@@ -50,7 +49,7 @@ class DefaultInjectionPoint<T> implements InjectionPoint<T> {
     }
 
     @Override
-    public Collection<Qualifier> getQualifiers() {
+    public Qualifiers getQualifiers() {
         return qualifiers;
     }
 

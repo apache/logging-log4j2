@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.plugins.defaults.model;
 
-import org.apache.logging.log4j.plugins.spi.model.Qualifier;
+import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
 
 import java.lang.annotation.Annotation;
@@ -27,16 +27,16 @@ import java.util.Objects;
 
 public class DefaultVariable<T> implements Variable<T> {
 
-    public static <T> DefaultVariable<T> newVariable(final Collection<Type> types, final Collection<Qualifier> qualifiers,
+    public static <T> DefaultVariable<T> newVariable(final Collection<Type> types, final Qualifiers qualifiers,
                                                      final Class<? extends Annotation> scopeType) {
         return new DefaultVariable<>(types, qualifiers, scopeType);
     }
 
     private final Collection<Type> types;
-    private final Collection<Qualifier> qualifiers;
+    private final Qualifiers qualifiers;
     private final Class<? extends Annotation> scopeType;
 
-    private DefaultVariable(final Collection<Type> types, final Collection<Qualifier> qualifiers,
+    private DefaultVariable(final Collection<Type> types, final Qualifiers qualifiers,
                             final Class<? extends Annotation> scopeType) {
         this.types = Objects.requireNonNull(types);
         this.qualifiers = Objects.requireNonNull(qualifiers);
@@ -49,7 +49,7 @@ public class DefaultVariable<T> implements Variable<T> {
     }
 
     @Override
-    public Collection<Qualifier> getQualifiers() {
+    public Qualifiers getQualifiers() {
         return qualifiers;
     }
 

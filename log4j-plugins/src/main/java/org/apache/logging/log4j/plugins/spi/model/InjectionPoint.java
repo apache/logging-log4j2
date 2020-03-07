@@ -20,7 +20,6 @@ package org.apache.logging.log4j.plugins.spi.model;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -39,7 +38,7 @@ public interface InjectionPoint<T> {
      * Gets the qualifiers of this point. If no qualifiers other than {@link org.apache.logging.log4j.plugins.api.Named}
      * are present, then these qualifiers will also include {@link org.apache.logging.log4j.plugins.api.Default}.
      */
-    Collection<Qualifier> getQualifiers();
+    Qualifiers getQualifiers();
 
     /**
      * Gets the bean where this injection point is defined or empty for static methods and fields.

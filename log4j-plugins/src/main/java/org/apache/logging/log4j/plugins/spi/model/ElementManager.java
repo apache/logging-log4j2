@@ -53,7 +53,7 @@ public interface ElementManager extends AutoCloseable {
      * @param element program element to extract qualifiers from
      * @return qualifiers present on the element
      */
-    Collection<Qualifier> getQualifiers(MetaElement<?> element);
+    Qualifiers getQualifiers(MetaElement<?> element);
 
     /**
      * Checks if a class has exactly one injectable constructor. A constructor is <i>injectable</i> if:

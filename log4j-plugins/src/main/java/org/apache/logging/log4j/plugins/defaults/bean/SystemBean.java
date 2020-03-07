@@ -18,8 +18,8 @@
 package org.apache.logging.log4j.plugins.defaults.bean;
 
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
-import org.apache.logging.log4j.plugins.spi.model.Qualifier;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
+import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
@@ -37,7 +37,7 @@ abstract class SystemBean<T> implements Bean<T> {
     }
 
     @Override
-    public Collection<Qualifier> getQualifiers() {
+    public Qualifiers getQualifiers() {
         return variable.getQualifiers();
     }
 

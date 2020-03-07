@@ -19,7 +19,7 @@ package org.apache.logging.log4j.plugins.defaults.bean;
 
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
-import org.apache.logging.log4j.plugins.spi.model.Qualifier;
+import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
 
 import java.lang.annotation.Annotation;
@@ -42,7 +42,7 @@ abstract class AbstractBean<D, T> implements Bean<T> {
     }
 
     @Override
-    public Collection<Qualifier> getQualifiers() {
+    public Qualifiers getQualifiers() {
         return variable.getQualifiers();
     }
 

@@ -18,8 +18,6 @@
 package org.apache.logging.log4j.plugins.defaults.model;
 
 import org.apache.logging.log4j.plugins.api.AliasFor;
-import org.apache.logging.log4j.plugins.api.Default;
-import org.apache.logging.log4j.plugins.api.Named;
 import org.apache.logging.log4j.plugins.api.PrototypeScoped;
 import org.apache.logging.log4j.plugins.api.QualifierType;
 import org.apache.logging.log4j.plugins.api.ScopeType;
@@ -32,7 +30,7 @@ import org.apache.logging.log4j.plugins.spi.model.MetaElement;
 import org.apache.logging.log4j.plugins.spi.model.MetaExecutable;
 import org.apache.logging.log4j.plugins.spi.model.MetaField;
 import org.apache.logging.log4j.plugins.spi.model.MetaParameter;
-import org.apache.logging.log4j.plugins.spi.model.Qualifier;
+import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
 import org.apache.logging.log4j.plugins.util.Cache;
 import org.apache.logging.log4j.plugins.util.WeakCache;
@@ -41,10 +39,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class DefaultElementManager implements ElementManager {
 
@@ -84,12 +80,8 @@ public class DefaultElementManager implements ElementManager {
     }
 
     @Override
-    public Collection<Qualifier> getQualifiers(final MetaElement<?> element) {
-        final Collection<Annotation> qualifiers = filterQualifiers(element.getAnnotations());
-        if (qualifiers.stream().noneMatch(annotation -> annotation.annotationType() != Named.class)) {
-            qualifiers.add(Default.INSTANCE);
-        }
-        return qualifiers.stream().map(Qualifier::fromAnnotation).collect(Collectors.toCollection(HashSet::new));
+    public Qualifiers getQualifiers(final MetaElement<?> element) {
+        return Qualifiers.fromQualifierAnnotations(filterQualifiers(element.getAnnotations()));
     }
 
     private Collection<Annotation> filterQualifiers(final Collection<Annotation> annotations) {
@@ -160,7 +152,7 @@ public class DefaultElementManager implements ElementManager {
     @Override
     public <D, T> InjectionPoint<T> createFieldInjectionPoint(final MetaField<D, T> field, final Bean<D> owner) {
         Objects.requireNonNull(field);
-        final Collection<Qualifier> qualifiers = getQualifiers(field);
+        final Qualifiers qualifiers = getQualifiers(field);
         return new DefaultInjectionPoint<>(field.getBaseType(), qualifiers, owner, field, field);
     }
 
@@ -170,7 +162,7 @@ public class DefaultElementManager implements ElementManager {
                                                                   final Bean<D> owner) {
         Objects.requireNonNull(executable);
         Objects.requireNonNull(parameter);
-        final Collection<Qualifier> qualifiers = getQualifiers(parameter);
+        final Qualifiers qualifiers = getQualifiers(parameter);
         return new DefaultInjectionPoint<>(parameter.getBaseType(), qualifiers, owner, executable, parameter);
     }
 
@@ -186,7 +178,7 @@ public class DefaultElementManager implements ElementManager {
         return createVariable(point.getElement(), point.getQualifiers());
     }
 
-    private <T> Variable<T> createVariable(final MetaElement<T> element, final Collection<Qualifier> qualifiers) {
+    private <T> Variable<T> createVariable(final MetaElement<T> element, final Qualifiers qualifiers) {
         final Collection<Type> types = element.getTypeClosure();
         final Class<? extends Annotation> scopeType = getScopeType(element);
         return DefaultVariable.newVariable(types, qualifiers, scopeType);

@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.plugins.api;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -29,28 +28,4 @@ import java.lang.annotation.RetentionPolicy;
 @Inherited
 // default qualifier unless qualifier besides @Named is present
 public @interface Default {
-    @SuppressWarnings("ClassExplicitlyAnnotation")
-    class Literal implements Default, Annotation {
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return Default.class;
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            return this == o || o instanceof Default;
-        }
-
-        @Override
-        public int hashCode() {
-            return Default.class.hashCode();
-        }
-
-        @Override
-        public String toString() {
-            return "@Default";
-        }
-    }
-
-    Default INSTANCE = new Literal();
 }

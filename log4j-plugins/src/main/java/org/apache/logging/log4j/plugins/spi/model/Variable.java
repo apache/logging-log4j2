@@ -35,7 +35,7 @@ public interface Variable<T> {
         return false;
     }
 
-    Collection<Qualifier> getQualifiers();
+    Qualifiers getQualifiers();
 
     Class<? extends Annotation> getScopeType();
 }

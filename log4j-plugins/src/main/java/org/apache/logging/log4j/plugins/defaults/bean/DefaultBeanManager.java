@@ -44,7 +44,7 @@ import org.apache.logging.log4j.plugins.spi.model.MetaField;
 import org.apache.logging.log4j.plugins.spi.model.MetaMember;
 import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
 import org.apache.logging.log4j.plugins.spi.model.MetaParameter;
-import org.apache.logging.log4j.plugins.spi.model.Qualifier;
+import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
 import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.scope.ScopeContext;
@@ -88,6 +88,7 @@ public class DefaultBeanManager implements BeanManager {
 
     public DefaultBeanManager(final ElementManager elementManager) {
         this.elementManager = elementManager;
+        // TODO: need a better way to register scope contexts
         scopes.put(PrototypeScoped.class, new PrototypeScopeContext());
         scopes.put(SingletonScoped.class, new DefaultScopeContext(SingletonScoped.class));
     }
@@ -276,7 +277,7 @@ public class DefaultBeanManager implements BeanManager {
             throw new InjectionException("Expected one type parameter argument for " + point + " but got " +
                     Arrays.toString(typeArguments));
         }
-        if (point.getQualifiers().contains(Qualifier.DEFAULT_QUALIFIER)) {
+        if (point.getQualifiers().hasDefaultQualifier()) {
             final Type typeArgument = typeArguments[0];
             if (!typeArgument.equals(expectedType)) {
                 throw new InjectionException("Expected type " + expectedType + " but got " + typeArgument + " in " + point);
@@ -288,7 +289,7 @@ public class DefaultBeanManager implements BeanManager {
         // TODO: this will need to allow for TypeConverter usage somehow
         // first, look for an existing bean
         final Type type = point.getType();
-        final Collection<Qualifier> qualifiers = point.getQualifiers();
+        final Qualifiers qualifiers = point.getQualifiers();
         final Optional<Bean<T>> existingBean = getExistingOrProvidedBean(type, qualifiers,
                 () -> elementManager.createVariable(point));
         if (existingBean.isPresent()) {
@@ -321,7 +322,7 @@ public class DefaultBeanManager implements BeanManager {
         return Optional.empty();
     }
 
-    private <T> Optional<Bean<T>> getExistingOrProvidedBean(final Type type, final Collection<Qualifier> qualifiers,
+    private <T> Optional<Bean<T>> getExistingOrProvidedBean(final Type type, final Qualifiers qualifiers,
                                                             final Supplier<Variable<T>> variableSupplier) {
         final Optional<Bean<T>> existingBean = getBean(type, qualifiers);
         if (existingBean.isPresent()) {
@@ -334,9 +335,9 @@ public class DefaultBeanManager implements BeanManager {
                 .map(this::addBean);
     }
 
-    private <T> Optional<Bean<T>> getBean(final Type type, final Collection<Qualifier> qualifiers) {
+    private <T> Optional<Bean<T>> getBean(final Type type, final Qualifiers qualifiers) {
         final Set<Bean<T>> beans = this.<T>streamBeansMatchingType(type)
-                .filter(bean -> areCollectionsIsomorphic(qualifiers, bean.getQualifiers()))
+                .filter(bean -> qualifiers.equals(bean.getQualifiers()))
                 .collect(Collectors.toSet());
         if (beans.size() > 1) {
             throw new AmbiguousBeanException(beans, "type " + type + " and qualifiers " + qualifiers);
@@ -440,11 +441,11 @@ public class DefaultBeanManager implements BeanManager {
 
     private static class DisposesMethod<D> {
         private final Collection<Type> types;
-        private final Collection<Qualifier> qualifiers;
+        private final Qualifiers qualifiers;
         private final Bean<D> declaringBean;
         private final MetaMethod<D, ?> disposesMethod;
 
-        private DisposesMethod(final Collection<Type> types, final Collection<Qualifier> qualifiers,
+        private DisposesMethod(final Collection<Type> types, final Qualifiers qualifiers,
                                final Bean<D> declaringBean, final MetaMethod<D, ?> disposesMethod) {
             this.types = types;
             this.qualifiers = qualifiers;
@@ -455,7 +456,7 @@ public class DefaultBeanManager implements BeanManager {
         boolean matches(final Variable<?> variable, final Bean<?> declaringBean) {
             return Objects.equals(declaringBean, this.declaringBean) &&
                     areCollectionsIsomorphic(types, variable.getTypes()) &&
-                    areCollectionsIsomorphic(qualifiers, variable.getQualifiers());
+                    qualifiers.equals(variable.getQualifiers());
         }
     }
 
