@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 public class WeakLazyValue<T> implements Value<T> {
 
     public static <T> WeakLazyValue<T> forSupplier(final Supplier<T> valueSupplier) {
-        return new WeakLazyValue<T>(valueSupplier);
+        return new WeakLazyValue<>(valueSupplier);
     }
 
     private final Supplier<T> valueSupplier;

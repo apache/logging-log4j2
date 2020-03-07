@@ -402,9 +402,11 @@ public final class TypeUtil {
      * Returns the type closure of a generic type.
      */
     public static Collection<Type> getTypeClosure(final Type type) {
-        // TODO: weak cache?
-        return new TypeResolver(type).types.values();
+        return TYPE_CLOSURE_CACHE.get(type);
     }
+
+    private static final Cache<Type, Collection<Type>> TYPE_CLOSURE_CACHE = new WeakCache<>(
+            type -> WeakLazyValue.forSupplier(() -> new TypeResolver(type).types.values()));
 
     private static class TypeResolver {
         private final Map<TypeVariable<?>, Type> resolvedTypeVariables = new HashMap<>();
