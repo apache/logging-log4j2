@@ -22,6 +22,7 @@ import org.apache.logging.log4j.plugins.api.PostConstruct;
 import org.apache.logging.log4j.plugins.api.PreDestroy;
 import org.apache.logging.log4j.plugins.spi.InjectionException;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
+import org.apache.logging.log4j.plugins.spi.bean.InjectionFactory;
 import org.apache.logging.log4j.plugins.spi.bean.InjectionTarget;
 import org.apache.logging.log4j.plugins.spi.bean.InjectionTargetFactory;
 import org.apache.logging.log4j.plugins.spi.model.ElementManager;
@@ -39,13 +40,13 @@ import java.util.stream.Collectors;
 
 class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
     private final ElementManager elementManager;
-    private final InjectionContext.Factory injectionContextFactory;
+    private final InjectionFactory injectionFactory;
     private final MetaClass<T> type;
 
-    DefaultInjectionTargetFactory(final ElementManager elementManager, final InjectionContext.Factory injectionContextFactory,
+    DefaultInjectionTargetFactory(final ElementManager elementManager, final InjectionFactory injectionFactory,
                                   final MetaClass<T> type) {
         this.elementManager = elementManager;
-        this.injectionContextFactory = injectionContextFactory;
+        this.injectionFactory = injectionFactory;
         this.type = type;
     }
 
@@ -74,7 +75,7 @@ class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
         final List<MetaMethod<T, ?>> preDestroyMethods = methods.stream()
                 .filter(method -> method.isAnnotationPresent(PreDestroy.class))
                 .collect(Collectors.toList());
-        return new DefaultInjectionTarget<>(injectionContextFactory, elementManager, injectionPoints, constructor,
+        return new DefaultInjectionTarget<>(injectionFactory, elementManager, injectionPoints, constructor,
                 postConstructMethods, preDestroyMethods);
     }
 

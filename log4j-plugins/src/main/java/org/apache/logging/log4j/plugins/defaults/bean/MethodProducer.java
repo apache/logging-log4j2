@@ -52,8 +52,8 @@ class MethodProducer<D, T> extends AbstractProducer<D, T> {
     public T produce(final InitializationContext<T> context) {
         try (final InitializationContext<D> parentContext = createContext()) {
             final D declaringInstance = producerMethod.isStatic() ? null : getDeclaringInstance(parentContext);
-            return injectionContextFactory.forMethod(producerMethod, producerInjectionPoints, declaringInstance)
-                    .invoke(context);
+            return injectionFactory.forProducerMethod(producerMethod, declaringInstance, producerInjectionPoints)
+                    .apply(context);
         }
     }
 

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.plugins.defaults.bean;
 
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.BeanManager;
+import org.apache.logging.log4j.plugins.spi.bean.InjectionFactory;
 import org.apache.logging.log4j.plugins.spi.bean.Producer;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
@@ -34,7 +35,7 @@ abstract class AbstractProducer<D, T> implements Producer<T> {
     private final Bean<D> declaringBean;
     private final MetaMethod<D, ?> disposerMethod;
     private final Collection<InjectionPoint<?>> disposerInjectionPoints;
-    final InjectionContext.Factory injectionContextFactory;
+    final InjectionFactory injectionFactory;
 
     AbstractProducer(final BeanManager beanManager, final Bean<D> declaringBean, final MetaMethod<D, ?> disposerMethod,
                      final Collection<InjectionPoint<?>> disposerInjectionPoints) {
@@ -42,7 +43,7 @@ abstract class AbstractProducer<D, T> implements Producer<T> {
         this.declaringBean = declaringBean;
         this.disposerMethod = disposerMethod;
         this.disposerInjectionPoints = Objects.requireNonNull(disposerInjectionPoints);
-        this.injectionContextFactory = new DefaultInjectionContextFactory(beanManager);
+        this.injectionFactory = new DefaultInjectionFactory(beanManager);
     }
 
     // context is managed separately as the declaring instance is only used for producing the object and is not a dependent of the bean
@@ -63,8 +64,8 @@ abstract class AbstractProducer<D, T> implements Producer<T> {
             // as producer and disposer bean is unrelated to this bean, we need to recreate it on demand
             try (final InitializationContext<D> context = createContext()) {
                 final D declaringInstance = disposerMethod.isStatic() ? null : getDeclaringInstance(context);
-                injectionContextFactory.forDisposerMethod(disposerMethod, disposerInjectionPoints, declaringInstance, instance)
-                        .invoke(context);
+                injectionFactory.forDisposerMethod(disposerMethod, declaringInstance, disposerInjectionPoints, instance)
+                        .accept(context);
             }
         }
     }

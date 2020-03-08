@@ -18,16 +18,17 @@
 package org.apache.logging.log4j.plugins.test;
 
 import org.apache.logging.log4j.plugins.defaults.bean.DefaultBeanManager;
+import org.apache.logging.log4j.plugins.defaults.bean.DefaultInjectionFactory;
 import org.apache.logging.log4j.plugins.defaults.model.DefaultElementManager;
 import org.apache.logging.log4j.plugins.spi.InjectionException;
 import org.apache.logging.log4j.plugins.spi.UnsatisfiedBeanException;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.BeanManager;
+import org.apache.logging.log4j.plugins.spi.bean.InjectionFactory;
 import org.apache.logging.log4j.plugins.spi.model.ElementManager;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
-import org.apache.logging.log4j.plugins.spi.model.MetaParameter;
 import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.junit.Test;
@@ -36,6 +37,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +53,7 @@ public class BeanJUnit4Runner extends BlockJUnit4ClassRunner {
     private MetaClass<?> testMetaClass;
 
     private BeanManager beanManager;
+    private InjectionFactory injectionFactory;
     private Bean<?> testClassBean;
     private InitializationContext<?> initializationContext;
 
@@ -87,6 +90,7 @@ public class BeanJUnit4Runner extends BlockJUnit4ClassRunner {
 
     private <T> T createTestInstance() {
         beanManager = new DefaultBeanManager(elementManager);
+        injectionFactory = new DefaultInjectionFactory(beanManager);
         final WithBeans testClassBeans = getTestClass().getAnnotation(WithBeans.class);
         if (testClassBeans != null) {
             beanManager.loadBeans(testClassBeans.value());
@@ -114,29 +118,20 @@ public class BeanJUnit4Runner extends BlockJUnit4ClassRunner {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                try {
+                try (final BeanManager manager = beanManager;
+                     final InitializationContext<T> context = TypeUtil.cast(initializationContext)) {
+                    beanManager = null;
+                    initializationContext = null;
                     final WithBeans methodBeans = method.getAnnotation(WithBeans.class);
                     if (methodBeans != null) {
-                        beanManager.loadBeans(methodBeans.value());
+                        manager.loadBeans(methodBeans.value());
                     }
                     final Class<T> testClass = TypeUtil.cast(getTestClass().getJavaClass());
                     final MetaClass<T> metaClass = elementManager.getMetaClass(testClass);
                     final MetaMethod<T, Void> metaMethod = metaClass.getMetaMethod(method.getMethod());
-                    final List<MetaParameter<?>> parameters = metaMethod.getParameters();
-                    final Object[] args = new Object[parameters.size()];
-                    for (int i = 0; i < args.length; i++) {
-                        final MetaParameter<?> parameter = parameters.get(i);
-                        final InjectionPoint<?> point =
-                                elementManager.createParameterInjectionPoint(metaMethod, parameter, testClassBean);
-                        args[i] = beanManager.getInjectableValue(point, initializationContext)
-                                .orElseThrow(() -> new UnsatisfiedBeanException(point));
-                    }
-                    metaMethod.invoke(testInstance, args);
-                } finally {
-                    initializationContext.close();
-                    initializationContext = null;
-                    beanManager.close();
-                    beanManager = null;
+                    final Collection<InjectionPoint<?>> points =
+                            elementManager.createExecutableInjectionPoints(metaMethod, testClassBean);
+                    injectionFactory.forMethod(metaMethod, testInstance, points).accept(context);
                 }
             }
         };
