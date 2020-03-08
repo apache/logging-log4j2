@@ -55,7 +55,6 @@ public class BeanJUnit4Runner extends BlockJUnit4ClassRunner {
     private BeanManager beanManager;
     private InjectionFactory injectionFactory;
     private Bean<?> testClassBean;
-    private InitializationContext<?> initializationContext;
 
     public BeanJUnit4Runner(final Class<?> clazz) throws InitializationError {
         super(clazz);
@@ -103,9 +102,7 @@ public class BeanJUnit4Runner extends BlockJUnit4ClassRunner {
         final Bean<T> testClassBean = testBean
                 .orElseThrow(() -> new UnsatisfiedBeanException(testClass));
         this.testClassBean = testClassBean;
-        // FIXME: should we use a null bean or not? I'm still confused by the init context thing
-        initializationContext = beanManager.createInitializationContext(testClassBean);
-        return beanManager.getValue(testClassBean, initializationContext);
+        return beanManager.getValue(testClassBean, beanManager.createInitializationContext(null));
     }
 
     @Override
@@ -118,13 +115,10 @@ public class BeanJUnit4Runner extends BlockJUnit4ClassRunner {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                try (final BeanManager manager = beanManager;
-                     final InitializationContext<T> context = TypeUtil.cast(initializationContext)) {
-                    beanManager = null;
-                    initializationContext = null;
+                try (final InitializationContext<T> context = beanManager.createInitializationContext(testClassBean)) {
                     final WithBeans methodBeans = method.getAnnotation(WithBeans.class);
                     if (methodBeans != null) {
-                        manager.loadBeans(methodBeans.value());
+                        beanManager.loadBeans(methodBeans.value());
                     }
                     final Class<T> testClass = TypeUtil.cast(getTestClass().getJavaClass());
                     final MetaClass<T> metaClass = elementManager.getMetaClass(testClass);
@@ -132,6 +126,9 @@ public class BeanJUnit4Runner extends BlockJUnit4ClassRunner {
                     final Collection<InjectionPoint<?>> points =
                             elementManager.createExecutableInjectionPoints(metaMethod, testClassBean);
                     injectionFactory.forMethod(metaMethod, testInstance, points).accept(context);
+                } finally {
+                    beanManager.close();
+                    beanManager = null;
                 }
             }
         };
