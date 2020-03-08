@@ -47,4 +47,12 @@ public class WeakLazyValue<T> implements Value<T> {
         }
         return value;
     }
+
+    @Override
+    public void close() {
+        if (reference != null) {
+            reference.clear();
+            reference = null;
+        }
+    }
 }

@@ -20,7 +20,9 @@ package org.apache.logging.log4j.plugins.defaults.bean;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.bean.ScopeContext;
+import org.apache.logging.log4j.plugins.util.LazyValue;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.plugins.util.Value;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -29,7 +31,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultScopeContext implements ScopeContext {
-    private final Map<Bean<?>, BeanInstance<?>> cache = new ConcurrentHashMap<>();
+    private final Map<Bean<?>, Value<?>> beanValues = new ConcurrentHashMap<>();
     private final Class<? extends Annotation> scopeType;
 
     public DefaultScopeContext(final Class<? extends Annotation> scopeType) {
@@ -43,28 +45,28 @@ public class DefaultScopeContext implements ScopeContext {
 
     @Override
     public <T> T getOrCreate(final Bean<T> bean, final InitializationContext<T> context) {
-        final BeanInstance<T> beanInstance =
-                TypeUtil.cast(cache.computeIfAbsent(bean, ignored -> new LazyBeanInstance<>(bean, context)));
-        return beanInstance.getInstance();
+        final Value<T> value = TypeUtil.cast(beanValues.computeIfAbsent(bean,
+                ignored -> LazyValue.forScope(() -> bean.create(context), instance -> bean.destroy(instance, context))));
+        return value.get();
     }
 
     @Override
     public <T> Optional<T> getIfExists(final Bean<T> bean) {
-        final BeanInstance<T> beanInstance = TypeUtil.cast(cache.get(bean));
-        return beanInstance == null ? Optional.empty() : Optional.of(beanInstance.getInstance());
+        return Optional.ofNullable(beanValues.get(bean))
+                .map(Value::get)
+                .map(TypeUtil::cast);
     }
 
     @Override
     public void destroy(final Bean<?> bean) {
-        final BeanInstance<?> beanInstance = cache.get(bean);
-        if (beanInstance != null) {
-            beanInstance.close();
-            cache.remove(bean, beanInstance);
-        }
+        beanValues.computeIfPresent(bean, (ignored, value) -> {
+            value.close();
+            return null;
+        });
     }
 
     @Override
     public void close() {
-        cache.keySet().forEach(this::destroy);
+        beanValues.keySet().forEach(this::destroy);
     }
 }

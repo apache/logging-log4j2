@@ -20,6 +20,7 @@ package org.apache.logging.log4j.plugins.defaults.bean;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.plugins.util.Value;
 
 import java.util.List;
 import java.util.Map;
@@ -31,8 +32,8 @@ public class DefaultInitializationContext<T> implements InitializationContext<T>
 
     private final Bean<T> bean;
     private Map<Bean<?>, Object> incompleteInstances;
-    private final List<BeanInstance<?>> dependentInstances = new CopyOnWriteArrayList<>();
-    private final List<BeanInstance<?>> parentDependentInstances;
+    private final List<DependentInstance<?>> dependentInstances = new CopyOnWriteArrayList<>();
+    private final List<DependentInstance<?>> parentDependentInstances;
     private final InitializationContext<?> parentContext;
 
     public DefaultInitializationContext(final Bean<T> bean) {
@@ -44,7 +45,7 @@ public class DefaultInitializationContext<T> implements InitializationContext<T>
     }
 
     private DefaultInitializationContext(final Bean<T> bean, final Map<Bean<?>, Object> incompleteInstances,
-                                         final List<BeanInstance<?>> parentDependentInstances,
+                                         final List<DependentInstance<?>> parentDependentInstances,
                                          final InitializationContext<?> parentContext) {
 
         this.bean = bean;
@@ -71,7 +72,7 @@ public class DefaultInitializationContext<T> implements InitializationContext<T>
 
     @Override
     public void addDependentInstance(final T dependentInstance) {
-        parentDependentInstances.add(new DefaultBeanInstance<>(bean, dependentInstance, this));
+        parentDependentInstances.add(new DependentInstance<>(bean, this, dependentInstance));
     }
 
     @Override
@@ -101,10 +102,32 @@ public class DefaultInitializationContext<T> implements InitializationContext<T>
 
     @Override
     public void close() {
-        for (final BeanInstance<?> dependentInstance : dependentInstances) {
-            if (dependentInstance.getBean().equals(bean)) {
+        for (final DependentInstance<?> dependentInstance : dependentInstances) {
+            if (dependentInstance.bean.equals(bean)) {
                 dependentInstance.close();
             }
+        }
+    }
+
+    private static class DependentInstance<T> implements Value<T> {
+        private final Bean<T> bean;
+        private final InitializationContext<T> context;
+        private final T instance;
+
+        private DependentInstance(final Bean<T> bean, final InitializationContext<T> context, final T instance) {
+            this.bean = bean;
+            this.context = context;
+            this.instance = instance;
+        }
+
+        @Override
+        public T get() {
+            return instance;
+        }
+
+        @Override
+        public void close() {
+            bean.destroy(instance, context);
         }
     }
 

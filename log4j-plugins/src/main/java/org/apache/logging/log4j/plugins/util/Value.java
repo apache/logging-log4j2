@@ -17,6 +17,9 @@
 
 package org.apache.logging.log4j.plugins.util;
 
-public interface Value<T> {
+public interface Value<T> extends AutoCloseable {
     T get();
+
+    @Override
+    void close();
 }
