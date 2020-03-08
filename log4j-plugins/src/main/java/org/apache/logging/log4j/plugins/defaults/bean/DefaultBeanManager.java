@@ -32,8 +32,8 @@ import org.apache.logging.log4j.plugins.spi.ValidationException;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.BeanManager;
 import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
-import org.apache.logging.log4j.plugins.spi.bean.InjectionFactory;
 import org.apache.logging.log4j.plugins.spi.bean.InjectionTargetFactory;
+import org.apache.logging.log4j.plugins.spi.bean.Injector;
 import org.apache.logging.log4j.plugins.spi.bean.ProducerFactory;
 import org.apache.logging.log4j.plugins.spi.bean.ScopeContext;
 import org.apache.logging.log4j.plugins.spi.model.ElementManager;
@@ -71,7 +71,7 @@ import java.util.stream.Stream;
 public class DefaultBeanManager implements BeanManager {
 
     private final ElementManager elementManager;
-    private final InjectionFactory injectionFactory = new DefaultInjectionFactory(this);
+    private final Injector injector = new DefaultInjector(this);
 
     private final Collection<Bean<?>> enabledBeans = ConcurrentHashMap.newKeySet();
     private final Map<Type, Collection<Bean<?>>> beansByType = new ConcurrentHashMap<>();
@@ -105,7 +105,7 @@ public class DefaultBeanManager implements BeanManager {
         if (elementManager.isInjectable(metaClass)) {
             final Variable<T> variable = elementManager.createVariable(metaClass);
             final InjectionTargetFactory<T> factory =
-                    new DefaultInjectionTargetFactory<>(elementManager, injectionFactory, metaClass);
+                    new DefaultInjectionTargetFactory<>(elementManager, injector, metaClass);
             created = addBean(new InjectionTargetBean<>(variable, metaClass, factory));
         } else {
             created = null;

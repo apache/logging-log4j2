@@ -22,9 +22,9 @@ import org.apache.logging.log4j.plugins.api.PostConstruct;
 import org.apache.logging.log4j.plugins.api.PreDestroy;
 import org.apache.logging.log4j.plugins.spi.InjectionException;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
-import org.apache.logging.log4j.plugins.spi.bean.InjectionFactory;
 import org.apache.logging.log4j.plugins.spi.bean.InjectionTarget;
 import org.apache.logging.log4j.plugins.spi.bean.InjectionTargetFactory;
+import org.apache.logging.log4j.plugins.spi.bean.Injector;
 import org.apache.logging.log4j.plugins.spi.model.ElementManager;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
@@ -40,13 +40,13 @@ import java.util.stream.Collectors;
 
 class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
     private final ElementManager elementManager;
-    private final InjectionFactory injectionFactory;
+    private final Injector injector;
     private final MetaClass<T> type;
 
-    DefaultInjectionTargetFactory(final ElementManager elementManager, final InjectionFactory injectionFactory,
+    DefaultInjectionTargetFactory(final ElementManager elementManager, final Injector injector,
                                   final MetaClass<T> type) {
         this.elementManager = elementManager;
-        this.injectionFactory = injectionFactory;
+        this.injector = injector;
         this.type = type;
     }
 
@@ -75,7 +75,7 @@ class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
         final List<MetaMethod<T, ?>> preDestroyMethods = methods.stream()
                 .filter(method -> method.isAnnotationPresent(PreDestroy.class))
                 .collect(Collectors.toList());
-        return new DefaultInjectionTarget<>(injectionFactory, elementManager, injectionPoints, constructor,
+        return new DefaultInjectionTarget<>(injector, elementManager, injectionPoints, constructor,
                 postConstructMethods, preDestroyMethods);
     }
 

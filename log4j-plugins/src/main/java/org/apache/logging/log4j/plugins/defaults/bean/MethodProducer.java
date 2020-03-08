@@ -20,9 +20,9 @@ package org.apache.logging.log4j.plugins.defaults.bean;
 import org.apache.logging.log4j.plugins.spi.InjectionException;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.BeanManager;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
-import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -52,8 +52,7 @@ class MethodProducer<D, T> extends AbstractProducer<D, T> {
     public T produce(final InitializationContext<T> context) {
         try (final InitializationContext<D> parentContext = createContext()) {
             final D declaringInstance = producerMethod.isStatic() ? null : getDeclaringInstance(parentContext);
-            return injectionFactory.forProducerMethod(producerMethod, declaringInstance, producerInjectionPoints)
-                    .apply(context);
+            return injector.produce(declaringInstance, producerMethod, producerInjectionPoints, context);
         }
     }
 
