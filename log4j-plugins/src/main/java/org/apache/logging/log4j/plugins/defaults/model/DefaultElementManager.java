@@ -21,7 +21,6 @@ import org.apache.logging.log4j.plugins.api.AliasFor;
 import org.apache.logging.log4j.plugins.api.Dependent;
 import org.apache.logging.log4j.plugins.api.QualifierType;
 import org.apache.logging.log4j.plugins.api.ScopeType;
-import org.apache.logging.log4j.plugins.api.Stereotype;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.model.ElementManager;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
@@ -45,7 +44,7 @@ import java.util.Objects;
 public class DefaultElementManager implements ElementManager {
 
     private enum AnnotationType {
-        QUALIFIER, SCOPE, STEREOTYPE, UNKNOWN
+        QUALIFIER, SCOPE, UNKNOWN
     }
 
     private final Cache<Class<?>, MetaClass<?>> classCache = WeakCache.newWeakRefCache(DefaultMetaClass::newMetaClass);
@@ -61,9 +60,6 @@ public class DefaultElementManager implements ElementManager {
             }
             if (type == ScopeType.class) {
                 return AnnotationType.SCOPE;
-            }
-            if (type == Stereotype.class) {
-                return AnnotationType.STEREOTYPE;
             }
         }
         return AnnotationType.UNKNOWN;
@@ -90,32 +86,9 @@ public class DefaultElementManager implements ElementManager {
             final Class<? extends Annotation> annotationType = annotation.annotationType();
             if (isQualifierType(annotationType)) {
                 qualifiers.add(annotation);
-            } else if (isStereotype(annotationType)) {
-                qualifiers.addAll(filterQualifiers(getStereotypeDefinition(annotationType)));
             }
         }
         return qualifiers;
-    }
-
-    /**
-     * Returns all the annotations associated with a {@linkplain Stereotype stereotype} annotation. This contains all
-     * annotation values sans the stereotype annotation values themselves.
-     */
-    private Collection<Annotation> getStereotypeDefinition(final Class<? extends Annotation> annotationType) {
-        final Stereotype stereotype = annotationType.getAnnotation(Stereotype.class);
-        if (stereotype == null) {
-            return Collections.emptySet();
-        }
-        final Annotation[] annotations = annotationType.getAnnotations();
-        final Collection<Annotation> stereotypeDefinition = new LinkedHashSet<>(annotations.length);
-        for (final Annotation annotation : annotations) {
-            if (isStereotype(annotation.annotationType())) {
-                stereotypeDefinition.addAll(getStereotypeDefinition(annotation.annotationType()));
-            } else {
-                stereotypeDefinition.add(annotation);
-            }
-        }
-        return Collections.unmodifiableCollection(stereotypeDefinition);
     }
 
     private Class<? extends Annotation> getScopeType(final MetaElement<?> element) {
@@ -130,15 +103,9 @@ public class DefaultElementManager implements ElementManager {
             final Class<? extends Annotation> annotationType = annotation.annotationType();
             if (isScopeType(annotationType)) {
                 scopeTypes.add(annotationType);
-            } else if (isStereotype(annotationType)) {
-                scopeTypes.addAll(filterScopeTypes(getStereotypeDefinition(annotationType)));
             }
         }
         return Collections.unmodifiableCollection(scopeTypes);
-    }
-
-    private boolean isStereotype(final Class<? extends Annotation> annotationType) {
-        return getAnnotationType(annotationType) == AnnotationType.STEREOTYPE;
     }
 
     private boolean isScopeType(final Class<? extends Annotation> annotationType) {
