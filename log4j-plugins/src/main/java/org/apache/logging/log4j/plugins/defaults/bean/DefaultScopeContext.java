@@ -15,11 +15,11 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.defaults.scope;
+package org.apache.logging.log4j.plugins.defaults.bean;
 
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
-import org.apache.logging.log4j.plugins.spi.scope.ScopeContext;
-import org.apache.logging.log4j.plugins.spi.scope.Scoped;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
+import org.apache.logging.log4j.plugins.spi.bean.ScopeContext;
+import org.apache.logging.log4j.plugins.spi.bean.Scoped;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.annotation.Annotation;

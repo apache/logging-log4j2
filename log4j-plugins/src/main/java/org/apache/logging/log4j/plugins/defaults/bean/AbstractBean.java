@@ -69,4 +69,6 @@ abstract class AbstractBean<D, T> implements Bean<T> {
     public int hashCode() {
         return Objects.hash(variable, declaringClass);
     }
+
+    abstract boolean isTrackingDependencies();
 }

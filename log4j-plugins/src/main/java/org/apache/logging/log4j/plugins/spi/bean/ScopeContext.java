@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.spi.scope;
+package org.apache.logging.log4j.plugins.spi.bean;
 
 import org.apache.logging.log4j.plugins.api.ScopeType;
 

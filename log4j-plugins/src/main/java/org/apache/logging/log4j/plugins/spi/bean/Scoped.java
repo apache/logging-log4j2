@@ -15,17 +15,16 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.spi.scope;
+package org.apache.logging.log4j.plugins.spi.bean;
 
-import org.apache.logging.log4j.plugins.api.PrototypeScoped;
-import org.apache.logging.log4j.plugins.api.SingletonScoped;
+import org.apache.logging.log4j.plugins.api.Dependent;
+import org.apache.logging.log4j.plugins.api.Singleton;
 
 import java.lang.annotation.Annotation;
 
 /**
  * Manages the creation and destruction of instances of a specific type within a particular scope context. Scopes
- * provide managed life-cycles for objects such as {@linkplain SingletonScoped singleton}
- * and {@linkplain PrototypeScoped prototype}.
+ * provide managed life-cycles for objects such as {@linkplain Singleton singleton} and {@linkplain Dependent dependent}.
  *
  * @param <T> type of managed instance
  * @see org.apache.logging.log4j.plugins.api.ScopeType
@@ -52,7 +51,7 @@ public interface Scoped<T> {
 
     Class<? extends Annotation> getScopeType();
 
-    default boolean isPrototypeScoped() {
-        return getScopeType() == PrototypeScoped.class;
+    default boolean isDependentScoped() {
+        return getScopeType() == Dependent.class;
     }
 }

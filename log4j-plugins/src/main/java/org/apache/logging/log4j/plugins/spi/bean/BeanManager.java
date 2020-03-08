@@ -19,8 +19,6 @@ package org.apache.logging.log4j.plugins.spi.bean;
 
 import org.apache.logging.log4j.plugins.spi.ValidationException;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
-import org.apache.logging.log4j.plugins.spi.scope.Scoped;
 
 import java.util.Arrays;
 import java.util.Collection;

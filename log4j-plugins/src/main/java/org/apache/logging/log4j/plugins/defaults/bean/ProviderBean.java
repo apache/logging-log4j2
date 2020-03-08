@@ -19,7 +19,7 @@ package org.apache.logging.log4j.plugins.defaults.bean;
 
 import org.apache.logging.log4j.plugins.api.Provider;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 
 import java.util.function.Function;
 

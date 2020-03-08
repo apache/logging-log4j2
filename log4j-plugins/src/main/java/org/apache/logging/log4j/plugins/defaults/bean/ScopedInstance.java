@@ -15,16 +15,15 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.api;
+package org.apache.logging.log4j.plugins.defaults.bean;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.apache.logging.log4j.plugins.spi.bean.Scoped;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
-@ScopeType
-public @interface SingletonScoped {
+interface ScopedInstance<T> extends AutoCloseable {
+    Scoped<T> getScoped();
+
+    T getInstance();
+
+    @Override
+    void close();
 }

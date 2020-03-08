@@ -15,24 +15,11 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.defaults.bean;
-
-import org.apache.logging.log4j.plugins.spi.model.Variable;
-import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
-
-import java.util.Optional;
-import java.util.function.Function;
-
-class OptionalBean<T> extends SystemBean<Optional<T>> {
-    private final Function<InitializationContext<?>, Optional<T>> optionalValueFactory;
-
-    OptionalBean(final Variable<Optional<T>> variable, final Function<InitializationContext<?>, Optional<T>> optionalValueFactory) {
-        super(variable);
-        this.optionalValueFactory = optionalValueFactory;
-    }
-
-    @Override
-    public Optional<T> create(final InitializationContext<Optional<T>> context) {
-        return optionalValueFactory.apply(context);
-    }
-}
+/**
+ * Plugin scopes and dependency injection APIs. These annotations and interfaces form the public API used by plugins
+ * to declare necessary dependencies of a class along with any produced objects and other lifecycle callbacks to
+ * participate in the Log4j plugin system.
+ *
+ * @since 3.0
+ */
+package org.apache.logging.log4j.plugins.api;

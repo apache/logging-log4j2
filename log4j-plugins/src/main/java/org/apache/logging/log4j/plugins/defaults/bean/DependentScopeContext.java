@@ -15,27 +15,30 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.defaults.scope;
+package org.apache.logging.log4j.plugins.defaults.bean;
 
-import org.apache.logging.log4j.plugins.api.PrototypeScoped;
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
-import org.apache.logging.log4j.plugins.spi.scope.ScopeContext;
-import org.apache.logging.log4j.plugins.spi.scope.Scoped;
+import org.apache.logging.log4j.plugins.api.Dependent;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
+import org.apache.logging.log4j.plugins.spi.bean.ScopeContext;
+import org.apache.logging.log4j.plugins.spi.bean.Scoped;
 
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 
-public class PrototypeScopeContext implements ScopeContext {
+public class DependentScopeContext implements ScopeContext {
     @Override
     public Class<? extends Annotation> getScopeType() {
-        return PrototypeScoped.class;
+        return Dependent.class;
     }
 
     @Override
     public <T> T getOrCreate(final Scoped<T> scoped, final InitializationContext<T> context) {
+        if (context == null) {
+            return null;
+        }
         final T instance = scoped.create(context);
-        if (context instanceof DefaultInitializationContext<?>) {
-            ((DefaultInitializationContext<T>) context).addDependentInstance(instance);
+        if (context.isTrackingDependencies(scoped)) {
+            context.addDependentInstance(instance);
         }
         return instance;
     }

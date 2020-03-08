@@ -22,7 +22,7 @@ import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

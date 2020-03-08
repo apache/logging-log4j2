@@ -22,7 +22,7 @@ import org.apache.logging.log4j.plugins.spi.bean.BeanManager;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaField;
 import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 
 import java.lang.reflect.Type;
 import java.util.Collection;

@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.plugins.spi.bean;
 
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
 
 import java.util.Collection;
 

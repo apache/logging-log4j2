@@ -23,7 +23,7 @@ import org.apache.logging.log4j.plugins.spi.bean.InjectionTargetFactory;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -51,8 +51,8 @@ class InjectionTargetBean<T> extends AbstractBean<T, T> {
         }
         injectionTarget.inject(instance, context);
         injectionTarget.postConstruct(instance);
-        if (isPrototypeScoped()) {
-            context.push(instance);
+        if (isDependentScoped()) {
+            context.addIncompleteInstance(instance);
         }
         return instance;
     }
@@ -60,7 +60,7 @@ class InjectionTargetBean<T> extends AbstractBean<T, T> {
     @Override
     public void destroy(final T instance, final InitializationContext<T> context) {
         try {
-            if (isPrototypeScoped()) {
+            if (isDependentScoped()) {
                 injectionTarget.preDestroy(instance);
             }
         } finally {
@@ -76,5 +76,11 @@ class InjectionTargetBean<T> extends AbstractBean<T, T> {
                 ", qualifiers=" + getQualifiers() +
                 ", declaringClass=" + getDeclaringClass() +
                 '}';
+    }
+
+    @Override
+    boolean isTrackingDependencies() {
+        return injectionTarget instanceof DefaultInjectionTarget<?> &&
+                ((DefaultInjectionTarget<?>) injectionTarget).hasPreDestroyMethods();
     }
 }

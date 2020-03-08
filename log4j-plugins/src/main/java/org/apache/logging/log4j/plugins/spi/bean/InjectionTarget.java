@@ -17,8 +17,6 @@
 
 package org.apache.logging.log4j.plugins.spi.bean;
 
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
-
 public interface InjectionTarget<T> extends Producer<T> {
     // sets values of injected fields and calls initializer methods
     void inject(final T instance, final InitializationContext<T> context);

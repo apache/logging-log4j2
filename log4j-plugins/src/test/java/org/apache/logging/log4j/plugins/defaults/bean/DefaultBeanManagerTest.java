@@ -23,7 +23,7 @@ import org.apache.logging.log4j.plugins.api.PostConstruct;
 import org.apache.logging.log4j.plugins.api.Produces;
 import org.apache.logging.log4j.plugins.api.Provider;
 import org.apache.logging.log4j.plugins.api.QualifierType;
-import org.apache.logging.log4j.plugins.api.SingletonScoped;
+import org.apache.logging.log4j.plugins.api.Singleton;
 import org.apache.logging.log4j.plugins.test.BeanJUnit4Runner;
 import org.apache.logging.log4j.plugins.test.WithBeans;
 import org.junit.Test;
@@ -45,11 +45,11 @@ public class DefaultBeanManagerTest {
     }
 
     @Produces
-    @SingletonScoped
+    @Singleton
     public String globalString = "global string value";
 
     @Produces
-    @SingletonScoped
+    @Singleton
     @Run
     public String testString() {
         return "test string value";
@@ -124,12 +124,12 @@ public class DefaultBeanManagerTest {
 
     @WithBeans(DefaultConstructorInjection.class)
     @Test
-    public void testPrototypeScopeDifferentInstances(final DefaultConstructorInjection first,
+    public void testDependentScopeDifferentInstances(final DefaultConstructorInjection first,
                                                      final DefaultConstructorInjection second) {
         assertNotSame(first, second);
     }
 
-    @SingletonScoped
+    @Singleton
     public static class SingletonInjection {
     }
 
@@ -221,7 +221,7 @@ public class DefaultBeanManagerTest {
         assertTrue(instance.isPresent());
     }
 
-    @SingletonScoped
+    @Singleton
     public static class IdGenerator {
         private final AtomicInteger current = new AtomicInteger();
 

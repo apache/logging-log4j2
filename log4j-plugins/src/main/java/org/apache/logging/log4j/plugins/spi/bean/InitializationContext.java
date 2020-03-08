@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.spi.scope;
+package org.apache.logging.log4j.plugins.spi.bean;
 
 import java.util.Optional;
 
@@ -29,16 +29,22 @@ public interface InitializationContext<T> extends AutoCloseable {
      *
      * @param incompleteInstance incompletely initialized instance
      */
-    void push(final T incompleteInstance);
+    void addIncompleteInstance(final T incompleteInstance);
+
+    // TODO: this API is needlessly complicated currently
+    boolean isTrackingDependencies(final Scoped<T> scoped);
+
+    void addDependentInstance(T dependentInstance);
+
+    // TODO: consider returning Optional<Bean<?>> or flattening Scoped into Bean
+    Optional<Scoped<?>> getNonDependentScopedDependent();
 
     <S> Optional<S> getIncompleteInstance(Scoped<S> scoped);
 
-    Optional<Scoped<T>> getScoped();
-
-    Optional<InitializationContext<?>> getParentContext();
-
+    // dependent contexts share the same incomplete instances
     <S> InitializationContext<S> createDependentContext(Scoped<S> scoped);
 
+    // independent contexts are used by producers to get their declaring bean separately
     <S> InitializationContext<S> createIndependentContext(Scoped<S> scoped);
 
     /**

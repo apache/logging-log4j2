@@ -19,14 +19,11 @@ package org.apache.logging.log4j.plugins.defaults.bean;
 
 import org.apache.logging.log4j.plugins.api.Disposes;
 import org.apache.logging.log4j.plugins.api.Produces;
-import org.apache.logging.log4j.plugins.api.PrototypeScoped;
+import org.apache.logging.log4j.plugins.api.Dependent;
 import org.apache.logging.log4j.plugins.api.Provider;
-import org.apache.logging.log4j.plugins.api.SingletonScoped;
+import org.apache.logging.log4j.plugins.api.Singleton;
 import org.apache.logging.log4j.plugins.defaults.model.DefaultElementManager;
 import org.apache.logging.log4j.plugins.defaults.model.DefaultVariable;
-import org.apache.logging.log4j.plugins.defaults.scope.DefaultInitializationContext;
-import org.apache.logging.log4j.plugins.defaults.scope.DefaultScopeContext;
-import org.apache.logging.log4j.plugins.defaults.scope.PrototypeScopeContext;
 import org.apache.logging.log4j.plugins.spi.AmbiguousBeanException;
 import org.apache.logging.log4j.plugins.spi.InjectionException;
 import org.apache.logging.log4j.plugins.spi.ResolutionException;
@@ -47,9 +44,9 @@ import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
 import org.apache.logging.log4j.plugins.spi.model.MetaParameter;
 import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
-import org.apache.logging.log4j.plugins.spi.scope.ScopeContext;
-import org.apache.logging.log4j.plugins.spi.scope.Scoped;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
+import org.apache.logging.log4j.plugins.spi.bean.ScopeContext;
+import org.apache.logging.log4j.plugins.spi.bean.Scoped;
 import org.apache.logging.log4j.plugins.util.ParameterizedTypeImpl;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
@@ -90,8 +87,8 @@ public class DefaultBeanManager implements BeanManager {
     public DefaultBeanManager(final ElementManager elementManager) {
         this.elementManager = elementManager;
         // TODO: need a better way to register scope contexts
-        scopes.put(PrototypeScoped.class, new PrototypeScopeContext());
-        scopes.put(SingletonScoped.class, new DefaultScopeContext(SingletonScoped.class));
+        scopes.put(Dependent.class, new DependentScopeContext());
+        scopes.put(Singleton.class, new DefaultScopeContext(Singleton.class));
     }
 
     @Override
@@ -125,7 +122,7 @@ public class DefaultBeanManager implements BeanManager {
     private <T> Bean<T> addBean(final Bean<T> bean) {
         if (enabledBeans.add(bean)) {
             addBeanTypes(bean);
-            if (!bean.isPrototypeScoped() && !isSystemBean(bean)) {
+            if (!bean.isDependentScoped() && !isSystemBean(bean)) {
                 sharedBeans.add(bean);
             }
         }
@@ -248,9 +245,8 @@ public class DefaultBeanManager implements BeanManager {
         if (rawType.equals(InjectionPoint.class)) {
             final Bean<?> bean = point.getBean()
                     .orElseThrow(() -> new InjectionException("Cannot inject " + point + " into a non-bean"));
-            if (!bean.isPrototypeScoped()) {
-                // TODO: more useful error message
-                throw new InjectionException("Injection of " + point + " requires use of prototype scope");
+            if (!bean.isDependentScoped()) {
+                throw new InjectionException("Injection points can only be @Dependent scoped; got: " + point);
             }
         }
         if (rawType.equals(Bean.class)) {
@@ -391,22 +387,22 @@ public class DefaultBeanManager implements BeanManager {
             return existingValue;
         }
         final InitializationContext<?> context =
-                resolvedBean.isPrototypeScoped() ? parentContext : createInitializationContext(resolvedBean);
+                resolvedBean.isDependentScoped() ? parentContext : createInitializationContext(resolvedBean);
         return Optional.of(getValue(resolvedBean, context));
     }
 
     private <T> Optional<T> getExistingInjectableValue(final Bean<T> resolvedBean, final Bean<?> pointBean,
                                                        final InitializationContext<?> parentContext) {
-        if (resolvedBean.getScopeType() != SingletonScoped.class) {
+        if (resolvedBean.getScopeType() != Singleton.class) {
             return Optional.empty();
         }
         final Optional<Bean<?>> bean;
-        if (pointBean.isPrototypeScoped() && !resolvedBean.isPrototypeScoped()) {
-            bean = findNonPrototypeScopedDependent(parentContext);
+        if (pointBean.isDependentScoped() && !resolvedBean.isDependentScoped()) {
+            bean = parentContext.getNonDependentScopedDependent().filter(Bean.class::isInstance).map(TypeUtil::cast);
         } else {
             bean = Optional.of(pointBean);
         }
-        return bean.filter(b -> SingletonScoped.class == b.getScopeType())
+        return bean.filter(b -> Singleton.class == b.getScopeType())
                 .flatMap(b -> {
                     final Optional<T> incompleteInstance = parentContext.getIncompleteInstance(resolvedBean);
                     if (incompleteInstance.isPresent()) {
@@ -424,15 +420,6 @@ public class DefaultBeanManager implements BeanManager {
         disposesMethods.clear();
         scopes.values().forEach(ScopeContext::close);
         scopes.clear();
-    }
-
-    private static Optional<Bean<?>> findNonPrototypeScopedDependent(final InitializationContext<?> context) {
-        return context.getParentContext().flatMap(parentContext ->
-                parentContext.getScoped()
-                        .filter(Bean.class::isInstance)
-                        .map(scoped -> (Bean<?>) scoped)
-                        .flatMap(bean -> bean.isPrototypeScoped() ?
-                                findNonPrototypeScopedDependent(parentContext) : Optional.of(bean)));
     }
 
     private static class DisposesMethod<D> {

@@ -20,7 +20,6 @@ package org.apache.logging.log4j.plugins.spi.bean;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
-import org.apache.logging.log4j.plugins.spi.scope.Scoped;
 
 import java.util.Collection;
 

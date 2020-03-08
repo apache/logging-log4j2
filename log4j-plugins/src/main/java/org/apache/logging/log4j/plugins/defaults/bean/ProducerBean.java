@@ -23,7 +23,7 @@ import org.apache.logging.log4j.plugins.spi.bean.ProducerFactory;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -59,8 +59,9 @@ class ProducerBean<D, T> extends AbstractBean<D, T> {
         if (instance == null) {
             throw new IllegalProductException("Producer created null instance: " + producer);
         }
-        if (isPrototypeScoped()) {
-            context.push(instance);
+        // FIXME: this logic doesn't seem to be in Weld? only seems to be required in InjectionTargetBean
+        if (isDependentScoped()) {
+            context.addIncompleteInstance(instance);
         }
         return instance;
     }
@@ -68,7 +69,7 @@ class ProducerBean<D, T> extends AbstractBean<D, T> {
     @Override
     public void destroy(final T instance, final InitializationContext<T> context) {
         try {
-            if (isPrototypeScoped()) {
+            if (isDependentScoped()) {
                 producer.dispose(instance);
             }
         } finally {
@@ -84,5 +85,10 @@ class ProducerBean<D, T> extends AbstractBean<D, T> {
                 ", qualifiers=" + getQualifiers() +
                 ", declaringClass=" + getDeclaringClass() +
                 '}';
+    }
+
+    @Override
+    boolean isTrackingDependencies() {
+        return producer instanceof AbstractProducer<?, ?> && ((AbstractProducer<?, ?>) producer).hasDisposerMethod();
     }
 }

@@ -18,7 +18,7 @@
 package org.apache.logging.log4j.plugins.defaults.model;
 
 import org.apache.logging.log4j.plugins.api.AliasFor;
-import org.apache.logging.log4j.plugins.api.PrototypeScoped;
+import org.apache.logging.log4j.plugins.api.Dependent;
 import org.apache.logging.log4j.plugins.api.QualifierType;
 import org.apache.logging.log4j.plugins.api.ScopeType;
 import org.apache.logging.log4j.plugins.api.Stereotype;
@@ -120,7 +120,7 @@ public class DefaultElementManager implements ElementManager {
 
     private Class<? extends Annotation> getScopeType(final MetaElement<?> element) {
         final Collection<Class<? extends Annotation>> scopeTypes = filterScopeTypes(element.getAnnotations());
-        return scopeTypes.isEmpty() ? PrototypeScoped.class : scopeTypes.iterator().next();
+        return scopeTypes.isEmpty() ? Dependent.class : scopeTypes.iterator().next();
     }
 
     private Collection<Class<? extends Annotation>> filterScopeTypes(final Collection<Annotation> annotations) {

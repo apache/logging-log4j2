@@ -25,7 +25,7 @@ import org.apache.logging.log4j.plugins.spi.model.MetaConstructor;
 import org.apache.logging.log4j.plugins.spi.model.MetaField;
 import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
 import org.apache.logging.log4j.plugins.spi.model.MetaParameter;
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 
 import java.util.Collection;
 import java.util.List;

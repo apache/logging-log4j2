@@ -30,7 +30,7 @@ import org.apache.logging.log4j.plugins.spi.model.MetaElement;
 import org.apache.logging.log4j.plugins.spi.model.MetaField;
 import org.apache.logging.log4j.plugins.spi.model.MetaMember;
 import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.util.Collection;
@@ -130,5 +130,9 @@ class DefaultInjectionTarget<T> implements InjectionTarget<T> {
     @Override
     public Collection<InjectionPoint<?>> getInjectionPoints() {
         return injectionPoints;
+    }
+
+    boolean hasPreDestroyMethods() {
+        return !preDestroyMethods.isEmpty();
     }
 }

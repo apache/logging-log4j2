@@ -23,7 +23,7 @@ import org.apache.logging.log4j.plugins.spi.bean.InjectionFactory;
 import org.apache.logging.log4j.plugins.spi.bean.Producer;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
-import org.apache.logging.log4j.plugins.spi.scope.InitializationContext;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -58,9 +58,13 @@ abstract class AbstractProducer<D, T> implements Producer<T> {
 
     abstract Type getType();
 
+    boolean hasDisposerMethod() {
+        return disposerMethod != null;
+    }
+
     @Override
     public void dispose(final T instance) {
-        if (disposerMethod != null) {
+        if (hasDisposerMethod()) {
             // as producer and disposer bean is unrelated to this bean, we need to recreate it on demand
             try (final InitializationContext<D> context = createContext()) {
                 final D declaringInstance = disposerMethod.isStatic() ? null : getDeclaringInstance(context);
