@@ -20,35 +20,34 @@ package org.apache.logging.log4j.plugins.spi.bean;
 import java.util.Optional;
 
 /**
- * Provides operations used by {@link Scoped} implementations for tracking lifecycle state.
+ * Provides operations used by {@link Bean} implementations for tracking lifecycle state.
  */
 public interface InitializationContext<T> extends AutoCloseable {
     /**
      * Pushes an incomplete instance state. An instance is not completely initialized until it is returned from
-     * {@link Scoped#create(InitializationContext)}.
+     * {@link Bean#create(InitializationContext)}.
      *
      * @param incompleteInstance incompletely initialized instance
      */
     void addIncompleteInstance(final T incompleteInstance);
 
     // TODO: this API is needlessly complicated currently
-    boolean isTrackingDependencies(final Scoped<T> scoped);
+    boolean isTrackingDependencies(final Bean<T> bean);
 
     void addDependentInstance(T dependentInstance);
 
-    // TODO: consider returning Optional<Bean<?>> or flattening Scoped into Bean
-    Optional<Scoped<?>> getNonDependentScopedDependent();
+    Optional<Bean<?>> getNonDependentScopedDependent();
 
-    <S> Optional<S> getIncompleteInstance(Scoped<S> scoped);
+    <S> Optional<S> getIncompleteInstance(Bean<S> bean);
 
     // dependent contexts share the same incomplete instances
-    <S> InitializationContext<S> createDependentContext(Scoped<S> scoped);
+    <S> InitializationContext<S> createDependentContext(Bean<S> bean);
 
     // independent contexts are used by producers to get their declaring bean separately
-    <S> InitializationContext<S> createIndependentContext(Scoped<S> scoped);
+    <S> InitializationContext<S> createIndependentContext(Bean<S> bean);
 
     /**
-     * Destroys all dependent objects by propagating them to {@link Scoped#destroy(Object, InitializationContext)}.
+     * Destroys all dependent objects by propagating them to {@link Bean#destroy(Object, InitializationContext)}.
      */
     @Override
     void close();

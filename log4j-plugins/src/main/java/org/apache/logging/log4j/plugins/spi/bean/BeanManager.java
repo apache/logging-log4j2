@@ -60,13 +60,13 @@ public interface BeanManager extends AutoCloseable {
 //    Collection<Bean<?>> getBeans();
 
     /**
-     * Creates an InitializationContext for a given Scoped instance for use in dependency injection SPIs.
+     * Creates an InitializationContext for a given Bean instance for use in dependency injection SPIs.
      *
-     * @param scoped scoped object to create an initialization context for
-     * @param <T>    type of object created by scope
-     * @return new InitializationContext for the given Scoped
+     * @param bean bean to create an initialization context for
+     * @param <T>  type of object created by bean
+     * @return new InitializationContext for the given Bean
      */
-    <T> InitializationContext<T> createInitializationContext(final Scoped<T> scoped);
+    <T> InitializationContext<T> createInitializationContext(final Bean<T> bean);
 
     /**
      * Gets or creates the value for a given bean inside a given InitializationContext.

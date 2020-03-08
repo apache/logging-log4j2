@@ -23,7 +23,7 @@ import java.lang.annotation.Annotation;
 import java.util.Optional;
 
 /**
- * Manages {@link Scoped} instances within a particular {@linkplain ScopeType scope}.
+ * Manages {@link Bean} instances within a particular {@linkplain ScopeType scope}.
  */
 public interface ScopeContext extends AutoCloseable {
 
@@ -33,30 +33,30 @@ public interface ScopeContext extends AutoCloseable {
     Class<? extends Annotation> getScopeType();
 
     /**
-     * Gets or {@linkplain Scoped#create(InitializationContext) creates} a scoped instance of a specific type.
+     * Gets or {@linkplain Bean#create(InitializationContext) creates} a bean instance of a specific type.
      *
-     * @param scoped the managed type
+     * @param bean    the bean to get or create an instance of
      * @param context the context to create a new instance in
      * @param <T>     the instance type being managed
      * @return the new or existing instance
      */
-    <T> T getOrCreate(final Scoped<T> scoped, final InitializationContext<T> context);
+    <T> T getOrCreate(final Bean<T> bean, final InitializationContext<T> context);
 
     /**
-     * Returns an existing scoped instance if it exists.
+     * Returns an existing bean instance if it exists.
      *
-     * @param scoped the managed type
-     * @param <T>     the instance type being managed
+     * @param bean the bean to look up an existing instance of
+     * @param <T>  the instance type being managed
      * @return the existing instance or empty
      */
-    <T> Optional<T> getIfExists(final Scoped<T> scoped);
+    <T> Optional<T> getIfExists(final Bean<T> bean);
 
     /**
-     * Destroys the existing scoped instance of a specified type if it exists or otherwise does nothing.
+     * Destroys the existing bean instance of a specified type if it exists or otherwise does nothing.
      *
-     * @param scoped the managed type
+     * @param bean the managed type
      */
-    void destroy(final Scoped<?> scoped);
+    void destroy(final Bean<?> bean);
 
     @Override
     void close();

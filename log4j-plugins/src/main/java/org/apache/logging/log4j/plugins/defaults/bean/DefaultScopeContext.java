@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.plugins.defaults.bean;
 
+import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.bean.ScopeContext;
-import org.apache.logging.log4j.plugins.spi.bean.Scoped;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.annotation.Annotation;
@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultScopeContext implements ScopeContext {
-    private final Map<Scoped<?>, ScopedInstance<?>> cache = new ConcurrentHashMap<>();
+    private final Map<Bean<?>, BeanInstance<?>> cache = new ConcurrentHashMap<>();
     private final Class<? extends Annotation> scopeType;
 
     public DefaultScopeContext(final Class<? extends Annotation> scopeType) {
@@ -42,24 +42,24 @@ public class DefaultScopeContext implements ScopeContext {
     }
 
     @Override
-    public <T> T getOrCreate(final Scoped<T> scoped, final InitializationContext<T> context) {
-        final ScopedInstance<T> scopedInstance =
-                TypeUtil.cast(cache.computeIfAbsent(scoped, ignored -> new LazyScopedInstance<>(scoped, context)));
-        return scopedInstance.getInstance();
+    public <T> T getOrCreate(final Bean<T> bean, final InitializationContext<T> context) {
+        final BeanInstance<T> beanInstance =
+                TypeUtil.cast(cache.computeIfAbsent(bean, ignored -> new LazyBeanInstance<>(bean, context)));
+        return beanInstance.getInstance();
     }
 
     @Override
-    public <T> Optional<T> getIfExists(final Scoped<T> scoped) {
-        final ScopedInstance<T> scopedInstance = TypeUtil.cast(cache.get(scoped));
-        return scopedInstance == null ? Optional.empty() : Optional.of(scopedInstance.getInstance());
+    public <T> Optional<T> getIfExists(final Bean<T> bean) {
+        final BeanInstance<T> beanInstance = TypeUtil.cast(cache.get(bean));
+        return beanInstance == null ? Optional.empty() : Optional.of(beanInstance.getInstance());
     }
 
     @Override
-    public void destroy(final Scoped<?> scoped) {
-        final ScopedInstance<?> scopedInstance = cache.get(scoped);
-        if (scopedInstance != null) {
-            scopedInstance.close();
-            cache.remove(scoped, scopedInstance);
+    public void destroy(final Bean<?> bean) {
+        final BeanInstance<?> beanInstance = cache.get(bean);
+        if (beanInstance != null) {
+            beanInstance.close();
+            cache.remove(bean, beanInstance);
         }
     }
 

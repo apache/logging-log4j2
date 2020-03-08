@@ -18,9 +18,9 @@
 package org.apache.logging.log4j.plugins.defaults.bean;
 
 import org.apache.logging.log4j.plugins.api.Dependent;
+import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.bean.ScopeContext;
-import org.apache.logging.log4j.plugins.spi.bean.Scoped;
 
 import java.lang.annotation.Annotation;
 import java.util.Optional;
@@ -32,24 +32,24 @@ public class DependentScopeContext implements ScopeContext {
     }
 
     @Override
-    public <T> T getOrCreate(final Scoped<T> scoped, final InitializationContext<T> context) {
+    public <T> T getOrCreate(final Bean<T> bean, final InitializationContext<T> context) {
         if (context == null) {
             return null;
         }
-        final T instance = scoped.create(context);
-        if (context.isTrackingDependencies(scoped)) {
+        final T instance = bean.create(context);
+        if (context.isTrackingDependencies(bean)) {
             context.addDependentInstance(instance);
         }
         return instance;
     }
 
     @Override
-    public <T> Optional<T> getIfExists(final Scoped<T> scoped) {
+    public <T> Optional<T> getIfExists(final Bean<T> bean) {
         return Optional.empty();
     }
 
     @Override
-    public void destroy(final Scoped<?> scoped) {
+    public void destroy(final Bean<?> bean) {
     }
 
     @Override

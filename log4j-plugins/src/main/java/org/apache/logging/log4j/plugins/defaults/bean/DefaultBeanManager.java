@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.plugins.defaults.bean;
 
+import org.apache.logging.log4j.plugins.api.Dependent;
 import org.apache.logging.log4j.plugins.api.Disposes;
 import org.apache.logging.log4j.plugins.api.Produces;
-import org.apache.logging.log4j.plugins.api.Dependent;
 import org.apache.logging.log4j.plugins.api.Provider;
 import org.apache.logging.log4j.plugins.api.Singleton;
 import org.apache.logging.log4j.plugins.defaults.model.DefaultElementManager;
@@ -31,9 +31,11 @@ import org.apache.logging.log4j.plugins.spi.UnsatisfiedBeanException;
 import org.apache.logging.log4j.plugins.spi.ValidationException;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.BeanManager;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.bean.InjectionFactory;
 import org.apache.logging.log4j.plugins.spi.bean.InjectionTargetFactory;
 import org.apache.logging.log4j.plugins.spi.bean.ProducerFactory;
+import org.apache.logging.log4j.plugins.spi.bean.ScopeContext;
 import org.apache.logging.log4j.plugins.spi.model.ElementManager;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
@@ -44,9 +46,6 @@ import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
 import org.apache.logging.log4j.plugins.spi.model.MetaParameter;
 import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
-import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
-import org.apache.logging.log4j.plugins.spi.bean.ScopeContext;
-import org.apache.logging.log4j.plugins.spi.bean.Scoped;
 import org.apache.logging.log4j.plugins.util.ParameterizedTypeImpl;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
@@ -356,8 +355,8 @@ public class DefaultBeanManager implements BeanManager {
     }
 
     @Override
-    public <T> InitializationContext<T> createInitializationContext(final Scoped<T> scoped) {
-        return new DefaultInitializationContext<>(scoped);
+    public <T> InitializationContext<T> createInitializationContext(final Bean<T> bean) {
+        return new DefaultInitializationContext<>(bean);
     }
 
     @Override
@@ -398,7 +397,7 @@ public class DefaultBeanManager implements BeanManager {
         }
         final Optional<Bean<?>> bean;
         if (pointBean.isDependentScoped() && !resolvedBean.isDependentScoped()) {
-            bean = parentContext.getNonDependentScopedDependent().filter(Bean.class::isInstance).map(TypeUtil::cast);
+            bean = parentContext.getNonDependentScopedDependent();
         } else {
             bean = Optional.of(pointBean);
         }

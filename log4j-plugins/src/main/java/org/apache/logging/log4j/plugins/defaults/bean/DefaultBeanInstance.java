@@ -17,13 +17,34 @@
 
 package org.apache.logging.log4j.plugins.defaults.bean;
 
-import org.apache.logging.log4j.plugins.spi.bean.Scoped;
+import org.apache.logging.log4j.plugins.spi.bean.Bean;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 
-interface ScopedInstance<T> extends AutoCloseable {
-    Scoped<T> getScoped();
+import java.util.Objects;
 
-    T getInstance();
+class DefaultBeanInstance<T> implements BeanInstance<T> {
+    private final Bean<T> bean;
+    private final T instance;
+    private final InitializationContext<T> context;
+
+    DefaultBeanInstance(final Bean<T> bean, final T instance, final InitializationContext<T> context) {
+        this.bean = Objects.requireNonNull(bean);
+        this.instance = Objects.requireNonNull(instance);
+        this.context = Objects.requireNonNull(context);
+    }
 
     @Override
-    void close();
+    public Bean<T> getBean() {
+        return bean;
+    }
+
+    @Override
+    public T getInstance() {
+        return instance;
+    }
+
+    @Override
+    public void close() {
+        bean.destroy(instance, context);
+    }
 }

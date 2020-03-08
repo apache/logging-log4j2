@@ -17,8 +17,8 @@
 
 package org.apache.logging.log4j.plugins.defaults.bean;
 
+import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
-import org.apache.logging.log4j.plugins.spi.bean.Scoped;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.util.List;
@@ -29,25 +29,25 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DefaultInitializationContext<T> implements InitializationContext<T> {
 
-    private final Scoped<T> scoped;
-    private Map<Scoped<?>, Object> incompleteInstances;
-    private final List<ScopedInstance<?>> dependentInstances = new CopyOnWriteArrayList<>();
-    private final List<ScopedInstance<?>> parentDependentInstances;
+    private final Bean<T> bean;
+    private Map<Bean<?>, Object> incompleteInstances;
+    private final List<BeanInstance<?>> dependentInstances = new CopyOnWriteArrayList<>();
+    private final List<BeanInstance<?>> parentDependentInstances;
     private final InitializationContext<?> parentContext;
 
-    public DefaultInitializationContext(final Scoped<T> scoped) {
-        this(scoped, null, new CopyOnWriteArrayList<>(), null);
+    public DefaultInitializationContext(final Bean<T> bean) {
+        this(bean, null, new CopyOnWriteArrayList<>(), null);
     }
 
-    private DefaultInitializationContext(final Scoped<T> scoped, final Map<Scoped<?>, Object> incompleteInstances) {
-        this(scoped, incompleteInstances, new CopyOnWriteArrayList<>(), null);
+    private DefaultInitializationContext(final Bean<T> bean, final Map<Bean<?>, Object> incompleteInstances) {
+        this(bean, incompleteInstances, new CopyOnWriteArrayList<>(), null);
     }
 
-    private DefaultInitializationContext(final Scoped<T> scoped, final Map<Scoped<?>, Object> incompleteInstances,
-                                         final List<ScopedInstance<?>> parentDependentInstances,
+    private DefaultInitializationContext(final Bean<T> bean, final Map<Bean<?>, Object> incompleteInstances,
+                                         final List<BeanInstance<?>> parentDependentInstances,
                                          final InitializationContext<?> parentContext) {
 
-        this.scoped = scoped;
+        this.bean = bean;
         this.incompleteInstances = incompleteInstances;
         this.parentDependentInstances = parentDependentInstances;
         this.parentContext = parentContext;
@@ -58,51 +58,51 @@ public class DefaultInitializationContext<T> implements InitializationContext<T>
         if (incompleteInstances == null) {
             incompleteInstances = new ConcurrentHashMap<>();
         }
-        if (scoped != null) {
-            incompleteInstances.put(scoped, incompleteInstance);
+        if (bean != null) {
+            incompleteInstances.put(bean, incompleteInstance);
         }
     }
 
     @Override
-    public boolean isTrackingDependencies(final Scoped<T> scoped) {
+    public boolean isTrackingDependencies(final Bean<T> bean) {
         return !dependentInstances.isEmpty() ||
-                (scoped instanceof AbstractBean<?, ?> && ((AbstractBean<?, ?>) scoped).isTrackingDependencies());
+                (bean instanceof AbstractBean<?, ?> && ((AbstractBean<?, ?>) bean).isTrackingDependencies());
     }
 
     @Override
     public void addDependentInstance(final T dependentInstance) {
-        parentDependentInstances.add(new DefaultScopedInstance<>(scoped, dependentInstance, this));
+        parentDependentInstances.add(new DefaultBeanInstance<>(bean, dependentInstance, this));
     }
 
     @Override
-    public Optional<Scoped<?>> getNonDependentScopedDependent() {
-        if (parentContext == null || scoped == null) {
+    public Optional<Bean<?>> getNonDependentScopedDependent() {
+        if (parentContext == null || bean == null) {
             return Optional.empty();
         }
-        return scoped.isDependentScoped() ? parentContext.getNonDependentScopedDependent() : Optional.of(scoped);
+        return bean.isDependentScoped() ? parentContext.getNonDependentScopedDependent() : Optional.of(bean);
     }
 
     @Override
-    public <S> InitializationContext<S> createDependentContext(final Scoped<S> scoped) {
-        return new DefaultInitializationContext<>(scoped, incompleteInstances, dependentInstances, this);
+    public <S> InitializationContext<S> createDependentContext(final Bean<S> bean) {
+        return new DefaultInitializationContext<>(bean, incompleteInstances, dependentInstances, this);
     }
 
     @Override
-    public <S> InitializationContext<S> createIndependentContext(final Scoped<S> scoped) {
-        return new DefaultInitializationContext<>(scoped, incompleteInstances == null ? null : new ConcurrentHashMap<>(incompleteInstances));
+    public <S> InitializationContext<S> createIndependentContext(final Bean<S> bean) {
+        return new DefaultInitializationContext<>(bean, incompleteInstances == null ? null : new ConcurrentHashMap<>(incompleteInstances));
     }
 
     @Override
-    public <S> Optional<S> getIncompleteInstance(final Scoped<S> scoped) {
+    public <S> Optional<S> getIncompleteInstance(final Bean<S> bean) {
         return Optional.ofNullable(incompleteInstances)
-                .map(map -> map.get(scoped))
+                .map(map -> map.get(bean))
                 .map(TypeUtil::cast);
     }
 
     @Override
     public void close() {
-        for (final ScopedInstance<?> dependentInstance : dependentInstances) {
-            if (!(scoped != null && scoped.equals(dependentInstance.getScoped()))) {
+        for (final BeanInstance<?> dependentInstance : dependentInstances) {
+            if (dependentInstance.getBean().equals(bean)) {
                 dependentInstance.close();
             }
         }

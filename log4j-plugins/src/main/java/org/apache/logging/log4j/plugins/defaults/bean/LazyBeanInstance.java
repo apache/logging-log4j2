@@ -17,34 +17,41 @@
 
 package org.apache.logging.log4j.plugins.defaults.bean;
 
+import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
-import org.apache.logging.log4j.plugins.spi.bean.Scoped;
 
 import java.util.Objects;
 
-class DefaultScopedInstance<T> implements ScopedInstance<T> {
-    private final Scoped<T> scoped;
-    private final T instance;
+class LazyBeanInstance<T> implements BeanInstance<T> {
+    private final Bean<T> bean;
     private final InitializationContext<T> context;
+    private volatile T instance;
 
-    DefaultScopedInstance(final Scoped<T> scoped, final T instance, final InitializationContext<T> context) {
-        this.scoped = Objects.requireNonNull(scoped);
-        this.instance = Objects.requireNonNull(instance);
+    LazyBeanInstance(final Bean<T> bean, final InitializationContext<T> context) {
+        this.bean = Objects.requireNonNull(bean);
         this.context = Objects.requireNonNull(context);
     }
 
     @Override
-    public Scoped<T> getScoped() {
-        return scoped;
+    public Bean<T> getBean() {
+        return bean;
     }
 
     @Override
     public T getInstance() {
+        if (instance == null) {
+            synchronized (this) {
+                if (instance == null) {
+                    instance = bean.create(context);
+                }
+            }
+        }
         return instance;
     }
 
     @Override
     public void close() {
-        scoped.destroy(instance, context);
+        bean.destroy(instance, context);
+        instance = null;
     }
 }

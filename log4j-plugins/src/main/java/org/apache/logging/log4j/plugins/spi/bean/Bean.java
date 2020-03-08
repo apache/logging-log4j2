@@ -23,7 +23,25 @@ import org.apache.logging.log4j.plugins.spi.model.Variable;
 
 import java.util.Collection;
 
-public interface Bean<T> extends Scoped<T>, Variable<T> {
+public interface Bean<T> extends Variable<T> {
+    /**
+     * Creates a new instance of this bean. The given {@link InitializationContext} should be used by implementations
+     * to track dependent objects.
+     *
+     * @param context the context in which the instance is being managed
+     * @return a managed, initialized instance
+     */
+    T create(final InitializationContext<T> context);
+
+    /**
+     * Destroys a managed instance in the given context. Implementations should call {@link InitializationContext#close()} to
+     * allow dependent objects to be destroyed.
+     *
+     * @param instance the managed instance to destroy
+     * @param context  the context in which the instance is being managed
+     */
+    void destroy(final T instance, final InitializationContext<T> context);
+
     Collection<InjectionPoint<?>> getInjectionPoints();
 
     // for a managed bean: that class

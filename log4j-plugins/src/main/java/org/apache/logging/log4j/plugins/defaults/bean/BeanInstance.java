@@ -15,32 +15,15 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.spi.model;
+package org.apache.logging.log4j.plugins.defaults.bean;
 
-import org.apache.logging.log4j.plugins.api.Dependent;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.plugins.spi.bean.Bean;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collection;
+interface BeanInstance<T> extends AutoCloseable {
+    Bean<T> getBean();
 
-public interface Variable<T> {
-    Collection<Type> getTypes();
+    T getInstance();
 
-    default boolean hasMatchingType(final Type requiredType) {
-        for (final Type type : getTypes()) {
-            if (TypeUtil.typesMatch(requiredType, type)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    Qualifiers getQualifiers();
-
-    Class<? extends Annotation> getScopeType();
-
-    default boolean isDependentScoped() {
-        return getScopeType() == Dependent.class;
-    }
+    @Override
+    void close();
 }
