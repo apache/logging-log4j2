@@ -850,10 +850,15 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             }
 
             if (isBuffered() && this.isBatchSupported) {
+                logger().debug("addBatch for {}", this.statement);
                 this.statement.addBatch();
-            } else if (this.statement.executeUpdate() == 0) {
-                throw new AppenderLoggingException(
-                        "No records inserted in database table for log event in JDBC manager [%s].", fieldsToString());
+            } else {
+                int executeUpdate = this.statement.executeUpdate();
+                logger().debug("executeUpdate = {} for {}", executeUpdate, this.statement);
+                if (executeUpdate == 0) {
+                    throw new AppenderLoggingException(
+                            "No records inserted in database table for log event in JDBC manager [%s].", fieldsToString());
+                }
             }
         } catch (final SQLException e) {
             throw new DbAppenderLoggingException(e, "Failed to insert record for log event in JDBC manager: %s [%s]", e,
