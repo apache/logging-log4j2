@@ -21,8 +21,4 @@ public class IllegalProductException extends InjectionException {
     public IllegalProductException(final String message) {
         super(message);
     }
-
-    public IllegalProductException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
 }

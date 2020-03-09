@@ -17,8 +17,8 @@
 
 package org.apache.logging.log4j.plugins.spi;
 
-public class ResolutionException extends InjectionException {
-    public ResolutionException(final String message) {
+public class DefinitionException extends InjectionException {
+    public DefinitionException(final String message) {
         super(message);
     }
 }
