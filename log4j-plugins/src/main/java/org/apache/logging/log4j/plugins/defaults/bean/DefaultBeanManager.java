@@ -381,7 +381,7 @@ public class DefaultBeanManager implements BeanManager {
                 .orElseThrow(() -> new UnsatisfiedBeanException(point));
         final Optional<T> existingValue = point.getBean()
                 .filter(bean -> !bean.equals(resolvedBean))
-                .flatMap(bean -> getExistingInjectableValue(resolvedBean, bean, parentContext));
+                .flatMap(bean -> getExistingValue(resolvedBean, bean, parentContext));
         if (existingValue.isPresent()) {
             return existingValue;
         }
@@ -390,25 +390,17 @@ public class DefaultBeanManager implements BeanManager {
         return Optional.of(getValue(resolvedBean, context));
     }
 
-    private <T> Optional<T> getExistingInjectableValue(final Bean<T> resolvedBean, final Bean<?> pointBean,
-                                                       final InitializationContext<?> parentContext) {
-        if (resolvedBean.getScopeType() != Singleton.class) {
+    private <T> Optional<T> getExistingValue(final Bean<T> resolvedBean, final Bean<?> pointBean,
+                                             final InitializationContext<?> parentContext) {
+        if (!pointBean.isDependentScoped() || parentContext.getNonDependentScopedDependent().isPresent()) {
+            final Optional<T> incompleteInstance = parentContext.getIncompleteInstance(resolvedBean);
+            if (incompleteInstance.isPresent()) {
+                return incompleteInstance;
+            }
+            return getScopeContext(resolvedBean.getScopeType()).getIfExists(resolvedBean);
+        } else {
             return Optional.empty();
         }
-        final Optional<Bean<?>> bean;
-        if (pointBean.isDependentScoped() && !resolvedBean.isDependentScoped()) {
-            bean = parentContext.getNonDependentScopedDependent();
-        } else {
-            bean = Optional.of(pointBean);
-        }
-        return bean.filter(b -> Singleton.class == b.getScopeType())
-                .flatMap(b -> {
-                    final Optional<T> incompleteInstance = parentContext.getIncompleteInstance(resolvedBean);
-                    if (incompleteInstance.isPresent()) {
-                        return incompleteInstance;
-                    }
-                    return getScopeContext(resolvedBean.getScopeType()).getIfExists(resolvedBean);
-                });
     }
 
     @Override

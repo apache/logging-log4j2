@@ -89,7 +89,7 @@ public class DefaultInitializationContext<T> implements InitializationContext<T>
     }
 
     @Override
-    public <S> InitializationContext<S> createIndependentContext(final Bean<S> bean) {
+    public <S> InitializationContext<S> createProducerContext(final Bean<S> bean) {
         return new DefaultInitializationContext<>(bean, incompleteInstances == null ? null : new ConcurrentHashMap<>(incompleteInstances));
     }
 

@@ -28,12 +28,12 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 
-class FieldProducer<D, T> extends AbstractProducer<D, T> {
-    private final MetaField<D, T> field;
+class FieldProducer<P, T> extends AbstractProducer<P, T> {
+    private final MetaField<P, T> field;
 
-    FieldProducer(final BeanManager beanManager, final Bean<D> declaringBean, final MetaField<D, T> field,
-                  final MetaMethod<D, ?> disposerMethod, final Collection<InjectionPoint<?>> disposerInjectionPoints) {
-        super(beanManager, declaringBean, disposerMethod, disposerInjectionPoints);
+    FieldProducer(final BeanManager beanManager, final Bean<P> producerBean, final MetaField<P, T> field,
+                  final MetaMethod<P, ?> disposerMethod, final Collection<InjectionPoint<?>> disposerInjectionPoints) {
+        super(beanManager, producerBean, disposerMethod, disposerInjectionPoints);
         this.field = field;
     }
 
@@ -44,9 +44,11 @@ class FieldProducer<D, T> extends AbstractProducer<D, T> {
 
     @Override
     public T produce(final InitializationContext<T> context) {
-        try (final InitializationContext<D> parentContext = createContext()) {
-            final D declaringInstance = field.isStatic() ? null : getDeclaringInstance(parentContext);
-            return field.get(declaringInstance);
+        if (field.isStatic()) {
+            return field.get(null);
+        }
+        try (final InitializationContext<P> parentContext = createContext()) {
+            return field.get(getProducerInstance(parentContext));
         }
     }
 

@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.plugins.defaults.bean;
 
-import org.apache.logging.log4j.plugins.spi.InjectionException;
+import org.apache.logging.log4j.plugins.spi.DefinitionException;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.BeanManager;
 import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
@@ -27,17 +27,16 @@ import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-class MethodProducer<D, T> extends AbstractProducer<D, T> {
-    private final MetaMethod<D, T> producerMethod;
+class MethodProducer<P, T> extends AbstractProducer<P, T> {
+    private final MetaMethod<P, T> producerMethod;
     private final Collection<InjectionPoint<?>> producerInjectionPoints;
 
-    MethodProducer(final BeanManager beanManager, final Bean<D> declaringBean,
-                   final MetaMethod<D, T> producerMethod, final Collection<InjectionPoint<?>> producerInjectionPoints,
-                   final MetaMethod<D, ?> disposerMethod, final Collection<InjectionPoint<?>> disposerInjectionPoints) {
-        super(beanManager, declaringBean, disposerMethod, disposerInjectionPoints);
-        if (!producerMethod.isStatic() && declaringBean == null) {
-            // TODO: more informative error message
-            throw new InjectionException("Instance method annotated @Produces must be associated with a declaring bean");
+    MethodProducer(final BeanManager beanManager, final Bean<P> producerBean,
+                   final MetaMethod<P, T> producerMethod, final Collection<InjectionPoint<?>> producerInjectionPoints,
+                   final MetaMethod<P, ?> disposerMethod, final Collection<InjectionPoint<?>> disposerInjectionPoints) {
+        super(beanManager, producerBean, disposerMethod, disposerInjectionPoints);
+        if (!producerMethod.isStatic() && producerBean == null) {
+            throw new DefinitionException("Producer instance method must be in a bean");
         }
         this.producerMethod = producerMethod;
         this.producerInjectionPoints = producerInjectionPoints;
@@ -50,9 +49,9 @@ class MethodProducer<D, T> extends AbstractProducer<D, T> {
 
     @Override
     public T produce(final InitializationContext<T> context) {
-        try (final InitializationContext<D> parentContext = createContext()) {
-            final D declaringInstance = producerMethod.isStatic() ? null : getDeclaringInstance(parentContext);
-            return injector.produce(declaringInstance, producerMethod, producerInjectionPoints, context);
+        try (final InitializationContext<P> parentContext = createContext()) {
+            final P declaringInstance = producerMethod.isStatic() ? null : getProducerInstance(parentContext);
+            return injector.produce(declaringInstance, producerMethod, producerInjectionPoints, parentContext);
         }
     }
 

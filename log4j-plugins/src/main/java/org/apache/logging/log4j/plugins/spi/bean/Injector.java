@@ -29,7 +29,7 @@ public interface Injector {
                     final InitializationContext<T> context);
 
     <D, T> T produce(final D producerInstance, final MetaMethod<D, T> producerMethod,
-                     final Collection<InjectionPoint<?>> points, final InitializationContext<T> context);
+                     final Collection<InjectionPoint<?>> points, final InitializationContext<D> context);
 
     <T> void dispose(final T disposerInstance, final MetaMethod<T, ?> disposerMethod,
                      final Collection<InjectionPoint<?>> points, final Object instance,

@@ -41,10 +41,10 @@ public interface InitializationContext<T> extends AutoCloseable {
     <S> Optional<S> getIncompleteInstance(Bean<S> bean);
 
     // dependent contexts share the same incomplete instances
-    <S> InitializationContext<S> createDependentContext(Bean<S> bean);
+    <D> InitializationContext<D> createDependentContext(Bean<D> bean);
 
     // independent contexts are used by producers to get their declaring bean separately
-    <S> InitializationContext<S> createIndependentContext(Bean<S> bean);
+    <P> InitializationContext<P> createProducerContext(Bean<P> bean);
 
     /**
      * Destroys all dependent objects by propagating them to {@link Bean#destroy(Object, InitializationContext)}.

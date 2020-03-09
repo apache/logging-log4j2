@@ -29,31 +29,30 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Objects;
 
-abstract class AbstractProducer<D, T> implements Producer<T> {
+abstract class AbstractProducer<P, T> implements Producer<T> {
     private final BeanManager beanManager;
-
-    private final Bean<D> declaringBean;
-    private final MetaMethod<D, ?> disposerMethod;
+    private final Bean<P> producerBean;
+    private final MetaMethod<P, ?> disposerMethod;
     private final Collection<InjectionPoint<?>> disposerInjectionPoints;
     final Injector injector;
 
-    AbstractProducer(final BeanManager beanManager, final Bean<D> declaringBean, final MetaMethod<D, ?> disposerMethod,
+    AbstractProducer(final BeanManager beanManager, final Bean<P> producerBean, final MetaMethod<P, ?> disposerMethod,
                      final Collection<InjectionPoint<?>> disposerInjectionPoints) {
         this.beanManager = beanManager;
-        this.declaringBean = declaringBean;
+        this.producerBean = producerBean;
         this.disposerMethod = disposerMethod;
         this.disposerInjectionPoints = Objects.requireNonNull(disposerInjectionPoints);
         this.injector = new DefaultInjector(beanManager);
     }
 
     // context is managed separately as the declaring instance is only used for producing the object and is not a dependent of the bean
-    InitializationContext<D> createContext() {
-        return beanManager.createInitializationContext(declaringBean);
+    InitializationContext<P> createContext() {
+        return beanManager.createInitializationContext(producerBean);
     }
 
-    D getDeclaringInstance(final InitializationContext<D> context) {
-        return context.getIncompleteInstance(declaringBean).orElseGet(() ->
-                beanManager.getValue(declaringBean, context.createIndependentContext(declaringBean)));
+    P getProducerInstance(final InitializationContext<P> context) {
+        return context.getIncompleteInstance(producerBean).orElseGet(() ->
+                beanManager.getValue(producerBean, context.createProducerContext(producerBean)));
     }
 
     abstract Type getType();
@@ -66,8 +65,8 @@ abstract class AbstractProducer<D, T> implements Producer<T> {
     public void dispose(final T instance) {
         if (hasDisposerMethod()) {
             // as producer and disposer bean is unrelated to this bean, we need to recreate it on demand
-            try (final InitializationContext<D> context = createContext()) {
-                final D declaringInstance = disposerMethod.isStatic() ? null : getDeclaringInstance(context);
+            try (final InitializationContext<P> context = createContext()) {
+                final P declaringInstance = disposerMethod.isStatic() ? null : getProducerInstance(context);
                 injector.dispose(declaringInstance, disposerMethod, disposerInjectionPoints, instance, context);
             }
         }

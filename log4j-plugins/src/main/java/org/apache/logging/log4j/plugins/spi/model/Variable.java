@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.plugins.spi.model;
 
 import org.apache.logging.log4j.plugins.api.Dependent;
+import org.apache.logging.log4j.plugins.api.Singleton;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.annotation.Annotation;
@@ -42,5 +43,9 @@ public interface Variable<T> {
 
     default boolean isDependentScoped() {
         return getScopeType() == Dependent.class;
+    }
+
+    default boolean isSingletonScoped() {
+        return getScopeType() == Singleton.class;
     }
 }

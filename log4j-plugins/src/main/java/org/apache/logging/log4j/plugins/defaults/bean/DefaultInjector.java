@@ -57,7 +57,7 @@ public class DefaultInjector implements Injector {
 
     @Override
     public <D, T> T produce(final D producerInstance, final MetaMethod<D, T> producerMethod,
-                            final Collection<InjectionPoint<?>> points, final InitializationContext<T> context) {
+                            final Collection<InjectionPoint<?>> points, final InitializationContext<D> context) {
         return producerMethod.invoke(producerInstance, createArguments(producerMethod.getParameters(), points, context, null));
     }
 
