@@ -853,7 +853,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 logger().debug("addBatch for {}", this.statement);
                 this.statement.addBatch();
             } else {
-                int executeUpdate = this.statement.executeUpdate();
+                final int executeUpdate = this.statement.executeUpdate();
                 logger().debug("executeUpdate = {} for {}", executeUpdate, this.statement);
                 if (executeUpdate == 0) {
                     throw new AppenderLoggingException(
