@@ -25,8 +25,6 @@ import org.apache.logging.log4j.message.SimpleMessage;
 
 final class MessageResolver implements EventResolver {
 
-    private static final String NAME = "message";
-
     private static final String[] FORMATS = { "JSON" };
 
     private final String key;
@@ -36,7 +34,7 @@ final class MessageResolver implements EventResolver {
     }
 
     static String getName() {
-        return NAME;
+        return "message";
     }
 
     @Override
@@ -78,7 +76,7 @@ final class MessageResolver implements EventResolver {
         }
 
         // Fallback to plain Object write.
-        writeFormattedMessageObject(message, jsonWriter);
+        resolveText(message, jsonWriter);
 
     }
 
@@ -127,27 +125,8 @@ final class MessageResolver implements EventResolver {
         }
 
         // Fallback to the default message formatter.
-        writeFormattedMessageObject(message, jsonWriter);
+        resolveText(message, jsonWriter);
         return true;
-
-    }
-
-    private void writeFormattedMessageObject(
-            final Message message,
-            final JsonWriter jsonWriter) {
-
-        // Resolve text node.
-        final String formattedMessage = message.getFormattedMessage();
-        if (formattedMessage == null) {
-            jsonWriter.writeNull();
-            return;
-        }
-
-        // Put textual representation of the message in an object.
-        jsonWriter.writeObjectStart();
-        jsonWriter.writeObjectKey(NAME);
-        jsonWriter.writeString(formattedMessage);
-        jsonWriter.writeObjectEnd();
 
     }
 
