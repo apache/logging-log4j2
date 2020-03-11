@@ -21,7 +21,7 @@ Volkan Yazıcı <vy@apache.org>
 emitting layout. It encodes ``LogEvent``s according to the structure described
 by the JSON template provided. In a nutshell, it shines with its
 
-* Superior link:#performance[performance]
+* Superior performance
 
 * Customizable JSON structure (see `eventTemplate[Uri]` and
   `stackTraceElementTemplate[Uri]` parameters)
@@ -635,129 +635,6 @@ alternatives.
 | ✓
 | ✓
 | ✓
-|===
-
-[#performance]
-== Performance
-
-The `log4j-perf` module contains `JsonTemplateLayoutBenchmark` assessing
-performance of various JSON layouts including `JsonTemplateLayout`,
-link:layouts.html#JSONLayout[`JsonLayout`],
-link:layouts.html#GELFLayout[`GelfLayout`], and
-https://github.com/elastic/java-ecs-logging/tree/master/log4j2-ecs-layout[`EcsLayout`]
-(shipped by Elastic). There
-https://openjdk.java.net/projects/code-tools/jmh/[JMH] is used to assess the
-rendering performance of these layouts. In the tests, different `LogEvent`
-profiles are employed:
-
-full:: `LogEvent` contains MDC, NDC, and an exception
-lite:: `LogEvent` has no MDC, NDC, or exception attachment
-
-We ran the benchmark with the following settings:
-
-* **CPU:** Intel i7 2.70GHz (x86-64, confined `java` process to a single core
-  using http://www.man7.org/linux/man-pages/man1/taskset.1.html[`taskset -c 0`])
-* **JVM:** OpenJDK 64-Bit, AdoptOpenJDK, build 25.232-b09
-** `-XX:+TieredCompilation`
-** `-Dlog4j2.garbagefreeThreadContextMap=true`
-** `-Dlog4j2.enableDirectEncoders=true`
-** `-Dlog4j2.enable.threadlocals=true`
-** `-Dlog4j2.is.webapp=false`
-* **OS:** Xubuntu 18.04.3 (4.15.0-70-generic, x86-64)
-* `JsonTemplateLayout4{Ecs,Json,Gelf}Layout` used default settings with the
-  following exceptions:
-** `stackTraceEnabled`: `true`
-** `maxByteCount`: (4096) 4KiB
-* `JsonLayout` used in two different flavors:
-** `DefaultJsonLayout`: default settings
-** `CustomJsonLayout`: default settings with an additional `"@version": 1`
-   field (this forces instantiation of a wrapper class to obtain the necessary
-   Jackson view)
-* `EcsLayout` used with the following configurations:
-** `serviceName`: `benchmark`
-** `additionalFields`: `new KeyValuePair[0]`
-* `GelfLayout` used with the following configurations:
-** `compressionType`: `off`
-
-The figures for serializing 1,000 ``LogEvent``s at each operation are as
-follows. (Note that the reported values are 99^th^ percentiles.)
-
-.Benchmark results
-[cols="3,>1,1,>1"]
-|===
-|Benchmark
-2+^|ops/sec
-^|B/op
-
-|liteJsonTemplateLayout4GelfLayout
-|1,517,062
-|▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉{nbsp}(100%)
-|0.0
-
-| liteJsonTemplateLayout4EcsLayout
-| 1,196,255
-| ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉{nbsp}(79%)
-| 0.0
-
-| liteGelfLayout
-| 1,184,922
-| ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉ (78%)
-| 0.0
-
-| liteJsonTemplateLayout4JsonLayout
-| 870,012
-| ▉▉▉▉▉▉▉▉▉▉▉{nbsp}(57%)
-| 0.0
-
-| liteEcsLayout
-| 836,648
-| ▉▉▉▉▉▉▉▉▉▉▉{nbsp}(55%)
-| 0.0
-
-| liteDefaultJsonLayout
-| 506,985
-| ▉▉▉▉▉▉▉{nbsp}(33%)
-| 5,331,680.0
-
-| liteCustomJsonLayout
-| 446,243
-| ▉▉▉▉▉▉{nbsp}(29%)
-| 5,740,400.0
-
-| fullJsonTemplateLayout4JsonLayout
-| 118,294
-| ▉▉{nbsp}(8%)
-| 104,000.1
-
-| fullJsonTemplateLayout4GelfLayout
-| 73,102
-| ▉{nbsp}(5%)
-| 35,663,200.3
-
-| fullJsonTemplateLayout4EcsLayout
-| 60,569
-| ▉{nbsp}(4%)
-| 35,631,200.4
-
-| fullEcsLayout
-| 27,887
-| ▉{nbsp}(2%)
-| 46,479,200.5
-
-| fullGelfLayout
-| 21,458
-| ▉{nbsp}(1%)
-| 58,911,200.7
-
-| fullDefaultJsonLayout
-| 13,513
-| ▉{nbsp}(1%)
-| 234,102,401.5
-
-| fullCustomJsonLayout
-| 13,511
-| ▉{nbsp}(1%)
-| 234,238,401.5
 |===
 
 [#faq]
