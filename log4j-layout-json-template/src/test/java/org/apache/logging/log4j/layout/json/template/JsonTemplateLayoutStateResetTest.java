@@ -30,7 +30,7 @@ import java.nio.Buffer;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
-public class JsonLayoutJsonTemplateGeneratorStateResetTest {
+public class JsonTemplateLayoutStateResetTest {
 
     private static final Configuration CONFIG = new DefaultConfiguration();
 
