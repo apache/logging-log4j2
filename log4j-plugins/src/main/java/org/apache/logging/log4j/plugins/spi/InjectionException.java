@@ -17,15 +17,12 @@
 
 package org.apache.logging.log4j.plugins.spi;
 
-// TODO: create more exception types such as:
-//       invalid use of annotations
-//       constraint validation errors
 public class InjectionException extends RuntimeException {
-    public InjectionException(final String message) {
+    protected InjectionException(final String message) {
         super(message);
     }
 
-    public InjectionException(final String message, final Throwable cause) {
+    protected InjectionException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

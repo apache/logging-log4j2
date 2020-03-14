@@ -17,13 +17,13 @@
 
 package org.apache.logging.log4j.plugins.defaults.bean;
 
-import org.apache.logging.log4j.plugins.spi.InjectionException;
+import org.apache.logging.log4j.plugins.spi.IllegalProductException;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.bean.InjectionTarget;
 import org.apache.logging.log4j.plugins.spi.bean.InjectionTargetFactory;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
-import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -47,7 +47,7 @@ class InjectionTargetBean<T> extends AbstractBean<T, T> {
     public T create(final InitializationContext<T> context) {
         final T instance = injectionTarget.produce(context);
         if (instance == null) {
-            throw new InjectionException("Injection target created null instance: " + injectionTarget);
+            throw new IllegalProductException("Injection target created null instance: " + injectionTarget);
         }
         injectionTarget.inject(instance, context);
         injectionTarget.postConstruct(instance);

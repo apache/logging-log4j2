@@ -21,7 +21,7 @@ import org.apache.logging.log4j.plugins.api.AliasFor;
 import org.apache.logging.log4j.plugins.api.Default;
 import org.apache.logging.log4j.plugins.api.Ignore;
 import org.apache.logging.log4j.plugins.api.Named;
-import org.apache.logging.log4j.plugins.spi.InjectionException;
+import org.apache.logging.log4j.plugins.spi.InitializationException;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
@@ -132,9 +132,9 @@ public final class Qualifiers {
         try {
             return element.invoke(annotation);
         } catch (final IllegalAccessException e) {
-            throw new InjectionException("Cannot access element " + element.getName() + " of annotation " + annotation, e);
+            throw new InitializationException("Cannot access element " + element.getName() + " of annotation " + annotation, e);
         } catch (final InvocationTargetException e) {
-            throw new InjectionException("Cannot access element " + element.getName() + " of annotation " + annotation,
+            throw new InitializationException("Cannot access element " + element.getName() + " of annotation " + annotation,
                     e.getCause());
         }
     }

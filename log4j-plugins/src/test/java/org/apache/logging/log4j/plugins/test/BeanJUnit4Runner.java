@@ -20,7 +20,7 @@ package org.apache.logging.log4j.plugins.test;
 import org.apache.logging.log4j.plugins.defaults.bean.DefaultBeanManager;
 import org.apache.logging.log4j.plugins.defaults.bean.DefaultInjector;
 import org.apache.logging.log4j.plugins.defaults.model.DefaultElementManager;
-import org.apache.logging.log4j.plugins.spi.InjectionException;
+import org.apache.logging.log4j.plugins.spi.DefinitionException;
 import org.apache.logging.log4j.plugins.spi.UnsatisfiedBeanException;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.BeanManager;
@@ -71,7 +71,7 @@ public class BeanJUnit4Runner extends BlockJUnit4ClassRunner {
     @Override
     protected void validateConstructor(final List<Throwable> errors) {
         if (!elementManager.isInjectable(testMetaClass)) {
-            errors.add(new InjectionException(testMetaClass + " does not have any injectable constructors"));
+            errors.add(new DefinitionException(testMetaClass + " does not have any injectable constructors"));
         }
     }
 

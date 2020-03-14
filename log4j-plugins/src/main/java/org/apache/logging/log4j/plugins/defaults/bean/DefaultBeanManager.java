@@ -25,6 +25,7 @@ import org.apache.logging.log4j.plugins.api.Singleton;
 import org.apache.logging.log4j.plugins.defaults.model.DefaultElementManager;
 import org.apache.logging.log4j.plugins.defaults.model.DefaultVariable;
 import org.apache.logging.log4j.plugins.spi.AmbiguousBeanException;
+import org.apache.logging.log4j.plugins.spi.DefinitionException;
 import org.apache.logging.log4j.plugins.spi.InjectionException;
 import org.apache.logging.log4j.plugins.spi.ResolutionException;
 import org.apache.logging.log4j.plugins.spi.UnsatisfiedBeanException;
@@ -234,18 +235,18 @@ public class DefaultBeanManager implements BeanManager {
     private <T> void validateInjectionPoint(final InjectionPoint<T> point) {
         final MetaElement<T> element = point.getElement();
         if (element.isAnnotationPresent(Produces.class)) {
-            throw new InjectionException("Cannot inject into a @Produces element: " + element);
+            throw new DefinitionException("Cannot inject into a @Produces element: " + element);
         }
         final Type type = point.getType();
         if (type instanceof TypeVariable<?>) {
-            throw new InjectionException("Cannot inject into a TypeVariable: " + point);
+            throw new DefinitionException("Cannot inject into a TypeVariable: " + point);
         }
         final Class<?> rawType = TypeUtil.getRawType(type);
         if (rawType.equals(InjectionPoint.class)) {
             final Bean<?> bean = point.getBean()
-                    .orElseThrow(() -> new InjectionException("Cannot inject " + point + " into a non-bean"));
+                    .orElseThrow(() -> new DefinitionException("Cannot inject " + point + " into a non-bean"));
             if (!bean.isDependentScoped()) {
-                throw new InjectionException("Injection points can only be @Dependent scoped; got: " + point);
+                throw new DefinitionException("Injection points can only be @Dependent scoped; got: " + point);
             }
         }
         if (rawType.equals(Bean.class)) {
@@ -265,18 +266,18 @@ public class DefaultBeanManager implements BeanManager {
     private void validateBeanInjectionPoint(final InjectionPoint<?> point, final Type expectedType) {
         final Type type = point.getType();
         if (!(type instanceof ParameterizedType)) {
-            throw new InjectionException("Expected parameterized type for " + point + " but got " + expectedType);
+            throw new DefinitionException("Expected parameterized type for " + point + " but got " + expectedType);
         }
         final ParameterizedType parameterizedType = (ParameterizedType) type;
         final Type[] typeArguments = parameterizedType.getActualTypeArguments();
         if (typeArguments.length != 1) {
-            throw new InjectionException("Expected one type parameter argument for " + point + " but got " +
+            throw new DefinitionException("Expected one type parameter argument for " + point + " but got " +
                     Arrays.toString(typeArguments));
         }
         if (point.getQualifiers().hasDefaultQualifier()) {
             final Type typeArgument = typeArguments[0];
             if (!typeArgument.equals(expectedType)) {
-                throw new InjectionException("Expected type " + expectedType + " but got " + typeArgument + " in " + point);
+                throw new DefinitionException("Expected type " + expectedType + " but got " + typeArgument + " in " + point);
             }
         }
     }
@@ -366,7 +367,7 @@ public class DefaultBeanManager implements BeanManager {
     private ScopeContext getScopeContext(final Class<? extends Annotation> scopeType) {
         final ScopeContext scopeContext = scopes.get(scopeType);
         if (scopeContext == null) {
-            throw new InjectionException("No active scope context found for scope @" + scopeType.getName());
+            throw new ResolutionException("No active scope context found for scope @" + scopeType.getName());
         }
         return scopeContext;
     }
