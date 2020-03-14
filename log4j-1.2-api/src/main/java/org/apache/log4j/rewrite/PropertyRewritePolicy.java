@@ -50,7 +50,7 @@ public class PropertyRewritePolicy implements RewritePolicy {
      * <p>
      * Form: propname1=propvalue1,propname2=propvalue2
      *
-     * @param props
+     * @param props The properties.
      */
     public void setProperties(String props) {
         Map hashTable = new HashMap();

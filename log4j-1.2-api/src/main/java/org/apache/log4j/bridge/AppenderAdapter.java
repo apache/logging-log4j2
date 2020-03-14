@@ -38,6 +38,7 @@ public class AppenderAdapter {
 
     /**
      * Constructor.
+     * @param appender The Appender to wrap.
      */
     public AppenderAdapter(Appender appender) {
         this.appender = appender;

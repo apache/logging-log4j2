@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Manages {@link FileWatcher}s.
@@ -50,7 +51,8 @@ public class WatchManager extends AbstractLifeCycle {
     private ScheduledFuture<?> future;
     private final ConfigurationScheduler scheduler;
     private final List<WatchEventService> eventServiceList;
-    private final UUID id = UuidUtil.getTimeBasedUuid();
+    // This just needs to be a unique key within the WatchEventManager.
+    private final UUID id = LocalUUID.get();
 
     public WatchManager(final ConfigurationScheduler scheduler) {
         this.scheduler = scheduler;
@@ -341,5 +343,32 @@ public class WatchManager extends AbstractLifeCycle {
     public String toString() {
         return "WatchManager [intervalSeconds=" + intervalSeconds + ", watchers=" + watchers + ", scheduler="
                 + scheduler + ", future=" + future + "]";
+    }
+
+    private static class LocalUUID {
+        private static final long LOW_MASK = 0xffffffffL;
+        private static final long MID_MASK = 0xffff00000000L;
+        private static final long HIGH_MASK = 0xfff000000000000L;
+        private static final int NODE_SIZE = 8;
+        private static final int SHIFT_2 = 16;
+        private static final int SHIFT_4 = 32;
+        private static final int SHIFT_6 = 48;
+        private static final int HUNDRED_NANOS_PER_MILLI = 10000;
+        private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
+        private static final AtomicInteger COUNT = new AtomicInteger(0);
+        private static final long TYPE1 = 0x1000L;
+        private static final byte VARIANT = (byte) 0x80;
+        private static final int SEQUENCE_MASK = 0x3FFF;
+
+
+        public static UUID get() {
+            final long time = ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) +
+                    NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) + (COUNT.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
+            final long timeLow = (time & LOW_MASK) << SHIFT_4;
+            final long timeMid = (time & MID_MASK) >> SHIFT_2;
+            final long timeHi = (time & HIGH_MASK) >> SHIFT_6;
+            final long most = timeLow | timeMid | TYPE1 | timeHi;
+            return new UUID(most, COUNT.incrementAndGet());
+        }
     }
 }

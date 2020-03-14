@@ -32,12 +32,12 @@ import org.apache.logging.log4j.util.Supplier;
  * {@link LogManager#getLogger()} method). Thus, the simplest way to use this would be like so:
  * </p>
  *
- * <pre>
+ * <pre><code>
  * public class MyClass {
  *     private static final Logger LOGGER = LogManager.getLogger();
  *     // ...
  * }
- * </pre>
+ * </code></pre>
  * <p>
  * For ease of filtering, searching, sorting, etc., it is generally a good idea to create Loggers for each class rather
  * than sharing Loggers. Instead, {@link Marker Markers} should be used for shared, filterable identification.
@@ -51,13 +51,13 @@ import org.apache.logging.log4j.util.Supplier;
  * allow client code to lazily log messages without explicitly checking if the requested log level is enabled. For
  * example, previously one would write:
  *
- * <pre>
+ * <pre><code>
  * // pre-Java 8 style optimization: explicitly check the log level
  * // to make sure the expensiveOperation() method is only called if necessary
  * if (logger.isTraceEnabled()) {
  *     logger.trace(&quot;Some long-running operation returned {}&quot;, expensiveOperation());
  * }
- * </pre>
+ * </code></pre>
  * <p>
  * With Java 8, the same effect can be achieved with a lambda expression:
  *
@@ -68,7 +68,7 @@ import org.apache.logging.log4j.util.Supplier;
  * </pre>
  *
  * <p>
- * Note that although {@link MessageSupplier} is provided, using {@link Supplier Supplier<Message>} works just the
+ * Note that although {@link MessageSupplier} is provided, using {@link Supplier {@code Supplier<Message>}} works just the
  * same. MessageSupplier was deprecated in 2.6 and un-deprecated in 2.8.1. Anonymous class usage of these APIs
  * should prefer using Supplier instead.
  * </p>
@@ -3495,20 +3495,20 @@ public interface Logger {
     /**
      * Logs entry to a method along with its parameters. For example,
      *
-     * <pre>
+     * <pre><code>
      * public void doSomething(String foo, int bar) {
      *     LOGGER.traceEntry("Parameters: {} and {}", foo, bar);
      *     // do something
      * }
-     * </pre>
+     * </code></pre>
      * or:
-     * <pre>
+     * <pre><code>
      * public int doSomething(String foo, int bar) {
      *     Message m = LOGGER.traceEntry("doSomething(foo={}, bar={})", foo, bar);
      *     // do something
      *     return traceExit(m, value);
      * }
-     * </pre>
+     * </code></pre>
      *
      * @param format The format String for the parameters.
      * @param params The parameters to the method.
@@ -3522,10 +3522,12 @@ public interface Logger {
      * Logs entry to a method along with its parameters. For example,
      *
      * <pre>
+     * <code>
      * public void doSomething(Request foo) {
      *     LOGGER.traceEntry(()->gson.toJson(foo));
      *     // do something
      * }
+     * </code>
      * </pre>
      *
      * @param paramSuppliers The Suppliers for the parameters to the method.
@@ -3539,10 +3541,12 @@ public interface Logger {
      * Logs entry to a method along with its parameters. For example,
      *
      * <pre>
+     * <code>
      * public void doSomething(String foo, int bar) {
      *     LOGGER.traceEntry("Parameters: {} and {}", ()->gson.toJson(foo), ()-> bar);
      *     // do something
      * }
+     * </code>
      * </pre>
      *
      * @param format The format String for the parameters.
@@ -3555,12 +3559,12 @@ public interface Logger {
 
     /**
      * Logs entry to a method using a Message to describe the parameters.
-     * <pre>
+     * <pre><code>
      * public void doSomething(Request foo) {
      *     LOGGER.traceEntry(new JsonMessage(foo));
      *     // do something
      * }
-     * </pre>
+     * </code></pre>
      * <p>
      * Avoid passing a {@code ReusableMessage} to this method (therefore, also avoid passing messages created by
      * calling {@code logger.getMessageFactory().newMessage("some message")}): Log4j will replace such messages with
@@ -3586,9 +3590,9 @@ public interface Logger {
     /**
      * Logs exiting from a method with the result. This may be coded as:
      *
-     * <pre>
+     * <pre><code>
      * return LOGGER.traceExit(myResult);
-     * </pre>
+     * </code></pre>
      *
      * @param <R> The type of the parameter and object being returned.
      * @param result The result being returned from the method call.
@@ -3601,9 +3605,9 @@ public interface Logger {
     /**
      * Logs exiting from a method with the result. This may be coded as:
      *
-     * <pre>
+     * <pre><code>
      * return LOGGER.traceExit("Result: {}", myResult);
-     * </pre>
+     * </code></pre>
      *
      * @param <R> The type of the parameter and object being returned.
      * @param format The format String for the result.
@@ -3617,13 +3621,13 @@ public interface Logger {
     /**
      * Logs exiting from a method with no result. Allows custom formatting of the result. This may be coded as:
      *
-     * <pre>
+     * <pre><code>
      * public long doSomething(int a, int b) {
      *    EntryMessage m = traceEntry("doSomething(a={}, b={})", a, b);
      *    // ...
      *    return LOGGER.traceExit(m);
      * }
-     * </pre>
+     * </code></pre>
      * @param message The Message containing the formatted result.
      *
      * @since 2.6
@@ -3633,13 +3637,13 @@ public interface Logger {
     /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
      *
-     * <pre>
+     * <pre><code>
      * public long doSomething(int a, int b) {
      *    EntryMessage m = traceEntry("doSomething(a={}, b={})", a, b);
      *    // ...
      *    return LOGGER.traceExit(m, myResult);
      * }
-     * </pre>
+     * </code></pre>
      * @param message The Message containing the formatted result.
      * @param result The result being returned from the method call.
      *
@@ -3653,9 +3657,9 @@ public interface Logger {
     /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
      *
-     * <pre>
+     * <pre><code>
      * return LOGGER.traceExit(new JsonMessage(myResult), myResult);
-     * </pre>
+     * </code></pre>
      * @param message The Message containing the formatted result.
      * @param result The result being returned from the method call.
      *

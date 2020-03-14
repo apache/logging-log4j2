@@ -48,6 +48,10 @@ public class ContextDataInjectorFactory {
      * {@code ContextDataInjector} classes defined in {@link ThreadContextDataInjector} which is most appropriate for
      * the ThreadContext implementation.
      * <p>
+     * <b>Note:</b> It is no longer recommended that users provide a custom implementation of the ContextDataInjector.
+     * Instead, provide a {@code ContextDataProvider}.
+     * </p>
+     * <p>
      * Users may use this system property to specify the fully qualified class name of a class that implements the
      * {@code ContextDataInjector} interface.
      * </p><p>

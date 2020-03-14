@@ -371,13 +371,14 @@ public class ResolverUtil {
         try {
             connection = (JarURLConnection) url.openConnection();
             if (connection != null) {
-                JarFile jarFile = connection.getJarFile();
-                Enumeration<JarEntry> entries = jarFile.entries();
-                while (entries.hasMoreElements()) {
-                    JarEntry entry = entries.nextElement();
-                    final String name = entry.getName();
-                    if (!entry.isDirectory() && name.startsWith(parent) && isTestApplicable(test, name)) {
-                        addIfMatching(test, name);
+                try (JarFile jarFile = connection.getJarFile()) {
+                    Enumeration<JarEntry> entries = jarFile.entries();
+                    while (entries.hasMoreElements()) {
+                        JarEntry entry = entries.nextElement();
+                        final String name = entry.getName();
+                        if (!entry.isDirectory() && name.startsWith(parent) && isTestApplicable(test, name)) {
+                            addIfMatching(test, name);
+                        }
                     }
                 }
             } else {

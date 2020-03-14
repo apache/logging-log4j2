@@ -67,7 +67,10 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
     private final Map<String, Appender> registry;
 
     /**
-     * No argument constructor.
+     * Constructor.
+     * @param loggerContext The LoggerContext.
+     * @param source The ConfigurationSource.
+     * @param monitorIntervalSeconds The monitoring interval in seconds.
      */
     public PropertiesConfiguration(final LoggerContext loggerContext, final ConfigurationSource source,
             int monitorIntervalSeconds) {
