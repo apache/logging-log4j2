@@ -20,7 +20,7 @@ package org.apache.logging.log4j.plugins.defaults.bean;
 import org.apache.logging.log4j.plugins.api.Inject;
 import org.apache.logging.log4j.plugins.api.PostConstruct;
 import org.apache.logging.log4j.plugins.api.PreDestroy;
-import org.apache.logging.log4j.plugins.spi.InjectionException;
+import org.apache.logging.log4j.plugins.spi.DefinitionException;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.InjectionTarget;
 import org.apache.logging.log4j.plugins.spi.bean.InjectionTargetFactory;
@@ -85,7 +85,7 @@ class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
                 .filter(constructor -> constructor.isAnnotationPresent(Inject.class))
                 .collect(Collectors.toList());
         if (injectConstructors.size() > 1) {
-            throw new InjectionException("Found more than one constructor with @Inject for " + type);
+            throw new DefinitionException("Found more than one constructor with @Inject for " + type);
         }
         if (injectConstructors.size() == 1) {
             return injectConstructors.get(0);
@@ -94,7 +94,7 @@ class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
                 .filter(constructor -> constructor.getParameters().stream().anyMatch(elementManager::isInjectable))
                 .collect(Collectors.toList());
         if (injectParameterConstructors.size() > 1) {
-            throw new InjectionException("No @Inject constructors found and remaining constructors ambiguous for " + type);
+            throw new DefinitionException("No @Inject constructors found and remaining constructors ambiguous for " + type);
         }
         if (injectParameterConstructors.size() == 1) {
             return injectParameterConstructors.get(0);
@@ -106,6 +106,6 @@ class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
             }
         }
         return type.getDefaultConstructor()
-                .orElseThrow(() -> new InjectionException("No candidate constructors found for " + type));
+                .orElseThrow(() -> new DefinitionException("No candidate constructors found for " + type));
     }
 }
