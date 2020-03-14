@@ -50,8 +50,8 @@ class DefaultMetaParameter<T> implements MetaParameter<T> {
     }
 
     @Override
-    public Type getBaseType() {
-        return parameterClass.getBaseType();
+    public Type getType() {
+        return parameterClass.getType();
     }
 
     @Override

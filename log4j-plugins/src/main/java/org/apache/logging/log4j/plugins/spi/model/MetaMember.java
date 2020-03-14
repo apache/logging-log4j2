@@ -18,8 +18,6 @@
 package org.apache.logging.log4j.plugins.spi.model;
 
 public interface MetaMember<D, T> extends MetaElement<T> {
-    MetaClass<T> getType();
-
     MetaClass<D> getDeclaringClass();
 
     boolean isStatic();

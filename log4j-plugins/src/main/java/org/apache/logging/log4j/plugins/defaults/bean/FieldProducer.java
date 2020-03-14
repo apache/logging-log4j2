@@ -39,7 +39,7 @@ class FieldProducer<P, T> extends AbstractProducer<P, T> {
 
     @Override
     Type getType() {
-        return field.getBaseType();
+        return field.getType();
     }
 
     @Override

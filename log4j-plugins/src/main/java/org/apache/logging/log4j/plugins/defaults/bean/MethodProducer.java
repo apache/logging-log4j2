@@ -44,7 +44,7 @@ class MethodProducer<P, T> extends AbstractProducer<P, T> {
 
     @Override
     Type getType() {
-        return producerMethod.getBaseType();
+        return producerMethod.getType();
     }
 
     @Override

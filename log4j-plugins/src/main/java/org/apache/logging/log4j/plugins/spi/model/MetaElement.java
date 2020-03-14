@@ -54,7 +54,7 @@ public interface MetaElement<T> {
         return false;
     }
 
-    Type getBaseType();
+    Type getType();
 
     Collection<Type> getTypeClosure();
 

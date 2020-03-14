@@ -120,7 +120,7 @@ public class DefaultElementManager implements ElementManager {
     public <D, T> InjectionPoint<T> createFieldInjectionPoint(final MetaField<D, T> field, final Bean<D> owner) {
         Objects.requireNonNull(field);
         final Qualifiers qualifiers = getQualifiers(field);
-        return new DefaultInjectionPoint<>(field.getBaseType(), qualifiers, owner, field, field);
+        return new DefaultInjectionPoint<>(field.getType(), qualifiers, owner, field, field);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class DefaultElementManager implements ElementManager {
         Objects.requireNonNull(executable);
         Objects.requireNonNull(parameter);
         final Qualifiers qualifiers = getQualifiers(parameter);
-        return new DefaultInjectionPoint<>(parameter.getBaseType(), qualifiers, owner, executable, parameter);
+        return new DefaultInjectionPoint<>(parameter.getType(), qualifiers, owner, executable, parameter);
     }
 
     @Override

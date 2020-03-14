@@ -156,7 +156,7 @@ public class DefaultBeanManager implements BeanManager {
             for (final MetaParameter<?> parameter : method.getParameters()) {
                 if (parameter.isAnnotationPresent(Disposes.class)) {
                     disposesMethods.add(new DisposesMethod<>(
-                            parameter.getBaseType(), elementManager.getQualifiers(parameter), bean, method));
+                            parameter.getType(), elementManager.getQualifiers(parameter), bean, method));
                 }
             }
         }
@@ -251,7 +251,7 @@ public class DefaultBeanManager implements BeanManager {
         if (rawType.equals(Bean.class)) {
             final Bean<?> bean = point.getBean().orElseThrow(() -> new UnsatisfiedBeanException(point));
             if (bean instanceof InjectionTargetBean<?>) {
-                validateBeanInjectionPoint(point, bean.getDeclaringClass().getBaseType());
+                validateBeanInjectionPoint(point, bean.getDeclaringClass().getType());
             } else if (bean instanceof ProducerBean<?, ?>) {
                 validateBeanInjectionPoint(point, ((ProducerBean<?, ?>) bean).getType());
             }

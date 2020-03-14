@@ -54,18 +54,13 @@ abstract class AbstractMetaMember<D, T> implements MetaMember<D, T> {
     }
 
     @Override
-    public Type getBaseType() {
-        return type.getBaseType();
+    public Type getType() {
+        return type.getType();
     }
 
     @Override
     public Collection<Type> getTypeClosure() {
         return type.getTypeClosure();
-    }
-
-    @Override
-    public MetaClass<T> getType() {
-        return type;
     }
 
     @Override

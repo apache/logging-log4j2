@@ -82,7 +82,7 @@ class DefaultMetaClass<T> implements MetaClass<T> {
     }
 
     @Override
-    public Type getBaseType() {
+    public Type getType() {
         return baseType;
     }
 
