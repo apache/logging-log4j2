@@ -31,7 +31,7 @@ import java.util.Objects;
 class InjectionTargetBean<T> extends AbstractBean<T, T> {
     private final InjectionTarget<T> injectionTarget;
 
-    InjectionTargetBean(final Variable<T> variable, final MetaClass<T> declaringClass,
+    InjectionTargetBean(final Variable variable, final MetaClass<T> declaringClass,
                         final InjectionTargetFactory<T> factory) {
         super(variable, declaringClass);
         Objects.requireNonNull(factory);

@@ -33,7 +33,7 @@ class ProducerBean<D, T> extends AbstractBean<D, T> {
     private final Producer<T> producer;
     private final Type type;
 
-    ProducerBean(final Variable<T> variable, final MetaClass<D> declaringClass, final ProducerFactory<D> factory) {
+    ProducerBean(final Variable variable, final MetaClass<D> declaringClass, final ProducerFactory<D> factory) {
         super(variable, declaringClass);
         Objects.requireNonNull(factory);
         producer = factory.createProducer(this);

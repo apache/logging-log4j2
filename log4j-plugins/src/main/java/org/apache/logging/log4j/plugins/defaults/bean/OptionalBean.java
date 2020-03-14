@@ -26,7 +26,7 @@ import java.util.function.Function;
 class OptionalBean<T> extends SystemBean<Optional<T>> {
     private final Function<InitializationContext<?>, Optional<T>> optionalValueFactory;
 
-    OptionalBean(final Variable<Optional<T>> variable, final Function<InitializationContext<?>, Optional<T>> optionalValueFactory) {
+    OptionalBean(final Variable variable, final Function<InitializationContext<?>, Optional<T>> optionalValueFactory) {
         super(variable);
         this.optionalValueFactory = optionalValueFactory;
     }

@@ -103,7 +103,7 @@ public class DefaultBeanManager implements BeanManager {
     private <T> Collection<Bean<?>> loadBeans(final MetaClass<T> metaClass) {
         final Bean<T> created;
         if (elementManager.isInjectable(metaClass)) {
-            final Variable<T> variable = elementManager.createVariable(metaClass);
+            final Variable variable = elementManager.createVariable(metaClass);
             final InjectionTargetFactory<T> factory =
                     new DefaultInjectionTargetFactory<>(elementManager, injector, metaClass);
             created = addBean(new InjectionTargetBean<>(variable, metaClass, factory));
@@ -162,47 +162,47 @@ public class DefaultBeanManager implements BeanManager {
         }
     }
 
-    private <T> Collection<Bean<?>> loadProducerBeans(final MetaClass<T> metaClass, final Bean<T> bean) {
+    private <P> Collection<Bean<?>> loadProducerBeans(final MetaClass<P> producingClass, final Bean<P> producingBean) {
         final Collection<Bean<?>> beans = new HashSet<>();
-        for (final MetaMethod<T, ?> method : metaClass.getMethods()) {
+        for (final MetaMethod<P, ?> method : producingClass.getMethods()) {
             if (method.isAnnotationPresent(Produces.class)) {
-                beans.add(loadProducerBean(method, bean));
+                beans.add(loadProducerBean(method, producingBean));
             }
         }
-        for (final MetaField<T, ?> field : metaClass.getFields()) {
+        for (final MetaField<P, ?> field : producingClass.getFields()) {
             if (field.isAnnotationPresent(Produces.class)) {
-                beans.add(loadProducerBean(field, bean));
+                beans.add(loadProducerBean(field, producingBean));
             }
         }
         return beans;
     }
 
-    private <D, T> Bean<T> loadProducerBean(final MetaMember<D, T> member, final Bean<D> bean) {
-        final Variable<T> variable = elementManager.createVariable(member);
-        final MetaClass<D> declaringType = member.getDeclaringClass();
-        final ProducerFactory<D> factory = getProducerFactory(member, bean);
+    private <P, T> Bean<T> loadProducerBean(final MetaMember<P, T> member, final Bean<P> producingBean) {
+        final Variable variable = elementManager.createVariable(member);
+        final MetaClass<P> declaringType = member.getDeclaringClass();
+        final ProducerFactory<P> factory = getProducerFactory(member, producingBean);
         return addBean(new ProducerBean<>(variable, declaringType, factory));
     }
 
-    private <D> ProducerFactory<D> getProducerFactory(final MetaMember<D, ?> member, final Bean<D> declaringBean) {
-        final Variable<?> variable = elementManager.createVariable(member);
-        final MetaMethod<D, ?> disposerMethod = resolveDisposerMethod(variable, declaringBean);
+    private <P> ProducerFactory<P> getProducerFactory(final MetaMember<P, ?> member, final Bean<P> producingBean) {
+        final Variable variable = elementManager.createVariable(member);
+        final MetaMethod<P, ?> disposerMethod = resolveDisposerMethod(variable, producingBean);
         final Collection<InjectionPoint<?>> disposerIPs = disposerMethod == null ? Collections.emptySet() :
-                elementManager.createExecutableInjectionPoints(disposerMethod, declaringBean);
+                elementManager.createExecutableInjectionPoints(disposerMethod, producingBean);
         if (member instanceof MetaField<?, ?>) {
-            final MetaField<D, ?> field = TypeUtil.cast(member);
-            return new FieldProducerFactory<>(this, declaringBean, field, disposerMethod, disposerIPs);
+            final MetaField<P, ?> field = TypeUtil.cast(member);
+            return new FieldProducerFactory<>(this, producingBean, field, disposerMethod, disposerIPs);
         } else {
-            final MetaMethod<D, ?> method = TypeUtil.cast(member);
+            final MetaMethod<P, ?> method = TypeUtil.cast(member);
             final Collection<InjectionPoint<?>> producerIPs =
-                    elementManager.createExecutableInjectionPoints(method, declaringBean);
-            return new MethodProducerFactory<>(this, declaringBean, method, producerIPs, disposerMethod, disposerIPs);
+                    elementManager.createExecutableInjectionPoints(method, producingBean);
+            return new MethodProducerFactory<>(this, producingBean, method, producerIPs, disposerMethod, disposerIPs);
         }
     }
 
-    private <D, T> MetaMethod<D, ?> resolveDisposerMethod(final Variable<T> variable, final Bean<D> bean) {
+    private <D> MetaMethod<D, ?> resolveDisposerMethod(final Variable variable, final Bean<D> disposingBean) {
         final List<MetaMethod<?, ?>> methods = disposesMethods.stream()
-                .filter(method -> method.matches(variable, bean))
+                .filter(method -> method.matches(variable, disposingBean))
                 .map(method -> method.disposesMethod)
                 .collect(Collectors.toList());
         if (methods.isEmpty()) {
@@ -286,8 +286,8 @@ public class DefaultBeanManager implements BeanManager {
         // first, look for an existing bean
         final Type type = point.getType();
         final Qualifiers qualifiers = point.getQualifiers();
-        final Optional<Bean<T>> existingBean = getExistingOrProvidedBean(type, qualifiers,
-                () -> elementManager.createVariable(point));
+        final Variable variable = elementManager.createVariable(point);
+        final Optional<Bean<T>> existingBean = getExistingOrProvidedBean(type, qualifiers, () -> variable);
         if (existingBean.isPresent()) {
             return existingBean;
         }
@@ -295,22 +295,17 @@ public class DefaultBeanManager implements BeanManager {
             final Class<?> rawType = TypeUtil.getRawType(type);
             final Type actualType = ((ParameterizedType) type).getActualTypeArguments()[0];
             if (rawType.equals(Provider.class)) {
-                // generics abuse ahoy
-                final InjectionPoint<Provider<T>> ip = TypeUtil.cast(point);
-                final Variable<Provider<T>> variable = elementManager.createVariable(ip);
                 // if a Provider<T> is requested, we can convert an existing Bean<T> into a Bean<Provider<T>>
                 return this.<T>getBean(actualType, qualifiers)
                         .map(bean -> new ProviderBean<>(variable, context -> getValue(bean, context)))
                         .map(this::addBean)
                         .map(TypeUtil::cast);
             } else if (rawType.equals(Optional.class)) {
-                final InjectionPoint<Optional<T>> ip = TypeUtil.cast(point);
-                final Variable<Optional<T>> optionalVariable = elementManager.createVariable(ip);
                 final Optional<Bean<T>> actualExistingBean = getExistingOrProvidedBean(actualType, qualifiers,
                         // FIXME: remove need for DefaultVariable to be public
                         () -> DefaultVariable.newVariable(
-                                TypeUtil.getTypeClosure(actualType), qualifiers, optionalVariable.getScopeType()));
-                final Bean<Optional<T>> optionalBean = addBean(new OptionalBean<>(optionalVariable,
+                                TypeUtil.getTypeClosure(actualType), qualifiers, variable.getScopeType()));
+                final Bean<Optional<T>> optionalBean = addBean(new OptionalBean<>(variable,
                         context -> actualExistingBean.map(bean -> getValue(bean, context))));
                 return Optional.of(TypeUtil.cast(optionalBean));
             }
@@ -319,18 +314,19 @@ public class DefaultBeanManager implements BeanManager {
     }
 
     private <T> Optional<Bean<T>> getExistingOrProvidedBean(final Type type, final Qualifiers qualifiers,
-                                                            final Supplier<Variable<T>> variableSupplier) {
+                                                            final Supplier<Variable> variableSupplier) {
         final Optional<Bean<T>> existingBean = getBean(type, qualifiers);
         if (existingBean.isPresent()) {
             return existingBean;
         }
-        final Variable<T> variable = variableSupplier.get();
+        final Variable variable = variableSupplier.get();
         final Type providerType = new ParameterizedTypeImpl(null, Provider.class, type);
         final Optional<Bean<Provider<T>>> providerBean = getBean(providerType, qualifiers);
         return providerBean.map(bean -> new ProvidedBean<>(variable, context -> getValue(bean, context).get()))
                 .map(this::addBean);
     }
 
+    // FIXME: this needs to consider scopes
     private <T> Optional<Bean<T>> getBean(final Type type, final Qualifiers qualifiers) {
         final Set<Bean<T>> beans = this.<T>streamBeansMatchingType(type)
                 .filter(bean -> qualifiers.equals(bean.getQualifiers()))
@@ -427,7 +423,7 @@ public class DefaultBeanManager implements BeanManager {
             this.disposesMethod = disposesMethod;
         }
 
-        boolean matches(final Variable<?> variable, final Bean<?> declaringBean) {
+        boolean matches(final Variable variable, final Bean<?> declaringBean) {
             return Objects.equals(declaringBean, this.declaringBean) &&
                     variable.hasMatchingType(type) &&
                     qualifiers.equals(variable.getQualifiers());

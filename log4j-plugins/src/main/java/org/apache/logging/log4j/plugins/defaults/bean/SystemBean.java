@@ -30,9 +30,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 abstract class SystemBean<T> implements Bean<T> {
-    private final Variable<T> variable;
+    private final Variable variable;
 
-    SystemBean(final Variable<T> variable) {
+    SystemBean(final Variable variable) {
         this.variable = variable;
     }
 

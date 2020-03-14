@@ -28,10 +28,10 @@ import java.util.Collection;
 import java.util.Objects;
 
 abstract class AbstractBean<D, T> implements Bean<T> {
-    private final Variable<T> variable;
+    private final Variable variable;
     private final MetaClass<D> declaringClass;
 
-    AbstractBean(final Variable<T> variable, final MetaClass<D> declaringClass) {
+    AbstractBean(final Variable variable, final MetaClass<D> declaringClass) {
         this.variable = Objects.requireNonNull(variable);
         this.declaringClass = declaringClass;
     }

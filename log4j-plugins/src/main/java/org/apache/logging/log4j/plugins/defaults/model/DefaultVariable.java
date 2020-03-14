@@ -25,11 +25,11 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Objects;
 
-public class DefaultVariable<T> implements Variable<T> {
+public class DefaultVariable implements Variable {
 
-    public static <T> DefaultVariable<T> newVariable(final Collection<Type> types, final Qualifiers qualifiers,
-                                                     final Class<? extends Annotation> scopeType) {
-        return new DefaultVariable<>(types, qualifiers, scopeType);
+    public static DefaultVariable newVariable(final Collection<Type> types, final Qualifiers qualifiers,
+                                              final Class<? extends Annotation> scopeType) {
+        return new DefaultVariable(types, qualifiers, scopeType);
     }
 
     private final Collection<Type> types;
@@ -62,7 +62,7 @@ public class DefaultVariable<T> implements Variable<T> {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final DefaultVariable<?> that = (DefaultVariable<?>) o;
+        final DefaultVariable that = (DefaultVariable) o;
         return types.equals(that.types) &&
                 qualifiers.equals(that.qualifiers) &&
                 scopeType.equals(that.scopeType);

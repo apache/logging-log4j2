@@ -23,7 +23,7 @@ import org.apache.logging.log4j.plugins.spi.model.Variable;
 
 import java.util.Collection;
 
-public interface Bean<T> extends Variable<T> {
+public interface Bean<T> extends Variable {
     /**
      * Creates a new instance of this bean. The given {@link InitializationContext} should be used by implementations
      * to track dependent objects.

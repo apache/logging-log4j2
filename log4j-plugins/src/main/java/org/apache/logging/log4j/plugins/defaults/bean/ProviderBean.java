@@ -26,7 +26,7 @@ import java.util.function.Function;
 class ProviderBean<T> extends SystemBean<Provider<T>> {
     private final Function<InitializationContext<?>, T> providedValueFactory;
 
-    ProviderBean(final Variable<Provider<T>> variable, final Function<InitializationContext<?>, T> providedValueFactory) {
+    ProviderBean(final Variable variable, final Function<InitializationContext<?>, T> providedValueFactory) {
         super(variable);
         this.providedValueFactory = providedValueFactory;
     }

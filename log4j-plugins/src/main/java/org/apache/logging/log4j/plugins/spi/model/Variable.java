@@ -25,7 +25,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-public interface Variable<T> {
+public interface Variable {
     Collection<Type> getTypes();
 
     default boolean hasMatchingType(final Type requiredType) {
@@ -43,9 +43,5 @@ public interface Variable<T> {
 
     default boolean isDependentScoped() {
         return getScopeType() == Dependent.class;
-    }
-
-    default boolean isSingletonScoped() {
-        return getScopeType() == Singleton.class;
     }
 }
