@@ -88,11 +88,11 @@ class DefaultInjectionPoint<T> implements InjectionPoint<T> {
     @Override
     public String toString() {
         return "DefaultInjectionPoint{" +
-                "type=" + type +
+                "type=" + type.getTypeName() +
                 ", qualifiers=" + qualifiers +
                 ", bean=" + bean +
-                ", member=" + member.getName() +
-                ", element=" + element.getName() +
+                ", member=" + member +
+                ", element=" + element +
                 '}';
     }
 }
