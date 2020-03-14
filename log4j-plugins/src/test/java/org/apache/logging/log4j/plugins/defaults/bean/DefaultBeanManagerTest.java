@@ -286,14 +286,19 @@ public class DefaultBeanManagerTest {
         }
     }
 
-    @WithBeans(DefaultNamedQualifier.class)
+    @Named
+    public static class FooBar {
+    }
+
+    @WithBeans({DefaultNamedQualifier.class, FooBar.class})
     @Test
     public void testDefaultNamedQualifier(@Named final String methodProducer,
                                           @Named("methodProducer") final String alternative,
-                                          @Named final short answer) {
+                                          @Named final short answer, @Named final FooBar fooBar) {
         assertEquals("foobar", methodProducer);
         assertEquals(methodProducer, alternative);
         assertEquals(42, answer);
+        assertNotNull(fooBar);
     }
 
     // TODO: add tests for other supported injection scenarios

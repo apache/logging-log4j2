@@ -92,6 +92,8 @@ public class DefaultElementManager implements ElementManager {
             } else {
                 defaultName = elementName;
             }
+        } else if (element instanceof MetaClass<?>) {
+            defaultName = Introspector.decapitalize(((MetaClass<?>) element).getJavaClass().getSimpleName());
         } else {
             defaultName = elementName;
         }
