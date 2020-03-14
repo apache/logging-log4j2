@@ -19,6 +19,7 @@ package org.apache.logging.log4j.plugins.defaults.bean;
 
 import org.apache.logging.log4j.plugins.api.Default;
 import org.apache.logging.log4j.plugins.api.Inject;
+import org.apache.logging.log4j.plugins.api.Named;
 import org.apache.logging.log4j.plugins.api.PostConstruct;
 import org.apache.logging.log4j.plugins.api.Produces;
 import org.apache.logging.log4j.plugins.api.Provider;
@@ -271,8 +272,31 @@ public class DefaultBeanManagerTest {
         assertEquals(6, instance.six);
     }
 
+    public static class DefaultNamedQualifier {
+        @Produces
+        @Named
+        public String methodProducer() {
+            return "foobar";
+        }
+
+        @Produces
+        @Named
+        public short getAnswer() {
+            return 42;
+        }
+    }
+
+    @WithBeans(DefaultNamedQualifier.class)
+    @Test
+    public void testDefaultNamedQualifier(@Named final String methodProducer,
+                                          @Named("methodProducer") final String alternative,
+                                          @Named final short answer) {
+        assertEquals("foobar", methodProducer);
+        assertEquals(methodProducer, alternative);
+        assertEquals(42, answer);
+    }
+
     // TODO: add tests for other supported injection scenarios
     // TODO: add tests for hierarchical scopes
-    // TODO: add tests for default @Named value calculation
     // TODO: add tests for @Named alias annotations like @PluginAttribute == @Named
 }

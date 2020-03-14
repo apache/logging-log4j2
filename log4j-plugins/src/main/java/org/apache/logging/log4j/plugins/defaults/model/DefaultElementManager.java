@@ -28,20 +28,26 @@ import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.MetaElement;
 import org.apache.logging.log4j.plugins.spi.model.MetaExecutable;
 import org.apache.logging.log4j.plugins.spi.model.MetaField;
+import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
 import org.apache.logging.log4j.plugins.spi.model.MetaParameter;
 import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
 import org.apache.logging.log4j.plugins.util.Cache;
 import org.apache.logging.log4j.plugins.util.WeakCache;
 
+import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DefaultElementManager implements ElementManager {
+
+    private static final Pattern BEAN_METHOD = Pattern.compile("^(is|get|set)([A-Z].*)$");
 
     private enum AnnotationType {
         QUALIFIER, SCOPE, UNKNOWN
@@ -77,7 +83,19 @@ public class DefaultElementManager implements ElementManager {
 
     @Override
     public Qualifiers getQualifiers(final MetaElement<?> element) {
-        return Qualifiers.fromQualifierAnnotations(filterQualifiers(element.getAnnotations()));
+        final String elementName = element.getName();
+        final String defaultName;
+        if (element instanceof MetaMethod<?, ?>) {
+            final Matcher matcher = BEAN_METHOD.matcher(elementName);
+            if (matcher.matches()) {
+                defaultName = Introspector.decapitalize(matcher.group(2));
+            } else {
+                defaultName = elementName;
+            }
+        } else {
+            defaultName = elementName;
+        }
+        return Qualifiers.fromQualifierAnnotations(filterQualifiers(element.getAnnotations()), defaultName);
     }
 
     private Collection<Annotation> filterQualifiers(final Collection<Annotation> annotations) {

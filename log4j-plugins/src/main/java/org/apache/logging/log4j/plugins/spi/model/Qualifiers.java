@@ -22,6 +22,7 @@ import org.apache.logging.log4j.plugins.api.Default;
 import org.apache.logging.log4j.plugins.api.Ignore;
 import org.apache.logging.log4j.plugins.api.Named;
 import org.apache.logging.log4j.plugins.spi.InjectionException;
+import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -68,17 +69,54 @@ public final class Qualifiers {
      * Creates a normalized Qualifiers instance from a collection of qualifier annotation instances.
      */
     public static Qualifiers fromQualifierAnnotations(final Collection<Annotation> annotations) {
+        return fromQualifierAnnotations(annotations, Strings.EMPTY);
+    }
+
+    /**
+     * Creates a normalized Qualifiers instance from a collection of qualifier annotation instances and a default name
+     * to use when {@linkplain Named named qualifiers} do not specify a value.
+     */
+    public static Qualifiers fromQualifierAnnotations(final Collection<Annotation> annotations, final String defaultName) {
         final Map<Class<? extends Annotation>, Map<String, Object>> qualifiers = new HashMap<>(annotations.size());
         for (final Annotation annotation : annotations) {
             final Class<? extends Annotation> annotationType = annotation.annotationType();
             final AliasFor alias = annotationType.getAnnotation(AliasFor.class);
             final Class<? extends Annotation> qualifierType = alias != null ? alias.value() : annotationType;
-            qualifiers.put(qualifierType, getQualifierAttributes(annotation));
+            qualifiers.put(qualifierType, getQualifierAttributes(annotation, defaultName));
         }
         if (needsDefaultQualifier(qualifiers.keySet())) {
             qualifiers.put(Default.class, Collections.emptyMap());
         }
         return new Qualifiers(Collections.unmodifiableMap(qualifiers));
+    }
+
+    private static Map<String, Object> getQualifierAttributes(final Annotation annotation, final String defaultName) {
+        final Class<? extends Annotation> annotationType = annotation.annotationType();
+        final Method[] elements = annotationType.getDeclaredMethods();
+        final Map<String, Object> attributes = new HashMap<>(elements.length);
+        for (final Method element : elements) {
+            if (!element.isAnnotationPresent(Ignore.class)) {
+                final String name = element.getName();
+                final Object value = getAnnotationElementValue(annotation, element);
+                if (annotationType == Named.class && name.equals("value") && value.toString().isEmpty()) {
+                    attributes.put("value", defaultName);
+                } else {
+                    attributes.put(name, value);
+                }
+            }
+        }
+        return Collections.unmodifiableMap(attributes);
+    }
+
+    private static Object getAnnotationElementValue(final Annotation annotation, final Method element) {
+        try {
+            return element.invoke(annotation);
+        } catch (final IllegalAccessException e) {
+            throw new InjectionException("Cannot access element " + element.getName() + " of annotation " + annotation, e);
+        } catch (final InvocationTargetException e) {
+            throw new InjectionException("Cannot access element " + element.getName() + " of annotation " + annotation,
+                    e.getCause());
+        }
     }
 
     private static boolean needsDefaultQualifier(final Collection<Class<? extends Annotation>> qualifierTypes) {
@@ -91,28 +129,5 @@ public final class Qualifiers {
             }
         }
         return true;
-    }
-
-    private static Map<String, Object> getQualifierAttributes(final Annotation annotation) {
-        final Class<? extends Annotation> annotationType = annotation.annotationType();
-        final Method[] elements = annotationType.getDeclaredMethods();
-        final Map<String, Object> attributes = new HashMap<>(elements.length);
-        for (final Method element : elements) {
-            if (!element.isAnnotationPresent(Ignore.class)) {
-                attributes.put(element.getName(), getAnnotationElement(annotation, element));
-            }
-        }
-        return Collections.unmodifiableMap(attributes);
-    }
-
-    private static Object getAnnotationElement(final Annotation annotation, final Method element) {
-        try {
-            return element.invoke(annotation);
-        } catch (final IllegalAccessException e) {
-            throw new InjectionException("Cannot access element " + element.getName() + " of annotation " + annotation, e);
-        } catch (final InvocationTargetException e) {
-            throw new InjectionException("Cannot access element " + element.getName() + " of annotation " + annotation,
-                    e.getCause());
-        }
     }
 }
