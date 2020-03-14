@@ -25,7 +25,7 @@ import org.apache.logging.log4j.plugins.spi.bean.ScopeContext;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 
-public class DependentScopeContext implements ScopeContext {
+class DependentScopeContext implements ScopeContext {
     @Override
     public Class<? extends Annotation> getScopeType() {
         return Dependent.class;
