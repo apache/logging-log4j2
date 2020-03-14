@@ -22,6 +22,7 @@ import org.apache.logging.log4j.plugins.api.Default;
 import org.apache.logging.log4j.plugins.api.Ignore;
 import org.apache.logging.log4j.plugins.api.Named;
 import org.apache.logging.log4j.plugins.spi.InjectionException;
+import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Annotation;
@@ -32,6 +33,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Represents a normalized set of {@linkplain org.apache.logging.log4j.plugins.api.QualifierType qualifier annotations}.
@@ -62,7 +64,25 @@ public final class Qualifiers {
 
     @Override
     public String toString() {
-        return qualifiers.toString();
+        final Set<Map.Entry<Class<? extends Annotation>, Map<String, Object>>> entries = qualifiers.entrySet();
+        if (entries.isEmpty()) {
+            return "[]";
+        }
+        StringBuilder sb = new StringBuilder().append('[');
+        for (final Map.Entry<Class<? extends Annotation>, Map<String, Object>> entry : entries) {
+            sb.append('@').append(entry.getKey().getSimpleName());
+            final Map<String, Object> attributes = entry.getValue();
+            if (!attributes.isEmpty()) {
+                sb.append('(');
+                for (final Map.Entry<String, Object> attribute : attributes.entrySet()) {
+                    StringBuilders.appendKeyDqValue(sb, attribute.getKey(), attribute.getValue());
+                    sb.append(", ");
+                }
+                sb.delete(sb.length() - 2, sb.length()).append(')');
+            }
+            sb.append(", ");
+        }
+        return sb.delete(sb.length() - 2, sb.length()).append(']').toString();
     }
 
     /**
