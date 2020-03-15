@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.plugins.spi.model;
 
-import org.apache.logging.log4j.plugins.api.AliasFor;
+import org.apache.logging.log4j.plugins.api.AnnotationAlias;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -30,32 +30,24 @@ public interface MetaElement<T> {
      */
     String getName();
 
+    Type getType();
+
+    Collection<Type> getTypeClosure();
+
     /**
      * Returns all the annotations present on this element.
      */
-    Collection<Annotation> getAnnotations();
+    Collection<MetaAnnotation> getAnnotations();
 
     /**
      * Indicates whether or not an annotation is present on this element taking into account
-     * {@linkplain AliasFor annotation aliasing}.
+     * {@linkplain AnnotationAlias annotation aliasing}.
      *
      * @param annotationType type of annotation to look for
      * @return whether or not the annotation is directly or indirectly present on this element
      */
     default boolean isAnnotationPresent(final Class<? extends Annotation> annotationType) {
-        for (final Annotation annotation : getAnnotations()) {
-            if (annotationType.equals(annotation.annotationType())) {
-                return true;
-            }
-            if (annotation instanceof AliasFor) {
-                return annotationType.equals(((AliasFor) annotation).value());
-            }
-        }
-        return false;
+        return getAnnotations().stream().anyMatch(annotation -> annotationType == annotation.getAnnotationType());
     }
-
-    Type getType();
-
-    Collection<Type> getTypeClosure();
 
 }

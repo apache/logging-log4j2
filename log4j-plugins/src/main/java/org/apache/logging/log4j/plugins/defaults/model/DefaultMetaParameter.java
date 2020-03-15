@@ -17,11 +17,11 @@
 
 package org.apache.logging.log4j.plugins.defaults.model;
 
+import org.apache.logging.log4j.plugins.spi.model.MetaAnnotation;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.MetaParameter;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -45,7 +45,7 @@ class DefaultMetaParameter<T> implements MetaParameter<T> {
     }
 
     @Override
-    public Collection<Annotation> getAnnotations() {
+    public Collection<MetaAnnotation> getAnnotations() {
         return parameterClass.getAnnotations();
     }
 

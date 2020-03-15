@@ -17,13 +17,18 @@
 
 package org.apache.logging.log4j.plugins.defaults.model;
 
-import org.apache.logging.log4j.plugins.api.AliasFor;
+import org.apache.logging.log4j.plugins.api.AnnotationAlias;
+import org.apache.logging.log4j.plugins.api.Default;
 import org.apache.logging.log4j.plugins.api.Dependent;
+import org.apache.logging.log4j.plugins.api.Ignore;
+import org.apache.logging.log4j.plugins.api.Named;
 import org.apache.logging.log4j.plugins.api.QualifierType;
 import org.apache.logging.log4j.plugins.api.ScopeType;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.model.ElementManager;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
+import org.apache.logging.log4j.plugins.spi.model.MetaAnnotation;
+import org.apache.logging.log4j.plugins.spi.model.MetaAnnotationElement;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.MetaElement;
 import org.apache.logging.log4j.plugins.spi.model.MetaExecutable;
@@ -33,6 +38,7 @@ import org.apache.logging.log4j.plugins.spi.model.MetaParameter;
 import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
 import org.apache.logging.log4j.plugins.util.Cache;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.util.WeakCache;
 
 import java.beans.Introspector;
@@ -42,8 +48,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class DefaultElementManager implements ElementManager {
 
@@ -58,8 +66,8 @@ public class DefaultElementManager implements ElementManager {
     private final Cache<Class<? extends Annotation>, AnnotationType> annotationTypeCache = WeakCache.newCache(clazz -> {
         for (final Annotation annotation : clazz.getAnnotations()) {
             Class<? extends Annotation> type = annotation.annotationType();
-            if (type == AliasFor.class) {
-                type = ((AliasFor) annotation).value();
+            if (type == AnnotationAlias.class) {
+                type = ((AnnotationAlias) annotation).value();
             }
             if (type == QualifierType.class) {
                 return AnnotationType.QUALIFIER;
@@ -84,31 +92,48 @@ public class DefaultElementManager implements ElementManager {
     @Override
     public Qualifiers getQualifiers(final MetaElement<?> element) {
         final String elementName = element.getName();
-        final String defaultName;
+        final String defaultNamedValue;
         if (element instanceof MetaMethod<?, ?>) {
             final Matcher matcher = BEAN_METHOD.matcher(elementName);
             if (matcher.matches()) {
-                defaultName = Introspector.decapitalize(matcher.group(2));
+                defaultNamedValue = Introspector.decapitalize(matcher.group(2));
             } else {
-                defaultName = elementName;
+                defaultNamedValue = elementName;
             }
         } else if (element instanceof MetaClass<?>) {
-            defaultName = Introspector.decapitalize(((MetaClass<?>) element).getJavaClass().getSimpleName());
+            defaultNamedValue = Introspector.decapitalize(((MetaClass<?>) element).getJavaClass().getSimpleName());
         } else {
-            defaultName = elementName;
+            defaultNamedValue = elementName;
         }
-        return Qualifiers.fromQualifierAnnotations(filterQualifiers(element.getAnnotations()), defaultName);
+        final Set<MetaAnnotation> qualifiers = element.getAnnotations().stream()
+                .filter(annotation -> isQualifierType(annotation.getAnnotationType()))
+                .map(annotation -> transformQualifier(annotation, defaultNamedValue))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        if (qualifiers.stream().map(MetaAnnotation::getAnnotationType).noneMatch(type -> type != Named.class)) {
+            qualifiers.add(new DefaultMetaAnnotation(Default.class, Collections.emptySet()));
+        }
+        return new DefaultQualifiers(qualifiers);
     }
 
-    private Collection<Annotation> filterQualifiers(final Collection<Annotation> annotations) {
-        final Collection<Annotation> qualifiers = new LinkedHashSet<>(annotations.size());
-        for (final Annotation annotation : annotations) {
-            final Class<? extends Annotation> annotationType = annotation.annotationType();
-            if (isQualifierType(annotationType)) {
-                qualifiers.add(annotation);
-            }
-        }
-        return qualifiers;
+    private static MetaAnnotation transformQualifier(final MetaAnnotation annotation, final String defaultNamedValue) {
+        final Class<? extends Annotation> annotationType = annotation.getAnnotationType();
+        final Set<MetaAnnotationElement<?>> elements = annotation.getAnnotationElements().stream()
+                .filter(element -> !element.isAnnotationPresent(Ignore.class))
+                .map(element -> {
+                    if (annotationType == Named.class && element.getName().equals("value")) {
+                        final MetaAnnotationElement<String> namedValue = TypeUtil.cast(element);
+                        final String value = namedValue.getValue();
+                        if (value.isEmpty()) {
+                            return namedValue.withNewValue(defaultNamedValue);
+                        } else {
+                            return namedValue;
+                        }
+                    } else {
+                        return element;
+                    }
+                })
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return new DefaultMetaAnnotation(annotationType, elements);
     }
 
     private Class<? extends Annotation> getScopeType(final MetaElement<?> element) {
@@ -116,11 +141,11 @@ public class DefaultElementManager implements ElementManager {
         return scopeTypes.isEmpty() ? Dependent.class : scopeTypes.iterator().next();
     }
 
-    private Collection<Class<? extends Annotation>> filterScopeTypes(final Collection<Annotation> annotations) {
+    private Collection<Class<? extends Annotation>> filterScopeTypes(final Collection<MetaAnnotation> annotations) {
         // only expect at most one scope
         final Collection<Class<? extends Annotation>> scopeTypes = new LinkedHashSet<>(1);
-        for (final Annotation annotation : annotations) {
-            final Class<? extends Annotation> annotationType = annotation.annotationType();
+        for (final MetaAnnotation annotation : annotations) {
+            final Class<? extends Annotation> annotationType = annotation.getAnnotationType();
             if (isScopeType(annotationType)) {
                 scopeTypes.add(annotationType);
             }

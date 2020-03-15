@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.plugins.defaults.model;
 
+import org.apache.logging.log4j.plugins.spi.model.MetaAnnotation;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.MetaConstructor;
 import org.apache.logging.log4j.plugins.spi.model.MetaField;
@@ -42,19 +43,19 @@ class DefaultMetaClass<T> implements MetaClass<T> {
     }
 
     static <T> MetaClass<T> newMetaClass(final Type baseType, final Class<T> javaClass, final Annotation... annotations) {
-        return new DefaultMetaClass<>(baseType, javaClass, TypeUtil.getTypeClosure(baseType), Arrays.asList(annotations));
+        return new DefaultMetaClass<>(baseType, javaClass, TypeUtil.getTypeClosure(baseType), DefaultMetaAnnotation.fromAnnotations(annotations));
     }
 
     private final Type baseType;
     private final Class<T> javaClass;
     private final Collection<Type> typeClosure;
-    private final Collection<Annotation> annotations;
+    private final Collection<MetaAnnotation> annotations;
     private final Value<Collection<MetaConstructor<T>>> constructors;
     private final Value<Collection<MetaMethod<T, ?>>> methods;
     private final Value<Collection<MetaField<T, ?>>> fields;
 
     private DefaultMetaClass(final Type baseType, final Class<T> javaClass, final Collection<Type> typeClosure,
-                             final Collection<Annotation> annotations) {
+                             final Collection<MetaAnnotation> annotations) {
         this.baseType = baseType;
         this.javaClass = javaClass;
         this.typeClosure = typeClosure;
@@ -77,7 +78,7 @@ class DefaultMetaClass<T> implements MetaClass<T> {
     }
 
     @Override
-    public Collection<Annotation> getAnnotations() {
+    public Collection<MetaAnnotation> getAnnotations() {
         return annotations;
     }
 

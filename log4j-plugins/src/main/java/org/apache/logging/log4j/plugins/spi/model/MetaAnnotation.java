@@ -15,19 +15,13 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.api;
+package org.apache.logging.log4j.plugins.spi.model;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Collection;
 
-// TODO: documentation around where this can be applied
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-@Documented
-public @interface AliasFor {
-    Class<? extends Annotation> value();
+public interface MetaAnnotation {
+    Class<? extends Annotation> getAnnotationType();
+
+    Collection<MetaAnnotationElement<?>> getAnnotationElements();
 }

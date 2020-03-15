@@ -100,7 +100,7 @@ public interface ElementManager extends AutoCloseable {
      */
     default boolean isInjectable(final MetaElement<?> element) {
         return element.isAnnotationPresent(Inject.class) ||
-                (element.getAnnotations().stream().map(Annotation::annotationType).anyMatch(this::isQualifierType) &&
+                (element.getAnnotations().stream().map(MetaAnnotation::getAnnotationType).anyMatch(this::isQualifierType) &&
                         !element.isAnnotationPresent(Produces.class));
     }
 

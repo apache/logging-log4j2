@@ -18,28 +18,23 @@
 package org.apache.logging.log4j.plugins.defaults.model;
 
 import org.apache.logging.log4j.plugins.spi.model.MetaAnnotation;
-import org.apache.logging.log4j.plugins.spi.model.MetaClass;
-import org.apache.logging.log4j.plugins.spi.model.MetaMember;
+import org.apache.logging.log4j.plugins.spi.model.MetaAnnotationElement;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Member;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
 
-abstract class AbstractMetaMember<D, T> implements MetaMember<D, T> {
+class DefaultMetaAnnotationElement<T> implements MetaAnnotationElement<T> {
     private final String name;
+    private final T value;
     private final Collection<MetaAnnotation> annotations;
-    private final MetaClass<D> declaringClass;
-    private final MetaClass<T> type;
-    private final boolean isStatic;
 
-    AbstractMetaMember(final MetaClass<D> declaringClass, final Member member, final MetaClass<T> type) {
-        this.name = member.getName();
-        this.annotations = DefaultMetaAnnotation.fromAnnotations(((AnnotatedElement) member).getAnnotations());
-        this.declaringClass = declaringClass;
-        this.type = type;
-        this.isStatic = Modifier.isStatic(member.getModifiers());
+    DefaultMetaAnnotationElement(final String name, final T value, final Collection<MetaAnnotation> annotations) {
+        this.name = name;
+        this.value = value;
+        this.annotations = Collections.unmodifiableCollection(annotations);
     }
 
     @Override
@@ -48,27 +43,40 @@ abstract class AbstractMetaMember<D, T> implements MetaMember<D, T> {
     }
 
     @Override
+    public Type getType() {
+        return value.getClass();
+    }
+
+    @Override
+    public Collection<Type> getTypeClosure() {
+        return TypeUtil.getTypeClosure(getType());
+    }
+
+    @Override
     public Collection<MetaAnnotation> getAnnotations() {
         return annotations;
     }
 
     @Override
-    public Type getType() {
-        return type.getType();
+    public T getValue() {
+        return value;
     }
 
     @Override
-    public Collection<Type> getTypeClosure() {
-        return type.getTypeClosure();
+    public MetaAnnotationElement<T> withNewValue(final T value) {
+        return new DefaultMetaAnnotationElement<>(name, value, annotations);
     }
 
     @Override
-    public MetaClass<D> getDeclaringClass() {
-        return declaringClass;
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final DefaultMetaAnnotationElement<?> that = (DefaultMetaAnnotationElement<?>) o;
+        return name.equals(that.name) && value.equals(that.value);
     }
 
     @Override
-    public boolean isStatic() {
-        return isStatic;
+    public int hashCode() {
+        return Objects.hash(name, value);
     }
 }

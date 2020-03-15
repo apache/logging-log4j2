@@ -17,12 +17,8 @@
 
 package org.apache.logging.log4j.plugins.spi.model;
 
-public interface Qualifiers {
-    boolean hasDefaultQualifier();
+public interface MetaAnnotationElement<T> extends MetaElement<T> {
+    T getValue();
 
-    @Override
-    boolean equals(Object o);
-
-    @Override
-    int hashCode();
+    MetaAnnotationElement<T> withNewValue(final T value);
 }
