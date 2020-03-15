@@ -174,7 +174,7 @@
           <li>StructuredDataFilter (garbage free since 2.8)</li>
           <li>ThreadContextMapFilter (garbage free since 2.8)</li>
           <li>ThresholdFilter (garbage free since 2.8)</li>
-          <li>TimeFilter (garbage free since 2.8)</li>
+          <li>TimeFilter (garbage free since 2.8 except when range must be recalculated once per day)</li>
         </ul>
         <p>
           Other filters like BurstFilter, RegexFilter and ScriptFilter are not trivial to make garbage free,
