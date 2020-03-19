@@ -22,6 +22,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 final class MessageResolver implements EventResolver {
 
@@ -52,8 +53,14 @@ final class MessageResolver implements EventResolver {
     private void resolveText(
             final Message message,
             final JsonWriter jsonWriter) {
-        final String formattedMessage = message.getFormattedMessage();
-        jsonWriter.writeString(formattedMessage);
+        if (message instanceof StringBuilderFormattable) {
+            final StringBuilderFormattable formattable =
+                    (StringBuilderFormattable) message;
+            jsonWriter.writeString(formattable);
+        } else {
+            final String formattedMessage = message.getFormattedMessage();
+            jsonWriter.writeString(formattedMessage);
+        }
     }
 
     private void resolveJson(

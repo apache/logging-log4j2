@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-import org.apache.logging.log4j.layout.json.template.util.BufferedPrintWriter;
+import org.apache.logging.log4j.layout.json.template.util.TruncatingBufferedPrintWriter;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.layout.json.template.util.Recycler;
 
@@ -24,22 +24,22 @@ import java.util.function.Supplier;
 
 final class StackTraceTextResolver implements StackTraceResolver {
 
-    private final Recycler<BufferedPrintWriter> writerRecycler;
+    private final Recycler<TruncatingBufferedPrintWriter> writerRecycler;
 
     StackTraceTextResolver(final EventResolverContext context) {
-        final int writerCapacity = context.getMaxByteCount() / Character.BYTES;
-        final Supplier<BufferedPrintWriter> writerSupplier =
-                () -> BufferedPrintWriter.ofCapacity(writerCapacity);
+        final Supplier<TruncatingBufferedPrintWriter> writerSupplier =
+                () -> TruncatingBufferedPrintWriter.ofCapacity(
+                        context.getMaxStringByteCount());
         this.writerRecycler = context
                 .getRecyclerFactory()
-                .create(writerSupplier, BufferedPrintWriter::close);
+                .create(writerSupplier, TruncatingBufferedPrintWriter::close);
     }
 
     @Override
     public void resolve(
             final Throwable throwable,
             final JsonWriter jsonWriter) {
-        final BufferedPrintWriter writer = writerRecycler.acquire();
+        final TruncatingBufferedPrintWriter writer = writerRecycler.acquire();
         try {
             throwable.printStackTrace(writer);
             jsonWriter.writeString(writer.getBuffer(), 0, writer.getPosition());

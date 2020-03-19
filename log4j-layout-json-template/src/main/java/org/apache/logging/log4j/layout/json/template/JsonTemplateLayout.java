@@ -25,15 +25,17 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
-import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
+import org.apache.logging.log4j.core.layout.Encoder;
+import org.apache.logging.log4j.core.layout.LockingStringBuilderEncoder;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.layout.json.template.resolver.EventResolverContext;
 import org.apache.logging.log4j.layout.json.template.resolver.StackTraceElementObjectResolverContext;
 import org.apache.logging.log4j.layout.json.template.resolver.TemplateResolver;
 import org.apache.logging.log4j.layout.json.template.resolver.TemplateResolvers;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
-import org.apache.logging.log4j.layout.json.template.util.ByteBufferOutputStream;
 import org.apache.logging.log4j.layout.json.template.util.Recycler;
 import org.apache.logging.log4j.layout.json.template.util.RecyclerFactory;
 import org.apache.logging.log4j.layout.json.template.util.Uris;
@@ -41,7 +43,6 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.Strings;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
@@ -61,19 +62,37 @@ public class JsonTemplateLayout implements StringLayout {
 
     private final String contentType;
 
-    private final byte[] emptyObjectJsonBytes;
-
     private final TemplateResolver<LogEvent> eventResolver;
 
-    private final byte[] eventDelimiterBytes;
+    private final String eventDelimiter;
 
-    private final Recycler<JsonWriter> jsonWriterRecycler;
+    private final Recycler<Context> contextRecycler;
+
+    // The class and fields are visible for tests.
+    static final class Context implements AutoCloseable {
+
+        final JsonWriter jsonWriter;
+
+        final Encoder<StringBuilder> encoder;
+
+        private Context(
+                final JsonWriter jsonWriter,
+                final Encoder<StringBuilder> encoder) {
+            this.jsonWriter = jsonWriter;
+            this.encoder = encoder;
+        }
+
+        @Override
+        public void close() {
+            jsonWriter.close();
+        }
+
+    }
 
     private JsonTemplateLayout(final Builder builder) {
         this.charset = builder.charset;
         this.contentType = "application/json; charset=" + charset;
-        this.emptyObjectJsonBytes = "{}".getBytes(charset);
-        this.eventDelimiterBytes = builder.eventDelimiter.getBytes(charset);
+        this.eventDelimiter = builder.eventDelimiter;
         final StrSubstitutor substitutor = builder.configuration.getStrSubstitutor();
         final TemplateResolver<StackTraceElement> stackTraceElementObjectResolver =
                 builder.stackTraceEnabled
@@ -83,7 +102,7 @@ public class JsonTemplateLayout implements StringLayout {
                 builder,
                 substitutor,
                 stackTraceElementObjectResolver);
-        this.jsonWriterRecycler = createJsonWriterRecycler(builder);
+        this.contextRecycler = createContextRecycler(builder);
     }
 
     private static TemplateResolver<StackTraceElement> createStackTraceElementResolver(
@@ -103,11 +122,15 @@ public class JsonTemplateLayout implements StringLayout {
             final StrSubstitutor substitutor,
             final TemplateResolver<StackTraceElement> stackTraceElementObjectResolver) {
         final String eventTemplate = readEventTemplate(builder);
+        final float maxByteCountPerChar = builder.charset.newEncoder().maxBytesPerChar();
+        final int maxStringByteCount =
+                Math.toIntExact(Math.round(
+                        maxByteCountPerChar * builder.maxStringLength));
         final EventResolverContext resolverContext = EventResolverContext
                 .newBuilder()
                 .setSubstitutor(substitutor)
                 .setRecyclerFactory(builder.recyclerFactory)
-                .setMaxByteCount(builder.maxByteCount)
+                .setMaxStringByteCount(maxStringByteCount)
                 .setLocationInfoEnabled(builder.locationInfoEnabled)
                 .setStackTraceEnabled(builder.stackTraceEnabled)
                 .setStackTraceElementObjectResolver(stackTraceElementObjectResolver)
@@ -141,73 +164,86 @@ public class JsonTemplateLayout implements StringLayout {
                 : template;
     }
 
-    private static Recycler<JsonWriter> createJsonWriterRecycler(
+    private static Recycler<Context> createContextRecycler(
             final Builder builder) {
-        final Supplier<JsonWriter> supplier = createJsonWriterSupplier(builder);
+        final Supplier<Context> supplier = createContextSupplier(builder);
         return builder
                 .recyclerFactory
-                .create(supplier, JsonWriter::close);
+                .create(supplier, Context::close);
     }
 
-    private static Supplier<JsonWriter>
-    createJsonWriterSupplier(final Builder builder) {
-        return () -> JsonWriter
-                .newBuilder()
-                .setCharset(builder.getCharset())
-                .setMaxByteCount(builder.maxByteCount)
-                .setMaxStringLength(builder.maxStringLength)
-                .setTruncatedStringSuffix(builder.truncatedStringSuffix)
-                .build();
-    }
-
-    @Override
-    public String toSerializable(final LogEvent event) {
-        try (final JsonWriter jsonWriter = acquireJsonWriter()) {
-            encode(event, jsonWriter);
-            final String encodedEvent = jsonWriter.getOutputStream().toString(charset);
-            jsonWriterRecycler.release(jsonWriter);
-            return encodedEvent;
-        }
+    private static Supplier<Context> createContextSupplier(
+            final Builder builder) {
+        return () -> {
+            final JsonWriter jsonWriter = JsonWriter
+                    .newBuilder()
+                    .setMaxStringLength(builder.maxStringLength)
+                    .setTruncatedStringSuffix(builder.truncatedStringSuffix)
+                    .build();
+            final Encoder<StringBuilder> encoder =
+                    Constants.ENABLE_DIRECT_ENCODERS
+                            ? new LockingStringBuilderEncoder(builder.charset)
+                            : null;
+            return new Context(jsonWriter, encoder);
+        };
     }
 
     @Override
     public byte[] toByteArray(final LogEvent event) {
-        try (final JsonWriter jsonWriter = acquireJsonWriter()) {
-            encode(event, jsonWriter);
-            final byte[] encodedEvent = jsonWriter.getOutputStream().toByteArray();
-            jsonWriterRecycler.release(jsonWriter);
-            return encodedEvent;
+        final String eventJson = toSerializable(event);
+        return StringEncoder.toBytes(eventJson, charset);
+    }
+
+    @Override
+    public String toSerializable(final LogEvent event) {
+        final Context context = acquireContext();
+        final JsonWriter jsonWriter = context.jsonWriter;
+        final StringBuilder stringBuilder = jsonWriter.getStringBuilder();
+        try {
+            eventResolver.resolve(event, jsonWriter);
+            stringBuilder.append(eventDelimiter);
+            return stringBuilder.toString();
+        } finally {
+            contextRecycler.release(context);
         }
     }
 
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
-        try (final JsonWriter jsonWriter = acquireJsonWriter()) {
-            encode(event, jsonWriter);
-            final ByteBuffer byteBuffer = jsonWriter.getOutputStream().getByteBuffer();
-            byteBuffer.flip();
-            // noinspection SynchronizationOnLocalVariableOrMethodParameter
-            synchronized (destination) {
-                ByteBufferDestinationHelper.writeToUnsynchronized(byteBuffer, destination);
+
+        // Acquire a context.
+        final Context context = acquireContext();
+        final JsonWriter jsonWriter = context.jsonWriter;
+        final StringBuilder stringBuilder = jsonWriter.getStringBuilder();
+        final Encoder<StringBuilder> encoder = context.encoder;
+
+        try {
+
+            // Render the JSON.
+            eventResolver.resolve(event, jsonWriter);
+            stringBuilder.append(eventDelimiter);
+
+            // Write to the destination.
+            if (encoder == null) {
+                final String eventJson = stringBuilder.toString();
+                final byte[] eventJsonBytes = StringEncoder.toBytes(eventJson, charset);
+                destination.writeBytes(eventJsonBytes, 0, eventJsonBytes.length);
+            } else {
+                encoder.encode(stringBuilder, destination);
             }
-            jsonWriterRecycler.release(jsonWriter);
+
         }
+
+        // Release the context.
+        finally {
+            contextRecycler.release(context);
+        }
+
     }
 
     // Visible for tests.
-    JsonWriter acquireJsonWriter() {
-        return jsonWriterRecycler.acquire();
-    }
-
-    private void encode(
-            final LogEvent event,
-            final JsonWriter jsonWriter) {
-        eventResolver.resolve(event, jsonWriter);
-        ByteBufferOutputStream outputStream = jsonWriter.getOutputStream();
-        if (outputStream.getByteBuffer().position() == 0) {
-            outputStream.write(emptyObjectJsonBytes);
-        }
-        outputStream.write(eventDelimiterBytes);
+    Context acquireContext() {
+        return contextRecycler.acquire();
     }
 
     @Override
@@ -286,9 +322,6 @@ public class JsonTemplateLayout implements StringLayout {
 
         @PluginBuilderAttribute
         private String eventDelimiter = JsonTemplateLayoutDefaults.getEventDelimiter();
-
-        @PluginBuilderAttribute
-        private int maxByteCount = JsonTemplateLayoutDefaults.getMaxByteCount();
 
         @PluginBuilderAttribute
         private int maxStringLength = JsonTemplateLayoutDefaults.getMaxStringLength();
@@ -416,15 +449,6 @@ public class JsonTemplateLayout implements StringLayout {
             return this;
         }
 
-        public int getMaxByteCount() {
-            return maxByteCount;
-        }
-
-        public Builder setMaxByteCount(final int maxByteCount) {
-            this.maxByteCount = maxByteCount;
-            return this;
-        }
-
         public int getMaxStringLength() {
             return maxStringLength;
         }
@@ -470,12 +494,6 @@ public class JsonTemplateLayout implements StringLayout {
                     && Strings.isBlank(stackTraceElementTemplateUri)) {
                 throw new IllegalArgumentException(
                         "both stackTraceElementTemplate and stackTraceElementTemplateUri are blank");
-            }
-            if (maxByteCount < JsonTemplateLayoutDefaults.MIN_BYTE_COUNT) {
-                throw new IllegalArgumentException(
-                        "was expecting maxByteCount >= " +
-                                JsonTemplateLayoutDefaults.MIN_BYTE_COUNT +
-                                ":" + maxByteCount);
             }
             Objects.requireNonNull(truncatedStringSuffix, "truncatedStringSuffix");
             Objects.requireNonNull(recyclerFactory, "recyclerFactory");

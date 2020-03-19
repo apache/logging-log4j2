@@ -18,39 +18,43 @@ package org.apache.logging.log4j.layout.json.template.util;
 
 import java.io.PrintWriter;
 
-public final class BufferedPrintWriter extends PrintWriter {
+public final class TruncatingBufferedPrintWriter extends PrintWriter {
 
-    private final BufferedWriter bufferedWriter;
+    private final TruncatingBufferedWriter writer;
 
-    private BufferedPrintWriter(final BufferedWriter bufferedWriter) {
-        super(bufferedWriter, false);
-        this.bufferedWriter = bufferedWriter;
+    private TruncatingBufferedPrintWriter(final TruncatingBufferedWriter writer) {
+        super(writer, false);
+        this.writer = writer;
     }
 
-    public static BufferedPrintWriter ofCapacity(final int capacity) {
+    public static TruncatingBufferedPrintWriter ofCapacity(final int capacity) {
         if (capacity < 0) {
             throw new IllegalArgumentException(
                     "was expecting a non-negative capacity: " + capacity);
         }
-        final BufferedWriter bufferedWriter = new BufferedWriter(capacity);
-        return new BufferedPrintWriter(bufferedWriter);
+        final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(capacity);
+        return new TruncatingBufferedPrintWriter(writer);
     }
 
     public char[] getBuffer() {
-        return bufferedWriter.getBuffer();
+        return writer.getBuffer();
     }
 
     public int getPosition() {
-        return bufferedWriter.getPosition();
+        return writer.getPosition();
     }
 
     public int getCapacity() {
-        return bufferedWriter.getCapacity();
+        return writer.getCapacity();
+    }
+
+    public boolean isTruncated() {
+        return writer.isTruncated();
     }
 
     @Override
     public void close() {
-        bufferedWriter.close();
+        writer.close();
     }
 
 }

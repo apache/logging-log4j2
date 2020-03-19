@@ -16,16 +16,13 @@
  */
 package org.apache.logging.log4j.layout.json.template.util;
 
-import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -52,56 +49,29 @@ import java.util.Objects;
  */
 public final class JsonWriter implements AutoCloseable {
 
-    private final Charset charset;
-
-    private final int maxByteCount;
-
-    private final ByteBufferOutputStream outputStream;
-
-    private final PrintStream printStream;
+    private final StringBuilder stringBuilder;
 
     private final int maxStringLength;
 
     private final String truncatedStringSuffix;
 
-    private final StringBuilder stringBuilder;
+    private final String escapedTruncatedStringSuffix;
 
     private JsonWriter(final Builder builder) {
-        this.charset = builder.charset;
-        this.maxByteCount = builder.maxByteCount;
-        this.outputStream = new ByteBufferOutputStream(builder.maxByteCount);
-        this.printStream = createPrintStream(builder.charset);
-        this.maxStringLength = builder.maxStringLength;
-        this.truncatedStringSuffix = escapeString(
-                builder.charset,
-                builder.truncatedStringSuffix);
         this.stringBuilder = new StringBuilder();
+        this.maxStringLength = builder.maxStringLength;
+        this.truncatedStringSuffix = builder.truncatedStringSuffix;
+        this.escapedTruncatedStringSuffix = escapeString(builder.truncatedStringSuffix);
     }
 
-    private PrintStream createPrintStream(final Charset charset) {
-        try {
-            return new PrintStream(outputStream, false, charset.name());
-        } catch (UnsupportedEncodingException error) {
-            throw new RuntimeException(error);
-        }
+    private static String escapeString(final String string) {
+        final StringBuilder stringBuilder = new StringBuilder(string);
+        StringBuilders.escapeJson(stringBuilder, 0);
+        return stringBuilder.toString();
     }
 
-    private String escapeString(final Charset charset, final String string) {
-        for (int i = 0; i < string.length(); i++) {
-            final char c = string.charAt(i);
-            writeChar(c);
-        }
-        final String escapedString = outputStream.toString(charset);
-        close();
-        return escapedString;
-    }
-
-    public Charset getCharset() {
-        return charset;
-    }
-
-    public int getMaxByteCount() {
-        return maxByteCount;
+    public StringBuilder getStringBuilder() {
+        return stringBuilder;
     }
 
     public int getMaxStringLength() {
@@ -110,10 +80,6 @@ public final class JsonWriter implements AutoCloseable {
 
     public String getTruncatedStringSuffix() {
         return truncatedStringSuffix;
-    }
-
-    public ByteBufferOutputStream getOutputStream() {
-        return outputStream;
     }
 
     public void writeValue(final Object value) {
@@ -265,16 +231,16 @@ public final class JsonWriter implements AutoCloseable {
     }
 
     public void writeObjectStart() {
-        printStream.print('{');
+        stringBuilder.append('{');
     }
 
     public void writeObjectEnd() {
-        printStream.print('}');
+        stringBuilder.append('}');
     }
 
     public void writeObjectKey(final String key) {
         writeString(key);
-        printStream.print(':');
+        stringBuilder.append(':');
     }
 
     public void writeArray(final List<Object> items) {
@@ -321,9 +287,11 @@ public final class JsonWriter implements AutoCloseable {
                     writeSeparator();
                 }
                 final char item = items[itemIndex];
-                printStream.print('"');
-                writeChar(item);
-                printStream.print('"');
+                stringBuilder.append('"');
+                final int startIndex = stringBuilder.length();
+                stringBuilder.append(item);
+                StringBuilders.escapeJson(stringBuilder, startIndex);
+                stringBuilder.append('"');
             }
             writeArrayEnd();
         }
@@ -458,24 +426,33 @@ public final class JsonWriter implements AutoCloseable {
     }
 
     public void writeArrayStart() {
-        printStream.print('[');
+        stringBuilder.append('[');
     }
 
     public void writeArrayEnd() {
-        printStream.print(']');
+        stringBuilder.append(']');
     }
 
     public void writeSeparator() {
-        printStream.print(',');
+        stringBuilder.append(',');
     }
 
     public void writeString(final StringBuilderFormattable formattable) {
         if (formattable == null) {
             writeNull();
         } else {
-            stringBuilder.setLength(0);
+            stringBuilder.append('"');
+            final int startIndex = stringBuilder.length();
             formattable.formatTo(stringBuilder);
-            writeString(stringBuilder);
+            final int length = stringBuilder.length() - startIndex;
+            if (length > maxStringLength) {
+                stringBuilder.setLength(startIndex + maxStringLength);
+                StringBuilders.escapeJson(stringBuilder, startIndex);
+                stringBuilder.append(escapedTruncatedStringSuffix);
+            } else {
+                StringBuilders.escapeJson(stringBuilder, startIndex);
+            }
+            stringBuilder.append('"');
         }
     }
 
@@ -508,25 +485,23 @@ public final class JsonWriter implements AutoCloseable {
                     "was expecting a positive length: " + length);
         }
 
-        printStream.print('"');
+        stringBuilder.append('"');
         // Handle max. string length complying input.
         if (maxStringLength <= 0 || length <= maxStringLength) {
             final int limit = offset + length;
-            for (int i = offset; i < limit; i++) {
-                final char c = seq.charAt(i);
-                writeChar(c);
-            }
+            final int escapeOffset = stringBuilder.length();
+            stringBuilder.append(seq, offset, limit);
+            StringBuilders.escapeJson(stringBuilder, escapeOffset);
         }
         // Handle max. string length violating input.
         else {
             final int limit = offset + maxStringLength;
-            for (int i = offset; i < limit; i++) {
-                final char c = seq.charAt(i);
-                writeChar(c);
-            }
-            printStream.print(truncatedStringSuffix);
+            final int escapeOffset = stringBuilder.length();
+            stringBuilder.append(seq, offset, limit);
+            StringBuilders.escapeJson(stringBuilder, escapeOffset);
+            stringBuilder.append(escapedTruncatedStringSuffix);
         }
-        printStream.print('"');
+        stringBuilder.append('"');
 
     }
 
@@ -559,71 +534,24 @@ public final class JsonWriter implements AutoCloseable {
                     "was expecting a positive length: " + length);
         }
 
-        printStream.print('"');
+        stringBuilder.append('"');
         // Handle max. string length complying input.
         if (maxStringLength <= 0 || length <= maxStringLength) {
             final int limit = offset + length;
-            for (int i = offset; i < limit; i++) {
-                final char c = buffer[i];
-                writeChar(c);
-            }
+            final int escapeOffset = stringBuilder.length();
+            stringBuilder.append(buffer, offset, limit);
+            StringBuilders.escapeJson(stringBuilder, escapeOffset);
         }
         // Handle max. string length violating input.
         else {
             final int limit = offset + maxStringLength;
-            for (int i = offset; i < limit; i++) {
-                final char c = buffer[i];
-                writeChar(c);
-            }
-            writeRawString(truncatedStringSuffix);
+            final int escapeOffset = stringBuilder.length();
+            stringBuilder.append(buffer, offset, limit);
+            StringBuilders.escapeJson(stringBuilder, escapeOffset);
+            stringBuilder.append(escapedTruncatedStringSuffix);
         }
-        printStream.print('"');
+        stringBuilder.append('"');
 
-    }
-
-    private void writeChar(final char c) {
-        switch (c) {
-
-            case '\b':
-                printStream.print("\\b");
-                break;
-
-            case '\t':
-                printStream.print("\\t");
-                break;
-
-            case '\f':
-                printStream.print("\\f");
-                break;
-
-            case '\n':
-                printStream.print("\\n");
-                break;
-
-            case '\r':
-                printStream.print("\\r");
-                break;
-
-            case '"':
-            case '\\':
-                printStream.print('\\');
-                printStream.print(c);
-                break;
-
-            default:
-                // All ISO control characters are in U+00ab range and their JSON
-                // encoding is "\\u00AB".
-                if (Character.isISOControl(c)) {
-                    printStream.print("\\u00");
-                    final char a = Chars.getUpperCaseHex((c & 0xF0) >> 4);
-                    final char b = Chars.getUpperCaseHex(c & 0xF);
-                    printStream.print(a);
-                    printStream.print(b);
-                } else {
-                    printStream.print(c);
-                }
-
-        }
     }
 
     private void writeNumber(final Number number) {
@@ -660,7 +588,7 @@ public final class JsonWriter implements AutoCloseable {
         if (number == null) {
             writeNull();
         } else {
-            printStream.print(number);
+            stringBuilder.append(number);
         }
     }
 
@@ -668,48 +596,28 @@ public final class JsonWriter implements AutoCloseable {
         if (number == null) {
             writeNull();
         } else {
-            printStream.print(number);
+            stringBuilder.append(number);
         }
     }
 
     public void writeNumber(final float number) {
-        stringBuilder.setLength(0);
-        // StringBuilder#append(float) is garbage-free compared to
-        // PrintStream#print(float).
         stringBuilder.append(number);
-        writeRawString(stringBuilder);
     }
 
     public void writeNumber(final double number) {
-        stringBuilder.setLength(0);
-        // StringBuilder#append(double) is garbage-free compared to
-        // PrintStream#print(double).
         stringBuilder.append(number);
-        writeRawString(stringBuilder);
     }
 
     public void writeNumber(final short number) {
-        stringBuilder.setLength(0);
-        // StringBuilder#append(short) is garbage-free compared to
-        // PrintStream#print(short).
         stringBuilder.append(number);
-        writeRawString(stringBuilder);
     }
 
     public void writeNumber(final int number) {
-        stringBuilder.setLength(0);
-        // StringBuilder#append(int) is garbage-free compared to
-        // PrintStream#print(int).
         stringBuilder.append(number);
-        writeRawString(stringBuilder);
     }
 
     public void writeNumber(final long number) {
-        stringBuilder.setLength(0);
-        // StringBuilder#append(long) is garbage-free compared to
-        // PrintStream#print(long).
         stringBuilder.append(number);
-        writeRawString(stringBuilder);
     }
 
     public void writeNumber(final long integralPart, final long fractionalPart) {
@@ -717,15 +625,11 @@ public final class JsonWriter implements AutoCloseable {
             throw new IllegalArgumentException(
                     "was expecting a positive fraction: " + fractionalPart);
         }
-        // StringBuilder#append(long) is garbage-free compared to
-        // PrintStream#print(long).
-        stringBuilder.setLength(0);
         stringBuilder.append(integralPart);
         if (fractionalPart != 0) {
             stringBuilder.append('.');
             stringBuilder.append(fractionalPart);
         }
-        writeRawString(stringBuilder);
     }
 
     public void writeBoolean(final boolean value) {
@@ -761,7 +665,7 @@ public final class JsonWriter implements AutoCloseable {
         final int limit = offset + length;
         for (int i = offset; i < limit; i++) {
             final char c = seq.charAt(i);
-            printStream.print(c);
+            stringBuilder.append(c);
         }
 
     }
@@ -791,14 +695,14 @@ public final class JsonWriter implements AutoCloseable {
         final int limit = offset + length;
         for (int i = offset; i < limit; i++) {
             final char c = buffer[i];
-            printStream.print(c);
+            stringBuilder.append(c);
         }
 
     }
 
     @Override
     public void close() {
-        outputStream.close();
+        stringBuilder.setLength(0);
     }
 
     public static Builder newBuilder() {
@@ -807,31 +711,9 @@ public final class JsonWriter implements AutoCloseable {
 
     public static final class Builder {
 
-        private Charset charset;
-
-        private int maxByteCount;
-
         private int maxStringLength;
 
         private String truncatedStringSuffix;
-
-        public Charset getCharset() {
-            return charset;
-        }
-
-        public Builder setCharset(final Charset charset) {
-            this.charset = charset;
-            return this;
-        }
-
-        public int getMaxByteCount() {
-            return maxByteCount;
-        }
-
-        public Builder setMaxByteCount(final int maxByteCount) {
-            this.maxByteCount = maxByteCount;
-            return this;
-        }
 
         public int getMaxStringLength() {
             return maxStringLength;
@@ -857,12 +739,6 @@ public final class JsonWriter implements AutoCloseable {
         }
 
         private void validate() {
-            Objects.requireNonNull(charset, "charset");
-            if (maxByteCount <= 0) {
-                throw new IllegalArgumentException(
-                        "was expecting a non-zero positive maxByteCount: " +
-                                maxByteCount);
-            }
             Objects.requireNonNull(truncatedStringSuffix, "truncatedStringSuffix");
         }
 

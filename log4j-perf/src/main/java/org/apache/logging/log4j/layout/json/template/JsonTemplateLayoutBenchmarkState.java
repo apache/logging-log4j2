@@ -36,8 +36,6 @@ public class JsonTemplateLayoutBenchmarkState {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
 
-    private static final int LOGSTASH_LAYOUT_MAX_BYTE_COUNT = 4096;
-
     private final ByteBufferDestination byteBufferDestination;
 
     private final JsonTemplateLayout jsonTemplateLayout4JsonLayout;
@@ -77,7 +75,6 @@ public class JsonTemplateLayoutBenchmarkState {
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplateUri("classpath:JsonLayout.json")
-                .setMaxByteCount(LOGSTASH_LAYOUT_MAX_BYTE_COUNT)
                 .build();
     }
 
@@ -93,7 +90,6 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplateUri("classpath:EcsLayout.json")
                 .setEventTemplateAdditionalFields(additionalFields)
-                .setMaxByteCount(LOGSTASH_LAYOUT_MAX_BYTE_COUNT)
                 .build();
     }
 
@@ -102,7 +98,6 @@ public class JsonTemplateLayoutBenchmarkState {
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplateUri("classpath:GelfLayout.json")
-                .setMaxByteCount(LOGSTASH_LAYOUT_MAX_BYTE_COUNT)
                 .setEventTemplateAdditionalFields(EventTemplateAdditionalFields
                         .newBuilder()
                         .setAdditionalFields(new KeyValuePair[]{

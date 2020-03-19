@@ -177,15 +177,10 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
   `System.lineSeparator()` set by `log4j.layout.jsonTemplate.eventDelimiter`
   property)
 
-| maxByteCount
-| int
-| caps the internal `byte[]` buffers used for serialization (defaults to 16 KiB
-  set by `log4j.layout.jsonTemplate.maxByteCount` property)
-
 | maxStringLength
 | int
-| truncate string values longer than the specified limit (defaults to 0 set by
-  `log4j.layout.jsonTemplate.maxStringLength` property)
+| truncate string values longer than the specified limit (defaults to 16384 set
+  by `log4j.layout.jsonTemplate.maxStringLength` property)
 
 | truncatedStringSuffix
 | String
@@ -640,20 +635,12 @@ alternatives.
 [#faq]
 == F.A.Q.
 
-[#faq-maxStringLength-vs-maxByteCount]
-=== `maxStringLength` versus `maxByteCount`
-
-Note that string value truncation via `maxStringLength` can take place both in
-object keys and values. `maxStringLength` is intended as a soft protection
-against excessive input and one should always rely on `maxByteCount` for a hard
-limit. For instance, consider a JSON template with 1,000 fields where each does
-not exceed `maxStringLength`, but the emitted final JSON string will certainly
-violate the `maxByteCount` constraint.
-
 [#faq-garbage-free]
 === Is `JsonTemplateLayout` garbage-free?
 
-`JsonTemplateLayout` is garbage-free with the following exceptions:
+Given the garbage-free layout behaviour enabler property
+`log4j2.enable.direct.encoders` is set to `true`, `JsonTemplateLayout` is
+garbage-free with the following exceptions:
 
 * When recycling strategy is either `dummy` or `queue` but access concurrency
   exceeds the configured `capacity`, then the recycler is not garbage-free.
@@ -665,7 +652,8 @@ violate the `maxByteCount` constraint.
   data (that is, MDC) is garbage-free.
 
 * Serialization of ``ObjectMessage``s via `${json:message:json}` is mostly
-  garbage-free except for certain types (e.g., `BigDecimal`, `BigInteger`).
+  garbage-free except for certain types (e.g., `BigDecimal`, `BigInteger`,
+  ``Collection``s with the exception of `List`).
 
 * link:lookups.html[Lookups] (that is, `${...}` variables, excluding
   `${json:...}` ones) are not garbage-free.

@@ -46,12 +46,13 @@ public class JsonTemplateLayoutConcurrentEncodeTest {
 
     }
 
-    private static class ConcurrentAccessDetectingByteBufferDestination extends BlackHoleByteBufferDestination {
+    private static class ConcurrentAccessDetectingByteBufferDestination
+            extends BlackHoleByteBufferDestination {
 
         private final AtomicInteger concurrentAccessCounter = new AtomicInteger(0);
 
-        ConcurrentAccessDetectingByteBufferDestination(final int maxByteCount) {
-            super(maxByteCount);
+        ConcurrentAccessDetectingByteBufferDestination() {
+            super(2_000);
         }
 
         @Override
@@ -145,10 +146,9 @@ public class JsonTemplateLayoutConcurrentEncodeTest {
 
     private void produce(final AtomicReference<Exception> encodeFailureRef) {
         final int threadCount = 10;
-        final int maxByteCount = JsonTemplateLayout.newBuilder().getMaxByteCount();
-        final JsonTemplateLayout layout = createLayout(maxByteCount);
+        final JsonTemplateLayout layout = createLayout();
         final ByteBufferDestination destination =
-                new ConcurrentAccessDetectingByteBufferDestination(maxByteCount);
+                new ConcurrentAccessDetectingByteBufferDestination();
         final AtomicLong encodeCounter = new AtomicLong(0);
         final List<Thread> workers = IntStream
                 .range(0, threadCount)
@@ -170,12 +170,11 @@ public class JsonTemplateLayoutConcurrentEncodeTest {
         });
     }
 
-    private JsonTemplateLayout createLayout(final int maxByteCount) {
+    private static JsonTemplateLayout createLayout() {
         final Configuration config = new DefaultConfiguration();
         return JsonTemplateLayout
                 .newBuilder()
                 .setConfiguration(config)
-                .setMaxByteCount(maxByteCount)
                 .setEventTemplate("{\"message\": \"${json:message}\"}")
                 .setStackTraceEnabled(false)
                 .setLocationInfoEnabled(false)

@@ -79,14 +79,7 @@ public enum JsonTemplateLayoutDefaults {;
                     "log4j.layout.jsonTemplate.eventDelimiter",
                     System.lineSeparator());
 
-    static final int MIN_BYTE_COUNT = 512;
-
-    private static final int MAX_BYTE_COUNT = readMaxByteCount();
-
-    private static final int MAX_STRING_LENGTH =
-            PROPERTIES.getIntegerProperty(
-                    "log4j.layout.jsonTemplate.maxStringLength",
-                    0);
+    private static final int MAX_STRING_LENGTH = readMaxStringLength();
 
     private static final String TRUNCATED_STRING_SUFFIX =
             PROPERTIES.getStringProperty(
@@ -126,17 +119,16 @@ public enum JsonTemplateLayoutDefaults {;
         }
     }
 
-    private static int readMaxByteCount() {
-        final String name = "log4j.layout.jsonTemplate.maxByteCount";
-        final int maxByteCount = PROPERTIES.getIntegerProperty(
-                name,
-                512 * 1024);    // 512 KiB
-        if (maxByteCount < MIN_BYTE_COUNT) {
+    private static int readMaxStringLength() {
+        final int maxStringLength = PROPERTIES.getIntegerProperty(
+                "log4j.layout.jsonTemplate.maxStringLength",
+                16 * 1_024);
+        if (maxStringLength <= 0) {
             throw new IllegalArgumentException(
-                    "was expecting " + name + " property to be >= " +
-                            MIN_BYTE_COUNT + ": " + maxByteCount);
+                    "was expecting a non-zero positive maxStringLength: " +
+                            maxStringLength);
         }
-        return maxByteCount;
+        return maxStringLength;
     }
 
     private static RecyclerFactory readRecyclerFactory() {
@@ -195,10 +187,6 @@ public enum JsonTemplateLayoutDefaults {;
 
     public static String getEventDelimiter() {
         return EVENT_DELIMITER;
-    }
-
-    public static int getMaxByteCount() {
-        return MAX_BYTE_COUNT;
     }
 
     public static int getMaxStringLength() {

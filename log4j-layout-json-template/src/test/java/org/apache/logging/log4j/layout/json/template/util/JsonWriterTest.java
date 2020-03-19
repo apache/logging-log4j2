@@ -1,3 +1,19 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
 package org.apache.logging.log4j.layout.json.template.util;
 
 import org.apache.logging.log4j.core.impl.JdkMapAdapterStringMap;
@@ -11,9 +27,6 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.BufferOverflowException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,33 +35,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+@SuppressWarnings("DoubleBraceInitialization")
 public class JsonWriterTest {
-
-    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     private static final JsonWriter WRITER = JsonWriter
             .newBuilder()
-            .setCharset(CHARSET)
-            .setMaxByteCount(1024)
             .setMaxStringLength(128)
             .setTruncatedStringSuffix("~")
             .build();
-
-    @Test
-    public void test_maxByteCount() {
-        final int maxByteCount = 10;
-        final JsonWriter writer = JsonWriter
-                .newBuilder()
-                .setCharset(CHARSET)
-                .setMaxByteCount(maxByteCount)
-                .setMaxStringLength(maxByteCount + 1)
-                .setTruncatedStringSuffix("~")
-                .build();
-        final Object value = Strings.repeat("x", maxByteCount - 2) + '!';
-        Assertions
-                .assertThatThrownBy(() -> writer.writeValue(value)).
-                isInstanceOf(BufferOverflowException.class);
-    }
 
     @Test
     public void test_writeValue_null_Object() {
@@ -347,6 +341,21 @@ public class JsonWriterTest {
         final String actualJson = write(writer ->
                 writer.writeString(stringBuilder -> {
                     stringBuilder.append("foo\tbar\tbuzz");
+                }));
+        Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+    }
+
+    @Test
+    public void test_writeString_formattable_excessive_string() {
+        final int maxStringLength = WRITER.getMaxStringLength();
+        final String excessiveString = Strings.repeat("x", maxStringLength) + 'y';
+        final String expectedJson = '"' +
+                excessiveString.substring(0, maxStringLength) +
+                WRITER.getTruncatedStringSuffix() +
+                '"';
+        final String actualJson = write(writer ->
+                writer.writeString(stringBuilder -> {
+                    stringBuilder.append(excessiveString);
                 }));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
@@ -688,7 +697,7 @@ public class JsonWriterTest {
     private static String write(Consumer<JsonWriter> body) {
         final JsonWriter writer = getCleanWriter();
         body.accept(writer);
-        return writer.getOutputStream().toString(CHARSET);
+        return writer.getStringBuilder().toString();
     }
 
     private static JsonWriter getCleanWriter() {

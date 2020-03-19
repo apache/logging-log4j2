@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
@@ -63,6 +62,7 @@ import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("DoubleBraceInitialization")
 public class JsonTemplateLayoutTest {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
@@ -275,11 +275,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
 
@@ -308,11 +306,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
 
@@ -348,11 +344,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
 
@@ -371,7 +365,6 @@ public class JsonTemplateLayoutTest {
 
         // Check the serialized event.
         final String serializedLogEvent = layout.toSerializable(logEvent);
-        System.out.println(serializedLogEvent);
         final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
         assertThat(point(rootNode, "message", "key1").asText()).isEqualTo("val1");
         assertThat(point(rootNode, "message", "key2").asLong()).isEqualTo(0xDEADBEEF);
@@ -441,11 +434,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
                 .build();
@@ -494,11 +485,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
                 .build();
@@ -545,11 +534,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
 
@@ -584,11 +571,9 @@ public class JsonTemplateLayoutTest {
             final boolean prettyPrintEnabled) {
 
         // Create the layout.
-        final BuiltConfiguration config =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(config)
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplateUri("classpath:LogstashJsonEventLayoutV1.json")
                 .build();
 
@@ -627,11 +612,9 @@ public class JsonTemplateLayoutTest {
         final String template = templateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplate(template)
                 .build();
 
@@ -684,11 +667,9 @@ public class JsonTemplateLayoutTest {
         String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
                 .setMdcKeyPattern(mdcPatternMatchedKey)
@@ -723,11 +704,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
 
@@ -759,11 +738,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
                 .build();
@@ -794,11 +771,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
                 .build();
@@ -834,10 +809,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        BuiltConfiguration configuration = ConfigurationBuilderFactory.newConfigurationBuilder().build();
         JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
                 .build();
@@ -880,11 +854,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setStackTraceElementTemplate(stackTraceElementTemplate)
                 .setEventTemplate(eventTemplate)
@@ -931,12 +903,10 @@ public class JsonTemplateLayoutTest {
     public void test_toSerializable_toByteArray_encode_outputs() {
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplateUri("classpath:LogstashJsonEventLayoutV1.json")
-                .setConfiguration(configuration)
                 .setStackTraceEnabled(true)
                 .build();
 
@@ -1020,11 +990,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .setMaxStringLength(maxStringLength)
                 .build();
@@ -1099,11 +1067,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
                 .build();
@@ -1137,8 +1103,6 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final KeyValuePair additionalField1 = new KeyValuePair("message", "${json:message}");
         final KeyValuePair additionalField2 = new KeyValuePair("@version", "1");
         final KeyValuePair[] additionalFieldPairs = {additionalField1, additionalField2};
@@ -1149,7 +1113,7 @@ public class JsonTemplateLayoutTest {
                 .build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
                 .setEventTemplateAdditionalFields(additionalFields)
@@ -1205,11 +1169,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
 
@@ -1256,11 +1218,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
 
@@ -1309,11 +1269,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .setStackTraceEnabled(true)
                 .build();
@@ -1354,11 +1312,9 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        final BuiltConfiguration configuration =
-                ConfigurationBuilderFactory.newConfigurationBuilder().build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
                 .build();
 
@@ -1395,6 +1351,40 @@ public class JsonTemplateLayoutTest {
                 .setMessage(message)
                 .setInstant(instant)
                 .build();
+    }
+
+    @Test
+    public void test_StackTraceTextResolver_with_maxStringLength() throws Exception {
+
+        // Create the event template.
+        ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
+        eventTemplateRootNode.put("stackTrace", "${json:exception:stackTrace:text}");
+        String eventTemplate = eventTemplateRootNode.toString();
+
+        // Create the layout.
+        int maxStringLength = eventTemplate.length();
+        JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .setMaxStringLength(maxStringLength)
+                .setStackTraceEnabled(true)
+                .build();
+
+        // Create the log event.
+        SimpleMessage message = new SimpleMessage("foo");
+        LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setMessage(message)
+                .setThrown(NonAsciiUtf8MethodNameContainingException.INSTANCE)
+                .build();
+
+        // Check the serialized event.
+        String serializedLogEvent = layout.toSerializable(logEvent);
+        JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
+        assertThat(point(rootNode, "stackTrace").asText()).isNotBlank();
+
     }
 
 }

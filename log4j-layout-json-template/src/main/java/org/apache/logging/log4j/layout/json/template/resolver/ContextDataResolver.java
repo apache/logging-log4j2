@@ -76,13 +76,21 @@ final class ContextDataResolver implements EventResolver {
             final JsonWriter jsonWriter,
             final IndexedStringMap contextData,
             final Pattern keyPattern) {
-        final boolean[] firstEntry = {true};
+        boolean firstEntry = true;
         for (int entryIndex = 0; entryIndex < contextData.size(); entryIndex++) {
             final String key = contextData.getKeyAt(entryIndex);
             final Object value = contextData.getValueAt(entryIndex);
             final boolean keyMatched =
                     keyPattern == null || keyPattern.matcher(key).matches();
-            resolveEntry(jsonWriter, firstEntry, key, value, keyMatched);
+            if (keyMatched) {
+                if (firstEntry) {
+                    firstEntry = false;
+                } else {
+                    jsonWriter.writeSeparator();
+                }
+                jsonWriter.writeObjectKey(key);
+                jsonWriter.writeValue(value);
+            }
         }
     }
 
@@ -94,25 +102,16 @@ final class ContextDataResolver implements EventResolver {
         contextData.forEach((final String key, final Object value) -> {
             final boolean keyMatched =
                     keyPattern == null || keyPattern.matcher(key).matches();
-            resolveEntry(jsonWriter, firstEntry, key, value, keyMatched);
-        });
-    }
-
-    private void resolveEntry(
-            final JsonWriter jsonWriter,
-            final boolean[] firstEntry,
-            final String key,
-            final Object value,
-            final boolean keyMatched) {
-        if (keyMatched) {
-            if (firstEntry[0]) {
-                firstEntry[0] = false;
-            } else {
-                jsonWriter.writeSeparator();
+            if (keyMatched) {
+                if (firstEntry[0]) {
+                    firstEntry[0] = false;
+                } else {
+                    jsonWriter.writeSeparator();
+                }
+                jsonWriter.writeObjectKey(key);
+                jsonWriter.writeValue(value);
             }
-            jsonWriter.writeObjectKey(key);
-            jsonWriter.writeValue(value);
-        }
+        });
     }
 
 }

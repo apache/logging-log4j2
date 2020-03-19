@@ -31,7 +31,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
     private final RecyclerFactory recyclerFactory;
 
-    private final int maxByteCount;
+    private final int maxStringByteCount;
 
     private final boolean locationInfoEnabled;
 
@@ -48,7 +48,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
     private EventResolverContext(final Builder builder) {
         this.substitutor = builder.substitutor;
         this.recyclerFactory = builder.recyclerFactory;
-        this.maxByteCount = builder.maxByteCount;
+        this.maxStringByteCount = builder.maxStringByteCount;
         this.locationInfoEnabled = builder.locationInfoEnabled;
         this.stackTraceEnabled = builder.stackTraceEnabled;
         this.stackTraceObjectResolver = stackTraceEnabled
@@ -78,8 +78,8 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         return recyclerFactory;
     }
 
-    int getMaxByteCount() {
-        return maxByteCount;
+    int getMaxStringByteCount() {
+        return maxStringByteCount;
     }
 
     boolean isLocationInfoEnabled() {
@@ -116,7 +116,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         private RecyclerFactory recyclerFactory;
 
-        private int maxByteCount;
+        private int maxStringByteCount;
 
         private boolean locationInfoEnabled;
 
@@ -144,8 +144,8 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             return this;
         }
 
-        public Builder setMaxByteCount(final int maxByteCount) {
-            this.maxByteCount = maxByteCount;
+        public Builder setMaxStringByteCount(final int maxStringByteCount) {
+            this.maxStringByteCount = maxStringByteCount;
             return this;
         }
 
@@ -189,10 +189,10 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         private void validate() {
             Objects.requireNonNull(substitutor, "substitutor");
             Objects.requireNonNull(recyclerFactory, "recyclerFactory");
-            if (maxByteCount <= 0) {
+            if (maxStringByteCount <= 0) {
                 throw new IllegalArgumentException(
-                        "was expecting maxByteCount > 0: " +
-                                maxByteCount);
+                        "was expecting maxStringByteCount > 0: " +
+                                maxStringByteCount);
             }
             if (stackTraceEnabled) {
                 Objects.requireNonNull(
