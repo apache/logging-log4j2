@@ -1,5 +1,5 @@
 {
-  "@timestamp": "${json:timestamp}",
+  "@timestamp": "${json:timestamp:pattern=yyyy-MM-dd'T'HH:mm:ss.SSS'Z',timeZone=UTC}",
   "log.level": "${json:level}",
   "message": "${json:message}",
   "process.thread.name": "${json:thread:name}",

@@ -824,6 +824,12 @@
         <version>2.6</version>
         <scope>test</scope>
       </dependency>
+      <!-- Used for testing JsonTemplateLayout -->
+      <dependency>
+        <groupId>co.elastic.logging</groupId>
+        <artifactId>log4j2-ecs-layout</artifactId>
+        <version>0.1.3</version>
+      </dependency>
       <!-- Used for testing HttpAppender -->
       <dependency>
         <groupId>com.github.tomakehurst</groupId>
