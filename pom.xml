@@ -430,6 +430,11 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jpl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-taglib</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1545,6 +1550,7 @@
     <module>log4j-perf</module>
     <module>log4j-iostreams</module>
     <module>log4j-jul</module>
+    <module>log4j-jpl</module>
     <module>log4j-liquibase</module>
     <module>log4j-appserver</module>
     <module>log4j-smtp</module>
