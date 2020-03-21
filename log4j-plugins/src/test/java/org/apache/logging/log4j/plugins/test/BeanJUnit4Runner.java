@@ -123,7 +123,7 @@ public class BeanJUnit4Runner extends BlockJUnit4ClassRunner {
                     final Class<T> testClass = TypeUtil.cast(getTestClass().getJavaClass());
                     final MetaClass<T> metaClass = elementManager.getMetaClass(testClass);
                     final MetaMethod<T, Void> metaMethod = metaClass.getMetaMethod(method.getMethod());
-                    final Collection<InjectionPoint<?>> points =
+                    final Collection<InjectionPoint> points =
                             elementManager.createExecutableInjectionPoints(metaMethod, testClassBean);
                     injector.invoke(testInstance, metaMethod, points, context);
                 } finally {

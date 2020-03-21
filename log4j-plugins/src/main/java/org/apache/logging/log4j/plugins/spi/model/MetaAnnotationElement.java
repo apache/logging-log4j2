@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.plugins.spi.model;
 
-public interface MetaAnnotationElement<T> extends MetaElement<T> {
+public interface MetaAnnotationElement<T> extends MetaElement {
     T getValue();
 
     MetaAnnotationElement<T> withNewValue(final T value);

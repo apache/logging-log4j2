@@ -19,10 +19,10 @@ package org.apache.logging.log4j.plugins.defaults.bean;
 
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.BeanManager;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaField;
 import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
-import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -32,7 +32,7 @@ class FieldProducer<P, T> extends AbstractProducer<P, T> {
     private final MetaField<P, T> field;
 
     FieldProducer(final BeanManager beanManager, final Bean<P> producerBean, final MetaField<P, T> field,
-                  final MetaMethod<P, ?> disposerMethod, final Collection<InjectionPoint<?>> disposerInjectionPoints) {
+                  final MetaMethod<P, ?> disposerMethod, final Collection<InjectionPoint> disposerInjectionPoints) {
         super(beanManager, producerBean, disposerMethod, disposerInjectionPoints);
         this.field = field;
     }
@@ -53,7 +53,7 @@ class FieldProducer<P, T> extends AbstractProducer<P, T> {
     }
 
     @Override
-    public Collection<InjectionPoint<?>> getInjectionPoints() {
+    public Collection<InjectionPoint> getInjectionPoints() {
         return Collections.emptySet();
     }
 }

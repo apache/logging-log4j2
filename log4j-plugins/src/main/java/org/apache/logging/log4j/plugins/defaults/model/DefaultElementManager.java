@@ -90,7 +90,7 @@ public class DefaultElementManager implements ElementManager {
     }
 
     @Override
-    public Qualifiers getQualifiers(final MetaElement<?> element) {
+    public Qualifiers getQualifiers(final MetaElement element) {
         final String elementName = element.getName();
         final String defaultNamedValue;
         if (element instanceof MetaMethod<?, ?>) {
@@ -136,7 +136,7 @@ public class DefaultElementManager implements ElementManager {
         return new DefaultMetaAnnotation(annotationType, elements);
     }
 
-    private Class<? extends Annotation> getScopeType(final MetaElement<?> element) {
+    private Class<? extends Annotation> getScopeType(final MetaElement element) {
         final Collection<Class<? extends Annotation>> scopeTypes = filterScopeTypes(element.getAnnotations());
         return scopeTypes.isEmpty() ? Dependent.class : scopeTypes.iterator().next();
     }
@@ -162,35 +162,35 @@ public class DefaultElementManager implements ElementManager {
     }
 
     @Override
-    public <D, T> InjectionPoint<T> createFieldInjectionPoint(final MetaField<D, T> field, final Bean<D> owner) {
+    public <D> InjectionPoint createFieldInjectionPoint(final MetaField<D, ?> field, final Bean<D> owner) {
         Objects.requireNonNull(field);
         final Qualifiers qualifiers = getQualifiers(field);
-        return new DefaultInjectionPoint<>(field.getType(), qualifiers, owner, field, field);
+        return new DefaultInjectionPoint(field.getType(), qualifiers, owner, field, field);
     }
 
     @Override
-    public <D, P> InjectionPoint<P> createParameterInjectionPoint(final MetaExecutable<D, ?> executable,
-                                                                  final MetaParameter<P> parameter,
-                                                                  final Bean<D> owner) {
+    public <D> InjectionPoint createParameterInjectionPoint(final MetaExecutable<D> executable,
+                                                            final MetaParameter parameter,
+                                                            final Bean<D> owner) {
         Objects.requireNonNull(executable);
         Objects.requireNonNull(parameter);
         final Qualifiers qualifiers = getQualifiers(parameter);
-        return new DefaultInjectionPoint<>(parameter.getType(), qualifiers, owner, executable, parameter);
+        return new DefaultInjectionPoint(parameter.getType(), qualifiers, owner, executable, parameter);
     }
 
     @Override
-    public Variable createVariable(final MetaElement<?> element) {
+    public Variable createVariable(final MetaElement element) {
         Objects.requireNonNull(element);
         return createVariable(element, getQualifiers(element));
     }
 
     @Override
-    public Variable createVariable(final InjectionPoint<?> point) {
+    public Variable createVariable(final InjectionPoint point) {
         Objects.requireNonNull(point);
         return createVariable(point.getElement(), point.getQualifiers());
     }
 
-    private Variable createVariable(final MetaElement<?> element, final Qualifiers qualifiers) {
+    private Variable createVariable(final MetaElement element, final Qualifiers qualifiers) {
         final Collection<Type> types = element.getTypeClosure();
         final Class<? extends Annotation> scopeType = getScopeType(element);
         return DefaultVariable.newVariable(types, qualifiers, scopeType);

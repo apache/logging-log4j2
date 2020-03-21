@@ -19,7 +19,6 @@ package org.apache.logging.log4j.plugins.defaults.model;
 
 import org.apache.logging.log4j.plugins.spi.model.MetaAnnotation;
 import org.apache.logging.log4j.plugins.spi.model.MetaAnnotationElement;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -45,11 +44,6 @@ class DefaultMetaAnnotationElement<T> implements MetaAnnotationElement<T> {
     @Override
     public Type getType() {
         return value.getClass();
-    }
-
-    @Override
-    public Collection<Type> getTypeClosure() {
-        return TypeUtil.getTypeClosure(getType());
     }
 
     @Override

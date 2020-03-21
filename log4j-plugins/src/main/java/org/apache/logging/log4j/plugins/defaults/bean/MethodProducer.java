@@ -29,11 +29,11 @@ import java.util.Collection;
 
 class MethodProducer<P, T> extends AbstractProducer<P, T> {
     private final MetaMethod<P, T> producerMethod;
-    private final Collection<InjectionPoint<?>> producerInjectionPoints;
+    private final Collection<InjectionPoint> producerInjectionPoints;
 
     MethodProducer(final BeanManager beanManager, final Bean<P> producerBean,
-                   final MetaMethod<P, T> producerMethod, final Collection<InjectionPoint<?>> producerInjectionPoints,
-                   final MetaMethod<P, ?> disposerMethod, final Collection<InjectionPoint<?>> disposerInjectionPoints) {
+                   final MetaMethod<P, T> producerMethod, final Collection<InjectionPoint> producerInjectionPoints,
+                   final MetaMethod<P, ?> disposerMethod, final Collection<InjectionPoint> disposerInjectionPoints) {
         super(beanManager, producerBean, disposerMethod, disposerInjectionPoints);
         if (!producerMethod.isStatic() && producerBean == null) {
             throw new DefinitionException("Producer instance method must be in a bean");
@@ -56,7 +56,7 @@ class MethodProducer<P, T> extends AbstractProducer<P, T> {
     }
 
     @Override
-    public Collection<InjectionPoint<?>> getInjectionPoints() {
+    public Collection<InjectionPoint> getInjectionPoints() {
         return producerInjectionPoints;
     }
 }

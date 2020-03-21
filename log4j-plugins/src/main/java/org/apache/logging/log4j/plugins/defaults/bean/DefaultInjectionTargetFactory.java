@@ -53,7 +53,7 @@ class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
     @Override
     public InjectionTarget<T> createInjectionTarget(final Bean<T> bean) {
         final MetaConstructor<T> constructor = getInjectableConstructor();
-        final Collection<InjectionPoint<?>> injectionPoints =
+        final Collection<InjectionPoint> injectionPoints =
                 new HashSet<>(elementManager.createExecutableInjectionPoints(constructor, bean));
         for (final MetaField<T, ?> field : type.getFields()) {
             if (elementManager.isInjectable(field)) {

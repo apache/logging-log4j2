@@ -24,10 +24,8 @@ import java.util.Optional;
 
 /**
  * Represents metadata about an element in a program where a value should be injected.
- *
- * @param <T> type of element
  */
-public interface InjectionPoint<T> {
+public interface InjectionPoint {
 
     /**
      * Gets the generic type information of this point.
@@ -48,11 +46,11 @@ public interface InjectionPoint<T> {
     /**
      * Gets the field, method, or constructor where injection takes place.
      */
-    MetaMember<?, ?> getMember();
+    MetaMember<?> getMember();
 
     /**
      * Gets the program element corresponding to this injection point.
      */
-    MetaElement<T> getElement();
+    MetaElement getElement();
 
 }

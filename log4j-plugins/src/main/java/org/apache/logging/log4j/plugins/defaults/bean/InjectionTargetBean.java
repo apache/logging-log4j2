@@ -28,7 +28,7 @@ import org.apache.logging.log4j.plugins.spi.model.Variable;
 import java.util.Collection;
 import java.util.Objects;
 
-class InjectionTargetBean<T> extends AbstractBean<T, T> {
+class InjectionTargetBean<T> extends AbstractBean<T> {
     private final InjectionTarget<T> injectionTarget;
 
     InjectionTargetBean(final Variable variable, final MetaClass<T> declaringClass,
@@ -39,7 +39,7 @@ class InjectionTargetBean<T> extends AbstractBean<T, T> {
     }
 
     @Override
-    public Collection<InjectionPoint<?>> getInjectionPoints() {
+    public Collection<InjectionPoint> getInjectionPoints() {
         return injectionTarget.getInjectionPoints();
     }
 

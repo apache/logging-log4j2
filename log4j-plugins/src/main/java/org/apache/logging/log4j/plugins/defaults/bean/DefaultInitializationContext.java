@@ -67,7 +67,7 @@ public class DefaultInitializationContext<T> implements InitializationContext<T>
     @Override
     public boolean isTrackingDependencies(final Bean<T> bean) {
         return !dependentInstances.isEmpty() ||
-                (bean instanceof AbstractBean<?, ?> && ((AbstractBean<?, ?>) bean).isTrackingDependencies());
+                (bean instanceof AbstractBean<?> && ((AbstractBean<?>) bean).isTrackingDependencies());
     }
 
     @Override

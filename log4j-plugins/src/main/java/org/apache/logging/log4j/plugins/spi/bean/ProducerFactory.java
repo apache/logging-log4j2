@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.plugins.spi.bean;
 
-public interface ProducerFactory<D> {
+public interface ProducerFactory {
     // only time bean is null is static @Produces potentially?
     <T> Producer<T> createProducer(final Bean<T> bean);
 }

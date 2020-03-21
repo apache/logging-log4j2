@@ -28,11 +28,11 @@ import java.util.Collection;
 
 class MethodProducerFactory<D> extends AbstractProducerFactory<D> {
     private final BeanManager beanManager;
-    private final Collection<InjectionPoint<?>> producerInjectionPoints;
+    private final Collection<InjectionPoint> producerInjectionPoints;
 
     MethodProducerFactory(final BeanManager beanManager, final Bean<D> declaringBean,
-                          final MetaMethod<D, ?> producerMethod, final Collection<InjectionPoint<?>> producerInjectionPoints,
-                          final MetaMethod<D, ?> disposerMethod, final Collection<InjectionPoint<?>> disposerInjectionPoints) {
+                          final MetaMethod<D, ?> producerMethod, final Collection<InjectionPoint> producerInjectionPoints,
+                          final MetaMethod<D, ?> disposerMethod, final Collection<InjectionPoint> disposerInjectionPoints) {
         super(declaringBean, producerMethod, disposerMethod, disposerInjectionPoints);
         this.producerInjectionPoints = producerInjectionPoints;
         this.beanManager = beanManager;

@@ -26,14 +26,15 @@ import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
 import java.util.Collection;
 import java.util.Objects;
 
-abstract class AbstractProducerFactory<D> implements ProducerFactory<D> {
+abstract class AbstractProducerFactory<D> implements ProducerFactory {
     final Bean<D> declaringBean;
-    final MetaMember<D, ?> producerMember;
+    final MetaMember<D> producerMember;
     final MetaMethod<D, ?> disposerMethod;
-    final Collection<InjectionPoint<?>> disposerInjectionPoints;
+    final Collection<InjectionPoint> disposerInjectionPoints;
 
-    AbstractProducerFactory(final Bean<D> declaringBean, final MetaMember<D, ?> producerMember,
-                            final MetaMethod<D, ?> disposerMethod, final Collection<InjectionPoint<?>> disposerInjectionPoints) {
+    AbstractProducerFactory(final Bean<D> declaringBean, final MetaMember<D> producerMember,
+                            final MetaMethod<D, ?> disposerMethod,
+                            final Collection<InjectionPoint> disposerInjectionPoints) {
         this.declaringBean = declaringBean;
         this.producerMember = Objects.requireNonNull(producerMember);
         this.disposerMethod = disposerMethod;

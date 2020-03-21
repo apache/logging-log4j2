@@ -86,7 +86,7 @@ public interface BeanManager extends AutoCloseable {
      * @param <T>           type of injectable value
      * @return value to inject if defined or empty otherwise
      */
-    <T> Optional<T> getInjectableValue(final InjectionPoint<T> point, final InitializationContext<?> parentContext);
+    <T> Optional<T> getInjectableValue(final InjectionPoint point, final InitializationContext<?> parentContext);
 
     @Override
     void close();

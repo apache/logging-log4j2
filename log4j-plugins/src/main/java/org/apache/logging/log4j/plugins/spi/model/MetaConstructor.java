@@ -17,6 +17,6 @@
 
 package org.apache.logging.log4j.plugins.spi.model;
 
-public interface MetaConstructor<T> extends MetaExecutable<T, T> {
+public interface MetaConstructor<T> extends MetaExecutable<T> {
     T construct(final Object... args);
 }

@@ -17,6 +17,6 @@
 
 package org.apache.logging.log4j.plugins.spi.model;
 
-public interface MetaMethod<D, T> extends MetaExecutable<D, T> {
+public interface MetaMethod<D, T> extends MetaExecutable<D> {
     T invoke(final D target, final Object... args);
 }

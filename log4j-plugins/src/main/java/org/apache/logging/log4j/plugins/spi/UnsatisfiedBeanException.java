@@ -22,7 +22,7 @@ import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import java.lang.reflect.Type;
 
 public class UnsatisfiedBeanException extends ResolutionException {
-    public UnsatisfiedBeanException(final InjectionPoint<?> point) {
+    public UnsatisfiedBeanException(final InjectionPoint point) {
         super("No beans found for " + point);
     }
 

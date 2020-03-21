@@ -25,19 +25,19 @@ import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
 import java.util.Collection;
 
 public interface Injector {
-    <T> T construct(final MetaConstructor<T> constructor, final Collection<InjectionPoint<?>> points,
+    <T> T construct(final MetaConstructor<T> constructor, final Collection<InjectionPoint> points,
                     final InitializationContext<T> context);
 
     <D, T> T produce(final D producerInstance, final MetaMethod<D, T> producerMethod,
-                     final Collection<InjectionPoint<?>> points, final InitializationContext<D> context);
+                     final Collection<InjectionPoint> points, final InitializationContext<D> context);
 
     <T> void dispose(final T disposerInstance, final MetaMethod<T, ?> disposerMethod,
-                     final Collection<InjectionPoint<?>> points, final Object instance,
+                     final Collection<InjectionPoint> points, final Object instance,
                      final InitializationContext<T> context);
 
-    <T> void invoke(final T instance, final MetaMethod<T, ?> method, final Collection<InjectionPoint<?>> points,
+    <T> void invoke(final T instance, final MetaMethod<T, ?> method, final Collection<InjectionPoint> points,
                     final InitializationContext<T> context);
 
-    <D, T> void set(final D instance, final MetaField<D, T> field, final InjectionPoint<T> point,
+    <D, T> void set(final D instance, final MetaField<D, T> field, final InjectionPoint point,
                     final InitializationContext<D> context);
 }

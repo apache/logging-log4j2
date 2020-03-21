@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface MetaClass<T> extends MetaElement<T> {
+public interface MetaClass<T> extends MetaElement {
     Class<T> getJavaClass();
 
     Collection<MetaConstructor<T>> getConstructors();

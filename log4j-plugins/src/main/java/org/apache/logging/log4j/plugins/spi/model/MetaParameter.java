@@ -17,5 +17,5 @@
 
 package org.apache.logging.log4j.plugins.spi.model;
 
-public interface MetaParameter<T> extends MetaElement<T> {
+public interface MetaParameter extends MetaElement {
 }

@@ -33,5 +33,5 @@ public interface Producer<T> {
 
     // for a class: injected fields, @Inject constructor parameters, and initializer method params
     // for a producer method: method params
-    Collection<InjectionPoint<?>> getInjectionPoints();
+    Collection<InjectionPoint> getInjectionPoints();
 }

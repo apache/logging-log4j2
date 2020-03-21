@@ -27,15 +27,15 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 
-class DefaultInjectionPoint<T> implements InjectionPoint<T> {
+class DefaultInjectionPoint implements InjectionPoint {
     private final Type type;
     private final Qualifiers qualifiers;
     private final Bean<?> bean;
-    private final MetaMember<?, ?> member;
-    private final MetaElement<T> element;
+    private final MetaMember<?> member;
+    private final MetaElement element;
 
     DefaultInjectionPoint(final Type type, final Qualifiers qualifiers, final Bean<?> bean,
-                          final MetaMember<?, ?> member, final MetaElement<T> element) {
+                          final MetaMember<?> member, final MetaElement element) {
         this.type = type;
         this.qualifiers = qualifiers;
         this.bean = bean;
@@ -59,12 +59,12 @@ class DefaultInjectionPoint<T> implements InjectionPoint<T> {
     }
 
     @Override
-    public MetaMember<?, ?> getMember() {
+    public MetaMember<?> getMember() {
         return member;
     }
 
     @Override
-    public MetaElement<T> getElement() {
+    public MetaElement getElement() {
         return element;
     }
 
@@ -72,7 +72,7 @@ class DefaultInjectionPoint<T> implements InjectionPoint<T> {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final DefaultInjectionPoint<?> that = (DefaultInjectionPoint<?>) o;
+        final DefaultInjectionPoint that = (DefaultInjectionPoint) o;
         return qualifiers.equals(that.qualifiers) &&
                 Objects.equals(bean, that.bean) &&
                 member.equals(that.member) &&

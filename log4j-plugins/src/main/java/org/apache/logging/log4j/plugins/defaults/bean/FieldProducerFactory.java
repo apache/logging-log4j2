@@ -32,7 +32,7 @@ class FieldProducerFactory<D> extends AbstractProducerFactory<D> {
 
     FieldProducerFactory(final BeanManager beanManager, final Bean<D> declaringBean,
                          final MetaField<D, ?> producerField, final MetaMethod<D, ?> disposerMethod,
-                         final Collection<InjectionPoint<?>> disposerInjectionPoints) {
+                         final Collection<InjectionPoint> disposerInjectionPoints) {
         super(declaringBean, producerField, disposerMethod, disposerInjectionPoints);
         this.beanManager = beanManager;
     }

@@ -18,22 +18,22 @@
 package org.apache.logging.log4j.plugins.defaults.bean;
 
 import org.apache.logging.log4j.plugins.spi.IllegalProductException;
+import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.bean.Producer;
 import org.apache.logging.log4j.plugins.spi.bean.ProducerFactory;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
-import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Objects;
 
-class ProducerBean<D, T> extends AbstractBean<D, T> {
+class ProducerBean<T> extends AbstractBean<T> {
     private final Producer<T> producer;
     private final Type type;
 
-    ProducerBean(final Variable variable, final MetaClass<D> declaringClass, final ProducerFactory<D> factory) {
+    ProducerBean(final Variable variable, final MetaClass<?> declaringClass, final ProducerFactory factory) {
         super(variable, declaringClass);
         Objects.requireNonNull(factory);
         producer = factory.createProducer(this);
@@ -49,7 +49,7 @@ class ProducerBean<D, T> extends AbstractBean<D, T> {
     }
 
     @Override
-    public Collection<InjectionPoint<?>> getInjectionPoints() {
+    public Collection<InjectionPoint> getInjectionPoints() {
         return producer.getInjectionPoints();
     }
 

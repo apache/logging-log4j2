@@ -27,7 +27,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-abstract class AbstractMetaMember<D, T> implements MetaMember<D, T> {
+abstract class AbstractMetaMember<D, T> implements MetaMember<D> {
     private final String name;
     private final Collection<MetaAnnotation> annotations;
     private final MetaClass<D> declaringClass;

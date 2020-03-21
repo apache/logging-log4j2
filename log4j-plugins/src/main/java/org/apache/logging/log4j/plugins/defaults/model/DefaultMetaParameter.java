@@ -20,22 +20,20 @@ package org.apache.logging.log4j.plugins.defaults.model;
 import org.apache.logging.log4j.plugins.spi.model.MetaAnnotation;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.MetaParameter;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-class DefaultMetaParameter<T> implements MetaParameter<T> {
+class DefaultMetaParameter implements MetaParameter {
     private final String name;
-    private final MetaClass<T> parameterClass;
+    private final MetaClass<?> parameterClass;
     private final String toString;
 
     DefaultMetaParameter(final Parameter parameter) {
         name = parameter.getName();
-        final Type type = parameter.getParameterizedType();
-        final Class<T> javaClass = TypeUtil.cast(parameter.getType());
-        parameterClass = DefaultMetaClass.newMetaClass(type, javaClass, parameter.getAnnotations());
+        parameterClass = DefaultMetaClass.newMetaClass(
+                parameter.getParameterizedType(), parameter.getType(), parameter.getAnnotations());
         toString = parameter.toString();
     }
 

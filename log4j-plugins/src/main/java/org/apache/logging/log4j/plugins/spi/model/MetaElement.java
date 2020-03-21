@@ -18,12 +18,13 @@
 package org.apache.logging.log4j.plugins.spi.model;
 
 import org.apache.logging.log4j.plugins.api.AnnotationAlias;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-public interface MetaElement<T> {
+public interface MetaElement {
 
     /**
      * Returns the source code name of this element.
@@ -32,7 +33,9 @@ public interface MetaElement<T> {
 
     Type getType();
 
-    Collection<Type> getTypeClosure();
+    default Collection<Type> getTypeClosure() {
+        return TypeUtil.getTypeClosure(getType());
+    }
 
     /**
      * Returns all the annotations present on this element.

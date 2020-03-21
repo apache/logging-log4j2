@@ -26,19 +26,19 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class AbstractMetaExecutable<D, T> extends AbstractMetaMember<D, T> implements MetaExecutable<D, T> {
-    private final List<MetaParameter<?>> parameters;
+abstract class AbstractMetaExecutable<D, T> extends AbstractMetaMember<D, T> implements MetaExecutable<D> {
+    private final List<MetaParameter> parameters;
 
     AbstractMetaExecutable(final MetaClass<D> declaringClass, final Executable executable, final MetaClass<T> type) {
         super(declaringClass, executable, type);
         parameters = new ArrayList<>(executable.getParameterCount());
         for (final Parameter parameter : executable.getParameters()) {
-            parameters.add(new DefaultMetaParameter<>(parameter));
+            parameters.add(new DefaultMetaParameter(parameter));
         }
     }
 
     @Override
-    public List<MetaParameter<?>> getParameters() {
+    public List<MetaParameter> getParameters() {
         return parameters;
     }
 }

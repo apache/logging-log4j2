@@ -19,6 +19,6 @@ package org.apache.logging.log4j.plugins.spi.model;
 
 import java.util.List;
 
-public interface MetaExecutable<D, T> extends MetaMember<D, T> {
-    List<MetaParameter<?>> getParameters();
+public interface MetaExecutable<T> extends MetaMember<T> {
+    List<MetaParameter> getParameters();
 }

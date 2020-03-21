@@ -27,7 +27,6 @@ import org.apache.logging.log4j.plugins.spi.model.ElementManager;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.MetaConstructor;
-import org.apache.logging.log4j.plugins.spi.model.MetaElement;
 import org.apache.logging.log4j.plugins.spi.model.MetaField;
 import org.apache.logging.log4j.plugins.spi.model.MetaMember;
 import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
@@ -44,13 +43,13 @@ import java.util.stream.Collectors;
 class DefaultInjectionTarget<T> implements InjectionTarget<T> {
     private final Injector injector;
     private final ElementManager elementManager;
-    private final Collection<InjectionPoint<?>> injectionPoints;
+    private final Collection<InjectionPoint> injectionPoints;
     private final MetaConstructor<T> constructor;
     private final List<MetaMethod<T, ?>> postConstructMethods;
     private final List<MetaMethod<T, ?>> preDestroyMethods;
 
     DefaultInjectionTarget(final Injector injector, final ElementManager elementManager,
-                           final Collection<InjectionPoint<?>> injectionPoints, final MetaConstructor<T> constructor,
+                           final Collection<InjectionPoint> injectionPoints, final MetaConstructor<T> constructor,
                            final List<MetaMethod<T, ?>> postConstructMethods, final List<MetaMethod<T, ?>> preDestroyMethods) {
         this.injector = injector;
         this.elementManager = elementManager;
@@ -62,7 +61,7 @@ class DefaultInjectionTarget<T> implements InjectionTarget<T> {
 
     @Override
     public T produce(final InitializationContext<T> context) {
-        final Set<InjectionPoint<?>> constructorInjectionPoints = injectionPoints.stream()
+        final Set<InjectionPoint> constructorInjectionPoints = injectionPoints.stream()
                 .filter(point -> constructor.equals(point.getMember()))
                 .collect(Collectors.toSet());
         return injector.construct(constructor, constructorInjectionPoints, context);
@@ -82,29 +81,21 @@ class DefaultInjectionTarget<T> implements InjectionTarget<T> {
     }
 
     private void injectFields(final T instance, final InitializationContext<T> context) {
-        for (final InjectionPoint<?> point : injectionPoints) {
-            injectField(instance, context, point);
-        }
-    }
-
-    private <F> void injectField(final T instance, final InitializationContext<T> context, final InjectionPoint<F> point) {
-        final MetaElement<F> element = point.getElement();
-        if (element instanceof MetaField<?, ?> && ((MetaField<?, F>) element).getDeclaringClass().getJavaClass().isInstance(instance)) {
-            final MetaField<T, F> field = (MetaField<T, F>) element;
-            injector.set(instance, field, point, context);
-        }
+        injectionPoints.stream()
+                .filter(point -> point.getElement() instanceof MetaField<?, ?>)
+                .forEachOrdered(point -> injector.set(instance, TypeUtil.cast(point.getElement()), point, context));
     }
 
     private void injectMethods(final T instance, final InitializationContext<T> context) {
-        final Set<MetaMember<?, ?>> injectedMethods = new HashSet<>();
-        for (final InjectionPoint<?> point : injectionPoints) {
+        final Set<MetaMember<?>> injectedMethods = new HashSet<>();
+        for (final InjectionPoint point : injectionPoints) {
             if (point.getMember() instanceof MetaMethod<?, ?> &&
                     point.getMember().getDeclaringClass().getJavaClass().isInstance(instance) &&
                     !injectedMethods.contains(point.getMember()) &&
                     !point.getElement().isAnnotationPresent(Produces.class) &&
                     !point.getElement().isAnnotationPresent(Disposes.class)) {
                 final MetaMethod<T, ?> method = TypeUtil.cast(point.getMember());
-                final Set<InjectionPoint<?>> methodInjectionPoints = injectionPoints.stream()
+                final Set<InjectionPoint> methodInjectionPoints = injectionPoints.stream()
                         .filter(p -> method.equals(p.getMember()))
                         .collect(Collectors.toSet());
                 injector.invoke(instance, method, methodInjectionPoints, context);
@@ -128,7 +119,7 @@ class DefaultInjectionTarget<T> implements InjectionTarget<T> {
     }
 
     @Override
-    public Collection<InjectionPoint<?>> getInjectionPoints() {
+    public Collection<InjectionPoint> getInjectionPoints() {
         return injectionPoints;
     }
 

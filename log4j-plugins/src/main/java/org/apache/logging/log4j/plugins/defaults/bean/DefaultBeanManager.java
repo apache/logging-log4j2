@@ -154,7 +154,7 @@ public class DefaultBeanManager implements BeanManager {
 
     private <T> void loadDisposerMethods(final MetaClass<T> metaClass, final Bean<T> bean) {
         for (final MetaMethod<T, ?> method : metaClass.getMethods()) {
-            for (final MetaParameter<?> parameter : method.getParameters()) {
+            for (final MetaParameter parameter : method.getParameters()) {
                 if (parameter.isAnnotationPresent(Disposes.class)) {
                     disposesMethods.add(new DisposesMethod<>(
                             parameter.getType(), elementManager.getQualifiers(parameter), bean, method));
@@ -178,24 +178,24 @@ public class DefaultBeanManager implements BeanManager {
         return beans;
     }
 
-    private <P, T> Bean<T> loadProducerBean(final MetaMember<P, T> member, final Bean<P> producingBean) {
+    private <P> Bean<?> loadProducerBean(final MetaMember<P> member, final Bean<P> producingBean) {
         final Variable variable = elementManager.createVariable(member);
         final MetaClass<P> declaringType = member.getDeclaringClass();
-        final ProducerFactory<P> factory = getProducerFactory(member, producingBean);
+        final ProducerFactory factory = getProducerFactory(member, producingBean);
         return addBean(new ProducerBean<>(variable, declaringType, factory));
     }
 
-    private <P> ProducerFactory<P> getProducerFactory(final MetaMember<P, ?> member, final Bean<P> producingBean) {
+    private <P> ProducerFactory getProducerFactory(final MetaMember<P> member, final Bean<P> producingBean) {
         final Variable variable = elementManager.createVariable(member);
         final MetaMethod<P, ?> disposerMethod = resolveDisposerMethod(variable, producingBean);
-        final Collection<InjectionPoint<?>> disposerIPs = disposerMethod == null ? Collections.emptySet() :
+        final Collection<InjectionPoint> disposerIPs = disposerMethod == null ? Collections.emptySet() :
                 elementManager.createExecutableInjectionPoints(disposerMethod, producingBean);
         if (member instanceof MetaField<?, ?>) {
-            final MetaField<P, ?> field = TypeUtil.cast(member);
+            final MetaField<P, ?> field = (MetaField<P, ?>) member;
             return new FieldProducerFactory<>(this, producingBean, field, disposerMethod, disposerIPs);
         } else {
-            final MetaMethod<P, ?> method = TypeUtil.cast(member);
-            final Collection<InjectionPoint<?>> producerIPs =
+            final MetaMethod<P, ?> method = (MetaMethod<P, ?>) member;
+            final Collection<InjectionPoint> producerIPs =
                     elementManager.createExecutableInjectionPoints(method, producingBean);
             return new MethodProducerFactory<>(this, producingBean, method, producerIPs, disposerMethod, disposerIPs);
         }
@@ -219,7 +219,7 @@ public class DefaultBeanManager implements BeanManager {
     public void validateBeans(final Iterable<Bean<?>> beans) {
         final List<Throwable> errors = new ArrayList<>();
         for (final Bean<?> bean : beans) {
-            for (final InjectionPoint<?> point : bean.getInjectionPoints()) {
+            for (final InjectionPoint point : bean.getInjectionPoints()) {
                 try {
                     validateInjectionPoint(point);
                 } catch (final InjectionException e) {
@@ -232,8 +232,8 @@ public class DefaultBeanManager implements BeanManager {
         }
     }
 
-    private <T> void validateInjectionPoint(final InjectionPoint<T> point) {
-        final MetaElement<T> element = point.getElement();
+    private <T> void validateInjectionPoint(final InjectionPoint point) {
+        final MetaElement element = point.getElement();
         if (element.isAnnotationPresent(Produces.class)) {
             throw new DefinitionException("Cannot inject into a @Produces element: " + element);
         }
@@ -253,8 +253,8 @@ public class DefaultBeanManager implements BeanManager {
             final Bean<?> bean = point.getBean().orElseThrow(() -> new UnsatisfiedBeanException(point));
             if (bean instanceof InjectionTargetBean<?>) {
                 validateBeanInjectionPoint(point, bean.getDeclaringClass().getType());
-            } else if (bean instanceof ProducerBean<?, ?>) {
-                validateBeanInjectionPoint(point, ((ProducerBean<?, ?>) bean).getType());
+            } else if (bean instanceof ProducerBean<?>) {
+                validateBeanInjectionPoint(point, ((ProducerBean<?>) bean).getType());
             }
         }
         final Optional<Bean<T>> bean = getInjectionPointBean(point);
@@ -263,7 +263,7 @@ public class DefaultBeanManager implements BeanManager {
         }
     }
 
-    private void validateBeanInjectionPoint(final InjectionPoint<?> point, final Type expectedType) {
+    private void validateBeanInjectionPoint(final InjectionPoint point, final Type expectedType) {
         final Type type = point.getType();
         if (!(type instanceof ParameterizedType)) {
             throw new DefinitionException("Expected parameterized type for " + point + " but got " + expectedType);
@@ -282,7 +282,7 @@ public class DefaultBeanManager implements BeanManager {
         }
     }
 
-    private <T> Optional<Bean<T>> getInjectionPointBean(final InjectionPoint<T> point) {
+    private <T> Optional<Bean<T>> getInjectionPointBean(final InjectionPoint point) {
         // TODO: this will need to allow for TypeConverter usage somehow
         // first, look for an existing bean
         final Type type = point.getType();
@@ -373,9 +373,9 @@ public class DefaultBeanManager implements BeanManager {
     }
 
     @Override
-    public <T> Optional<T> getInjectableValue(final InjectionPoint<T> point, final InitializationContext<?> parentContext) {
-        final Bean<T> resolvedBean = getInjectionPointBean(point)
-                .orElseThrow(() -> new UnsatisfiedBeanException(point));
+    public <T> Optional<T> getInjectableValue(final InjectionPoint point, final InitializationContext<?> parentContext) {
+        final Optional<Bean<T>> optionalResolvedBean = getInjectionPointBean(point);
+        final Bean<T> resolvedBean = optionalResolvedBean.orElseThrow(() -> new UnsatisfiedBeanException(point));
         final Optional<T> existingValue = point.getBean()
                 .filter(bean -> !bean.equals(resolvedBean))
                 .flatMap(bean -> getExistingValue(resolvedBean, bean, parentContext));

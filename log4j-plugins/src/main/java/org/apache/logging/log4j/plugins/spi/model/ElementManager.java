@@ -53,7 +53,7 @@ public interface ElementManager extends AutoCloseable {
      * @param element program element to extract qualifiers from
      * @return qualifiers present on the element
      */
-    Qualifiers getQualifiers(MetaElement<?> element);
+    Qualifiers getQualifiers(MetaElement element);
 
     /**
      * Checks if a class has exactly one injectable constructor. A constructor is <i>injectable</i> if:
@@ -98,7 +98,7 @@ public interface ElementManager extends AutoCloseable {
      * @param element field, method, or parameter to check
      * @return true if the element is injectable or false otherwise
      */
-    default boolean isInjectable(final MetaElement<?> element) {
+    default boolean isInjectable(final MetaElement element) {
         return element.isAnnotationPresent(Inject.class) ||
                 (element.getAnnotations().stream().map(MetaAnnotation::getAnnotationType).anyMatch(this::isQualifierType) &&
                         !element.isAnnotationPresent(Produces.class));
@@ -110,10 +110,9 @@ public interface ElementManager extends AutoCloseable {
      * @param field field where injection will take place
      * @param owner bean where field is located or null for static fields
      * @param <D>   bean type
-     * @param <T>   field type
      * @return an injection point describing the field
      */
-    <D, T> InjectionPoint<T> createFieldInjectionPoint(final MetaField<D, T> field, final Bean<D> owner);
+    <D> InjectionPoint createFieldInjectionPoint(final MetaField<D, ?> field, final Bean<D> owner);
 
     /**
      * Creates an injection point for a method or constructor parameter with an optional owning bean.
@@ -122,11 +121,10 @@ public interface ElementManager extends AutoCloseable {
      * @param parameter  which parameter of that executable to create a point at
      * @param owner      bean where executable is located or null for static methods
      * @param <D>        bean type
-     * @param <P>        parameter type
      * @return an injection point describing the parameter
      */
-    <D, P> InjectionPoint<P> createParameterInjectionPoint(final MetaExecutable<D, ?> executable,
-                                                           final MetaParameter<P> parameter, final Bean<D> owner);
+    <D> InjectionPoint createParameterInjectionPoint(final MetaExecutable<D> executable,
+                                                     final MetaParameter parameter, final Bean<D> owner);
 
     /**
      * Creates a collection of injection points for all the parameters of a method or constructor with an optional
@@ -137,7 +135,7 @@ public interface ElementManager extends AutoCloseable {
      * @param <D>        bean type
      * @return collection of injection points describing the executable parameters
      */
-    default <D> Collection<InjectionPoint<?>> createExecutableInjectionPoints(final MetaExecutable<D, ?> executable, final Bean<D> owner) {
+    default <D> Collection<InjectionPoint> createExecutableInjectionPoints(final MetaExecutable<D> executable, final Bean<D> owner) {
         Objects.requireNonNull(executable);
         return executable.getParameters().stream()
                 .map(parameter -> createParameterInjectionPoint(executable, parameter, owner))
@@ -147,12 +145,12 @@ public interface ElementManager extends AutoCloseable {
     /**
      * Creates a variable for an element.
      */
-    Variable createVariable(final MetaElement<?> element);
+    Variable createVariable(final MetaElement element);
 
     /**
      * Creates a variable for an injection point.
      */
-    Variable createVariable(final InjectionPoint<?> point);
+    Variable createVariable(final InjectionPoint point);
 
     @Override
     void close();

@@ -27,17 +27,17 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Objects;
 
-abstract class AbstractBean<D, T> implements Bean<T> {
+abstract class AbstractBean<T> implements Bean<T> {
     private final Variable variable;
-    private final MetaClass<D> declaringClass;
+    private final MetaClass<?> declaringClass;
 
-    AbstractBean(final Variable variable, final MetaClass<D> declaringClass) {
+    AbstractBean(final Variable variable, final MetaClass<?> declaringClass) {
         this.variable = Objects.requireNonNull(variable);
         this.declaringClass = declaringClass;
     }
 
     @Override
-    public MetaClass<D> getDeclaringClass() {
+    public MetaClass<?> getDeclaringClass() {
         return declaringClass;
     }
 
@@ -60,7 +60,7 @@ abstract class AbstractBean<D, T> implements Bean<T> {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final AbstractBean<?, ?> that = (AbstractBean<?, ?>) o;
+        final AbstractBean<?> that = (AbstractBean<?>) o;
         return variable.equals(that.variable) &&
                 Objects.equals(declaringClass, that.declaringClass);
     }

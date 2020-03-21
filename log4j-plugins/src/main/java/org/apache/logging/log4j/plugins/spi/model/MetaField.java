@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.plugins.spi.model;
 
-public interface MetaField<D, T> extends MetaMember<D, T> {
+public interface MetaField<D, T> extends MetaMember<D> {
     T get(final D target);
 
     void set(final D target, final T value);

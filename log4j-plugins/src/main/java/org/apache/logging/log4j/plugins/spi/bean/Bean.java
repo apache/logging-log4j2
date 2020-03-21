@@ -42,7 +42,7 @@ public interface Bean<T> extends Variable {
      */
     void destroy(final T instance, final InitializationContext<T> context);
 
-    Collection<InjectionPoint<?>> getInjectionPoints();
+    Collection<InjectionPoint> getInjectionPoints();
 
     // for a managed bean: that class
     // for a producer field or producer method: the declaring class

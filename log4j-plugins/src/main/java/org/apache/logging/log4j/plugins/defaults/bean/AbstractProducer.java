@@ -33,11 +33,11 @@ abstract class AbstractProducer<P, T> implements Producer<T> {
     private final BeanManager beanManager;
     private final Bean<P> producerBean;
     private final MetaMethod<P, ?> disposerMethod;
-    private final Collection<InjectionPoint<?>> disposerInjectionPoints;
+    private final Collection<InjectionPoint> disposerInjectionPoints;
     final Injector injector;
 
     AbstractProducer(final BeanManager beanManager, final Bean<P> producerBean, final MetaMethod<P, ?> disposerMethod,
-                     final Collection<InjectionPoint<?>> disposerInjectionPoints) {
+                     final Collection<InjectionPoint> disposerInjectionPoints) {
         this.beanManager = beanManager;
         this.producerBean = producerBean;
         this.disposerMethod = disposerMethod;
