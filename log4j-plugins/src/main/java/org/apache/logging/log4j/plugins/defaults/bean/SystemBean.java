@@ -37,18 +37,33 @@ abstract class SystemBean<T> implements Bean<T> {
     }
 
     @Override
-    public Qualifiers getQualifiers() {
-        return variable.getQualifiers();
-    }
-
-    @Override
     public Collection<Type> getTypes() {
         return variable.getTypes();
     }
 
     @Override
+    public Variable withTypes(final Collection<Type> types) {
+        return variable.withTypes(types);
+    }
+
+    @Override
+    public Qualifiers getQualifiers() {
+        return variable.getQualifiers();
+    }
+
+    @Override
+    public Variable withQualifiers(final Qualifiers qualifiers) {
+        return variable.withQualifiers(qualifiers);
+    }
+
+    @Override
     public Class<? extends Annotation> getScopeType() {
         return variable.getScopeType();
+    }
+
+    @Override
+    public Variable withScopeType(final Class<? extends Annotation> scopeType) {
+        return variable.withScopeType(scopeType);
     }
 
     @Override

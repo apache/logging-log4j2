@@ -23,21 +23,16 @@ import org.apache.logging.log4j.plugins.spi.model.Variable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 public class DefaultVariable implements Variable {
-
-    public static DefaultVariable newVariable(final Collection<Type> types, final Qualifiers qualifiers,
-                                              final Class<? extends Annotation> scopeType) {
-        return new DefaultVariable(types, qualifiers, scopeType);
-    }
-
     private final Collection<Type> types;
     private final Qualifiers qualifiers;
     private final Class<? extends Annotation> scopeType;
 
-    private DefaultVariable(final Collection<Type> types, final Qualifiers qualifiers,
-                            final Class<? extends Annotation> scopeType) {
+    DefaultVariable(final Collection<Type> types, final Qualifiers qualifiers,
+                    final Class<? extends Annotation> scopeType) {
         this.types = Objects.requireNonNull(types);
         this.qualifiers = Objects.requireNonNull(qualifiers);
         this.scopeType = Objects.requireNonNull(scopeType);
@@ -45,7 +40,12 @@ public class DefaultVariable implements Variable {
 
     @Override
     public Collection<Type> getTypes() {
-        return types;
+        return Collections.unmodifiableCollection(types);
+    }
+
+    @Override
+    public Variable withTypes(final Collection<Type> types) {
+        return new DefaultVariable(types, getQualifiers(), getScopeType());
     }
 
     @Override
@@ -54,8 +54,18 @@ public class DefaultVariable implements Variable {
     }
 
     @Override
+    public Variable withQualifiers(final Qualifiers qualifiers) {
+        return new DefaultVariable(getTypes(), qualifiers, getScopeType());
+    }
+
+    @Override
     public Class<? extends Annotation> getScopeType() {
         return scopeType;
+    }
+
+    @Override
+    public Variable withScopeType(final Class<? extends Annotation> scopeType) {
+        return new DefaultVariable(getTypes(), getQualifiers(), scopeType);
     }
 
     @Override

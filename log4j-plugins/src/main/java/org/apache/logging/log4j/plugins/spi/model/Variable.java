@@ -27,6 +27,8 @@ import java.util.Collection;
 public interface Variable {
     Collection<Type> getTypes();
 
+    Variable withTypes(final Collection<Type> types);
+
     default boolean hasMatchingType(final Type requiredType) {
         for (final Type type : getTypes()) {
             if (TypeUtil.typesMatch(requiredType, type)) {
@@ -38,7 +40,11 @@ public interface Variable {
 
     Qualifiers getQualifiers();
 
+    Variable withQualifiers(final Qualifiers qualifiers);
+
     Class<? extends Annotation> getScopeType();
+
+    Variable withScopeType(final Class<? extends Annotation> scopeType);
 
     default boolean isDependentScoped() {
         return getScopeType() == Dependent.class;

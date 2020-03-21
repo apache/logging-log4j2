@@ -193,7 +193,7 @@ public class DefaultElementManager implements ElementManager {
     private Variable createVariable(final MetaElement element, final Qualifiers qualifiers) {
         final Collection<Type> types = element.getTypeClosure();
         final Class<? extends Annotation> scopeType = getScopeType(element);
-        return DefaultVariable.newVariable(types, qualifiers, scopeType);
+        return new DefaultVariable(types, qualifiers, scopeType);
     }
 
     @Override

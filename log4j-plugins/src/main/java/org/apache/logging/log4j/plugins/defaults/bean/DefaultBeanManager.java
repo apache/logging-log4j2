@@ -23,7 +23,6 @@ import org.apache.logging.log4j.plugins.api.Produces;
 import org.apache.logging.log4j.plugins.api.Provider;
 import org.apache.logging.log4j.plugins.api.Singleton;
 import org.apache.logging.log4j.plugins.defaults.model.DefaultElementManager;
-import org.apache.logging.log4j.plugins.defaults.model.DefaultVariable;
 import org.apache.logging.log4j.plugins.spi.AmbiguousBeanException;
 import org.apache.logging.log4j.plugins.spi.DefinitionException;
 import org.apache.logging.log4j.plugins.spi.InjectionException;
@@ -232,7 +231,7 @@ public class DefaultBeanManager implements BeanManager {
         }
     }
 
-    private <T> void validateInjectionPoint(final InjectionPoint point) {
+    private void validateInjectionPoint(final InjectionPoint point) {
         final MetaElement element = point.getElement();
         if (element.isAnnotationPresent(Produces.class)) {
             throw new DefinitionException("Cannot inject into a @Produces element: " + element);
@@ -257,7 +256,7 @@ public class DefaultBeanManager implements BeanManager {
                 validateBeanInjectionPoint(point, ((ProducerBean<?>) bean).getType());
             }
         }
-        final Optional<Bean<T>> bean = getInjectionPointBean(point);
+        final Optional<Bean<?>> bean = getBeanForInjectionPoint(point);
         if (!bean.isPresent() && !rawType.equals(Optional.class)) {
             throw new UnsatisfiedBeanException(point);
         }
@@ -282,54 +281,49 @@ public class DefaultBeanManager implements BeanManager {
         }
     }
 
-    private <T> Optional<Bean<T>> getInjectionPointBean(final InjectionPoint point) {
+    private Optional<Bean<?>> getBeanForInjectionPoint(final InjectionPoint point) {
         // TODO: this will need to allow for TypeConverter usage somehow
         // first, look for an existing bean
         final Type type = point.getType();
         final Qualifiers qualifiers = point.getQualifiers();
-        final Variable variable = elementManager.createVariable(point);
-        final Optional<Bean<T>> existingBean = getExistingOrProvidedBean(type, qualifiers, () -> variable);
+        final Optional<Bean<?>> existingBean = getExistingOrProvidedBean(type, qualifiers,
+                () -> elementManager.createVariable(point));
         if (existingBean.isPresent()) {
             return existingBean;
         }
         if (type instanceof ParameterizedType) {
             final Class<?> rawType = TypeUtil.getRawType(type);
-            final Type actualType = ((ParameterizedType) type).getActualTypeArguments()[0];
-            if (rawType.equals(Provider.class)) {
+            if (rawType == Provider.class) {
+                final Type actualType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 // if a Provider<T> is requested, we can convert an existing Bean<T> into a Bean<Provider<T>>
-                return this.<T>getBean(actualType, qualifiers)
-                        .map(bean -> new ProviderBean<>(variable, context -> getValue(bean, context)))
-                        .map(this::addBean)
-                        .map(TypeUtil::cast);
-            } else if (rawType.equals(Optional.class)) {
-                final Optional<Bean<T>> actualExistingBean = getExistingOrProvidedBean(actualType, qualifiers,
-                        // FIXME: remove need for DefaultVariable to be public
-                        () -> DefaultVariable.newVariable(
-                                TypeUtil.getTypeClosure(actualType), qualifiers, variable.getScopeType()));
-                final Bean<Optional<T>> optionalBean = addBean(new OptionalBean<>(variable,
-                        context -> actualExistingBean.map(bean -> getValue(bean, context))));
-                return Optional.of(TypeUtil.cast(optionalBean));
+                return getExistingBean(actualType, qualifiers)
+                        .map(bean -> new ProviderBean<>(
+                                elementManager.createVariable(point), context -> getValue(bean, context)))
+                        .map(this::addBean);
+            } else if (rawType == Optional.class) {
+                final Type actualType = ((ParameterizedType) type).getActualTypeArguments()[0];
+                final Variable variable = elementManager.createVariable(point);
+                return Optional.of(createOptionalBean(actualType, qualifiers, variable));
             }
         }
         return Optional.empty();
     }
 
-    private <T> Optional<Bean<T>> getExistingOrProvidedBean(final Type type, final Qualifiers qualifiers,
-                                                            final Supplier<Variable> variableSupplier) {
-        final Optional<Bean<T>> existingBean = getBean(type, qualifiers);
+    private Optional<Bean<?>> getExistingOrProvidedBean(final Type type, final Qualifiers qualifiers,
+                                                        final Supplier<Variable> variableSupplier) {
+        final Optional<Bean<?>> existingBean = getExistingBean(type, qualifiers);
         if (existingBean.isPresent()) {
             return existingBean;
         }
-        final Variable variable = variableSupplier.get();
         final Type providerType = new ParameterizedTypeImpl(null, Provider.class, type);
-        final Optional<Bean<Provider<T>>> providerBean = getBean(providerType, qualifiers);
-        return providerBean.map(bean -> new ProvidedBean<>(variable, context -> getValue(bean, context).get()))
+        return getExistingBean(providerType, qualifiers)
+                .<Bean<Provider<?>>>map(TypeUtil::cast)
+                .map(bean -> new ProvidedBean<>(variableSupplier.get(), context -> getValue(bean, context).get()))
                 .map(this::addBean);
     }
 
-    // FIXME: this needs to consider scopes
-    private <T> Optional<Bean<T>> getBean(final Type type, final Qualifiers qualifiers) {
-        final Set<Bean<T>> beans = this.<T>streamBeansMatchingType(type)
+    private Optional<Bean<?>> getExistingBean(final Type type, final Qualifiers qualifiers) {
+        final Set<Bean<?>> beans = beansWithType(type)
                 .filter(bean -> qualifiers.equals(bean.getQualifiers()))
                 .collect(Collectors.toSet());
         if (beans.size() > 1) {
@@ -338,17 +332,24 @@ public class DefaultBeanManager implements BeanManager {
         return beans.isEmpty() ? Optional.empty() : Optional.of(beans.iterator().next());
     }
 
-    private <T> Stream<Bean<T>> streamBeansMatchingType(final Type requiredType) {
+    private Stream<Bean<?>> beansWithType(final Type requiredType) {
         if (beansByType.containsKey(requiredType)) {
-            return beansByType.get(requiredType).stream().map(TypeUtil::cast);
+            return beansByType.get(requiredType).stream();
         }
         if (requiredType instanceof ParameterizedType) {
             return beansByType.getOrDefault(((ParameterizedType) requiredType).getRawType(), Collections.emptySet())
                     .stream()
-                    .filter(bean -> bean.hasMatchingType(requiredType))
-                    .map(TypeUtil::cast);
+                    .filter(bean -> bean.hasMatchingType(requiredType));
         }
         return Stream.empty();
+    }
+
+    private Bean<?> createOptionalBean(final Type actualType, final Qualifiers qualifiers, final Variable variable) {
+        final Supplier<Variable> variableSupplier = () -> variable.withTypes(TypeUtil.getTypeClosure(actualType));
+        final Bean<?> optionalBean = new OptionalBean<>(variable, context ->
+                getExistingOrProvidedBean(actualType, qualifiers, variableSupplier)
+                        .map(bean -> getValue(bean, context)));
+        return addBean(optionalBean);
     }
 
     @Override
@@ -374,7 +375,7 @@ public class DefaultBeanManager implements BeanManager {
 
     @Override
     public <T> Optional<T> getInjectableValue(final InjectionPoint point, final InitializationContext<?> parentContext) {
-        final Optional<Bean<T>> optionalResolvedBean = getInjectionPointBean(point);
+        final Optional<Bean<T>> optionalResolvedBean = getBeanForInjectionPoint(point).map(TypeUtil::cast);
         final Bean<T> resolvedBean = optionalResolvedBean.orElseThrow(() -> new UnsatisfiedBeanException(point));
         final Optional<T> existingValue = point.getBean()
                 .filter(bean -> !bean.equals(resolvedBean))
