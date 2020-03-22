@@ -230,6 +230,10 @@ public class DefaultBeanManagerTest {
         public int nextId() {
             return current.incrementAndGet();
         }
+
+        public int getCurrent() {
+            return current.get();
+        }
     }
 
     public static class PostConstructInjection {
@@ -299,6 +303,40 @@ public class DefaultBeanManagerTest {
         assertEquals(methodProducer, alternative);
         assertEquals(42, answer);
         assertNotNull(fooBar);
+    }
+
+    @SingletonScoped
+    public static class DeferredSingleton {
+        private final int id;
+
+        @Inject
+        public DeferredSingleton(final int id) {
+            this.id = id;
+        }
+    }
+
+    public static class DeferredDependent {
+        private final int id;
+
+        @Inject
+        public DeferredDependent(final int id) {
+            this.id = id;
+        }
+    }
+
+    @WithBeans({IdGenerator.class, DeferredSingleton.class, DeferredDependent.class})
+    @Test
+    public void testDeferredProviderNotInvokedUntilInitiallyProvided(final IdGenerator generator,
+                                                                     final Provider<DeferredSingleton> singletonProvider,
+                                                                     final Provider<DeferredDependent> dependentProvider) {
+        assertEquals(0, generator.getCurrent());
+        assertEquals(1, singletonProvider.get().id);
+        assertEquals(1, singletonProvider.get().id);
+        assertEquals(2, dependentProvider.get().id);
+        assertEquals(1, singletonProvider.get().id);
+        assertEquals(3, dependentProvider.get().id);
+        assertEquals(1, singletonProvider.get().id);
+        assertEquals(4, dependentProvider.get().id);
     }
 
     // TODO: add tests for other supported injection scenarios
