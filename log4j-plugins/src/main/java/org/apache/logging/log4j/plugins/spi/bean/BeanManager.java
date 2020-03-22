@@ -30,8 +30,8 @@ import java.util.Optional;
 public interface BeanManager extends AutoCloseable {
 
     /**
-     * Loads beans from the given classes. This looks for injectable classes and producers, validates them, registers
-     * them in this manager, then returns the loaded beans.
+     * Loads beans from the given classes. This looks for injectable classes and producers in the provided classes,
+     * loads them into this manager, and returns the loaded beans.
      *
      * @param beanClasses classes to load beans from
      * @return beans loaded from the given classes
@@ -39,25 +39,35 @@ public interface BeanManager extends AutoCloseable {
     Collection<Bean<?>> loadBeans(final Collection<Class<?>> beanClasses);
 
     /**
-     * Loads beans from the given classes. This looks for injectable classes and producers, validates them, registers
-     * them in this manager, then returns the loaded beans.
+     * Loads beans from the given classes. This looks for injectable classes and producers, registers them in this
+     * manager, validates them, then returns the validated beans.
      *
      * @param beanClasses classes to load beans from
      * @return beans loaded from the given classes
+     * @throws ValidationException if any beans have validation errors
      */
-    default Collection<Bean<?>> loadBeans(final Class<?>... beanClasses) {
-        return loadBeans(Arrays.asList(beanClasses));
+    default Collection<Bean<?>> loadAndValidateBeans(final Class<?>... beanClasses) {
+        final Collection<Bean<?>> beans = loadBeans(Arrays.asList(beanClasses));
+        validateBeans(beans);
+        return beans;
     }
 
     /**
      * Validates beans and throws a {@link ValidationException} if there are any errors.
      *
      * @param beans beans to check for validation errors
+     * @throws ValidationException if any beans have validation errors
      */
     void validateBeans(final Iterable<Bean<?>> beans);
 
-    // TODO: re-add query methods for beans as needed
-//    Collection<Bean<?>> getBeans();
+    /**
+     * Validates the given injection point.
+     *
+     * @param point injection point to validate
+     * @throws org.apache.logging.log4j.plugins.spi.DefinitionException      if the injection point is improperly defined
+     * @throws org.apache.logging.log4j.plugins.spi.UnsatisfiedBeanException if no beans can satisfy the injection point
+     */
+    void validateInjectionPoint(InjectionPoint point);
 
     /**
      * Creates an InitializationContext for a given Bean instance for use in dependency injection SPIs.

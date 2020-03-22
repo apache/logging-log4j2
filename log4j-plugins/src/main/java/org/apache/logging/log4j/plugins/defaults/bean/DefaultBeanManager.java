@@ -231,7 +231,8 @@ public class DefaultBeanManager implements BeanManager {
         }
     }
 
-    private void validateInjectionPoint(final InjectionPoint point) {
+    @Override
+    public void validateInjectionPoint(final InjectionPoint point) {
         final MetaElement element = point.getElement();
         if (element.isAnnotationPresent(Produces.class)) {
             throw new DefinitionException("Cannot inject into a @Produces element: " + element);

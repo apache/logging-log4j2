@@ -92,10 +92,10 @@ public class BeanJUnit4Runner extends BlockJUnit4ClassRunner {
         injector = new DefaultInjector(beanManager);
         final WithBeans testClassBeans = getTestClass().getAnnotation(WithBeans.class);
         if (testClassBeans != null) {
-            beanManager.loadBeans(testClassBeans.value());
+            beanManager.loadAndValidateBeans(testClassBeans.value());
         }
         final Class<T> testClass = TypeUtil.cast(getTestClass().getJavaClass());
-        final Optional<Bean<T>> testBean = beanManager.loadBeans(testClass).stream()
+        final Optional<Bean<T>> testBean = beanManager.loadAndValidateBeans(testClass).stream()
                 .filter(bean -> bean.hasMatchingType(testClass))
                 .findAny()
                 .map(TypeUtil::cast);
@@ -118,7 +118,7 @@ public class BeanJUnit4Runner extends BlockJUnit4ClassRunner {
                 try (final InitializationContext<T> context = beanManager.createInitializationContext(testClassBean)) {
                     final WithBeans methodBeans = method.getAnnotation(WithBeans.class);
                     if (methodBeans != null) {
-                        beanManager.loadBeans(methodBeans.value());
+                        beanManager.loadAndValidateBeans(methodBeans.value());
                     }
                     final Class<T> testClass = TypeUtil.cast(getTestClass().getJavaClass());
                     final MetaClass<T> metaClass = elementManager.getMetaClass(testClass);
