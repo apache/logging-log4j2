@@ -26,6 +26,18 @@ import java.util.List;
 
 /**
  * Benchmark suite for various JSON layouts.
+ * <p>
+ * You can run this test as follows:
+ * <pre>
+ * java \
+ *     -jar log4j-perf/target/benchmarks.jar \
+ *     -f 2 \
+ *     -wi 3 -w 20s \
+ *     -i 5 -r 30s \
+ *     -prof gc \
+ *     -rf json -rff log4j-perf/target/JsonTemplateLayoutBenchmarkResult.json \
+ *     ".*JsonTemplateLayoutBenchmark.*"
+ * </pre>
  */
 public class JsonTemplateLayoutBenchmark {
 
