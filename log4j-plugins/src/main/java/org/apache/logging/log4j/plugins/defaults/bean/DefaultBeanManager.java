@@ -17,11 +17,11 @@
 
 package org.apache.logging.log4j.plugins.defaults.bean;
 
-import org.apache.logging.log4j.plugins.api.Dependent;
+import org.apache.logging.log4j.plugins.api.DependentScoped;
 import org.apache.logging.log4j.plugins.api.Disposes;
 import org.apache.logging.log4j.plugins.api.Produces;
 import org.apache.logging.log4j.plugins.api.Provider;
-import org.apache.logging.log4j.plugins.api.Singleton;
+import org.apache.logging.log4j.plugins.api.SingletonScoped;
 import org.apache.logging.log4j.plugins.defaults.model.DefaultElementManager;
 import org.apache.logging.log4j.plugins.spi.AmbiguousBeanException;
 import org.apache.logging.log4j.plugins.spi.DefinitionException;
@@ -86,8 +86,8 @@ public class DefaultBeanManager implements BeanManager {
     public DefaultBeanManager(final ElementManager elementManager) {
         this.elementManager = elementManager;
         // TODO: need a better way to register scope contexts
-        scopes.put(Dependent.class, new DependentScopeContext());
-        scopes.put(Singleton.class, new DefaultScopeContext(Singleton.class));
+        scopes.put(DependentScoped.class, new DependentScopeContext());
+        scopes.put(SingletonScoped.class, new DefaultScopeContext(SingletonScoped.class));
     }
 
     @Override
@@ -245,7 +245,7 @@ public class DefaultBeanManager implements BeanManager {
             final Bean<?> bean = point.getBean()
                     .orElseThrow(() -> new DefinitionException("Cannot inject " + point + " into a non-bean"));
             if (!bean.isDependentScoped()) {
-                throw new DefinitionException("Injection points can only be @Dependent scoped; got: " + point);
+                throw new DefinitionException("Injection points can only be @DependentScoped scoped; got: " + point);
             }
         }
         if (rawType.equals(Bean.class)) {

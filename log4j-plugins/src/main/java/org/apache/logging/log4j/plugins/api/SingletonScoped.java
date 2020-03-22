@@ -22,17 +22,10 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/**
- * Dependent scoped beans are beans that belong to another bean. Beans with this scope are created and destroyed in
- * participation of the lifecycle of the owning bean. That is, when a bean is destroyed, any of its dependent objects
- * are destroyed; dependent beans injected into a {@linkplain Disposes disposer method} are destroyed after the method
- * is finished executing; dependent beans created to {@linkplain Produces produce} or {@linkplain Disposes dispose}
- * a bean are destroyed after the producer or disposer is finished executing; and any other dependent beans no longer
- * directly referenced by the application may be destroyed.
- */
+// TODO: consider making this the default scope?
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
 @ScopeType
-public @interface Dependent {
+public @interface SingletonScoped {
 }

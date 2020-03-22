@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.plugins.spi.model;
 
-import org.apache.logging.log4j.plugins.api.Dependent;
+import org.apache.logging.log4j.plugins.api.DependentScoped;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.annotation.Annotation;
@@ -43,6 +43,6 @@ public interface Variable {
     Class<? extends Annotation> getScopeType();
 
     default boolean isDependentScoped() {
-        return getScopeType() == Dependent.class;
+        return getScopeType() == DependentScoped.class;
     }
 }

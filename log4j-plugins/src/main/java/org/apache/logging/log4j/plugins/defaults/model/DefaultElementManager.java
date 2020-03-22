@@ -19,7 +19,7 @@ package org.apache.logging.log4j.plugins.defaults.model;
 
 import org.apache.logging.log4j.plugins.api.AnnotationAlias;
 import org.apache.logging.log4j.plugins.api.Default;
-import org.apache.logging.log4j.plugins.api.Dependent;
+import org.apache.logging.log4j.plugins.api.DependentScoped;
 import org.apache.logging.log4j.plugins.api.Ignore;
 import org.apache.logging.log4j.plugins.api.Named;
 import org.apache.logging.log4j.plugins.api.QualifierType;
@@ -138,7 +138,7 @@ public class DefaultElementManager implements ElementManager {
 
     private Class<? extends Annotation> getScopeType(final MetaElement element) {
         final Collection<Class<? extends Annotation>> scopeTypes = filterScopeTypes(element.getAnnotations());
-        return scopeTypes.isEmpty() ? Dependent.class : scopeTypes.iterator().next();
+        return scopeTypes.isEmpty() ? DependentScoped.class : scopeTypes.iterator().next();
     }
 
     private Collection<Class<? extends Annotation>> filterScopeTypes(final Collection<MetaAnnotation> annotations) {

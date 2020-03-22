@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.plugins.defaults.bean;
 
-import org.apache.logging.log4j.plugins.api.Dependent;
+import org.apache.logging.log4j.plugins.api.DependentScoped;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.bean.ScopeContext;
@@ -28,7 +28,7 @@ import java.util.Optional;
 class DependentScopeContext implements ScopeContext {
     @Override
     public Class<? extends Annotation> getScopeType() {
-        return Dependent.class;
+        return DependentScoped.class;
     }
 
     @Override
