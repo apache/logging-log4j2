@@ -90,12 +90,10 @@ public class DefaultBeanManager implements BeanManager {
 
     @Override
     public Collection<Bean<?>> loadBeans(final Collection<Class<?>> beanClasses) {
-        final Collection<Bean<?>> beans = beanClasses.stream()
+        return beanClasses.stream()
                 .map(elementManager::getMetaClass)
                 .flatMap(metaClass -> loadBeans(metaClass).stream())
                 .collect(Collectors.toSet());
-        validateBeans(beans);
-        return beans;
     }
 
     private <T> Collection<Bean<?>> loadBeans(final MetaClass<T> metaClass) {
