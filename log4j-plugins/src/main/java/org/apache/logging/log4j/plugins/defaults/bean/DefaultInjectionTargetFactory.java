@@ -75,7 +75,7 @@ class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
         final List<MetaMethod<T, ?>> preDestroyMethods = methods.stream()
                 .filter(method -> method.isAnnotationPresent(PreDestroy.class))
                 .collect(Collectors.toList());
-        return new DefaultInjectionTarget<>(injector, elementManager, injectionPoints, constructor,
+        return new DefaultInjectionTarget<>(injector, type, injectionPoints, constructor,
                 postConstructMethods, preDestroyMethods);
     }
 

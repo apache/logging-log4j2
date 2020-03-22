@@ -23,7 +23,6 @@ import org.apache.logging.log4j.plugins.api.Produces;
 import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.bean.InjectionTarget;
 import org.apache.logging.log4j.plugins.spi.bean.Injector;
-import org.apache.logging.log4j.plugins.spi.model.ElementManager;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.MetaConstructor;
@@ -42,17 +41,17 @@ import java.util.stream.Collectors;
 
 class DefaultInjectionTarget<T> implements InjectionTarget<T> {
     private final Injector injector;
-    private final ElementManager elementManager;
+    private final MetaClass<T> metaClass;
     private final Collection<InjectionPoint> injectionPoints;
     private final MetaConstructor<T> constructor;
     private final List<MetaMethod<T, ?>> postConstructMethods;
     private final List<MetaMethod<T, ?>> preDestroyMethods;
 
-    DefaultInjectionTarget(final Injector injector, final ElementManager elementManager,
+    DefaultInjectionTarget(final Injector injector, final MetaClass<T> metaClass,
                            final Collection<InjectionPoint> injectionPoints, final MetaConstructor<T> constructor,
                            final List<MetaMethod<T, ?>> postConstructMethods, final List<MetaMethod<T, ?>> preDestroyMethods) {
         this.injector = injector;
-        this.elementManager = elementManager;
+        this.metaClass = metaClass;
         this.injectionPoints = Objects.requireNonNull(injectionPoints);
         this.constructor = Objects.requireNonNull(constructor);
         this.postConstructMethods = Objects.requireNonNull(postConstructMethods);
@@ -71,8 +70,6 @@ class DefaultInjectionTarget<T> implements InjectionTarget<T> {
     public void inject(final T instance, final InitializationContext<T> context) {
         injectFields(instance, context);
         injectMethods(instance, context);
-        final Class<T> clazz = TypeUtil.cast(instance.getClass());
-        final MetaClass<T> metaClass = elementManager.getMetaClass(clazz);
         for (final MetaMethod<T, ?> method : metaClass.getMethods()) {
             if (method.isAnnotationPresent(Inject.class) && method.getParameters().isEmpty()) {
                 injector.invoke(instance, method, Collections.emptySet(), context);
