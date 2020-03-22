@@ -20,39 +20,48 @@ package org.apache.logging.log4j.plugins.defaults.model;
 import org.apache.logging.log4j.plugins.api.Default;
 import org.apache.logging.log4j.plugins.spi.model.MetaAnnotation;
 import org.apache.logging.log4j.plugins.spi.model.MetaAnnotationElement;
+import org.apache.logging.log4j.plugins.spi.model.MetaElement;
 import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 import org.apache.logging.log4j.util.StringBuilders;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.lang.annotation.Annotation;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Represents a normalized set of {@linkplain org.apache.logging.log4j.plugins.api.QualifierType qualifier annotations}.
  */
 class DefaultQualifiers implements Qualifiers {
-    private final Set<MetaAnnotation> qualifiers;
+    private final Map<Class<? extends Annotation>, Map<String, Object>> qualifiers;
 
     DefaultQualifiers(final Set<MetaAnnotation> qualifiers) {
-        this.qualifiers = qualifiers;
+        this.qualifiers = qualifiers.stream()
+                .collect(Collectors.toMap(MetaAnnotation::getAnnotationType,
+                        ann -> ann.getAnnotationElements().stream()
+                                .collect(Collectors.toMap(MetaElement::getName, MetaAnnotationElement::getValue))));
     }
 
     @Override
     public boolean hasDefaultQualifier() {
-        return qualifiers.stream().anyMatch(q -> q.getAnnotationType() == Default.class);
+        return qualifiers.containsKey(Default.class);
+    }
+
+    @Override
+    public Set<Map.Entry<Class<? extends Annotation>, Map<String, Object>>> getQualifierEntries() {
+        return qualifiers.entrySet();
     }
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final DefaultQualifiers that = (DefaultQualifiers) o;
-        return qualifiers.equals(that.qualifiers);
+        // these should intentionally be substitutable by never using the subclass types directly
+        // i.e., we'd like to allow equality with annotation-processor-generated qualifiers later
+        return this == o || o instanceof Qualifiers && this.equalTo((Qualifiers) o);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(qualifiers);
+        return hash();
     }
 
     @Override
@@ -61,13 +70,13 @@ class DefaultQualifiers implements Qualifiers {
             return "[]";
         }
         StringBuilder sb = new StringBuilder().append('[');
-        for (final MetaAnnotation qualifier : qualifiers) {
-            sb.append('@').append(qualifier.getAnnotationType().getSimpleName());
-            final Collection<MetaAnnotationElement<?>> elements = qualifier.getAnnotationElements();
+        for (final Map.Entry<Class<? extends Annotation>, Map<String, Object>> qualifier : qualifiers.entrySet()) {
+            sb.append('@').append(qualifier.getKey().getSimpleName());
+            final Map<String, Object> elements = qualifier.getValue();
             if (!elements.isEmpty()) {
                 sb.append('(');
-                for (final MetaAnnotationElement<?> element : elements) {
-                    StringBuilders.appendKeyDqValue(sb, element.getName(), element.getValue()).append(", ");
+                for (final Map.Entry<String, Object> element : elements.entrySet()) {
+                    StringBuilders.appendKeyDqValue(sb, element.getKey(), element.getValue()).append(", ");
                 }
                 sb.delete(sb.length() - 2, sb.length()).append(')');
             }

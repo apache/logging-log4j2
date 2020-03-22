@@ -17,12 +17,21 @@
 
 package org.apache.logging.log4j.plugins.spi.model;
 
+import java.lang.annotation.Annotation;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
 public interface Qualifiers {
     boolean hasDefaultQualifier();
 
-    @Override
-    boolean equals(Object o);
+    Set<Map.Entry<Class<? extends Annotation>, Map<String, Object>>> getQualifierEntries();
 
-    @Override
-    int hashCode();
+    default boolean equalTo(final Qualifiers other) {
+        return Objects.equals(getQualifierEntries(), other.getQualifierEntries());
+    }
+
+    default int hash() {
+        return Objects.hashCode(getQualifierEntries());
+    }
 }
