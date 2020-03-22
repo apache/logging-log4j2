@@ -87,7 +87,6 @@ class DefaultInjectionTarget<T> implements InjectionTarget<T> {
         final Set<MetaMember<?>> injectedMethods = new HashSet<>();
         for (final InjectionPoint point : injectionPoints) {
             if (point.getMember() instanceof MetaMethod<?, ?> &&
-                    point.getMember().getDeclaringClass().getJavaClass().isInstance(instance) &&
                     !injectedMethods.contains(point.getMember()) &&
                     !point.getElement().isAnnotationPresent(Produces.class) &&
                     !point.getElement().isAnnotationPresent(Disposes.class)) {
