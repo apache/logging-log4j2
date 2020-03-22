@@ -331,12 +331,19 @@ public class DefaultBeanManagerTest {
                                                                      final Provider<DeferredDependent> dependentProvider) {
         assertEquals(0, generator.getCurrent());
         assertEquals(1, singletonProvider.get().id);
+        assertEquals(1, generator.getCurrent());
         assertEquals(1, singletonProvider.get().id);
+        assertEquals(1, generator.getCurrent());
         assertEquals(2, dependentProvider.get().id);
+        assertEquals(2, generator.getCurrent());
         assertEquals(1, singletonProvider.get().id);
+        assertEquals(2, generator.getCurrent());
         assertEquals(3, dependentProvider.get().id);
+        assertEquals(3, generator.getCurrent());
         assertEquals(1, singletonProvider.get().id);
+        assertEquals(3, generator.getCurrent());
         assertEquals(4, dependentProvider.get().id);
+        assertEquals(4, generator.getCurrent());
     }
 
     // TODO: add tests for other supported injection scenarios
