@@ -46,7 +46,7 @@ import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
 import org.apache.logging.log4j.plugins.spi.model.MetaParameter;
 import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 import org.apache.logging.log4j.plugins.spi.model.Variable;
-import org.apache.logging.log4j.plugins.util.ParameterizedTypeImpl;
+import org.apache.logging.log4j.plugins.util.LazyValue;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.annotation.Annotation;
@@ -64,7 +64,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -75,7 +74,6 @@ public class DefaultBeanManager implements BeanManager {
 
     private final Collection<Bean<?>> enabledBeans = ConcurrentHashMap.newKeySet();
     private final Map<Type, Collection<Bean<?>>> beansByType = new ConcurrentHashMap<>();
-    private final Collection<Bean<?>> sharedBeans = ConcurrentHashMap.newKeySet();
     private final Collection<DisposesMethod<?>> disposesMethods = Collections.synchronizedCollection(new ArrayList<>());
     private final Map<Class<? extends Annotation>, ScopeContext> scopes = new ConcurrentHashMap<>();
 
@@ -121,9 +119,6 @@ public class DefaultBeanManager implements BeanManager {
     private <T> Bean<T> addBean(final Bean<T> bean) {
         if (enabledBeans.add(bean)) {
             addBeanTypes(bean);
-            if (!bean.isDependentScoped() && !isSystemBean(bean)) {
-                sharedBeans.add(bean);
-            }
         }
         return bean;
     }
@@ -144,11 +139,7 @@ public class DefaultBeanManager implements BeanManager {
     }
 
     private void addBeanType(final Bean<?> bean, final Type type) {
-        beansByType.computeIfAbsent(type, ignored -> new HashSet<>()).add(bean);
-    }
-
-    private boolean isSystemBean(final Bean<?> bean) {
-        return bean instanceof SystemBean<?>;
+        beansByType.computeIfAbsent(type, ignored -> ConcurrentHashMap.newKeySet()).add(bean);
     }
 
     private <T> void loadDisposerMethods(final MetaClass<T> metaClass, final Bean<T> bean) {
@@ -257,7 +248,7 @@ public class DefaultBeanManager implements BeanManager {
                 validateBeanInjectionPoint(point, ((ProducerBean<?>) bean).getType());
             }
         }
-        final Optional<Bean<?>> bean = getBeanForInjectionPoint(point);
+        final Optional<Bean<Object>> bean = getBeanForInjectionPoint(point);
         if (!bean.isPresent() && !rawType.equals(Optional.class)) {
             throw new UnsatisfiedBeanException(point);
         }
@@ -282,13 +273,12 @@ public class DefaultBeanManager implements BeanManager {
         }
     }
 
-    private Optional<Bean<?>> getBeanForInjectionPoint(final InjectionPoint point) {
+    private <T> Optional<Bean<T>> getBeanForInjectionPoint(final InjectionPoint point) {
         // TODO: this will need to allow for TypeConverter usage somehow
         // first, look for an existing bean
         final Type type = point.getType();
         final Qualifiers qualifiers = point.getQualifiers();
-        final Optional<Bean<?>> existingBean = getExistingOrProvidedBean(type, qualifiers,
-                () -> elementManager.createVariable(point));
+        final Optional<Bean<T>> existingBean = getExistingOrProvidedBean(type, qualifiers);
         if (existingBean.isPresent()) {
             return existingBean;
         }
@@ -297,34 +287,30 @@ public class DefaultBeanManager implements BeanManager {
             if (rawType == Provider.class) {
                 final Type actualType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 // if a Provider<T> is requested, we can convert an existing Bean<T> into a Bean<Provider<T>>
-                return getExistingBean(actualType, qualifiers)
-                        .map(bean -> new ProviderBean<>(
-                                elementManager.createVariable(point), context -> getValue(bean, context)))
-                        .map(this::addBean);
+                final Optional<Bean<T>> actualExistingBean = getExistingBean(actualType, qualifiers);
+                return actualExistingBean.map(bean -> new ProviderBean<>(bean, context -> getValue(bean, context)))
+                        .map(this::addBean)
+                        .map(TypeUtil::cast);
             } else if (rawType == Optional.class) {
                 final Type actualType = ((ParameterizedType) type).getActualTypeArguments()[0];
-                final Variable variable = elementManager.createVariable(point);
-                return Optional.of(createOptionalBean(actualType, qualifiers, variable));
+                // fake T like in Provider above
+                final Bean<Optional<T>> optionalBean = createOptionalBean(type, actualType, qualifiers);
+                return Optional.of(optionalBean).map(TypeUtil::cast);
             }
         }
         return Optional.empty();
     }
 
-    private Optional<Bean<?>> getExistingOrProvidedBean(final Type type, final Qualifiers qualifiers,
-                                                        final Supplier<Variable> variableSupplier) {
-        final Optional<Bean<?>> existingBean = getExistingBean(type, qualifiers);
+    private <T> Optional<Bean<T>> getExistingOrProvidedBean(final Type type, final Qualifiers qualifiers) {
+        final Optional<Bean<T>> existingBean = getExistingBean(type, qualifiers);
         if (existingBean.isPresent()) {
             return existingBean;
         }
-        final Type providerType = new ParameterizedTypeImpl(null, Provider.class, type);
-        return getExistingBean(providerType, qualifiers)
-                .<Bean<Provider<?>>>map(TypeUtil::cast)
-                .map(bean -> new ProvidedBean<>(variableSupplier.get(), context -> getValue(bean, context).get()))
-                .map(this::addBean);
+        return getProvidedBean(type, qualifiers);
     }
 
-    private Optional<Bean<?>> getExistingBean(final Type type, final Qualifiers qualifiers) {
-        final Set<Bean<?>> beans = beansWithType(type)
+    private <T> Optional<Bean<T>> getExistingBean(final Type type, final Qualifiers qualifiers) {
+        final Set<Bean<T>> beans = this.<T>beansWithType(type)
                 .filter(bean -> qualifiers.equals(bean.getQualifiers()))
                 .collect(Collectors.toSet());
         if (beans.size() > 1) {
@@ -333,24 +319,30 @@ public class DefaultBeanManager implements BeanManager {
         return beans.isEmpty() ? Optional.empty() : Optional.of(beans.iterator().next());
     }
 
-    private Stream<Bean<?>> beansWithType(final Type requiredType) {
+    private <T> Optional<Bean<T>> getProvidedBean(final Type providedType, final Qualifiers qualifiers) {
+        return getExistingBean(TypeUtil.getParameterizedType(Provider.class, providedType), qualifiers)
+                .<Bean<Provider<T>>>map(TypeUtil::cast)
+                .map(bean -> new ProvidedBean<>(bean, context -> getValue(bean, context).get()))
+                .map(this::addBean);
+    }
+
+    private <T> Stream<Bean<T>> beansWithType(final Type requiredType) {
         if (beansByType.containsKey(requiredType)) {
-            return beansByType.get(requiredType).stream();
+            return beansByType.get(requiredType).stream().map(TypeUtil::cast);
         }
         if (requiredType instanceof ParameterizedType) {
             return beansByType.getOrDefault(((ParameterizedType) requiredType).getRawType(), Collections.emptySet())
                     .stream()
-                    .filter(bean -> bean.hasMatchingType(requiredType));
+                    .filter(bean -> bean.hasMatchingType(requiredType))
+                    .map(TypeUtil::cast);
         }
         return Stream.empty();
     }
 
-    private Bean<?> createOptionalBean(final Type actualType, final Qualifiers qualifiers, final Variable variable) {
-        final Supplier<Variable> variableSupplier = () -> variable.withTypes(TypeUtil.getTypeClosure(actualType));
-        final Bean<?> optionalBean = new OptionalBean<>(variable, context ->
-                getExistingOrProvidedBean(actualType, qualifiers, variableSupplier)
-                        .map(bean -> getValue(bean, context)));
-        return addBean(optionalBean);
+    private <T> Bean<Optional<T>> createOptionalBean(final Type type, final Type typeArgument, final Qualifiers qualifiers) {
+        return addBean(new OptionalBean<>(type, qualifiers,
+                LazyValue.forSupplier(() -> getExistingOrProvidedBean(typeArgument, qualifiers)),
+                this::getValue));
     }
 
     @Override
@@ -376,8 +368,8 @@ public class DefaultBeanManager implements BeanManager {
 
     @Override
     public <T> Optional<T> getInjectableValue(final InjectionPoint point, final InitializationContext<?> parentContext) {
-        final Optional<Bean<T>> optionalResolvedBean = getBeanForInjectionPoint(point).map(TypeUtil::cast);
-        final Bean<T> resolvedBean = optionalResolvedBean.orElseThrow(() -> new UnsatisfiedBeanException(point));
+        final Bean<T> resolvedBean = this.<T>getBeanForInjectionPoint(point)
+                .orElseThrow(() -> new UnsatisfiedBeanException(point));
         final Optional<T> existingValue = point.getBean()
                 .filter(bean -> !bean.equals(resolvedBean))
                 .flatMap(bean -> getExistingValue(resolvedBean, bean, parentContext));
@@ -406,7 +398,6 @@ public class DefaultBeanManager implements BeanManager {
     public void close() {
         beansByType.clear();
         enabledBeans.clear();
-        sharedBeans.clear();
         disposesMethods.clear();
         scopes.values().forEach(ScopeContext::close);
         scopes.clear();

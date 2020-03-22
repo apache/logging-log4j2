@@ -42,11 +42,6 @@ abstract class SystemBean<T> implements Bean<T> {
     }
 
     @Override
-    public Variable withTypes(final Collection<Type> types) {
-        return variable.withTypes(types);
-    }
-
-    @Override
     public Qualifiers getQualifiers() {
         return variable.getQualifiers();
     }

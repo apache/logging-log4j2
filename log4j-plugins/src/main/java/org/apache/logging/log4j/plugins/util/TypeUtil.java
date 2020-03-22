@@ -538,4 +538,8 @@ public final class TypeUtil {
         return t;
     }
 
+    public static ParameterizedType getParameterizedType(final Type rawType, final Type... typeArguments) {
+        return new ParameterizedTypeImpl(null, rawType, typeArguments);
+    }
+
 }

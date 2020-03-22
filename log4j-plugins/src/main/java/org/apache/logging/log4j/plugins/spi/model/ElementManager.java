@@ -147,11 +147,6 @@ public interface ElementManager extends AutoCloseable {
      */
     Variable createVariable(final MetaElement element);
 
-    /**
-     * Creates a variable for an injection point.
-     */
-    Variable createVariable(final InjectionPoint point);
-
     @Override
     void close();
 }

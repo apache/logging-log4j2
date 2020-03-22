@@ -184,12 +184,6 @@ public class DefaultElementManager implements ElementManager {
         return createVariable(element, getQualifiers(element));
     }
 
-    @Override
-    public Variable createVariable(final InjectionPoint point) {
-        Objects.requireNonNull(point);
-        return createVariable(point.getElement(), point.getQualifiers());
-    }
-
     private Variable createVariable(final MetaElement element, final Qualifiers qualifiers) {
         final Collection<Type> types = element.getTypeClosure();
         final Class<? extends Annotation> scopeType = getScopeType(element);

@@ -44,11 +44,6 @@ public class DefaultVariable implements Variable {
     }
 
     @Override
-    public Variable withTypes(final Collection<Type> types) {
-        return new DefaultVariable(types, getQualifiers(), getScopeType());
-    }
-
-    @Override
     public Qualifiers getQualifiers() {
         return qualifiers;
     }
