@@ -57,18 +57,8 @@ abstract class AbstractBean<T> implements Bean<T> {
     }
 
     @Override
-    public Variable withQualifiers(final Qualifiers qualifiers) {
-        return variable.withQualifiers(qualifiers);
-    }
-
-    @Override
     public Class<? extends Annotation> getScopeType() {
         return variable.getScopeType();
-    }
-
-    @Override
-    public Variable withScopeType(final Class<? extends Annotation> scopeType) {
-        return variable.withScopeType(scopeType);
     }
 
     @Override

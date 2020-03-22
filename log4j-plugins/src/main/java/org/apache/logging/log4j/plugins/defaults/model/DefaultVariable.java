@@ -54,18 +54,8 @@ public class DefaultVariable implements Variable {
     }
 
     @Override
-    public Variable withQualifiers(final Qualifiers qualifiers) {
-        return new DefaultVariable(getTypes(), qualifiers, getScopeType());
-    }
-
-    @Override
     public Class<? extends Annotation> getScopeType() {
         return scopeType;
-    }
-
-    @Override
-    public Variable withScopeType(final Class<? extends Annotation> scopeType) {
-        return new DefaultVariable(getTypes(), getQualifiers(), scopeType);
     }
 
     @Override

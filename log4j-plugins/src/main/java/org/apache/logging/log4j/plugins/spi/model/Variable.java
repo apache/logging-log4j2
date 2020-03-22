@@ -40,11 +40,7 @@ public interface Variable {
 
     Qualifiers getQualifiers();
 
-    Variable withQualifiers(final Qualifiers qualifiers);
-
     Class<? extends Annotation> getScopeType();
-
-    Variable withScopeType(final Class<? extends Annotation> scopeType);
 
     default boolean isDependentScoped() {
         return getScopeType() == Dependent.class;
