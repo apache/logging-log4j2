@@ -34,6 +34,7 @@ import java.nio.file.attribute.UserPrincipal;
 import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.Objects;
 import java.util.Set;
+import java.security.AccessControlException;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -85,8 +86,12 @@ public final class FileUtils {
         final String charsetName = StandardCharsets.UTF_8.name();
         try {
             String fileName = uri.toURL().getFile();
-            if (new File(fileName).exists()) { // LOG4J2-466
-                return new File(fileName); // allow files with '+' char in name
+            try {
+                if (new File(fileName).exists()) { // LOG4J2-466
+                    return new File(fileName); // allow files with '+' char in name
+                }
+            } catch (AccessControlException ex) {
+                LOGGER.debug("Unable to read file: {}", fileName, ex);
             }
             fileName = URLDecoder.decode(fileName, charsetName);
             return new File(fileName);
