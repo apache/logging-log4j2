@@ -160,15 +160,15 @@ public class GcFreeLoggingTestUtil {
         }
     }
 
-    private static File agentJar() {
+    private static File agentJar() throws Exception {
         final String name = AllocationRecorder.class.getName();
         final URL url = AllocationRecorder.class.getResource("/" + name.replace('.', '/').concat(".class"));
         if (url == null) {
             throw new IllegalStateException("Could not find url for " + name);
         }
         final String temp = url.toString();
-        final String path = temp.substring("jar:file:".length(), temp.indexOf('!'));
-        return new File(path);
+        final URL jarurl = new URL(temp.substring("jar:".length(), temp.indexOf('!')));
+        return new File(jarurl.toURI());
     }
 
     public static class MyCharSeq implements CharSequence {
