@@ -67,8 +67,12 @@ public final class FileUtils {
             } catch (URISyntaxException use) {
                 // should not happen, ignore
             }
-            if (PROTOCOL_FILE.equals(uri.getScheme())) {
-                return new File(uri);
+            try {
+                if (PROTOCOL_FILE.equals(uri.getScheme())) {
+                    return new File(uri);
+                }
+            } catch (final Exception ex) {
+                LOGGER.warn("Invalid URI {}", uri);
             }
         } else {
             File file = new File(uri.toString());
