@@ -81,10 +81,7 @@ public final class FileUtils {
                     return file;
                 }
                 final String path = uri.getPath();
-                file = new File(path);
-                if (file.exists()) {
-                    return file;
-                }
+                return new File(path);
             } catch (final Exception ex) {
                 LOGGER.warn("Invalid URI {}", uri);
             }
