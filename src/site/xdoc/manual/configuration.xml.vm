@@ -699,6 +699,7 @@ Configuration:
   appenders:
     Console:
       name: STDOUT
+      target: SYSTEM_OUT
       PatternLayout:
         Pattern: "%m%n"
     File:
