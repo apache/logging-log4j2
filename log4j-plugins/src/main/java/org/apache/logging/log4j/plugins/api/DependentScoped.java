@@ -18,9 +18,11 @@
 package org.apache.logging.log4j.plugins.api;
 
 import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Dependent scoped beans are beans that belong to another bean. Beans with this scope are created and destroyed in
@@ -31,6 +33,7 @@ import java.lang.annotation.RetentionPolicy;
  * directly referenced by the application may be destroyed.
  */
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 @Documented
 @Inherited
 @ScopeType
