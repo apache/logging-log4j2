@@ -26,6 +26,7 @@ import java.util.Stack;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 @RunWith(BlockJUnit4ClassRunner.class)
@@ -132,7 +133,13 @@ public class StackLocatorTest {
          */
         final StackTraceElement element = new Foo().foo();
         assertEquals("org.apache.logging.log4j.util.StackLocatorTest$Foo", element.getClassName());
-        assertEquals(100, element.getLineNumber());
+        assertEquals(101, element.getLineNumber());
+    }
+
+    @Test
+    public void testCalcLocationWhenNotInTheStack() {
+        final StackTraceElement stackTraceElement = stackLocator.calcLocation("java.util.Logger");
+        assertNull(stackTraceElement);
     }
 
     class ClassLocator {

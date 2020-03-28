@@ -169,6 +169,18 @@
       </action>
     </release>
     <release version="2.13.2" date="2020-MM-DD" description="GA Release 2.13.2">
+      <action issue="LOG4J2-2761" dev="rgoers" type="fix" due-to="Uwe Schindler">
+        Fix Exceptions when whitespace is in the file path and Java security manager is used.
+      </action>
+      <action issue="LOG4J2-2809" dev="rgoers" type="fix" due-to="Romain Manni-Bucau">
+        Avoid NullPointerException when StackWalker returns null.
+      </action>
+      <action issue="LOG4J2-2807" dev="rgoers" type="add">
+        Added EventLookup to retrieve fields from the log event.
+      </action>
+      <action issue="LOG4J2-2805" dev="rgoers" type="fix">
+        TimeFilter did not handle daylight saving time transitions and did not support a range over 2 days.
+      </action>
       <action issue="LOG4J2-2779" dev="rgoers" type="update">
         Add ContextDataProviders as an alternative to having to implement a ContextDataInjector.
       </action>
