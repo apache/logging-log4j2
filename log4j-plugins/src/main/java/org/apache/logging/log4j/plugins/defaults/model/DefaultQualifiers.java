@@ -26,6 +26,7 @@ import org.apache.logging.log4j.util.StringBuilders;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,12 +57,13 @@ class DefaultQualifiers implements Qualifiers {
     public boolean equals(final Object o) {
         // these should intentionally be substitutable by never using the subclass types directly
         // i.e., we'd like to allow equality with annotation-processor-generated qualifiers later
-        return this == o || o instanceof Qualifiers && this.equalTo((Qualifiers) o);
+        return this == o ||
+                (o instanceof Qualifiers && getQualifierEntries().equals(((Qualifiers) o).getQualifierEntries()));
     }
 
     @Override
     public int hashCode() {
-        return hash();
+        return Objects.hashCode(getQualifierEntries());
     }
 
     @Override
