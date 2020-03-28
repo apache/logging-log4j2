@@ -45,45 +45,41 @@ public class FileUtilsTest {
     }
 
     @Test
+    public void testAbsoluteFileFromUriWithPlusCharactersInName() throws Exception {
+        final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
+        final URI uri = new File(config).toURI();
+        final File file = FileUtils.fileFromUri(uri);
+        assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
+        assertTrue("file exists", file.exists());
+    }
+
+    @Test
+    public void testAbsoluteFileFromUriWithSpacesInName() throws Exception {
+        final String config = "target/test-classes/s p a c e s/log4j+config+with+plus+characters.xml";
+        final URI uri = new File(config).toURI();
+        final File file = FileUtils.fileFromUri(uri);
+        assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
+        assertTrue("file exists", file.exists());
+    }
+
+    @Test
+    public void testAbsoluteFileFromJBossVFSUri() throws Exception {
+        final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
+        final String uriStr = new File(config).toURI().toString().replaceAll("^file:", "vfsfile:");
+        assertTrue(uriStr.startsWith("vfsfile:"));
+        final URI uri = URI.create(uriStr);
+        final File file = FileUtils.fileFromUri(uri);
+        assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
+        assertTrue("file exists", file.exists());
+    }
+
+    @Test
     public void testFileFromUriWithSpacesAndPlusCharactersInName() throws Exception {
         final String config = "target/test-classes/s%20p%20a%20c%20e%20s/log4j%2Bconfig%2Bwith%2Bplus%2Bcharacters.xml";
         final URI uri = new URI(config);
         final File file = FileUtils.fileFromUri(uri);
         assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
         assertTrue("file exists", file.exists());
-    }
-
-    /**
-     * Helps figure out why {@link #testFileFromUriWithPlusCharactersInName()} fails in Jenkins but asserting different
-     * parts of the implementation of {@link FileUtils#fileFromUri(URI)}.
-     */
-    @Test
-    public void testFileExistsWithPlusCharactersInName() throws Exception {
-        final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
-        final File file = new File(config);
-        assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
-        assertTrue("file exists", file.exists());
-        //
-        final URI uri1 = new URI(config);
-        assertNull(uri1.getScheme());
-        //
-        final URI uri2 = new File(uri1.getPath()).toURI();
-        assertNotNull(uri2);
-        assertTrue("URI \"" + uri2 + "\" does not end with \"" + LOG4J_CONFIG_WITH_PLUS + "\"", uri2.toString()
-                .endsWith(LOG4J_CONFIG_WITH_PLUS));
-        //
-        final String fileName = uri2.toURL().getFile();
-        assertTrue("File name \"" + fileName + "\" does not end with \"" + LOG4J_CONFIG_WITH_PLUS + "\"",
-                fileName.endsWith(LOG4J_CONFIG_WITH_PLUS));
-    }
-
-    @Test
-    public void testFileFromUriWithPlusCharactersConvertedToSpacesIfFileDoesNotExist() throws Exception {
-        final String config = "NON-EXISTING-PATH/this+file+does+not+exist.xml";
-        final URI uri = new URI(config);
-        final File file = FileUtils.fileFromUri(uri);
-        assertEquals("this file does not exist.xml", file.getName());
-        assertFalse("file does not exist", file.exists());
     }
 
 }
