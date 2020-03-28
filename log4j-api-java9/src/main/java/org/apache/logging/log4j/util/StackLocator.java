@@ -76,7 +76,8 @@ public class StackLocator {
 
     public StackTraceElement calcLocation(final String fqcnOfLogger) {
         FQCN.set(fqcnOfLogger);
-        StackTraceElement element = walker.walk(LOCATOR).toStackTraceElement();
+        final StackWalker.StackFrame walk = walker.walk(LOCATOR);
+        final StackTraceElement element = walk == null ? null : walk.toStackTraceElement();
         FQCN.set(null);
         return element;
     }
