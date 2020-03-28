@@ -15,23 +15,10 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.defaults.bean;
+package org.apache.logging.log4j.plugins.spi.bean;
 
 import org.apache.logging.log4j.plugins.api.Provider;
-import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
-import org.apache.logging.log4j.plugins.spi.bean.ProviderFactory;
-import org.apache.logging.log4j.plugins.spi.model.Variable;
 
-class ProviderBean<T> extends SystemBean<Provider<T>> {
-    private final ProviderFactory<T> providerFactory;
-
-    ProviderBean(final Variable variable, final ProviderFactory<T> providerFactory) {
-        super(variable);
-        this.providerFactory = providerFactory;
-    }
-
-    @Override
-    public Provider<T> create(final InitializationContext<Provider<T>> context) {
-        return providerFactory.getProvider(context);
-    }
+public interface ProviderFactory<T> {
+    Provider<T> getProvider(final InitializationContext<?> context);
 }

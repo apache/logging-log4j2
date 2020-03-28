@@ -286,7 +286,7 @@ public class DefaultBeanManager implements BeanManager {
                 final Type actualType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 // if a Provider<T> is requested, we can convert an existing Bean<T> into a Bean<Provider<T>>
                 final Optional<Bean<T>> actualExistingBean = getExistingBean(actualType, qualifiers);
-                return actualExistingBean.map(bean -> new ProviderBean<>(bean, context -> getValue(bean, context)))
+                return actualExistingBean.map(bean -> new ProviderBean<>(bean, context -> () -> getValue(bean, context)))
                         .map(this::addBean)
                         .map(TypeUtil::cast);
             } else if (rawType == Optional.class) {
@@ -320,7 +320,7 @@ public class DefaultBeanManager implements BeanManager {
     private <T> Optional<Bean<T>> getProvidedBean(final Type providedType, final Qualifiers qualifiers) {
         return getExistingBean(TypeUtil.getParameterizedType(Provider.class, providedType), qualifiers)
                 .<Bean<Provider<T>>>map(TypeUtil::cast)
-                .map(bean -> new ProvidedBean<>(bean, context -> getValue(bean, context).get()))
+                .map(bean -> new ProvidedBean<>(bean, context -> getValue(bean, context)))
                 .map(this::addBean);
     }
 

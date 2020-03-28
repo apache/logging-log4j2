@@ -17,21 +17,20 @@
 
 package org.apache.logging.log4j.plugins.defaults.bean;
 
-import org.apache.logging.log4j.plugins.spi.model.Variable;
 import org.apache.logging.log4j.plugins.spi.bean.InitializationContext;
-
-import java.util.function.Function;
+import org.apache.logging.log4j.plugins.spi.bean.ProviderFactory;
+import org.apache.logging.log4j.plugins.spi.model.Variable;
 
 class ProvidedBean<T> extends SystemBean<T> {
-    private final Function<InitializationContext<?>, T> providedValueFactory;
+    private final ProviderFactory<T> providerFactory;
 
-    ProvidedBean(final Variable variable, final Function<InitializationContext<?>, T> providedValueFactory) {
+    ProvidedBean(final Variable variable, final ProviderFactory<T> providerFactory) {
         super(variable);
-        this.providedValueFactory = providedValueFactory;
+        this.providerFactory = providerFactory;
     }
 
     @Override
     public T create(final InitializationContext<T> context) {
-        return providedValueFactory.apply(context);
+        return providerFactory.getProvider(context).get();
     }
 }
