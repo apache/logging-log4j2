@@ -136,6 +136,80 @@ when the `USER` environment variable is undefined, the default value
   </PatternLayout>
 </File>
 ----
+[#EventLookup]
+== Event Lookup
+
+The EventLookup provides access to fields within the log event from the configuration.
+
+[cols="1m,4a"]
+|===
+|Key |Description
+
+|Exception
+|Returns the simple class name of the Exception, if one is included in the event.
+
+|Level
+|Returns the logging Level of the event.
+
+|Logger
+|Returns the name of the Logger.
+
+|Marker
+|Returns the name of the Marker associated with the log event, if one is present.
+
+|Message
+|Returns the formatted Message string.
+
+|ThreadId
+|Returns the thread id associated with the log event.
+
+|ThreadName
+|Returns the name of the thread associate with the log event.
+
+|Timestamp
+|Returns the time in milliseconds when the event occurred.
+
+|===
+
+In this example the RoutingAppender picks a route based on the presence of a Marker named "AUDIT" being
+present in the log event.
+[source,prettyprint,linenums]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" name="RoutingTest">
+  <Appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT" />
+    <Flume name="AuditLogger" compress="true">
+      <Agent host="192.168.10.101" port="8800"/>
+      <Agent host="192.168.10.102" port="8800"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+    </Flume>
+    <Routing name="Routing">
+      <Routes>
+        <Route pattern="$${event:Marker}">
+          <RollingFile
+              name="Rolling-${mdc:UserId}"
+              fileName="${mdc:UserId}.log"
+              filePattern="${mdc:UserId}.%i.log.gz">
+            <PatternLayout>
+              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+        </Route>
+        <Route ref="AuditLogger" key="AUDIT"/>
+        <Route ref="STDOUT" key="STDOUT"/>
+      </Routes>
+      <IdlePurgePolicy timeToLive="15" timeUnit="minutes"/>
+    </Routing>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="Routing" />
+    </Root>
+  </Loggers>
+</Configuration>
+----
 
 [#JavaLookup]
 == Java Lookup

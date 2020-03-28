@@ -144,16 +144,19 @@
         <item name="Date" href="/manual/lookups.html#DateLookup"/>
         <item name="Docker" href="manual/lookups.html#DockerLookup"/>
         <item name="Environment" href="/manual/lookups.html#EnvironmentLookup"/>
+        <item name="Event" href="/manual/lookups.html#EventLookup"/>
         <item name="Java" href="/manual/lookups.html#JavaLookup"/>
         <item name="JNDI" href="/manual/lookups.html#JndiLookup"/>
         <item name="JVM Arguments" href="/manual/lookups.html#JmxRuntimeInputArgumentsLookup"/>
         <item name="Kubernetes" href="/manual/lookups.html#KubernetesLookup"/>
         <item name="Log4j Config" href="/manual/lookups.html#Log4jConfigLookup"/>
+        <item name="Lower" href="/manual/lookups.html#LowerLookup"/>
         <item name="Main Arguments" href="/manual/lookups.html#AppMainArgsLookup"/>
         <item name="Map" href="/manual/lookups.html#MapLookup"/>
         <item name="Spring" href="/manual/lookups.html#SpringLookup"/>
         <item name="Structured Data" href="/manual/lookups.html#StructuredDataLookup"/>
         <item name="System Properties" href="/manual/lookups.html#SystemPropertiesLookup"/>
+        <item name="Upper" href="/manual/lookups.html#UpperLookup"/>
         <item name="Web" href="/manual/lookups.html#WebLookup"/>
       </item>
 
