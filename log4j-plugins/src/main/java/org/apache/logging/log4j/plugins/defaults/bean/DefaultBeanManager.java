@@ -246,7 +246,7 @@ public class DefaultBeanManager implements BeanManager {
                 validateBeanInjectionPoint(point, ((ProducerBean<?>) bean).getType());
             }
         }
-        final Optional<Bean<Object>> bean = getBeanForInjectionPoint(point);
+        final Optional<Bean<Object>> bean = getBean(point.getType(), point.getQualifiers());
         if (!bean.isPresent() && !rawType.equals(Optional.class)) {
             throw new UnsatisfiedBeanException(point);
         }
@@ -271,11 +271,10 @@ public class DefaultBeanManager implements BeanManager {
         }
     }
 
-    private <T> Optional<Bean<T>> getBeanForInjectionPoint(final InjectionPoint point) {
+    @Override
+    public <T> Optional<Bean<T>> getBean(final Type type, final Qualifiers qualifiers) {
         // TODO: this will need to allow for TypeConverter usage somehow
         // first, look for an existing bean
-        final Type type = point.getType();
-        final Qualifiers qualifiers = point.getQualifiers();
         final Optional<Bean<T>> existingBean = getExistingOrProvidedBean(type, qualifiers);
         if (existingBean.isPresent()) {
             return existingBean;
@@ -366,7 +365,7 @@ public class DefaultBeanManager implements BeanManager {
 
     @Override
     public <T> Optional<T> getInjectableValue(final InjectionPoint point, final InitializationContext<?> parentContext) {
-        final Bean<T> resolvedBean = this.<T>getBeanForInjectionPoint(point)
+        final Bean<T> resolvedBean = this.<T>getBean(point.getType(), point.getQualifiers())
                 .orElseThrow(() -> new UnsatisfiedBeanException(point));
         final Optional<T> existingValue = point.getBean()
                 .filter(bean -> !bean.equals(resolvedBean))

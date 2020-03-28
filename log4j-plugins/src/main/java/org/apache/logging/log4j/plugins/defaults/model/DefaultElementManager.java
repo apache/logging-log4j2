@@ -112,7 +112,7 @@ public class DefaultElementManager implements ElementManager {
         if (qualifiers.stream().map(MetaAnnotation::getAnnotationType).noneMatch(type -> type != Named.class)) {
             qualifiers.add(new DefaultMetaAnnotation(Default.class, Collections.emptySet()));
         }
-        return new DefaultQualifiers(qualifiers);
+        return Qualifiers.fromAnnotations(qualifiers);
     }
 
     private static MetaAnnotation transformQualifier(final MetaAnnotation annotation, final String defaultNamedValue) {

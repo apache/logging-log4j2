@@ -19,7 +19,9 @@ package org.apache.logging.log4j.plugins.spi.bean;
 
 import org.apache.logging.log4j.plugins.spi.ValidationException;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
+import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -43,13 +45,11 @@ public interface BeanManager extends AutoCloseable {
      * manager, validates them, then returns the validated beans.
      *
      * @param beanClasses classes to load beans from
-     * @return beans loaded from the given classes
      * @throws ValidationException if any beans have validation errors
      */
-    default Collection<Bean<?>> loadAndValidateBeans(final Class<?>... beanClasses) {
+    default void loadAndValidateBeans(final Class<?>... beanClasses) {
         final Collection<Bean<?>> beans = loadBeans(Arrays.asList(beanClasses));
         validateBeans(beans);
-        return beans;
     }
 
     /**
@@ -68,6 +68,8 @@ public interface BeanManager extends AutoCloseable {
      * @throws org.apache.logging.log4j.plugins.spi.UnsatisfiedBeanException if no beans can satisfy the injection point
      */
     void validateInjectionPoint(InjectionPoint point);
+
+    <T> Optional<Bean<T>> getBean(final Type type, final Qualifiers qualifiers);
 
     /**
      * Creates an InitializationContext for a given Bean instance for use in dependency injection SPIs.

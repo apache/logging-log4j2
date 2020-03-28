@@ -30,6 +30,7 @@ import org.apache.logging.log4j.plugins.spi.model.ElementManager;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.model.MetaClass;
 import org.apache.logging.log4j.plugins.spi.model.MetaMethod;
+import org.apache.logging.log4j.plugins.spi.model.Qualifiers;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.junit.Test;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -39,7 +40,6 @@ import org.junit.runners.model.Statement;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * JUnit 4 test runner that integrates with {@link BeanManager} to create test instances and inject test parameters.
@@ -95,11 +95,8 @@ public class BeanJUnit4Runner extends BlockJUnit4ClassRunner {
             beanManager.loadAndValidateBeans(testClassBeans.value());
         }
         final Class<T> testClass = TypeUtil.cast(getTestClass().getJavaClass());
-        final Optional<Bean<T>> testBean = beanManager.loadAndValidateBeans(testClass).stream()
-                .filter(bean -> bean.hasMatchingType(testClass))
-                .findAny()
-                .map(TypeUtil::cast);
-        final Bean<T> testClassBean = testBean
+        beanManager.loadAndValidateBeans(testClass);
+        final Bean<T> testClassBean = beanManager.<T>getBean(testClass, Qualifiers.DEFAULT)
                 .orElseThrow(() -> new UnsatisfiedBeanException(testClass));
         this.testClassBean = testClassBean;
         return beanManager.getValue(testClassBean, beanManager.createInitializationContext(null));
