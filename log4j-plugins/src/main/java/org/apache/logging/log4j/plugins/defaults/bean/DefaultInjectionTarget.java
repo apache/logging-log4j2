@@ -70,11 +70,6 @@ class DefaultInjectionTarget<T> implements InjectionTarget<T> {
     public void inject(final T instance, final InitializationContext<T> context) {
         injectFields(instance, context);
         injectMethods(instance, context);
-        for (final MetaMethod<T, ?> method : metaClass.getMethods()) {
-            if (method.isAnnotationPresent(Inject.class) && method.getParameters().isEmpty()) {
-                injector.invoke(instance, method, Collections.emptySet(), context);
-            }
-        }
     }
 
     private void injectFields(final T instance, final InitializationContext<T> context) {
@@ -96,6 +91,11 @@ class DefaultInjectionTarget<T> implements InjectionTarget<T> {
                         .collect(Collectors.toSet());
                 injector.invoke(instance, method, methodInjectionPoints, context);
                 injectedMethods.add(method);
+            }
+        }
+        for (final MetaMethod<T, ?> method : metaClass.getMethods()) {
+            if (method.isAnnotationPresent(Inject.class) && method.getParameters().isEmpty()) {
+                injector.invoke(instance, method, Collections.emptySet(), context);
             }
         }
     }
