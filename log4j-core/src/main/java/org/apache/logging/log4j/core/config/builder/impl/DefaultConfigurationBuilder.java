@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -382,7 +383,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newAsyncLogger(final String name, final String level, final boolean includeLocation) {
-        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger");
+        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger", includeLocation);
     }
 
     @Override
