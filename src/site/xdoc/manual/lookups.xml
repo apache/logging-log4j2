@@ -117,6 +117,89 @@
   </PatternLayout>
 </File>]]></pre>           
         </subsection>
+        <a name="EventLookup"/>
+        <subsection name="EventLookup">
+          <p>
+            The EventLookup provides access to fields within the log event from the configuration.
+          </p>
+          <table>
+            <tr>
+              <th>Key</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>Exception</td>
+              <td>Returns the simple class name of the Exception, if one is included in the event.</td>
+            </tr>
+            <tr>
+              <td>Level</td>
+              <td>Returns the logging Level of the event.</td>
+            </tr>
+            <tr>
+              <td>Logger</td>
+              <td>Returns the name of the Logger.</td>
+            </tr>
+            <tr>
+              <td>Marker</td>
+              <td>Returns the name of the Marker associated with the log event, if one is present.</td>
+            </tr>
+            <tr>
+              <td>Message</td>
+              <td>Returns the formatted Message string.</td>
+            </tr>
+            <tr>
+              <td>ThreadId</td>
+              <td>Returns the thread id associated with the log event.</td>
+            </tr>
+            <tr>
+              <td>ThreadName</td>
+              <td>Returns the name of the thread associate with the log event.</td>
+            </tr>
+            <tr>
+              <td>Timestamp</td>
+              <td>Returns the time in milliseconds when the event occurred.</td>
+            </tr>
+          </table>
+          <p>
+            In this example the RoutingAppender picks a route based on the presence of a Marker named "AUDIT" being
+            present in the log event.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+          <?xml version="1.0" encoding="UTF-8"?>
+          <Configuration status="WARN" name="RoutingTest">
+            <Appenders>
+              <Console name="STDOUT" target="SYSTEM_OUT" />
+              <Flume name="AuditLogger" compress="true">
+                <Agent host="192.168.10.101" port="8800"/>
+                <Agent host="192.168.10.102" port="8800"/>
+                <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+              </Flume>
+              <Routing name="Routing">
+                <Routes>
+                  <Route pattern="$${event:Marker}">
+                    <RollingFile
+                        name="Rolling-${mdc:UserId}"
+                        fileName="${mdc:UserId}.log"
+                        filePattern="${mdc:UserId}.%i.log.gz">
+                      <PatternLayout>
+                        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+                      </PatternLayout>
+                      <SizeBasedTriggeringPolicy size="500" />
+                    </RollingFile>
+                  </Route>
+                  <Route ref="AuditLogger" key="AUDIT"/>
+                  <Route ref="STDOUT" key="STDOUT"/>
+                </Routes>
+                <IdlePurgePolicy timeToLive="15" timeUnit="minutes"/>
+              </Routing>
+            </Appenders>
+            <Loggers>
+              <Root level="error">
+                <AppenderRef ref="Routing" />
+              </Root>
+            </Loggers>
+          </Configuration>]]></pre>
+        </subsection>
         <a name="JavaLookup"/>
         <subsection name="Java Lookup">
           <p>
@@ -555,6 +638,19 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
   <File name="ApplicationLog" fileName="${sys:logPath:-/var/logs}/app.log"/>
 </Appenders>]]></pre>            
         </subsection>
+        <a name="UpperLookup"/>
+        <subsection name="Upper Lookup">
+          <p>
+            The UpperLookup converts the passed in argument to upper case. Presumably the value will be the
+            result of a nested lookup.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $$upper{${spring:spring.application.name}} %m%n</pattern>
+  </PatternLayout>
+</File>]]></pre>
+        </subsection>
         <a name="WebLookup"/>
         <subsection name="Web Lookup">
           <p>
@@ -619,19 +715,6 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
 <Appenders>
   <File name="ApplicationLog" fileName="${web:rootDir}/app.log"/>
 </Appenders>]]></pre>
-        </subsection>
-        <a name="UpperLookup"/>
-        <subsection name="Upper Lookup">
-          <p>
-            The UpperLookup converts the passed in argument to upper case. Presumably the value will be the
-            result of a nested lookup.
-          </p>
-          <pre class="prettyprint linenums"><![CDATA[
-<File name="Application" fileName="application.log">
-  <PatternLayout>
-    <pattern>%d %p %c{1.} [%t] $$upper{${spring:spring.application.name}} %m%n</pattern>
-  </PatternLayout>
-</File>]]></pre>
         </subsection>
       </section>
     </body>
