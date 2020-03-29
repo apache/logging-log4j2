@@ -123,7 +123,7 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         /**
          * Additional fields to set on each log event.
-         *
+         * @param additionalFields The additional Key/Value pairs to add.
          * @return this builder
          */
         public B setAdditionalFields(final KeyValuePair[] additionalFields) {
@@ -153,7 +153,7 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         /**
          * Whether to include NULL byte as delimiter after each event (optional, default to false).
-         *
+         * @param includeNullDelimiter true if a null delimiter should be included.
          * @return this builder
          */
         public B setIncludeNullDelimiter(final boolean includeNullDelimiter) {
@@ -185,7 +185,7 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         /**
          * Whether to format the stacktrace as a string, and not a nested object (optional, defaults to false).
-         *
+         * @param stacktraceAsString true if the stacktrace should be formatted as a String.
          * @return this builder
          */
         public B setStacktraceAsString(final boolean stacktraceAsString) {
