@@ -30,6 +30,7 @@ public class RewritePolicyAdapter implements org.apache.logging.log4j.core.appen
 
     /**
      * Constructor.
+     * @param policy The Rewrite policy.
      */
     public RewritePolicyAdapter(RewritePolicy policy) {
         this.policy = policy;

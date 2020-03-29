@@ -327,6 +327,8 @@ public class XmlConfiguration extends Log4j1Configuration {
 
     /**
      * Used internally to parse appenders by IDREF element.
+     * @param appenderRef The Appender Reference Element.
+     * @return The Appender.
      */
     public Appender findAppenderByReference(Element appenderRef) {
         String appenderName = subst(appenderRef.getAttribute(REF_ATTR));
@@ -336,6 +338,8 @@ public class XmlConfiguration extends Log4j1Configuration {
 
     /**
      * Used internally to parse an appender element.
+     * @param appenderElement The Appender Element.
+     * @return The Appender.
      */
     public Appender parseAppender(Element appenderElement) {
         String className = subst(appenderElement.getAttribute(CLASS_ATTR));
@@ -477,6 +481,8 @@ public class XmlConfiguration extends Log4j1Configuration {
 
     /**
      * Used internally to parse a filter element.
+     * @param filterElement The Filter Element.
+     * @return The Filter.
      */
     public Filter parseFilters(Element filterElement) {
         String className = subst(filterElement.getAttribute(CLASS_ATTR));
@@ -561,6 +567,8 @@ public class XmlConfiguration extends Log4j1Configuration {
 
     /**
      * Used internally to parse a layout element.
+     * @param layoutElement The Layout Element.
+     * @return The Layout.
      */
     public Layout parseLayout(Element layoutElement) {
         String className = subst(layoutElement.getAttribute(CLASS_ATTR));

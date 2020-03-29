@@ -37,7 +37,8 @@ public interface Configurator {
      The configuration is done relative to the <code>hierarchy</code>
      parameter.
 
-     @param inputStream The InputStream to parse
+     @param inputStream The InputStream to parse.
+     @param loggerContext The LoggerContext.
 
      @since 1.2.17
      */
@@ -50,6 +51,7 @@ public interface Configurator {
      parameter.
 
      @param url The URL to parse
+     @param loggerContext The LoggerContext.
      */
     void doConfigure(URL url, final LoggerContext loggerContext);
 }
