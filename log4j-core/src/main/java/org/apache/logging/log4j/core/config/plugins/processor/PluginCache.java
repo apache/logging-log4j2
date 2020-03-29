@@ -53,10 +53,7 @@ public class PluginCache {
      */
     public Map<String, PluginEntry> getCategory(final String category) {
         final String key = category.toLowerCase();
-        if (!categories.containsKey(key)) {
-            categories.put(key, new TreeMap<String, PluginEntry>());
-        }
-        return categories.get(key);
+        return categories.computeIfAbsent(key, ignored -> new TreeMap<>());
     }
 
     /**
@@ -104,16 +101,22 @@ public class PluginCache {
                     final Map<String, PluginEntry> m = getCategory(category);
                     final int entries = in.readInt();
                     for (int j = 0; j < entries; j++) {
-                        final PluginEntry entry = new PluginEntry();
-                        entry.setKey(in.readUTF());
-                        entry.setClassName(in.readUTF());
-                        entry.setName(in.readUTF());
-                        entry.setPrintable(in.readBoolean());
-                        entry.setDefer(in.readBoolean());
-                        entry.setCategory(category);
-                        if (!m.containsKey(entry.getKey())) {
-                            m.put(entry.getKey(), entry);
-                        }
+                        // Must always read all parts of the entry, even if not adding, so that the stream progresses
+                        final String key = in.readUTF();
+                        final String className = in.readUTF();
+                        final String name = in.readUTF();
+                        final boolean printable = in.readBoolean();
+                        final boolean defer = in.readBoolean();
+                        m.computeIfAbsent(key, k -> {
+                            final PluginEntry entry = new PluginEntry();
+                            entry.setKey(k);
+                            entry.setClassName(className);
+                            entry.setName(name);
+                            entry.setPrintable(printable);
+                            entry.setDefer(defer);
+                            entry.setCategory(category);
+                            return entry;
+                        });
                     }
                 }
             }
