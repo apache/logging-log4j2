@@ -169,6 +169,12 @@
       </action>
     </release>
     <release version="2.13.2" date="2020-MM-DD" description="GA Release 2.13.2">
+      <action issue="LOG4J2-2790" dev="rgoers" type="fix" due-to="Marius Volkhart">
+        Conditionally allocate PluginEntry during PluginCache loading.
+      </action>
+      <action issue="LOG4J2-2811" dev="rgoers" type="fix" due-to="Kuojian21">
+        Add missing includeLocation parameter when creating AsyncLogger.
+      </action>
       <action issue="LOG4J2-2761" dev="rgoers" type="fix" due-to="Uwe Schindler">
         Fix Exceptions when whitespace is in the file path and Java security manager is used.
       </action>

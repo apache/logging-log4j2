@@ -27,6 +27,10 @@ public class LocationInfo implements java.io.Serializable {
 
     public String fullInfo;
 
+    /**
+     * Constructor for LocationInfo.
+     * @param element The StackTraceElement representing the caller.
+     */
     public LocationInfo(StackTraceElement element) {
         this.element = element;
     }
@@ -43,33 +47,33 @@ public class LocationInfo implements java.io.Serializable {
     /**
      Return the fully qualified class name of the caller making the
      logging request.
+     @return The class name.
      */
-    public
-    String getClassName() {
+    public String getClassName() {
         return element.getClassName();
     }
 
     /**
      Return the file name of the caller.
+     @return the file name.
      */
-    public
-    String getFileName() {
+    public String getFileName() {
         return element.getFileName();
     }
 
     /**
      Returns the line number of the caller.
+     @return The line number.
      */
-    public
-    String getLineNumber() {
+    public String getLineNumber() {
         return Integer.toString(element.getLineNumber());
     }
 
     /**
      Returns the method name of the caller.
+     @return The method name.
      */
-    public
-    String getMethodName() {
+    public String getMethodName() {
         return element.getMethodName();
     }
 }
