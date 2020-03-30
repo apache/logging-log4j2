@@ -23,7 +23,6 @@ The Log4j 2 JDK Logging Adapter allow to route all System.Logger events to Log4j
 ## Requirements
 
 The JDK Platform Logging Adapter is dependent on the Log4j API as well as Java 11.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
 
 ## Usage
 

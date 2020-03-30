@@ -199,6 +199,7 @@
                project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
+          <failOnError>false</failOnError>
         </configuration>
         <reportSets>
           <reportSet>
