@@ -58,6 +58,7 @@ public class Timer implements Serializable, StringBuilderFormattable
      * Constructor.
      *
      * @param name the timer name.
+     * @param iterations the number of iterations that will take place.
      */
     public Timer(final String name, final int iterations)
     {
@@ -86,6 +87,7 @@ public class Timer implements Serializable, StringBuilderFormattable
 
     /**
      * Stop the timer.
+     * @return the String result of the timer completing.
      */
     public synchronized String stop()
     {

@@ -35,7 +35,7 @@ public interface ReusableMessage extends Message, StringBuilderFormattable {
      * Returns the parameter array that was used to initialize this reusable message and replaces it with the specified
      * array. The returned parameter array will no longer be modified by this reusable message. The specified array is
      * now "owned" by this reusable message and can be modified if necessary for the next log event.
-     * </p><p>
+     * <p>
      * ReusableMessages that have no parameters return the specified array.
      * </p><p>
      * This method is used by asynchronous loggers to pass the parameter array to a background thread without

@@ -509,6 +509,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
+     * @param key The key.
+     * @param value The boolean value.
      *
      * @since 2.9
      */
@@ -518,6 +520,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
+     * @param key The key.
+     * @param value The byte value.
      *
      * @since 2.9
      */
@@ -527,6 +531,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
+     * @param key The key.
+     * @param value The char value.
      *
      * @since 2.9
      */
@@ -536,6 +542,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
+     * @param key The key.
+     * @param value The double value.
      *
      * @since 2.9
      */
@@ -545,6 +553,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
+     * @param key The key.
+     * @param value The float value.
      *
      * @since 2.9
      */
@@ -554,6 +564,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
+     * @param key The key.
+     * @param value The integer value.
      *
      * @since 2.9
      */
@@ -563,6 +575,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
+     * @param key The key.
+     * @param value The long value.
      *
      * @since 2.9
      */
@@ -572,6 +586,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
+     * @param key The key.
+     * @param value The Object value.
      *
      * @since 2.9
      */
@@ -581,6 +597,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
+     * @param key The key.
+     * @param value The short value.
      *
      * @since 2.9
      */
@@ -590,6 +608,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
+     * @param key The key.
+     * @param value The string value.
      *
      * @since 2.9
      */

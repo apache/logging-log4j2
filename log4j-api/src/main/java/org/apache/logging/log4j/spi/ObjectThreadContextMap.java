@@ -32,6 +32,7 @@ public interface ObjectThreadContextMap extends CleanableThreadContextMap {
      * collection.
      *
      * @param key the key whose value to return
+     * @param <V> The type of the returned value.
      * @return the value for the specified key or {@code null}
      */
     <V> V getValue(String key);
@@ -40,6 +41,7 @@ public interface ObjectThreadContextMap extends CleanableThreadContextMap {
      * Puts the specified key-value pair into the collection.
      *
      * @param key the key to add or remove. Keys may be {@code null}.
+     * @param <V> The type of the stored and returned value.
      * @param value the value to add. Values may be {@code null}.
      */
     <V> void putValue(String key, V value);
@@ -48,6 +50,7 @@ public interface ObjectThreadContextMap extends CleanableThreadContextMap {
      * Puts all given key-value pairs into the collection.
      *
      * @param values the map of key-value pairs to add
+     * @param <V> The type of the value being added.
      */
     <V> void putAllValues(Map<String, V> values);
 

@@ -151,6 +151,7 @@
                project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
+          <source>8</source>
           <links>
             <link>http://www.osgi.org/javadoc/r4v43/core/</link>
           </links>

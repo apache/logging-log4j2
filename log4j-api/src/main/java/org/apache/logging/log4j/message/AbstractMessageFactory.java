@@ -21,7 +21,7 @@ import java.io.Serializable;
 /**
  * Provides an abstract superclass for {@link MessageFactory}. This class is now unnecessary as all default
  * methods are provided by the (@link MessageFactory) interface.
- * </p>
+ *
  * @deprecated MessageFactory has default methods that implement all the methods that were here.
  */
 public abstract class AbstractMessageFactory implements MessageFactory, Serializable {

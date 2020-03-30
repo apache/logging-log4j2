@@ -33,6 +33,10 @@ public class PluginType<T> {
     private final String elementName;
 
     /**
+     * Constructor.
+     * @param pluginEntry The PluginEntry.
+     * @param pluginClass The plugin Class.
+     * @param elementName The name of the element.
      * @since 2.1
      */
     public PluginType(final PluginEntry pluginEntry, final Class<T> pluginClass, final String elementName) {
@@ -43,6 +47,7 @@ public class PluginType<T> {
     }
 
     /**
+     * The Constructor.
      * @since 3.0
      * @param pluginEntry The PluginEntry.
      * @param classLoader The ClassLoader to use to load the Plugin.
@@ -77,6 +82,8 @@ public class PluginType<T> {
     }
 
     /**
+     * Return The plugin's key.
+     * @return The plugin key.
      * @since 2.1
      */
     public String getKey() {
@@ -92,6 +99,8 @@ public class PluginType<T> {
     }
 
     /**
+     * Return the plugin category.
+     * @return the Plugin category.
      * @since 2.1
      */
     public String getCategory() {

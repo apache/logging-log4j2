@@ -164,6 +164,7 @@
           <additionalparam>${javadoc.opts}</additionalparam>
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
+          <source>8</source>
           <links>
             <link>http://docs.oracle.com/javaee/6/api/</link>
           </links>

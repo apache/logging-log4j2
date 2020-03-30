@@ -51,51 +51,61 @@ public @interface PluginAttribute {
 
     /**
      * Specifies the default boolean value to use.
+     * @return the default boolean value.
      */
     boolean defaultBoolean() default false;
 
     /**
      * Specifies the default byte value to use.
+     * @return the default byte value;
      */
     byte defaultByte() default 0;
 
     /**
      * Specifies the default byte value to use.
+     * @return the default char value.
      */
     char defaultChar() default 0;
 
     /**
      * Specifies the default {@link Class} value to use.
+     * @return the default class value.
      */
     Class<?> defaultClass() default Object.class;
 
     /**
      * Specifies the default double floating point value to use.
+     * @return the default double value;
      */
     double defaultDouble() default 0.0d;
 
     /**
      * Specifies the default floating point value to use.
+     * @return the default float value.
      */
     float defaultFloat() default 0.0f;
 
     /**
      * Specifies the default integer value to use.
+     * @return the default integer value.
      */
     int defaultInt() default 0;
 
     /**
      * Specifies the default long value to use.
+     * @return the default long value;
      */
     long defaultLong() default 0L;
 
     /**
      * Specifies the default long value to use.
+     * @return the default short value.
      */
     short defaultShort() default 0;
 
     /**
      * Specifies the default value this attribute should use if none is provided or if the provided value is invalid.
+     * @return the default String value.
      */
     String defaultString() default Strings.EMPTY;
 
@@ -109,12 +119,14 @@ public @interface PluginAttribute {
      *     (<var>XYZ</var>) of the method name. Otherwise, uses the name of the first parameter.</li>
      *     <li>Parameter: uses the parameter name.</li>
      * </ul>
+     * @return the value;
      */
     String value() default Strings.EMPTY;
 
     /**
      * Indicates that this attribute is a sensitive one that shouldn't be logged directly. Such attributes will instead
      * be output as a hashed value.
+     * @return true if the attribute should be considered sensitive.
      */
     boolean sensitive() default false;
 

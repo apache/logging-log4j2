@@ -36,6 +36,7 @@ public @interface ValidHost {
 
     /**
      * The message to be logged if this constraint is violated. This should normally be overridden.
+     * @return The message to be logged if this constraint is violated.
      */
     String message() default "The hostname is invalid";
 }

@@ -47,6 +47,7 @@ public @interface PluginValue {
     /**
      * Specifies the case-insensitive attribute name to use in configuration formats that don't distinguish between
      * attributes and values. By default, this uses the attribute name {@code value}.
+     * @return the value of the attribute.
      */
     String value() default "value";
 }

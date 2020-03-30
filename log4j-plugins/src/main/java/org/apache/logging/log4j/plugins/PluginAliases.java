@@ -33,6 +33,7 @@ public @interface PluginAliases {
 
     /**
      * Aliases the annotated element can also be referred to. These aliases are case-insensitive.
+     * @return the aliases associated with the plugin.
      */
     String[] value();
 }

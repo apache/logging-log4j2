@@ -107,6 +107,8 @@ public class PluginRegistry {
     }
 
     /**
+     * Retrieve plugins by their category and bundle id.
+     * @return The Map of plugin maps.
      * @since 2.1
      */
     public Map<Long, Map<String, List<PluginType<?>>>> getPluginsByCategoryByBundleId() {
@@ -114,6 +116,8 @@ public class PluginRegistry {
     }
 
     /**
+     * Retrieve plugins from the main classloader.
+     * @return Map of the List of PluginTypes by category.
      * @since 2.1
      */
     public Map<String, List<PluginType<?>>> loadFromMainClassLoader() {
@@ -135,6 +139,8 @@ public class PluginRegistry {
     }
 
     /**
+     * Remove the bundle plugins.
+     * @param bundleId The bundle id.
      * @since 2.1
      */
     public void clearBundlePlugins(final long bundleId) {
@@ -142,6 +148,10 @@ public class PluginRegistry {
     }
 
     /**
+     * Load plugins from a bundle.
+     * @param bundleId The bundle id.
+     * @param loader The ClassLoader.
+     * @return the Map of Lists of plugins organized by category.
      * @since 2.1
      */
     public Map<String, List<PluginType<?>>> loadFromBundle(final long bundleId, final ClassLoader loader) {
@@ -166,6 +176,7 @@ public class PluginRegistry {
     /**
      * Loads all the plugins in a Bundle.
      * @param categories All the categories in the bundle.
+     * @param bundleId The bundle Id.
      * @since 3.0
      */
     public void loadFromBundle(Map<String, List<PluginType<?>>> categories, Long bundleId) {
@@ -180,6 +191,8 @@ public class PluginRegistry {
     }
 
     /**
+     * Load plugins across all ClassLoaders.
+     * @param map The Map of the lists of plugins organized by category.
      * @since 3.0
      */
     public void loadPlugins(Map<String, List<PluginType<?>>> map) {
@@ -193,6 +206,9 @@ public class PluginRegistry {
     }
 
     /**
+     * Load plugins from a specific ClassLoader.
+     * @param classLoader The ClassLoader.
+     * @param map The Map of the list of plugin types organized by category.
      * @since 3.0
      */
     public void loadPlugins(ClassLoader classLoader, Map<String, List<PluginType<?>>> map) {
@@ -265,6 +281,9 @@ public class PluginRegistry {
     }
 
     /**
+     * Load plugin types from a package.
+     * @param pkg The package name.
+     * @return A Map of the lists of plugin types organized by category.
      * @since 2.1
      */
     public Map<String, List<PluginType<?>>> loadFromPackage(final String pkg) {

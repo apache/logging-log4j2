@@ -103,6 +103,8 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     }
 
     /**
+     * @param bundle The ResourceBundle for this message.
+     * @param key The key of the message in the bundle.
      * @since 2.8
      */
     public LocalizedMessage(final ResourceBundle bundle, final String key) {

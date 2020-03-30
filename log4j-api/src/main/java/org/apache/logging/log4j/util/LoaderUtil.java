@@ -220,6 +220,7 @@ public final class LoaderUtil {
      * Loads and instantiates a Class using the default constructor.
      *
      * @param clazz The class.
+     * @param <T> The Class's type.
      * @return new instance of the class.
      * @throws IllegalAccessException if the class can't be instantiated through a public constructor
      * @throws InstantiationException if there was an exception whilst instantiating the class
@@ -240,6 +241,7 @@ public final class LoaderUtil {
      * Loads and instantiates a Class using the default constructor.
      *
      * @param className The class name.
+     * @param <T> The class's type.
      * @return new instance of the class.
      * @throws ClassNotFoundException if the class isn't available to the usual ClassLoaders
      * @throws IllegalAccessException if the class can't be instantiated through a public constructor

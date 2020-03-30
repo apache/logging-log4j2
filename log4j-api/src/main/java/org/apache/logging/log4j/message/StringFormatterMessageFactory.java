@@ -29,6 +29,7 @@ import java.io.Serializable;
  * <p>
  * This class is immutable.
  * </p>
+ * <h3></h3>
  * <h4>Note to implementors</h4>
  * <p>
  * This class implements all {@link MessageFactory} methods.

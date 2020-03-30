@@ -502,6 +502,9 @@ public class SortedArrayStringMap implements IndexedStringMap {
      * Save the state of the {@code SortedArrayStringMap} instance to a stream (i.e.,
      * serialize it).
      *
+     * @param s The ObjectOutputStream.
+     * @throws IOException if there is an error serializing the object to the stream.
+     *
      * @serialData The <i>capacity</i> of the SortedArrayStringMap (the length of the
      *             bucket array) is emitted (int), followed by the
      *             <i>size</i> (an int, the number of key-value
@@ -590,6 +593,9 @@ public class SortedArrayStringMap implements IndexedStringMap {
     /**
      * Reconstitute the {@code SortedArrayStringMap} instance from a stream (i.e.,
      * deserialize it).
+     * @param s The ObjectInputStream.
+     * @throws IOException If there is an error reading the input stream.
+     * @throws ClassNotFoundException if the class to be instantiated could not be found.
      */
     private void readObject(final java.io.ObjectInputStream s)  throws IOException, ClassNotFoundException {
         if (!(s instanceof FilteredObjectInputStream) && setObjectInputFilter == null) {

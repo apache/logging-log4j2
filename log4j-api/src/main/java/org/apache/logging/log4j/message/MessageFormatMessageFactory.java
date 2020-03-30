@@ -20,7 +20,8 @@ import java.io.Serializable;
 
 /**
  * Creates {@link FormattedMessage} instances for {@link MessageFactory} methods.
- * 
+ *
+ * <h3></h3>
  * <h4>Note to implementors</h4>
  * <p>
  * This class implements all {@link MessageFactory} methods.

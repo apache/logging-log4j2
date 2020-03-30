@@ -32,6 +32,7 @@ import java.io.Serializable;
  * <p>
  * This class is immutable.
  * </p>
+ * <h3></h3>
  * <h4>Note to implementors</h4>
  * <p>
  * This class does <em>not</em> implement any {@link MessageFactory} methods and lets the superclass funnel those calls

@@ -217,6 +217,8 @@ public final class Strings {
     /**
      * Removes control characters from both ends of this String returning {@code Optional.empty()} if the String is
      * empty ("") after the trim or if it is {@code null}.
+     * @param str The String to trim.
+     * @return An Optional containing the String.
      *
      * @see #trimToNull(String)
      */

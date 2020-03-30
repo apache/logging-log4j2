@@ -35,6 +35,7 @@ public @interface ValidPort {
 
     /**
      * The message to be logged if this constraint is violated. This should normally be overridden.
+     * @return The message to be logged if the constraint is violated.
      */
     String message() default "The port number is invalid";
 }

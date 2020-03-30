@@ -32,6 +32,7 @@ public interface LoggerContext {
     /**
      * Retrieve an object by its name.
      * @param key The object's key.
+     * @return The Object that is associated with the key, if any.
      * @since 2.13.0
      */
     default Object getObject(String key) {

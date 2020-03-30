@@ -122,6 +122,7 @@
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
+          <source>8</source>
         </configuration>
         <reportSets>
           <reportSet>
