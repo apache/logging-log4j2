@@ -751,6 +751,9 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             throw new AppenderLoggingException("Cannot set a value when the PreparedStatement is null.");
         }
         if (value == null) {
+            if (columnMetaData == null) {
+                throw new AppenderLoggingException("Cannot set a value when the column metadata is null.");
+            }
             // [LOG4J2-2762] [JDBC] MS-SQL Server JDBC driver throws SQLServerException when
             // inserting a null value for a VARBINARY column.
             // Calling setNull() instead of setObject() for null values fixes [LOG4J2-2762].
