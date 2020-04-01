@@ -190,6 +190,9 @@
       <action issue="LOG4J2-2779" dev="rgoers" type="update">
         Add ContextDataProviders as an alternative to having to implement a ContextDataInjector.
       </action>
+      <action issue="LOG4J2-2812" dev="ggregory" type="update">
+        [JDBC] Throw a AppenderLoggingException instead of an NPE in the JDBC database manager.
+      </action>
     </release>
     <release version="2.13.1" date="2020-02-25" description="GA Release 2.13.1">
       <action issue="LOG4J2-2717" dev="rgoers" type="fix">
