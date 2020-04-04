@@ -34,8 +34,11 @@ pipeline {
                         jdk 'JDK 1.8 (latest)'
                         maven 'Maven 3 (latest)'
                     }
+                    environment {
+                        LANG = 'en_US.UTF-8'
+                    }
                     steps {
-                        sh 'mvn -B -fn -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install'
+                        sh 'mvn -B -fn -Djenkins -V clean install deploy'
                         junit '**/*-reports/*.xml'
                         archiveArtifacts artifacts: '**/*.jar', fingerprint: true
                         recordIssues sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/master',
@@ -49,10 +52,13 @@ pipeline {
                         jdk 'JDK 1.8 (latest)'
                         maven 'Maven 3 (latest)'
                     }
+                    environment {
+                        LANG = 'en_US.UTF-8'
+                    }
                     steps {
                         bat '''
                         if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo
-                        mvn -B -fn -t toolchains-jenkins-win.xml -Dfile.encoding=UTF-8 -V clean install
+                        mvn -B -fn -Dfile.encoding=UTF-8 -V clean install
                         '''
                         junit '**/*-reports/*.xml'
                     }
