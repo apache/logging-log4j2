@@ -22,7 +22,6 @@ pipeline {
         buildDiscarder logRotator(numToKeepStr: '10')
         timeout time: 2, unit: 'HOURS'
         parallelsAlwaysFailFast()
-        compressBuildLog()
         durabilityHint 'PERFORMANCE_OPTIMIZED'
     }
     agent none
@@ -36,22 +35,11 @@ pipeline {
                         maven 'Maven 3 (latest)'
                     }
                     steps {
-                        sh '''
-                        mvn -B -fn -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install
-                        mvn -B -t toolchains-jenkins-ubuntu.xml -Djenkins -V site
-                        '''
+                        sh 'mvn -B -fn -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install'
                     }
                     post {
-                        success {
-                            archiveArtifacts artifacts: '**/*.jar', fingerprint: true
-                            recordIssues tools: [cpd(pattern: '**/target/cpd.xml'),
-                                    checkStyle(pattern: '**/target/checkstyle-result.xml'),
-                                    pmdParser(pattern: '**/target/pmd.xml'),
-                                    spotBugs(pattern: '**/target/spotbugsXml.xml')],
-                                sourceCodeEncoding: 'UTF-8',
-                                referenceJobName: 'log4j/master'
-                        }
                         always {
+                            archiveArtifacts artifacts: '**/*.jar', fingerprint: true
                             junit '**/*-reports/*.xml'
                             recordIssues enabledForFailure: true,
                                 tool: mavenConsole(),
@@ -60,7 +48,7 @@ pipeline {
                                 tool: errorProne(),
                                 referenceJobName: 'log4j/master'
                             recordIssues enabledForFailure: true,
-                                tools: [java(), javaDoc()],
+                                tool: java(),
                                 sourceCodeEncoding: 'UTF-8',
                                 referenceJobName: 'log4j/master'
                             recordIssues enabledForFailure: true,
