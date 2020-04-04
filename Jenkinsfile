@@ -34,28 +34,16 @@ pipeline {
                         jdk 'JDK 1.8 (latest)'
                         maven 'Maven 3 (latest)'
                     }
-                    steps {
-                        sh 'mvn -B -fn -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install'
+                    environment {
+                        LANG = 'en_US.UTF-8'
                     }
-                    post {
-                        always {
-                            archiveArtifacts artifacts: '**/*.jar', fingerprint: true
-                            junit '**/*-reports/*.xml'
-                            recordIssues enabledForFailure: true,
-                                tool: mavenConsole(),
-                                referenceJobName: 'log4j/release-2.x'
-                            recordIssues enabledForFailure: true,
-                                tool: errorProne(),
-                                referenceJobName: 'log4j/release-2.x'
-                            recordIssues enabledForFailure: true,
-                                tool: java(),
-                                sourceCodeEncoding: 'UTF-8',
-                                referenceJobName: 'log4j/release-2.x'
-                            recordIssues enabledForFailure: true,
-                                tool: taskScanner(includePattern: '**/*.java', excludePattern: 'target/**', highTags: 'FIXME', normalTags: 'TODO'),
-                                sourceCodeEncoding: 'UTF-8',
-                                referenceJobName: 'log4j/release-2.x'
-                        }
+                    steps {
+                        sh 'mvn -B -fn -Djenkins -V clean install deploy'
+                        junit '**/*-reports/*.xml'
+                        archiveArtifacts artifacts: '**/*.jar', fingerprint: true
+                        recordIssues sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/release-2.x',
+                            tools: [mavenConsole(), errorProne(), java(), // junitParser() // TODO: compare with junit step
+                                taskScanner(highTags: 'FIXME', normalTags: 'TODO', includePattern: '**/*.java', excludePattern: '*/target/**')]
                     }
                 }
                 stage('Windows') {
@@ -64,16 +52,15 @@ pipeline {
                         jdk 'JDK 1.8 (latest)'
                         maven 'Maven 3 (latest)'
                     }
+                    environment {
+                        LANG = 'en_US.UTF-8'
+                    }
                     steps {
                         bat '''
                         if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo
-                        mvn -B -fn -t toolchains-jenkins-win.xml -Dfile.encoding=UTF-8 -V clean install
+                        mvn -B -fn -Dfile.encoding=UTF-8 -V clean install
                         '''
-                    }
-                    post {
-                        always {
-                            junit '**/*-reports/*.xml'
-                        }
+                        junit '**/*-reports/*.xml'
                     }
                 }
             }
@@ -81,10 +68,49 @@ pipeline {
     }
     post {
         regression {
-            slackSend channel: 'logging', message: "Regression detected in ${env.BUILD_URL}", color: 'danger'
+            slackSend channel: 'logging',
+                color: 'warning',
+                message: ":disappear: Regression detected in ${env.BUILD_URL}"
+            mail to: 'notifications@logging.apache.org',
+                replyTo: 'dev@logging.apache.org',
+                subject: "Regression in Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER})",
+                body: """
+There is a new regression detected in ${env.JOB_NAME}.
+
+Build: ${env.BUILD_URL}
+Logs: ${env.BUILD_URL}console
+Tests: ${env.BUILD_URL}testReport/
+Changes: ${env.BUILD_URL}changes
+"""
         }
         fixed {
-            slackSend channel: 'logging', message: "Build back to normal: ${env.BUILD_URL}", color: 'good'
+            slackSend channel: 'logging',
+                color: 'good',
+                message: ":beer_parrot: Build back to normal: ${env.BUILD_URL}"
+            mail to: 'notifications@logging.apache.org',
+                replyTo: 'dev@logging.apache.org',
+                subject: "Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER}) back to normal",
+                body: "See ${env.BUILD_URL} for more details."
+        }
+        failure {
+            slackSend channel: 'logging',
+                color: 'danger',
+                message: ":doh: Build failed: ${env.BUILD_URL}"
+            mail to: 'notifications@logging.apache.org',
+                replyTo: 'dev@logging.apache.org',
+                subject: "Build failure in Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER})",
+                body: """
+There is a build failure in ${env.JOB_NAME}.
+
+Build: ${env.BUILD_URL}
+Logs: ${env.BUILD_URL}console
+Changes: ${env.BUILD_URL}changes
+"""
+        }
+        unstable {
+            slackSend channel: 'logging',
+                color: 'warning',
+                message: ":sadpanda: Build still unstable: ${env.BUILD_URL}"
         }
     }
 }
