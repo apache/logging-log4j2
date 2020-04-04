@@ -22,6 +22,7 @@ pipeline {
         buildDiscarder logRotator(numToKeepStr: '10')
         timeout(90)
         parallelsAlwaysFailFast()
+        durabilityHint 'PERFORMANCE_OPTIMIZED'
     }
     agent none
     stages {
@@ -41,7 +42,7 @@ pipeline {
                     }
                     post {
                         success {
-                            archiveArtifacts '**/*.jar'
+                            archiveArtifacts artifacts: '**/*.jar', fingerprint: true
                             recordIssues tools: [cpd(pattern: '**/target/cpd.xml'),
                                     checkStyle(pattern: '**/target/checkstyle-result.xml'),
                                     pmdParser(pattern: '**/target/pmd.xml'),
