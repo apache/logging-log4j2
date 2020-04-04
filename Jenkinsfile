@@ -43,7 +43,7 @@ pipeline {
                         archiveArtifacts artifacts: '**/*.jar', fingerprint: true
                         recordIssues sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/master',
                             tools: [mavenConsole(), errorProne(), java(), // junitParser() // TODO: compare with junit step
-                                taskScanner(highTags: 'FIXME', normalTags: 'TODO', excludePattern: '*/target/**')]
+                                taskScanner(highTags: 'FIXME', normalTags: 'TODO', includePattern: '**/*.java', excludePattern: '*/target/**')]
                     }
                 }
                 stage('Windows') {
