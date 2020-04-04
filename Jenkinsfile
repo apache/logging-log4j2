@@ -36,7 +36,7 @@ pipeline {
                     }
                     post {
                         always {
-                            recordIssues tools: [cpd(), checkStyle(), pmdParser(), mavenConsole(), errorProne()]
+                            recordIssues tools: [cpd(), checkStyle(), pmdParser(), mavenConsole(), errorProne(), junitParser(), spotBugs()]
                         }
                     }
                 }
