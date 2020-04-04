@@ -43,18 +43,18 @@ pipeline {
                             junit '**/*-reports/*.xml'
                             recordIssues enabledForFailure: true,
                                 tool: mavenConsole(),
-                                referenceJobName: 'log4j/master'
+                                referenceJobName: 'log4j/release-2.x'
                             recordIssues enabledForFailure: true,
                                 tool: errorProne(),
-                                referenceJobName: 'log4j/master'
+                                referenceJobName: 'log4j/release-2.x'
                             recordIssues enabledForFailure: true,
                                 tool: java(),
                                 sourceCodeEncoding: 'UTF-8',
-                                referenceJobName: 'log4j/master'
+                                referenceJobName: 'log4j/release-2.x'
                             recordIssues enabledForFailure: true,
                                 tool: taskScanner(includePattern: '**/*.java', excludePattern: 'target/**', highTags: 'FIXME', normalTags: 'TODO'),
                                 sourceCodeEncoding: 'UTF-8',
-                                referenceJobName: 'log4j/master'
+                                referenceJobName: 'log4j/release-2.x'
                         }
                     }
                 }
