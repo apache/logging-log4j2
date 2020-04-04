@@ -36,26 +36,11 @@ pipeline {
                     }
                     steps {
                         sh 'mvn -B -fn -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install'
-                    }
-                    post {
-                        always {
-                            archiveArtifacts artifacts: '**/*.jar', fingerprint: true
-                            junit '**/*-reports/*.xml'
-                            recordIssues enabledForFailure: true,
-                                tool: mavenConsole(),
-                                referenceJobName: 'log4j/master'
-                            recordIssues enabledForFailure: true,
-                                tool: errorProne(),
-                                referenceJobName: 'log4j/master'
-                            recordIssues enabledForFailure: true,
-                                tool: java(),
-                                sourceCodeEncoding: 'UTF-8',
-                                referenceJobName: 'log4j/master'
-                            recordIssues enabledForFailure: true,
-                                tool: taskScanner(includePattern: '**/*.java', excludePattern: 'target/**', highTags: 'FIXME', normalTags: 'TODO'),
-                                sourceCodeEncoding: 'UTF-8',
-                                referenceJobName: 'log4j/master'
-                        }
+                        junit '**/*-reports/*.xml'
+                        archiveArtifacts artifacts: '**/*.jar', fingerprint: true
+                        recordIssues sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/master',
+                            tools: [mavenConsole(), errorProne(), java(), // junitParser() // TODO: compare with junit step
+                                taskScanner(highTags: 'FIXME', normalTags: 'TODO', excludePattern: '*/target/**')]
                     }
                 }
                 stage('Windows') {
@@ -69,11 +54,7 @@ pipeline {
                         if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo
                         mvn -B -fn -t toolchains-jenkins-win.xml -Dfile.encoding=UTF-8 -V clean install
                         '''
-                    }
-                    post {
-                        always {
-                            junit '**/*-reports/*.xml'
-                        }
+                        junit '**/*-reports/*.xml'
                     }
                 }
             }
