@@ -21,34 +21,65 @@ pipeline {
         ansiColor('xterm')
         buildDiscarder logRotator(numToKeepStr: '10')
         timeout(90)
+        parallelsAlwaysFailFast()
     }
     agent none
     stages {
         stage('Build') {
-            failFast true
             parallel {
                 stage('Ubuntu') {
                     agent { label 'ubuntu' }
+                    tools {
+                        jdk 'JDK 1.8 (latest)'
+                        maven 'Maven 3 (latest)'
+                    }
                     steps {
-                        withMaven(jdk: 'JDK 1.8 (latest)', maven: 'Maven 3 (latest)') {
-                            sh 'mvn -B -fae -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install site'
-                        }
+                        sh '''
+                        mvn -B -fn -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install
+                        mvn -B -t toolchains-jenkins-ubuntu.xml -Djenkins -V site
+                        '''
                     }
                     post {
                         always {
-                            recordIssues enabledForFailure: true, tool: mavenConsole(), referenceJobName: 'log4j/master'
-                            recordIssues enabledForFailure: true, tool: errorProne(), referenceJobName: 'log4j/master'
-                            recordIssues enabledForFailure: true, tools: [java(), javaDoc()], sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/master'
-                            recordIssues tools: [cpd(), checkStyle(), pmdParser(), spotBugs()], sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/master'
+                            junit '**/*-reports/*.xml'
+                            recordIssues enabledForFailure: true,
+                                tool: mavenConsole(),
+                                referenceJobName: 'log4j/master'
+                            recordIssues enabledForFailure: true,
+                                tool: errorProne(),
+                                referenceJobName: 'log4j/master'
+                            recordIssues enabledForFailure: true,
+                                tools: [java(), javaDoc()],
+                                sourceCodeEncoding: 'UTF-8',
+                                referenceJobName: 'log4j/master'
+                            recordIssues tools: [cpd(pattern: '**/target/cpd.xml'),
+                                    checkStyle(pattern: '**/target/checkstyle-result.xml'),
+                                    pmdParser(pattern: '**/target/pmd.xml'),
+                                    spotBugs(pattern: '**/target/spotbugsXml.xml')],
+                                sourceCodeEncoding: 'UTF-8',
+                                referenceJobName: 'log4j/master'
+                            recordIssues enabledForFailure: true,
+                                tool: taskScanner(includePattern: '**/*.java', excludePattern: 'target/**', highTags: 'FIXME', normalTags: 'TODO'),
+                                sourceCodeEncoding: 'UTF-8',
+                                referenceJobName: 'log4j/master'
                         }
                     }
                 }
                 stage('Windows') {
                     agent { label 'Windows' }
+                    tools {
+                        jdk 'JDK 1.8 (latest)'
+                        maven 'Maven 3 (latest)'
+                    }
                     steps {
-                        bat 'if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo'
-                        withMaven(jdk: 'JDK 1.8 (latest)', maven: 'Maven 3 (latest)') {
-                            bat 'mvn -B -fae -t toolchains-jenkins-win.xml -V -Dfile.encoding=UTF-8 clean install'
+                        bat '''
+                        if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo
+                        mvn -B -fn -t toolchains-jenkins-win.xml -Dfile.encoding=UTF-8 -V clean install
+                        '''
+                    }
+                    post {
+                        always {
+                            junit '**/*-reports/*.xml'
                         }
                     }
                 }
@@ -56,8 +87,11 @@ pipeline {
         }
     }
     post {
-        failure {
-            slackSend channel: 'logging', message: "Jenkins build failure: ${env.BUILD_URL}"
+        regression {
+            slackSend channel: 'logging', message: "Regression detected in ${env.BUILD_URL}", color: 'danger'
+        }
+        fixed {
+            slackSend channel: 'logging', message: "Build back to normal: ${env.BUILD_URL}", color: 'good'
         }
     }
 }
