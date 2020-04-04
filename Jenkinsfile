@@ -18,7 +18,9 @@
 
 pipeline {
     options {
-        timeout time: 60, unit: 'MINUTES'
+        ansiColor('xterm')
+        buildDiscarder logRotator(numToKeepStr: '10')
+        timeout(90)
     }
     agent none
     stages {
@@ -26,69 +28,34 @@ pipeline {
             failFast true
             parallel {
                 stage('Ubuntu') {
-                    agent { label 'ubuntu&&!H20' }
-                    tools {
-                        // https://cwiki.apache.org/confluence/display/INFRA/JDK+Installation+Matrix
-                        jdk 'JDK 1.8 (latest)'
-                        // https://cwiki.apache.org/confluence/display/INFRA/Maven+Installation+Matrix
-                        maven 'Maven 3 (latest)'
-                    }
+                    agent { label 'ubuntu' }
                     steps {
-                        ansiColor('xterm') {
-                            sh 'mvn -t toolchains-jenkins-ubuntu.xml -Djenkins -V install'
-                            junit '*/target/*-reports/*.xml'
-                            stash includes: 'target/**', name: 'target'
+                        withMaven {
+                            sh 'mvn -B -t toolchains-jenkins-ubuntu.xml -Djenkins -V install'
                         }
                     }
-                }
-                stage('IBM JDK') {
-                    agent { label 'ubuntu&&!H20' }
-                    tools {
-                        jdk 'IBM 1.8 64-bit (on Ubuntu only)'
-                        maven 'Maven 3 (latest)'
-                    }
-                    steps {
-                        ansiColor('xterm') {
-                            sh 'mvn -t toolchains-jenkins-ibm.xml -Djenkins -V install'
-                            junit '*/target/*-reports/*.xml'
+                    post {
+                        always {
+                            //junit '*/target/*-reports/*.xml'
+                            recordIssues tools: [cpd(), checkStyle(), pmdParser(), mavenConsole(), errorProne()]
                         }
                     }
                 }
                 stage('Windows') {
                     agent { label 'Windows' }
-                    tools {
-                        // https://cwiki.apache.org/confluence/display/INFRA/JDK+Installation+Matrix
-                        jdk 'JDK 1.8 (latest)'
-                        // https://cwiki.apache.org/confluence/display/INFRA/Maven+Installation+Matrix
-                        maven 'Maven 3 (latest)'
-                    }
                     steps {
                         bat 'if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo'
-                        bat 'mvn -t toolchains-jenkins-win.xml -V -Dfile.encoding=UTF-8 install'
-                        junit '*/target/*-reports/*.xml'
+                        withMaven {
+                            bat 'mvn -B -t toolchains-jenkins-win.xml -V -Dfile.encoding=UTF-8 install'
+                        }
                     }
                 }
             }
         }
-        stage('Deploy') {
-            when { branch 'master' }
-            tools {
-                // https://cwiki.apache.org/confluence/display/INFRA/JDK+Installation+Matrix
-                jdk 'JDK 1.8 (latest)'
-                // https://cwiki.apache.org/confluence/display/INFRA/Maven+Installation+Matrix
-                maven 'Maven 3 (latest)'
+        post {
+            failure {
+                slackSend channel: 'logging', message: "Jenkins build failure: ${env.BUILD_URL}"
             }
-            steps {
-                ansiColor('xterm') {
-                    unstash 'target'
-                    sh 'mvn -t toolchains-jenkins-ubuntu.xml -Djenkins -DskipTests -V deploy'
-                }
-            }
-//            post {
-//                failure {
-//                    emailext body: "See <${env.BUILD_URL}>", replyTo: 'dev@logging.apache.org', subject: "[Log4j] Jenkins build failure (#${env.BUILD_NUMBER})", to: 'notifications@logging.apache.org'
-//                }
-//            }
         }
     }
 }

@@ -20,16 +20,6 @@
   <toolchain>
     <type>jdk</type>
     <provides>
-      <version>1.7</version>
-      <vendor>sun</vendor>
-    </provides>
-    <configuration>
-      <jdkHome>/home/jenkins/tools/java/latest1.7</jdkHome>
-    </configuration>
-  </toolchain>
-  <toolchain>
-    <type>jdk</type>
-    <provides>
       <version>1.8</version>
       <vendor>sun</vendor>
     </provides>
@@ -61,10 +51,50 @@
     <type>jdk</type>
     <provides>
       <version>11</version>
-      <vendor>oracle</vendor>
+      <vendor>sun</vendor>
     </provides>
     <configuration>
       <jdkHome>/home/jenkins/tools/java/latest11/</jdkHome>
+    </configuration>
+  </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>12</version>
+      <vendor>sun</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/home/jenkins/tools/java/latest12/</jdkHome>
+    </configuration>
+  </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>13</version>
+      <vendor>sun</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/home/jenkins/tools/java/latest13/</jdkHome>
+    </configuration>
+  </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>14</version>
+      <vendor>sun</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/home/jenkins/tools/java/latest14/</jdkHome>
+    </configuration>
+  </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>15</version>
+      <vendor>sun</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/home/jenkins/tools/java/latest15/</jdkHome>
     </configuration>
   </toolchain>
   <!-- other toolchains -->
