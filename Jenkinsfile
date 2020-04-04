@@ -40,6 +40,15 @@ pipeline {
                         '''
                     }
                     post {
+                        success {
+                            archiveArtifacts '**/*.jar'
+                            recordIssues tools: [cpd(pattern: '**/target/cpd.xml'),
+                                    checkStyle(pattern: '**/target/checkstyle-result.xml'),
+                                    pmdParser(pattern: '**/target/pmd.xml'),
+                                    spotBugs(pattern: '**/target/spotbugsXml.xml')],
+                                sourceCodeEncoding: 'UTF-8',
+                                referenceJobName: 'log4j/master'
+                        }
                         always {
                             junit '**/*-reports/*.xml'
                             recordIssues enabledForFailure: true,
@@ -50,12 +59,6 @@ pipeline {
                                 referenceJobName: 'log4j/master'
                             recordIssues enabledForFailure: true,
                                 tools: [java(), javaDoc()],
-                                sourceCodeEncoding: 'UTF-8',
-                                referenceJobName: 'log4j/master'
-                            recordIssues tools: [cpd(pattern: '**/target/cpd.xml'),
-                                    checkStyle(pattern: '**/target/checkstyle-result.xml'),
-                                    pmdParser(pattern: '**/target/pmd.xml'),
-                                    spotBugs(pattern: '**/target/spotbugsXml.xml')],
                                 sourceCodeEncoding: 'UTF-8',
                                 referenceJobName: 'log4j/master'
                             recordIssues enabledForFailure: true,
