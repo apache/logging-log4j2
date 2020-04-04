@@ -52,10 +52,10 @@ pipeline {
                 }
             }
         }
-        post {
-            failure {
-                slackSend channel: 'logging', message: "Jenkins build failure: ${env.BUILD_URL}"
-            }
+    }
+    post {
+        failure {
+            slackSend channel: 'logging', message: "Jenkins build failure: ${env.BUILD_URL}"
         }
     }
 }
