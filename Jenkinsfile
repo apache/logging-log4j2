@@ -20,8 +20,9 @@ pipeline {
     options {
         ansiColor('xterm')
         buildDiscarder logRotator(numToKeepStr: '10')
-        timeout(90)
+        timeout time: 2, unit: 'HOURS'
         parallelsAlwaysFailFast()
+        compressBuildLog()
         durabilityHint 'PERFORMANCE_OPTIMIZED'
     }
     agent none
