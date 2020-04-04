@@ -62,10 +62,49 @@ pipeline {
     }
     post {
         regression {
-            slackSend channel: 'logging', message: "Regression detected in ${env.BUILD_URL}", color: 'danger'
+            slackSend channel: 'logging',
+                color: 'warning',
+                message: ":disappear: Regression detected in ${env.BUILD_URL}"
+            mail to: 'notifications@logging.apache.org',
+                replyTo: 'dev@logging.apache.org',
+                subject: "Regression in Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER})",
+                body: """
+There is a new regression detected in ${env.JOB_NAME}.
+
+Build: ${env.BUILD_URL}
+Logs: ${env.BUILD_URL}console
+Tests: ${env.BUILD_URL}testReport/
+Changes: ${env.BUILD_URL}changes
+"""
         }
         fixed {
-            slackSend channel: 'logging', message: "Build back to normal: ${env.BUILD_URL}", color: 'good'
+            slackSend channel: 'logging',
+                color: 'good',
+                message: ":beer_parrot: Build back to normal: ${env.BUILD_URL}"
+            mail to: 'notifications@logging.apache.org',
+                replyTo: 'dev@logging.apache.org',
+                subject: "Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER}) back to normal",
+                body: "See ${env.BUILD_URL} for more details."
+        }
+        failure {
+            slackSend channel: 'logging',
+                color: 'danger',
+                message: ":doh: Build failed: ${env.BUILD_URL}"
+            mail to: 'notifications@logging.apache.org',
+                replyTo: 'dev@logging.apache.org',
+                subject: "Build failure in Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER})",
+                body: """
+There is a build failure in ${env.JOB_NAME}.
+
+Build: ${env.BUILD_URL}
+Logs: ${env.BUILD_URL}console
+Changes: ${env.BUILD_URL}changes
+"""
+        }
+        unstable {
+            slackSend channel: 'logging',
+                color: 'warning',
+                message: ":sadpanda: Build still unstable: ${env.BUILD_URL}"
         }
     }
 }
