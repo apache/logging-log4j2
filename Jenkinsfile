@@ -31,7 +31,7 @@ pipeline {
                     agent { label 'ubuntu' }
                     steps {
                         withMaven(jdk: 'JDK 1.8 (latest)', maven: 'Maven 3 (latest)') {
-                            sh 'mvn -B -t toolchains-jenkins-ubuntu.xml -Djenkins -V install'
+                            sh 'mvn -B -fae -t toolchains-jenkins-ubuntu.xml -Djenkins -V install'
                         }
                     }
                     post {
@@ -46,7 +46,7 @@ pipeline {
                     steps {
                         bat 'if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo'
                         withMaven(jdk: 'JDK 1.8 (latest)', maven: 'Maven 3 (latest)') {
-                            bat 'mvn -B -t toolchains-jenkins-win.xml -V -Dfile.encoding=UTF-8 install'
+                            bat 'mvn -B -fae -t toolchains-jenkins-win.xml -V -Dfile.encoding=UTF-8 install'
                         }
                     }
                 }
