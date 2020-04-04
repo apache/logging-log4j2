@@ -36,7 +36,10 @@ pipeline {
                     }
                     post {
                         always {
-                            recordIssues tools: [cpd(), checkStyle(), pmdParser(), mavenConsole(), errorProne(), junitParser(), spotBugs()]
+                            recordIssues enabledForFailure: true, tool: mavenConsole(), referenceJobName: 'log4j/master'
+                            recordIssues enabledForFailure: true, tool: errorProne(), referenceJobName: 'log4j/master'
+                            recordIssues enabledForFailure: true, tools: [java(), javaDoc()], sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/master'
+                            recordIssues tools: [cpd(), checkStyle(), pmdParser(), spotBugs()], sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/master'
                         }
                     }
                 }
