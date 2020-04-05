@@ -39,9 +39,11 @@ pipeline {
                     }
                     steps {
                         sh 'mvn -B -fae -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install deploy'
-                        archiveArtifacts artifacts: '**/*.jar', fingerprint: true
                     }
                     post {
+                        success {
+                            archiveArtifacts artifacts: '**/*.jar', fingerprint: true
+                        }
                         always {
                             recordIssues enabledForFailure: true, sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/master',
                                 tool: taskScanner(highTags: 'FIXME', normalTags: 'TODO', includePattern: '**/*.java', excludePattern: '*/target/**')
@@ -74,9 +76,8 @@ pipeline {
         }
     }
     post {
-        always {
-            recordIssues enabledForFailure: true,
-                sourceCodeEncoding: 'UTF-8',
+        success {
+            recordIssues sourceCodeEncoding: 'UTF-8',
                 referenceJobName: 'log4j/master',
                 tools: [mavenConsole(), errorProne(), java()]
         }
