@@ -39,11 +39,14 @@ pipeline {
                     }
                     steps {
                         sh 'mvn -B -fae -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install deploy'
-                        junit '**/*-reports/*.xml'
                         archiveArtifacts artifacts: '**/*.jar', fingerprint: true
-                        recordIssues sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/master',
-                            tools: [mavenConsole(), errorProne(), java(), // junitParser() // TODO: compare with junit step
-                                taskScanner(highTags: 'FIXME', normalTags: 'TODO', includePattern: '**/*.java', excludePattern: '*/target/**')]
+                    }
+                    post {
+                        always {
+                            recordIssues enabledForFailure: true, sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/master',
+                                tool: taskScanner(highTags: 'FIXME', normalTags: 'TODO', includePattern: '**/*.java', excludePattern: '*/target/**')
+                            junit '**/*-reports/*.xml'
+                        }
                     }
                 }
                 stage('Windows') {
@@ -60,17 +63,28 @@ pipeline {
                         if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo
                         mvn -B -fae -t toolchains-jenkins-win.xml -Dfile.encoding=UTF-8 -V clean install
                         '''
-                        junit '**/*-reports/*.xml'
+                    }
+                    post {
+                        always {
+                            junit '**/*-reports/*.xml'
+                        }
                     }
                 }
             }
         }
     }
     post {
+        always {
+            recordIssues enabledForFailure: true,
+                sourceCodeEncoding: 'UTF-8',
+                referenceJobName: 'log4j/master',
+                tools: [mavenConsole(), errorProne(), java()]
+        }
         fixed {
             slackSend channel: 'logging',
                 color: 'good',
-                message: ":beer_parrot: Build back to normal: ${env.BUILD_URL}"
+                iconEmoji: 'beer_parrot',
+                message: "Build back to normal: <${env.BUILD_URL}|${env.BUILD_DISPLAY_NAME}>."
             mail to: 'notifications@logging.apache.org',
                 subject: "Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER}) back to normal",
                 body: "See ${env.BUILD_URL} for more details."
@@ -78,7 +92,8 @@ pipeline {
         failure {
             slackSend channel: 'logging',
                 color: 'danger',
-                message: ":doh: Build failed: ${env.BUILD_URL}"
+                iconEmoji: 'doh',
+                message: "Build failed: <${env.BUILD_URL}|${env.BUILD_DISPLAY_NAME}>."
             mail to: 'notifications@logging.apache.org',
                 subject: "Build failure in Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER})",
                 body: """
@@ -95,7 +110,8 @@ Mr. Jenkins
         unstable {
             slackSend channel: 'logging',
                 color: 'warning',
-                message: ":sadpanda: Build still unstable: ${env.BUILD_URL}"
+                iconEmoji: 'sadpanda',
+                message: "Build unstable: ${env.BUILD_URL}"
         }
     }
 }
