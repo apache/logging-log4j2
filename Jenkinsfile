@@ -26,6 +26,7 @@ pipeline {
     }
     agent none
     stages {
+        stage {
         parallel {
             stage('Ubuntu') {
                 agent { label 'ubuntu' }
@@ -75,6 +76,7 @@ pipeline {
                 }
             }
         }
+    }
     }
     post {
         fixed {
