@@ -26,7 +26,7 @@ pipeline {
     }
     agent none
     stages {
-        stage {
+        stage('Checkout') {
         parallel {
             stage('Ubuntu') {
                 agent { label 'ubuntu' }
