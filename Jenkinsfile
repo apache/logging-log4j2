@@ -83,7 +83,7 @@ pipeline {
         fixed {
             slackSend channel: 'logging',
                 color: 'good',
-                iconEmoji: ':beer_parrot:',
+                iconEmoji: 'male_mage',
                 message: "Build back to normal: <${env.BUILD_URL}|${env.BUILD_DISPLAY_NAME}>."
             mail to: 'notifications@logging.apache.org',
                 subject: "Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER}) back to normal",
@@ -92,7 +92,7 @@ pipeline {
         failure {
             slackSend channel: 'logging',
                 color: 'danger',
-                iconEmoji: ':doh:',
+                iconEmoji: 'face_palm',
                 message: "Build failed: <${env.BUILD_URL}|${env.BUILD_DISPLAY_NAME}>."
             mail to: 'notifications@logging.apache.org',
                 subject: "Build failure in Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER})",
@@ -110,7 +110,7 @@ Mr. Jenkins
         unstable {
             slackSend channel: 'logging',
                 color: 'warning',
-                iconEmoji: ':sadpanda:',
+                iconEmoji: 'juggling',
                 message: "Build unstable: ${env.BUILD_URL}"
         }
     }
