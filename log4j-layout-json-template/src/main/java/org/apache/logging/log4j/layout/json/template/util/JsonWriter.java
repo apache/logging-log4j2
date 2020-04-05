@@ -47,7 +47,7 @@ import java.util.Objects;
  *     <li>{@link CharSequence} and <tt>char[]</tt> with necessary escaping
  * </ul>
  */
-public final class JsonWriter implements AutoCloseable {
+public final class JsonWriter implements AutoCloseable, Cloneable {
 
     private final StringBuilder stringBuilder;
 
@@ -68,6 +68,15 @@ public final class JsonWriter implements AutoCloseable {
         final StringBuilder stringBuilder = new StringBuilder(string);
         StringBuilders.escapeJson(stringBuilder, 0);
         return stringBuilder.toString();
+    }
+
+    public String use(Runnable runnable) {
+        final int startIndex = stringBuilder.length();
+        runnable.run();
+        final StringBuilder sliceStringBuilder = new StringBuilder();
+        sliceStringBuilder.append(stringBuilder, startIndex, stringBuilder.length());
+        stringBuilder.setLength(startIndex);
+        return sliceStringBuilder.toString();
     }
 
     public StringBuilder getStringBuilder() {
@@ -445,12 +454,14 @@ public final class JsonWriter implements AutoCloseable {
             final int startIndex = stringBuilder.length();
             formattable.formatTo(stringBuilder);
             final int length = stringBuilder.length() - startIndex;
-            if (length > maxStringLength) {
-                stringBuilder.setLength(startIndex + maxStringLength);
-                StringBuilders.escapeJson(stringBuilder, startIndex);
-                stringBuilder.append(escapedTruncatedStringSuffix);
-            } else {
-                StringBuilders.escapeJson(stringBuilder, startIndex);
+            if (length > 0) {
+                if (length > maxStringLength) {
+                    stringBuilder.setLength(startIndex + maxStringLength);
+                    StringBuilders.escapeJson(stringBuilder, startIndex);
+                    stringBuilder.append(escapedTruncatedStringSuffix);
+                } else {
+                    StringBuilders.escapeJson(stringBuilder, startIndex);
+                }
             }
             stringBuilder.append('"');
         }
@@ -663,10 +674,7 @@ public final class JsonWriter implements AutoCloseable {
 
         // Write characters.
         final int limit = offset + length;
-        for (int i = offset; i < limit; i++) {
-            final char c = seq.charAt(i);
-            stringBuilder.append(c);
-        }
+        stringBuilder.append(seq, offset, limit);
 
     }
 
@@ -692,17 +700,24 @@ public final class JsonWriter implements AutoCloseable {
         }
 
         // Write characters.
-        final int limit = offset + length;
-        for (int i = offset; i < limit; i++) {
-            final char c = buffer[i];
-            stringBuilder.append(c);
-        }
+        stringBuilder.append(buffer, offset, length);
 
     }
 
     @Override
     public void close() {
         stringBuilder.setLength(0);
+    }
+
+    @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    public JsonWriter clone() {
+        final JsonWriter jsonWriter = newBuilder()
+                .setMaxStringLength(maxStringLength)
+                .setTruncatedStringSuffix(truncatedStringSuffix)
+                .build();
+        jsonWriter.stringBuilder.append(stringBuilder);
+        return jsonWriter;
     }
 
     public static Builder newBuilder() {

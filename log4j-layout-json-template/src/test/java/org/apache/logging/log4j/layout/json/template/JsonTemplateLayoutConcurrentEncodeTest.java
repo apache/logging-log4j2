@@ -19,15 +19,12 @@ package org.apache.logging.log4j.layout.json.template;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
-import org.apache.logging.log4j.message.SimpleMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -113,28 +110,11 @@ public class JsonTemplateLayoutConcurrentEncodeTest {
 
     private static LogEvent[] createMessages() {
         final int messageCount = 1_000;
-        final int minMessageLength = 1;
-        final int maxMessageLength = 1_000;
-        final Random random = new Random(0);
-        return IntStream
-                .range(0, messageCount)
-                .mapToObj(ignored -> {
-                    final int messageLength = minMessageLength + random.nextInt(maxMessageLength);
-                    final int startIndex = random.nextInt(10);
-                    final String messageText = IntStream
-                            .range(0, messageLength)
-                            .mapToObj(charIndex -> {
-                                final int digit = (startIndex + charIndex) % 10;
-                                return String.valueOf(digit);
-                            })
-                            .collect(Collectors.joining(""));
-                    final SimpleMessage message = new SimpleMessage(messageText);
-                    return Log4jLogEvent
-                            .newBuilder()
-                            .setMessage(message)
-                            .build();
-                })
-                .toArray(LogEvent[]::new);
+        final LogEvent[] logEvents = new LogEvent[messageCount];
+        LogEventFixture
+                .createLiteLogEvents(messageCount)
+                .toArray(logEvents);
+        return logEvents;
     }
 
     @Test

@@ -21,8 +21,6 @@ import java.util.function.Supplier;
 
 public class ThreadLocalRecycler<V> implements Recycler<V> {
 
-    private final Supplier<V> supplier;
-
     private final Consumer<V> cleaner;
 
     private final ThreadLocal<V> holder;
@@ -30,26 +28,18 @@ public class ThreadLocalRecycler<V> implements Recycler<V> {
     public ThreadLocalRecycler(
             final Supplier<V> supplier,
             final Consumer<V> cleaner) {
-        this.supplier = supplier;
         this.cleaner = cleaner;
-        this.holder = new ThreadLocal<>();
+        this.holder = ThreadLocal.withInitial(supplier);
     }
 
     @Override
     public V acquire() {
         final V value = holder.get();
-        if (value == null) {
-            return supplier.get();
-        } else {
-            holder.set(null);
-            cleaner.accept(value);
-            return value;
-        }
+        cleaner.accept(value);
+        return value;
     }
 
     @Override
-    public void release(final V value) {
-        holder.set(value);
-    }
+    public void release(final V value) {}
 
 }

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.layout.json.template.resolver;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.layout.json.template.util.RecyclerFactory;
 
 import java.util.Map;
@@ -28,6 +29,8 @@ import java.util.regex.Pattern;
 public final class EventResolverContext implements TemplateResolverContext<LogEvent, EventResolverContext> {
 
     private final StrSubstitutor substitutor;
+
+    private final JsonWriter jsonWriter;
 
     private final RecyclerFactory recyclerFactory;
 
@@ -47,6 +50,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
     private EventResolverContext(final Builder builder) {
         this.substitutor = builder.substitutor;
+        this.jsonWriter = builder.jsonWriter;
         this.recyclerFactory = builder.recyclerFactory;
         this.maxStringByteCount = builder.maxStringByteCount;
         this.locationInfoEnabled = builder.locationInfoEnabled;
@@ -72,6 +76,11 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
     @Override
     public StrSubstitutor getSubstitutor() {
         return substitutor;
+    }
+
+    @Override
+    public JsonWriter getJsonWriter() {
+        return jsonWriter;
     }
 
     RecyclerFactory getRecyclerFactory() {
@@ -114,6 +123,8 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         private StrSubstitutor substitutor;
 
+        private JsonWriter jsonWriter;
+
         private RecyclerFactory recyclerFactory;
 
         private int maxStringByteCount;
@@ -136,6 +147,11 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         public Builder setSubstitutor(final StrSubstitutor substitutor) {
             this.substitutor = substitutor;
+            return this;
+        }
+
+        public Builder setJsonWriter(final JsonWriter jsonWriter) {
+            this.jsonWriter = jsonWriter;
             return this;
         }
 
@@ -188,6 +204,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         private void validate() {
             Objects.requireNonNull(substitutor, "substitutor");
+            Objects.requireNonNull(jsonWriter, "jsonWriter");
             Objects.requireNonNull(recyclerFactory, "recyclerFactory");
             if (maxStringByteCount <= 0) {
                 throw new IllegalArgumentException(

@@ -178,16 +178,28 @@ public enum TemplateResolvers {;
             return emptyObjectResolver;
         }
 
+        // Prepare field names to avoid escape and truncation costs at runtime.
+        final List<String> fieldPrefixes = fieldNames
+                .stream()
+                .map(fieldName -> {
+                    try (JsonWriter jsonWriter = context.getJsonWriter()) {
+                        jsonWriter.writeString(fieldName);
+                        jsonWriter.getStringBuilder().append(':');
+                        return jsonWriter.getStringBuilder().toString();
+                    }
+                })
+                .collect(Collectors.toList());
+
         // Create a parent resolver collecting each object field resolver execution.
-        return (final V value, final JsonWriter jsonWriter) -> {
+        return (value, jsonWriter) -> {
             jsonWriter.writeObjectStart();
             for (int fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
-                final String fieldName = fieldNames.get(fieldIndex);
+                final String fieldPrefix = fieldPrefixes.get(fieldIndex);
                 final TemplateResolver<V> fieldResolver = fieldResolvers.get(fieldIndex);
                 if (fieldIndex > 0) {
                     jsonWriter.writeSeparator();
                 }
-                jsonWriter.writeObjectKey(fieldName);
+                jsonWriter.writeRawString(fieldPrefix);
                 fieldResolver.resolve(value, jsonWriter);
             }
             jsonWriter.writeObjectEnd();
@@ -218,9 +230,11 @@ public enum TemplateResolvers {;
         // Check if substitution needed at all. (Copied logic from
         // AbstractJacksonLayout.valueNeedsLookup() method.)
         final boolean substitutionNeeded = fieldValue.contains("${");
+        final JsonWriter contextJsonWriter = context.getJsonWriter();
         if (substitutionNeeded) {
+
+            // Use Log4j substitutor with LogEvent.
             if (EventResolverContext.class.isAssignableFrom(context.getContextClass())) {
-                // Use Log4j substitutor with LogEvent.
                 return (final V value, final JsonWriter jsonWriter) -> {
                     final LogEvent logEvent = (LogEvent) value;
                     final String replacedText = context.getSubstitutor().replace(logEvent, fieldValue);
@@ -230,21 +244,34 @@ public enum TemplateResolvers {;
                         jsonWriter.writeString(replacedText);
                     }
                 };
-            } else {
-                // Use standalone Log4j substitutor.
-                return (final V value, final JsonWriter jsonWriter) -> {
-                    final String replacedText = context.getSubstitutor().replace(null, fieldValue);
-                    if (replacedText == null) {
-                        jsonWriter.writeNull();
-                    } else {
-                        jsonWriter.writeString(replacedText);
-                    }
-                };
             }
-        } else {
-            // Write the field value as is. (Blank value check has already been done at the top.)
+
+            // Use standalone Log4j substitutor.
+            else {
+                final String replacedText = context.getSubstitutor().replace(null, fieldValue);
+                if (replacedText == null) {
+                    // noinspection unchecked
+                    return (TemplateResolver<V>) NULL_RESOLVER;
+                } else {
+                    // Prepare the escaped replacement first.
+                    final String escapedReplacedText =
+                            contextJsonWriter.use(() ->
+                                    contextJsonWriter.writeString(replacedText));
+                    // Create a resolver dedicated to the escaped replacement.
+                    return (final V value, final JsonWriter jsonWriter) ->
+                            jsonWriter.writeRawString(escapedReplacedText);
+                }
+            }
+
+        }
+
+        // Write the field value as is. (Blank value check has already been done at the top.)
+        else {
+            final String escapedFieldValue =
+                    contextJsonWriter.use(() ->
+                            contextJsonWriter.writeString(fieldValue));
             return (final V value, final JsonWriter jsonWriter) ->
-                    jsonWriter.writeString(fieldValue);
+                    jsonWriter.writeRawString(escapedFieldValue);
         }
 
     }

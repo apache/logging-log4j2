@@ -35,7 +35,7 @@ final class TimestampResolverFactory implements EventResolverFactory<TimestampRe
     public TimestampResolver create(
             final EventResolverContext context,
             final String key) {
-        return new TimestampResolver(context, key);
+        return new TimestampResolver(key);
     }
 
 }

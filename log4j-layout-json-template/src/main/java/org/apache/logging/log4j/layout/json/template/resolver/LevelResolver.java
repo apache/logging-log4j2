@@ -16,42 +16,76 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 final class LevelResolver implements EventResolver {
 
-    private static final EventResolver NAME_RESOLVER =
-            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                final String levelName = logEvent.getLevel().name();
-                jsonWriter.writeString(levelName);
-            };
-
-    private static final EventResolver SEVERITY_NAME_RESOLVER =
-            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                final String severityName = Severity.getSeverity(logEvent.getLevel()).name();
-                jsonWriter.writeString(severityName);
-            };
+    private static Map<Level, String> SEVERITY_CODE_RESOLUTION_BY_LEVEL = Arrays
+            .stream(Level.values())
+            .collect(Collectors.toMap(
+                    Function.identity(),
+                    level -> "" + Severity.getSeverity(level).getCode()));
 
     private static final EventResolver SEVERITY_CODE_RESOLVER =
             (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                final int severityCode = Severity.getSeverity(logEvent.getLevel()).getCode();
-                jsonWriter.writeNumber(severityCode);
+                final String severityCodeResolution =
+                        SEVERITY_CODE_RESOLUTION_BY_LEVEL.get(logEvent.getLevel());
+                jsonWriter.writeRawString(severityCodeResolution);
             };
 
     private final EventResolver internalResolver;
 
-    LevelResolver(final String key) {
+    LevelResolver(final EventResolverContext context, final String key) {
+        final JsonWriter jsonWriter = context.getJsonWriter();
         if (key == null) {
-            internalResolver = NAME_RESOLVER;
+            internalResolver = createNameResolver(jsonWriter);
         } else if ("severity".equals(key)) {
-            internalResolver = SEVERITY_NAME_RESOLVER;
+            internalResolver = createSeverityNameResolver(jsonWriter);
         } else if ("severity:code".equals(key)) {
             internalResolver = SEVERITY_CODE_RESOLVER;
         } else {
             throw new IllegalArgumentException("unknown key: " + key);
         }
+    }
+
+    private static EventResolver createNameResolver(
+            final JsonWriter contextJsonWriter) {
+        final Map<Level, String> resolutionByLevel = Arrays
+                .stream(Level.values())
+                .collect(Collectors.toMap(
+                        Function.identity(),
+                        (final Level level) -> contextJsonWriter.use(() -> {
+                            final String name = level.name();
+                            contextJsonWriter.writeString(name);
+                        })));
+        return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+            final String resolution = resolutionByLevel.get(logEvent.getLevel());
+            jsonWriter.writeRawString(resolution);
+        };
+    }
+
+    private static EventResolver createSeverityNameResolver(
+            final JsonWriter contextJsonWriter) {
+        final Map<Level, String> resolutionByLevel = Arrays
+                .stream(Level.values())
+                .collect(Collectors.toMap(
+                        Function.identity(),
+                        (final Level level) -> contextJsonWriter.use(() -> {
+                            final String severityName = Severity.getSeverity(level).name();
+                            contextJsonWriter.writeString(severityName);
+                        })));
+        return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+            final String resolution = resolutionByLevel.get(logEvent.getLevel());
+            jsonWriter.writeRawString(resolution);
+        };
     }
 
     static String getName() {

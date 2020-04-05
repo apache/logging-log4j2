@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.layout.json.template.resolver;
 
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
 import java.util.Map;
 import java.util.Objects;
@@ -26,8 +27,11 @@ public final class StackTraceElementObjectResolverContext
 
     private final StrSubstitutor substitutor;
 
+    private final JsonWriter jsonWriter;
+
     private StackTraceElementObjectResolverContext(final Builder builder) {
         this.substitutor = builder.substitutor;
+        this.jsonWriter = builder.jsonWriter;
     }
 
     @Override
@@ -45,6 +49,11 @@ public final class StackTraceElementObjectResolverContext
         return substitutor;
     }
 
+    @Override
+    public JsonWriter getJsonWriter() {
+        return jsonWriter;
+    }
+
     public static Builder newBuilder() {
         return new Builder();
     }
@@ -52,6 +61,8 @@ public final class StackTraceElementObjectResolverContext
     public static class Builder {
 
         private StrSubstitutor substitutor;
+
+        private JsonWriter jsonWriter;
 
         private Builder() {
             // Do nothing.
@@ -62,6 +73,11 @@ public final class StackTraceElementObjectResolverContext
             return this;
         }
 
+        public Builder setJsonWriter(final JsonWriter jsonWriter) {
+            this.jsonWriter = jsonWriter;
+            return this;
+        }
+
         public StackTraceElementObjectResolverContext build() {
             validate();
             return new StackTraceElementObjectResolverContext(this);
@@ -69,6 +85,7 @@ public final class StackTraceElementObjectResolverContext
 
         private void validate() {
             Objects.requireNonNull(substitutor, "substitutor");
+            Objects.requireNonNull(jsonWriter, "jsonWriter");
         }
 
     }

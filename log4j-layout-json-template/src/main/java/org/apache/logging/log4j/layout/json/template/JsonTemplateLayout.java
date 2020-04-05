@@ -94,24 +94,32 @@ public class JsonTemplateLayout implements StringLayout {
         this.contentType = "application/json; charset=" + charset;
         this.eventDelimiter = builder.eventDelimiter;
         final StrSubstitutor substitutor = builder.configuration.getStrSubstitutor();
+        final JsonWriter jsonWriter = JsonWriter
+                .newBuilder()
+                .setMaxStringLength(builder.maxStringLength)
+                .setTruncatedStringSuffix(builder.truncatedStringSuffix)
+                .build();
         final TemplateResolver<StackTraceElement> stackTraceElementObjectResolver =
                 builder.stackTraceEnabled
-                        ? createStackTraceElementResolver(builder, substitutor)
+                        ? createStackTraceElementResolver(builder, substitutor, jsonWriter)
                         : null;
         this.eventResolver = createEventResolver(
                 builder,
                 substitutor,
+                jsonWriter,
                 stackTraceElementObjectResolver);
-        this.contextRecycler = createContextRecycler(builder);
+        this.contextRecycler = createContextRecycler(builder, jsonWriter);
     }
 
     private static TemplateResolver<StackTraceElement> createStackTraceElementResolver(
             final Builder builder,
-            final StrSubstitutor substitutor) {
+            final StrSubstitutor substitutor,
+            final JsonWriter jsonWriter) {
         final StackTraceElementObjectResolverContext stackTraceElementObjectResolverContext =
                 StackTraceElementObjectResolverContext
                         .newBuilder()
                         .setSubstitutor(substitutor)
+                        .setJsonWriter(jsonWriter)
                         .build();
         final String stackTraceElementTemplate = readStackTraceElementTemplate(builder);
         return TemplateResolvers.ofTemplate(stackTraceElementObjectResolverContext, stackTraceElementTemplate);
@@ -120,6 +128,7 @@ public class JsonTemplateLayout implements StringLayout {
     private TemplateResolver<LogEvent> createEventResolver(
             final Builder builder,
             final StrSubstitutor substitutor,
+            final JsonWriter jsonWriter,
             final TemplateResolver<StackTraceElement> stackTraceElementObjectResolver) {
         final String eventTemplate = readEventTemplate(builder);
         final float maxByteCountPerChar = builder.charset.newEncoder().maxBytesPerChar();
@@ -129,6 +138,7 @@ public class JsonTemplateLayout implements StringLayout {
         final EventResolverContext resolverContext = EventResolverContext
                 .newBuilder()
                 .setSubstitutor(substitutor)
+                .setJsonWriter(jsonWriter)
                 .setRecyclerFactory(builder.recyclerFactory)
                 .setMaxStringByteCount(maxStringByteCount)
                 .setLocationInfoEnabled(builder.locationInfoEnabled)
@@ -165,26 +175,25 @@ public class JsonTemplateLayout implements StringLayout {
     }
 
     private static Recycler<Context> createContextRecycler(
-            final Builder builder) {
-        final Supplier<Context> supplier = createContextSupplier(builder);
+            final Builder builder,
+            final JsonWriter jsonWriter) {
+        final Supplier<Context> supplier =
+                createContextSupplier(builder.charset, jsonWriter);
         return builder
                 .recyclerFactory
                 .create(supplier, Context::close);
     }
 
     private static Supplier<Context> createContextSupplier(
-            final Builder builder) {
+            final Charset charset,
+            final JsonWriter jsonWriter) {
         return () -> {
-            final JsonWriter jsonWriter = JsonWriter
-                    .newBuilder()
-                    .setMaxStringLength(builder.maxStringLength)
-                    .setTruncatedStringSuffix(builder.truncatedStringSuffix)
-                    .build();
+            final JsonWriter clonedJsonWriter = jsonWriter.clone();
             final Encoder<StringBuilder> encoder =
                     Constants.ENABLE_DIRECT_ENCODERS
-                            ? new LockingStringBuilderEncoder(builder.charset)
+                            ? new LockingStringBuilderEncoder(charset)
                             : null;
-            return new Context(jsonWriter, encoder);
+            return new Context(clonedJsonWriter, encoder);
         };
     }
 

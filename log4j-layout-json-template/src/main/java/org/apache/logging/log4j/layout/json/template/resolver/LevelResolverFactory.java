@@ -33,7 +33,7 @@ final class LevelResolverFactory implements EventResolverFactory<LevelResolver> 
 
     @Override
     public LevelResolver create(final EventResolverContext context, final String key) {
-        return new LevelResolver(key);
+        return new LevelResolver(context, key);
     }
 
 }

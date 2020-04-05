@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.layout.json.template.resolver;
 
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
 import java.util.Map;
 
@@ -27,5 +28,7 @@ interface TemplateResolverContext<V, C extends TemplateResolverContext<V, C>> {
     Map<String, TemplateResolverFactory<V, C, ? extends TemplateResolver<V>>> getResolverFactoryByName();
 
     StrSubstitutor getSubstitutor();
+
+    JsonWriter getJsonWriter();
 
 }
