@@ -40,12 +40,11 @@ pipeline {
                     steps {
                         sh 'mvn -B -fae -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install deploy'
                         archiveArtifacts artifacts: '**/*.jar', fingerprint: true
-                        recordIssues sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/release-2.x',
-                            tools: [mavenConsole(), errorProne(), java(), // junitParser() // TODO: compare with junit step
-                                taskScanner(highTags: 'FIXME', normalTags: 'TODO', includePattern: '**/*.java', excludePattern: '*/target/**')]
                     }
                     post {
                         always {
+                            recordIssues enabledForFailure: true, sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/release-2.x',
+                                tool: taskScanner(highTags: 'FIXME', normalTags: 'TODO', includePattern: '**/*.java', excludePattern: '*/target/**')
                             junit '**/*-reports/*.xml'
                         }
                     }
@@ -75,37 +74,27 @@ pipeline {
         }
     }
     post {
-        regression {
-            slackSend channel: 'logging',
-                color: 'warning',
-                message: ":disappear: Regression detected in ${env.BUILD_URL}"
-            mail to: 'notifications@logging.apache.org',
-                replyTo: 'dev@logging.apache.org',
-                subject: "Regression in Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER})",
-                body: """
-There is a new regression detected in ${env.JOB_NAME}.
-
-Build: ${env.BUILD_URL}
-Logs: ${env.BUILD_URL}console
-Tests: ${env.BUILD_URL}testReport/
-Changes: ${env.BUILD_URL}changes
-"""
+        always {
+            recordIssues enabledForFailure: true,
+                sourceCodeEncoding: 'UTF-8',
+                referenceJobName: 'log4j/release-2.x',
+                tools: [mavenConsole(), errorProne(), java()]
         }
         fixed {
             slackSend channel: 'logging',
                 color: 'good',
-                message: ":beer_parrot: Build back to normal: ${env.BUILD_URL}"
+                iconEmoji: 'beer_parrot',
+                message: "Build back to normal: <${env.BUILD_URL}|${env.BUILD_DISPLAY_NAME}>."
             mail to: 'notifications@logging.apache.org',
-                replyTo: 'dev@logging.apache.org',
                 subject: "Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER}) back to normal",
                 body: "See ${env.BUILD_URL} for more details."
         }
         failure {
             slackSend channel: 'logging',
                 color: 'danger',
-                message: ":doh: Build failed: ${env.BUILD_URL}"
+                iconEmoji: 'doh',
+                message: "Build failed: <${env.BUILD_URL}|${env.BUILD_DISPLAY_NAME}>."
             mail to: 'notifications@logging.apache.org',
-                replyTo: 'dev@logging.apache.org',
                 subject: "Build failure in Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER})",
                 body: """
 There is a build failure in ${env.JOB_NAME}.
@@ -113,12 +102,16 @@ There is a build failure in ${env.JOB_NAME}.
 Build: ${env.BUILD_URL}
 Logs: ${env.BUILD_URL}console
 Changes: ${env.BUILD_URL}changes
+
+--
+Mr. Jenkins
 """
         }
         unstable {
             slackSend channel: 'logging',
                 color: 'warning',
-                message: ":sadpanda: Build still unstable: ${env.BUILD_URL}"
+                iconEmoji: 'sadpanda',
+                message: "Build unstable: ${env.BUILD_URL}"
         }
     }
 }
