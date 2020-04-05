@@ -80,7 +80,7 @@ pipeline {
         fixed {
             slackSend channel: 'logging',
                 color: 'good',
-                message: ":excellent: <${env.JOB_URL|${env.JOB_NAME}> was fixed in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>."
+                message: ":excellent: <${env.JOB_URL}|${env.JOB_NAME}> was fixed in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>."
             mail to: 'notifications@logging.apache.org',
                 from: 'Mr. Jenkins <jenkins@builds.apache.org>',
                 subject: "Jenkins job ${env.JOB_NAME}#${env.BUILD_NUMBER} back to normal",
