@@ -72,7 +72,6 @@ pipeline {
                 color: 'good',
                 message: ":beer_parrot: Build back to normal: ${env.BUILD_URL}"
             mail to: 'notifications@logging.apache.org',
-                replyTo: 'dev@logging.apache.org',
                 subject: "Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER}) back to normal",
                 body: "See ${env.BUILD_URL} for more details."
         }
@@ -81,7 +80,6 @@ pipeline {
                 color: 'danger',
                 message: ":doh: Build failed: ${env.BUILD_URL}"
             mail to: 'notifications@logging.apache.org',
-                replyTo: 'dev@logging.apache.org',
                 subject: "Build failure in Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER})",
                 body: """
 There is a build failure in ${env.JOB_NAME}.
@@ -89,6 +87,9 @@ There is a build failure in ${env.JOB_NAME}.
 Build: ${env.BUILD_URL}
 Logs: ${env.BUILD_URL}console
 Changes: ${env.BUILD_URL}changes
+
+--
+Mr. Jenkins
 """
         }
         unstable {
