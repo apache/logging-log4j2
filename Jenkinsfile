@@ -24,7 +24,7 @@ pipeline {
         parallelsAlwaysFailFast()
         durabilityHint 'PERFORMANCE_OPTIMIZED'
     }
-    agent none
+    agent any
     stages {
         stage('Build') {
             parallel {
