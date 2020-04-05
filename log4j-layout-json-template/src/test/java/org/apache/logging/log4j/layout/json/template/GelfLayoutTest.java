@@ -7,6 +7,7 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.data.Percentage;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -66,6 +67,19 @@ public class GelfLayoutTest {
     private static void test(final LogEvent logEvent) throws Exception {
         final Map<String, Object> jsonTemplateLayoutMap = renderUsingJsonTemplateLayout(logEvent);
         final Map<String, Object> gelfLayoutMap = renderUsingGelfLayout(logEvent);
+        // Handle timestamp individually to avoid floating-point comparison hiccups.
+        {
+            final Number jsonTemplateLayoutTimestamp =
+                    (Number) jsonTemplateLayoutMap.remove("timestamp");
+            final Number gelfLayoutTimestamp =
+                    (Number) gelfLayoutMap.remove("timestamp");
+            Assertions
+                    .assertThat(jsonTemplateLayoutTimestamp.doubleValue())
+                    .isCloseTo(
+                            gelfLayoutTimestamp.doubleValue(),
+                            Percentage.withPercentage(0.01));
+        }
+        // Handle the eventual maps.
         Assertions.assertThat(jsonTemplateLayoutMap).isEqualTo(gelfLayoutMap);
     }
 
