@@ -38,7 +38,7 @@ pipeline {
                         LANG = 'en_US.UTF-8'
                     }
                     steps {
-                        sh 'mvn -B -fae -t /home/jenkins/.m2/toolchains.xml -Djenkins -V clean install deploy'
+                        sh 'mvn -B -fae -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install deploy'
                         junit '**/*-reports/*.xml'
                         archiveArtifacts artifacts: '**/*.jar', fingerprint: true
                         recordIssues sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/master',
@@ -58,7 +58,7 @@ pipeline {
                     steps {
                         bat '''
                         if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo
-                        mvn -B -fae -t f:\\jenkins\\.m2\\toolchains.xml -Dfile.encoding=UTF-8 -V clean install
+                        mvn -B -fae -t toolchains-jenkins-win.xml -Dfile.encoding=UTF-8 -V clean install
                         '''
                         junit '**/*-reports/*.xml'
                     }
