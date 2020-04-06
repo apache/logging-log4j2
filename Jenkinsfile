@@ -92,6 +92,7 @@ The build for ${env.JOB_NAME} completed successfully and is back to normal.
 Build: ${env.BUILD_URL}
 Logs: ${env.BUILD_URL}console
 Changes: ${env.BUILD_URL}changes
+
 --
 Mr. Jenkins
 Director of Continuous Integration
