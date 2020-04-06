@@ -35,7 +35,7 @@ pipeline {
                     maven 'Maven 3 (latest)'
                 }
                 environment {
-                    LANG = 'en_US.UTF-8'
+                    LANG = 'C.UTF-8'
                 }
                 steps {
                     sh 'mvn -B -fae -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install deploy'
@@ -61,7 +61,7 @@ pipeline {
                     maven 'Maven 3 (latest)'
                 }
                 environment {
-                    LANG = 'en_US.UTF-8'
+                    LANG = 'C.UTF-8'
                 }
                 steps {
                     bat '''
