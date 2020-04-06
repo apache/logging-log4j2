@@ -204,7 +204,13 @@
         <artifactId>log4j-jul</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- java.util.logging adapter -->
+      <!-- Java System Platform Loggerr -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jpl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Liquibase adapter -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-liquibase</artifactId>
@@ -226,6 +232,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-docker</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Kubernetes support -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-kubernetes</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Spring Cloud Config Client -->
