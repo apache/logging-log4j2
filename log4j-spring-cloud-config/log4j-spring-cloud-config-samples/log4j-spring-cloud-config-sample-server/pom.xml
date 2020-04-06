@@ -30,6 +30,7 @@
     </sonar.dependencyCheck.reportPath>
 
     <!-- maven plugin versions -->
+    <deploy.plugin.version>2.8.2</deploy.plugin.version>
     <maven.checkstyle.version>3.0.0</maven.checkstyle.version>
     <maven.findbugs.version>3.0.5</maven.findbugs.version>
     <maven.google.code.findbugs.version>3.0.2</maven.google.code.findbugs.version>
