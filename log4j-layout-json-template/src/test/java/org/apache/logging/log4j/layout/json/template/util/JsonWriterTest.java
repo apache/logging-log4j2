@@ -17,14 +17,17 @@
 package org.apache.logging.log4j.layout.json.template.util;
 
 import org.apache.logging.log4j.core.impl.JdkMapAdapterStringMap;
+import org.apache.logging.log4j.layout.json.template.JacksonFixture;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -33,7 +36,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 @SuppressWarnings("DoubleBraceInitialization")
 public class JsonWriterTest {
@@ -46,33 +49,33 @@ public class JsonWriterTest {
 
     @Test
     public void test_writeValue_null_Object() {
-        expectNull(writer -> writer.writeValue(null));
+        expectNull(() -> WRITER.writeValue(null));
     }
 
     @Test
     public void test_writeValue() {
         final Object value = Collections.singletonMap("a", "b");
         final String expectedJson = "{'a':'b'}".replace('\'', '"');
-        final String actualJson = write(writer -> writer.writeValue(value));
+        final String actualJson = WRITER.use(() -> WRITER.writeValue(value));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeObject_null_StringMap() {
-        expectNull(writer -> writer.writeObject((StringMap) null));
+        expectNull(() -> WRITER.writeObject((StringMap) null));
     }
 
     @Test
     public void test_writeObject_StringMap() {
         final StringMap map = new JdkMapAdapterStringMap(Collections.singletonMap("a", "b"));
         final String expectedJson = "{'a':'b'}".replace('\'', '"');
-        final String actualJson = write(writer -> writer.writeObject(map));
+        final String actualJson = WRITER.use(() -> WRITER.writeObject(map));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeObject_null_IndexedReadOnlyStringMap() {
-        expectNull(writer -> writer.writeObject((IndexedReadOnlyStringMap) null));
+        expectNull(() -> WRITER.writeObject((IndexedReadOnlyStringMap) null));
     }
 
     @Test
@@ -83,13 +86,13 @@ public class JsonWriterTest {
                     put("foo", "bar");
                 }});
         final String expectedJson = "{'buzz':1.2,'foo':'bar'}".replace('\'', '"');
-        final String actualJson = write(writer -> writer.writeObject(map));
+        final String actualJson = WRITER.use(() -> WRITER.writeObject(map));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeObject_null_Map() {
-        expectNull(writer -> writer.writeObject((Map<String, Object>) null));
+        expectNull(() -> WRITER.writeObject((Map<String, Object>) null));
     }
 
     @Test
@@ -162,13 +165,13 @@ public class JsonWriterTest {
                 "'key6':[{'buzz':1.2,'foo':'bar'},{'a':'b'}]," +
                 "'key7':'7.7777777777777'" +
                 "}").replace('\'', '"');
-        final String actualJson = write(writer -> writer.writeObject(map));
+        final String actualJson = WRITER.use(() -> WRITER.writeObject(map));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeArray_null_List() {
-        expectNull(writer -> writer.writeArray((List<Object>) null));
+        expectNull(() -> WRITER.writeArray((List<Object>) null));
     }
 
     @Test
@@ -178,13 +181,13 @@ public class JsonWriterTest {
                 "yo",
                 Collections.singletonMap("foo", "bar"));
         final String expectedJson = "[1,2,3,\"yo\",{\"foo\":\"bar\"}]";
-        final String actualJson = write(writer -> writer.writeArray(items));
+        final String actualJson = WRITER.use(() -> WRITER.writeArray(items));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeArray_null_Collection() {
-        expectNull(writer -> writer.writeArray((Collection<Object>) null));
+        expectNull(() -> WRITER.writeArray((Collection<Object>) null));
     }
 
     @Test
@@ -193,39 +196,39 @@ public class JsonWriterTest {
                 1, 2, 3,
                 Collections.singletonMap("foo", "bar"));
         final String expectedJson = "[1,2,3,{\"foo\":\"bar\"}]";
-        final String actualJson = write(writer -> writer.writeArray(items));
+        final String actualJson = WRITER.use(() -> WRITER.writeArray(items));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeArray_null_char() {
-        expectNull(writer -> writer.writeArray((char[]) null));
+        expectNull(() -> WRITER.writeArray((char[]) null));
     }
 
     @Test
     public void test_writeArray_char() {
-        final char[] items = {'\u0000', 'a', 'b', 'c', '\u009f'};
-        final String expectedJson = "[\"\\u0000\",\"a\",\"b\",\"c\",\"\\u009F\"]";
-        final String actualJson = write(writer -> writer.writeArray(items));
+        final char[] items = {'\u0000', 'a', 'b', 'c', '\u007f'};
+        final String expectedJson = "[\"\\u0000\",\"a\",\"b\",\"c\",\"\u007F\"]";
+        final String actualJson = WRITER.use(() -> WRITER.writeArray(items));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeArray_null_boolean() {
-        expectNull(writer -> writer.writeArray((boolean[]) null));
+        expectNull(() -> WRITER.writeArray((boolean[]) null));
     }
 
     @Test
     public void test_writeArray_boolean() {
         final boolean[] items = {true, false};
         final String expectedJson = "[true,false]";
-        final String actualJson = write(writer -> writer.writeArray(items));
+        final String actualJson = WRITER.use(() -> WRITER.writeArray(items));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeArray_null_byte() {
-        expectNull(writer -> writer.writeArray((byte[]) null));
+        expectNull(() -> WRITER.writeArray((byte[]) null));
     }
 
     @Test
@@ -234,13 +237,13 @@ public class JsonWriterTest {
         final String expectedJson = Arrays
                 .toString(items)
                 .replaceAll(" ", "");
-        final String actualJson = write(writer -> writer.writeArray(items));
+        final String actualJson = WRITER.use(() -> WRITER.writeArray(items));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeArray_null_short() {
-        expectNull(writer -> writer.writeArray((short[]) null));
+        expectNull(() -> WRITER.writeArray((short[]) null));
     }
 
     @Test
@@ -249,13 +252,13 @@ public class JsonWriterTest {
         final String expectedJson = Arrays
                 .toString(items)
                 .replaceAll(" ", "");
-        final String actualJson = write(writer -> writer.writeArray(items));
+        final String actualJson = WRITER.use(() -> WRITER.writeArray(items));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeArray_null_int() {
-        expectNull(writer -> writer.writeArray((int[]) null));
+        expectNull(() -> WRITER.writeArray((int[]) null));
     }
 
     @Test
@@ -264,13 +267,13 @@ public class JsonWriterTest {
         final String expectedJson = Arrays
                 .toString(items)
                 .replaceAll(" ", "");
-        final String actualJson = write(writer -> writer.writeArray(items));
+        final String actualJson = WRITER.use(() -> WRITER.writeArray(items));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeArray_null_long() {
-        expectNull(writer -> writer.writeArray((long[]) null));
+        expectNull(() -> WRITER.writeArray((long[]) null));
     }
 
     @Test
@@ -279,13 +282,13 @@ public class JsonWriterTest {
         final String expectedJson = Arrays
                 .toString(items)
                 .replaceAll(" ", "");
-        final String actualJson = write(writer -> writer.writeArray(items));
+        final String actualJson = WRITER.use(() -> WRITER.writeArray(items));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeArray_null_float() {
-        expectNull(writer -> writer.writeArray((float[]) null));
+        expectNull(() -> WRITER.writeArray((float[]) null));
     }
 
     @Test
@@ -294,13 +297,13 @@ public class JsonWriterTest {
         final String expectedJson = Arrays
                 .toString(items)
                 .replaceAll(" ", "");
-        final String actualJson = write(writer -> writer.writeArray(items));
+        final String actualJson = WRITER.use(() -> WRITER.writeArray(items));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeArray_null_double() {
-        expectNull(writer -> writer.writeArray((double[]) null));
+        expectNull(() -> WRITER.writeArray((double[]) null));
     }
 
     @Test
@@ -309,20 +312,20 @@ public class JsonWriterTest {
         final String expectedJson = Arrays
                 .toString(items)
                 .replaceAll(" ", "");
-        final String actualJson = write(writer -> writer.writeArray(items));
+        final String actualJson = WRITER.use(() -> WRITER.writeArray(items));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeArray_null_Object() {
-        expectNull(writer -> writer.writeArray((Object[]) null));
+        expectNull(() -> WRITER.writeArray((Object[]) null));
     }
 
     @Test
     public void test_writeArray_Object() {
         final String expectedJson = "[\"foo\",{\"bar\":\"buzz\"},null]";
-        final String actualJson = write(writer ->
-                writer.writeArray(new Object[]{
+        final String actualJson = WRITER.use(() ->
+                WRITER.writeArray(new Object[]{
                         "foo",
                         Collections.singletonMap("bar", "buzz"),
                         null
@@ -332,15 +335,19 @@ public class JsonWriterTest {
 
     @Test
     public void test_writeString_null_formattable() {
-        expectNull(writer -> writer.writeString((StringBuilderFormattable) null));
+        expectNull(() -> WRITER.writeString((StringBuilderFormattable) null));
     }
 
     @Test
     public void test_writeString_formattable() {
         final String expectedJson = "\"foo\\tbar\\tbuzz\"";
-        final String actualJson = write(writer ->
-                writer.writeString(stringBuilder -> {
-                    stringBuilder.append("foo\tbar\tbuzz");
+        @SuppressWarnings("Convert2Lambda")
+        final String actualJson = WRITER.use(() ->
+                WRITER.writeString(new StringBuilderFormattable() {
+                    @Override
+                    public void formatTo(StringBuilder stringBuilder) {
+                        stringBuilder.append("foo\tbar\tbuzz");
+                    }
                 }));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
@@ -353,28 +360,32 @@ public class JsonWriterTest {
                 excessiveString.substring(0, maxStringLength) +
                 WRITER.getTruncatedStringSuffix() +
                 '"';
-        final String actualJson = write(writer ->
-                writer.writeString(stringBuilder -> {
-                    stringBuilder.append(excessiveString);
+        @SuppressWarnings("Convert2Lambda")
+        final String actualJson = WRITER.use(() ->
+                WRITER.writeString(new StringBuilderFormattable() {
+                    @Override
+                    public void formatTo(StringBuilder stringBuilder) {
+                        stringBuilder.append(excessiveString);
+                    }
                 }));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeString_null_seq_1() {
-        expectNull(writer -> writer.writeString((CharSequence) null));
+        expectNull(() -> WRITER.writeString((CharSequence) null));
     }
 
     @Test
     public void test_writeString_null_seq_2() {
-        expectNull(writer -> writer.writeString((CharSequence) null, 0, 4));
+        expectNull(() -> WRITER.writeString((CharSequence) null, 0, 4));
     }
 
     @Test
     public void test_writeString_seq_negative_offset() {
         Assertions
                 .assertThatThrownBy(() ->
-                        write(writer -> writer.writeString("a", -1, 0)))
+                        WRITER.use(() -> WRITER.writeString("a", -1, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("offset");
     }
@@ -383,7 +394,7 @@ public class JsonWriterTest {
     public void test_writeString_seq_negative_length() {
         Assertions
                 .assertThatThrownBy(() ->
-                        write(writer -> writer.writeString("a", 0, -1)))
+                        WRITER.use(() -> WRITER.writeString("a", 0, -1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("length");
     }
@@ -395,49 +406,33 @@ public class JsonWriterTest {
                 Strings.repeat("x", WRITER.getMaxStringLength()) +
                 WRITER.getTruncatedStringSuffix() +
                 '"';
-        final String actualJson = write(writer -> writer.writeString(seq));
+        final String actualJson = WRITER.use(() -> WRITER.writeString(seq));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
-    public void test_writeString_seq() {
-        final String expectedJson = "\"" +
-                "\\b" +
-                "\\t" +
-                "\\f" +
-                "\\n" +
-                "\\r" +
-                "\\\"" +
-                "\\\\" +
-                "\\u007F" +
-                "\"";
-        final String actualJson = write(writer ->
-                writer.writeString("\b" +
-                        "\t" +
-                        "\f" +
-                        "\n" +
-                        "\r" +
-                        "\"" +
-                        "\\" +
-                        '\u007f'));
-        Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+    public void test_writeString_seq() throws IOException {
+        testQuoting((final Character c) -> {
+            final String s = "" + c;
+            return WRITER.use(() -> WRITER.writeString(s));
+        });
     }
 
     @Test
     public void test_writeString_null_buffer_1() {
-        expectNull(writer -> writer.writeString((char[]) null));
+        expectNull(() -> WRITER.writeString((char[]) null));
     }
 
     @Test
     public void test_writeString_null_buffer_2() {
-        expectNull(writer -> writer.writeString((char[]) null, 0, 4));
+        expectNull(() -> WRITER.writeString((char[]) null, 0, 4));
     }
 
     @Test
     public void test_writeString_buffer_negative_offset() {
         Assertions
                 .assertThatThrownBy(() ->
-                        write(writer -> writer.writeString(new char[]{'a'}, -1, 0)))
+                        WRITER.use(() -> WRITER.writeString(new char[]{'a'}, -1, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("offset");
     }
@@ -446,7 +441,7 @@ public class JsonWriterTest {
     public void test_writeString_buffer_negative_length() {
         Assertions
                 .assertThatThrownBy(() ->
-                        write(writer -> writer.writeString(new char[]{'a'}, 0, -1)))
+                        WRITER.use(() -> WRITER.writeString(new char[]{'a'}, 0, -1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("length");
     }
@@ -460,40 +455,42 @@ public class JsonWriterTest {
                 Strings.repeat("x", WRITER.getMaxStringLength()) +
                 WRITER.getTruncatedStringSuffix() +
                 '"';
-        final String actualJson = write(writer -> writer.writeString(buffer));
+        final String actualJson = WRITER.use(() -> WRITER.writeString(buffer));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
-    public void test_writeString_buffer() {
-        final String expectedJson = "\"" +
-                "\\b" +
-                "\\t" +
-                "\\f" +
-                "\\n" +
-                "\\r" +
-                "\\\"" +
-                "\\\\" +
-                "\\u007F" +
-                "\"";
-        final String actualJson = write(writer -> {
-            final String seq = "\b" +
-                    "\t" +
-                    "\f" +
-                    "\n" +
-                    "\r" +
-                    "\"" +
-                    "\\" +
-                    '\u007f';
-            final char[] buffer = seq.toCharArray();
-            writer.writeString(buffer);
+    public void test_writeString_buffer() throws IOException {
+        final char[] buffer = new char[1];
+        testQuoting((final Character c) -> {
+            buffer[0] = c;
+            return WRITER.use(() -> WRITER.writeString(buffer));
         });
-        Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+    }
+
+    private void testQuoting(
+            final Function<Character, String> quoter) throws IOException {
+        final SoftAssertions assertions = new SoftAssertions();
+        for (char c = Character.MIN_VALUE;; c++) {
+            final String s = "" + c;
+            final String expectedJson = JacksonFixture
+                    .getObjectMapper()
+                    .writeValueAsString(s);
+            final String actualJson = quoter.apply(c);
+            assertions
+                    .assertThat(actualJson)
+                    .as("c='%c' (%d)", c, (int) c)
+                    .isEqualTo(expectedJson);
+            if (c == Character.MAX_VALUE) {
+                break;
+            }
+        }
+        assertions.assertAll();
     }
 
     @Test
     public void test_writeNumber_null_BigDecimal() {
-        expectNull(writer -> writer.writeNumber((BigDecimal) null));
+        expectNull(() -> WRITER.writeNumber((BigDecimal) null));
     }
 
     @Test
@@ -507,14 +504,14 @@ public class JsonWriterTest {
                         '.' + Long.MAX_VALUE +
                         "" + Long.MAX_VALUE)}) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = write(writer -> writer.writeNumber(number));
+            final String actualJson = WRITER.use(() -> WRITER.writeNumber(number));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
 
     @Test
     public void test_writeNumber_null_BigInteger() {
-        expectNull(writer -> writer.writeNumber((BigInteger) null));
+        expectNull(() -> WRITER.writeNumber((BigInteger) null));
     }
 
     @Test
@@ -525,7 +522,7 @@ public class JsonWriterTest {
                 BigInteger.TEN,
                 new BigInteger("" + Long.MAX_VALUE + "" + Long.MAX_VALUE)}) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = write(writer -> writer.writeNumber(number));
+            final String actualJson = WRITER.use(() -> WRITER.writeNumber(number));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
@@ -534,7 +531,7 @@ public class JsonWriterTest {
     public void test_writeNumber_float() {
         for (final float number : new float[]{Float.MIN_VALUE, -1.0F, 0F, 1.0F, Float.MAX_VALUE}) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = write(writer -> writer.writeNumber(number));
+            final String actualJson = WRITER.use(() -> WRITER.writeNumber(number));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
@@ -543,7 +540,7 @@ public class JsonWriterTest {
     public void test_writeNumber_double() {
         for (final double number : new double[]{Double.MIN_VALUE, -1.0D, 0D, 1.0D, Double.MAX_VALUE}) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = write(writer -> writer.writeNumber(number));
+            final String actualJson = WRITER.use(() -> WRITER.writeNumber(number));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
@@ -552,7 +549,7 @@ public class JsonWriterTest {
     public void test_writeNumber_short() {
         for (final short number : new short[]{Short.MIN_VALUE, -1, 0, 1, Short.MAX_VALUE}) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = write(writer -> writer.writeNumber(number));
+            final String actualJson = WRITER.use(() -> WRITER.writeNumber(number));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
@@ -561,7 +558,7 @@ public class JsonWriterTest {
     public void test_writeNumber_int() {
         for (final int number : new int[]{Integer.MIN_VALUE, -1, 0, 1, Integer.MAX_VALUE}) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = write(writer -> writer.writeNumber(number));
+            final String actualJson = WRITER.use(() -> WRITER.writeNumber(number));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
@@ -570,7 +567,7 @@ public class JsonWriterTest {
     public void test_writeNumber_long() {
         for (final long number : new long[]{Long.MIN_VALUE, -1L, 0L, 1L, Long.MAX_VALUE}) {
             final String expectedJson = String.valueOf(number);
-            final String actualJson = write(writer -> writer.writeNumber(number));
+            final String actualJson = WRITER.use(() -> WRITER.writeNumber(number));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
         }
     }
@@ -578,7 +575,7 @@ public class JsonWriterTest {
     @Test
     public void test_writeNumber_integral_and_negative_fractional() {
         Assertions
-                .assertThatThrownBy(() -> write(writer -> writer.writeNumber(0, -1)))
+                .assertThatThrownBy(() -> WRITER.use(() -> WRITER.writeNumber(0, -1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("was expecting a positive fraction: -1");
     }
@@ -586,39 +583,39 @@ public class JsonWriterTest {
     @Test
     public void test_writeNumber_integral_and_zero_fractional() {
         final String expectedJson = "123";
-        final String actualJson = write(writer -> writer.writeNumber(123L, 0L));
+        final String actualJson = WRITER.use(() -> WRITER.writeNumber(123L, 0L));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeNumber_integral_and_fractional() {
         final String expectedJson = "123.456";
-        final String actualJson = write(writer -> writer.writeNumber(123L, 456L));
+        final String actualJson = WRITER.use(() -> WRITER.writeNumber(123L, 456L));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeBoolean_true() {
         final String expectedJson = "true";
-        final String actualJson = write(writer -> writer.writeBoolean(true));
+        final String actualJson = WRITER.use(() -> WRITER.writeBoolean(true));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeBoolean_false() {
         final String expectedJson = "false";
-        final String actualJson = write(writer -> writer.writeBoolean(false));
+        final String actualJson = WRITER.use(() -> WRITER.writeBoolean(false));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeNull() {
-        expectNull(JsonWriter::writeNull);
+        expectNull(WRITER::writeNull);
     }
 
-    private void expectNull(Consumer<JsonWriter> body) {
+    private void expectNull(Runnable body) {
         final String expectedJson = "null";
-        final String actualJson = write(body);
+        final String actualJson = WRITER.use(body);
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -626,8 +623,8 @@ public class JsonWriterTest {
     public void test_writeRawString_null_seq() {
         Assertions
                 .assertThatThrownBy(() ->
-                        write(writer ->
-                                writer.writeRawString((String) null)))
+                        WRITER.use(() ->
+                                WRITER.writeRawString((String) null)))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("seq");
     }
@@ -636,8 +633,8 @@ public class JsonWriterTest {
     public void test_writeRawString_seq_negative_offset() {
         Assertions
                 .assertThatThrownBy(() ->
-                        write(writer ->
-                                writer.writeRawString("a", -1, 0)))
+                        WRITER.use(() ->
+                                WRITER.writeRawString("a", -1, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("offset");
     }
@@ -646,8 +643,8 @@ public class JsonWriterTest {
     public void test_writeRawString_seq_negative_length() {
         Assertions
                 .assertThatThrownBy(() ->
-                        write(writer ->
-                                writer.writeRawString("a", 0, -1)))
+                        WRITER.use(() ->
+                                WRITER.writeRawString("a", 0, -1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("length");
     }
@@ -655,14 +652,15 @@ public class JsonWriterTest {
     @Test
     public void test_writeRawString_seq() {
         final String expectedJson = "this is not a valid JSON string";
-        final String actualJson = write(writer -> writer.writeRawString(expectedJson));
+        final String actualJson = WRITER.use(() -> WRITER.writeRawString(expectedJson));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
     public void test_writeRawString_null_buffer() {
         Assertions
-                .assertThatThrownBy(() -> write(writer -> writer.writeRawString((char[]) null)))
+                .assertThatThrownBy(() -> WRITER.use(() ->
+                        WRITER.writeRawString((char[]) null)))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("buffer");
     }
@@ -671,8 +669,8 @@ public class JsonWriterTest {
     public void test_writeRawString_buffer_negative_offset() {
         Assertions
                 .assertThatThrownBy(() ->
-                        write(writer ->
-                                writer.writeRawString(new char[]{'a'}, -1, 0)))
+                        WRITER.use(() ->
+                                WRITER.writeRawString(new char[]{'a'}, -1, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("offset");
     }
@@ -681,8 +679,8 @@ public class JsonWriterTest {
     public void test_writeRawString_buffer_negative_length() {
         Assertions
                 .assertThatThrownBy(() ->
-                        write(writer ->
-                                writer.writeRawString(new char[]{'a'}, 0, -1)))
+                        WRITER.use(() ->
+                                WRITER.writeRawString(new char[]{'a'}, 0, -1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("length");
     }
@@ -690,19 +688,8 @@ public class JsonWriterTest {
     @Test
     public void test_writeRawString_buffer() {
         final String expectedJson = "this is not a valid JSON string";
-        final String actualJson = write(writer -> writer.writeRawString(expectedJson.toCharArray()));
+        final String actualJson = WRITER.use(() -> WRITER.writeRawString(expectedJson.toCharArray()));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
-    }
-
-    private static String write(Consumer<JsonWriter> body) {
-        final JsonWriter writer = getCleanWriter();
-        body.accept(writer);
-        return writer.getStringBuilder().toString();
-    }
-
-    private static JsonWriter getCleanWriter() {
-        WRITER.close();
-        return WRITER;
     }
 
 }

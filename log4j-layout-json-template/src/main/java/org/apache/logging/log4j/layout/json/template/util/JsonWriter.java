@@ -18,7 +18,6 @@ package org.apache.logging.log4j.layout.json.template.util;
 
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 
 import java.math.BigDecimal;
@@ -46,28 +45,72 @@ import java.util.Objects;
  *     <tt>char/boolean/byte/short/int/long/float/double</tt> and {@link Object}
  *     <li>{@link CharSequence} and <tt>char[]</tt> with necessary escaping
  * </ul>
+ * <p>
+ * JSON standard quoting routines are borrowed from
+ * <a href="https://github.com/FasterXML/jackson-core">Jackson</a>.
  */
 public final class JsonWriter implements AutoCloseable, Cloneable {
 
+    private final static char[] HEX_CHARS = "0123456789ABCDEF".toCharArray();
+
+    /**
+     * Lookup table used for determining which output characters in 7-bit ASCII
+     * range (i.e., first 128 Unicode code points, single-byte UTF-8 characters)
+     * need to be quoted.
+     *<p>
+     * Value of 0 means "no escaping"; other positive values, that value is
+     * character to use after backslash; and negative values, that generic
+     * (backslash - u) escaping is to be used.
+     */
+    private final static int[] ESC_CODES;
+    static {
+        int[] table = new int[128];
+        // Control chars need generic escape sequence
+        for (int i = 0; i < 32; ++i) {
+            // 04-Mar-2011, tatu: Used to use "-(i + 1)", replaced with constant
+            table[i] = -1;
+        }
+        // Others (and some within that range too) have explicit shorter sequences
+        table['"'] = '"';
+        table['\\'] = '\\';
+        // Escaping of slash is optional, so let's not add it
+        table[0x08] = 'b';
+        table[0x09] = 't';
+        table[0x0C] = 'f';
+        table[0x0A] = 'n';
+        table[0x0D] = 'r';
+        ESC_CODES = table;
+    }
+
+    private final char[] quoteBuffer;
+
     private final StringBuilder stringBuilder;
+
+    private final StringBuilder formattableBuffer;
 
     private final int maxStringLength;
 
     private final String truncatedStringSuffix;
 
-    private final String escapedTruncatedStringSuffix;
+    private final String quotedTruncatedStringSuffix;
 
     private JsonWriter(final Builder builder) {
+        this.quoteBuffer = new char[]{'\\', '-', '0', '0', '-', '-'};
         this.stringBuilder = new StringBuilder();
+        this.formattableBuffer = new StringBuilder();
         this.maxStringLength = builder.maxStringLength;
         this.truncatedStringSuffix = builder.truncatedStringSuffix;
-        this.escapedTruncatedStringSuffix = escapeString(builder.truncatedStringSuffix);
+        this.quotedTruncatedStringSuffix = quoteString(builder.truncatedStringSuffix);
     }
 
-    private static String escapeString(final String string) {
-        final StringBuilder stringBuilder = new StringBuilder(string);
-        StringBuilders.escapeJson(stringBuilder, 0);
-        return stringBuilder.toString();
+    private String quoteString(final String string) {
+        final int startIndex = stringBuilder.length();
+        quoteString(string, 0, string.length());
+        final StringBuilder quotedStringBuilder = new StringBuilder();
+        quotedStringBuilder.append(stringBuilder, startIndex, stringBuilder.length());
+        final String quotedString = quotedStringBuilder.toString();
+        stringBuilder.setLength(startIndex);
+        return quotedString;
     }
 
     public String use(Runnable runnable) {
@@ -295,11 +338,8 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
                 if (itemIndex > 0) {
                     writeSeparator();
                 }
-                final char item = items[itemIndex];
                 stringBuilder.append('"');
-                final int startIndex = stringBuilder.length();
-                stringBuilder.append(item);
-                StringBuilders.escapeJson(stringBuilder, startIndex);
+                quoteString(items, itemIndex, 1);
                 stringBuilder.append('"');
             }
             writeArrayEnd();
@@ -451,17 +491,14 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
             writeNull();
         } else {
             stringBuilder.append('"');
-            final int startIndex = stringBuilder.length();
-            formattable.formatTo(stringBuilder);
-            final int length = stringBuilder.length() - startIndex;
-            if (length > 0) {
-                if (length > maxStringLength) {
-                    stringBuilder.setLength(startIndex + maxStringLength);
-                    StringBuilders.escapeJson(stringBuilder, startIndex);
-                    stringBuilder.append(escapedTruncatedStringSuffix);
-                } else {
-                    StringBuilders.escapeJson(stringBuilder, startIndex);
-                }
+            formattableBuffer.setLength(0);
+            formattable.formatTo(formattableBuffer);
+            final int length = formattableBuffer.length();
+            if (length > maxStringLength) {
+                quoteString(formattableBuffer, 0, maxStringLength);
+                stringBuilder.append(quotedTruncatedStringSuffix);
+            } else {
+                quoteString(formattableBuffer, 0, length);
             }
             stringBuilder.append('"');
         }
@@ -499,21 +536,45 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         stringBuilder.append('"');
         // Handle max. string length complying input.
         if (maxStringLength <= 0 || length <= maxStringLength) {
-            final int limit = offset + length;
-            final int escapeOffset = stringBuilder.length();
-            stringBuilder.append(seq, offset, limit);
-            StringBuilders.escapeJson(stringBuilder, escapeOffset);
+            quoteString(seq, offset, length);
         }
         // Handle max. string length violating input.
         else {
-            final int limit = offset + maxStringLength;
-            final int escapeOffset = stringBuilder.length();
-            stringBuilder.append(seq, offset, limit);
-            StringBuilders.escapeJson(stringBuilder, escapeOffset);
-            stringBuilder.append(escapedTruncatedStringSuffix);
+            quoteString(seq, offset, maxStringLength);
+            stringBuilder.append(quotedTruncatedStringSuffix);
         }
         stringBuilder.append('"');
 
+    }
+
+    /**
+     * Quote text contents using JSON standard quoting.
+     */
+    private void quoteString(
+            final CharSequence seq,
+            final int offset,
+            final int length) {
+        final int limit = offset + length;
+        int i = offset;
+        outer:
+        while (i < limit) {
+            while (true) {
+                char c = seq.charAt(i);
+                if (c < ESC_CODES.length && ESC_CODES[c] != 0) {
+                    break;
+                }
+                stringBuilder.append(c);
+                if (++i >= limit) {
+                    break outer;
+                }
+            }
+            final char d = seq.charAt(i++);
+            int escCode = ESC_CODES[d];
+            int quoteBufferLength = escCode < 0
+                    ? quoteNumeric(d)
+                    : quoteNamed(escCode);
+            stringBuilder.append(quoteBuffer, 0, quoteBufferLength);
+        }
     }
 
     public void writeString(final char[] buffer) {
@@ -548,21 +609,58 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         stringBuilder.append('"');
         // Handle max. string length complying input.
         if (maxStringLength <= 0 || length <= maxStringLength) {
-            final int limit = offset + length;
-            final int escapeOffset = stringBuilder.length();
-            stringBuilder.append(buffer, offset, limit);
-            StringBuilders.escapeJson(stringBuilder, escapeOffset);
+            quoteString(buffer, offset, length);
         }
         // Handle max. string length violating input.
         else {
-            final int limit = offset + maxStringLength;
-            final int escapeOffset = stringBuilder.length();
-            stringBuilder.append(buffer, offset, limit);
-            StringBuilders.escapeJson(stringBuilder, escapeOffset);
-            stringBuilder.append(escapedTruncatedStringSuffix);
+            quoteString(buffer, offset, maxStringLength);
+            stringBuilder.append(quotedTruncatedStringSuffix);
         }
         stringBuilder.append('"');
 
+    }
+
+    /**
+     * Quote text contents using JSON standard quoting.
+     */
+    private void quoteString(
+            final char[] buffer,
+            final int offset,
+            final int length) {
+        final int limit = offset + length;
+        int i = offset;
+        outer:
+        while (i < limit) {
+            while (true) {
+                char c = buffer[i];
+                if (c < ESC_CODES.length && ESC_CODES[c] != 0) {
+                    break;
+                }
+                stringBuilder.append(c);
+                if (++i >= limit) {
+                    break outer;
+                }
+            }
+            char d = buffer[i++];
+            int escCode = ESC_CODES[d];
+            int quoteBufferLength = escCode < 0
+                    ? quoteNumeric(d)
+                    : quoteNamed(escCode);
+            stringBuilder.append(quoteBuffer, 0, quoteBufferLength);
+        }
+    }
+
+    private int quoteNumeric(int value) {
+        quoteBuffer[1] = 'u';
+        // We know it's a control char, so only the last 2 chars are non-0
+        quoteBuffer[4] = HEX_CHARS[value >> 4];
+        quoteBuffer[5] = HEX_CHARS[value & 0xF];
+        return 6;
+    }
+
+    private int quoteNamed(int esc) {
+        quoteBuffer[1] = (char) esc;
+        return 2;
     }
 
     private void writeNumber(final Number number) {
