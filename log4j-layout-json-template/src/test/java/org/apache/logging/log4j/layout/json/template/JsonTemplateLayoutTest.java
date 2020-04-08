@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.layout.json.template;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -27,6 +28,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
@@ -39,6 +41,7 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
+import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
@@ -46,9 +49,13 @@ import org.assertj.core.data.Percentage;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
@@ -58,7 +65,12 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -1357,13 +1369,13 @@ public class JsonTemplateLayoutTest {
     public void test_StackTraceTextResolver_with_maxStringLength() throws Exception {
 
         // Create the event template.
-        ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
+        final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
         eventTemplateRootNode.put("stackTrace", "${json:exception:stackTrace:text}");
-        String eventTemplate = eventTemplateRootNode.toString();
+        final String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
-        int maxStringLength = eventTemplate.length();
-        JsonTemplateLayout layout = JsonTemplateLayout
+        final int maxStringLength = eventTemplate.length();
+        final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplate(eventTemplate)
@@ -1372,8 +1384,8 @@ public class JsonTemplateLayoutTest {
                 .build();
 
         // Create the log event.
-        SimpleMessage message = new SimpleMessage("foo");
-        LogEvent logEvent = Log4jLogEvent
+        final SimpleMessage message = new SimpleMessage("foo");
+        final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
                 .setLoggerName(LOGGER_NAME)
                 .setMessage(message)
@@ -1381,10 +1393,220 @@ public class JsonTemplateLayoutTest {
                 .build();
 
         // Check the serialized event.
-        String serializedLogEvent = layout.toSerializable(logEvent);
-        JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
+        final String serializedLogEvent = layout.toSerializable(logEvent);
+        final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
         assertThat(point(rootNode, "stackTrace").asText()).isNotBlank();
 
+    }
+
+    @Test
+    public void test_null_eventDelimiter() {
+
+        // Create the event template.
+        final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
+        eventTemplateRootNode.put("key", "val");
+        final String eventTemplate = eventTemplateRootNode.toString();
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .setEventDelimiter("\0")
+                .build();
+
+        // Create the log event.
+        final SimpleMessage message = new SimpleMessage("foo");
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setMessage(message)
+                .setThrown(NonAsciiUtf8MethodNameContainingException.INSTANCE)
+                .build();
+
+        // Check the serialized event.
+        final String serializedLogEvent = layout.toSerializable(logEvent);
+        assertThat(serializedLogEvent).isEqualTo(eventTemplate + '\0');
+
+    }
+
+    @Test
+    public void test_against_SocketAppender() throws Exception {
+
+        // Craft nasty events.
+        final List<LogEvent> logEvents = createNastyLogEvents();
+
+        // Create the event template.
+        final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
+        eventTemplateRootNode.put("message", "${json:message}");
+        final String eventTemplate = eventTemplateRootNode.toString();
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        // Create the server.
+        final int port = AvailablePortFinder.getNextAvailable();
+        try (final JsonAcceptingTcpServer server = new JsonAcceptingTcpServer(port, 1)) {
+
+            // Create the appender.
+            final SocketAppender appender = SocketAppender
+                    .newBuilder()
+                    .setHost("localhost")
+                    .setBufferedIo(false)
+                    .setPort(port)
+                    .setReconnectDelayMillis(100)
+                    .setName("test")
+                    .setImmediateFail(false)
+                    .setIgnoreExceptions(false)
+                    .setLayout(layout)
+                    .build();
+
+            // Start the appender.
+            appender.start();
+
+            // Transfer and verify the log events.
+            for (int logEventIndex = 0; logEventIndex < logEvents.size(); logEventIndex++) {
+
+                // Send the log event.
+                final LogEvent logEvent = logEvents.get(logEventIndex);
+                appender.append(logEvent);
+                appender.getManager().flush();
+
+                // Pull the parsed log event.
+                final JsonNode node = server.receivedNodes.poll(3, TimeUnit.SECONDS);
+                assertThat(node)
+                        .as("logEventIndex=%d", logEventIndex)
+                        .isNotNull();
+
+                // Verify the received content.
+                final String expectedMessage = logEvent.getMessage().getFormattedMessage();
+                final String expectedMessageChars = explainChars(expectedMessage);
+                final String actualMessage = point(node, "message").asText();
+                final String actualMessageChars = explainChars(actualMessage);
+                assertThat(actualMessageChars)
+                        .as("logEventIndex=%d", logEventIndex)
+                        .isEqualTo(expectedMessageChars);
+
+            }
+
+            // Verify that there were no overflows.
+            assertThat(server.droppedNodeCount).isZero();
+
+        }
+
+    }
+
+    private static List<LogEvent> createNastyLogEvents() {
+        return createNastyMessages()
+                .stream()
+                .map(message -> Log4jLogEvent
+                        .newBuilder()
+                        .setLoggerName(LOGGER_NAME)
+                        .setMessage(message)
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private static List<SimpleMessage> createNastyMessages() {
+
+        // Determine the message count and character offset.
+        final int messageCount = 1024;
+        final int minChar = Character.MIN_VALUE;
+        final int maxChar = Character.MIN_HIGH_SURROGATE - 1;
+        final int totalCharCount = maxChar - minChar + 1;
+        final int charOffset = totalCharCount / messageCount;
+
+        // Populate messages.
+        List<SimpleMessage> messages = new ArrayList<>(messageCount);
+        for (int messageIndex = 0; messageIndex < messageCount; messageIndex++) {
+            final StringBuilder stringBuilder = new StringBuilder(messageIndex + "@");
+            for (int charIndex = 0; charIndex < charOffset; charIndex++) {
+                final char c = (char) (minChar + messageIndex * charOffset + charIndex);
+                stringBuilder.append(c);
+            }
+            final String messageString = stringBuilder.toString();
+            final SimpleMessage message = new SimpleMessage(messageString);
+            messages.add(message);
+        }
+        return messages;
+
+    }
+
+    private static final class JsonAcceptingTcpServer extends Thread implements AutoCloseable {
+
+        private final ServerSocket serverSocket;
+
+        private final BlockingQueue<JsonNode> receivedNodes;
+
+        private volatile int droppedNodeCount = 0;
+
+        private volatile boolean closed = false;
+
+        private JsonAcceptingTcpServer(
+                final int port,
+                final int capacity) throws IOException {
+            this.serverSocket = new ServerSocket(port);
+            this.receivedNodes = new ArrayBlockingQueue<>(capacity);
+            serverSocket.setReuseAddress(true);
+            serverSocket.setSoTimeout(5_000);
+            setDaemon(true);
+            start();
+        }
+
+        @Override
+        public void run() {
+            try {
+                try (final Socket socket = serverSocket.accept()) {
+                    final InputStream inputStream = socket.getInputStream();
+                    while (!closed) {
+                        final MappingIterator<JsonNode> iterator = JacksonFixture
+                                .getObjectMapper()
+                                .readerFor(JsonNode.class)
+                                .readValues(inputStream);
+                        while (iterator.hasNextValue()) {
+                            final JsonNode value = iterator.nextValue();
+                            synchronized (this) {
+                                final boolean added = receivedNodes.offer(value);
+                                if (!added) {
+                                    droppedNodeCount++;
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (final EOFException ignored) {
+                // Socket is closed.
+            } catch (final Exception error) {
+                if (!closed) {
+                    throw new RuntimeException(error);
+                }
+            }
+        }
+
+        @Override
+        public synchronized void close() throws InterruptedException {
+            if (closed) {
+                throw new IllegalStateException("shutdown has already been invoked");
+            }
+            closed = true;
+            interrupt();
+            join(3_000L);
+        }
+
+    }
+
+    private static String explainChars(final String input) {
+        return IntStream
+                .range(0, input.length())
+                .mapToObj(i -> {
+                    final char c = input.charAt(i);
+                    return String.format("'%c' (%04X)", c, (int) c);
+                })
+                .collect(Collectors.joining(", "));
     }
 
 }
