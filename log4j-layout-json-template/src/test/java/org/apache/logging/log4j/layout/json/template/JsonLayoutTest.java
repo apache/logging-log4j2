@@ -1,6 +1,5 @@
 package org.apache.logging.log4j.layout.json.template;
 
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -14,6 +13,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static org.apache.logging.log4j.layout.json.template.LayoutComparisonHelpers.removeNullEntries;
+import static org.apache.logging.log4j.layout.json.template.LayoutComparisonHelpers.renderUsing;
 
 public class JsonLayoutTest {
 
@@ -72,17 +74,6 @@ public class JsonLayoutTest {
         return map;
     }
 
-    private static Map<String, Object> removeNullEntries(
-            final Map<String, Object> root) {
-        final Map<String, Object> trimmedRoot = new LinkedHashMap<>(root);
-        root.forEach((final String key, final Object value) -> {
-            if (value == null) {
-                trimmedRoot.remove(key);
-            }
-        });
-        return trimmedRoot;
-    }
-
     private static Map<String, Object> removeEmptyObject(
             final Map<String, Object> root,
             final String key) {
@@ -100,15 +91,6 @@ public class JsonLayoutTest {
         final Map<String, Object> trimmedRoot = new LinkedHashMap<>(root);
         trimmedRoot.remove(key);
         return trimmedRoot;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Map<String, Object> renderUsing(
-            final LogEvent logEvent,
-            final Layout<String> layout)
-            throws Exception {
-        final String json = layout.toSerializable(logEvent);
-        return JacksonFixture.getObjectMapper().readValue(json, Map.class);
     }
 
 }

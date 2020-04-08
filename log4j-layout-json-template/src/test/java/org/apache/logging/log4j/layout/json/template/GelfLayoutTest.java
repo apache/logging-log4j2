@@ -1,6 +1,5 @@
 package org.apache.logging.log4j.layout.json.template;
 
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -15,6 +14,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
+import static org.apache.logging.log4j.layout.json.template.LayoutComparisonHelpers.removeNullEntries;
+import static org.apache.logging.log4j.layout.json.template.LayoutComparisonHelpers.renderUsing;
 
 public class GelfLayoutTest {
 
@@ -87,7 +89,8 @@ public class GelfLayoutTest {
             final LogEvent logEvent)
             throws Exception {
         final Map<String, Object> map = renderUsing(logEvent, JSON_TEMPLATE_LAYOUT);
-        return flattenKey(map, "_mdc", "_", String::valueOf);
+        final Map<String, Object> flattenedMap = flattenKey(map, "_mdc", "_", String::valueOf);
+        return removeNullEntries(flattenedMap);
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -112,15 +115,6 @@ public class GelfLayoutTest {
             final LogEvent logEvent)
             throws Exception {
         return renderUsing(logEvent, GELF_LAYOUT);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Map<String, Object> renderUsing(
-            final LogEvent logEvent,
-            final Layout<String> layout)
-            throws Exception {
-        final String json = layout.toSerializable(logEvent);
-        return JacksonFixture.getObjectMapper().readValue(json, Map.class);
     }
 
 }

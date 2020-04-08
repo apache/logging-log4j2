@@ -1,7 +1,6 @@
 package org.apache.logging.log4j.layout.json.template;
 
 import co.elastic.logging.log4j2.EcsLayout;
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -13,6 +12,9 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.apache.logging.log4j.layout.json.template.LayoutComparisonHelpers.removeNullEntries;
+import static org.apache.logging.log4j.layout.json.template.LayoutComparisonHelpers.renderUsing;
 
 public class EcsLayoutTest {
 
@@ -69,7 +71,8 @@ public class EcsLayoutTest {
             final LogEvent logEvent)
             throws Exception {
         final Map<String, Object> map = renderUsing(logEvent, JSON_TEMPLATE_LAYOUT);
-        return stringifyGroup(map, "labels");
+        final Map<String, Object> flattenedMap = stringifyGroup(map, "labels");
+        return removeNullEntries(flattenedMap);
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -116,15 +119,6 @@ public class EcsLayoutTest {
             }
         });
         return output;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Map<String, Object> renderUsing(
-            final LogEvent logEvent,
-            final Layout<String> layout)
-            throws Exception {
-        final String json = layout.toSerializable(logEvent);
-        return JacksonFixture.getObjectMapper().readValue(json, Map.class);
     }
 
 }
