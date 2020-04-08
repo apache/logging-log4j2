@@ -1,0 +1,114 @@
+package org.apache.logging.log4j.layout.json.template;
+
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
+import org.assertj.core.api.Assertions;
+import org.junit.Test;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+public class JsonLayoutTest {
+
+    private static final Configuration CONFIGURATION = new DefaultConfiguration();
+
+    private static final JsonTemplateLayout JSON_TEMPLATE_LAYOUT = JsonTemplateLayout
+            .newBuilder()
+            .setConfiguration(CONFIGURATION)
+            .setEventTemplateUri("classpath:JsonLayout.json")
+            .build();
+
+    private static final JsonLayout JSON_LAYOUT = JsonLayout
+            .newBuilder()
+            .setConfiguration(CONFIGURATION)
+            .build();
+
+    @Test
+    public void test_lite_log_events() throws Exception {
+        final List<LogEvent> logEvents = LogEventFixture.createLiteLogEvents(1_000);
+        test(logEvents);
+    }
+
+    @Test
+    public void test_full_log_events() throws Exception {
+        final List<LogEvent> logEvents = LogEventFixture.createFullLogEvents(1_000);
+        test(logEvents);
+    }
+
+    private static void test(final Collection<LogEvent> logEvents) throws Exception {
+        for (final LogEvent logEvent : logEvents) {
+            test(logEvent);
+        }
+    }
+
+    private static void test(final LogEvent logEvent) throws Exception {
+        final Map<String, Object> jsonTemplateLayoutMap = renderUsingJsonTemplateLayout(logEvent);
+        final Map<String, Object> jsonLayoutMap = renderUsingJsonLayout(logEvent);
+        Assertions.assertThat(jsonTemplateLayoutMap).isEqualTo(jsonLayoutMap);
+    }
+
+    private static Map<String, Object> renderUsingJsonTemplateLayout(
+            final LogEvent logEvent)
+            throws Exception {
+        final Map<String, Object> map = renderUsing(logEvent, JSON_TEMPLATE_LAYOUT);
+        final Map<String, Object> nullExcludedMap = removeNullEntries(map);
+        final Map<String, Object> emptySourceExcludedMap = removeEmptyObject(nullExcludedMap, "source");
+        emptySourceExcludedMap.remove("thrown");
+        return emptySourceExcludedMap;
+    }
+
+    private static Map<String, Object> renderUsingJsonLayout(
+            final LogEvent logEvent)
+            throws Exception {
+        final Map<String, Object> map = renderUsing(logEvent, JSON_LAYOUT);
+        map.remove("thrown");
+        return map;
+    }
+
+    private static Map<String, Object> removeNullEntries(
+            final Map<String, Object> root) {
+        final Map<String, Object> trimmedRoot = new LinkedHashMap<>(root);
+        root.forEach((final String key, final Object value) -> {
+            if (value == null) {
+                trimmedRoot.remove(key);
+            }
+        });
+        return trimmedRoot;
+    }
+
+    private static Map<String, Object> removeEmptyObject(
+            final Map<String, Object> root,
+            final String key) {
+        @SuppressWarnings("unchecked")
+        final Map<String, Object> source =
+                (Map<String, Object>) root.getOrDefault(
+                        key, Collections.emptyMap());
+        boolean emptySource = source
+                .values()
+                .stream()
+                .allMatch(Objects::isNull);
+        if (!emptySource) {
+            return root;
+        }
+        final Map<String, Object> trimmedRoot = new LinkedHashMap<>(root);
+        trimmedRoot.remove(key);
+        return trimmedRoot;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> renderUsing(
+            final LogEvent logEvent,
+            final Layout<String> layout)
+            throws Exception {
+        final String json = layout.toSerializable(logEvent);
+        return JacksonFixture.getObjectMapper().readValue(json, Map.class);
+    }
+
+}

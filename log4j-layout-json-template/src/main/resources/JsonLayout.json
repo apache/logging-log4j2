@@ -15,7 +15,6 @@
   "contextStack": "${json:ndc}",
   "endOfBatch": "${json:endOfBatch}",
   "loggerFqcn": "${json:logger:fqcn}",
-  "contextMap": "${json:mdc}",
   "threadId": "${json:thread:id}",
   "threadPriority": "${json:thread:priority}",
   "source": {
