@@ -494,11 +494,14 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
             formattableBuffer.setLength(0);
             formattable.formatTo(formattableBuffer);
             final int length = formattableBuffer.length();
-            if (length > maxStringLength) {
+            // Handle max. string length complying input.
+            if (length <= maxStringLength) {
+                quoteString(formattableBuffer, 0, length);
+            }
+            // Handle max. string length violating input.
+            else {
                 quoteString(formattableBuffer, 0, maxStringLength);
                 stringBuilder.append(quotedTruncatedStringSuffix);
-            } else {
-                quoteString(formattableBuffer, 0, length);
             }
             stringBuilder.append('"');
         }
@@ -535,7 +538,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
 
         stringBuilder.append('"');
         // Handle max. string length complying input.
-        if (maxStringLength <= 0 || length <= maxStringLength) {
+        if (length <= maxStringLength) {
             quoteString(seq, offset, length);
         }
         // Handle max. string length violating input.
@@ -608,7 +611,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
 
         stringBuilder.append('"');
         // Handle max. string length complying input.
-        if (maxStringLength <= 0 || length <= maxStringLength) {
+        if (length <= maxStringLength) {
             quoteString(buffer, offset, length);
         }
         // Handle max. string length violating input.
@@ -852,6 +855,11 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         }
 
         private void validate() {
+            if (maxStringLength <= 0) {
+                throw new IllegalArgumentException(
+                        "was expecting maxStringLength > 0: " +
+                                maxStringLength);
+            }
             Objects.requireNonNull(truncatedStringSuffix, "truncatedStringSuffix");
         }
 
