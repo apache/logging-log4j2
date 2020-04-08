@@ -48,7 +48,7 @@ public class GelfLayoutTest {
 
     @Test
     public void test_lite_log_events() throws Exception {
-        final List<LogEvent> logEvents = LogEventFixture.createFullLogEvents(1_000);
+        final List<LogEvent> logEvents = LogEventFixture.createLiteLogEvents(1_000);
         test(logEvents);
     }
 
