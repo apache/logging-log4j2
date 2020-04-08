@@ -105,7 +105,7 @@ public class JsonTemplateLayoutTest {
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
-                .setEventTemplateUri("classpath:TestLayout.json")
+                .setEventTemplateUri("classpath:testJsonTemplateLayout.json")
                 .setStackTraceEnabled(true)
                 .setLocationInfoEnabled(true)
                 .setMdcKeyPattern(firstMdcKeyExcludingRegex)
