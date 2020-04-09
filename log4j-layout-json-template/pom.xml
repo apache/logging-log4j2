@@ -170,7 +170,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <skip>true</skip>
+          <skip>${maven.test.skip}</skip>
+          <excludes>
+            <exclude>**/JsonTemplateLayoutConcurrentEncodeTest.java</exclude>
+            <exclude>**/JsonTemplateLayoutTest.java</exclude>
+          </excludes>
           <!-- Enforcing a non-UTF-8 encoding to check that the layout
                indeed handles everything in UTF-8 without implicitly
                relying on the system defaults. -->
@@ -188,6 +192,10 @@
               <systemPropertyVariables>
                 <log4j2.layout.jsonTemplate.recyclerFactory>threadLocal</log4j2.layout.jsonTemplate.recyclerFactory>
               </systemPropertyVariables>
+              <includes>
+                <include>**/JsonTemplateLayoutConcurrentEncodeTest.java</include>
+                <include>**/JsonTemplateLayoutTest.java</include>
+              </includes>
             </configuration>
           </execution>
           <!-- Thread-Local recycler execution -->
@@ -201,6 +209,10 @@
               <systemPropertyVariables>
                 <log4j2.layout.jsonTemplate.recyclerFactory>threadLocal</log4j2.layout.jsonTemplate.recyclerFactory>
               </systemPropertyVariables>
+              <includes>
+                <include>**/JsonTemplateLayoutConcurrentEncodeTest.java</include>
+                <include>**/JsonTemplateLayoutTest.java</include>
+              </includes>
             </configuration>
           </execution>
           <!-- ArrayBlockingQueue recycler execution -->
@@ -214,6 +226,10 @@
               <systemPropertyVariables>
                 <log4j2.layout.jsonTemplate.recyclerFactory>queue:supplier=java.util.concurrent.ArrayBlockingQueue.new</log4j2.layout.jsonTemplate.recyclerFactory>
               </systemPropertyVariables>
+              <includes>
+                <include>**/JsonTemplateLayoutConcurrentEncodeTest.java</include>
+                <include>**/JsonTemplateLayoutTest.java</include>
+              </includes>
             </configuration>
           </execution>
           <!-- MpmcArrayQueue recycler execution -->
@@ -227,6 +243,10 @@
               <systemPropertyVariables>
                 <log4j2.layout.jsonTemplate.recyclerFactory>queue:supplier=org.jctools.queues.MpmcArrayQueue.new</log4j2.layout.jsonTemplate.recyclerFactory>
               </systemPropertyVariables>
+              <includes>
+                <include>**/JsonTemplateLayoutConcurrentEncodeTest.java</include>
+                <include>**/JsonTemplateLayoutTest.java</include>
+              </includes>
             </configuration>
           </execution>
         </executions>
