@@ -18,23 +18,33 @@ package org.apache.logging.log4j.spring.cloud.config.client;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.AbstractConfiguration;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.springframework.boot.logging.LogFile;
 import org.springframework.boot.logging.LoggingInitializationContext;
@@ -49,6 +59,8 @@ import org.springframework.util.ResourceUtils;
 public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
     private static final String HTTPS = "https";
     public static final String ENVIRONMENT_KEY = "SpringEnvironment";
+    private static final String OVERRIDE_PARAM = "override";
+    private static Logger LOGGER = StatusLogger.getLogger();
 
     public Log4j2CloudConfigLoggingSystem(ClassLoader loader) {
         super(loader);
@@ -103,13 +115,37 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
         Assert.notNull(location, "Location must not be null");
         try {
             LoggerContext ctx = getLoggerContext();
-            URL url = ResourceUtils.getURL(location);
-            ConfigurationSource source = getConfigurationSource(url);
-            ctx.start(ConfigurationFactory.getInstance().getConfiguration(ctx, source));
+            String[] locations = parseConfigLocations(location);
+            if (locations.length == 1) {
+                final URL url = ResourceUtils.getURL(location);
+                final ConfigurationSource source = getConfigurationSource(url);
+                if (source != null) {
+                    ctx.start(ConfigurationFactory.getInstance().getConfiguration(ctx, source));
+                }
+            } else {
+                final List<AbstractConfiguration> configs = new ArrayList<>();
+                for (final String sourceLocation : locations) {
+                    final ConfigurationSource source = getConfigurationSource(ResourceUtils.getURL(sourceLocation));
+                    if (source != null) {
+                        final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, source);
+                        if (config instanceof AbstractConfiguration) {
+                            configs.add((AbstractConfiguration) config);
+                        } else {
+                            LOGGER.warn("Configuration at {} cannot be combined in a CompositeConfiguration", sourceLocation);
+                            return;
+                        }
+                    }
+                }
+                if (configs.size() > 1) {
+                    ctx.start(new CompositeConfiguration(configs));
+                } else {
+                    ctx.start(configs.get(0));
+                }
+            }
         }
         catch (Exception ex) {
             throw new IllegalStateException(
-                "Could not initialize Log4J2 logging from " + location, ex);
+                    "Could not initialize Log4J2 logging from " + location, ex);
         }
     }
 
@@ -117,6 +153,33 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
     public void cleanUp() {
         getLoggerContext().removeObject(ENVIRONMENT_KEY);
         super.cleanUp();
+    }
+
+    private String[] parseConfigLocations(String configLocations) {
+        final String[] uris = configLocations.split("\\?");
+        final List<String> locations = new ArrayList<>();
+        if (uris.length > 1) {
+            locations.add(uris[0]);
+            try {
+                final URL url = new URL(configLocations);
+                final String[] pairs = url.getQuery().split("&");
+                for (String pair : pairs) {
+                    final int idx = pair.indexOf("=");
+                    try {
+                        final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "UTF-8") : pair;
+                        if (key.equalsIgnoreCase(OVERRIDE_PARAM)) {
+                            locations.add(URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+                        }
+                    } catch (UnsupportedEncodingException ex) {
+                        LOGGER.warn("Bad data in configuration string: {}", pair);
+                    }
+                }
+                return locations.toArray(new String[0]);
+            } catch (MalformedURLException ex) {
+                LOGGER.warn("Unable to parse configuration URL {}", configLocations);
+            }
+        }
+        return new String[] {uris[0]};
     }
 
     private ConfigurationSource getConfigurationSource(URL url) throws IOException, URISyntaxException {
@@ -133,13 +196,17 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
             }
         }
         File file = FileUtils.fileFromUri(url.toURI());
-        if (file != null) {
-            return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
-        } else {
-            return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
+        try {
+            if (file != null) {
+                return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
+            } else {
+                return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
+            }
+        } catch (FileNotFoundException ex) {
+            LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
+            return null;
         }
     }
-
     private LoggerContext getLoggerContext() {
         return (LoggerContext) LogManager.getContext(false);
     }
