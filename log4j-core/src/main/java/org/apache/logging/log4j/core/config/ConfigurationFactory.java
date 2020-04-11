@@ -16,20 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -50,6 +36,23 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Factory class for parsed {@link Configuration} objects from a configuration file.
@@ -132,6 +135,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      * The name of the classpath URI scheme, synonymous with the classloader URI scheme.
      */
     private static final String CLASS_PATH_SCHEME = "classpath";
+
+    private static final String OVERRIDE_PARAM = "override";
 
     private static volatile List<ConfigurationFactory> factories = null;
 
@@ -393,7 +398,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                 final String configLocationStr = this.substitutor.replace(PropertiesUtil.getProperties()
                         .getStringProperty(CONFIGURATION_FILE_PROPERTY));
                 if (configLocationStr != null) {
-                    final String[] sources = configLocationStr.split(",");
+                    String[] sources = parseConfigLocations(configLocationStr);
                     if (sources.length > 1) {
                         final List<AbstractConfiguration> configs = new ArrayList<>();
                         for (final String sourceLocation : sources) {
@@ -430,6 +435,20 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     }
                 }
             } else {
+                String[] sources = parseConfigLocations(configLocation);
+                if (sources.length > 1) {
+                    final List<AbstractConfiguration> configs = new ArrayList<>();
+                    for (final String sourceLocation : sources) {
+                        final Configuration config = getConfiguration(loggerContext, sourceLocation.trim());
+                        if (config instanceof AbstractConfiguration) {
+                            configs.add((AbstractConfiguration) config);
+                        } else {
+                            LOGGER.error("Failed to created configuration at {}", sourceLocation);
+                            return null;
+                        }
+                    }
+                    return new CompositeConfiguration(configs);
+                }
                 // configLocation != null
                 final String configLocationStr = configLocation.toString();
                 for (final ConfigurationFactory factory : getFactories()) {
@@ -564,6 +583,41 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             }
             LOGGER.error("Cannot process configuration, input source is null");
             return null;
+        }
+
+        private String[] parseConfigLocations(URI configLocations) {
+            final String[] uris = configLocations.toString().split("\\?");
+            final List<String> locations = new ArrayList<>();
+            if (uris.length > 1) {
+                locations.add(uris[0]);
+                final String[] pairs = configLocations.getQuery().split("&");
+                for (String pair : pairs) {
+                    final int idx = pair.indexOf("=");
+                    try {
+                        final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "UTF-8") : pair;
+                        if (key.equalsIgnoreCase(OVERRIDE_PARAM)) {
+                            locations.add(URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+                        }
+                    } catch (UnsupportedEncodingException ex) {
+                        LOGGER.warn("Invalid query parameter in {}", configLocations);
+                    }
+                }
+                return locations.toArray(new String[0]);
+            }
+            return new String[] {uris[0]};
+        }
+
+        private String[] parseConfigLocations(String configLocations) {
+            final String[] uris = configLocations.split(",");
+            if (uris.length > 1) {
+                return uris;
+            }
+            try {
+                return parseConfigLocations(new URI(configLocations));
+            } catch (URISyntaxException ex) {
+                LOGGER.warn("Error parsing URI {}", configLocations);
+            }
+            return new String[] {configLocations};
         }
     }
 

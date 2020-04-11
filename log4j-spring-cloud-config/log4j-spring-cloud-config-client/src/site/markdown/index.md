@@ -41,6 +41,18 @@ When referencing a configuration located in Spring Cloud Config the configuratio
 ```
 log4j.configurationFile=http://host.docker.internal:8888/ConfigService/sampleapp/default/master/log4j2.xml
 ```
+
+Log4j also supports Composite Configurations. The standard way to do that is to concatentate the paths to the files in
+a comma separated string. Unfortunately, Spring validates the URL being provided and commas are not allowed. 
+Therefore, additional configurations must be supplied as "override" query parametes.
+
+```
+log4j.configurationFile=http://host.docker.internal:8888/ConfigService/sampleapp/default/master/log4j2.xml
+?override=http://host.docker.internal:8888/ConfigService/sampleapp/default/master/log4j2-sampleapp.xml
+```
+Note that the location within the directory structure and how configuration files are located is completely 
+dependent on the searchPaths setting in the Spring Cloud Config server.
+
 When running in a docker container host.docker.internal may be used as the domain name to access an application
 running on the same hose outside of the docker container. Note that in accordance with Spring Cloud Config
 practices but the application, profile, and label should be specified in the url.
