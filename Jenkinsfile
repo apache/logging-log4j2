@@ -26,76 +26,85 @@ pipeline {
     }
     agent none
     stages {
-        stage('Build') {
-            parallel {
-                stage('Ubuntu') {
-                    agent { label 'ubuntu' }
-                    tools {
-                        jdk 'JDK 1.8 (latest)'
-                        maven 'Maven 3 (latest)'
-                    }
-                    environment {
-                        LANG = 'en_US.UTF-8'
-                    }
-                    steps {
-                        sh 'mvn -B -fae -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install deploy'
+        stage('Checkout') {
+        parallel {
+            stage('Ubuntu') {
+                agent { label 'ubuntu' }
+                tools {
+                    jdk 'JDK 1.8 (latest)'
+                    maven 'Maven 3 (latest)'
+                }
+                environment {
+                    LANG = 'C.UTF-8'
+                }
+                steps {
+                    sh 'mvn -B -fae -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install deploy'
+                }
+                post {
+                    success {
                         archiveArtifacts artifacts: '**/*.jar', fingerprint: true
                     }
-                    post {
-                        always {
-                            recordIssues enabledForFailure: true, sourceCodeEncoding: 'UTF-8', referenceJobName: 'log4j/release-2.x',
-                                tool: taskScanner(highTags: 'FIXME', normalTags: 'TODO', includePattern: '**/*.java', excludePattern: '*/target/**')
-                            junit '**/*-reports/*.xml'
-                        }
+                    always {
+                        junit '**/*-reports/*.xml'
+                        recordIssues enabledForFailure: true,
+                            sourceCodeEncoding: 'UTF-8',
+                            referenceJobName: 'log4j/release-2.x',
+                            tools: [mavenConsole(), errorProne(), java(),
+                                taskScanner(highTags: 'FIXME', normalTags: 'TODO', includePattern: '**/*.java', excludePattern: '*/target/**')]
                     }
                 }
-                stage('Windows') {
-                    agent { label 'Windows' }
-                    tools {
-                        jdk 'JDK 1.8 (latest)'
-                        maven 'Maven 3 (latest)'
-                    }
-                    environment {
-                        LANG = 'en_US.UTF-8'
-                    }
-                    steps {
-                        bat '''
-                        if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo
-                        mvn -B -fae -t toolchains-jenkins-win.xml -Dfile.encoding=UTF-8 -V clean install
-                        '''
-                    }
-                    post {
-                        always {
-                            junit '**/*-reports/*.xml'
-                        }
+            }
+            stage('Windows') {
+                agent { label 'Windows' }
+                tools {
+                    jdk 'JDK 1.8 (latest)'
+                    maven 'Maven 3 (latest)'
+                }
+                environment {
+                    LANG = 'C.UTF-8'
+                }
+                steps {
+                    bat '''
+                    if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo
+                    mvn -B -fae -t toolchains-jenkins-win.xml -Dproject.build.sourceEncoding=UTF-8 -V clean install
+                    '''
+                }
+                post {
+                    always {
+                        junit '**/*-reports/*.xml'
                     }
                 }
             }
         }
     }
+    }
     post {
-        always {
-            recordIssues enabledForFailure: true,
-                sourceCodeEncoding: 'UTF-8',
-                referenceJobName: 'log4j/release-2.x',
-                tools: [mavenConsole(), errorProne(), java()]
-        }
         fixed {
             slackSend channel: 'logging',
                 color: 'good',
-                iconEmoji: 'beer_parrot',
-                message: "Build back to normal: <${env.BUILD_URL}|${env.BUILD_DISPLAY_NAME}>."
+                message: ":excellent: <${env.JOB_URL}|${env.JOB_NAME}> was fixed in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>."
             mail to: 'notifications@logging.apache.org',
-                subject: "Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER}) back to normal",
-                body: "See ${env.BUILD_URL} for more details."
+                from: 'Mr. Jenkins <jenkins@builds.apache.org>',
+                subject: "Jenkins job ${env.JOB_NAME}#${env.BUILD_NUMBER} back to normal",
+                body: """
+The build for ${env.JOB_NAME} completed successfully and is back to normal.
+
+Build: ${env.BUILD_URL}
+Logs: ${env.BUILD_URL}console
+Changes: ${env.BUILD_URL}changes
+
+--
+Mr. Jenkins
+Director of Continuous Integration
+"""
         }
         failure {
             slackSend channel: 'logging',
                 color: 'danger',
-                iconEmoji: 'doh',
-                message: "Build failed: <${env.BUILD_URL}|${env.BUILD_DISPLAY_NAME}>."
+                message: ":doh: <${env.JOB_URL}|${env.JOB_NAME}> failed in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>."
             mail to: 'notifications@logging.apache.org',
-                subject: "Build failure in Jenkins build of ${env.JOB_NAME} (${env.BUILD_NUMBER})",
+                from: 'Mr. Jenkins <jenkins@builds.apache.org>',
+                subject: "Jenkins job ${env.JOB_NAME}#${env.BUILD_NUMBER} failed",
                 body: """
 There is a build failure in ${env.JOB_NAME}.
 
@@ -105,13 +114,13 @@ Changes: ${env.BUILD_URL}changes
 
 --
 Mr. Jenkins
+Director of Continuous Integration
 """
         }
         unstable {
             slackSend channel: 'logging',
                 color: 'warning',
-                iconEmoji: 'sadpanda',
-                message: "Build unstable: ${env.BUILD_URL}"
+                message: ":disappear: <${env.JOB_URL}|${env.JOB_NAME}> is unstable in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>."
         }
     }
 }
