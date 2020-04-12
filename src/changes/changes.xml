@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.13.2" date="2020-MM-DD" description="GA Release 2.13.2">
+      <action issue="LOG4J2-2817" dev="rgoers" type="fix" due-to="Trejkaz">
+        Allow the file size action to parse the value without being sensitive to the current locale.
+      </action>
       <action issue="LOG4J2-2794" dev="rgoers" type="fix" due-to="Johan Karlberg">
         Make YamlLayoutTest more resiliant to environmental differences.
       </action>
