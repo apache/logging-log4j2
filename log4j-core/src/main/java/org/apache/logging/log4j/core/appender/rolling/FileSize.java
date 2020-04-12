@@ -61,7 +61,7 @@ public final class FileSize {
         if (matcher.matches()) {
             try {
                 // Get double precision value
-                final long value = NumberFormat.getNumberInstance(Locale.getDefault()).parse(
+                final long value = NumberFormat.getNumberInstance(Locale.ROOT).parse(
                     matcher.group(1)).longValue();
 
                 // Get units specified
