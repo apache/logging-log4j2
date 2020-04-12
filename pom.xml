@@ -26,9 +26,6 @@
     <artifactId>logging-parent</artifactId>
     <version>1</version>
   </parent>
-  <prerequisites>
-    <maven>3.0.5</maven>
-  </prerequisites>
   <description>Apache Log4j 2</description>
   <url>https://logging.apache.org/log4j/2.x/</url>
   <issueManagement>
