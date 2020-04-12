@@ -1308,7 +1308,8 @@ rootLogger.appenderRef.stdout.ref = STDOUT
         <subsection name="Composite Configuration">
             <p>
               Log4j allows multiple configuration files to be used by specifying them as a list of comma separated
-              file paths on log4j.configurationFile.  The merge logic can be controlled by specifying a class
+              file paths on log4j.configurationFile or, when using urls, by adding secondary configuration
+              locations as query parameters named "override".  The merge logic can be controlled by specifying a class
                 that implements the MergeStrategy interface on the log4j.mergeStrategy property. The default
                 merge strategy will merge the files using the following rules:
               <ol>
