@@ -38,7 +38,7 @@ pipeline {
                     LANG = 'C.UTF-8'
                 }
                 steps {
-                    sh 'mvn -B -fae -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install deploy'
+                    sh 'mvn -fae -t toolchains-jenkins-ubuntu.xml -Djenkins -V clean install deploy'
                 }
                 post {
                     success {
@@ -66,7 +66,7 @@ pipeline {
                 steps {
                     bat '''
                     if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo
-                    mvn -B -fae -t toolchains-jenkins-win.xml -Dproject.build.sourceEncoding=UTF-8 -V clean install
+                    mvn -fae -t toolchains-jenkins-win.xml -Djenkins -V clean install
                     '''
                 }
                 post {
