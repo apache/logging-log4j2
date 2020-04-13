@@ -4990,6 +4990,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               Determines whether the remote authentication credentials
               (and thus the connection) should be trusted.</td>
           </tr>
+            <tr>
+              <td>verifyHostName</td>
+              <td>boolean</td>
+              <td>Toggles whether or not to perform host name verification. Defaults to <code>false</code>.</td>
+            </tr>
           </table>
 
           <h4>KeyStore</h4>
