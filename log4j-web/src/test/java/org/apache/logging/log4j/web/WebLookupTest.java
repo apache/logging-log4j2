@@ -37,6 +37,7 @@ public class WebLookupTest {
     public void testLookup() throws Exception {
         ContextAnchor.THREAD_CONTEXT.remove();
         final ServletContext servletContext = new MockServletContext();
+        ((MockServletContext) servletContext).setContextPath("/WebApp");
         servletContext.setAttribute("TestAttr", "AttrValue");
         servletContext.setInitParameter("TestParam", "ParamValue");
         servletContext.setAttribute("Name1", "Ben");
@@ -64,6 +65,9 @@ public class WebLookupTest {
             value = substitutor.replace("${web:Name2}");
             assertNotNull("No value for Name2", value);
             assertEquals("Incorrect value for Name2: " + value, "Jerry", value);
+            value = substitutor.replace("${web:contextPathName}");
+            assertNotNull("No value for context name", value);
+            assertEquals("Incorrect value for context name", "WebApp", value);
         } catch (final IllegalStateException e) {
             fail("Failed to initialize Log4j properly." + e.getMessage());
         }
@@ -75,6 +79,7 @@ public class WebLookupTest {
     public void testLookup2() throws Exception {
         ContextAnchor.THREAD_CONTEXT.remove();
         final ServletContext servletContext = new MockServletContext();
+        ((MockServletContext) servletContext).setContextPath("/");
         servletContext.setAttribute("TestAttr", "AttrValue");
         servletContext.setInitParameter("myapp.logdir", "target");
         servletContext.setAttribute("Name1", "Ben");
@@ -95,6 +100,10 @@ public class WebLookupTest {
                 assertEquals("target/myapp.log", fa.getFileName());
             }
         }
+        final StrSubstitutor substitutor = config.getStrSubstitutor();
+        String value = substitutor.replace("${web:contextPathName:-default}");
+        assertEquals("Incorrect value for context name", "default", value);
+        assertNotNull("No value for context name", value);
         initializer.stop();
         ContextAnchor.THREAD_CONTEXT.remove();
     }

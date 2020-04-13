@@ -680,6 +680,10 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
               <td>The context path of the web application</td>
             </tr>
             <tr>
+              <td>contextPathName</td>
+              <td>The first token in the context path of the web application splitting on "/" characters.</td>
+            </tr>
+            <tr>
               <td>effectiveMajorVersion</td>
               <td>Gets the major version of the Servlet specification that the application represented by this
                 ServletContext is based on.</td>
