@@ -4764,6 +4764,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
+            <tr>
+              <td>SSL</td>
+              <td>SslConfiguration</td>
+              <td>Contains the configuration for the KeyStore and TrustStore. See <a href="#SSL">SSL</a>.</td>
+            </tr>
           </table>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
