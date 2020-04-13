@@ -251,7 +251,7 @@ public class SslConfiguration {
         @PluginAttribute("protocol") final String protocol,
         @PluginElement("KeyStore") final KeyStoreConfiguration keyStoreConfig,
         @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig,
-        @PluginElement("verifyHostName") final boolean verifyHostName) {
+        @PluginAttribute("verifyHostName") final boolean verifyHostName) {
         // @formatter:on
         return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, verifyHostName);
     }
