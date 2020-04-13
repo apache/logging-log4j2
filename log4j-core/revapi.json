@@ -107,6 +107,33 @@
         "new": "method <B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>> B org.apache.logging.log4j.core.appender.WriterAppender::newBuilder()",
         "typeParameter": "B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B extends org.apache.logging.log4j.core.appender.WriterAppender.Builder<B>>",
         "justification": "LOG4J2-2491 - Allow all appenders to optionally carry a property array"
+      },
+      {
+        "code": "java.annotation.removed",
+        "old": "method org.apache.logging.log4j.core.appender.SmtpAppender org.apache.logging.log4j.core.appender.SmtpAppender::createAppender(org.apache.logging.log4j.core.config.Configuration, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, java.lang.String)",
+        "new": "method org.apache.logging.log4j.core.appender.SmtpAppender org.apache.logging.log4j.core.appender.SmtpAppender::createAppender(org.apache.logging.log4j.core.config.Configuration, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.Layout<? extends java.io.Serializable>, org.apache.logging.log4j.core.Filter, java.lang.String)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "Plugin is created through builder class now. No practical change here."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.apache.logging.log4j.core.net.SmtpManager org.apache.logging.log4j.core.net.SmtpManager::getSmtpManager(org.apache.logging.log4j.core.config.Configuration, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, java.lang.String, java.lang.String, boolean, java.lang.String, int)",
+        "new": "method org.apache.logging.log4j.core.net.SmtpManager org.apache.logging.log4j.core.net.SmtpManager::getSmtpManager(org.apache.logging.log4j.core.config.Configuration, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, java.lang.String, java.lang.String, boolean, java.lang.String, int, org.apache.logging.log4j.core.net.ssl.SslConfiguration)",
+        "justification": "LOG4J2-2819 - Add support for specifying an SSL configuration for SmtpAppender"
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "parameter org.apache.logging.log4j.core.net.ssl.SslConfiguration org.apache.logging.log4j.core.net.ssl.SslConfiguration::createSSLConfiguration(java.lang.String, org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration, org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration, ===boolean===)",
+        "new": "parameter org.apache.logging.log4j.core.net.ssl.SslConfiguration org.apache.logging.log4j.core.net.ssl.SslConfiguration::createSSLConfiguration(java.lang.String, org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration, org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration, ===boolean===)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginAttribute(\"verifyHostName\")",
+        "justification": "LOG4J2-TODO"
+      },
+      {
+        "code": "java.annotation.removed",
+        "old": "parameter org.apache.logging.log4j.core.net.ssl.SslConfiguration org.apache.logging.log4j.core.net.ssl.SslConfiguration::createSSLConfiguration(java.lang.String, org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration, org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration, ===boolean===)",
+        "new": "parameter org.apache.logging.log4j.core.net.ssl.SslConfiguration org.apache.logging.log4j.core.net.ssl.SslConfiguration::createSSLConfiguration(java.lang.String, org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration, org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration, ===boolean===)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginElement(\"verifyHostName\")",
+        "justification": "LOG4J2-TODO"
       }
     ]
   }
