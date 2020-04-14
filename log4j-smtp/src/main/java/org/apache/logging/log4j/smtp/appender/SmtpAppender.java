@@ -76,7 +76,7 @@ public final class SmtpAppender extends AbstractAppender {
      * @since 2.13.2
      */
     public static class Builder extends AbstractAppender.Builder<Builder>
-            implements org.apache.logging.log4j.core.util.Builder<SmtpAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<SmtpAppender> {
         @PluginAttribute
         private String to;
 
