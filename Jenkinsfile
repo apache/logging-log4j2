@@ -66,7 +66,7 @@ pipeline {
                 steps {
                     bat '''
                     if exist %userprofile%\\.embedmongo\\ rd /s /q %userprofile%\\.embedmongo
-                    mvn -fae -t toolchains-jenkins-win.xml -Djenkins -V clean install
+                    mvn -fae -t toolchains-jenkins-win.xml -V clean install
                     '''
                 }
                 post {
