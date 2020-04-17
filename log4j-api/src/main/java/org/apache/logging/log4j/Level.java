@@ -284,8 +284,7 @@ public final class Level implements Comparable<Level>, Serializable {
         if (name == null) {
             return defaultLevel;
         }
-        String trimmedName = name.trim();
-        final Level level = LEVELS.get(toUpperCase(trimmedName));
+        final Level level = LEVELS.get(toUpperCase(name.trim()));
         return level == null ? defaultLevel : level;
     }
 
@@ -313,8 +312,7 @@ public final class Level implements Comparable<Level>, Serializable {
      */
     public static Level valueOf(final String name) {
         Objects.requireNonNull(name, "No level name given.");
-        String trimmedName = name.trim();
-        final String levelName = toUpperCase(trimmedName);
+        final String levelName = toUpperCase(name.trim());
         final Level level = LEVELS.get(levelName);
         if (level != null) {
             return level;
