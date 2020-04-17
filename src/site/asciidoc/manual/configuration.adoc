@@ -55,7 +55,9 @@ for properties, and one for XML.
 
 1.  Log4j will inspect the `"log4j.configurationFile"` system property
 and, if set, will attempt to load the configuration using the
-`ConfigurationFactory` that matches the file extension.
+`ConfigurationFactory` that matches the file extension. Note that this
+is not restricted to a location on the local file system and may contain
+a URL.
 2.  If no system property is set the properties ConfigurationFactory
 will look for `log4j2-test.properties` in the classpath.
 3.  If no such file is found the YAML ConfigurationFactory will look for
@@ -1677,7 +1679,9 @@ variable; and _Legacy Property Name_ for the pre-2.10 name.
 |LOG4J_CONFIGURATION_FILE
 | 
 |Path to an Log4j 2 configuration file. May
-also contain a comma separated list of configuration file names.
+also contain a comma separated list of configuration file names. May contain a URL.
+When specified as a URL the "override" query parameter may be used to specify additional
+configuration file locations.
 
 |[[debug]]log4j2.debug +
 ([[log4j2.debug]]log4j2.debug)
