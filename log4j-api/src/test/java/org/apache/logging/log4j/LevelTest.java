@@ -54,6 +54,17 @@ public class LevelTest {
     }
 
     @Test
+    public void testLevelsWithSpaces() {
+        Level level = Level.toLevel(" INFO ");
+        assertNotNull(level);
+        assertEquals(Level.INFO, level);
+
+        level = Level.valueOf(" INFO ");
+        assertNotNull(level);
+        assertEquals(Level.INFO, level);
+    }
+
+    @Test
     public void testIsInRangeErrorToDebug() {
         assertFalse(Level.OFF.isInRange(Level.ERROR, Level.DEBUG));
         assertFalse(Level.FATAL.isInRange(Level.ERROR, Level.DEBUG));
