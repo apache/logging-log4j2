@@ -39,7 +39,9 @@ import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Selects the pattern to use based on the Marker in the LogEvent.
+ * Selects the pattern to use based on the result of executing a Script. The returned value will be used as the "key"
+ * to choose between one of the configured patterns. If no key is returned or there is no match the default
+ * pattern will be used.
  */
 @Plugin(name = "ScriptPatternSelector", category = Node.CATEGORY, elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
 public class ScriptPatternSelector implements PatternSelector, LocationAware {
