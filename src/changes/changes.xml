@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.13.2" date="2020-MM-DD" description="GA Release 2.13.2">
+      <action issue="LOG4J2-2813" dev="rgoers" type="fix" due-to="Keith D Gregory">
+        serializeToBytes was checking wrong variable for null.
+      </action>
       <action issue="LOG4J2-2814" dev="rgoers" type="fix">
         Fix Javadoc for ScriptPatternSelector.
       </action>
