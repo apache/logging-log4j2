@@ -29,12 +29,16 @@ import org.apache.logging.log4j.layout.json.template.JsonTemplateLayout.EventTem
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @State(Scope.Benchmark)
 public class JsonTemplateLayoutBenchmarkState {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
+
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     private final ByteBufferDestination byteBufferDestination;
 
@@ -74,6 +78,7 @@ public class JsonTemplateLayoutBenchmarkState {
         return JsonTemplateLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
+                .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:JsonLayout.json")
                 .build();
     }
@@ -88,6 +93,7 @@ public class JsonTemplateLayoutBenchmarkState {
         return JsonTemplateLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
+                .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:EcsLayout.json")
                 .setEventTemplateAdditionalFields(additionalFields)
                 .build();
@@ -97,6 +103,7 @@ public class JsonTemplateLayoutBenchmarkState {
         return JsonTemplateLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
+                .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:GelfLayout.json")
                 .setEventTemplateAdditionalFields(EventTemplateAdditionalFields
                         .newBuilder()
@@ -114,6 +121,7 @@ public class JsonTemplateLayoutBenchmarkState {
         return JsonLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
+                .setCharset(CHARSET)
                 .build();
     }
 
@@ -121,6 +129,7 @@ public class JsonTemplateLayoutBenchmarkState {
         return JsonLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
+                .setCharset(CHARSET)
                 .setAdditionalFields(new KeyValuePair[]{
                         new KeyValuePair("@version", "1")
                 })
@@ -131,6 +140,7 @@ public class JsonTemplateLayoutBenchmarkState {
         return EcsLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
+                .setCharset(CHARSET)
                 .setServiceName("benchmark")
                 .build();
     }
@@ -139,6 +149,7 @@ public class JsonTemplateLayoutBenchmarkState {
         return GelfLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
+                .setCharset(CHARSET)
                 .setCompressionType(GelfLayout.CompressionType.OFF)
                 .build();
     }
