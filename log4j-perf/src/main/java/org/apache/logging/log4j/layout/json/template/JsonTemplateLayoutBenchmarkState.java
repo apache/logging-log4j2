@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
 import org.apache.logging.log4j.layout.json.template.JsonTemplateLayout.EventTemplateAdditionalFields;
+import org.apache.logging.log4j.layout.json.template.util.ThreadLocalRecyclerFactory;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
@@ -80,6 +81,7 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:JsonLayout.json")
+                .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
                 .build();
     }
 
@@ -95,6 +97,7 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:EcsLayout.json")
+                .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
                 .setEventTemplateAdditionalFields(additionalFields)
                 .build();
     }
@@ -105,6 +108,7 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:GelfLayout.json")
+                .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
                 .setEventTemplateAdditionalFields(EventTemplateAdditionalFields
                         .newBuilder()
                         .setAdditionalFields(new KeyValuePair[]{
