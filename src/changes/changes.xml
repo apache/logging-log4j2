@@ -30,6 +30,12 @@
          - "remove" - Removed
     -->
     <release version="2.13.2" date="2020-MM-DD" description="GA Release 2.13.2">
+      <action issue="LOG4J2-2766" dev="rgoers" type="fix">
+        Initialize pattern processor before triggering policy during reconriguration.
+      </action>
+      <action issue="LOG4J2-2457" dev="rgoers" type="update">
+        Allow the file extension in the file pattern to be modified during reconfiguration.
+      </action>
       <action issue="LOG4J2-2810" dev="rgoers" type="fix">
         Add information about using a url in log4j.configurationFile.
       </action>

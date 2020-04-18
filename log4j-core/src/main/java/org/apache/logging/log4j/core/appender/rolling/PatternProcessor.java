@@ -52,6 +52,7 @@ public class PatternProcessor {
 
     private final ArrayPatternConverter[] patternConverters;
     private final FormattingInfo[] patternFields;
+    private final FileExtension fileExtension;
 
     private long prevFileTime = 0;
     private long nextFileTime = 0;
@@ -86,6 +87,7 @@ public class PatternProcessor {
         patternFields = fields.toArray(infoArray);
         final ArrayPatternConverter[] converterArray = new ArrayPatternConverter[converters.size()];
         patternConverters = converters.toArray(converterArray);
+        this.fileExtension = FileExtension.lookupForFile(pattern);
 
         for (final ArrayPatternConverter converter : patternConverters) {
             if (converter instanceof DatePatternConverter) {
@@ -127,6 +129,10 @@ public class PatternProcessor {
     public void setPrevFileTime(final long prevFileTime) {
         LOGGER.debug("Setting prev file time to {}", new Date(prevFileTime));
         this.prevFileTime = prevFileTime;
+    }
+
+    public FileExtension getFileExtension() {
+        return fileExtension;
     }
 
     /**

@@ -126,6 +126,11 @@ public abstract class AbstractManager implements AutoCloseable {
         }
     }
 
+    /**
+     * Used by Log4j to update the Manager during reconfiguration. This method should be considered private.
+     * Implementations may not be thread safe. This method may be made protected in a future release.
+     * @param data The data to update.
+     */
     public void updateData(final Object data) {
         // This default implementation does nothing.
     }
