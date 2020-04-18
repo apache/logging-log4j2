@@ -308,11 +308,17 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
 
     }
 
+    /**
+     * Updates the RollingFileManager's data during a reconfiguration. This method should be considered private.
+     * It is not thread safe and calling it outside of a reconfiguration may lead to errors. This method may be
+     * made protected in a future release.
+     * @param data The data to update.
+     */
     @Override
     public void updateData(final Object data) {
         final FactoryData factoryData = (FactoryData) data;
         setRolloverStrategy(factoryData.getRolloverStrategy());
-        setTriggeringPolicy(factoryData.getTriggeringPolicy());
         setPatternProcessor(new PatternProcessor(factoryData.getPattern(), getPatternProcessor()));
+        setTriggeringPolicy(factoryData.getTriggeringPolicy());
     }
 }

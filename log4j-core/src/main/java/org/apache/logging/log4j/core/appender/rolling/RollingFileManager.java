@@ -69,7 +69,6 @@ public class RollingFileManager extends FileManager {
     private volatile boolean renameEmptyFiles = false;
     private volatile boolean initialized = false;
     private volatile String fileName;
-    private final FileExtension fileExtension;
     private final boolean directWrite;
 
     /* This executor pool will create a new Thread for every work async action to be performed. Using it allows
@@ -105,7 +104,6 @@ public class RollingFileManager extends FileManager {
         this.patternProcessor.setPrevFileTime(initialTime);
         this.fileName = fileName;
         this.directWrite = rolloverStrategy instanceof DirectFileRolloverStrategy;
-        this.fileExtension = FileExtension.lookupForFile(pattern);
     }
 
     public void initialize() {
@@ -182,7 +180,7 @@ public class RollingFileManager extends FileManager {
     }
 
     public FileExtension getFileExtension() {
-        return fileExtension;
+        return patternProcessor.getFileExtension();
     }
 
     // override to make visible for unit tests
@@ -574,12 +572,18 @@ public class RollingFileManager extends FileManager {
         }
     }
 
+    /**
+     * Updates the RollingFileManager's data during a reconfiguration. This method should be considered private.
+     * It is not thread safe and calling it outside of a reconfiguration may lead to errors. This method may be
+     * made protected in a future release.
+     * @param data The data to update.
+     */
     @Override
     public void updateData(final Object data) {
         final FactoryData factoryData = (FactoryData) data;
         setRolloverStrategy(factoryData.getRolloverStrategy());
-        setTriggeringPolicy(factoryData.getTriggeringPolicy());
         setPatternProcessor(new PatternProcessor(factoryData.getPattern(), getPatternProcessor()));
+        setTriggeringPolicy(factoryData.getTriggeringPolicy());
     }
 
     /**
