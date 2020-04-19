@@ -98,6 +98,18 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>elasticsearch-rest-high-level-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -188,7 +200,7 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <skip>${maven.test.skip}</skip>
+              <skip>${skipTests}</skip>
               <systemPropertyVariables>
                 <log4j2.layout.jsonTemplate.recyclerFactory>threadLocal</log4j2.layout.jsonTemplate.recyclerFactory>
               </systemPropertyVariables>
@@ -205,7 +217,7 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <skip>${maven.test.skip}</skip>
+              <skip>${skipTests}</skip>
               <systemPropertyVariables>
                 <log4j2.layout.jsonTemplate.recyclerFactory>threadLocal</log4j2.layout.jsonTemplate.recyclerFactory>
               </systemPropertyVariables>
@@ -222,7 +234,7 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <skip>${maven.test.skip}</skip>
+              <skip>${skipTests}</skip>
               <systemPropertyVariables>
                 <log4j2.layout.jsonTemplate.recyclerFactory>queue:supplier=java.util.concurrent.ArrayBlockingQueue.new</log4j2.layout.jsonTemplate.recyclerFactory>
               </systemPropertyVariables>
@@ -239,7 +251,7 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <skip>${maven.test.skip}</skip>
+              <skip>${skipTests}</skip>
               <systemPropertyVariables>
                 <log4j2.layout.jsonTemplate.recyclerFactory>queue:supplier=org.jctools.queues.MpmcArrayQueue.new</log4j2.layout.jsonTemplate.recyclerFactory>
               </systemPropertyVariables>
@@ -252,8 +264,157 @@
         </executions>
       </plugin>
 
+      <!-- Disable ITs, which are Docker-dependent, by default. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>docker</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <skip>${skipTests}</skip>
+              <includes>
+                <include>**/*IT.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>start</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <verbose>all</verbose>
+              <startParallel>true</startParallel>
+              <autoCreateCustomNetworks>true</autoCreateCustomNetworks>
+              <images>
+                <image>
+                  <alias>elasticsearch</alias>
+                  <name>elasticsearch:${elastic.version}</name>
+                  <run>
+                    <env>
+                      <discovery.type>single-node</discovery.type>
+                    </env>
+                    <ports>
+                      <port>9200:9200</port>
+                    </ports>
+                    <network>
+                      <mode>custom</mode>
+                      <name>log4j-layout-json-template-network</name>
+                      <alias>elasticsearch</alias>
+                    </network>
+                    <log>
+                      <prefix>[ES]</prefix>
+                      <color>cyan</color>
+                    </log>
+                    <wait>
+                      <log>recovered \[0\] indices into cluster_state</log>
+                      <time>60000</time>
+                    </wait>
+                  </run>
+                </image>
+                <image>
+                  <alias>logstash</alias>
+                  <name>logstash:${elastic.version}</name>
+                  <run>
+                    <dependsOn>
+                      <container>elasticsearch</container>
+                    </dependsOn>
+                    <network>
+                      <mode>custom</mode>
+                      <name>log4j-layout-json-template-network</name>
+                      <alias>logstash</alias>
+                    </network>
+                    <ports>
+                      <port>12345:12345</port>
+                    </ports>
+                    <log>
+                      <prefix>[LS]</prefix>
+                      <color>green</color>
+                    </log>
+                    <entrypoint>
+                      <exec>
+                        <arg>logstash</arg>
+                        <arg>--pipeline.batch.size</arg>
+                        <arg>1</arg>
+                        <arg>-e</arg>
+                        <arg>
+                          input {
+                            tcp {
+                              port => 12345
+                              codec => json
+                            }
+                          }
+                          output {
+                            elasticsearch {
+                              hosts => ["http://elasticsearch:9200"]
+                              index => "log4j"
+                            }
+                          }
+                        </arg>
+                      </exec>
+                    </entrypoint>
+                    <wait>
+                      <log>Successfully started Logstash API endpoint</log>
+                      <time>60000</time>
+                    </wait>
+                  </run>
+                </image>
+              </images>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <reporting>
     <plugins>
