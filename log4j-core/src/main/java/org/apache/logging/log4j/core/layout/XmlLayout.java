@@ -76,7 +76,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
         public XmlLayout build() {
             return new XmlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(),
                     isCompact(), getEndOfLine(), getCharset(), isIncludeStacktrace(), isStacktraceAsString(),
-                    isIncludeNullDelimiter(), getAdditionalFields());
+                    isIncludeNullDelimiter(), isIncludeTimeMillis(), getAdditionalFields());
         }
     }
 
@@ -86,16 +86,17 @@ public final class XmlLayout extends AbstractJacksonLayout {
     @Deprecated
     protected XmlLayout(final boolean locationInfo, final boolean properties, final boolean complete,
                         final boolean compact, final Charset charset, final boolean includeStacktrace) {
-        this(null, locationInfo, properties, complete, compact, null, charset, includeStacktrace, false, false, null);
+        this(null, locationInfo, properties, complete, compact, null, charset, includeStacktrace,
+                false, false, false, null);
     }
 
     private XmlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
                       final boolean complete, final boolean compact, final String endOfLine, final Charset charset,
                       final boolean includeStacktrace, final boolean stacktraceAsString,
-                      final boolean includeNullDelimiter,
+                      final boolean includeNullDelimiter, final boolean includeTimeMillis,
                       final KeyValuePair[] additionalFields) {
         super(config, new JacksonFactory.XML(includeStacktrace, stacktraceAsString).newWriter(
-            locationInfo, properties, compact),
+            locationInfo, properties, compact, includeTimeMillis),
             charset, compact, complete, false, endOfLine, null, null, includeNullDelimiter,
             additionalFields);
     }
@@ -189,7 +190,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
             final Charset charset,
             final boolean includeStacktrace) {
         return new XmlLayout(null, locationInfo, properties, complete, compact, null, charset, includeStacktrace, false,
-                false, null);
+                false, false, null);
     }
 
     @PluginBuilderFactory
@@ -203,6 +204,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * @return an XML Layout.
      */
     public static XmlLayout createDefaultLayout() {
-        return new XmlLayout(null, false, false, false, false, null, StandardCharsets.UTF_8, true, false, false, null);
+        return new XmlLayout(null, false, false, false, false, null, StandardCharsets.UTF_8, true, false, false,
+                false, null);
     }
 }

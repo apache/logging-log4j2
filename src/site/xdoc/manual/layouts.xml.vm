@@ -491,6 +491,12 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>If true, include full stacktrace of any logged #javadoc('java/lang', 'Throwable') (optional, default to true).</td>
             </tr>
             <tr>
+              <td>includeTimeMillis</td>
+              <td>boolean</td>
+              <td>If true, the timeMillis attribute is included in the Json payload instead of the instant. timeMillis
+                will contain the number of milliseconds since midnight, January 1, 1970 UTC.</td>
+            </tr>
+            <tr>
               <td>stacktraceAsString</td>
               <td>boolean</td>
               <td>Whether to format the stacktrace as a string, and not a nested object (optional, defaults to false).</td>

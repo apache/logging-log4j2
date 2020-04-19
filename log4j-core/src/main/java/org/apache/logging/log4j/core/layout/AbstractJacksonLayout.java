@@ -83,6 +83,9 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private boolean includeNullDelimiter = false;
 
+        @PluginBuilderAttribute
+        private boolean includeTimeMillis = false;
+
         @PluginElement("AdditionalField")
         private KeyValuePair[] additionalFields;
 
@@ -127,6 +130,10 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         }
 
         public boolean isIncludeNullDelimiter() { return includeNullDelimiter; }
+
+        public boolean isIncludeTimeMillis() {
+            return includeTimeMillis;
+        }
 
         public KeyValuePair[] getAdditionalFields() {
             return additionalFields;
@@ -189,6 +196,16 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
          */
         public B setIncludeNullDelimiter(final boolean includeNullDelimiter) {
             this.includeNullDelimiter = includeNullDelimiter;
+            return asBuilder();
+        }
+
+        /**
+         * Whether to include the timestamp (in addition to the Instant) (optional, default to false).
+         *
+         * @return this builder
+         */
+        public B setIncludeTimeMillis(final boolean includeTimeMillis) {
+            this.includeTimeMillis = includeTimeMillis;
             return asBuilder();
         }
 

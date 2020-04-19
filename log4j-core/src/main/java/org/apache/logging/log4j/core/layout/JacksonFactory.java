@@ -21,6 +21,7 @@ import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
+import com.fasterxml.jackson.databind.ser.FilterProvider;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.JsonConstants;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
@@ -57,6 +58,16 @@ abstract class JacksonFactory {
         @Override
         protected String getPropertNameForContextMap() {
             return JsonConstants.ELT_CONTEXT_MAP;
+        }
+
+        @Override
+        protected String getPropertyNameForTimeMillis() {
+            return JsonConstants.ELT_TIME_MILLIS;
+        }
+
+        @Override
+        protected String getPropertyNameForInstant() {
+            return JsonConstants.ELT_INSTANT;
         }
 
         @Override
@@ -100,6 +111,16 @@ abstract class JacksonFactory {
         }
 
         @Override
+        protected String getPropertyNameForTimeMillis() {
+            return XmlConstants.ELT_TIME_MILLIS;
+        }
+
+        @Override
+        protected String getPropertyNameForInstant() {
+            return XmlConstants.ELT_INSTANT;
+        }
+
+        @Override
         protected String getPropertNameForContextMap() {
             return XmlConstants.ELT_CONTEXT_MAP;
         }
@@ -140,6 +161,16 @@ abstract class JacksonFactory {
         public YAML(final boolean includeStacktrace, final boolean stacktraceAsString) {
             this.includeStacktrace = includeStacktrace;
             this.stacktraceAsString = stacktraceAsString;
+        }
+
+        @Override
+        protected String getPropertyNameForTimeMillis() {
+            return JsonConstants.ELT_TIME_MILLIS;
+        }
+
+        @Override
+        protected String getPropertyNameForInstant() {
+            return JsonConstants.ELT_INSTANT;
         }
 
         @Override
@@ -207,6 +238,10 @@ abstract class JacksonFactory {
 
     }
 
+    abstract protected String getPropertyNameForTimeMillis();
+
+    abstract protected String getPropertyNameForInstant();
+
     abstract protected String getPropertNameForContextMap();
 
     abstract protected String getPropertNameForSource();
@@ -220,13 +255,23 @@ abstract class JacksonFactory {
     abstract protected PrettyPrinter newPrettyPrinter();
 
     ObjectWriter newWriter(final boolean locationInfo, final boolean properties, final boolean compact) {
+        return newWriter(locationInfo, properties, compact, false);
+    }
+
+    ObjectWriter newWriter(final boolean locationInfo, final boolean properties, final boolean compact,
+            final boolean includeMillis) {
         final SimpleFilterProvider filters = new SimpleFilterProvider();
-        final Set<String> except = new HashSet<>(2);
+        final Set<String> except = new HashSet<>(3);
         if (!locationInfo) {
             except.add(this.getPropertNameForSource());
         }
         if (!properties) {
             except.add(this.getPropertNameForContextMap());
+        }
+        if (includeMillis) {
+            except.add(getPropertyNameForInstant());
+        } else {
+            except.add(getPropertyNameForTimeMillis());
         }
         except.add(this.getPropertNameForNanoTime());
         filters.addFilter(Log4jLogEvent.class.getName(), SimpleBeanPropertyFilter.serializeAllExcept(except));

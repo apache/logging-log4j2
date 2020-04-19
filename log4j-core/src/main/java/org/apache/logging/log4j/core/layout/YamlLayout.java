@@ -69,7 +69,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
             return new YamlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(),
                     isCompact(), getEventEol(), getEndOfLine(), headerPattern, footerPattern, getCharset(),
                     isIncludeStacktrace(), isStacktraceAsString(), isIncludeNullDelimiter(),
-                    getAdditionalFields());
+                    isIncludeTimeMillis(), getAdditionalFields());
         }
     }
 
@@ -91,9 +91,10 @@ public final class YamlLayout extends AbstractJacksonLayout {
                        final boolean complete, final boolean compact, final boolean eventEol, final String endOfLine,
                        final String headerPattern, final String footerPattern, final Charset charset,
                        final boolean includeStacktrace, final boolean stacktraceAsString,
-                       final boolean includeNullDelimiter,
+                       final boolean includeNullDelimiter, final boolean includeTimeMillis,
                        final KeyValuePair[] additionalFields) {
-        super(config, new JacksonFactory.YAML(includeStacktrace, stacktraceAsString).newWriter(locationInfo, properties, compact),
+        super(config, new JacksonFactory.YAML(includeStacktrace, stacktraceAsString)
+                        .newWriter(locationInfo, properties, compact, includeTimeMillis),
                 charset, compact, complete, eventEol, endOfLine,
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
@@ -186,7 +187,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
             final Charset charset,
             final boolean includeStacktrace) {
         return new YamlLayout(config, locationInfo, properties, false, false, true, null, headerPattern, footerPattern,
-                charset, includeStacktrace, false, false, null);
+                charset, includeStacktrace, false, false, false, null);
     }
 
     @PluginBuilderFactory
@@ -201,6 +202,6 @@ public final class YamlLayout extends AbstractJacksonLayout {
      */
     public static AbstractJacksonLayout createDefaultLayout() {
         return new YamlLayout(new DefaultConfiguration(), false, false, false, false, false, null, DEFAULT_HEADER,
-                DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, null);
+                DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, false, null);
     }
 }

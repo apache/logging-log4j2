@@ -27,6 +27,7 @@ public final class XmlConstants {
     public static final String ELT_EVENT = "Event";
     public static final String ELT_EXTENDED_STACK_TRACE = "ExtendedStackTrace";
     public static final String ELT_EXTENDED_STACK_TRACE_ITEM = "ExtendedStackTraceItem";
+    public static final String ELT_TIME_MILLIS = "TimeMillis";
     public static final String ELT_INSTANT = "Instant";
     public static final String ELT_MARKER = "Marker";
     public static final String ELT_MESSAGE = "Message";

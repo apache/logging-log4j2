@@ -127,9 +127,8 @@ abstract class LogEventJsonMixIn implements LogEvent {
     @Override
     public abstract ThrowableProxy getThrownProxy();
 
-    @JsonIgnore // ignore from 2.11
-//    @JsonProperty()
-//    @JacksonXmlProperty(isAttribute = true)
+    @JsonProperty(JsonConstants.ELT_TIME_MILLIS)
+    @JacksonXmlProperty(isAttribute = true)
     @Override
     public abstract long getTimeMillis();
 
