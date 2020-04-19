@@ -119,7 +119,7 @@ public abstract class LogEventJsonMixIn /* extends AbstractLogEventMixIn */ impl
     @Override
     public abstract ThrowableProxy getThrownProxy();
 
-    @JsonIgnore // ignore from 2.11
+    @JsonProperty(JsonConstants.ELT_TIME_MILLIS)
     @Override
     public abstract long getTimeMillis();
 

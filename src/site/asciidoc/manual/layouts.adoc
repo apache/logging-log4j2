@@ -452,6 +452,11 @@ expensive operation and may impact performance. Use with caution.
 https://docs.oracle.com/javase/6/docs/api/java/lang/Throwable.html[Throwable]
 (optional, default to true).
 
+|includeTimeMillis
+|boolean
+|If true, the timeMillis attribute is included in the Json payload instead of the instant. timeMillis
+will contain the number of milliseconds since midnight, January 1, 1970 UTC.
+
 |stacktraceAsString
 |boolean
 |Whether to format the stacktrace as a
