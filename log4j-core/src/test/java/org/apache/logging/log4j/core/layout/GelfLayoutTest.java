@@ -20,7 +20,11 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.*;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.layout.GelfLayout.CompressionType;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
@@ -86,17 +90,17 @@ public class GelfLayoutTest {
         }
         // set up appenders
         final GelfLayout layout = GelfLayout.newBuilder()
-            .setConfiguration(ctx.getConfiguration())
-            .setHost(host)
-            .setAdditionalFields(new KeyValuePair[] {
-                new KeyValuePair(KEY1, VALUE1),
-                new KeyValuePair(KEY2, "${java:runtime}"), })
-            .setCompressionType(compressionType)
-            .setCompressionThreshold(1024)
-            .setIncludeStacktrace(includeStacktrace)
-            .setIncludeThreadContext(includeThreadContext)
-            .setIncludeNullDelimiter(includeNullDelimiter)
-            .build();
+                .setConfiguration(ctx.getConfiguration())
+                .setHost(host)
+                .setAdditionalFields(new KeyValuePair[]{
+                        new KeyValuePair(KEY1, VALUE1),
+                        new KeyValuePair(KEY2, "${java:runtime}"),})
+                .setCompressionType(compressionType)
+                .setCompressionThreshold(1024)
+                .setIncludeStacktrace(includeStacktrace)
+                .setIncludeThreadContext(includeThreadContext)
+                .setIncludeNullDelimiter(includeNullDelimiter)
+                .build();
         final ListAppender eventAppender = new ListAppender("Events", null, null, true, false);
         final ListAppender rawAppender = new ListAppender("Raw", null, layout, true, true);
         final ListAppender formattedAppender = new ListAppender("Formatted", null, layout, true, false);
@@ -159,11 +163,11 @@ public class GelfLayoutTest {
                         "\"_thread\": \"" + threadName + "\"," +
                         "\"_logger\": \"\"," +
                         "\"short_message\": \"" + LINE2 + "\"," +
-                       (includeThreadContext ?
-                            "\"_" + MDCKEY1 + "\": \"" + MDCVALUE1 + "\"," +
-                           "\"_" + MDCKEY2 + "\": \"" + MDCVALUE2 + "\","
-                                            :
-                           "") +
+                        (includeThreadContext ?
+                                "\"_" + MDCKEY1 + "\": \"" + MDCVALUE1 + "\"," +
+                                        "\"_" + MDCKEY2 + "\": \"" + MDCVALUE2 + "\","
+                                :
+                                "") +
                         "\"_" + KEY1 + "\": \"" + VALUE1 + "\"," +
                         "\"_" + KEY2 + "\": \"" + javaLookup.getRuntime() + "\"" +
                         "}",
@@ -176,20 +180,20 @@ public class GelfLayoutTest {
         InputStream inflaterStream;
         InputStream inflaterStream2;
         switch (compressionType) {
-        case GZIP:
-            inflaterStream = new GZIPInputStream(bais);
-            inflaterStream2 = new GZIPInputStream(bais2);
-            break;
-        case ZLIB:
-            inflaterStream = new InflaterInputStream(bais);
-            inflaterStream2 = new InflaterInputStream(bais2);
-            break;
-        case OFF:
-            inflaterStream = bais;
-            inflaterStream2 = bais2;
-            break;
-        default:
-            throw new IllegalStateException("Missing test case clause");
+            case GZIP:
+                inflaterStream = new GZIPInputStream(bais);
+                inflaterStream2 = new GZIPInputStream(bais2);
+                break;
+            case ZLIB:
+                inflaterStream = new InflaterInputStream(bais);
+                inflaterStream2 = new InflaterInputStream(bais2);
+                break;
+            case OFF:
+                inflaterStream = bais;
+                inflaterStream2 = bais2;
+                break;
+            default:
+                throw new IllegalStateException("Missing test case clause");
         }
         final byte[] uncompressed = IOUtils.toByteArray(inflaterStream);
         final byte[] uncompressed2 = IOUtils.toByteArray(inflaterStream2);
@@ -209,9 +213,9 @@ public class GelfLayoutTest {
                 "\"full_message\": \"" + String.valueOf(JsonStringEncoder.getInstance().quoteAsString(
                 includeStacktrace ? GelfLayout.formatThrowable(exception).toString() : exception.toString())) + "\"," +
                 (includeThreadContext ?
-                      "\"_" + MDCKEY1 + "\": \"" + MDCVALUE1 + "\"," +
-                       "\"_" + MDCKEY2 + "\": \"" + MDCVALUE2 + "\","
-                    : "") +
+                        "\"_" + MDCKEY1 + "\": \"" + MDCVALUE1 + "\"," +
+                                "\"_" + MDCKEY2 + "\": \"" + MDCVALUE2 + "\","
+                        : "") +
                 "\"_" + KEY1 + "\": \"" + VALUE1 + "\"," +
                 "\"_" + KEY2 + "\": \"" + javaLookup.getRuntime() + "\"" +
                 "}";
@@ -264,5 +268,29 @@ public class GelfLayoutTest {
         assertEquals("1.100", GelfLayout.formatTimestamp(1100L).toString());
         assertEquals("1458741206.653", GelfLayout.formatTimestamp(1458741206653L).toString());
         assertEquals("9223372036854775.807", GelfLayout.formatTimestamp(Long.MAX_VALUE).toString());
+    }
+
+    private void testRequiresLocation(String messagePattern, Boolean requiresLocation) {
+
+        GelfLayout layout = GelfLayout.newBuilder()
+                .setMessagePattern(messagePattern)
+                .build();
+
+        assertEquals(layout.requiresLocation(), requiresLocation);
+    }
+
+    @Test
+    public void testRequiresLocationPatternNotSet() {
+        testRequiresLocation(null, false);
+    }
+
+    @Test
+    public void testRequiresLocationPatternNotContainsLocation() {
+        testRequiresLocation("%m %n", false);
+    }
+
+    @Test
+    public void testRequiresLocationPatternContainsLocation() {
+        testRequiresLocation("%C %m %t", true);
     }
 }
