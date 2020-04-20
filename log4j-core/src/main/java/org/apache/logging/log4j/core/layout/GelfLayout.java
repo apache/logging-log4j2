@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -386,6 +387,11 @@ public final class GelfLayout extends AbstractStringLayout {
         final StringBuilder text = toText(event, getStringBuilder(), true);
         final Encoder<StringBuilder> helper = getStringBuilderEncoder();
         helper.encode(text, destination);
+    }
+
+    @Override
+    public boolean requiresLocation() {
+        return Objects.nonNull(layout) && layout.requiresLocation();
     }
 
     private byte[] compress(final byte[] bytes) {
