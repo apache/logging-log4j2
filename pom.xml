@@ -181,7 +181,7 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.13.1</Log4jReleaseVersion>
+    <Log4jReleaseVersion>2.13.2</Log4jReleaseVersion>
     <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
     <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <!--<Log4jReleaseManager>Matt Sicker</Log4jReleaseManager> -->
@@ -242,7 +242,7 @@
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <mockitoVersion>2.25.1</mockitoVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
-    <javaTargetVersion>1.7</javaTargetVersion>
+    <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />
   </properties>
   <pluginRepositories>

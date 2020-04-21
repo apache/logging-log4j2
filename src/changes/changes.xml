@@ -29,7 +29,7 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.13.2" date="2020-MM-DD" description="GA Release 2.13.2">
+    <release version="2.13.2" date="2020-04-23" description="GA Release 2.13.2">
       <action issue="LOG4J2-2824" dev="rgoers" type="fix" due-to="CrazyBills">
         Implement requiresLocation in GelfLayout to reflect whether location information is used in the message Pattern.
       </action>
