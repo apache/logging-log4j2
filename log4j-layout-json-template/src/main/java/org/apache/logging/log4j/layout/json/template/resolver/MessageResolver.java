@@ -23,34 +23,47 @@ import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.Strings;
 
 final class MessageResolver implements EventResolver {
 
     private static final String[] FORMATS = { "JSON" };
 
-    private final String key;
+    private final EventResolver internalResolver;
 
     MessageResolver(final String key) {
-        this.key = key;
+        this.internalResolver = createInternalResolver(key);
     }
 
     static String getName() {
         return "message";
     }
 
+    private static EventResolver createInternalResolver(final String key) {
+        if (Strings.isBlank(key)) {
+            return MessageResolver::resolveText;
+        } else if (FORMATS[0].equalsIgnoreCase(key)) {
+            return MessageResolver::resolveJson;
+        } else {
+            throw new IllegalArgumentException("unknown key: " + key);
+        }
+    }
+
     @Override
     public void resolve(
             final LogEvent logEvent,
             final JsonWriter jsonWriter) {
-        final Message message = logEvent.getMessage();
-        if (FORMATS[0].equalsIgnoreCase(key)) {
-            resolveJson(message, jsonWriter);
-        } else {
-            resolveText(message, jsonWriter);
-        }
+        internalResolver.resolve(logEvent, jsonWriter);
     }
 
-    private void resolveText(
+    private static void resolveText(
+            final LogEvent logEvent,
+            final JsonWriter jsonWriter) {
+        final Message message = logEvent.getMessage();
+        resolveText(message, jsonWriter);
+    }
+
+    private static void resolveText(
             final Message message,
             final JsonWriter jsonWriter) {
         if (message instanceof StringBuilderFormattable) {
@@ -63,11 +76,12 @@ final class MessageResolver implements EventResolver {
         }
     }
 
-    private void resolveJson(
-            final Message message,
+    private static void resolveJson(
+            final LogEvent logEvent,
             final JsonWriter jsonWriter) {
 
         // Try SimpleMessage serializer.
+        final Message message = logEvent.getMessage();
         if (writeSimpleMessage(jsonWriter, message)) {
             return;
         }
@@ -83,11 +97,11 @@ final class MessageResolver implements EventResolver {
         }
 
         // Fallback to plain Object write.
-        resolveText(message, jsonWriter);
+        resolveText(logEvent, jsonWriter);
 
     }
 
-    private boolean writeSimpleMessage(
+    private static boolean writeSimpleMessage(
             final JsonWriter jsonWriter,
             final Message message) {
 
@@ -104,7 +118,7 @@ final class MessageResolver implements EventResolver {
 
     }
 
-    private boolean writeMultiformatMessage(
+    private static boolean writeMultiformatMessage(
             final JsonWriter jsonWriter,
             final Message message) {
 
@@ -132,12 +146,12 @@ final class MessageResolver implements EventResolver {
         }
 
         // Fallback to the default message formatter.
-        resolveText(message, jsonWriter);
+        resolveText((LogEvent) message, jsonWriter);
         return true;
 
     }
 
-    private boolean writeObjectMessage(
+    private static boolean writeObjectMessage(
             final JsonWriter jsonWriter,
             final Message message) {
 
