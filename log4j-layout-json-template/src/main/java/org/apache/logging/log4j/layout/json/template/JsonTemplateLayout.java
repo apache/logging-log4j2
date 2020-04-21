@@ -93,7 +93,8 @@ public class JsonTemplateLayout implements StringLayout {
         this.charset = builder.charset;
         this.contentType = "application/json; charset=" + charset;
         this.eventDelimiter = builder.eventDelimiter;
-        final StrSubstitutor substitutor = builder.configuration.getStrSubstitutor();
+        final Configuration configuration = builder.configuration;
+        final StrSubstitutor substitutor = configuration.getStrSubstitutor();
         final JsonWriter jsonWriter = JsonWriter
                 .newBuilder()
                 .setMaxStringLength(builder.maxStringLength)
@@ -105,7 +106,9 @@ public class JsonTemplateLayout implements StringLayout {
                         : null;
         this.eventResolver = createEventResolver(
                 builder,
+                configuration,
                 substitutor,
+                charset,
                 jsonWriter,
                 stackTraceElementObjectResolver);
         this.contextRecycler = createContextRecycler(builder, jsonWriter);
@@ -127,7 +130,9 @@ public class JsonTemplateLayout implements StringLayout {
 
     private TemplateResolver<LogEvent> createEventResolver(
             final Builder builder,
+            final Configuration configuration,
             final StrSubstitutor substitutor,
+            final Charset charset,
             final JsonWriter jsonWriter,
             final TemplateResolver<StackTraceElement> stackTraceElementObjectResolver) {
         final String eventTemplate = readEventTemplate(builder);
@@ -137,7 +142,9 @@ public class JsonTemplateLayout implements StringLayout {
                         maxByteCountPerChar * builder.maxStringLength));
         final EventResolverContext resolverContext = EventResolverContext
                 .newBuilder()
+                .setConfiguration(configuration)
                 .setSubstitutor(substitutor)
+                .setCharset(charset)
                 .setJsonWriter(jsonWriter)
                 .setRecyclerFactory(builder.recyclerFactory)
                 .setMaxStringByteCount(maxStringByteCount)

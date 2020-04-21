@@ -17,18 +17,24 @@
 package org.apache.logging.log4j.layout.json.template.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.layout.json.template.util.RecyclerFactory;
 
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 public final class EventResolverContext implements TemplateResolverContext<LogEvent, EventResolverContext> {
 
+    private final Configuration configuration;
+
     private final StrSubstitutor substitutor;
+
+    private final Charset charset;
 
     private final JsonWriter jsonWriter;
 
@@ -49,7 +55,9 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
     private final KeyValuePair[] additionalFields;
 
     private EventResolverContext(final Builder builder) {
+        this.configuration = builder.configuration;
         this.substitutor = builder.substitutor;
+        this.charset = builder.charset;
         this.jsonWriter = builder.jsonWriter;
         this.recyclerFactory = builder.recyclerFactory;
         this.maxStringByteCount = builder.maxStringByteCount;
@@ -73,9 +81,17 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         return EventResolverFactories.getResolverFactoryByName();
     }
 
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
     @Override
     public StrSubstitutor getSubstitutor() {
         return substitutor;
+    }
+
+    public Charset getCharset() {
+        return charset;
     }
 
     @Override
@@ -121,7 +137,11 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
     public static class Builder {
 
+        private Configuration configuration;
+
         private StrSubstitutor substitutor;
+
+        private Charset charset;
 
         private JsonWriter jsonWriter;
 
@@ -145,8 +165,18 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             // Do nothing.
         }
 
+        public Builder setConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
         public Builder setSubstitutor(final StrSubstitutor substitutor) {
             this.substitutor = substitutor;
+            return this;
+        }
+
+        public Builder setCharset(final Charset charset) {
+            this.charset = charset;
             return this;
         }
 
@@ -203,7 +233,9 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         }
 
         private void validate() {
+            Objects.requireNonNull(configuration, "configuration");
             Objects.requireNonNull(substitutor, "substitutor");
+            Objects.requireNonNull(charset, "charset");
             Objects.requireNonNull(jsonWriter, "jsonWriter");
             Objects.requireNonNull(recyclerFactory, "recyclerFactory");
             if (maxStringByteCount <= 0) {

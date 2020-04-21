@@ -398,6 +398,10 @@ Below is the list of supported event template variables:
 | ndc
 | Nested Diagnostic Context `String[]` returned by `logEvent.getContextStack()`
 
+| pattern:<pattern>
+| injects link:layouts.html#PatternLayout[`PatternLayout`] serialized string
+  described by the `pattern` parameter
+
 | source:className
 | `logEvent.getSource().getClassName()`
 
@@ -661,3 +665,6 @@ garbage-free with the following exceptions:
 
 * link:lookups.html[Lookups] (that is, `${...}` variables, excluding
   `${json:...}` ones) are not garbage-free.
+
+* link:layouts.html#PatternLayout[`PatternLayout`] serialization through
+  `${json:pattern:<pattern>}` is not garbage-free.

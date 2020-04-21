@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.layout.json.template;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -1607,6 +1608,41 @@ public class JsonTemplateLayoutTest {
                     return String.format("'%c' (%04X)", c, (int) c);
                 })
                 .collect(Collectors.joining(", "));
+    }
+
+    @Test
+    public void test_PatternResolver() throws IOException {
+
+        // Create the event template.
+        final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
+        eventTemplateRootNode.put("message", "${json:pattern:%p:%m}");
+        final String eventTemplate = eventTemplateRootNode.toString();
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        // Create the log event.
+        final SimpleMessage message = new SimpleMessage("foo");
+        final Level level = Level.FATAL;
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setMessage(message)
+                .setLevel(level)
+                .build();
+
+        // Check the serialized event.
+        final String serializedLogEvent = layout.toSerializable(logEvent);
+        final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
+        final String expectedMessage = String.format(
+                "%s:%s",
+                level, message.getFormattedMessage());
+        assertThat(point(rootNode, "message").asText()).isEqualTo(expectedMessage);
+
     }
 
 }
