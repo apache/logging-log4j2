@@ -20,7 +20,7 @@
   <parent>
     <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
-    <version>2.13.2-SNAPSHOT</version>
+    <version>2.13.2</version>
     <relativePath>../</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -245,7 +245,7 @@
             <!-- Use Maven Surefire 2.21 which brings module support -->
             <version>${surefire.plugin.version}</version>
             <!-- Disable forked VM as 2.21 yields https://issues.apache.org/jira/browse/SUREFIRE-720 -->
-            <configuration combine.self="override"/>
+            <configuration combine.self="override" />
             <executions>
               <execution>
                 <id>test</id>
