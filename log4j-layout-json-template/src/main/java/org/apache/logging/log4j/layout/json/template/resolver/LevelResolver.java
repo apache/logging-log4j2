@@ -28,16 +28,29 @@ import java.util.stream.Collectors;
 
 final class LevelResolver implements EventResolver {
 
-    private static Map<Level, String> SEVERITY_CODE_RESOLUTION_BY_LEVEL = Arrays
-            .stream(Level.values())
-            .collect(Collectors.toMap(
-                    Function.identity(),
-                    level -> "" + Severity.getSeverity(level).getCode()));
+    private static String[] SEVERITY_CODE_RESOLUTION_BY_STANDARD_LEVEL_ORDINAL;
+
+    static {
+        final int levelCount = Level.values().length;
+        final String[] severityCodeResolutionByStandardLevelOrdinal =
+                new String[levelCount + 1];
+        for (final Level level : Level.values()) {
+            final int standardLevelOrdinal = level.getStandardLevel().ordinal();
+            final int severityCode = Severity.getSeverity(level).getCode();
+            severityCodeResolutionByStandardLevelOrdinal[standardLevelOrdinal] =
+                    String.valueOf(severityCode);
+        }
+        SEVERITY_CODE_RESOLUTION_BY_STANDARD_LEVEL_ORDINAL =
+                severityCodeResolutionByStandardLevelOrdinal;
+    }
 
     private static final EventResolver SEVERITY_CODE_RESOLVER =
             (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+                final int standardLevelOrdinal =
+                        logEvent.getLevel().getStandardLevel().ordinal();
                 final String severityCodeResolution =
-                        SEVERITY_CODE_RESOLUTION_BY_LEVEL.get(logEvent.getLevel());
+                        SEVERITY_CODE_RESOLUTION_BY_STANDARD_LEVEL_ORDINAL[
+                                standardLevelOrdinal];
                 jsonWriter.writeRawString(severityCodeResolution);
             };
 

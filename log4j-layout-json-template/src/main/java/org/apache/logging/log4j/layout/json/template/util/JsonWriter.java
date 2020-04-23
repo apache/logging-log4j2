@@ -562,7 +562,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         outer:
         while (i < limit) {
             while (true) {
-                char c = seq.charAt(i);
+                final char c = seq.charAt(i);
                 if (c < ESC_CODES.length && ESC_CODES[c] != 0) {
                     break;
                 }
@@ -572,8 +572,8 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
                 }
             }
             final char d = seq.charAt(i++);
-            int escCode = ESC_CODES[d];
-            int quoteBufferLength = escCode < 0
+            final int escCode = ESC_CODES[d];
+            final int quoteBufferLength = escCode < 0
                     ? quoteNumeric(d)
                     : quoteNamed(escCode);
             stringBuilder.append(quoteBuffer, 0, quoteBufferLength);
@@ -635,7 +635,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         outer:
         while (i < limit) {
             while (true) {
-                char c = buffer[i];
+                final char c = buffer[i];
                 if (c < ESC_CODES.length && ESC_CODES[c] != 0) {
                     break;
                 }
@@ -644,16 +644,16 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
                     break outer;
                 }
             }
-            char d = buffer[i++];
-            int escCode = ESC_CODES[d];
-            int quoteBufferLength = escCode < 0
+            final char d = buffer[i++];
+            final int escCode = ESC_CODES[d];
+            final int quoteBufferLength = escCode < 0
                     ? quoteNumeric(d)
                     : quoteNamed(escCode);
             stringBuilder.append(quoteBuffer, 0, quoteBufferLength);
         }
     }
 
-    private int quoteNumeric(int value) {
+    private int quoteNumeric(final int value) {
         quoteBuffer[1] = 'u';
         // We know it's a control char, so only the last 2 chars are non-0
         quoteBuffer[4] = HEX_CHARS[value >> 4];
@@ -661,7 +661,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         return 6;
     }
 
-    private int quoteNamed(int esc) {
+    private int quoteNamed(final int esc) {
         quoteBuffer[1] = (char) esc;
         return 2;
     }
