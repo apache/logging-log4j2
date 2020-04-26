@@ -859,7 +859,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
 
 
 [#Loggers]
-=== Configuring loggers
+=== Configuring Loggers
 
 An understanding of how loggers work in Log4j is critical before trying
 to configure them. Please reference the Log4j
@@ -874,6 +874,16 @@ The level may be configured with one of TRACE, DEBUG, INFO, WARN, ERROR,
 ALL or OFF. If no level is specified it will default to ERROR. The
 additivity attribute may be assigned a value of true or false. If the
 attribute is omitted the default value of true will be used.
+
+Capturing location information (the class name, file name, method name, and line number of the caller)
+can be slow. Log4j tries to optimize this by reducing the size of the stack that must be traversed
+to find the caller of the logging method. It does this by determining if any component that might
+be accessed requires location information. This can cause performance issues if a logger is configured
+at a level like trace or debug with the expectation that most logs will be filtered on an Appender
+reference or Appender as Log4j will calculate the location information even though the log event
+is going to be discarded. To disable this behavior the `includeLocation` attribute
+can be set to false on the LoggerConfig. This will cause Log4j to defer calculating the location
+information until absolutely necessary.
 
 A LoggerConfig (including the root LoggerConfig) can be configured with
 properties that will be added to the properties copied from the
