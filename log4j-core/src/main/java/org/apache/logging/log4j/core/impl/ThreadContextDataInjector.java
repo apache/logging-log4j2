@@ -208,7 +208,7 @@ public class ThreadContextDataInjector {
                 // this will replace the LogEvent's context data with the returned instance
                 return providers.get(0).supplyStringMap();
             }
-            int count = props.size();
+            int count = props == null ? 0 : props.size();
             StringMap[] maps = new StringMap[providers.size()];
             for (int i = 0; i < providers.size(); ++i) {
                 maps[i] = providers.get(i).supplyStringMap();
