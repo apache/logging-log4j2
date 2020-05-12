@@ -43,8 +43,9 @@ public enum JsonTemplateLayoutBenchmarkReport {;
 
     public static void main(final String[] args) throws Exception {
         final CliArgs cliArgs = CliArgs.parseArgs(args);
+        final JmhSetup jmhSetup = JmhSetup.ofJmhResult(cliArgs.jmhResultJsonFile);
         final List<JmhSummary> jmhSummaries = JmhSummary.ofJmhResult(cliArgs.jmhResultJsonFile);
-        dumpJmhSummaries(cliArgs.outputAdocFile, jmhSummaries);
+        dumpReport(cliArgs.outputAdocFile, jmhSetup, jmhSummaries);
     }
 
     private static final class CliArgs {
@@ -104,32 +105,90 @@ public enum JsonTemplateLayoutBenchmarkReport {;
 
     }
 
+    private static final class JmhSetup {
+
+        private final String vmName;
+
+        private final String vmVersion;
+
+        private final List<String> vmArgs;
+
+        private final int forkCount;
+
+        private final int warmupIterationCount;
+
+        private final String warmupTime;
+
+        private final int measurementIterationCount;
+
+        private final String measurementTime;
+
+        private JmhSetup(
+                final String vmName,
+                final String vmVersion,
+                final List<String> vmArgs,
+                final int forkCount,
+                final int warmupIterationCount,
+                final String warmupTime,
+                final int measurementIterationCount,
+                final String measurementTime) {
+            this.vmName = vmName;
+            this.vmVersion = vmVersion;
+            this.vmArgs = vmArgs;
+            this.forkCount = forkCount;
+            this.warmupIterationCount = warmupIterationCount;
+            this.warmupTime = warmupTime;
+            this.measurementIterationCount = measurementIterationCount;
+            this.measurementTime = measurementTime;
+        }
+
+        private static JmhSetup ofJmhResult(final File jmhResultFile) throws IOException {
+            final List<Object> jmhResult = readObject(jmhResultFile);
+            return ofJmhResult(jmhResult);
+        }
+
+        private static JmhSetup ofJmhResult(final List<Object> jmhResult) {
+            final Object jmhResultEntry = jmhResult.stream().findFirst().get();
+            final String vmName = readObjectAtPath(jmhResultEntry, "vmName");
+            final String vmVersion = readObjectAtPath(jmhResultEntry, "vmVersion");
+            final List<String> vmArgs = readObjectAtPath(jmhResultEntry, "jvmArgs");
+            final int forkCount = readObjectAtPath(jmhResultEntry, "forks");
+            final int warmupIterationCount = readObjectAtPath(jmhResultEntry, "warmupIterations");
+            final String warmupTime = readObjectAtPath(jmhResultEntry, "warmupTime");
+            final int measurementIterationCount = readObjectAtPath(jmhResultEntry, "measurementIterations");
+            final String measurementTime = readObjectAtPath(jmhResultEntry, "measurementTime");
+            return new JmhSetup(
+                    vmName,
+                    vmVersion,
+                    vmArgs,
+                    forkCount,
+                    warmupIterationCount,
+                    warmupTime,
+                    measurementIterationCount,
+                    measurementTime);
+        }
+
+    }
+
     private static final class JmhSummary {
 
         private final String benchmark;
 
         private final BigDecimal opRate;
 
-        private final BigDecimal normalizedOpRate;
-
         private final BigDecimal gcRate;
 
         private JmhSummary(
                 final String benchmark,
                 final BigDecimal opRate,
-                final BigDecimal normalizedOpRate,
                 final BigDecimal gcRate) {
             this.benchmark = benchmark;
             this.opRate = opRate;
-            this.normalizedOpRate = normalizedOpRate;
             this.gcRate = gcRate;
         }
 
         private static List<JmhSummary> ofJmhResult(final File jmhResultFile) throws IOException {
-            final byte[] jmhResultJsonBytes = Files.readAllBytes(jmhResultFile.toPath());
-            final String jmhResultJson = new String(jmhResultJsonBytes, CHARSET);
-            @SuppressWarnings("unchecked")
-            final List<Object> jmhResult = (List<Object>) JsonReader.read(jmhResultJson);
+            final List<Object> jmhResult = readObject(jmhResultFile);
             return ofJmhResult(jmhResult);
         }
 
@@ -145,78 +204,119 @@ public enum JsonTemplateLayoutBenchmarkReport {;
                         final String benchmark = readObjectAtPath(jmhResultEntry, "benchmark");
                         final BigDecimal opRate = readBigDecimalAtPath(jmhResultEntry, "primaryMetric", "scorePercentiles", "99.0");
                         final BigDecimal gcRate = readBigDecimalAtPath(jmhResultEntry, "secondaryMetrics", "·gc.alloc.rate.norm", "scorePercentiles", "99.0");
-                        final BigDecimal normalizedOpRate = opRate.divide(maxOpRate, RoundingMode.CEILING);
-                        return new JmhSummary(benchmark, opRate, normalizedOpRate, gcRate);
+                        return new JmhSummary(benchmark, opRate, gcRate);
                     })
                     .collect(Collectors.toList());
         }
 
-        private static <V> V readObjectAtPath(final Object object, String... path) {
-            Object lastObject = object;
-            for (final String key : path) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> lastMap = (Map<String, Object>) lastObject;
-                lastObject = lastMap.get(key);
-            }
-            @SuppressWarnings("unchecked")
-            final V typedLastObject = (V) lastObject;
-            return typedLastObject;
-        }
-
-        private static BigDecimal readBigDecimalAtPath(final Object object, String... path) {
-            final Number number = readObjectAtPath(object, path);
-            if (number instanceof BigDecimal) {
-                return (BigDecimal) number;
-            } else if (number instanceof Integer) {
-                final int intNumber = (int) number;
-                return BigDecimal.valueOf(intNumber);
-            } else if (number instanceof Long) {
-                final long longNumber = (long) number;
-                return BigDecimal.valueOf(longNumber);
-            } else if (number instanceof BigInteger) {
-                final BigInteger bigInteger = (BigInteger) number;
-                return new BigDecimal(bigInteger);
-            } else {
-                final String message = String.format(
-                        "failed to convert the value to BigDecimal at path %s: %s",
-                        Arrays.asList(path), number);
-                throw new IllegalArgumentException(message);
-            }
-        }
-
     }
 
-    private static void dumpJmhSummaries(
+    private static <V> V readObject(final File file) throws IOException {
+        final byte[] jsonBytes = Files.readAllBytes(file.toPath());
+        final String json = new String(jsonBytes, CHARSET);
+        @SuppressWarnings("unchecked")
+        final V object = (V) JsonReader.read(json);
+        return object;
+    }
+
+    private static <V> V readObjectAtPath(final Object object, String... path) {
+        Object lastObject = object;
+        for (final String key : path) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> lastMap = (Map<String, Object>) lastObject;
+            lastObject = lastMap.get(key);
+        }
+        @SuppressWarnings("unchecked")
+        final V typedLastObject = (V) lastObject;
+        return typedLastObject;
+    }
+
+    private static BigDecimal readBigDecimalAtPath(final Object object, String... path) {
+        final Number number = readObjectAtPath(object, path);
+        if (number instanceof BigDecimal) {
+            return (BigDecimal) number;
+        } else if (number instanceof Integer) {
+            final int intNumber = (int) number;
+            return BigDecimal.valueOf(intNumber);
+        } else if (number instanceof Long) {
+            final long longNumber = (long) number;
+            return BigDecimal.valueOf(longNumber);
+        } else if (number instanceof BigInteger) {
+            final BigInteger bigInteger = (BigInteger) number;
+            return new BigDecimal(bigInteger);
+        } else {
+            final String message = String.format(
+                    "failed to convert the value to BigDecimal at path %s: %s",
+                    Arrays.asList(path), number);
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    private static void dumpReport(
             final File outputAdocFile,
+            final JmhSetup jmhSetup,
             final List<JmhSummary> jmhSummaries) throws IOException {
         try (final OutputStream outputStream = new FileOutputStream(outputAdocFile);
              final PrintStream printStream = new PrintStream(outputStream, false, CHARSET.name())) {
-            dumpJmhSummaries(printStream, jmhSummaries);
+            dumpJmhSetup(printStream, jmhSetup);
+            dumpJmhSummaries(printStream, jmhSummaries, "lite");
+            dumpJmhSummaries(printStream, jmhSummaries, "full");
         }
+    }
+
+    private static void dumpJmhSetup(
+            final PrintStream printStream,
+            final JmhSetup jmhSetup) {
+        printStream.println("[cols=\"1,4\", options=\"header\"]");
+        printStream.println(".JMH setup");
+        printStream.println("|===");
+        printStream.println("|Setting|Value");
+        printStream.format("|JVM name|%s%n", jmhSetup.vmName);
+        printStream.format("|JVM version|%s%n", jmhSetup.vmVersion);
+        printStream.format("|JVM args|%s%n", jmhSetup.vmArgs != null ? String.join(" ", jmhSetup.vmArgs) : "");
+        printStream.format("|Forks|%s%n", jmhSetup.forkCount);
+        printStream.format("|Warmup iterations|%d × %s%n", jmhSetup.warmupIterationCount, jmhSetup.warmupTime);
+        printStream.format("|Measurement iterations|%d × %s%n", jmhSetup.measurementIterationCount, jmhSetup.measurementTime);
+        printStream.println("|===");
     }
 
     private static void dumpJmhSummaries(
             final PrintStream printStream,
-            final List<JmhSummary> jmhSummaries) {
+            final List<JmhSummary> jmhSummaries,
+            final String prefix) {
 
         // Print header.
         printStream.println("[cols=\"4,>2,4,>2\", options=\"header\"]");
-        printStream.println(".JMH result (99^th^ percentile) summary");
+        printStream.format(".JMH result (99^th^ percentile) summary for \"%s\" log events%n", prefix);
         printStream.println("|===");
         printStream.println("^|Benchmark");
         printStream.println("2+^|ops/sec");
         printStream.println("^|B/op");
+
+        // Filter JMH summaries by prefix.
+        final String filterRegex = String.format("^.*\\.%s[A-Za-z0-9]+$", prefix);
+        final List<JmhSummary> filteredJmhSummaries = jmhSummaries
+                .stream()
+                .filter(jmhSummary -> jmhSummary.benchmark.matches(filterRegex))
+                .collect(Collectors.toList());
+
+        // Determine the max. op rate.
+        final BigDecimal maxOpRate = filteredJmhSummaries
+                .stream()
+                .map(jmhSummary -> jmhSummary.opRate)
+                .max(BigDecimal::compareTo)
+                .get();
 
         // Print each summary.
         final Comparator<JmhSummary> jmhSummaryComparator =
                 Comparator
                         .comparing((final JmhSummary jmhSummary) -> jmhSummary.opRate)
                         .reversed();
-        jmhSummaries
+        filteredJmhSummaries
                 .stream()
                 .sorted(jmhSummaryComparator)
                 .forEach((final JmhSummary jmhSummary) -> {
-                    dumpJmhSummary(printStream, jmhSummary);
+                    dumpJmhSummary(printStream, maxOpRate, jmhSummary);
                 });
 
         // Print footer.
@@ -224,7 +324,10 @@ public enum JsonTemplateLayoutBenchmarkReport {;
 
     }
 
-    private static void dumpJmhSummary(PrintStream printStream, JmhSummary jmhSummary) {
+    private static void dumpJmhSummary(
+            final PrintStream printStream,
+            final BigDecimal maxOpRate,
+            final JmhSummary jmhSummary) {
         printStream.println();
         final String benchmark = jmhSummary
                 .benchmark
@@ -236,15 +339,16 @@ public enum JsonTemplateLayoutBenchmarkReport {;
                 .toBigInteger()
                 .longValueExact();
         printStream.format("|%,d%n", opRatePerSec);
-        final int opRateBarLength = jmhSummary
-                .normalizedOpRate
+        final BigDecimal normalizedOpRate = jmhSummary
+                .opRate
+                .divide(maxOpRate, RoundingMode.CEILING);
+        final int opRateBarLength = normalizedOpRate
                 .multiply(BigDecimal.valueOf(19))
                 .toBigInteger()
                 .add(BigInteger.ONE)
                 .intValueExact();
         final String opRateBar = Strings.repeat("▉", opRateBarLength);
-        final int opRatePercent = jmhSummary
-                .normalizedOpRate
+        final int opRatePercent = normalizedOpRate
                 .multiply(BigDecimal.valueOf(100))
                 .toBigInteger()
                 .intValueExact();
