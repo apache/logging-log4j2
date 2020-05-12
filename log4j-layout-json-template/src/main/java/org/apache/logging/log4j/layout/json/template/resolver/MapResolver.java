@@ -36,6 +36,11 @@ final class MapResolver implements EventResolver {
     }
 
     @Override
+    public boolean isResolvable(final LogEvent logEvent) {
+        return logEvent.getMessage() instanceof MapMessage;
+    }
+
+    @Override
     public void resolve(
             final LogEvent logEvent,
             final JsonWriter jsonWriter) {

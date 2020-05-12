@@ -69,13 +69,16 @@ final class SourceResolver implements EventResolver {
                 }
             };
 
+    private final boolean locationInfoEnabled;
+
     private final EventResolver internalResolver;
 
     SourceResolver(final EventResolverContext context, final String key) {
+        this.locationInfoEnabled = context.isLocationInfoEnabled();
         this.internalResolver = createInternalResolver(context, key);
     }
 
-    private EventResolver createInternalResolver(
+    private static EventResolver createInternalResolver(
             final EventResolverContext context,
             final String key) {
         if (!context.isLocationInfoEnabled()) {
@@ -92,6 +95,11 @@ final class SourceResolver implements EventResolver {
 
     static String getName() {
         return "source";
+    }
+
+    @Override
+    public boolean isResolvable(final LogEvent logEvent) {
+        return locationInfoEnabled && logEvent.getSource() != null;
     }
 
     @Override

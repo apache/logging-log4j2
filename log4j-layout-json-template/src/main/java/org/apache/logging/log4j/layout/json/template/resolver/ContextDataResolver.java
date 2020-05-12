@@ -42,6 +42,12 @@ final class ContextDataResolver implements EventResolver {
     }
 
     @Override
+    public boolean isResolvable(final LogEvent logEvent) {
+        final ReadOnlyStringMap contextData = logEvent.getContextData();
+        return contextData != null && !contextData.isEmpty();
+    }
+
+    @Override
     public void resolve(
             final LogEvent logEvent,
             final JsonWriter jsonWriter) {

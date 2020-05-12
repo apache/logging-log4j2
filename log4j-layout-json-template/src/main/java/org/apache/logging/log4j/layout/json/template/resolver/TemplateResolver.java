@@ -18,7 +18,12 @@ package org.apache.logging.log4j.layout.json.template.resolver;
 
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
+@FunctionalInterface
 public interface TemplateResolver<V> {
+
+    default boolean isResolvable(V value) {
+        return true;
+    }
 
     void resolve(V value, JsonWriter jsonWriter);
 

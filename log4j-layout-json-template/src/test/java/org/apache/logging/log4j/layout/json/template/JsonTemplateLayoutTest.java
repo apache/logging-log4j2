@@ -1292,10 +1292,10 @@ public class JsonTemplateLayoutTest {
         // Check the serialized event.
         final String serializedLogEvent = layout.toSerializable(logEvent);
         final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
-        assertThat(point(rootNode, "exceptionStackTrace")).isInstanceOf(NullNode.class);
-        assertThat(point(rootNode, "exceptionStackTraceText")).isInstanceOf(NullNode.class);
-        assertThat(point(rootNode, "exceptionRootCauseStackTrace")).isInstanceOf(NullNode.class);
-        assertThat(point(rootNode, "exceptionRootCauseStackTraceText")).isInstanceOf(NullNode.class);
+        assertThat(point(rootNode, "exceptionStackTrace")).isInstanceOf(MissingNode.class);
+        assertThat(point(rootNode, "exceptionStackTraceText")).isInstanceOf(MissingNode.class);
+        assertThat(point(rootNode, "exceptionRootCauseStackTrace")).isInstanceOf(MissingNode.class);
+        assertThat(point(rootNode, "exceptionRootCauseStackTraceText")).isInstanceOf(MissingNode.class);
         assertThat(point(rootNode, "requiredFieldTriggeringError").asBoolean()).isTrue();
 
     }

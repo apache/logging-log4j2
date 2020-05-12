@@ -38,6 +38,12 @@ final class ContextStackResolver implements EventResolver {
     }
 
     @Override
+    public boolean isResolvable(final LogEvent logEvent) {
+        final ThreadContext.ContextStack contextStack = logEvent.getContextStack();
+        return contextStack.getDepth() > 0;
+    }
+
+    @Override
     public void resolve(
             final LogEvent logEvent,
             final JsonWriter jsonWriter) {

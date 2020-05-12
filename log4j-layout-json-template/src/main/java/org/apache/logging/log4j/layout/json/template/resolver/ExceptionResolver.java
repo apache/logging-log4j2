@@ -78,14 +78,22 @@ class ExceptionResolver implements EventResolver {
 
             };
 
+    private final boolean stackTraceEnabled;
+
     private final EventResolver internalResolver;
 
     ExceptionResolver(final EventResolverContext context, final String key) {
+        this.stackTraceEnabled = context.isStackTraceEnabled();
         this.internalResolver = INTERNAL_RESOLVER_FACTORY.createInternalResolver(context, key);
     }
 
     static String getName() {
         return "exception";
+    }
+
+    @Override
+    public boolean isResolvable(final LogEvent logEvent) {
+        return stackTraceEnabled && logEvent.getThrown() != null;
     }
 
     @Override

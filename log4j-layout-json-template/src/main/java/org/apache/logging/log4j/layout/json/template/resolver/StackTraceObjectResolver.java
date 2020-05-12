@@ -30,6 +30,9 @@ final class StackTraceObjectResolver implements StackTraceResolver {
     public void resolve(
             final Throwable throwable,
             final JsonWriter jsonWriter) {
+        // Following check against the stacktrace element count is not
+        // implemented in isResolvable(), since Throwable#getStackTrace() incurs
+        // a significant cloning cost.
         final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
         if (stackTraceElements.length  == 0) {
             jsonWriter.writeNull();

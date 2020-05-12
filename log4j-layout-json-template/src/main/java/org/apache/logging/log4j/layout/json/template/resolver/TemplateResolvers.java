@@ -193,12 +193,16 @@ public enum TemplateResolvers {;
         // Create a parent resolver collecting each object field resolver execution.
         return (value, jsonWriter) -> {
             jsonWriter.writeObjectStart();
-            for (int fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
-                final String fieldPrefix = fieldPrefixes.get(fieldIndex);
+            for (int resolvedFieldCount = 0, fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
                 final TemplateResolver<V> fieldResolver = fieldResolvers.get(fieldIndex);
-                if (fieldIndex > 0) {
+                final boolean resolvable = fieldResolver.isResolvable(value);
+                if (!resolvable) {
+                    continue;
+                }
+                if (resolvedFieldCount++ > 0) {
                     jsonWriter.writeSeparator();
                 }
+                final String fieldPrefix = fieldPrefixes.get(fieldIndex);
                 jsonWriter.writeRawString(fieldPrefix);
                 fieldResolver.resolve(value, jsonWriter);
             }

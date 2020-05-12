@@ -83,14 +83,22 @@ final class ExceptionRootCauseResolver implements EventResolver {
 
             };
 
+    private final boolean stackTraceEnabled;
+
     private final EventResolver internalResolver;
 
     ExceptionRootCauseResolver(final EventResolverContext context, final String key) {
+        this.stackTraceEnabled = context.isStackTraceEnabled();
         this.internalResolver = INTERNAL_RESOLVER_FACTORY.createInternalResolver(context, key);
     }
 
     static String getName() {
         return "exceptionRootCause";
+    }
+
+    @Override
+    public boolean isResolvable(final LogEvent logEvent) {
+        return stackTraceEnabled && logEvent.getThrown() != null;
     }
 
     @Override

@@ -50,6 +50,11 @@ final class MarkerResolver implements EventResolver {
     }
 
     @Override
+    public boolean isResolvable(final LogEvent logEvent) {
+        return logEvent.getMarker() != null;
+    }
+
+    @Override
     public void resolve(
             final LogEvent logEvent,
             final JsonWriter jsonWriter) {
