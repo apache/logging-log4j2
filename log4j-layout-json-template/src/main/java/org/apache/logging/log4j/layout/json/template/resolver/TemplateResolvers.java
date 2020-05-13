@@ -165,8 +165,11 @@ public enum TemplateResolvers {;
         final List<TemplateResolver<V>> fieldResolvers = new ArrayList<>();
         map.forEach((fieldName, fieldValue) -> {
             final TemplateResolver<V> fieldResolver = ofObject(context, fieldValue);
-            fieldNames.add(fieldName);
-            fieldResolvers.add(fieldResolver);
+            final boolean resolvable = fieldResolver.isResolvable();
+            if (resolvable) {
+                fieldNames.add(fieldName);
+                fieldResolvers.add(fieldResolver);
+            }
         });
 
         // Short-circuit if the object is empty.

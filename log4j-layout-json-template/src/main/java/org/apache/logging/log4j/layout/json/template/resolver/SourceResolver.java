@@ -98,6 +98,11 @@ final class SourceResolver implements EventResolver {
     }
 
     @Override
+    public boolean isResolvable() {
+        return locationInfoEnabled;
+    }
+
+    @Override
     public boolean isResolvable(final LogEvent logEvent) {
         return locationInfoEnabled && logEvent.getSource() != null;
     }

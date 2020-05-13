@@ -92,6 +92,11 @@ class ExceptionResolver implements EventResolver {
     }
 
     @Override
+    public boolean isResolvable() {
+        return stackTraceEnabled;
+    }
+
+    @Override
     public boolean isResolvable(final LogEvent logEvent) {
         return stackTraceEnabled && logEvent.getThrown() != null;
     }
