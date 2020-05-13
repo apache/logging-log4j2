@@ -167,6 +167,9 @@
       <action issue="LOG4J2-2572" dev="ggregory" type="update">
         Update Apache Flume from 1.8.0 to 1.9.0.
       </action>
+      <action issue="LOG4J2-2844" dev="ggregory" type="fix">
+        Null pointer exception when no network interfaces are available.
+      </action>
     </release>
     <release version="2.13.3" date="2020-05-10" description="GA Release 2.13.3">
       <action issue="LOG4J2-2838" dev="rgoers" type="fix">
