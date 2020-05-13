@@ -25,6 +25,17 @@ import java.lang.reflect.Array;
 public class ArrayUtils {
 
     /**
+     * Checks if an array of Objects is empty or {@code null}.
+     *
+     * @param array  the array to test
+     * @return {@code true} if the array is empty or {@code null}
+     * @since 2.1
+     */
+    public static boolean isEmpty(final byte[] array) {
+        return getLength(array) == 0;
+    }
+    
+    /**
      * <p>Returns the length of the specified array.
      * This method can deal with {@code Object} arrays and with primitive arrays.</p>
      *
