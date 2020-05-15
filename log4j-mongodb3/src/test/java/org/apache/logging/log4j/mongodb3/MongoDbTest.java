@@ -64,6 +64,7 @@ public class MongoDbTest {
             final Document first = collection.find().first();
             Assert.assertNotNull(first);
             Assert.assertEquals(first.toJson(), "Hello log", first.getString("message"));
+            Assert.assertEquals(first.toJson(), "INFO", first.getString("level"));
         }
     }
 }
