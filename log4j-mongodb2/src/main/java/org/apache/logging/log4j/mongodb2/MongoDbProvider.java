@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.mongodb2;
 
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.convert.TypeConverters;
@@ -38,16 +37,16 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.Strings;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 
 /**
  * The MongoDB implementation of {@link NoSqlProvider}.
  */
 @Plugin(name = "MongoDb2", category = Core.CATEGORY_NAME, printObject = true)
-@PluginAliases("MongoDb") // Deprecated alias
 public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 
     public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
