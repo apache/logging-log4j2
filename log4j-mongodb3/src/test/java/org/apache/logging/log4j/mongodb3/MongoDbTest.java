@@ -38,7 +38,7 @@ import com.mongodb.client.MongoDatabase;
  * This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
  */
 @Category(Appenders.MongoDb.class)
-public class MongoDbTestJava8 {
+public class MongoDbTest {
 
     private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb.xml");
 
@@ -46,7 +46,7 @@ public class MongoDbTestJava8 {
             .create(TestConstants.SYS_PROP_NAME_PORT);
 
     private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(),
-            MongoDbTestJava8.class, LoggingTarget.NULL);
+            MongoDbTest.class, LoggingTarget.NULL);
 
     @ClassRule
     public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,

@@ -33,6 +33,12 @@
       <action issue="LOG4J2-2844" dev="ggregory" type="fix">
         Null pointer exception when no network interfaces are available.
       </action>
+      <action dev="ggregory" type="update">
+        Update MongoDB tests to require Java 8 unconditionally now that Log4j requires Java 8.
+      </action>
+      <action dev="ggregory" type="update">
+        
+      </action>
     </release>
     <release version="2.13.3" date="2020-05-10" description="GA Release 2.13.3">
       <action issue="LOG4J2-2838" dev="rgoers" type="fix">
@@ -47,7 +53,7 @@
         Add option to restore printing timeMillis in the JsonLayout.
       </action>
       <action issue="LOG4J2-2766" dev="rgoers" type="fix">
-        Initialize pattern processor before triggering policy during reconriguration.
+        Initialize pattern processor before triggering policy during reconfiguration.
       </action>
       <action issue="LOG4J2-2457" dev="rgoers" type="update">
         Allow the file extension in the file pattern to be modified during reconfiguration.
@@ -80,10 +86,10 @@
         Allow the file size action to parse the value without being sensitive to the current locale.
       </action>
       <action issue="LOG4J2-2794" dev="rgoers" type="fix" due-to="Johan Karlberg">
-        Make YamlLayoutTest more resiliant to environmental differences.
+        Make YamlLayoutTest more resilient to environmental differences.
       </action>
       <action issue="LOG4J2-2815" dev="rgoers" type="update">
-        Allow Spring Boot applications to use composite configuratons.
+        Allow Spring Boot applications to use composite configurations.
       </action>
       <action issue="LOG4J2-1360" dev="rgoers" type="add" due-to="Kevin Leturc">
         Provide a Log4j implementation of System.Logger.
@@ -136,7 +142,7 @@
         ClassLoaderContextSelector was not locating the LoggerContext during shutdown.
       </action>
       <action issue="LOG4J2-2652" dev="rgoers" type="fix">
-        JSON output wrong when using additonal fields.
+        JSON output wrong when using additional fields.
       </action>
       <action issue="LOG4J2-2649" dev="rgoers" type="fix">
         GraalVM does not allow use of MethodHandles.
@@ -145,7 +151,7 @@
         Allow Lookup keys with leading dashes by using a slash as an escape character.
       </action>
       <action issue="LOG4J2-2782" dev="rgoers" type="update">
-        Use LinkedBlockingQueue instead of synchronized collction in StatusConfiguration.
+        Use LinkedBlockingQueue instead of synchronized collection in StatusConfiguration.
       </action>
       <action issue="LOG4J2-2781" dev="rgoers" type="fix" due-to="qxo">
         ServletContainerInitializer was obtaining the StatusLogger too soon.
@@ -353,7 +359,7 @@
         Add filter that will match events when no marker is present.
       </action>
       <action issue="LOG4J2-1143" dev="rgoers" type="fix" due-to="Pascal Heinrich">
-        Lookups were not found if the plugin key was not lowercase.
+        Lookups were not found if the plugin key was not lower case.
       </action>
       <action issue="LOG4J2-2406" dev="rgoers" type="add">
         Add reconfiguration methods to Configurator.
@@ -473,7 +479,7 @@
         Direct write was creating files with the wrong date/time.
       </action>
       <action issue="LOG4J2-2453" dev="rgoers" type="fix" due-to="theit">
-        Add Log4j-slf4j18-impl dependency to bom pom.
+        Add Log4j-slf4j18-impl dependency to BOM POM.
       </action>
       <action issue="LOG4J2-2515" dev="rgoers" type="fix" due-to="MakarovS">
         Configuration documentation referenced incorrect method name.
@@ -491,7 +497,7 @@
         an additional buffer for stack trace contents.
       </action>
       <action issue="LOG4J2-2397" dev="ggregory" type="fix" due-to="EckelDong">
-        Predeployment of PersistenceUnit that using Log4j as session logger failed (#198).
+        Pre-deployment of PersistenceUnit that using Log4j as session logger failed (#198).
       </action>
       <action issue="LOG4J2-2365" dev="ckozak" type="fix" due-to="Eugene Zimichev">
         NameAbbreviator correctly abbreviates first fragments (#188).
@@ -756,7 +762,7 @@
     </release>
     <release version="2.11.0" date="2018-03-11" description="GA Release 2.11.0">
       <action issue="LOG4J2-2104" dev="rgoers" type="fix">
-        LoaderUtil was not looping properly over classloaders.
+        LoaderUtil was not looping properly over class loaders.
       </action>
       <action issue="LOG4J2-1976" dev="rgoers" type="fix">
         Revert OSGi API version to 4.3.1.

@@ -20,7 +20,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.mongodb3.MongoDbTestRule.LoggingTarget;
 import org.apache.logging.log4j.test.AvailablePortSystemPropertyTestRule;
 import org.apache.logging.log4j.test.RuleChainFactory;
@@ -39,15 +38,15 @@ import com.mongodb.client.MongoDatabase;
  * This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
  */
 @Category(Appenders.MongoDb.class)
-public class MongoDbMapMessageTestJava8 {
+public class MongoDbCappedTest {
 
-    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-map-message.xml");
+    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-capped.xml");
 
     private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
             .create(TestConstants.SYS_PROP_NAME_PORT);
 
     private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(),
-            MongoDbMapMessageTestJava8.class, LoggingTarget.NULL);
+            MongoDbCappedTest.class, LoggingTarget.NULL);
 
     @ClassRule
     public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,
@@ -56,11 +55,7 @@ public class MongoDbMapMessageTestJava8 {
     @Test
     public void test() {
         final Logger logger = LogManager.getLogger();
-        final MapMessage mapMessage = new MapMessage();
-        mapMessage.with("SomeName", "SomeValue");
-        mapMessage.with("SomeInt", 1);
-        logger.info(mapMessage);
-        //
+        logger.info("Hello log");
         try (final MongoClient mongoClient = mongoDbTestRule.getMongoClient()) {
             final MongoDatabase database = mongoClient.getDatabase("test");
             Assert.assertNotNull(database);
@@ -68,9 +63,7 @@ public class MongoDbMapMessageTestJava8 {
             Assert.assertNotNull(collection);
             final Document first = collection.find().first();
             Assert.assertNotNull(first);
-            final String firstJson = first.toJson();
-            Assert.assertEquals(firstJson, "SomeValue", first.getString("SomeName"));
-            Assert.assertEquals(firstJson, Integer.valueOf(1), first.getInteger("SomeInt"));
+            Assert.assertEquals(first.toJson(), "Hello log", first.getString("message"));
         }
     }
 }

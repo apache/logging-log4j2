@@ -25,22 +25,25 @@ import org.apache.logging.log4j.test.AvailablePortSystemPropertyTestRule;
 import org.apache.logging.log4j.test.RuleChainFactory;
 import org.junit.Assert;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 /**
  * This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
+ *
+ * TODO Set up the log4j user in MongoDB.
  */
+@Ignore("TODO Set up the log4j user in MongoDB")
 @Category(Appenders.MongoDb.class)
-public class MongoDbCappedTestJava8 {
+public class MongoDbAuthFailureTest {
 
-    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-capped.xml");
+    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-auth-failure.xml");
 
     private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
             .create(TestConstants.SYS_PROP_NAME_PORT);
@@ -61,10 +64,7 @@ public class MongoDbCappedTestJava8 {
             Assert.assertNotNull(database);
             final DBCollection collection = database.getCollection("applog");
             Assert.assertNotNull(collection);
-            Assert.assertTrue(collection.find().hasNext());
-            final DBObject first = collection.find().next();
-            Assert.assertNotNull(first);
-            Assert.assertEquals(first.toMap().toString(), "Hello log", first.get("message"));
+            Assert.assertFalse(collection.find().hasNext());
         } finally {
             mongoClient.close();
         }
