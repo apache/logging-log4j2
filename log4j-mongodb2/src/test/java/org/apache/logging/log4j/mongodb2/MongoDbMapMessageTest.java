@@ -32,6 +32,7 @@ import org.junit.rules.RuleChain;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
@@ -46,7 +47,8 @@ public class MongoDbMapMessageTest {
     private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
             .create(TestConstants.SYS_PROP_NAME_PORT);
 
-    private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(), LoggingTarget.NULL);
+    private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(),
+            LoggingTarget.NULL);
 
     @ClassRule
     public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,
@@ -66,11 +68,13 @@ public class MongoDbMapMessageTest {
             Assert.assertNotNull(database);
             final DBCollection collection = database.getCollection("applog");
             Assert.assertNotNull(collection);
-            final DBObject first = collection.find().next();
-            Assert.assertNotNull(first);
-            final String firstMapString = first.toMap().toString();
-            Assert.assertEquals(firstMapString, "SomeValue", first.get("SomeName"));
-            Assert.assertEquals(firstMapString, Integer.valueOf(1), first.get("SomeInt"));
+            try (DBCursor cursor = collection.find()) {
+                final DBObject first = cursor.next();
+                Assert.assertNotNull(first);
+                final String firstMapString = first.toMap().toString();
+                Assert.assertEquals(firstMapString, "SomeValue", first.get("SomeName"));
+                Assert.assertEquals(firstMapString, Integer.valueOf(1), first.get("SomeInt"));
+            }
         } finally {
             mongoClient.close();
         }

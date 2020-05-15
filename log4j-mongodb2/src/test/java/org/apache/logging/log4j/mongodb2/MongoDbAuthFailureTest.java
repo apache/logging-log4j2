@@ -32,6 +32,7 @@ import org.junit.rules.RuleChain;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 
 /**
@@ -48,7 +49,8 @@ public class MongoDbAuthFailureTest {
     private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
             .create(TestConstants.SYS_PROP_NAME_PORT);
 
-    private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(), LoggingTarget.NULL);
+    private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(),
+            LoggingTarget.NULL);
 
     @ClassRule
     public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,
@@ -64,7 +66,9 @@ public class MongoDbAuthFailureTest {
             Assert.assertNotNull(database);
             final DBCollection collection = database.getCollection("applog");
             Assert.assertNotNull(collection);
-            Assert.assertFalse(collection.find().hasNext());
+            try (DBCursor cursor = collection.find()) {
+                Assert.assertFalse(cursor.hasNext());
+            }
         } finally {
             mongoClient.close();
         }
