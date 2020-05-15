@@ -32,7 +32,7 @@ import org.junit.rules.RuleChain;
 import com.mongodb.client.MongoIterable;
 
 /**
- * Tests MongoDbRule. This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
+ * Tests MongoDbRule.
  * <p>
  * The test framework {@code de.flapdoodle.embed.mongo} requires Java 8.
  * </p>

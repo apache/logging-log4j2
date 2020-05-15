@@ -36,7 +36,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 /**
- * This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
+ *
  */
 @Category(Appenders.MongoDb.class)
 public class MongoDbMapMessageTest {

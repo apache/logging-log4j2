@@ -35,7 +35,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 
 /**
- * This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
+ *
  *
  * TODO Set up the log4j user in MongoDB.
  */

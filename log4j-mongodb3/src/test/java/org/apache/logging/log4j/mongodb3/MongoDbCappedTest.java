@@ -35,7 +35,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 /**
- * This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
+ *
  */
 @Category(Appenders.MongoDb.class)
 public class MongoDbCappedTest {

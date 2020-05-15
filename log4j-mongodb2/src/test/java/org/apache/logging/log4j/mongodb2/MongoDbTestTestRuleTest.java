@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 
 /**
- * Tests {@link MongoDbTestRule}. This class name does NOT end in "Test" in order to only be picked up by {@link Java8Test}.
+ * Tests {@link MongoDbTestRule}.
  */
 public class MongoDbTestTestRuleTest {
 
