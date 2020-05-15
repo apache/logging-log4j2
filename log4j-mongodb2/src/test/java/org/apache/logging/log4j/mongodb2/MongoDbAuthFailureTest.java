@@ -32,6 +32,7 @@ import org.junit.rules.RuleChain;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 
 /**
@@ -64,7 +65,9 @@ public class MongoDbAuthFailureTest {
             Assert.assertNotNull(database);
             final DBCollection collection = database.getCollection("applog");
             Assert.assertNotNull(collection);
-            Assert.assertFalse(collection.find().hasNext());
+            try (DBCursor cursor = collection.find()) {
+                Assert.assertFalse(cursor.hasNext());
+            }
         } finally {
             mongoClient.close();
         }

@@ -32,6 +32,7 @@ import org.junit.rules.RuleChain;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
@@ -55,7 +56,7 @@ public class MongoDbMapMessageTest {
     @Test
     public void test() {
         final Logger logger = LogManager.getLogger();
-        final MapMessage mapMessage = new MapMessage();
+        final MapMessage<?, Object> mapMessage = new MapMessage<>();
         mapMessage.with("SomeName", "SomeValue");
         mapMessage.with("SomeInt", 1);
         logger.info(mapMessage);
@@ -66,11 +67,13 @@ public class MongoDbMapMessageTest {
             Assert.assertNotNull(database);
             final DBCollection collection = database.getCollection("applog");
             Assert.assertNotNull(collection);
-            final DBObject first = collection.find().next();
-            Assert.assertNotNull(first);
-            final String firstMapString = first.toMap().toString();
-            Assert.assertEquals(firstMapString, "SomeValue", first.get("SomeName"));
-            Assert.assertEquals(firstMapString, Integer.valueOf(1), first.get("SomeInt"));
+            try (DBCursor cursor = collection.find()) {
+                final DBObject first = cursor.next();
+                Assert.assertNotNull(first);
+                final String firstMapString = first.toMap().toString();
+                Assert.assertEquals(firstMapString, "SomeValue", first.get("SomeName"));
+                Assert.assertEquals(firstMapString, Integer.valueOf(1), first.get("SomeInt"));
+            }
         } finally {
             mongoClient.close();
         }
