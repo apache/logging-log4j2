@@ -67,6 +67,7 @@ public class MongoDbTest {
                 final DBObject first = cursor.next();
                 Assert.assertNotNull(first);
                 Assert.assertEquals(first.toMap().toString(), "Hello log", first.get("message"));
+                Assert.assertEquals(first.toMap().toString(), "INFO", first.get("level"));
             }
         } finally {
             mongoClient.close();
