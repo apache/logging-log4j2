@@ -39,6 +39,24 @@
       <action dev="ggregory" type="update">
 		Update mongodb3.version from 3.12.1 to 3.12.4.
       </action>
+      <action dev="ggregory" type="update">
+        Update com.fasterxml.jackson.* 2.10.2 -> 2.11.0.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.apache.activemq:activemq-broker 5.15.11 -> 5.15.12.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.apache.commons:commons-compress 1.19 -> 1.20.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.apache.commons:commons-csv 1.7 -> 1.8.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.apache.commons:commons-lang3 3.9 -> 3.10.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.codehaus.groovy:* 2.5.6 -> 3.0.3.
+      </action>
     </release>
     <release version="2.13.3" date="2020-05-10" description="GA Release 2.13.3">
       <action issue="LOG4J2-2838" dev="rgoers" type="fix">
