@@ -36,6 +36,6 @@ public class InitTest {
         timer.stop();
         long elapsed = timer.getElapsedNanoTime();
         System.out.println(timer.toString());
-        assertTrue("Initialization time exceeded threshold; elapsed " + elapsed, elapsed < 1000000000);
+        assertTrue(String.format("Initialization time exceeded threshold; elapsed %,d nanoseconds", elapsed), elapsed < 1_000_000_000);
     }
 }

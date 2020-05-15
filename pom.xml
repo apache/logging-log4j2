@@ -190,7 +190,7 @@
     <slf4jVersion>1.7.25</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.10.2</jackson2Version>
+    <jackson2Version>2.11.0</jackson2Version>
     <springVersion>3.2.18.RELEASE</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
@@ -198,7 +198,7 @@
     <conversantDisruptorVersion>1.2.15</conversantDisruptorVersion> <!-- Version 1.2.11 requires Java 8 -->
     <mongodb2.version>2.14.3</mongodb2.version>
     <mongodb3.version>3.12.4</mongodb3.version>
-    <groovy.version>2.5.6</groovy.version>
+    <groovy.version>3.0.3</groovy.version>
     <compiler.plugin.version>3.8.1</compiler.plugin.version>
     <pmd.plugin.version>3.10.0</pmd.plugin.version>
     <findbugs.plugin.version>3.0.5</findbugs.plugin.version>
@@ -235,8 +235,7 @@
     <javax.persistence>2.1.1</javax.persistence>
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
     <osgi.api.version>4.3.1</osgi.api.version>
-    <!-- Version 5.15.0 requires Java 8 -->
-    <activemq.version>5.15.11</activemq.version>
+    <activemq.version>5.15.12</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
@@ -307,7 +306,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.9</version>
+        <version>3.10</version>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -664,7 +663,7 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.12</version>
+        <version>4.13</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -821,7 +820,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.19</version>
+        <version>1.20</version>
       </dependency>
       <dependency>
         <groupId>org.tukaani</groupId>
@@ -833,7 +832,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-csv</artifactId>
-        <version>1.7</version>
+        <version>1.8</version>
       </dependency>
       <!-- GC-free -->
       <dependency>
