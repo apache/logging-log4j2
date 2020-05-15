@@ -228,7 +228,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     private FilterComponentBuilder createFilter(final String key, final Properties properties) {
         final String type = (String) properties.remove(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
-            throw new ConfigurationException("No type attribute provided for Appender " + key);
+            throw new ConfigurationException("No type attribute provided for Filter " + key);
         }
         final String onMatch = (String) properties.remove(AbstractFilterBuilder.ATTR_ON_MATCH);
         final String onMismatch = (String) properties.remove(AbstractFilterBuilder.ATTR_ON_MISMATCH);
