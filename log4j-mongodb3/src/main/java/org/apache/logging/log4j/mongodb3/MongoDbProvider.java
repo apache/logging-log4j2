@@ -151,8 +151,8 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                         return null;
                     }
 
-                    final String databaseName = database.getName();
-                    description = "database=" + databaseName;
+                    final String dbName = database.getName();
+                    description = "database=" + dbName;
                 } catch (final ClassNotFoundException e) {
                     LOGGER.error("The factory class [{}] could not be loaded.", factoryClassName, e);
                     return null;
