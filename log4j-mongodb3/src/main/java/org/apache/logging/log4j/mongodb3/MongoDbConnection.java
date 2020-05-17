@@ -16,16 +16,13 @@
  */
 package org.apache.logging.log4j.mongodb3;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.nosql.AbstractNoSqlConnection;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlConnection;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlObject;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.bson.BSON;
 import org.bson.Document;
-import org.bson.Transformer;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
@@ -39,18 +36,6 @@ import com.mongodb.client.model.CreateCollectionOptions;
 public final class MongoDbConnection extends AbstractNoSqlConnection<Document, MongoDbDocumentObject> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-
-    static {
-        BSON.addEncodingHook(Level.class, new Transformer() {
-            @Override
-            public Object transform(final Object o) {
-                if (o instanceof Level) {
-                    return ((Level) o).name();
-                }
-                return o;
-            }
-        });
-    }
 
     private static MongoCollection<Document> getOrCreateMongoCollection(final MongoDatabase database,
             final String collectionName, final boolean isCapped, final Integer sizeInBytes) {
