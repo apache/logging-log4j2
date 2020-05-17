@@ -21,8 +21,6 @@ Volkan Yazıcı <vy@apache.org>
 emitting layout. It encodes ``LogEvent``s according to the structure described
 by the JSON template provided. In a nutshell, it shines with its
 
-* Superior performance
-
 * Customizable JSON structure (see `eventTemplate[Uri]` and
   `stackTraceElementTemplate[Uri]` parameters)
 
@@ -640,24 +638,153 @@ alternatives.
 | ✓
 |===
 
+== Performance
+
+The `log4j-perf` module contains a benchmark comparing `JsonTemplateLayout`
+performance with link:layouts.html#JSONLayout[`JsonLayout`],
+link:layouts.html#GELFLayout[`GelfLayout`], and
+https://github.com/elastic/java-ecs-logging/tree/master/log4j2-ecs-layout[`EcsLayout`]
+(shipped by Elastic). The benchmark employs different `LogEvent` profiles:
+
+* **full**: `LogEvent` contains MDC, NDC, and an exception.
+* **lite:** `LogEvent` has no MDC, NDC, or exception attachment.
+
+To give an idea, the benchmark is run with the following settings:
+
+* **CPU:** Intel i7 2.70GHz (x86-64, confined `java` process to a single core
+  using http://www.man7.org/linux/man-pages/man1/taskset.1.html[`taskset -c 0`])
+* **OS:** Xubuntu 18.04.4 (4.15.0-91-generic, x86-64)
+* `JsonTemplateLayout4{Ecs,Json,Gelf}Layout` is used with the default settings
+  except for:
+** `stackTraceEnabled`: `true`
+** `recyclerFactory`: `threadLocal`
+* `JsonLayout` is used in two different flavors:
+** `DefaultJsonLayout`: default settings
+** `CustomJsonLayout`: default settings with an additional `"@version": 1`
+   field (this forces instantiation of a wrapper class to obtain the necessary
+   Jackson view)
+* `EcsLayout` is used with the following configurations:
+** `serviceName`: `benchmark`
+** `additionalFields`: `new KeyValuePair[0]`
+* `GelfLayout` is used with the following configurations:
+** `compressionType`: `off`
+
+The figures for serializing 1,000 ``LogEvent``s at each operation are shared
+below.
+
+[cols="1,4", options="header"]
+.JMH setup
+|===
+|Setting|Value
+|JVM name|OpenJDK 64-Bit Server VM
+|JVM version|11.0.6+10
+|JVM args|-Xms64m -Xmx64m -XX:+AlwaysPreTouch -Dlog4j2.enable.threadlocals=true -Dlog4j2.is.webapp=false -Dlog4j2.garbagefreeThreadContextMap=true -Dlog4j2.enableDirectEncoders=true
+|Forks|3
+|Warmup iterations|3 × 20 s
+|Measurement iterations|5 × 120 s
+|===
+
+[cols="4,>2,4,>2", options="header"]
+.JMH result (99^th^ percentile) summary for "lite" log events
+|===
+^|Benchmark
+2+^|ops/sec
+^|B/op
+
+|liteEcsLayout
+|875,359
+|▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉ (100%)
+|0.0
+
+|liteGelfLayout
+|846,139
+|▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉ (96%)
+|0.0
+
+|liteJsonTemplateLayout4EcsLayout
+|762,189
+|▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉ (87%)
+|0.0
+
+|liteDefaultJsonLayout
+|636,377
+|▉▉▉▉▉▉▉▉▉▉▉▉▉▉ (72%)
+|2,637,520.0
+
+|liteJsonTemplateLayout4GelfLayout
+|572,614
+|▉▉▉▉▉▉▉▉▉▉▉▉▉ (65%)
+|0.0
+
+|liteCustomJsonLayout
+|545,942
+|▉▉▉▉▉▉▉▉▉▉▉▉ (62%)
+|2,942,960.0
+
+|liteJsonTemplateLayout4JsonLayout
+|408,059
+|▉▉▉▉▉▉▉▉▉ (46%)
+|0.0
+|===
+
+[cols="4,>2,4,>2", options="header"]
+.JMH result (99^th^ percentile) summary for "full" log events
+|===
+^|Benchmark
+2+^|ops/sec
+^|B/op
+
+|fullJsonTemplateLayout4JsonLayout
+|38,797
+|▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉ (100%)
+|104,000.1
+
+|fullJsonTemplateLayout4EcsLayout
+|38,149
+|▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉ (98%)
+|24,951,200.1
+
+|fullJsonTemplateLayout4GelfLayout
+|31,140
+|▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉ (80%)
+|24,967,200.2
+
+|fullEcsLayout
+|22,970
+|▉▉▉▉▉▉▉▉▉▉▉▉ (59%)
+|29,583,200.2
+
+|fullGelfLayout
+|18,915
+|▉▉▉▉▉▉▉▉▉▉ (48%)
+|35,807,200.3
+
+|fullDefaultJsonLayout
+|15,917
+|▉▉▉▉▉▉▉▉ (41%)
+|100,204,400.5
+
+|fullCustomJsonLayout
+|15,596
+|▉▉▉▉▉▉▉▉ (40%)
+|100,405,280.5
+|===
+
 [#faq]
 == F.A.Q.
 
 [#faq-garbage-free]
 === Is `JsonTemplateLayout` garbage-free?
 
-Given the garbage-free layout behaviour enabler property
-`log4j2.enable.direct.encoders` is set to `true`, `JsonTemplateLayout` is
-garbage-free with the following exceptions:
+Given the garbage-free layout behaviour enabler properties
+`log4j2.enableDirectEncoders` and `log4j2.garbagefreeThreadContextMap` are set
+to `true`, `JsonTemplateLayout` is garbage-free with the following exceptions:
 
 * When recycling strategy is either `dummy` or `queue` but access concurrency
   exceeds the configured `capacity`, then the recycler is not garbage-free.
 
 * Since `Throwable#getStackTrace()` clones the original `StackTraceElement[]`,
   access to (and hence rendering of) stack traces are not garbage-free.
-
-* Given `-Dlog4j2.garbagefreeThreadContextMap=true`, serialization of context
-  data (that is, MDC) is garbage-free.
 
 * Serialization of ``ObjectMessage``s via `${json:message:json}` is mostly
   garbage-free except for certain types (e.g., `BigDecimal`, `BigInteger`,
