@@ -1,11 +1,14 @@
 package org.apache.logging.log4j.layout.json.template;
 
 import org.apache.http.HttpHost;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
@@ -28,6 +31,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -35,10 +39,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class LogstashIT {
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
+
+    private static final DefaultConfiguration CONFIGURATION = new DefaultConfiguration();
 
     private static final int LOG_EVENT_COUNT = 100;
 
@@ -96,7 +103,7 @@ public class LogstashIT {
                         .map(LogEvent::getMessage)
                         .map(Message::getFormattedMessage)
                         .collect(Collectors.toSet());
-                final HashSet<String> actualMessages =
+                final Set<String> actualMessages =
                         new HashSet<>(queryDocumentMessages(client));
                 Assertions
                         .assertThat(actualMessages)
@@ -106,6 +113,76 @@ public class LogstashIT {
                 appender.stop();
             }
         }
+    }
+
+    @Test
+    public void test_newlines() throws IOException {
+
+        // Create two log events containing new lines.
+        final Level level = Level.DEBUG;
+        final String loggerFqcn = "f.q.c.n";
+        final String loggerName = "A";
+        final SimpleMessage message1 = new SimpleMessage("line1\nline2\r\nline3");
+        final long instantMillis1 = Instant.EPOCH.toEpochMilli();
+        final LogEvent logEvent1 = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(loggerName)
+                .setLoggerFqcn(loggerFqcn)
+                .setLevel(level)
+                .setMessage(message1)
+                .setTimeMillis(instantMillis1)
+                .build();
+        final SimpleMessage message2 = new SimpleMessage("line4\nline5\r\nline6");
+        final long instantMillis2 = instantMillis1 + Duration.ofDays(1).toMillis();
+        final LogEvent logEvent2 = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(loggerName)
+                .setLoggerFqcn(loggerFqcn)
+                .setLevel(level)
+                .setMessage(message2)
+                .setTimeMillis(instantMillis2)
+                .build();
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate("{\"message\":\"${json:message}\"}")
+                .build();
+
+        try (final RestHighLevelClient client = createClient()) {
+            final Appender appender = createStartedAppender(layout);
+            try {
+
+                // Append the event.
+                LOGGER.info("appending events");
+                appender.append(logEvent1);
+                appender.append(logEvent2);
+                LOGGER.info("completed appending events");
+
+                // Wait the message to arrive.
+                Awaitility
+                        .await()
+                        .atMost(Duration.ofSeconds(60))
+                        .pollDelay(Duration.ofSeconds(2))
+                        .until(() -> queryDocumentCount(client) == 2);
+
+                // Verify indexed messages.
+                final Set<String> expectedMessages = Stream
+                        .of(message1, message2)
+                        .map(Message::getFormattedMessage)
+                        .collect(Collectors.toSet());
+                final Set<String> actualMessages =
+                        new HashSet<>(queryDocumentMessages(client));
+                Assertions
+                        .assertThat(actualMessages)
+                        .isEqualTo(expectedMessages);
+
+            } finally {
+                appender.stop();
+            }
+        }
+
     }
 
     private static RestHighLevelClient createClient() throws IOException {
@@ -149,20 +226,19 @@ public class LogstashIT {
     }
 
     private static SocketAppender createStartedAppender() {
-
-        // Create the layout.
-        final DefaultConfiguration configuration = new DefaultConfiguration();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setEventTemplateUri("classpath:EcsLayout.json")
                 .build();
+        return createStartedAppender(layout);
+    }
 
-        // Create the appender.
+    private static SocketAppender createStartedAppender(final JsonTemplateLayout layout) {
         LOGGER.info("creating the appender");
         final SocketAppender appender = SocketAppender
                 .newBuilder()
-                .setConfiguration(configuration)
+                .setConfiguration(CONFIGURATION)
                 .setHost(HOST_NAME)
                 .setPort(MavenHardcodedConstants.LS_TCP_PLUGIN_PORT)
                 .setReconnectDelayMillis(100)
@@ -172,11 +248,8 @@ public class LogstashIT {
                 .setIgnoreExceptions(false)
                 .setLayout(layout)
                 .build();
-
-        // Start and return the appender.
         appender.start();
         return appender;
-
     }
 
     private static long queryDocumentCount(
