@@ -16,12 +16,9 @@
  */
 package org.apache.logging.log4j.mongodb3;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
-import com.mongodb.client.MongoDatabase;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
@@ -38,9 +35,14 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
+import com.mongodb.client.MongoDatabase;
 
 /**
  * The MongoDB implementation of {@link NoSqlProvider} using the MongoDB driver version 3 API.
@@ -50,6 +52,12 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 
     public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
             implements org.apache.logging.log4j.plugins.util.Builder<MongoDbProvider> {
+
+        // @formatter:off
+        private static final CodecRegistry CODEC_REGISTRIES = CodecRegistries.fromRegistries(
+                        CodecRegistries.fromCodecs(LevelCodec.INSTANCE),
+                        MongoClient.getDefaultCodecRegistry());
+        // @formatter:on
 
         private static WriteConcern toWriteConcern(final String writeConcernConstant,
                 final String writeConcernConstantClassName) {
@@ -179,9 +187,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                     final WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
                     // @formatter:off
                     final MongoClientOptions options = MongoClientOptions.builder()
-                            .codecRegistry(CodecRegistries.fromRegistries(
-                                            CodecRegistries.fromCodecs(new LevelCodec()),
-                                            MongoClient.getDefaultCodecRegistry()))
+                            .codecRegistry(CODEC_REGISTRIES)
                             .writeConcern(writeConcern)
                             .build();
                     // @formatter:on
