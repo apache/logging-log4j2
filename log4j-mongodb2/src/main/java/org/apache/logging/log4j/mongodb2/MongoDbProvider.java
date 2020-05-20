@@ -45,7 +45,7 @@ import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 
 /**
- * The MongoDB implementation of {@link NoSqlProvider}.
+ * The MongoDB implementation of {@link NoSqlProvider} using the MongoDB driver version 2 API.
  */
 @Plugin(name = "MongoDb2", category = Core.CATEGORY_NAME, printObject = true)
 @PluginAliases("MongoDb") // Deprecated alias

@@ -44,7 +44,7 @@ import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoDatabase;
 
 /**
- * The MongoDB implementation of {@link NoSqlProvider}.
+ * The MongoDB implementation of {@link NoSqlProvider}.using the MongoDB driver version 3 API.
  */
 @Plugin(name = "MongoDb3", category = Core.CATEGORY_NAME, printObject = true)
 public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
