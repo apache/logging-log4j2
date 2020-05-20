@@ -35,6 +35,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -51,6 +52,12 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 
     public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<MongoDbProvider> {
+
+        // @formatter:off
+        private static final CodecRegistry CODEC_REGISTRIES = CodecRegistries.fromRegistries(
+                        CodecRegistries.fromCodecs(LevelCodec.INSTANCE),
+                        MongoClient.getDefaultCodecRegistry());
+        // @formatter:on
 
         private static WriteConcern toWriteConcern(final String writeConcernConstant,
                 final String writeConcernConstantClassName) {
@@ -180,9 +187,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                     final WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
                     // @formatter:off
                     final MongoClientOptions options = MongoClientOptions.builder()
-                            .codecRegistry(CodecRegistries.fromRegistries(
-                                            CodecRegistries.fromCodecs(new LevelCodec()),
-                                            MongoClient.getDefaultCodecRegistry()))
+                            .codecRegistry(CODEC_REGISTRIES)
                             .writeConcern(writeConcern)
                             .build();
                     // @formatter:on
