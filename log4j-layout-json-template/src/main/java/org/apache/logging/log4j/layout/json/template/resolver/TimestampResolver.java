@@ -21,9 +21,14 @@ import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.layout.json.template.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
+import org.apache.logging.log4j.layout.json.template.util.StringParameterParser;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 final class TimestampResolver implements EventResolver {
@@ -40,6 +45,20 @@ final class TimestampResolver implements EventResolver {
      * Context for GC-free formatted timestamp resolver.
      */
     private static final class FormatResolverContext {
+
+        private enum Key {;
+
+            private static final String PATTERN = "pattern";
+
+            private static final String TIME_ZONE = "timeZone";
+
+            private static final String LOCALE = "locale";
+
+        }
+
+        private static final Set<String> KEYS =
+                new LinkedHashSet<>(Arrays.asList(
+                        Key.PATTERN, Key.TIME_ZONE, Key.LOCALE));
 
         private final FastDateFormat timestampFormat;
 
@@ -58,95 +77,70 @@ final class TimestampResolver implements EventResolver {
         }
 
         private static FormatResolverContext fromKey(final String key) {
-            String pattern = JsonTemplateLayoutDefaults.getTimestampFormatPattern();
-            boolean patternProvided = false;
-            TimeZone timeZone = JsonTemplateLayoutDefaults.getTimeZone();
-            boolean timeZoneProvided = false;
-            Locale locale = JsonTemplateLayoutDefaults.getLocale();
-            boolean localeProvided = false;
-            final String[] pairs = key != null
-                    ? key.split("\\s*,\\s*", 3)
-                    : new String[0];
-            for (final String pair : pairs) {
-                final String[] nameAndValue = pair.split("\\s*=\\s*", 2);
-                if (nameAndValue.length != 2) {
-                    throw new IllegalArgumentException("illegal timestamp key: " + key);
-                }
-                final String name = nameAndValue[0];
-                final String value = nameAndValue[1];
-                switch (name) {
-
-                    case "pattern": {
-                        if (patternProvided) {
-                            throw new IllegalArgumentException(
-                                    "multiple occurrences of pattern in timestamp key: " + key);
-                        }
-                        try {
-                            FastDateFormat.getInstance(value);
-                        } catch (final IllegalArgumentException error) {
-                            throw new IllegalArgumentException(
-                                    "invalid pattern in timestamp key: " + key,
-                                    error);
-                        }
-                        patternProvided = true;
-                        pattern = value;
-                        break;
-                    }
-
-                    case "timeZone": {
-                        if (timeZoneProvided) {
-                            throw new IllegalArgumentException(
-                                    "multiple occurrences of time zone in timestamp key: " + key);
-                        }
-                        boolean found = false;
-                        for (final String availableTimeZone : TimeZone.getAvailableIDs()) {
-                            if (availableTimeZone.equalsIgnoreCase(value)) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            throw new IllegalArgumentException(
-                                    "invalid time zone in timestamp key: " + key);
-                        }
-                        timeZoneProvided = true;
-                        timeZone = TimeZone.getTimeZone(value);
-                        break;
-                    }
-
-                    case "locale": {
-                        if (localeProvided) {
-                            throw new IllegalArgumentException(
-                                    "multiple occurrences of locale in timestamp key: " + key);
-                        }
-                        final String[] localeFields = value.split("_", 3);
-                        switch (localeFields.length) {
-                            case 1:
-                                locale = new Locale(localeFields[0]);
-                                break;
-                            case 2:
-                                locale = new Locale(localeFields[0], localeFields[1]);
-                                break;
-                            case 3:
-                                locale = new Locale(localeFields[0], localeFields[1], localeFields[2]);
-                                break;
-                            default:
-                                throw new IllegalArgumentException(
-                                        "invalid locale in timestamp key: " + key);
-                        }
-                        localeProvided = true;
-                        break;
-                    }
-
-                    default:
-                        throw new IllegalArgumentException(
-                                "invalid timestamp key: " + key);
-
-                }
-            }
+            final Map<String, StringParameterParser.Value> keys =
+                    StringParameterParser.parse(key, KEYS);
+            final String pattern = readPattern(keys);
+            final TimeZone timeZone = readTimeZone(keys);
+            final Locale locale = readLocale(keys);
             final FastDateFormat fastDateFormat =
                     FastDateFormat.getInstance(pattern, timeZone, locale);
             return new FormatResolverContext(timeZone, locale, fastDateFormat);
+        }
+
+        private static String readPattern(
+                final Map<String, StringParameterParser.Value> keys) {
+            final StringParameterParser.Value patternValue = keys.get(Key.PATTERN);
+            if (patternValue == null || patternValue instanceof StringParameterParser.NullValue) {
+                return JsonTemplateLayoutDefaults.getTimestampFormatPattern();
+            }
+            final String pattern = patternValue.toString();
+            try {
+                FastDateFormat.getInstance(pattern);
+            } catch (final IllegalArgumentException error) {
+                throw new IllegalArgumentException(
+                        "invalid pattern in timestamp key: " + pattern,
+                        error);
+            }
+            return pattern;
+        }
+
+        private static TimeZone readTimeZone(
+                final Map<String, StringParameterParser.Value> keys) {
+            final StringParameterParser.Value timeZoneValue = keys.get(Key.TIME_ZONE);
+            if (timeZoneValue == null || timeZoneValue instanceof StringParameterParser.NullValue) {
+                return JsonTemplateLayoutDefaults.getTimeZone();
+            }
+            final String timeZoneId = timeZoneValue.toString();
+            boolean found = false;
+            for (final String availableTimeZone : TimeZone.getAvailableIDs()) {
+                if (availableTimeZone.equalsIgnoreCase(timeZoneId)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw new IllegalArgumentException(
+                        "invalid time zone in timestamp key: " + timeZoneId);
+            }
+            return TimeZone.getTimeZone(timeZoneId);
+        }
+
+        private static Locale readLocale(
+                final Map<String, StringParameterParser.Value> keys) {
+            final StringParameterParser.Value localeValue = keys.get(Key.LOCALE);
+            if (localeValue == null || localeValue instanceof StringParameterParser.NullValue) {
+                return JsonTemplateLayoutDefaults.getLocale();
+            }
+            final String locale = localeValue.toString();
+            final String[] localeFields = locale.split("_", 3);
+            switch (localeFields.length) {
+                case 1: return new Locale(localeFields[0]);
+                case 2: return new Locale(localeFields[0], localeFields[1]);
+                case 3: return new Locale(localeFields[0], localeFields[1], localeFields[2]);
+                default:
+                    throw new IllegalArgumentException(
+                            "invalid locale in timestamp key: " + locale);
+            }
         }
 
     }
