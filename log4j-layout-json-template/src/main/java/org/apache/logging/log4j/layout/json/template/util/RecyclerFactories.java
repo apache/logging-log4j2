@@ -21,11 +21,13 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.Strings;
 import org.jctools.queues.MpmcArrayQueue;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Supplier;
@@ -104,75 +106,40 @@ public enum RecyclerFactories {;
             final String recyclerFactorySpec,
             final int defaultCapacity) {
 
-        // Set defaults.
-        String supplierPath = JCTOOLS_QUEUE_CLASS_AVAILABLE
-                ? JCTOOLS_QUEUE_CLASS_SUPPLIER_PATH
-                : "java.util.concurrent.ArrayBlockingQueue.new";
-        boolean supplierPathProvided = false;
-        int capacity = defaultCapacity;
-        boolean capacityProvided = false;
+        // Parse the spec.
         final String queueFactorySpec = recyclerFactorySpec.substring(
                 "queue".length() +
                         (recyclerFactorySpec.startsWith("queue:")
                                 ? 1
                                 : 0));
+        final Map<String, StringParameterParser.Value> parsedValues =
+                StringParameterParser.parse(
+                        queueFactorySpec,
+                        new LinkedHashSet<>(Arrays.asList("supplier", "capacity")));
 
-        // Read the user-provided spec.
-        final String[] queueFactorySpecFields = queueFactorySpec.split("\\s*,\\s*", 2);
-        for (final String queueFactorySpecField : queueFactorySpecFields) {
+        // Read the supplier path.
+        final StringParameterParser.Value supplierValue = parsedValues.get("supplier");
+        final String supplierPath;
+        if (supplierValue == null || supplierValue instanceof StringParameterParser.NullValue) {
+            supplierPath = JCTOOLS_QUEUE_CLASS_AVAILABLE
+                    ? JCTOOLS_QUEUE_CLASS_SUPPLIER_PATH
+                    : "java.util.concurrent.ArrayBlockingQueue.new";
+        } else {
+            supplierPath = supplierValue.toString();
+        }
 
-            // Skip blank fields.
-            if (Strings.isBlank(queueFactorySpecField)) {
-                continue;
-            }
-
-            // Split the key-value pair.
-            final String[] keyAndValue = queueFactorySpecField.split("\\s*=\\s*", 2);
-            if (keyAndValue.length != 2) {
+        // Read the capacity.
+        final StringParameterParser.Value capacityValue = parsedValues.get("capacity");
+        final int capacity;
+        if (capacityValue == null || capacityValue instanceof StringParameterParser.NullValue) {
+            capacity = defaultCapacity;
+        } else {
+            try {
+                capacity = Integer.parseInt(capacityValue.toString());
+            } catch (final NumberFormatException error) {
                 throw new IllegalArgumentException(
-                        "invalid queueing recycler: " + recyclerFactorySpec);
-            }
-            final String key = keyAndValue[0];
-            final String value = keyAndValue[1];
-
-            switch (key) {
-
-                // Read supplier path.
-                case "supplier": {
-                    if (supplierPathProvided) {
-                        throw new IllegalArgumentException(
-                                "multiple occurrences of supplier in queueing " +
-                                        "recycler factory: " + queueFactorySpec);
-                    }
-                    supplierPathProvided = true;
-                    supplierPath = value;
-                    break;
-                }
-
-                // Read capacity.
-                case "capacity": {
-                    if (capacityProvided) {
-                        throw new IllegalArgumentException(
-                                "multiple occurrences of capacity in queueing " +
-                                        "recycler factory: " + queueFactorySpec);
-                    }
-                    capacityProvided = true;
-                    try {
-                        capacity = Integer.parseInt(value);
-                    } catch (NumberFormatException error) {
-                        throw new IllegalArgumentException(
-                                "failed reading capacity in queueing recycler " +
-                                        "factory: " + queueFactorySpec, error);
-                    }
-                    break;
-                }
-
-                // Bogus input.
-                default:
-                    throw new IllegalArgumentException(
-                            "invalid queueing recycler factory: " +
-                                    queueFactorySpec);
-
+                        "failed reading capacity in queueing recycler " +
+                                "factory: " + queueFactorySpec, error);
             }
         }
 
