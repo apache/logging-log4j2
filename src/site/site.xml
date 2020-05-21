@@ -179,6 +179,7 @@
         <item name="NoSQL for MongoDB" href="/manual/appenders.html#NoSQLAppenderMongoDB"/>
         <item name="NoSQL for MongoDB 2" href="/manual/appenders.html#NoSQLAppenderMongoDB2"/>
         <item name="NoSQL for MongoDB 3" href="/manual/appenders.html#NoSQLAppenderMongoDB3"/>
+        <item name="NoSQL for MongoDB 4" href="/manual/appenders.html#NoSQLAppenderMongoDB4"/>
         <item name="NoSQL for CouchDB" href="/manual/appenders.html#NoSQLAppenderCouchDB"/>
         <item name="Output Stream" href="/manual/appenders.html#OutputStreamAppender"/>
         <item name="Random Access File" href="/manual/appenders.html#RandomAccessFileAppender"/>
@@ -319,6 +320,7 @@
       <item name="Log4j CouchDB appender" href="log4j-couchdb/index.html"/>
       <item name="Log4j MongoDB2 appender" href="log4j-mongodb2/index.html"/>
       <item name="Log4j MongoDB3 appender" href="log4j-mongodb3/index.html"/>
+      <item name="Log4j MongoDB4 appender" href="log4j-mongodb4/index.html"/>
       <item name="Log4j Cassandra appender" href="log4j-cassandra/index.html"/>
       <item name="Log4j IO Streams" href="log4j-iostreams/index.html"/>
       <item name="Log4j Liquibase Binding" href="log4j-liquibase/index.html"/>

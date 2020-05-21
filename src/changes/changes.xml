@@ -33,6 +33,9 @@
       <action issue="LOG4J2-2844" dev="ggregory" type="fix">
         Null pointer exception when no network interfaces are available.
       </action>
+      <action issue="LOG4J2-2848" dev="ggregory" type="add">
+        Create module log4j-mongodb4 to use new major version 4 MongoDB driver.
+      </action>
       <action dev="ggregory" type="update">
         Update MongoDB tests to require Java 8 unconditionally now that Log4j requires Java 8.
       </action>
