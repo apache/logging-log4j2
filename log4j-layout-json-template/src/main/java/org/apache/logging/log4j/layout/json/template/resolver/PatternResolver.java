@@ -19,18 +19,23 @@ package org.apache.logging.log4j.layout.json.template.resolver;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
+import org.apache.logging.log4j.util.BiConsumer;
 
 final class PatternResolver implements EventResolver {
 
-    private final PatternLayout patternLayout;
+    private final BiConsumer<StringBuilder, LogEvent> emitter;
 
-    PatternResolver(final EventResolverContext context, final String key) {
-        this.patternLayout = PatternLayout
+    PatternResolver(
+            final EventResolverContext context,
+            final String key) {
+        final PatternLayout patternLayout = PatternLayout
                 .newBuilder()
                 .setConfiguration(context.getConfiguration())
                 .setCharset(context.getCharset())
                 .setPattern(key)
                 .build();
+        this.emitter = (final StringBuilder stringBuilder, final LogEvent logEvent) ->
+                patternLayout.serialize(logEvent, stringBuilder);
     }
 
     static String getName() {
@@ -38,9 +43,8 @@ final class PatternResolver implements EventResolver {
     }
 
     @Override
-    public void resolve(LogEvent logEvent, JsonWriter jsonWriter) {
-        final String serializedLogEvent = patternLayout.toSerializable(logEvent);
-        jsonWriter.writeString(serializedLogEvent);
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
+        jsonWriter.writeString(emitter, logEvent);
     }
 
 }

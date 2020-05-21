@@ -18,6 +18,7 @@ package org.apache.logging.log4j.layout.json.template.util;
 
 import org.apache.logging.log4j.core.impl.JdkMapAdapterStringMap;
 import org.apache.logging.log4j.layout.json.template.JacksonFixture;
+import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -330,6 +331,39 @@ public class JsonWriterTest {
                         Collections.singletonMap("bar", "buzz"),
                         null
                 }));
+        Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+    }
+
+    @Test
+    public void test_writeString_null_emitter() {
+        Assertions
+                .assertThatThrownBy(() ->
+                        WRITER.use(() -> WRITER.writeString(null, 0L)))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("emitter");
+    }
+
+    @Test
+    public void test_writeString_emitter() {
+        final String state = "there-is-no-spoon";
+        final BiConsumer<StringBuilder, String> emitter = StringBuilder::append;
+        final String expectedJson = '"' + state + '"';
+        final String actualJson =
+                WRITER.use(() -> WRITER.writeString(emitter, state));
+        Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+    }
+
+    @Test
+    public void test_writeString_emitter_excessive_string() {
+        final int maxStringLength = WRITER.getMaxStringLength();
+        final String excessiveString = Strings.repeat("x", maxStringLength) + 'y';
+        final String expectedJson = '"' +
+                excessiveString.substring(0, maxStringLength) +
+                WRITER.getTruncatedStringSuffix() +
+                '"';
+        final BiConsumer<StringBuilder, String> emitter = StringBuilder::append;
+        final String actualJson =
+                WRITER.use(() -> WRITER.writeString(emitter, excessiveString));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 

@@ -789,6 +789,3 @@ to `true`, `JsonTemplateLayout` is garbage-free with the following exceptions:
 
 * link:lookups.html[Lookups] (that is, `${...}` variables, excluding
   `${json:...}` ones) are not garbage-free.
-
-* link:layouts.html#PatternLayout[`PatternLayout`] serialization through
-  `${json:pattern:<pattern>}` is not garbage-free.

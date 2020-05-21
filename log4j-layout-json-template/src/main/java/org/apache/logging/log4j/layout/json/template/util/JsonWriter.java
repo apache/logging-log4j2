@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.layout.json.template.util;
 
+import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringMap;
@@ -484,6 +485,26 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
 
     public void writeSeparator() {
         stringBuilder.append(',');
+    }
+
+    public <S> void writeString(
+            final BiConsumer<StringBuilder, S> emitter,
+            final S state) {
+        Objects.requireNonNull(emitter, "emitter");
+        stringBuilder.append('"');
+        formattableBuffer.setLength(0);
+        emitter.accept(formattableBuffer, state);
+        final int length = formattableBuffer.length();
+        // Handle max. string length complying input.
+        if (length <= maxStringLength) {
+            quoteString(formattableBuffer, 0, length);
+        }
+        // Handle max. string length violating input.
+        else {
+            quoteString(formattableBuffer, 0, maxStringLength);
+            stringBuilder.append(quotedTruncatedStringSuffix);
+        }
+        stringBuilder.append('"');
     }
 
     public void writeString(final StringBuilderFormattable formattable) {
