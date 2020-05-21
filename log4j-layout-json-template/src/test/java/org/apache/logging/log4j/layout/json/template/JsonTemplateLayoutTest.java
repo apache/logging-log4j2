@@ -16,11 +16,9 @@
  */
 package org.apache.logging.log4j.layout.json.template;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.NullNode;
@@ -65,11 +63,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -104,25 +100,12 @@ public class JsonTemplateLayoutTest {
             @SuppressWarnings("SameParameterValue")
             final String lookupTestKey,
             final String lookupTestVal) throws IOException {
-        final Set<String> mdcKeys = logEvent.getContextData().toMap().keySet();
-        final String firstMdcKey = mdcKeys.iterator().next();
-        final String firstMdcKeyExcludingRegex = !mdcKeys.isEmpty()
-                ? String.format("^(?!%s).*$", Pattern.quote(firstMdcKey))
-                : null;
-        final List<String> ndcItems = logEvent.getContextStack().asList();
-        final String firstNdcItem = ndcItems.get(0);
-        @SuppressWarnings("ConstantConditions")
-        final String firstNdcItemExcludingRegex = !ndcItems.isEmpty()
-                ? String.format("^(?!%s).*$", Pattern.quote(firstNdcItem))
-                : null;
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setEventTemplateUri("classpath:testJsonTemplateLayout.json")
                 .setStackTraceEnabled(true)
                 .setLocationInfoEnabled(true)
-                .setMdcKeyPattern(firstMdcKeyExcludingRegex)
-                .setNdcPattern(firstNdcItemExcludingRegex)
                 .build();
         final String serializedLogEvent = layout.toSerializable(logEvent);
         final JsonNode rootNode = OBJECT_MAPPER.readValue(serializedLogEvent, JsonNode.class);
@@ -130,8 +113,6 @@ public class JsonTemplateLayoutTest {
         checkBasicFields(logEvent, rootNode);
         checkSource(logEvent, rootNode);
         checkException(layout.getCharset(), logEvent, rootNode);
-        checkContextData(logEvent, firstMdcKeyExcludingRegex, rootNode);
-        checkContextStack(logEvent, firstNdcItemExcludingRegex, rootNode);
         checkLookupTest(lookupTestKey, lookupTestVal, rootNode);
     }
 
@@ -189,57 +170,6 @@ public class JsonTemplateLayoutTest {
         }  catch (final UnsupportedEncodingException error) {
             throw new RuntimeException("failed converting the stack trace to string", error);
         }
-    }
-
-    private static void checkContextData(
-            final LogEvent logEvent,
-            final String mdcKeyRegex,
-            final JsonNode rootNode) {
-        final Pattern mdcKeyPattern = mdcKeyRegex != null ? Pattern.compile(mdcKeyRegex) : null;
-        logEvent.getContextData().forEach((final String key, final Object value) -> {
-            final JsonNode node = point(rootNode, "mdc", key);
-            final boolean matches = mdcKeyPattern == null || mdcKeyPattern.matcher(key).matches();
-            if (matches) {
-                final JsonNode valueNode = OBJECT_MAPPER.convertValue(value, JsonNode.class);
-                if (valueNode.isNumber()) {
-                    final double valueNodeDouble = valueNode.asDouble();
-                    final double nodeDouble = node.asDouble();
-                    assertThat(nodeDouble).isEqualTo(valueNodeDouble);
-                } else {
-                    assertThat(node).isEqualTo(valueNode);
-                }
-            } else {
-                assertThat(node).isEqualTo(MissingNode.getInstance());
-            }
-        });
-    }
-
-    private static void checkContextStack(
-            final LogEvent logEvent,
-            final String ndcRegex,
-            final JsonNode rootNode) {
-
-        // Determine the expected context stack.
-        final Pattern ndcPattern = ndcRegex == null ? null : Pattern.compile(ndcRegex);
-        final List<String> initialContextStack = logEvent.getContextStack().asList();
-        final List<String> expectedContextStack = new ArrayList<>();
-        for (final String contextStackItem : initialContextStack) {
-            final boolean matches = ndcPattern == null || ndcPattern.matcher(contextStackItem).matches();
-            if (matches) {
-                expectedContextStack.add(contextStackItem);
-            }
-        }
-
-        // Determine the actual context stack.
-        final ArrayNode contextStack = (ArrayNode) point(rootNode, "ndc");
-        final List<String> actualContextStack = new ArrayList<>();
-        for (final JsonNode contextStackItem : contextStack) {
-            actualContextStack.add(contextStackItem.asText());
-        }
-
-        // Compare expected and actual context stacks.
-        assertThat(actualContextStack).isEqualTo(expectedContextStack);
-
     }
 
     private static void checkLookupTest(
@@ -649,13 +579,7 @@ public class JsonTemplateLayoutTest {
         final String mdcDirectlyAccessedKey = "mdcKey1";
         final String mdcDirectlyAccessedValue = "mdcValue1";
         contextData.putValue(mdcDirectlyAccessedKey, mdcDirectlyAccessedValue);
-        final String mdcPatternMatchedKey = "mdcKey2";
-        final String mdcPatternMatchedValue = "mdcValue2";
-        contextData.putValue(mdcPatternMatchedKey, mdcPatternMatchedValue);
-        final String mdcPatternMismatchedKey = "mdcKey3";
-        final String mdcPatternMismatchedValue = "mdcValue3";
-        contextData.putValue(mdcPatternMismatchedKey, mdcPatternMismatchedValue);
-        final String mdcDirectlyAccessedNullPropertyKey = "mdcKey4";
+        final String mdcDirectlyAccessedNullPropertyKey = "mdcKey2";
         final String mdcDirectlyAccessedNullPropertyValue = null;
         // noinspection ConstantConditions
         contextData.putValue(mdcDirectlyAccessedNullPropertyKey, mdcDirectlyAccessedNullPropertyValue);
@@ -669,14 +593,12 @@ public class JsonTemplateLayoutTest {
 
         // Create the event template.
         final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
-        final String mdcFieldName = "mdc";
-        eventTemplateRootNode.put(mdcFieldName, "${json:mdc}");
         eventTemplateRootNode.put(
                 mdcDirectlyAccessedKey,
-                String.format("${json:mdc:%s}", mdcDirectlyAccessedKey));
+                String.format("${json:mdc:key=%s}", mdcDirectlyAccessedKey));
         eventTemplateRootNode.put(
                 mdcDirectlyAccessedNullPropertyKey,
-                String.format("${json:mdc:%s}", mdcDirectlyAccessedNullPropertyKey));
+                String.format("${json:mdc:key=%s}", mdcDirectlyAccessedNullPropertyKey));
         String eventTemplate = eventTemplateRootNode.toString();
 
         // Create the layout.
@@ -685,16 +607,99 @@ public class JsonTemplateLayoutTest {
                 .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)
                 .setEventTemplate(eventTemplate)
-                .setMdcKeyPattern(mdcPatternMatchedKey)
                 .build();
 
         // Check the serialized event.
         final String serializedLogEvent = layout.toSerializable(logEvent);
         final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
         assertThat(point(rootNode, mdcDirectlyAccessedKey).asText()).isEqualTo(mdcDirectlyAccessedValue);
+        assertThat(point(rootNode, mdcDirectlyAccessedNullPropertyKey)).isInstanceOf(NullNode.class);
+
+    }
+
+    @Test
+    public void test_mdc_pattern() throws IOException {
+
+        // Create the log event.
+        final SimpleMessage message = new SimpleMessage("Hello, World!");
+        final StringMap contextData = new SortedArrayStringMap();
+        final String mdcPatternMatchedKey = "mdcKey1";
+        final String mdcPatternMatchedValue = "mdcValue1";
+        contextData.putValue(mdcPatternMatchedKey, mdcPatternMatchedValue);
+        final String mdcPatternMismatchedKey = "mdcKey2";
+        final String mdcPatternMismatchedValue = "mdcValue2";
+        contextData.putValue(mdcPatternMismatchedKey, mdcPatternMismatchedValue);
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setLevel(Level.INFO)
+                .setMessage(message)
+                .setContextData(contextData)
+                .build();
+
+        // Create the event template.
+        final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
+        final String mdcFieldName = "mdc";
+        eventTemplateRootNode.put(mdcFieldName, "${json:mdc:pattern=" + mdcPatternMatchedKey + "}");
+        String eventTemplate = eventTemplateRootNode.toString();
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setStackTraceEnabled(true)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        // Check the serialized event.
+        final String serializedLogEvent = layout.toSerializable(logEvent);
+        final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
         assertThat(point(rootNode, mdcFieldName, mdcPatternMatchedKey).asText()).isEqualTo(mdcPatternMatchedValue);
         assertThat(point(rootNode, mdcFieldName, mdcPatternMismatchedKey)).isInstanceOf(MissingNode.class);
-        assertThat(point(rootNode, mdcDirectlyAccessedNullPropertyKey)).isInstanceOf(NullNode.class);
+
+    }
+
+    @Test
+    public void test_mdc_flatten() throws IOException {
+
+        // Create the log event.
+        final SimpleMessage message = new SimpleMessage("Hello, World!");
+        final StringMap contextData = new SortedArrayStringMap();
+        final String mdcPatternMatchedKey = "mdcKey1";
+        final String mdcPatternMatchedValue = "mdcValue1";
+        contextData.putValue(mdcPatternMatchedKey, mdcPatternMatchedValue);
+        final String mdcPatternMismatchedKey = "mdcKey2";
+        final String mdcPatternMismatchedValue = "mdcValue2";
+        contextData.putValue(mdcPatternMismatchedKey, mdcPatternMismatchedValue);
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setLevel(Level.INFO)
+                .setMessage(message)
+                .setContextData(contextData)
+                .build();
+
+        // Create the event template.
+        final ObjectNode eventTemplateRootNode = JSON_NODE_FACTORY.objectNode();
+        final String mdcPrefix = "_mdc.";
+        eventTemplateRootNode.put(
+                mdcPrefix,
+                "${json:mdc:flatten=" + mdcPrefix + ",pattern=" + mdcPatternMatchedKey + "}");
+        String eventTemplate = eventTemplateRootNode.toString();
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setStackTraceEnabled(true)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        // Check the serialized event.
+        final String serializedLogEvent = layout.toSerializable(logEvent);
+        final JsonNode rootNode = OBJECT_MAPPER.readTree(serializedLogEvent);
+        assertThat(point(rootNode, mdcPrefix + mdcPatternMatchedKey).asText()).isEqualTo(mdcPatternMatchedValue);
+        assertThat(point(rootNode, mdcPrefix + mdcPatternMismatchedKey)).isInstanceOf(MissingNode.class);
 
     }
 

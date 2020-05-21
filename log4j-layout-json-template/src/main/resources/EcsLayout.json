@@ -4,7 +4,7 @@
   "message": "${json:message}",
   "process.thread.name": "${json:thread:name}",
   "log.logger": "${json:logger:name}",
-  "labels": "${json:mdc}",
+  "labels": "${json:mdc:flatten=labels.,stringify}",
   "tags": "${json:ndc}",
   "error.type": "${json:exception:className}",
   "error.message": "${json:exception:message}",

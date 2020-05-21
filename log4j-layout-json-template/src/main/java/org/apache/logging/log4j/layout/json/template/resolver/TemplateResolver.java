@@ -21,6 +21,10 @@ import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 @FunctionalInterface
 public interface TemplateResolver<V> {
 
+    default boolean isFlattening() {
+        return false;
+    }
+
     default boolean isResolvable() {
         return true;
     }
@@ -30,5 +34,9 @@ public interface TemplateResolver<V> {
     }
 
     void resolve(V value, JsonWriter jsonWriter);
+
+    default void resolve(V value, JsonWriter jsonWriter, boolean succeedingEntry) {
+        resolve(value, jsonWriter);
+    }
 
 }

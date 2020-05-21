@@ -21,16 +21,29 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Add Nested Diagnostic Context (NDC).
  */
 final class ContextStackResolver implements EventResolver {
 
-    private final EventResolverContext context;
+    private final Pattern itemPattern;
 
-    ContextStackResolver(final EventResolverContext context) {
-        this.context = context;
+    ContextStackResolver(final String key) {
+        if (key == null) {
+            itemPattern = null;
+        } else if (key.startsWith("pattern=")) {
+            final String pattern = key.substring("pattern=".length());
+            try {
+                itemPattern = Pattern.compile(pattern);
+            } catch (final PatternSyntaxException error) {
+                throw new IllegalArgumentException(
+                        "invalid ndc pattern: " + pattern, error);
+            }
+        } else {
+            throw new IllegalArgumentException("unknown ndc key: " + key);
+        }
     }
 
     static String getName() {
@@ -52,7 +65,6 @@ final class ContextStackResolver implements EventResolver {
             jsonWriter.writeNull();
             return;
         }
-        final Pattern itemPattern = context.getNdcPattern();
         boolean arrayStarted = false;
         for (final String contextStackItem : contextStack.asList()) {
             final boolean matched =

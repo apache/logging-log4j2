@@ -26,7 +26,6 @@ import org.apache.logging.log4j.layout.json.template.util.RecyclerFactory;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 public final class EventResolverContext implements TemplateResolverContext<LogEvent, EventResolverContext> {
 
@@ -48,10 +47,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
     private final TemplateResolver<Throwable> stackTraceObjectResolver;
 
-    private final Pattern mdcKeyPattern;
-
-    private final Pattern ndcPattern;
-
     private final KeyValuePair[] additionalFields;
 
     private EventResolverContext(final Builder builder) {
@@ -66,8 +61,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         this.stackTraceObjectResolver = stackTraceEnabled
                 ? new StackTraceObjectResolver(builder.stackTraceElementObjectResolver)
                 : null;
-        this.mdcKeyPattern = builder.mdcKeyPattern == null ? null : Pattern.compile(builder.mdcKeyPattern);
-        this.ndcPattern = builder.ndcPattern == null ? null : Pattern.compile(builder.ndcPattern);
         this.additionalFields = builder.eventTemplateAdditionalFields;
     }
 
@@ -119,14 +112,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         return stackTraceObjectResolver;
     }
 
-    Pattern getMdcKeyPattern() {
-        return mdcKeyPattern;
-    }
-
-    Pattern getNdcPattern() {
-        return ndcPattern;
-    }
-
     KeyValuePair[] getAdditionalFields() {
         return additionalFields;
     }
@@ -154,10 +139,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         private boolean stackTraceEnabled;
 
         private TemplateResolver<StackTraceElement> stackTraceElementObjectResolver;
-
-        private String mdcKeyPattern;
-
-        private String ndcPattern;
 
         private KeyValuePair[] eventTemplateAdditionalFields;
 
@@ -208,16 +189,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         public Builder setStackTraceElementObjectResolver(
                 final TemplateResolver<StackTraceElement> stackTraceElementObjectResolver) {
             this.stackTraceElementObjectResolver = stackTraceElementObjectResolver;
-            return this;
-        }
-
-        public Builder setMdcKeyPattern(final String mdcKeyPattern) {
-            this.mdcKeyPattern = mdcKeyPattern;
-            return this;
-        }
-
-        public Builder setNdcPattern(final String ndcPattern) {
-            this.ndcPattern = ndcPattern;
             return this;
         }
 

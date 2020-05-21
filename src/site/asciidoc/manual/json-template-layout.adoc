@@ -133,14 +133,6 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
 | includes stack traces (defaults to `true` set by
   `log4j.layout.jsonTemplate.stackTraceEnabled` property)
 
-| mdcKeyPattern
-| String
-| regex to filter MDC keys (does not apply to direct `mdc:key` access)
-
-| ndcPattern
-| String
-| regex to filter NDC items
-
 | eventTemplate
 | String
 | inline JSON template for rendering ``LogEvent``s (has priority over
@@ -378,12 +370,16 @@ Below is the list of supported event template variables:
 | `logEvent.getMarker.getName()`
 
 | mdc
-| Mapped Diagnostic Context `Map<String, String>` returned by
-  `logEvent.getContextData()`
+.4+| Mapped Diagnostic Context `Map<String, String>` returned by
+  `logEvent.getContextData()`, where one can merge it with the parent JSON
+  object via `flatten[=<prefix>]`, filter keys matching a regex `pattern`, just
+  extract a certain `key`, or `stringify` values
 
-| mdc:<key>
-| Mapped Diagnostic Context `String` associated with `key` (`mdcKeyPattern` is
-  discarded)
+| mdc:flatten[=<prefix>][,stringify]
+
+| mdc:pattern=<pattern>[,flatten=<prefix>][,stringify]
+
+| mdc:key=<key>[,stringify]
 
 | message
 | `logEvent.getFormattedMessage()`
@@ -393,8 +389,9 @@ Below is the list of supported event template variables:
   its read value; if is of type `ObjectMessage`, its serialized output via
   Jackson `ObjectMapper`; otherwise, `{"message": <formattedMessage>}` object
 
-| ndc
-| Nested Diagnostic Context `String[]` returned by `logEvent.getContextStack()`
+| ndc[:pattern=<pattern>]
+| Nested Diagnostic Context `String[]` returned by `logEvent.getContextStack()`,
+  where filtering is supported via the supplied regex `pattern`
 
 | pattern:<pattern>
 | injects link:layouts.html#PatternLayout[`PatternLayout`] serialized string

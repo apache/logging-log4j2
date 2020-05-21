@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.apache.logging.log4j.layout.json.template.LayoutComparisonHelpers.removeNullEntries;
 import static org.apache.logging.log4j.layout.json.template.LayoutComparisonHelpers.renderUsing;
 
 public class JsonLayoutTest {
@@ -60,8 +59,11 @@ public class JsonLayoutTest {
             final LogEvent logEvent)
             throws Exception {
         final Map<String, Object> map = renderUsing(logEvent, JSON_TEMPLATE_LAYOUT);
-        final Map<String, Object> nullExcludedMap = removeNullEntries(map);
-        final Map<String, Object> emptySourceExcludedMap = removeEmptyObject(nullExcludedMap, "source");
+        final Map<String, Object> emptySourceExcludedMap = removeEmptyObject(map, "source");
+        // JsonLayout blindly serializes the Throwable as a POJO, this is,
+        // to say the least, quite wrong, and I ain't gonna try to emulate
+        // this behaviour in JsonTemplateLayout. Hence, discarding the "thrown"
+        // field.
         emptySourceExcludedMap.remove("thrown");
         return emptySourceExcludedMap;
     }
@@ -70,6 +72,10 @@ public class JsonLayoutTest {
             final LogEvent logEvent)
             throws Exception {
         final Map<String, Object> map = renderUsing(logEvent, JSON_LAYOUT);
+        // JsonLayout blindly serializes the Throwable as a POJO, this is,
+        // to say the least, quite wrong, and I ain't gonna try to emulate
+        // this behaviour in JsonTemplateLayout. Hence, discarding the "thrown"
+        // field.
         map.remove("thrown");
         return map;
     }

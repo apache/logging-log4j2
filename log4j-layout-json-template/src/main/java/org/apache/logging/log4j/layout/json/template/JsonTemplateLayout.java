@@ -151,8 +151,6 @@ public class JsonTemplateLayout implements StringLayout {
                 .setLocationInfoEnabled(builder.locationInfoEnabled)
                 .setStackTraceEnabled(builder.stackTraceEnabled)
                 .setStackTraceElementObjectResolver(stackTraceElementObjectResolver)
-                .setMdcKeyPattern(builder.mdcKeyPattern)
-                .setNdcPattern(builder.ndcPattern)
                 .setEventTemplateAdditionalFields(builder.eventTemplateAdditionalFields.additionalFields)
                 .build();
         return TemplateResolvers.ofTemplate(resolverContext, eventTemplate);
@@ -331,12 +329,6 @@ public class JsonTemplateLayout implements StringLayout {
                 JsonTemplateLayoutDefaults.getStackTraceElementTemplateUri();
 
         @PluginBuilderAttribute
-        private String mdcKeyPattern = JsonTemplateLayoutDefaults.getMdcKeyPattern();
-
-        @PluginBuilderAttribute
-        private String ndcPattern = JsonTemplateLayoutDefaults.getNdcPattern();
-
-        @PluginBuilderAttribute
         private String eventDelimiter = JsonTemplateLayoutDefaults.getEventDelimiter();
 
         @PluginBuilderAttribute
@@ -435,24 +427,6 @@ public class JsonTemplateLayout implements StringLayout {
         public Builder setStackTraceElementTemplateUri(
                 final String stackTraceElementTemplateUri) {
             this.stackTraceElementTemplateUri = stackTraceElementTemplateUri;
-            return this;
-        }
-
-        public String getMdcKeyPattern() {
-            return mdcKeyPattern;
-        }
-
-        public Builder setMdcKeyPattern(final String mdcKeyPattern) {
-            this.mdcKeyPattern = mdcKeyPattern;
-            return this;
-        }
-
-        public String getNdcPattern() {
-            return ndcPattern;
-        }
-
-        public Builder setNdcPattern(final String ndcPattern) {
-            this.ndcPattern = ndcPattern;
             return this;
         }
 

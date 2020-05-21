@@ -33,7 +33,7 @@ final class ContextStackResolverFactory implements EventResolverFactory<ContextS
 
     @Override
     public ContextStackResolver create(final EventResolverContext context, final String key) {
-        return new ContextStackResolver(context);
+        return new ContextStackResolver(key);
     }
 
 }

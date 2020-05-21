@@ -9,11 +9,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.logging.log4j.layout.json.template.LayoutComparisonHelpers.removeNullEntries;
 import static org.apache.logging.log4j.layout.json.template.LayoutComparisonHelpers.renderUsing;
 
 public class EcsLayoutTest {
@@ -70,55 +68,13 @@ public class EcsLayoutTest {
     private static Map<String, Object> renderUsingJsonTemplateLayout(
             final LogEvent logEvent)
             throws Exception {
-        final Map<String, Object> map = renderUsing(logEvent, JSON_TEMPLATE_LAYOUT);
-        final Map<String, Object> flattenedMap = stringifyGroup(map, "labels");
-        return removeNullEntries(flattenedMap);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static Map<String, Object> stringifyGroup(
-            final Map<String, Object> input,
-            final String key) {
-        @SuppressWarnings("unchecked")
-        final Map<String, Object> subInput = (Map<String, Object>) input.get(key);
-        if (subInput == null) {
-            return input;
-        } else {
-            final Map<String, Object> subOutput = new LinkedHashMap<>();
-            subInput.forEach((final String subKey, final Object subValue) ->
-                    subOutput.put(subKey, String.valueOf(subValue)));
-            final Map<String, Object> output = new LinkedHashMap<>(input);
-            output.put(key, subOutput);
-            return output;
-        }
+        return renderUsing(logEvent, JSON_TEMPLATE_LAYOUT);
     }
 
     private static Map<String, Object> renderUsingEcsLayout(
             final LogEvent logEvent)
             throws Exception {
-        final Map<String, Object> map = renderUsing(logEvent, ECS_LAYOUT);
-        return groupKeys(map, "labels");
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static Map<String, Object> groupKeys(
-            final Map<String, Object> input,
-            final String prefix) {
-        final Map<String, Object> output = new LinkedHashMap<>();
-        input.forEach((final String key, final Object value) -> {
-            if (key.startsWith(prefix + '.')) {
-                final String subKey = key.replaceFirst("^" + prefix + "\\.", "");
-                @SuppressWarnings("unchecked")
-                final Map<String, Object> subOutput =
-                        (Map<String, Object>) output.computeIfAbsent(
-                                prefix,
-                                ignored -> new LinkedHashMap<>());
-                subOutput.put(subKey, value);
-            } else {
-                output.put(key, value);
-            }
-        });
-        return output;
+        return renderUsing(logEvent, ECS_LAYOUT);
     }
 
 }

@@ -7,5 +7,5 @@
   "level": "${json:level:severity:code}",
   "_logger": "${json:logger:name}",
   "_thread": "${json:thread:name}",
-  "_mdc": "${json:mdc}"
+  "_mdc": "${json:mdc:flatten=_,stringify}"
 }

@@ -10,12 +10,9 @@ import org.assertj.core.data.Percentage;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
-import static org.apache.logging.log4j.layout.json.template.LayoutComparisonHelpers.removeNullEntries;
 import static org.apache.logging.log4j.layout.json.template.LayoutComparisonHelpers.renderUsing;
 
 public class GelfLayoutTest {
@@ -69,52 +66,37 @@ public class GelfLayoutTest {
     private static void test(final LogEvent logEvent) throws Exception {
         final Map<String, Object> jsonTemplateLayoutMap = renderUsingJsonTemplateLayout(logEvent);
         final Map<String, Object> gelfLayoutMap = renderUsingGelfLayout(logEvent);
-        // Handle timestamp individually to avoid floating-point comparison hiccups.
-        {
-            final Number jsonTemplateLayoutTimestamp =
-                    (Number) jsonTemplateLayoutMap.remove("timestamp");
-            final Number gelfLayoutTimestamp =
-                    (Number) gelfLayoutMap.remove("timestamp");
-            Assertions
-                    .assertThat(jsonTemplateLayoutTimestamp.doubleValue())
-                    .isCloseTo(
-                            gelfLayoutTimestamp.doubleValue(),
-                            Percentage.withPercentage(0.01));
-        }
-        // Handle the eventual maps.
+        verifyTimestamp(jsonTemplateLayoutMap, gelfLayoutMap);
         Assertions.assertThat(jsonTemplateLayoutMap).isEqualTo(gelfLayoutMap);
     }
 
     private static Map<String, Object> renderUsingJsonTemplateLayout(
             final LogEvent logEvent)
             throws Exception {
-        final Map<String, Object> map = renderUsing(logEvent, JSON_TEMPLATE_LAYOUT);
-        final Map<String, Object> flattenedMap = flattenKey(map, "_mdc", "_", String::valueOf);
-        return removeNullEntries(flattenedMap);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static Map<String, Object> flattenKey(
-            final Map<String, Object> map,
-            final String key,
-            final String keyPrefix,
-            final Function<Object, Object> valueMapper) {
-        final Map<String, Object> flattenedMap = new LinkedHashMap<>(map);
-        @SuppressWarnings("unchecked")
-        final Map<String, Object> subMap = (Map<String, Object>) flattenedMap.remove(key);
-        if (subMap != null) {
-            subMap.forEach((subKey, subValue) -> {
-                final Object mappedSubValue = valueMapper.apply(subValue);
-                flattenedMap.put(keyPrefix + subKey, mappedSubValue);
-            });
-        }
-        return flattenedMap;
+        return renderUsing(logEvent, JSON_TEMPLATE_LAYOUT);
     }
 
     private static Map<String, Object> renderUsingGelfLayout(
             final LogEvent logEvent)
             throws Exception {
         return renderUsing(logEvent, GELF_LAYOUT);
+    }
+
+    /**
+     * Handle timestamps individually to avoid floating-point comparison hiccups.
+     */
+    private static void verifyTimestamp(
+            final Map<String, Object> jsonTemplateLayoutMap,
+            final Map<String, Object> gelfLayoutMap) {
+        final Number jsonTemplateLayoutTimestamp =
+                (Number) jsonTemplateLayoutMap.remove("timestamp");
+        final Number gelfLayoutTimestamp =
+                (Number) gelfLayoutMap.remove("timestamp");
+        Assertions
+                .assertThat(jsonTemplateLayoutTimestamp.doubleValue())
+                .isCloseTo(
+                        gelfLayoutTimestamp.doubleValue(),
+                        Percentage.withPercentage(0.01));
     }
 
 }

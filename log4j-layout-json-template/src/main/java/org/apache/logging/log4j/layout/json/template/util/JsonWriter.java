@@ -290,7 +290,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         stringBuilder.append('}');
     }
 
-    public void writeObjectKey(final String key) {
+    public void writeObjectKey(final CharSequence key) {
         writeString(key);
         stringBuilder.append(':');
     }

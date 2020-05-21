@@ -1,6 +1,4 @@
 {
-  "mdc": "${json:mdc}",
-  "ndc": "${json:ndc}",
   "exception_class": "${json:exception:className}",
   "exception_message": "${json:exception:message}",
   "stacktrace": "${json:exception:stackTrace:text}",

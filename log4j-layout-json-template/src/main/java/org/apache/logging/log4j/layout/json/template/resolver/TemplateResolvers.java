@@ -128,7 +128,14 @@ public enum TemplateResolvers {;
         // Create resolver for each children.
         final List<TemplateResolver<V>> itemResolvers = list
                 .stream()
-                .map(item -> ofObject(context, item))
+                .map(item -> {
+                    final TemplateResolver<V> itemResolver = ofObject(context, item);
+                    if (itemResolver.isFlattening()) {
+                        throw new IllegalArgumentException(
+                                "flattening resolvers are not allowed in lists");
+                    }
+                    return itemResolver;
+                })
                 .collect(Collectors.toList());
 
         // Short-circuit if the array is empty.
@@ -195,6 +202,7 @@ public enum TemplateResolvers {;
 
         // Create a parent resolver collecting each object field resolver execution.
         return (value, jsonWriter) -> {
+            final StringBuilder jsonWriterStringBuilder = jsonWriter.getStringBuilder();
             jsonWriter.writeObjectStart();
             for (int resolvedFieldCount = 0, fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
                 final TemplateResolver<V> fieldResolver = fieldResolvers.get(fieldIndex);
@@ -202,12 +210,23 @@ public enum TemplateResolvers {;
                 if (!resolvable) {
                     continue;
                 }
-                if (resolvedFieldCount++ > 0) {
-                    jsonWriter.writeSeparator();
+                final boolean succeedingEntry = resolvedFieldCount > 0;
+                if (fieldResolver.isFlattening()) {
+                    final int initLength = jsonWriterStringBuilder.length();
+                    fieldResolver.resolve(value, jsonWriter, succeedingEntry);
+                    final boolean resolved = jsonWriterStringBuilder.length() > initLength;
+                    if (resolved) {
+                        resolvedFieldCount++;
+                    }
+                } else {
+                    if (succeedingEntry) {
+                        jsonWriter.writeSeparator();
+                    }
+                    final String fieldPrefix = fieldPrefixes.get(fieldIndex);
+                    jsonWriter.writeRawString(fieldPrefix);
+                    fieldResolver.resolve(value, jsonWriter, succeedingEntry);
+                    resolvedFieldCount++;
                 }
-                final String fieldPrefix = fieldPrefixes.get(fieldIndex);
-                jsonWriter.writeRawString(fieldPrefix);
-                fieldResolver.resolve(value, jsonWriter);
             }
             jsonWriter.writeObjectEnd();
         };
