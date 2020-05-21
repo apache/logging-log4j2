@@ -28,6 +28,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class InitTest {
 
+    private static final String KEY = InitTest.class.getSimpleName() + ".threshold";
+
     @Test
     public void initTest() {
         Timer timer = new Timer("Log4j Initialization");
@@ -36,6 +38,9 @@ public class InitTest {
         timer.stop();
         long elapsed = timer.getElapsedNanoTime();
         System.out.println(timer.toString());
-        assertTrue(String.format("Initialization time exceeded threshold; elapsed %,d nanoseconds", elapsed), elapsed < 1_000_000_000);
+        long threshold = Long.getLong(KEY, 1_000_000_000);
+        assertTrue(
+                String.format("Initialization time exceeded %s %,d; elapsed %,d nanoseconds", KEY, threshold, elapsed),
+                elapsed < threshold);
     }
 }
