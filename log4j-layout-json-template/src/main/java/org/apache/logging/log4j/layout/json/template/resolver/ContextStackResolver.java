@@ -19,7 +19,10 @@ package org.apache.logging.log4j.layout.json.template.resolver;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
+import org.apache.logging.log4j.layout.json.template.util.StringParameterParser;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -30,19 +33,28 @@ final class ContextStackResolver implements EventResolver {
 
     private final Pattern itemPattern;
 
-    ContextStackResolver(final String key) {
-        if (key == null) {
-            itemPattern = null;
-        } else if (key.startsWith("pattern=")) {
-            final String pattern = key.substring("pattern=".length());
+    private enum Param {;
+
+        private static final String PATTERN = "pattern";
+
+    }
+
+    ContextStackResolver(final String spec) {
+        final Map<String, StringParameterParser.Value> params =
+                StringParameterParser.parse(spec, Collections.singleton(Param.PATTERN));
+        final StringParameterParser.Value patternValue = params.get(Param.PATTERN);
+        if (patternValue == null) {
+            this.itemPattern = null;
+        } else if (patternValue instanceof StringParameterParser.NullValue) {
+            throw new IllegalArgumentException("missing NDC pattern: " + spec);
+        } else {
+            final String pattern = patternValue.toString();
             try {
-                itemPattern = Pattern.compile(pattern);
+                this.itemPattern = Pattern.compile(pattern);
             } catch (final PatternSyntaxException error) {
                 throw new IllegalArgumentException(
-                        "invalid ndc pattern: " + pattern, error);
+                        "invalid NDC pattern: " + spec, error);
             }
-        } else {
-            throw new IllegalArgumentException("unknown ndc key: " + key);
         }
     }
 
