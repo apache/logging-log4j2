@@ -266,7 +266,7 @@ public enum StringParameterParser {;
     }
 
     public static Map<String, Value> parse(final String input) {
-        return parse(input, Collections.emptySet());
+        return parse(input, null);
     }
 
     public static Map<String, Value> parse(
@@ -278,7 +278,7 @@ public enum StringParameterParser {;
         final Map<String, Value> map = new Parser(input).call();
         final Set<String> actualKeys = map.keySet();
         for (final String actualKey : actualKeys) {
-            final boolean allowed = allowedKeys.contains(actualKey);
+            final boolean allowed = allowedKeys == null || allowedKeys.contains(actualKey);
             if (!allowed) {
                 final String message = String.format(
                         "unknown key \"%s\" is found in input: %s",
