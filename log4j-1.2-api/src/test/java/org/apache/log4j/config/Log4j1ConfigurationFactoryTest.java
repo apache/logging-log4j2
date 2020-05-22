@@ -169,7 +169,7 @@ public class Log4j1ConfigurationFactoryTest {
             final Configuration configuration = getConfiguration("config-1.2/log4j-system-properties-1.properties");
             final RollingFileAppender appender = configuration.getAppender("RFA");
 			appender.stop(10, TimeUnit.SECONDS);
-            System.out.println("expected: " + tempFileName + " Actual: " + appender.getFileName());
+            // System.out.println("expected: " + tempFileName + " Actual: " + appender.getFileName());
             assertEquals(tempFileName, appender.getFileName());
         } finally {
 			try {
