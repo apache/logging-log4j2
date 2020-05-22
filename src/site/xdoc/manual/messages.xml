@@ -218,8 +218,8 @@ public class MyApp {
             <code>MapMessage</code> to values in a SQL INSERT statement.
           </li>
           <li>
-            When a <a href="appenders.html#NoSQLAppenderMongoDB2">MongoDB2 Appender</a> or 
-            <a href="appenders.html#NoSQLAppenderMongoDB3">MongoDB3 Appender</a> is configured with a <code>MessageLayout</code>, it converts a Log4j 
+            When a <a href="appenders.html#NoSQLAppenderMongoDB2">MongoDB3 Appender</a> or 
+            <a href="appenders.html#NoSQLAppenderMongoDB3">MongoDB4 Appender</a> is configured with a <code>MessageLayout</code>, it converts a Log4j 
             <code>MapMessage</code> to fields in a MongoDB object. 
           </li>
         </ul>

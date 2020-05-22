@@ -2341,12 +2341,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <a name="NoSQLAppenderMongoDB"/>
         <subsection name="NoSQLAppender for MongoDB">
           <p>
-            Starting with Log4 2.11.0, we provide two MongoDB modules:
+            Starting with Log4 2.11.0, we provide the following MongoDB modules:
           </p>
           <ul>
-            <li>v2.11.0: <code>log4j-mongodb2</code> defines the configuration element <a href="#NoSQLAppenderMongoDB2"><code>MongoDb2</code></a> matching the MongoDB Driver version 2.</li>
-            <li>v2.11.0: <code>log4j-mongodb3</code> defines the configuration element <a href="#NoSQLAppenderMongoDB3"><code>MongoDb3</code></a> matching the MongoDB Driver version 3.</li>
-            <li>v2.14.0: <code>log4j-mongodb4</code> defines the configuration element <a href="#NoSQLAppenderMongoDB4"><code>MongoDb4</code></a> matching the MongoDB Driver version 4.</li>
+            <li>Added in v2.11.0, dropped in v2.14.0: <code>log4j-mongodb2</code> defines the configuration element <code>MongoDb2</code> matching the MongoDB Driver version 2.</li>
+            <li>Added in v2.11.0: <code>log4j-mongodb3</code> defines the configuration element <a href="#NoSQLAppenderMongoDB3"><code>MongoDb3</code></a> matching the MongoDB Driver version 3.</li>
+            <li>Added in v2.14.0: <code>log4j-mongodb4</code> defines the configuration element <a href="#NoSQLAppenderMongoDB4"><code>MongoDb4</code></a> matching the MongoDB Driver version 4.</li>
           </ul>
           <p>
             We no longer provide the module <code>log4j-mongodb</code>.
@@ -2354,137 +2354,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <p>
             The module <code>log4j-mongodb2</code> aliases the old configuration element <code>MongoDb</code> to <a href="#NoSQLAppenderMongoDB2"><code>MongoDb2</code></a>.
           </p>
-        </subsection>
-        <a name="NoSQLAppenderMongoDB2"/>
-        <subsection name="NoSQLAppender for MongoDB 2">
-          <p>
-            This section details specializations of the <a href="#NoSQLAppender">NoSQLAppender</a> provider for MongoDB using
-            the MongoDB driver version 2. The NoSQLAppender Appender writes log events to a NoSQL database using an
-            internal lightweight provider interface.
-          </p>
-          <table>
-            <caption align="top">MongoDB2 Provider Parameters</caption>
-            <tr>
-              <th>Parameter Name</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-            <tr>
-              <td>collectionName</td>
-              <td>String</td>
-              <td><em>Required.</em> The name of the MongoDB collection to insert the events into.</td>
-            </tr>
-            <tr>
-              <td>writeConcernConstant</td>
-              <td>Field</td>
-              <td>By default, the MongoDB provider inserts records with the instructions
-                <code>com.mongodb.WriteConcern.ACKNOWLEDGED</code>. Use this optional attribute to specify the name of
-                a constant other than <code>ACKNOWLEDGED</code>.</td>
-            </tr>
-            <tr>
-              <td>writeConcernConstantClass</td>
-              <td>Class</td>
-              <td>If you specify <code>writeConcernConstant</code>, you can use this attribute to specify a class other
-                than <code>com.mongodb.WriteConcern</code> to find the constant on (to create your own custom
-                instructions).</td>
-            </tr>
-            <tr>
-              <td>factoryClassName</td>
-              <td>Class</td>
-              <td>To provide a connection to the MongoDB database, you can use this attribute and
-                <code>factoryMethodName</code> to specify a class and static method to get the connection from. The
-                method must return a <code>com.mongodb.DB</code> or a <code>com.mongodb.MongoClient</code>. If the
-                <code>DB</code> is not authenticated, you must also specify a <code>username</code> and
-                <code>password</code>. If you use the factory method for providing a connection, you must not specify
-                the <code>databaseName</code>, <code>server</code>, or <code>port</code> attributes.</td>
-            </tr>
-            <tr>
-              <td>factoryMethodName</td>
-              <td>Method</td>
-              <td>See the documentation for attribute <code>factoryClassName</code>.</td>
-            </tr>
-            <tr>
-              <td>databaseName</td>
-              <td>String</td>
-              <td>If you do not specify a <code>factoryClassName</code> and <code>factoryMethodName</code> for providing
-                a MongoDB connection, you must specify a MongoDB database name using this attribute. You must also
-                specify a <code>username</code> and <code>password</code>. You can optionally also specify a
-                <code>server</code> (defaults to localhost), and a <code>port</code> (defaults to the default MongoDB
-                port).</td>
-            </tr>
-            <tr>
-              <td>server</td>
-              <td>String</td>
-              <td>See the documentation for attribute <code>databaseName</code>.</td>
-            </tr>
-            <tr>
-              <td>port</td>
-              <td>int</td>
-              <td>See the documentation for attribute <code>databaseName</code>.</td>
-            </tr>
-            <tr>
-              <td>username</td>
-              <td>String</td>
-              <td>See the documentation for attributes <code>databaseName</code> and <code>factoryClassName</code>.</td>
-            </tr>
-            <tr>
-              <td>password</td>
-              <td>String</td>
-              <td>See the documentation for attributes <code>databaseName</code> and <code>factoryClassName</code>.</td>
-            </tr>
-            <tr>
-              <td>capped</td>
-              <td>boolean</td>
-              <td>Enable support for <a href="https://docs.mongodb.com/manual/core/capped-collections/">capped collections</a></td>
-            </tr>
-            <tr>
-              <td>collectionSize</td>
-              <td>int</td>
-              <td>Specify the size in bytes of the capped collection to use if enabled. The minimum size is 4096 bytes,
-              and larger sizes will be increased to the nearest integer multiple of 256. See the capped collection documentation
-              linked above for more information.</td>
-            </tr>
-          </table>
-          <p>
-            This appender is <a href="messages.html#MapMessage">MapMessage</a>-aware.
-          </p>
-          <p>
-            Here are a few sample configurations for the NoSQLAppender and MongoDB2 provider:
-          </p>
-
-            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error">
-  <Appenders>
-    <NoSql name="databaseAppender">
-      <MongoDb2 databaseName="applicationDb" collectionName="applicationLog" server="mongo.example.org"
-               username="loggingUser" password="abc123" />
-    </NoSql>
-  </Appenders>
-  <Loggers>
-    <Root level="warn">
-      <AppenderRef ref="databaseAppender"/>
-    </Root>
-  </Loggers>
-</Configuration>]]></pre>
-
-            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error">
-  <Appenders>
-    <NoSql name="databaseAppender">
-      <MongoDb2 collectionName="applicationLog" factoryClassName="org.example.db.ConnectionFactory"
-               factoryMethodName="getNewMongoClient" />
-    </NoSql>
-  </Appenders>
-  <Loggers>
-    <Root level="warn">
-      <AppenderRef ref="databaseAppender"/>
-    </Root>
-  </Loggers>
-</Configuration>]]></pre>
-        <p>
-          Starting in Log4j version 2.11.0, the provider element name is <code>MongoDb2</code>.
-          The name <code>MongoDb</code> is now a deprecated alias for <code>MongoDb2</code>.
-        </p>
         </subsection>
         <a name="NoSQLAppenderMongoDB3"/>
         <subsection name="NoSQLAppender for MongoDB 3">
