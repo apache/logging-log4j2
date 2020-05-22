@@ -1,13 +1,18 @@
 package org.apache.logging.log4j.layout.json.template;
 
+import co.elastic.logging.log4j2.EcsLayout;
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.core.layout.GelfLayout;
+import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.layout.json.template.util.ThreadLocalRecyclerFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.assertj.core.api.Assertions;
@@ -29,15 +34,20 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,9 +57,59 @@ public class LogstashIT {
 
     private static final DefaultConfiguration CONFIGURATION = new DefaultConfiguration();
 
-    private static final int LOG_EVENT_COUNT = 100;
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
-    private static final String HOST_NAME = "localhost";
+    private static final String HOST_NAME = NetUtils.getLocalHostname();
+
+    private static final String SERVICE_NAME = "LogstashIT";
+
+    private static final GelfLayout GELF_LAYOUT = GelfLayout
+            .newBuilder()
+            .setConfiguration(CONFIGURATION)
+            .setCharset(CHARSET)
+            .setCompressionType(GelfLayout.CompressionType.OFF)
+            .setIncludeNullDelimiter(true)
+            .setHost(HOST_NAME)
+            .build();
+
+    private static final JsonTemplateLayout JSON_TEMPLATE_GELF_LAYOUT = JsonTemplateLayout
+            .newBuilder()
+            .setConfiguration(CONFIGURATION)
+            .setCharset(CHARSET)
+            .setEventTemplateUri("classpath:GelfLayout.json")
+            .setEventDelimiter("\0")
+            .setEventTemplateAdditionalFields(JsonTemplateLayout
+                    .EventTemplateAdditionalFields
+                    .newBuilder()
+                    .setAdditionalFields(new KeyValuePair[]{
+                            new KeyValuePair("host", HOST_NAME)
+                    })
+                    .build())
+            .build();
+
+    private static final EcsLayout ECS_LAYOUT = EcsLayout
+            .newBuilder()
+            .setConfiguration(CONFIGURATION)
+            .setCharset(CHARSET)
+            .setServiceName(SERVICE_NAME)
+            .build();
+
+    private static final JsonTemplateLayout JSON_TEMPLATE_ECS_LAYOUT = JsonTemplateLayout
+            .newBuilder()
+            .setConfiguration(CONFIGURATION)
+            .setCharset(CHARSET)
+            .setEventTemplateUri("classpath:EcsLayout.json")
+            .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
+            .setEventTemplateAdditionalFields(JsonTemplateLayout
+                    .EventTemplateAdditionalFields
+                    .newBuilder()
+                    .setAdditionalFields(new KeyValuePair[]{
+                            new KeyValuePair("service.name", SERVICE_NAME)
+                    })
+                    .build())
+            .build();
+
+    private static final int LOG_EVENT_COUNT = 100;
 
     private static final String ES_INDEX_MESSAGE_FIELD_NAME = "message";
 
@@ -58,7 +118,9 @@ public class LogstashIT {
      */
     private enum MavenHardcodedConstants {;
 
-        private static final int LS_TCP_PLUGIN_PORT = 12345;
+        private static final int LS_GELF_INPUT_PORT = 12222;
+
+        private static final int LS_TCP_INPUT_PORT = 12345;
 
         private static final int ES_PORT = 9200;
 
@@ -82,7 +144,9 @@ public class LogstashIT {
 
     private static void testEvents(final List<LogEvent> logEvents) throws IOException {
         try (final RestHighLevelClient client = createClient()) {
-            final Appender appender = createStartedAppender();
+            final Appender appender = createStartedAppender(
+                    JSON_TEMPLATE_GELF_LAYOUT,
+                    MavenHardcodedConstants.LS_GELF_INPUT_PORT);
             try {
 
                 // Append events.
@@ -100,11 +164,13 @@ public class LogstashIT {
                 // Verify indexed messages.
                 final Set<String> expectedMessages = logEvents
                         .stream()
-                        .map(LogEvent::getMessage)
-                        .map(Message::getFormattedMessage)
+                        .map(LogstashIT::expectedLogstashMessageField)
                         .collect(Collectors.toSet());
-                final Set<String> actualMessages =
-                        new HashSet<>(queryDocumentMessages(client));
+                final Set<String> actualMessages = queryDocuments(client)
+                        .stream()
+                        .map(source -> (String) source.get(ES_INDEX_MESSAGE_FIELD_NAME))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
                 Assertions
                         .assertThat(actualMessages)
                         .isEqualTo(expectedMessages);
@@ -112,6 +178,23 @@ public class LogstashIT {
             } finally {
                 appender.stop();
             }
+        }
+    }
+
+    private static String expectedLogstashMessageField(final LogEvent logEvent) {
+        final Throwable throwable = logEvent.getThrown();
+        if (throwable != null) {
+            try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                 final PrintStream printStream = new PrintStream(outputStream, false, CHARSET.name())) {
+                throwable.printStackTrace(printStream);
+                return outputStream.toString(CHARSET.name());
+            } catch (final Exception error) {
+                throw new RuntimeException(
+                        "failed printing stack trace",
+                        error);
+            }
+        } else {
+            return logEvent.getMessage().getFormattedMessage();
         }
     }
 
@@ -143,15 +226,10 @@ public class LogstashIT {
                 .setTimeMillis(instantMillis2)
                 .build();
 
-        // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setEventTemplate("{\"message\":\"${json:message}\"}")
-                .build();
-
         try (final RestHighLevelClient client = createClient()) {
-            final Appender appender = createStartedAppender(layout);
+            final Appender appender = createStartedAppender(
+                    JSON_TEMPLATE_GELF_LAYOUT,
+                    MavenHardcodedConstants.LS_GELF_INPUT_PORT);
             try {
 
                 // Append the event.
@@ -169,11 +247,14 @@ public class LogstashIT {
 
                 // Verify indexed messages.
                 final Set<String> expectedMessages = Stream
-                        .of(message1, message2)
-                        .map(Message::getFormattedMessage)
+                        .of(logEvent1, logEvent2)
+                        .map(LogstashIT::expectedLogstashMessageField)
                         .collect(Collectors.toSet());
-                final Set<String> actualMessages =
-                        new HashSet<>(queryDocumentMessages(client));
+                final Set<String> actualMessages = queryDocuments(client)
+                        .stream()
+                        .map(source -> (String) source.get(ES_INDEX_MESSAGE_FIELD_NAME))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
                 Assertions
                         .assertThat(actualMessages)
                         .isEqualTo(expectedMessages);
@@ -183,6 +264,115 @@ public class LogstashIT {
             }
         }
 
+    }
+
+    @Test
+    public void test_GelfLayout() throws IOException {
+
+        // Create log events.
+        final List<LogEvent> logEvents =
+                LogEventFixture.createFullLogEvents(LOG_EVENT_COUNT);
+
+        // Append log events and collect persisted sources.
+        final Function<Map<String, Object>, Integer> keyMapper =
+                (final Map<String, Object> source) -> {
+                    final String timestamp = (String) source.get("timestamp");
+                    final String shortMessage = (String) source.get("short_message");
+                    final String fullMessage = (String) source.get("full_message");
+                    return Objects.hash(timestamp, shortMessage, fullMessage);
+                };
+        final Map<Integer, Object> expectedSourceByKey =
+                appendAndCollect(
+                        logEvents,
+                        GELF_LAYOUT,
+                        MavenHardcodedConstants.LS_GELF_INPUT_PORT,
+                        keyMapper,
+                        Collections.emptySet());
+        final Map<Integer, Object> actualSourceByKey =
+                appendAndCollect(
+                        logEvents,
+                        JSON_TEMPLATE_GELF_LAYOUT,
+                        MavenHardcodedConstants.LS_GELF_INPUT_PORT,
+                        keyMapper,
+                        Collections.emptySet());
+
+        // Compare persisted sources.
+        Assertions.assertThat(actualSourceByKey).isEqualTo(expectedSourceByKey);
+
+    }
+
+    @Test
+    public void test_EcsLayout() throws IOException {
+
+        // Create log events.
+        final List<LogEvent> logEvents =
+                LogEventFixture.createFullLogEvents(LOG_EVENT_COUNT);
+
+        // Append log events and collect persisted sources.
+        final Function<Map<String, Object>, Integer> keyMapper =
+                (final Map<String, Object> source) -> {
+                    final String timestamp = (String) source.get("@timestamp");
+                    final String message = (String) source.get("message");
+                    final String errorMessage = (String) source.get("error.message");
+                    return Objects.hash(timestamp, message, errorMessage);
+                };
+        final Set<String> excludedKeys = Collections.singleton("port");
+        final Map<Integer, Object> expectedSourceByKey =
+                appendAndCollect(
+                        logEvents,
+                        ECS_LAYOUT,
+                        MavenHardcodedConstants.LS_TCP_INPUT_PORT,
+                        keyMapper,
+                        excludedKeys);
+        final Map<Integer, Object> actualSourceByKey =
+                appendAndCollect(
+                        logEvents,
+                        JSON_TEMPLATE_ECS_LAYOUT,
+                        MavenHardcodedConstants.LS_TCP_INPUT_PORT,
+                        keyMapper,
+                        excludedKeys);
+
+        // Compare persisted sources.
+        Assertions.assertThat(actualSourceByKey).isEqualTo(expectedSourceByKey);
+
+    }
+
+    private static <K> Map<K, Object> appendAndCollect(
+            final List<LogEvent> logEvents,
+            final Layout<?> layout,
+            final int port,
+            final Function<Map<String, Object>, K> keyMapper,
+            final Set<String> excludedKeys) throws IOException {
+        try (final RestHighLevelClient client = createClient()) {
+            final Appender appender = createStartedAppender(layout, port);
+            try {
+
+                // Append the event.
+                LOGGER.info("appending events");
+                logEvents.forEach(appender::append);
+                LOGGER.info("completed appending events");
+
+                // Wait the message to arrive.
+                Awaitility
+                        .await()
+                        .atMost(Duration.ofSeconds(60))
+                        .pollDelay(Duration.ofSeconds(2))
+                        .until(() -> queryDocumentCount(client) == LOG_EVENT_COUNT);
+
+                // Retrieve the persisted messages.
+                return queryDocuments(client)
+                        .stream()
+                        .collect(Collectors.toMap(
+                                keyMapper,
+                                (final Map<String, Object> source) -> {
+                                    excludedKeys.forEach(source::remove);
+                                    return source;
+                                }));
+
+            } finally {
+                appender.stop();
+            }
+        }
     }
 
     private static RestHighLevelClient createClient() throws IOException {
@@ -225,24 +415,17 @@ public class LogstashIT {
 
     }
 
-    private static SocketAppender createStartedAppender() {
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setEventTemplateUri("classpath:EcsLayout.json")
-                .build();
-        return createStartedAppender(layout);
-    }
-
-    private static SocketAppender createStartedAppender(final JsonTemplateLayout layout) {
+    private static SocketAppender createStartedAppender(
+            final Layout<?> layout,
+            final int port) {
         LOGGER.info("creating the appender");
         final SocketAppender appender = SocketAppender
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setHost(HOST_NAME)
-                .setPort(MavenHardcodedConstants.LS_TCP_PLUGIN_PORT)
+                .setPort(port)
                 .setReconnectDelayMillis(100)
-                .setName("LogstashIT")
+                .setName("LogstashItAppender")
                 .setBufferedIo(false)
                 .setImmediateFail(true)
                 .setIgnoreExceptions(false)
@@ -274,13 +457,13 @@ public class LogstashIT {
         }
     }
 
-    private static List<String> queryDocumentMessages(
+    private static List<Map<String, Object>> queryDocuments(
             final RestHighLevelClient client
     ) throws IOException {
         final SearchSourceBuilder searchSourceBuilder =
                 new SearchSourceBuilder()
                         .size(LOG_EVENT_COUNT)
-                        .fetchSource(new String[]{ES_INDEX_MESSAGE_FIELD_NAME}, null);
+                        .fetchSource(true);
         final SearchRequest searchRequest =
                 new SearchRequest(MavenHardcodedConstants.ES_INDEX_NAME)
                         .source(searchSourceBuilder);
@@ -290,9 +473,6 @@ public class LogstashIT {
             return Arrays
                     .stream(searchResponse.getHits().getHits())
                     .map(SearchHit::getSourceAsMap)
-                    .filter(Objects::nonNull)
-                    .map(map -> (String) map.get(ES_INDEX_MESSAGE_FIELD_NAME))
-                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
         } catch (ElasticsearchStatusException error) {
             if (RestStatus.NOT_FOUND.equals(error.status())) {
