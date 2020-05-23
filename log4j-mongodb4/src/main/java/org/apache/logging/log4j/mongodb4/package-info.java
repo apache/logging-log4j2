@@ -14,30 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
-
-import static org.junit.Assert.assertTrue;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.Timer;
-import org.junit.Ignore;
-import org.junit.Test;
-
 /**
- * Test initialization.
+ * The classes in this package contain the MongoDB provider for the NoSQL
+ * Appender.
  */
-@Ignore
-public class InitTest {
-
-    @Test
-    public void initTest() {
-        Timer timer = new Timer("Log4j Initialization");
-        timer.start();
-        Logger logger = LogManager.getLogger();
-        timer.stop();
-        long elapsed = timer.getElapsedNanoTime();
-        System.out.println(timer.toString());
-        assertTrue("Initialization time exceeded threshold; elapsed " + elapsed, elapsed < 1000000000);
-    }
-}
+package org.apache.logging.log4j.mongodb4;
