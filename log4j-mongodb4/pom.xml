@@ -32,7 +32,7 @@
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>MongoDB 4 Documentation</docLabel>
-    <projectDir>/log4j-mongodb3</projectDir>
+    <projectDir>/log4j-mongodb4</projectDir>
     <module.name>org.apache.logging.log4j.mongodb4</module.name>
   </properties>
 
