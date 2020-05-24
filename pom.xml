@@ -793,21 +793,6 @@
         <scope>provided</scope>
       </dependency>
       <dependency>
-        <groupId>org.mongodb</groupId>
-        <artifactId>mongo-java-driver</artifactId>
-        <version>${mongodb2.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mongodb</groupId>
-        <artifactId>mongodb-driver</artifactId>
-        <version>${mongodb3.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mongodb</groupId>
-        <artifactId>bson</artifactId>
-        <version>${mongodb3.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.lightcouch</groupId>
         <artifactId>lightcouch</artifactId>
         <version>0.0.6</version>
@@ -1572,8 +1557,8 @@
     <module>log4j-jms</module>
     <module>log4j-kafka</module>
     <module>log4j-couchdb</module>
-    <module>log4j-mongodb2</module>
     <module>log4j-mongodb3</module>
+    <module>log4j-mongodb4</module>
     <module>log4j-cassandra</module>
     <module>log4j-web</module>
     <module>log4j-perf</module>
