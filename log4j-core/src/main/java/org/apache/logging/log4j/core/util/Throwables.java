@@ -40,12 +40,26 @@ public final class Throwables {
      * @return the deepest throwable or the given throwable
      */
     public static Throwable getRootCause(final Throwable throwable) {
+
+        // Keep a second pointer that slowly walks the causal chain. If the fast
+        // pointer ever catches the slower pointer, then there's a loop.
+        Throwable slowPointer = throwable;
+        boolean advanceSlowPointer = false;
+
+        Throwable parent = throwable;
         Throwable cause;
-        Throwable root = throwable;
-        while ((cause = root.getCause()) != null) {
-            root = cause;
+        while ((cause = parent.getCause()) != null) {
+            parent = cause;
+            if (parent == slowPointer) {
+                throw new IllegalArgumentException("loop in causal chain");
+            }
+            if (advanceSlowPointer) {
+                slowPointer = slowPointer.getCause();
+            }
+            advanceSlowPointer = !advanceSlowPointer; // only advance every other iteration
         }
-        return root;
+        return parent;
+
     }
 
     /**

@@ -1,0 +1,6 @@
+{
+  "class": "${json:stackTraceElement:className}",
+  "method": "${json:stackTraceElement:methodName}",
+  "file": "${json:stackTraceElement:fileName}",
+  "line": "${json:stackTraceElement:lineNumber}"
+}

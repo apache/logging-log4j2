@@ -1,0 +1,19 @@
+{
+  "mdc": "${json:mdc}",
+  "exception": {
+    "exception_class": "${json:exception:className}",
+    "exception_message": "${json:exception:message}",
+    "stacktrace": "${json:exception:stackTrace:text}"
+  },
+  "line_number": "${json:source:lineNumber}",
+  "class": "${json:source:className}",
+  "@version": 1,
+  "source_host": "${hostName}",
+  "message": "${json:message}",
+  "thread_name": "${json:thread:name}",
+  "@timestamp": "${json:timestamp}",
+  "level": "${json:level}",
+  "file": "${json:source:fileName}",
+  "method": "${json:source:methodName}",
+  "logger_name": "${json:logger:name}"
+}

@@ -1,0 +1,659 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= JSON Template Layout
+Volkan Yazıcı <vy@apache.org>
+
+`JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON
+emitting layout. It encodes ``LogEvent``s according to the structure described
+by the JSON template provided. In a nutshell, it shines with its
+
+* Customizable JSON structure (see `eventTemplate[Uri]` and
+  `stackTraceElementTemplate[Uri]` parameters)
+
+* Customizable timestamp formatting (see `timestamp` parameter)
+
+[#usage]
+== Usage
+
+Adding `log4j-layout-json-template` artifact to your dependencies is enough to
+enable access to `JsonTemplateLayout` in your Log4j configuration:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-layout-json-template</artifactId>
+    <version>${log4j.version}</version>
+</dependency>
+----
+
+For instance, given the following JSON template modelling the
+https://github.com/logstash/log4j-jsonevent-layout[the official Logstash
+`JSONEventLayoutV1`]
+
+[source,json]
+----
+{
+  "mdc": "${json:mdc}",
+  "exception": {
+    "exception_class": "${json:exception:className}",
+    "exception_message": "${json:exception:message}",
+    "stacktrace": "${json:exception:stackTrace:text}"
+  },
+  "line_number": "${json:source:lineNumber}",
+  "class": "${json:source:className}",
+  "@version": 1,
+  "source_host": "${hostName}",
+  "message": "${json:message}",
+  "thread_name": "${json:thread:name}",
+  "@timestamp": "${json:timestamp}",
+  "level": "${json:level}",
+  "file": "${json:source:fileName}",
+  "method": "${json:source:methodName}",
+  "logger_name": "${json:logger:name}"
+}
+----
+
+in combination with the below `log4j2.xml` configuration:
+
+[source,xml]
+----
+<JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"/>
+----
+
+or with the below `log4j2.properties` configuration:
+
+[source,ini]
+----
+appender.console.json.type = JsonTemplateLayout
+appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.json
+----
+
+`JsonTemplateLayout` emits JSON strings as follows:
+
+[source,json]
+----
+{
+  "exception": {
+    "exception_class": "java.lang.RuntimeException",
+    "exception_message": "test",
+    "stacktrace": "java.lang.RuntimeException: test\n\tat org.apache.logging.log4j.JsonTemplateLayoutDemo.main(JsonTemplateLayoutDemo.java:11)\n"
+  },
+  "line_number": 12,
+  "class": "org.apache.logging.log4j.JsonTemplateLayoutDemo",
+  "@version": 1,
+  "source_host": "varlik",
+  "message": "Hello, error!",
+  "thread_name": "main",
+  "@timestamp": "2017-05-25T19:56:23.370+02:00",
+  "level": "ERROR",
+  "file": "JsonTemplateLayoutDemo.java",
+  "method": "main",
+  "logger_name": "org.apache.logging.log4j.JsonTemplateLayoutDemo"
+}
+----
+
+[#layout-config]
+== Layout Configuration
+
+`JsonTemplateLayout` is configured with the following parameters:
+
+.`JsonTemplateLayout` parameters
+[cols="1m,1m,4"]
+|===
+| Parameter Name
+| Type
+| Description
+
+| charset
+| Charset
+| `Charset` used for `String` encoding
+
+| locationInfoEnabled
+| boolean
+| includes the filename and line number in the output (defaults to `false` set
+  by `log4j.layout.jsonTemplate.locationInfoEnabled` property)
+
+| stackTraceEnabled
+| boolean
+| includes stack traces (defaults to `true` set by
+  `log4j.layout.jsonTemplate.stackTraceEnabled` property)
+
+| eventTemplate
+| String
+| inline JSON template for rendering ``LogEvent``s (has priority over
+  `eventTemplateUri`, defaults to `null` set by
+  `log4j.layout.jsonTemplate.eventTemplate` property)
+
+| eventTemplateUri
+| String
+| URI pointing to the JSON template for rendering ``LogEvent``s (defaults to
+  `classpath:JsonLayout.json` set by `log4j.layout.jsonTemplate.eventTemplateUri`
+  property)
+
+| eventTemplateAdditionalFields
+| KeyValuePair[]
+| additional key-value pairs appended to the root of the event template
+
+| stackTraceElementTemplate
+| String
+| inline JSON template for rendering ``StackTraceElement``s (has priority over
+  `stackTraceElementTemplateUri`, defaults to `null` set by
+  `log4j.layout.jsonTemplate.stackTraceElementTemplate` property)
+
+| stackTraceElementTemplateUri
+| String
+| JSON template for rendering ``StackTraceElement``s (defaults to
+  `classpath:StackTraceElementLayout.json` set by
+  `log4j.layout.jsonTemplate.stackTraceElementTemplateUri` property)
+
+| eventDelimiter
+| String
+| delimiter used for separating emitted ``LogEvent``s (defaults to
+  `System.lineSeparator()` set by `log4j.layout.jsonTemplate.eventDelimiter`
+  property)
+
+| maxStringLength
+| int
+| truncate string values longer than the specified limit (defaults to 16384 set
+  by `log4j.layout.jsonTemplate.maxStringLength` property)
+
+| truncatedStringSuffix
+| String
+| suffix to append to the truncated strings (defaults to `…` set by
+  `log4j.layout.jsonTemplate.truncatedStringSuffix` property)
+
+| recyclerFactory
+| RecyclerFactory
+| recycling strategy that can either be `dummy`, `threadLocal`, or `queue`
+  (set by `log4j.layout.jsonTemplate.recyclerFactory` property)
+|===
+
+[#additional-event-template-fields]
+=== Additonal event template fields
+
+One can configure additional event template fields via
+`eventTemplateAdditionalFields` as follows:
+
+[source,xml]
+----
+<JsonTemplateLayout ...>
+    <EventTemplateAdditionalFields>
+        <KeyValuePair key="serviceName" value="auth-service"/>
+        <KeyValuePair key="containerId" value="6ede3f0ca7d9"/>
+    </EventTemplateAdditionalFields>
+</JsonTemplateLayout>
+----
+
+[#recycling-strategy]
+=== Recycling strategy
+
+`RecyclerFactory` plays a crucial role for determining the memory footprint of
+the layout. Template resolvers employ it to create recyclers for objects that
+they can reuse. The function of each `RecyclerFactory` and when one should
+prefer one over another is explained below:
+
+* `dummy` performs no recycling, hence each recycling attempt will result in a
+new instance. This will obviously create a load on the garbage-collector. It
+is a good choice for applications with low and medium log rate.
+
+* `threadLocal` performs the best, since every instance is stored in TLAB and
+accessed without any synchronization cost. Though this might not be a
+desirable option for applications running with hundreds of threads or more,
+e.g., a web servlet.
+
+* `queue` is the best of both worlds. It allows recycling of objects up to a
+certain number (`capacity`). When this limit is exceeded due to excessive
+concurrent load (e.g., `capacity` is 50 but there are 51 threads concurrently
+trying to log), it starts allocating. `queue` is a good strategy where
+`threadLocal` is not desirable.
++
+`queue` also accepts optional `supplier` (of type `java.util.Queue`, defaults to
+  `org.jctools.queues.MpmcArrayQueue.new` if JCTools is in the classpath;
+otherwise `java.util.concurrent.ArrayBlockingQueue.new`) and `capacity` (of
+type `int`, defaults to `max(8,2*cpuCount+1)`) parameters:
++
+[source]
+----
+queue:supplier=org.jctools.queues.MpmcArrayQueue.new
+queue:capacity=10
+queue:supplier=java.util.concurrent.ArrayBlockingQueue.new,capacity=50
+----
+
+The default `RecyclerFactory` is `threadLocal`, if
+`log4j2.enable.threadlocals=true`; otherwise, `queue`.
+
+[#template-config]
+== Template Configuration
+
+Templates are configured by means of the following `JsonTemplateLayout`
+parameters:
+
+- `eventTemplate[Uri]` (for serializing ``LogEvent``s)
+- `stackTraceElementTemplate[Uri]` (for serializing ``StackStraceElement``s)
+- `eventTemplateAdditionalFields` (for extending the used `LogEvent` template)
+
+[#event-templates]
+=== Event Templates
+
+`eventTemplate[Uri]` describes the JSON structure `JsonTemplateLayout` uses to
+serialize ``LogEvent``s. The default configuration (accessible by
+`log4j.layout.jsonTemplate.eventTemplate[Uri]` property) is set to
+`classpath:JsonLayout.json` provided by the `log4j-layout-json-template`
+artifact:
+
+[source,json]
+----
+{
+  "instant": {
+    "epochSecond": "${json:timestamp:epoch:secs,integral}",
+    "nanoOfSecond": "${json:timestamp:epoch:secs.nanos}"
+  },
+  "thread": "${json:thread:name}",
+  "level": "${json:level}",
+  "loggerName": "${json:logger:name}",
+  "message": "${json:message}",
+  "thrown": {
+    "message": "${json:exception:message}",
+    "name": "${json:exception:className}",
+    "extendedStackTrace": "${json:exception:stackTrace}"
+  },
+  "contextStack": "${json:ndc}",
+  "endOfBatch": "${json:endOfBatch}",
+  "loggerFqcn": "${json:logger:fqcn}",
+  "contextMap": "${json:mdc}",
+  "threadId": "${json:thread:id}",
+  "threadPriority": "${json:thread:priority}",
+  "source": {
+    "class": "${json:source:className}",
+    "method": "${json:source:methodName}",
+    "file": "${json:source:fileName}",
+    "line": "${json:source:lineNumber}"
+  }
+}
+----
+
+`log4j-layout-json-template` artifact contains the following predefined event
+templates:
+
+- https://github.com/apache/logging-log4j2/tree/master/log4j-layout-json-template/src/main/resources/EcsLayout.json[`EcsLayout.json`]
+  described by https://www.elastic.co/guide/en/ecs/current/ecs-reference.html[the Elastic Common Schema (ECS) specification]
+
+- https://github.com/apache/logging-log4j2/tree/master/log4j-layout-json-template/src/main/resources/LogstashJsonEventLayoutV1.json[`LogstashJsonEventLayoutV1.json`]
+  described in https://github.com/logstash/log4j-jsonevent-layout[log4j-jsonevent-layout]
+
+- https://github.com/apache/logging-log4j2/tree/master/log4j-layout-json-template/src/main/resources/GelfLayout.json[`GelfLayout.json`]
+  described by https://docs.graylog.org/en/3.1/pages/gelf.html#gelf-payload-specification[the
+  Graylog Extended Log Format (GELF) payload specification] with additional
+  `_thread` and `_logger` fields. (Here it is advised to override the obligatory
+  `host` field with a user provided constant via `eventTemplateAdditionalFields`
+  to avoid `hostName` property lookup at runtime, which incurs an extra cost.)
+
+- https://github.com/apache/logging-log4j2/tree/master/log4j-layout-json-template/src/main/resources/JsonLayout.json[`JsonLayout.json`]
+  providing the exact JSON structure generated by link:layouts.html#JSONLayout[`JsonLayout`]
+  with the exception of `thrown` field. (`JsonLayout` serializes the `Throwable`
+  as is via Jackson `ObjectMapper`, whereas `JsonLayout.json` template of
+  `JsonTemplateLayout` employs the `StackTraceElementLayout.json` template
+  for stack traces to generate an always document-store-friendly flat structure.)
+
+Below is the list of supported event template variables:
+
+.`LogEvent` template variables
+[cols="1m,4"]
+|===
+| Variable Name
+| Description
+
+| endOfBatch
+| `logEvent.isEndOfBatch()`
+
+| exception:className
+| `logEvent.getThrown().getClass().getCanonicalName()`
+
+| exception:message
+| `logEvent.getThrown().getMessage()`
+
+| exception:stackTrace
+| `logEvent.getThrown().getStackTrace()` (inactive when `stackTraceEnabled=false`)
+
+| exception:stackTrace:text
+| `logEvent.getThrown().printStackTrace()` (inactive when `stackTraceEnabled=false`)
+
+| exceptionRootCause:className
+| the innermost `exception:className` in causal chain
+
+| exceptionRootCause:message
+| the innermost `exception:message` in causal chain
+
+| exceptionRootCause:stackTrace[:text]
+| the innermost `exception:stackTrace[:text]` in causal chain
+
+| level
+| `logEvent.getLevel()`
+
+| level:severity
+| https://en.wikipedia.org/wiki/Syslog#Severity_levels[Syslog severity] keyword
+  of `logEvent.getLevel()`
+
+| level:severity:code
+| https://en.wikipedia.org/wiki/Syslog#Severity_levels[Syslog severity] code of
+  `logEvent.getLevel()`
+
+| logger:fqcn
+| `logEvent.getLoggerFqcn()`
+
+| logger:name
+| `logEvent.getLoggerName()`
+
+| main:<key>
+| performs link:lookups.html#AppMainArgsLookup[Main Argument Lookup] for the
+  given `key`
+
+| map:<key>
+| performs link:lookups.html#MapLookup[Map Lookup] for the given `key`
+
+| marker:name
+| `logEvent.getMarker.getName()`
+
+| mdc
+.4+| Mapped Diagnostic Context `Map<String, String>` returned by
+  `logEvent.getContextData()`, where one can merge it with the parent JSON
+  object via `flatten[=<prefix>]`, filter keys matching a regex `pattern`, just
+  extract a certain `key`, or `stringify` values
+
+| mdc:flatten[=<prefix>][,stringify]
+
+| mdc:pattern=<pattern>[,flatten=<prefix>][,stringify]
+
+| mdc:key=<key>[,stringify]
+
+| message
+| `logEvent.getFormattedMessage()`
+
+| message:json
+| if `logEvent.getMessage()` is of type `MultiformatMessage` and supports JSON,
+  its read value; if is of type `ObjectMessage`, its serialized output via
+  Jackson `ObjectMapper`; otherwise, `{"message": <formattedMessage>}` object
+
+| ndc[:pattern=<pattern>]
+| Nested Diagnostic Context `String[]` returned by `logEvent.getContextStack()`,
+  where filtering is supported via the supplied regex `pattern`
+
+| pattern:<pattern>
+| injects link:layouts.html#PatternLayout[`PatternLayout`] serialized string
+  described by the `pattern` parameter
+
+| source:className
+| `logEvent.getSource().getClassName()`
+
+| source:fileName
+| `logEvent.getSource().getFileName()` (inactive when `locationInfoEnabled=false`)
+
+| source:lineNumber
+| `logEvent.getSource().getLineNumber()` (inactive when `locationInfoEnabled=false`)
+
+| source:methodName
+| `logEvent.getSource().getMethodName()`
+
+| thread:id
+| `logEvent.getThreadId()`
+
+| thread:name
+| `logEvent.getThreadName()`
+
+| thread:priority
+| `logEvent.getThreadPriority()`
+
+| timestamp
+.4+| `logEvent.getInstant()` formatted using optional
+  `pattern` (defaults to `yyyy-MM-dd'T'HH:mm:ss.SSSZZZ` set by
+  `log4j.layout.jsonTemplate.timestampFormatPattern` property), `timeZone`
+  (defaults to `TimeZone.getDefault()` set by
+  `log4j.layout.jsonTemplate.timeZone` property), and `locale` (represented by
+  `language[_country[_variant]]` pattern, defaults to `Locale.getDefault()` set
+  by `log4j.layout.jsonTemplate.locale` property) parameters
+
+| timestamp:pattern=<pattern>
+
+| timestamp:timeZone=<timeZone>
+
+| timestamp:locale=<locale>
+
+| timestamp:epoch:nanos
+| UTC epoch nanoseconds (of type `long`) derived from `logEvent.getInstant()`
+
+| timestamp:epoch:<secs\|micros\|millis>[,integral]
+| UTC epoch seconds, microseconds, or milliseconds (of type `double`) derived from
+  `logEvent.getInstant()` and, if `integral` is provided, cast to `long`
+
+| timestamp:epoch:secs.<micros\|millis\|nanos>
+.3+| UTC epoch fractions (of type `long`) derived from `logEvent.getInstant()`;
+  `secs.micros` denotes the "fractional part of epoch seconds, in microseconds",
+  `micros.millis` denotes the "fractional part of epoch microseconds, in
+milliseconds", etc.
+
+| timestamp:epoch:micros.<millis\|nanos>
+
+| timestamp:epoch:millis.nanos
+|===
+
+In the following table, timestamp template variables are illustrated by
+examples:
+
+.`timestamp` template variable examples
+[cols="1m,4m"]
+|===
+| Variable Name
+| Output
+
+|timestamp
+|2020-02-07T13:38:47.098+02:00
+
+|timestamp:pattern=yyyy-MM-dd'T'HH:mm:ss.SSS'Z',timeZone=UTC,locale=en_US
+|2020-02-07T13:38:47.098Z
+
+|timestamp:epoch:secs
+|1581082727.982123456
+
+|timestamp:epoch:secs,integral
+|1581082727
+
+|timestamp:epoch:millis
+|1581082727982.123456
+
+|timestamp:epoch:millis,integral
+|1581082727982
+
+|timestamp:epoch:micros
+|1581082727982123.456
+
+|timestamp:epoch:millis,integral
+|1581082727982123
+
+|timestamp:epoch:nanos
+|1581082727982123456
+
+|timestamp:epoch:secs.millis
+|0000000000982
+
+|timestamp:epoch:secs.micros
+|0000000000982123
+
+|timestamp:epoch:secs.nanos
+|0000000000982123456
+
+|timestamp:epoch:millis.micros
+|0000000000000123
+
+|timestamp:epoch:millis.nanos
+|0000000000000123456
+
+|timestamp:epoch:micros.nanos
+|0000000000000000456
+|===
+
+[#stack-trace-element-templates]
+=== Stack Trace Element Templates
+
+`stackTraceElement[Uri]` describes the JSON structure `JsonTemplateLayout` uses
+to format ``StackTraceElement``s. The default configuration (accessible by
+`log4j.layout.jsonTemplate.stackTraceElementTemplate[Uri]` property) is set to
+`classpath:StackTraceElementLayout.json` provided by the
+`log4j-layout-json-template` artifact:
+
+[source,json]
+----
+{
+  "class": "${json:stackTraceElement:className}",
+  "method": "${json:stackTraceElement:methodName}",
+  "file": "${json:stackTraceElement:fileName}",
+  "line": "${json:stackTraceElement:lineNumber}"
+}
+----
+
+Below is the list of supported stack trace element template variables:
+
+.`StackTraceElement` template variables
+[cols="1m,4m"]
+|===
+| Variable Name
+| Description
+
+| stackTraceElement:className
+| stackTraceElement.getClassName()
+
+| stackTraceElement:methodName
+| stackTraceElement.getMethodName()
+
+| stackTraceElement:fileName
+| stackTraceElement.getFileName()
+
+| stackTraceElement:lineNumber
+| stackTraceElement.getLineNumber()
+|===
+
+[#template-variables]
+=== Template Variables
+
+JSON field lookups are performed using the `${json:<variable-name>}` scheme
+where `<variable-name>` is defined as `<resolver-name>[:<resolver-key>]`.
+Characters following colon (`:`) are treated as the `resolver-key`.
+
+link:lookups.html[Lookups] (e.g., `${java:version}`, `${env:USER}`,
+`${date:MM-dd-yyyy}`) are supported in templates too. Though note that while
+`${json:...}` template variables are expected to occupy an entire field, that
+is, `"level": "${json:level}"`, a lookup can be mixed within a regular string as
+in `"greeting": "Hello, ${env:USER}!"`.
+
+[#features]
+== Features
+
+Below is a feature comparison matrix between `JsonTemplateLayout` and
+alternatives.
+
+.Feature comparison matrix
+[cols="3,1,1,1,1"]
+|===
+| Feature
+| `JsonTemplateLayout`
+| link:layouts.html#JSONLayout[`JsonLayout`]
+| link:layouts.html#GELFLayout[`GelfLayout`]
+| https://github.com/elastic/java-ecs-logging/tree/master/log4j2-ecs-layout[`EcsLayout`]
+
+| Java version
+| 8
+| 8
+| 8
+| 6
+
+| Dependencies
+| None
+| Jackson
+| None
+| None
+
+| Full schema customization?
+| ✓
+| ✕
+| ✕
+| ✕
+
+| Timestamp customization?
+| ✓
+| ✕
+| ✕
+| ✕
+
+| (Almost) garbage-free?
+| ✓
+| ✕
+| ✓
+| ✓
+
+| Custom typed `Message` serialization?
+| ✓
+| ✕
+| ✕
+| ?footnote:[Only for ``ObjectMessage``s and if Jackson is in the classpath.]
+
+| Custom typed `MDC` value serialization?
+| ✓
+| ✕
+| ✕
+| ✕
+
+| Rendering stack traces as array?
+| ✓
+| ✓
+| ✕
+| ✓
+
+| JSON pretty print?
+| ✕
+| ✓
+| ✕
+| ✕
+
+| Additional fields?
+| ✓
+| ✓
+| ✓
+| ✓
+|===
+
+[#faq]
+== F.A.Q.
+
+[#faq-garbage-free]
+=== Is `JsonTemplateLayout` garbage-free?
+
+Given the garbage-free layout behaviour enabler properties
+`log4j2.enableDirectEncoders` and `log4j2.garbagefreeThreadContextMap` are set
+to `true`, `JsonTemplateLayout` is garbage-free with the following exceptions:
+
+* When recycling strategy is either `dummy` or `queue` but access concurrency
+  exceeds the configured `capacity`, then the recycler is not garbage-free.
+
+* Since `Throwable#getStackTrace()` clones the original `StackTraceElement[]`,
+  access to (and hence rendering of) stack traces are not garbage-free.
+
+* Serialization of ``ObjectMessage``s via `${json:message:json}` is mostly
+  garbage-free except for certain types (e.g., `BigDecimal`, `BigInteger`,
+  ``Collection``s with the exception of `List`).
+
+* link:lookups.html[Lookups] (that is, `${...}` variables, excluding
+  `${json:...}` ones) are not garbage-free.

@@ -1,0 +1,26 @@
+{
+  "instant": {
+    "epochSecond": "${json:timestamp:epoch:secs,integral}",
+    "nanoOfSecond": "${json:timestamp:epoch:secs.nanos}"
+  },
+  "thread": "${json:thread:name}",
+  "level": "${json:level}",
+  "loggerName": "${json:logger:name}",
+  "message": "${json:message}",
+  "thrown": {
+    "message": "${json:exception:message}",
+    "name": "${json:exception:className}",
+    "extendedStackTrace": "${json:exception:stackTrace}"
+  },
+  "contextStack": "${json:ndc}",
+  "endOfBatch": "${json:endOfBatch}",
+  "loggerFqcn": "${json:logger:fqcn}",
+  "threadId": "${json:thread:id}",
+  "threadPriority": "${json:thread:priority}",
+  "source": {
+    "class": "${json:source:className}",
+    "method": "${json:source:methodName}",
+    "file": "${json:source:fileName}",
+    "line": "${json:source:lineNumber}"
+  }
+}

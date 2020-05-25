@@ -118,76 +118,69 @@ being configured with a list of hosts and ports so high availability is not an i
 
 ![Aggregator](../images/LoggerAggregator.png "Application Logging to an Aggregator via TCP")
 
-## <a name="ELK"></a>Logging using ElasticSearch, Logstash, and Kibana
+## <a name="ELK"></a>Logging using Elasticsearch, Logstash, and Kibana
 
-The following configurations have been tested with an ELK stack and are known to work.
+There are various approaches with different trade-offs for ingesting logs into
+an ELK stack. Here we will briefly cover how one can forward Log4j generated
+events first to Logstash and then to Elasticsearch.
 
 ### Log4j Configuration
-Use a socket appender with the GELF layout. Note that if the host name used by the socket appender has more than 
-one ip address associated with its DNS entry the socket appender will fail through them all if needed.
 
-    <Socket name="Elastic" host="${sys:elastic.search.host}" port="12222" protocol="tcp" bufferedIo="true">
-      <GelfLayout includeStackTrace="true" host="${hostName}" includeThreadContext="true" includeNullDelimiter="true"
-                  compressionType="OFF">
-        <ThreadContextIncludes>requestId,sessionId,loginId,userId,ipAddress,callingHost</ThreadContextIncludes>
-        <MessagePattern>%d [%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress} %C{1.}.%M:%L - %m%n</MessagePattern>
-        <KeyValuePair key="containerId" value="${docker:containerId:-}"/>
-        <KeyValuePair key="application" value="$${lower:${spring:spring.application.name:-spring}}"/>
-        <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
-        <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
-        <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
-        <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
-        <KeyValuePair key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
-        <KeyValuePair key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
-        <KeyValuePair key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
-        <KeyValuePair key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
-        <KeyValuePair key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
-        <KeyValuePair key="kubernetes.podID" value="${k8s:podId:-}"/>
-        <KeyValuePair key="kubernetes.podIP" value="${k8s:podIp:-}"/>
-        <KeyValuePair key="kubernetes.podName" value="${k8s:podName:-}"/>
-        <KeyValuePair key="kubernetes.imageId" value="${k8s:imageId:-}"/>
-        <KeyValuePair key="kubernetes.imageName" value="${k8s:imageName:-}"/>
-      </GelfLayout>
+Log4j provides a multitude of JSON generating layouts. In particular, [JSON
+Template Layout](layouts.html#JSONTemplateLayout) allows full schema
+customization and bundles ELK-specific layouts by default, which makes it a
+great fit for the bill.
+
+    <Socket name="Logstash"
+            host="${sys:logstash.host}"
+            port="12345"
+            protocol="tcp"
+            bufferedIo="true">
+        <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json">
+            <EventTemplateAdditionalFields>
+                <KeyValuePair key="containerId" value="${docker:containerId:-}"/>
+                <KeyValuePair key="application" value="$${lower:${spring:spring.application.name:-spring}}"/>
+                <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
+                <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
+                <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
+                <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
+                <KeyValuePair key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
+                <KeyValuePair key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
+                <KeyValuePair key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
+                <KeyValuePair key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
+                <KeyValuePair key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
+                <KeyValuePair key="kubernetes.podID" value="${k8s:podId:-}"/>
+                <KeyValuePair key="kubernetes.podIP" value="${k8s:podIp:-}"/>
+                <KeyValuePair key="kubernetes.podName" value="${k8s:podName:-}"/>
+                <KeyValuePair key="kubernetes.imageId" value="${k8s:imageId:-}"/>
+                <KeyValuePair key="kubernetes.imageName" value="${k8s:imageName:-}"/>
+            </EventTemplateAdditionalFields>
+        </JsonTemplateLayout>
     </Socket>
 
 ### Logstash Configuration
 
-    input {
-      gelf {
-        host => "localhost"
-        use_tcp => true
-        use_udp => false
-        port => 12222
-        type => "gelf"
-      }
-    }
+We will configure Logstash to listen on TCP port 12345 for payloads of type JSON
+and then forward these to (either console and/or) an Elasticsearch server.
 
-    filter {
-      # These are GELF/Syslog logging levels as defined in RFC 3164. Map the integer level to its human readable format.
-      translate {
-        field => "[level]"
-        destination => "[levelName]"
-        dictionary => {
-          "0" => "EMERG"
-          "1" => "ALERT"
-          "2" => "CRITICAL"
-          "3" => "ERROR"
-          "4" => "WARN"
-          "5" => "NOTICE"
-          "6" => "INFO"
-          "7" => "DEBUG"
-        }
+    input {
+      tcp {
+        port => 12345
+        codec => "json"
       }
     }
 
     output {
-      # (Un)comment for debugging purposes
+
+      # (Un)comment for debugging purposes.
       # stdout { codec => rubydebug }
+
       # Modify the hosts value to reflect where elasticsearch is installed.
       elasticsearch {
         hosts => ["http://localhost:9200/"]
         index => "app-%{application}-%{+YYYY.MM.dd}"
       }
+
     }
 
 ### Kibana
