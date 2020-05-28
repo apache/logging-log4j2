@@ -64,7 +64,10 @@
         Update org.codehaus.groovy:* 2.5.6 -> 3.0.3.
       </action>
       <action dev="ggregory" type="update">
-        junit:junit 4.12 -> 4.13.
+        Update tests junit:junit 4.12 -> 4.13.
+      </action>
+      <action dev="ggregory" type="update">
+        Update tests commons-io:commons-io 2.6 -> 2.7.
       </action>
     </release>
     <release version="2.13.3" date="2020-05-10" description="GA Release 2.13.3">
