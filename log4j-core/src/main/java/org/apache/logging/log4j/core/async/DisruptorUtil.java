@@ -61,25 +61,27 @@ final class DisruptorUtil {
     }
 
     static WaitStrategy createWaitStrategy(final String propertyName) {
-        final String strategyStr = PropertiesUtil.getProperties().getStringProperty(propertyName, DisruptorWaitStrategy.TIMEOUT.toString());
-        LOGGER.trace("property {}={}", propertyName, strategyStr);
-        final DisruptorWaitStrategy strategy = DisruptorWaitStrategy.valueOf(Strings.toRootUpperCase(strategyStr));
+        final String strategy = PropertiesUtil.getProperties().getStringProperty(propertyName, "Timeout");
+        LOGGER.trace("property {}={}", propertyName, strategy);
+        final String strategyUp = Strings.toRootUpperCase(strategy);
         final long timeoutMillis = parseAdditionalLongProperty(propertyName, "Timeout", 10L);
-        switch (strategy) {
-            case SLEEP:
+        // String (not enum) is deliberately used here to avoid IllegalArgumentException being thrown. In case of
+        // incorrect property value, default WaitStrategy is created.
+        switch (strategyUp) {
+            case "SLEEP":
                 final long sleepTimeNs =
                         parseAdditionalLongProperty(propertyName, "SleepTimeNs", 100L);
                 final String key = getFullPropertyKey(propertyName, "Retries");
                 final int retries =
                         PropertiesUtil.getProperties().getIntegerProperty(key, 200);
                 return new SleepingWaitStrategy(retries, sleepTimeNs);
-            case YIELD:
+            case "YIELD":
                 return new YieldingWaitStrategy();
-            case BLOCK:
+            case "BLOCK":
                 return new BlockingWaitStrategy();
-            case BUSYSPIN:
+            case "BUSYSPIN":
                 return new BusySpinWaitStrategy();
-            case TIMEOUT:
+            case "TIMEOUT":
                 return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
             default:
                 return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
@@ -171,14 +173,5 @@ final class DisruptorUtil {
                     + "Giving up to avoid the risk of application deadlock.";
             throw new IllegalStateException(msg, ex);
         }
-    }
-
-    private enum DisruptorWaitStrategy
-    {
-        SLEEP,
-        YIELD,
-        BLOCK,
-        BUSYSPIN,
-        TIMEOUT
     }
 }
