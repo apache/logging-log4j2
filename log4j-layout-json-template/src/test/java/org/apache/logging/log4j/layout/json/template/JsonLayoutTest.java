@@ -32,32 +32,31 @@ public class JsonLayoutTest {
             .build();
 
     @Test
-    public void test_lite_log_events() throws Exception {
+    public void test_lite_log_events() {
         final List<LogEvent> logEvents = LogEventFixture.createLiteLogEvents(1_000);
         test(logEvents);
     }
 
     @Test
-    public void test_full_log_events() throws Exception {
+    public void test_full_log_events() {
         final List<LogEvent> logEvents = LogEventFixture.createFullLogEvents(1_000);
         test(logEvents);
     }
 
-    private static void test(final Collection<LogEvent> logEvents) throws Exception {
+    private static void test(final Collection<LogEvent> logEvents) {
         for (final LogEvent logEvent : logEvents) {
             test(logEvent);
         }
     }
 
-    private static void test(final LogEvent logEvent) throws Exception {
+    private static void test(final LogEvent logEvent) {
         final Map<String, Object> jsonTemplateLayoutMap = renderUsingJsonTemplateLayout(logEvent);
         final Map<String, Object> jsonLayoutMap = renderUsingJsonLayout(logEvent);
         Assertions.assertThat(jsonTemplateLayoutMap).isEqualTo(jsonLayoutMap);
     }
 
     private static Map<String, Object> renderUsingJsonTemplateLayout(
-            final LogEvent logEvent)
-            throws Exception {
+            final LogEvent logEvent) {
         final Map<String, Object> map = renderUsing(logEvent, JSON_TEMPLATE_LAYOUT);
         final Map<String, Object> emptySourceExcludedMap = removeEmptyObject(map, "source");
         // JsonLayout blindly serializes the Throwable as a POJO, this is,
@@ -69,8 +68,7 @@ public class JsonLayoutTest {
     }
 
     private static Map<String, Object> renderUsingJsonLayout(
-            final LogEvent logEvent)
-            throws Exception {
+            final LogEvent logEvent) {
         final Map<String, Object> map = renderUsing(logEvent, JSON_LAYOUT);
         // JsonLayout blindly serializes the Throwable as a POJO, this is,
         // to say the least, quite wrong, and I ain't gonna try to emulate

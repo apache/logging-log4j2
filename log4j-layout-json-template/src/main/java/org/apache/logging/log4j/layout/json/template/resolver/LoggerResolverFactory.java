@@ -32,8 +32,10 @@ final class LoggerResolverFactory implements EventResolverFactory<LoggerResolver
     }
 
     @Override
-    public LoggerResolver create(final EventResolverContext context, final String key) {
-        return new LoggerResolver(key);
+    public LoggerResolver create(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        return new LoggerResolver(config);
     }
 
 }

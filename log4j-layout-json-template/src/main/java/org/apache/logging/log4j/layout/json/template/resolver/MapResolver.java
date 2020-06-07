@@ -21,6 +21,26 @@ import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.message.MapMessage;
 
+/**
+ * {@link MapMessage} field resolver.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config = "key" -> string
+ * </pre>
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the <tt>userRole</tt> field of the message:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "map",
+ *   "key": "userRole"
+ * }
+ * </pre>
+ */
 final class MapResolver implements EventResolver {
 
     private static final MapLookup MAP_LOOKUP = new MapLookup();
@@ -31,7 +51,11 @@ final class MapResolver implements EventResolver {
         return "map";
     }
 
-    MapResolver(final String key) {
+    MapResolver(final TemplateResolverConfig config) {
+        final String key = config.getString("key");
+        if (key == null) {
+            throw new IllegalArgumentException("missing key: " + config);
+        }
         this.key = key;
     }
 
@@ -44,19 +68,8 @@ final class MapResolver implements EventResolver {
     public void resolve(
             final LogEvent logEvent,
             final JsonWriter jsonWriter) {
-
-        // If the event message is not of type MapMessage, then do not even try
-        // to perform the map lookup.
-        if (!(logEvent.getMessage() instanceof MapMessage)) {
-            jsonWriter.writeNull();
-        }
-
-        // Perform the map lookup against Log4j.
-        else {
-            final String resolvedValue = MAP_LOOKUP.lookup(logEvent, key);
-            jsonWriter.writeString(resolvedValue);
-        }
-
+        final String resolvedValue = MAP_LOOKUP.lookup(logEvent, key);
+        jsonWriter.writeString(resolvedValue);
     }
 
 }

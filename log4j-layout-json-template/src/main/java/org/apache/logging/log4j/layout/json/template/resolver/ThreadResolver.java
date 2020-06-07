@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,6 +19,26 @@ package org.apache.logging.log4j.layout.json.template.resolver;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
+/**
+ * Thread resolver.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config = "field" -> ( "name" | "id" | "priority" )
+ * </pre>
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the thread name:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "thread",
+ *   "field": "name"
+ * }
+ * </pre>
+ */
 final class ThreadResolver implements EventResolver {
 
     private static final EventResolver NAME_RESOLVER =
@@ -41,17 +61,19 @@ final class ThreadResolver implements EventResolver {
 
     private final EventResolver internalResolver;
 
-    ThreadResolver(final String key) {
-        this.internalResolver = createInternalResolver(key);
+    ThreadResolver(final TemplateResolverConfig config) {
+        this.internalResolver = createInternalResolver(config);
     }
 
-    private static EventResolver createInternalResolver(final String key) {
-        switch (key) {
+    private static EventResolver createInternalResolver(
+            final TemplateResolverConfig config) {
+        final String fieldName = config.getString("field");
+        switch (fieldName) {
             case "name": return NAME_RESOLVER;
             case "id": return ID_RESOLVER;
             case "priority": return PRIORITY_RESOLVER;
         }
-        throw new IllegalArgumentException("unknown key: " + key);
+        throw new IllegalArgumentException("unknown field: " + config);
     }
 
     static String getName() {

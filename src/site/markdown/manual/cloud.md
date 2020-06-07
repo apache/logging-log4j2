@@ -138,22 +138,22 @@ great fit for the bill.
             bufferedIo="true">
         <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json">
             <EventTemplateAdditionalFields>
-                <KeyValuePair key="containerId" value="${docker:containerId:-}"/>
-                <KeyValuePair key="application" value="$${lower:${spring:spring.application.name:-spring}}"/>
-                <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
-                <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
-                <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
-                <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
-                <KeyValuePair key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
-                <KeyValuePair key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
-                <KeyValuePair key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
-                <KeyValuePair key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
-                <KeyValuePair key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
-                <KeyValuePair key="kubernetes.podID" value="${k8s:podId:-}"/>
-                <KeyValuePair key="kubernetes.podIP" value="${k8s:podIp:-}"/>
-                <KeyValuePair key="kubernetes.podName" value="${k8s:podName:-}"/>
-                <KeyValuePair key="kubernetes.imageId" value="${k8s:imageId:-}"/>
-                <KeyValuePair key="kubernetes.imageName" value="${k8s:imageName:-}"/>
+                <EventTemplateAdditionalField key="containerId" value="${docker:containerId:-}"/>
+                <EventTemplateAdditionalField key="application" value="$${lower:${spring:spring.application.name:-spring}}"/>
+                <EventTemplateAdditionalField key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
+                <EventTemplateAdditionalField key="kubernetes.containerId" value="${k8s:containerId:-}"/>
+                <EventTemplateAdditionalField key="kubernetes.containerName" value="${k8s:containerName:-}"/>
+                <EventTemplateAdditionalField key="kubernetes.host" value="${k8s:host:-}"/>
+                <EventTemplateAdditionalField key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
+                <EventTemplateAdditionalField key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
+                <EventTemplateAdditionalField key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
+                <EventTemplateAdditionalField key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
+                <EventTemplateAdditionalField key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
+                <EventTemplateAdditionalField key="kubernetes.podID" value="${k8s:podId:-}"/>
+                <EventTemplateAdditionalField key="kubernetes.podIP" value="${k8s:podIp:-}"/>
+                <EventTemplateAdditionalField key="kubernetes.podName" value="${k8s:podName:-}"/>
+                <EventTemplateAdditionalField key="kubernetes.imageId" value="${k8s:imageId:-}"/>
+                <EventTemplateAdditionalField key="kubernetes.imageName" value="${k8s:imageName:-}"/>
             </EventTemplateAdditionalFields>
         </JsonTemplateLayout>
     </Socket>

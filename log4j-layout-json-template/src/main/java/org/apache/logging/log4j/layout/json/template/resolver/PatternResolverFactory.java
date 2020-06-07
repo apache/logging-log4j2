@@ -32,8 +32,10 @@ final class PatternResolverFactory implements EventResolverFactory<PatternResolv
     }
 
     @Override
-    public PatternResolver create(final EventResolverContext context, final String key) {
-        return new PatternResolver(context, key);
+    public PatternResolver create(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        return new PatternResolver(context, config);
     }
 
 }

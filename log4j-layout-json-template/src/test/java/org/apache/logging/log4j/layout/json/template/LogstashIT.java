@@ -10,8 +10,8 @@ import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.GelfLayout;
-import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.layout.json.template.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.layout.json.template.util.ThreadLocalRecyclerFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -81,9 +81,14 @@ public class LogstashIT {
             .setEventTemplateAdditionalFields(JsonTemplateLayout
                     .EventTemplateAdditionalFields
                     .newBuilder()
-                    .setAdditionalFields(new KeyValuePair[]{
-                            new KeyValuePair("host", HOST_NAME)
-                    })
+                    .setAdditionalFields(
+                            new EventTemplateAdditionalField[]{
+                                    EventTemplateAdditionalField
+                                            .newBuilder()
+                                            .setKey("host")
+                                            .setValue(HOST_NAME)
+                                            .build()
+                            })
                     .build())
             .build();
 
@@ -103,9 +108,14 @@ public class LogstashIT {
             .setEventTemplateAdditionalFields(JsonTemplateLayout
                     .EventTemplateAdditionalFields
                     .newBuilder()
-                    .setAdditionalFields(new KeyValuePair[]{
-                            new KeyValuePair("service.name", SERVICE_NAME)
-                    })
+                    .setAdditionalFields(
+                            new EventTemplateAdditionalField[]{
+                                    EventTemplateAdditionalField
+                                            .newBuilder()
+                                            .setKey("service.name")
+                                            .setValue(SERVICE_NAME)
+                                            .build()
+                            })
                     .build())
             .build();
 

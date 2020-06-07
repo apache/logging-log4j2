@@ -20,6 +20,39 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
+/**
+ * An index-based resolver for the <tt>main()</tt> method arguments.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config = index | key
+ * index  = "index" -> number
+ * key    = "key" -> string
+ * </pre>
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the 1st <tt>main()</tt> method argument:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "main",
+ *   "index": 0
+ * }
+ * </pre>
+ *
+ * Resolve the argument coming right after <tt>--userId</tt>:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "main",
+ *   "key": "--userId"
+ * }
+ * </pre>
+ *
+ * @see MainMapResolver
+ */
 final class MainMapResolver implements EventResolver {
 
     private static final MainMapLookup MAIN_MAP_LOOKUP = new MainMapLookup();
@@ -30,8 +63,20 @@ final class MainMapResolver implements EventResolver {
         return "main";
     }
 
-    MainMapResolver(final String key) {
-        this.key = key;
+    MainMapResolver(final TemplateResolverConfig config) {
+        final String key = config.getString("key");
+        final Integer index = config.getInteger("index");
+        if (key != null && index != null) {
+            throw new IllegalArgumentException(
+                    "provided both key and index: " + config);
+        }
+        if (key == null && index == null) {
+            throw new IllegalArgumentException(
+                    "either key or index must be provided: " + config);
+        }
+        this.key = index != null
+                ? String.valueOf(index)
+                : key;
     }
 
     @Override

@@ -23,30 +23,58 @@ import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.Strings;
 
+/**
+ * {@link Message} resolver.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config      = [ stringified ]
+ * stringified = "stringified" -> boolean
+ * </pre>
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the message into a string:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "message",
+ *   "stringified": true
+ * }
+ * </pre>
+ *
+ * Resolve the message such that if it is a {@link ObjectMessage} or {@link
+ * MultiformatMessage} with JSON support, its emitted JSON type (string, list,
+ * object, etc.) will be retained:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "message"
+ * }
+ * </pre>
+ */
 final class MessageResolver implements EventResolver {
 
     private static final String[] FORMATS = { "JSON" };
 
     private final EventResolver internalResolver;
 
-    MessageResolver(final String key) {
-        this.internalResolver = createInternalResolver(key);
+    MessageResolver(final TemplateResolverConfig config) {
+        this.internalResolver = createInternalResolver(config);
     }
 
     static String getName() {
         return "message";
     }
 
-    private static EventResolver createInternalResolver(final String key) {
-        if (Strings.isBlank(key)) {
-            return MessageResolver::resolveText;
-        } else if (FORMATS[0].equalsIgnoreCase(key)) {
-            return MessageResolver::resolveJson;
-        } else {
-            throw new IllegalArgumentException("unknown key: " + key);
-        }
+    private static EventResolver createInternalResolver(
+            final TemplateResolverConfig config) {
+        final boolean stringified = config.getBoolean("stringified", false);
+        return stringified
+                ? MessageResolver::resolveString
+                : MessageResolver::resolveObject;
     }
 
     @Override
@@ -56,14 +84,14 @@ final class MessageResolver implements EventResolver {
         internalResolver.resolve(logEvent, jsonWriter);
     }
 
-    private static void resolveText(
+    private static void resolveString(
             final LogEvent logEvent,
             final JsonWriter jsonWriter) {
         final Message message = logEvent.getMessage();
-        resolveText(message, jsonWriter);
+        resolveString(message, jsonWriter);
     }
 
-    private static void resolveText(
+    private static void resolveString(
             final Message message,
             final JsonWriter jsonWriter) {
         if (message instanceof StringBuilderFormattable) {
@@ -76,7 +104,7 @@ final class MessageResolver implements EventResolver {
         }
     }
 
-    private static void resolveJson(
+    private static void resolveObject(
             final LogEvent logEvent,
             final JsonWriter jsonWriter) {
 
@@ -97,7 +125,7 @@ final class MessageResolver implements EventResolver {
         }
 
         // Fallback to plain Object write.
-        resolveText(logEvent, jsonWriter);
+        resolveString(logEvent, jsonWriter);
 
     }
 
@@ -146,7 +174,7 @@ final class MessageResolver implements EventResolver {
         }
 
         // Fallback to the default message formatter.
-        resolveText((LogEvent) message, jsonWriter);
+        resolveString((LogEvent) message, jsonWriter);
         return true;
 
     }

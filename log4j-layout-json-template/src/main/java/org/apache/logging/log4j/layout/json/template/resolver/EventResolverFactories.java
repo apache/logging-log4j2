@@ -33,8 +33,8 @@ enum EventResolverFactories {;
 
         // Collect resolver factories.
         final List<EventResolverFactory<? extends EventResolver>> resolverFactories = Arrays.asList(
-                ContextDataResolverFactory.getInstance(),
-                ContextStackResolverFactory.getInstance(),
+                ThreadContextDataResolverFactory.getInstance(),
+                ThreadContextStackResolverFactory.getInstance(),
                 EndOfBatchResolverFactory.getInstance(),
                 ExceptionResolverFactory.getInstance(),
                 ExceptionRootCauseResolverFactory.getInstance(),

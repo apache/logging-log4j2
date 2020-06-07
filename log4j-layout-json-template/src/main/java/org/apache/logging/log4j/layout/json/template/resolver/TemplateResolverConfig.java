@@ -16,26 +16,14 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-final class EndOfBatchResolverFactory implements EventResolverFactory<EndOfBatchResolver> {
+import org.apache.logging.log4j.layout.json.template.util.MapAccessor;
 
-    private static final EndOfBatchResolverFactory INSTANCE = new EndOfBatchResolverFactory();
+import java.util.Map;
 
-    private EndOfBatchResolverFactory() {}
+class TemplateResolverConfig extends MapAccessor {
 
-    static EndOfBatchResolverFactory getInstance() {
-        return INSTANCE;
-    }
-
-    @Override
-    public String getName() {
-        return EndOfBatchResolver.getName();
-    }
-
-    @Override
-    public EndOfBatchResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        return EndOfBatchResolver.getInstance();
+    TemplateResolverConfig(final Map<String, Object> map) {
+        super(map);
     }
 
 }

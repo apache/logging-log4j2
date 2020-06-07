@@ -32,8 +32,10 @@ final class MessageResolverFactory implements EventResolverFactory<MessageResolv
     }
 
     @Override
-    public MessageResolver create(final EventResolverContext context, final String key) {
-        return new MessageResolver(key);
+    public MessageResolver create(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        return new MessageResolver(config);
     }
 
 }

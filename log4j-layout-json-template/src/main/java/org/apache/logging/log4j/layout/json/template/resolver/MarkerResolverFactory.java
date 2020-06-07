@@ -32,8 +32,10 @@ final class MarkerResolverFactory implements EventResolverFactory<MarkerResolver
     }
 
     @Override
-    public MarkerResolver create(final EventResolverContext context, final String key) {
-        return new MarkerResolver(key);
+    public MarkerResolver create(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        return new MarkerResolver(config);
     }
 
 }

@@ -21,44 +21,201 @@ import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.layout.json.template.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
-import org.apache.logging.log4j.layout.json.template.util.StringParameterParser;
 
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.LinkedHashSet;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 import java.util.TimeZone;
 
+/**
+ * Timestamp resolver.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config        = [ patternConfig | epochConfig ]
+ *
+ * patternConfig = "pattern" -> ( [ format ] , [ timeZone ] , [ locale ] )
+ * format        = "format" -> string
+ * timeZone      = "timeZone" -> string
+ * locale        = "locale" -> (
+ *                     language                                   |
+ *                   ( language , "_" , country )                 |
+ *                   ( language , "_" , country , "_" , variant )
+ *                 )
+ *
+ * epochConfig   = "epoch" -> ( unit , [ rounded ] )
+ * unit          = "unit" -> (
+ *                     "nanos"         |
+ *                     "millis"        |
+ *                     "secs"          |
+ *                     "millis.nanos"  |
+ *                     "secs.nanos"    |
+ *                  )
+ * rounded       = "rounded" -> boolean
+ * </pre>
+ *
+ * If no configuration options are provided, <tt>pattern-config</tt> is
+ * employed. There {@link
+ * JsonTemplateLayoutDefaults#getTimestampFormatPattern()}, {@link
+ * JsonTemplateLayoutDefaults#getTimeZone()}, {@link
+ * JsonTemplateLayoutDefaults#getLocale()} are used as defaults for
+ * <tt>pattern</tt>, <tt>timeZone</tt>, and <tt>locale</tt>, respectively.
+ *
+ * In <tt>epoch-config</tt>, <tt>millis.nanos</tt>, <tt>secs.nanos</tt> stand
+ * for the fractional component in nanoseconds.
+ *
+ * <h3>Examples</h3>
+ *
+ * <table>
+ * <tr>
+ *     <td>Configuration</td>
+ *     <td>Output</td>
+ * </tr>
+ * <tr>
+ *     <td><pre>
+ * {
+ *   "$resolver": "timestamp"
+ * }
+ *     </pre></td>
+ *     <td><pre>
+ * 2020-02-07T13:38:47.098+02:00
+ *     </pre></td>
+ * </tr>
+ * <tr>
+ *     <td><pre>
+ * {
+ *   "$resolver": "timestamp",
+ *   "pattern": {
+ *     "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+ *     "timeZone": "UTC",
+ *     "locale": "en_US"
+ *   }
+ * }
+ *     </pre></td>
+ *     <td><pre>
+ * 2020-02-07T13:38:47.098Z
+ *     </pre></td>
+ * </tr>
+ * <tr>
+ *     <td><pre>
+ * {
+ *   "$resolver": "timestamp",
+ *   "epoch": {
+ *     "unit": "secs"
+ *   }
+ * }
+ *     </pre></td>
+ *     <td><pre>
+ * 1581082727.982123456
+ *     </pre></td>
+ * </tr>
+ * <tr>
+ *     <td><pre>
+ * {
+ *   "$resolver": "timestamp",
+ *   "epoch": {
+ *     "unit": "secs",
+ *     "rounded": true
+ *   }
+ * }
+ *     </pre></td>
+ *     <td><pre>
+ * 1581082727
+ *     </pre></td>
+ * </tr>
+ * <tr>
+ *     <td><pre>
+ * {
+ *   "$resolver": "timestamp",
+ *   "epoch": {
+ *     "unit": "secs.nanos"
+ *   }
+ * }
+ *     </pre></td>
+ *     <td><pre>
+ *            982123456
+ *     </pre></td>
+ * </tr>
+ * <tr>
+ *     <td><pre>
+ * {
+ *   "$resolver": "timestamp",
+ *   "epoch": {
+ *     "unit": "millis"
+ *   }
+ * }
+ *     </pre></td>
+ *     <td><pre>
+ * 1581082727982.123456
+ *     </pre></td>
+ * </tr>
+ * <tr>
+ *     <td><pre>
+ * {
+ *   "$resolver": "timestamp",
+ *   "epoch": {
+ *     "unit": "millis",
+ *     "rounded": true
+ *   }
+ * }
+ *     </pre></td>
+ *     <td><pre>
+ * 1581082727982
+ *     </pre></td>
+ * </tr>
+ * <tr>
+ *     <td><pre>
+ * {
+ *   "$resolver": "timestamp",
+ *   "epoch": {
+ *     "unit": "millis.nanos"
+ *   }
+ * }
+ *     </pre></td>
+ *     <td><pre>
+ *              123456
+ *     </pre></td>
+ * </tr>
+ * <tr>
+ *     <td><pre>
+ * {
+ *   "$resolver": "timestamp",
+ *   "epoch": {
+ *     "unit": "nanos"
+ *   }
+ * }
+ *     </pre></td>
+ *     <td><pre>
+ * 1581082727982123456
+ *     </pre></td>
+ * </tr>
+ * </table>
+ */
 final class TimestampResolver implements EventResolver {
 
     private final EventResolver internalResolver;
 
-    TimestampResolver(final String key) {
-        this.internalResolver = (key != null && key.startsWith("epoch:"))
-                ? createEpochResolver(key)
-                : createFormatResolver(key);
+    TimestampResolver(final TemplateResolverConfig config) {
+        this.internalResolver = createResolver(config);
+    }
+
+    private static EventResolver createResolver(
+            final TemplateResolverConfig config) {
+        final boolean patternProvided = config.exists("pattern");
+        final boolean epochProvided = config.exists("epoch");
+        if (patternProvided && epochProvided) {
+            throw new IllegalArgumentException(
+                    "conflicting configuration options are provided: " + config);
+        }
+        return epochProvided
+                ? createEpochResolver(config)
+                : createFormatResolver(config);
     }
 
     /**
      * Context for GC-free formatted timestamp resolver.
      */
     private static final class FormatResolverContext {
-
-        private enum Key {;
-
-            private static final String PATTERN = "pattern";
-
-            private static final String TIME_ZONE = "timeZone";
-
-            private static final String LOCALE = "locale";
-
-        }
-
-        private static final Set<String> KEYS =
-                new LinkedHashSet<>(Arrays.asList(
-                        Key.PATTERN, Key.TIME_ZONE, Key.LOCALE));
 
         private final FastDateFormat timestampFormat;
 
@@ -76,41 +233,36 @@ final class TimestampResolver implements EventResolver {
             timestampFormat.format(calendar, formattedTimestampBuilder);
         }
 
-        private static FormatResolverContext fromKey(final String key) {
-            final Map<String, StringParameterParser.Value> keys =
-                    StringParameterParser.parse(key, KEYS);
-            final String pattern = readPattern(keys);
-            final TimeZone timeZone = readTimeZone(keys);
-            final Locale locale = readLocale(keys);
+        private static FormatResolverContext fromConfig(
+                final TemplateResolverConfig config) {
+            final String format = readFormat(config);
+            final TimeZone timeZone = readTimeZone(config);
+            final Locale locale = readLocale(config);
             final FastDateFormat fastDateFormat =
-                    FastDateFormat.getInstance(pattern, timeZone, locale);
+                    FastDateFormat.getInstance(format, timeZone, locale);
             return new FormatResolverContext(timeZone, locale, fastDateFormat);
         }
 
-        private static String readPattern(
-                final Map<String, StringParameterParser.Value> keys) {
-            final StringParameterParser.Value patternValue = keys.get(Key.PATTERN);
-            if (patternValue == null || patternValue instanceof StringParameterParser.NullValue) {
+        private static String readFormat(final TemplateResolverConfig config) {
+            final String format = config.getString(new String[]{"pattern", "format"});
+            if (format == null) {
                 return JsonTemplateLayoutDefaults.getTimestampFormatPattern();
             }
-            final String pattern = patternValue.toString();
             try {
-                FastDateFormat.getInstance(pattern);
+                FastDateFormat.getInstance(format);
             } catch (final IllegalArgumentException error) {
                 throw new IllegalArgumentException(
-                        "invalid pattern in timestamp key: " + pattern,
+                        "invalid timestamp format: " + config,
                         error);
             }
-            return pattern;
+            return format;
         }
 
-        private static TimeZone readTimeZone(
-                final Map<String, StringParameterParser.Value> keys) {
-            final StringParameterParser.Value timeZoneValue = keys.get(Key.TIME_ZONE);
-            if (timeZoneValue == null || timeZoneValue instanceof StringParameterParser.NullValue) {
+        private static TimeZone readTimeZone(final TemplateResolverConfig config) {
+            final String timeZoneId = config.getString(new String[]{"pattern", "timeZone"});
+            if (timeZoneId == null) {
                 return JsonTemplateLayoutDefaults.getTimeZone();
             }
-            final String timeZoneId = timeZoneValue.toString();
             boolean found = false;
             for (final String availableTimeZone : TimeZone.getAvailableIDs()) {
                 if (availableTimeZone.equalsIgnoreCase(timeZoneId)) {
@@ -120,27 +272,23 @@ final class TimestampResolver implements EventResolver {
             }
             if (!found) {
                 throw new IllegalArgumentException(
-                        "invalid time zone in timestamp key: " + timeZoneId);
+                        "invalid timestamp time zone: " + config);
             }
             return TimeZone.getTimeZone(timeZoneId);
         }
 
-        private static Locale readLocale(
-                final Map<String, StringParameterParser.Value> keys) {
-            final StringParameterParser.Value localeValue = keys.get(Key.LOCALE);
-            if (localeValue == null || localeValue instanceof StringParameterParser.NullValue) {
+        private static Locale readLocale(final TemplateResolverConfig config) {
+            final String locale = config.getString(new String[]{"pattern", "locale"});
+            if (locale == null) {
                 return JsonTemplateLayoutDefaults.getLocale();
             }
-            final String locale = localeValue.toString();
             final String[] localeFields = locale.split("_", 3);
             switch (localeFields.length) {
                 case 1: return new Locale(localeFields[0]);
                 case 2: return new Locale(localeFields[0], localeFields[1]);
                 case 3: return new Locale(localeFields[0], localeFields[1], localeFields[2]);
-                default:
-                    throw new IllegalArgumentException(
-                            "invalid locale in timestamp key: " + locale);
             }
+            throw new IllegalArgumentException("invalid timestamp locale: " + config);
         }
 
     }
@@ -196,53 +344,35 @@ final class TimestampResolver implements EventResolver {
 
     }
 
-    private static EventResolver createFormatResolver(final String key) {
+    private static EventResolver createFormatResolver(
+            final TemplateResolverConfig config) {
         final FormatResolverContext formatResolverContext =
-                FormatResolverContext.fromKey(key);
+                FormatResolverContext.fromConfig(config);
         return new FormatResolver(formatResolverContext);
     }
 
-    private static EventResolver createEpochResolver(final String key) {
-        switch (key) {
-            case "epoch:nanos":
-                return createEpochNanosResolver();
-            case "epoch:micros":
-                return createEpochMicrosDoubleResolver();
-            case "epoch:micros,integral":
-                return createEpochMicrosLongResolver();
-            case "epoch:millis":
-                return createEpochMillisDoubleResolver();
-            case "epoch:millis,integral":
-                return createEpochMillisLongResolver();
-            case "epoch:secs":
-                return createEpochSecsDoubleResolver();
-            case "epoch:secs,integral":
-                return createEpochSecsLongResolver();
-            case "epoch:micros.nanos":
-                return createEpochMicrosNanosResolver();
-            case "epoch:millis.nanos":
-                return createEpochMillisNanosResolver();
-            case "epoch:millis.micros":
-                return createEpochMillisMicrosResolver();
-            case "epoch:secs.nanos":
-                return createEpochSecsNanosResolver();
-            case "epoch:secs.micros":
-                return createEpochSecsMicrosResolver();
-            case "epoch:secs.millis":
-                return createEpochSecsMillisResolver();
-            default:
-                throw new IllegalArgumentException(
-                        "was expecting an epoch key: " + key);
+    private static EventResolver createEpochResolver(
+            final TemplateResolverConfig config) {
+        final String unit = config.getString(new String[]{"epoch", "unit"});
+        final Boolean rounded = config.getBoolean(new String[]{"epoch", "rounded"});
+        if ("nanos".equals(unit) && !Boolean.FALSE.equals(rounded)) {
+            return EPOCH_NANOS_RESOLVER;
+        } else if ("millis".equals(unit)) {
+            return !Boolean.TRUE.equals(rounded)
+                    ? EPOCH_MILLIS_RESOLVER
+                    : EPOCH_MILLIS_ROUNDED_RESOLVER;
+        } else if ("millis.nanos".equals(unit) && rounded == null) {
+                return EPOCH_MILLIS_NANOS_RESOLVER;
+        } else if ("secs".equals(unit)) {
+            return !Boolean.TRUE.equals(rounded)
+                    ? EPOCH_SECS_RESOLVER
+                    : EPOCH_SECS_ROUNDED_RESOLVER;
+        } else if ("secs.nanos".equals(unit) && rounded == null) {
+            return EPOCH_SECS_NANOS_RESOLVER;
         }
+        throw new IllegalArgumentException(
+                "invalid epoch configuration: " + config);
     }
-
-    private static final int MICROS_PER_SEC = 1_000_000;
-
-    private static final int NANOS_PER_SEC = 1_000_000_000;
-
-    private static final int NANOS_PER_MILLI = 1_000_000;
-
-    private static final int NANOS_PER_MICRO = 1_000;
 
     private static final class EpochResolutionRecord {
 
@@ -292,144 +422,73 @@ final class TimestampResolver implements EventResolver {
 
     }
 
-    private static EventResolver createEpochNanosResolver() {
-        return new EpochResolver() {
-            @Override
-            void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
-                final long nanos = epochNanos(logEventInstant);
-                jsonWriter.writeNumber(nanos);
-            }
-        };
-    }
+    private static final EventResolver EPOCH_NANOS_RESOLVER =
+            new EpochResolver() {
+                @Override
+                void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
+                    final long nanos = epochNanos(logEventInstant);
+                    jsonWriter.writeNumber(nanos);
+                }
+            };
 
-    private static EventResolver createEpochMicrosDoubleResolver() {
-        return new EpochResolver() {
-            @Override
-            void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
-                final long secs = logEventInstant.getEpochSecond();
-                final int nanosOfSecs = logEventInstant.getNanoOfSecond();
-                final long micros = MICROS_PER_SEC * secs + nanosOfSecs / NANOS_PER_MICRO;
-                final int nanosOfMicros = nanosOfSecs - nanosOfSecs % NANOS_PER_MICRO;
-                jsonWriter.writeNumber(micros, nanosOfMicros);
-            }
-        };
-    }
+    private static final EventResolver EPOCH_MILLIS_RESOLVER =
+            new EpochResolver() {
+                @Override
+                void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
+                    final StringBuilder jsonWriterStringBuilder = jsonWriter.getStringBuilder();
+                    final long nanos = epochNanos(logEventInstant);
+                    jsonWriterStringBuilder.append(nanos);
+                    jsonWriterStringBuilder.insert(jsonWriterStringBuilder.length() - 6, '.');
+                }
+            };
 
-    private static EventResolver createEpochMicrosLongResolver() {
-        return new EpochResolver() {
-            @Override
-            void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
-                final long nanos = epochNanos(logEventInstant);
-                final long micros = nanos / NANOS_PER_MICRO;
-                jsonWriter.writeNumber(micros);
-            }
-        };
-    }
+    private static final EventResolver EPOCH_MILLIS_ROUNDED_RESOLVER =
+            new EpochResolver() {
+                @Override
+                void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
+                    jsonWriter.writeNumber(logEventInstant.getEpochMillisecond());
+                }
+            };
 
-    private static EventResolver createEpochMillisDoubleResolver() {
-        return new EpochResolver() {
-            @Override
-            void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
-                jsonWriter.writeNumber(
-                        logEventInstant.getEpochMillisecond(),
-                        logEventInstant.getNanoOfMillisecond());
-            }
-        };
-    }
+    private static final EventResolver EPOCH_MILLIS_NANOS_RESOLVER =
+            new EpochResolver() {
+                @Override
+                void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
+                    final long nanos = epochNanos(logEventInstant);
+                    final long fraction = nanos % 1_000_000L;
+                    jsonWriter.writeNumber(fraction);
+                }
+            };
 
-    private static EventResolver createEpochMillisLongResolver() {
-        return new EpochResolver() {
-            @Override
-            void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
-                jsonWriter.writeNumber(logEventInstant.getEpochMillisecond());
-            }
-        };
-    }
+    private static final EventResolver EPOCH_SECS_RESOLVER =
+            new EpochResolver() {
+                @Override
+                void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
+                    final StringBuilder jsonWriterStringBuilder = jsonWriter.getStringBuilder();
+                    final long nanos = epochNanos(logEventInstant);
+                    jsonWriterStringBuilder.append(nanos);
+                    jsonWriterStringBuilder.insert(jsonWriterStringBuilder.length() - 9, '.');
+                }
+            };
 
-    private static EventResolver createEpochSecsDoubleResolver() {
-        return new EpochResolver() {
-            @Override
-            void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
-                jsonWriter.writeNumber(
-                        logEventInstant.getEpochSecond(),
-                        logEventInstant.getNanoOfSecond());
-            }
-        };
-    }
+    private static final EventResolver EPOCH_SECS_ROUNDED_RESOLVER =
+            new EpochResolver() {
+                @Override
+                void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
+                    jsonWriter.writeNumber(logEventInstant.getEpochSecond());
+                }
+            };
 
-    private static EventResolver createEpochSecsLongResolver() {
-        return new EpochResolver() {
-            @Override
-            void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
-                jsonWriter.writeNumber(logEventInstant.getEpochSecond());
-            }
-        };
-    }
-
-    private static EventResolver createEpochMicrosNanosResolver() {
-        return new EpochResolver() {
-            @Override
-            void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
-                final int nanosOfSecs = logEventInstant.getNanoOfSecond();
-                final int nanosOfMicros = nanosOfSecs % NANOS_PER_MICRO;
-                jsonWriter.writeNumber(nanosOfMicros);
-            }
-        };
-    }
-
-    private static EventResolver createEpochMillisNanosResolver() {
-        return new EpochResolver() {
-            @Override
-            void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
-                jsonWriter.writeNumber(logEventInstant.getNanoOfMillisecond());
-            }
-        };
-    }
-
-    private static EventResolver createEpochMillisMicrosResolver() {
-        return new EpochResolver() {
-            @Override
-            void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
-                final int nanosOfMillis = logEventInstant.getNanoOfMillisecond();
-                final int microsOfMillis = nanosOfMillis / NANOS_PER_MICRO;
-                jsonWriter.writeNumber(microsOfMillis);
-            }
-        };
-    }
-
-    private static EventResolver createEpochSecsNanosResolver() {
-        return new EpochResolver() {
-            @Override
-            void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
-                jsonWriter.writeNumber(logEventInstant.getNanoOfSecond());
-            }
-        };
-    }
-
-    private static EventResolver createEpochSecsMicrosResolver() {
-        return new EpochResolver() {
-            @Override
-            void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
-                final int nanosOfSecs = logEventInstant.getNanoOfSecond();
-                final int microsOfSecs = nanosOfSecs / NANOS_PER_MICRO;
-                jsonWriter.writeNumber(microsOfSecs);
-            }
-        };
-    }
-
-    private static EventResolver createEpochSecsMillisResolver() {
-        return new EpochResolver() {
-            @Override
-            void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
-                final int nanosOfSecs = logEventInstant.getNanoOfSecond();
-                final int millisOfSecs = nanosOfSecs / NANOS_PER_MILLI;
-                jsonWriter.writeNumber(millisOfSecs);
-            }
-        };
-    }
+    private static final EventResolver EPOCH_SECS_NANOS_RESOLVER =
+            new EpochResolver() {
+                @Override
+                void resolve(final Instant logEventInstant, final JsonWriter jsonWriter) {
+                    jsonWriter.writeNumber(logEventInstant.getNanoOfSecond());
+                }
+            };
 
     private static long epochNanos(Instant instant) {
-        return NANOS_PER_SEC * instant.getEpochSecond() + instant.getNanoOfSecond();
+        return 1_000_000_000L * instant.getEpochSecond() + instant.getNanoOfSecond();
     }
 
     static String getName() {

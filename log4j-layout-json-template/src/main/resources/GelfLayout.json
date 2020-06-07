@@ -1,11 +1,41 @@
 {
   "version": "1.1",
   "host": "${hostName}",
-  "short_message": "${json:message}",
-  "full_message": "${json:exception:stackTrace:text}",
-  "timestamp": "${json:timestamp:epoch:secs}",
-  "level": "${json:level:severity:code}",
-  "_logger": "${json:logger:name}",
-  "_thread": "${json:thread:name}",
-  "_mdc": "${json:mdc:flatten=_,stringify}"
+  "short_message": {
+    "$resolver": "message",
+    "stringified": true
+  },
+  "full_message": {
+    "$resolver": "exception",
+    "field": "stackTrace",
+    "stringified": true
+  },
+  "timestamp": {
+    "$resolver": "timestamp",
+    "epoch": {
+      "unit": "secs"
+    }
+  },
+  "level": {
+    "$resolver": "level",
+    "field": "severity",
+    "severity": {
+      "field": "code"
+    }
+  },
+  "_logger": {
+    "$resolver": "logger",
+    "field": "name"
+  },
+  "_thread": {
+    "$resolver": "thread",
+    "field": "name"
+  },
+  "_mdc": {
+    "$resolver": "mdc",
+    "flatten": {
+      "prefix": "_"
+    },
+    "stringified": true
+  }
 }

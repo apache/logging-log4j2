@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,43 +19,48 @@ package org.apache.logging.log4j.layout.json.template.resolver;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
-import org.apache.logging.log4j.layout.json.template.util.StringParameterParser;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
- * Add Nested Diagnostic Context (NDC).
+ * Nested Diagnostic Context (NDC), aka. Thread Context Stack, resolver.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config  = [ pattern ]
+ * pattern = "pattern" -> string
+ * </pre>
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve all NDC values into a list:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "ndc"
+ * }
+ * </pre>
+ *
+ * Resolve all NDC values matching with the <tt>pattern</tt> regex:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "ndc",
+ *   "pattern": "user(Role|Rank):\\w+"
+ * }
+ * </pre>
  */
-final class ContextStackResolver implements EventResolver {
+final class ThreadContextStackResolver implements EventResolver {
 
     private final Pattern itemPattern;
 
-    private enum Param {;
-
-        private static final String PATTERN = "pattern";
-
-    }
-
-    ContextStackResolver(final String spec) {
-        final Map<String, StringParameterParser.Value> params =
-                StringParameterParser.parse(spec, Collections.singleton(Param.PATTERN));
-        final StringParameterParser.Value patternValue = params.get(Param.PATTERN);
-        if (patternValue == null) {
-            this.itemPattern = null;
-        } else if (patternValue instanceof StringParameterParser.NullValue) {
-            throw new IllegalArgumentException("missing NDC pattern: " + spec);
-        } else {
-            final String pattern = patternValue.toString();
-            try {
-                this.itemPattern = Pattern.compile(pattern);
-            } catch (final PatternSyntaxException error) {
-                throw new IllegalArgumentException(
-                        "invalid NDC pattern: " + spec, error);
-            }
-        }
+    ThreadContextStackResolver(final TemplateResolverConfig config) {
+        this.itemPattern = Optional
+                .ofNullable(config.getString("pattern"))
+                .map(Pattern::compile)
+                .orElse(null);
     }
 
     static String getName() {
