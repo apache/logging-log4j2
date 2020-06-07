@@ -1694,6 +1694,67 @@ public class JsonTemplateLayoutTest {
 
     }
 
+    @Test
+    public void test_unresolvable_nested_fields_are_skipped() {
+
+        // Create the event template.
+        final String eventTemplate = writeJson(Map(
+                "exception", Map(
+                        "message", Map(
+                                "$resolver", "exception",
+                                "field", "message"),
+                        "className", Map(
+                                "$resolver", "exception",
+                                "field", "className")),
+                "exceptionRootCause", Map(
+                        "message", Map(
+                                "$resolver", "exceptionRootCause",
+                                "field", "message"),
+                        "className", Map(
+                                "$resolver", "exceptionRootCause",
+                                "field", "className")),
+                "source", Map(
+                        "lineNumber", Map(
+                                "$resolver", "source",
+                                "field", "lineNumber"),
+                        "fileName", Map(
+                                "$resolver", "source",
+                                "field", "fileName")),
+                "emptyMap", Collections.emptyMap(),
+                "emptyList", Collections.emptyList(),
+                "null", null));
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .setStackTraceEnabled(false)        // Disable "exception" and "exceptionRootCause" resolvers.
+                .setLocationInfoEnabled(false)      // Disable the "source" resolver.
+                .build();
+
+        // Create the log event.
+        final SimpleMessage message = new SimpleMessage("foo");
+        final Level level = Level.FATAL;
+        final Exception thrown = new RuntimeException("bar");
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setMessage(message)
+                .setLevel(level)
+                .setThrown(thrown)
+                .build();
+
+        // Check the serialized event.
+        final String expectedSerializedLogEventJson =
+                "{}" + JsonTemplateLayoutDefaults.getEventDelimiter();
+        final String actualSerializedLogEventJson = layout.toSerializable(logEvent);
+        Assertions
+                .assertThat(actualSerializedLogEventJson)
+                .isEqualTo(expectedSerializedLogEventJson);
+
+    }
+
     private static String writeJson(final Object value) {
         final StringBuilder stringBuilder = JSON_WRITER.getStringBuilder();
         stringBuilder.setLength(0);

@@ -30,21 +30,46 @@ public enum TemplateResolvers {;
 
     private static final String RESOLVER_FIELD_NAME = "$resolver";
 
+    private static abstract class UnresolvableTemplateResolver
+            implements TemplateResolver<Object> {
+
+        @Override
+        public final boolean isResolvable() {
+            return false;
+        }
+
+        @Override
+        public final boolean isResolvable(Object value) {
+            return false;
+        }
+
+    }
+
     private static final TemplateResolver<?> EMPTY_ARRAY_RESOLVER =
-            (final Object ignored, final JsonWriter jsonWriter) -> {
-                jsonWriter.writeArrayStart();
-                jsonWriter.writeArrayEnd();
+            new UnresolvableTemplateResolver() {
+                @Override
+                public void resolve(final Object value, final JsonWriter jsonWriter) {
+                    jsonWriter.writeArrayStart();
+                    jsonWriter.writeArrayEnd();
+                }
             };
 
     private static final TemplateResolver<?> EMPTY_OBJECT_RESOLVER =
-            (final Object ignored, final JsonWriter jsonWriter) -> {
-                jsonWriter.writeObjectStart();
-                jsonWriter.writeObjectEnd();
+            new UnresolvableTemplateResolver() {
+                @Override
+                public void resolve(final Object value, final JsonWriter jsonWriter) {
+                    jsonWriter.writeObjectStart();
+                    jsonWriter.writeObjectEnd();
+                }
             };
 
     private static final TemplateResolver<?> NULL_RESOLVER =
-            (final Object ignored, final JsonWriter jsonWriter) ->
+            new UnresolvableTemplateResolver() {
+                @Override
+                public void resolve(final Object value, final JsonWriter jsonWriter) {
                     jsonWriter.writeNull();
+                }
+            };
 
     public static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofTemplate(
             final C context,
@@ -236,36 +261,80 @@ public enum TemplateResolvers {;
                 })
                 .collect(Collectors.toList());
 
-        // Create a parent resolver collecting each object field resolver execution.
-        return (value, jsonWriter) -> {
-            final StringBuilder jsonWriterStringBuilder = jsonWriter.getStringBuilder();
-            jsonWriter.writeObjectStart();
-            for (int resolvedFieldCount = 0, fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
-                final TemplateResolver<V> fieldResolver = fieldResolvers.get(fieldIndex);
-                final boolean resolvable = fieldResolver.isResolvable(value);
-                if (!resolvable) {
-                    continue;
+        return new TemplateResolver<V>() {
+
+            /**
+             * The parent resolver checking if each child is resolvable.
+             *
+             * This is an optimization to skip the rendering of a parent if all
+             * its children are not resolvable.
+             */
+            @Override
+            public boolean isResolvable() {
+                for (int fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
+                    final TemplateResolver<V> fieldResolver = fieldResolvers.get(fieldIndex);
+                    final boolean resolvable = fieldResolver.isResolvable();
+                    if (resolvable) {
+                        return true;
+                    }
                 }
-                final boolean succeedingEntry = resolvedFieldCount > 0;
-                final boolean flattening = fieldResolver.isFlattening();
-                if (flattening) {
-                    final int initLength = jsonWriterStringBuilder.length();
-                    fieldResolver.resolve(value, jsonWriter, succeedingEntry);
-                    final boolean resolved = jsonWriterStringBuilder.length() > initLength;
-                    if (resolved) {
+                return false;
+            }
+
+            /**
+             * The parent resolver checking if each child is resolvable given
+             * the passed {@code value}.
+             *
+             * This is an optimization to skip the rendering of a parent if all
+             * its children are not resolvable given the passed {@code value}.
+             */
+            @Override
+            public boolean isResolvable(final V value) {
+                for (int fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
+                    final TemplateResolver<V> fieldResolver = fieldResolvers.get(fieldIndex);
+                    final boolean resolvable = fieldResolver.isResolvable(value);
+                    if (resolvable) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            /**
+             * The parent resolver combining all child resolver executions.
+              */
+            @Override
+            public void resolve(final V value, final JsonWriter jsonWriter) {
+                final StringBuilder jsonWriterStringBuilder = jsonWriter.getStringBuilder();
+                jsonWriter.writeObjectStart();
+                for (int resolvedFieldCount = 0, fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
+                    final TemplateResolver<V> fieldResolver = fieldResolvers.get(fieldIndex);
+                    final boolean resolvable = fieldResolver.isResolvable(value);
+                    if (!resolvable) {
+                        continue;
+                    }
+                    final boolean succeedingEntry = resolvedFieldCount > 0;
+                    final boolean flattening = fieldResolver.isFlattening();
+                    if (flattening) {
+                        final int initLength = jsonWriterStringBuilder.length();
+                        fieldResolver.resolve(value, jsonWriter, succeedingEntry);
+                        final boolean resolved = jsonWriterStringBuilder.length() > initLength;
+                        if (resolved) {
+                            resolvedFieldCount++;
+                        }
+                    } else {
+                        if (succeedingEntry) {
+                            jsonWriter.writeSeparator();
+                        }
+                        final String fieldPrefix = fieldPrefixes.get(fieldIndex);
+                        jsonWriter.writeRawString(fieldPrefix);
+                        fieldResolver.resolve(value, jsonWriter, succeedingEntry);
                         resolvedFieldCount++;
                     }
-                } else {
-                    if (succeedingEntry) {
-                        jsonWriter.writeSeparator();
-                    }
-                    final String fieldPrefix = fieldPrefixes.get(fieldIndex);
-                    jsonWriter.writeRawString(fieldPrefix);
-                    fieldResolver.resolve(value, jsonWriter, succeedingEntry);
-                    resolvedFieldCount++;
                 }
+                jsonWriter.writeObjectEnd();
             }
-            jsonWriter.writeObjectEnd();
+
         };
 
     }
