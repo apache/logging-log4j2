@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
@@ -50,7 +51,7 @@ public class UrisTest {
             try (final OutputStream outputStream = new FileOutputStream(file)) {
                 outputStream.write(nonAsciiUtfText.getBytes(StandardCharsets.UTF_8));
             }
-            final String uri = String.format("file:%s", file.getAbsoluteFile());
+            final URI uri = file.toURI();
             final String content = Uris.readUri(uri, StandardCharsets.UTF_8);
             Assert.assertEquals(nonAsciiUtfText, content);
         } finally {
