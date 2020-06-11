@@ -263,22 +263,11 @@ public enum TemplateResolvers {;
 
         return new TemplateResolver<V>() {
 
-            /**
-             * The parent resolver checking if each child is resolvable.
-             *
-             * This is an optimization to skip the rendering of a parent if all
-             * its children are not resolvable.
-             */
             @Override
             public boolean isResolvable() {
-                for (int fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
-                    final TemplateResolver<V> fieldResolver = fieldResolvers.get(fieldIndex);
-                    final boolean resolvable = fieldResolver.isResolvable();
-                    if (resolvable) {
-                        return true;
-                    }
-                }
-                return false;
+                // We have already excluded unresolvable ones while collecting
+                // the resolvers. Hence it is safe to return true here.
+                return true;
             }
 
             /**
