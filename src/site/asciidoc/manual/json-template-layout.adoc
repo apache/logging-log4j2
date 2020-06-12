@@ -656,7 +656,7 @@ a|
 `log4j2.garbagefreeThreadContextMap` flag needs to be turned on to iterate
 the map without allocations.
 
-`stringify` allocates a new `String` for values that are not of type `String`.
+`stringified` allocates a new `String` for values that are not of type `String`.
 
 Writing certain non-primitive values (e.g., `BigDecimal`, `Set`, etc.) to JSON
 generates garbage, though most (e.g., `int`, `long`, `String`, `List`,

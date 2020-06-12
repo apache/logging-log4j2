@@ -169,7 +169,6 @@ final class ThreadContextDataResolver implements EventResolver {
                 final ReadOnlyStringMap contextData = logEvent.getContextData();
                 final Object value = contextData == null ? null : contextData.getValue(key);
                 if (stringified) {
-                    // TODO Write the value as string without extra allocations.
                     final String valueString = String.valueOf(value);
                     jsonWriter.writeString(valueString);
                 } else {
