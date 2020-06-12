@@ -737,7 +737,7 @@ stringified = "stringified" -> boolean
 ----
 a| `logEvent.getMessage()`
 | For simple string messages, the resolution is performed without allocations.
-  For `ObjectMessage`s and `MultiformatMessage`s, it depends.
+  For ``ObjectMessage``s and ``MultiformatMessage``s, it depends.
 a|
 Resolve the message into a string:
 
