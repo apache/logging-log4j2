@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.nio.file.Paths;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -140,6 +141,9 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
 
     private void createFileAfterRollover(String fileName) throws IOException {
         this.randomAccessFile = new RandomAccessFile(fileName, "rw");
+        if (isAttributeViewEnabled()) {
+            defineAttributeView(Paths.get(fileName));
+        }
         if (isAppend()) {
             randomAccessFile.seek(randomAccessFile.length());
         }
