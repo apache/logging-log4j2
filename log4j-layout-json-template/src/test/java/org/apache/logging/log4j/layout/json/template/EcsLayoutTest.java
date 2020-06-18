@@ -4,7 +4,6 @@ import co.elastic.logging.log4j2.EcsLayout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.layout.json.template.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -21,6 +20,8 @@ public class EcsLayoutTest {
 
     private static final String SERVICE_NAME = "test";
 
+    private static final String EVENT_DATASET = "test.log";
+
     private static final JsonTemplateLayout JSON_TEMPLATE_LAYOUT = JsonTemplateLayout
             .newBuilder()
             .setConfiguration(CONFIGURATION)
@@ -35,6 +36,11 @@ public class EcsLayoutTest {
                                                     .newBuilder()
                                                     .setKey("service.name")
                                                     .setValue(SERVICE_NAME)
+                                                    .build(),
+                                            EventTemplateAdditionalField
+                                                    .newBuilder()
+                                                    .setKey("event.dataset")
+                                                    .setValue(EVENT_DATASET)
                                                     .build()
                                     })
                             .build())
@@ -44,6 +50,7 @@ public class EcsLayoutTest {
             .newBuilder()
             .setConfiguration(CONFIGURATION)
             .setServiceName(SERVICE_NAME)
+            .setEventDataset(EVENT_DATASET)
             .build();
 
     @Test

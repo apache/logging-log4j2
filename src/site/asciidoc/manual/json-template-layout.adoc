@@ -270,10 +270,10 @@ prefer one over another is explained below:
 new instance. This will obviously create a load on the garbage-collector. It
 is a good choice for applications with low and medium log rate.
 
-* `threadLocal` performs the best, since every instance is stored in TLAB and
-accessed without any synchronization cost. Though this might not be a
-desirable option for applications running with hundreds of threads or more,
-e.g., a web servlet.
+* `threadLocal` performs the best, since every instance is stored in
+``ThreadLocal``s and accessed without any synchronization cost. Though this
+might not be a desirable option for applications running with hundreds of
+threads or more, e.g., a web servlet.
 
 * `queue` is the best of both worlds. It allows recycling of objects up to a
 certain number (`capacity`). When this limit is exceeded due to excessive
@@ -343,9 +343,7 @@ artifact:
   },
   "labels": {
     "$resolver": "mdc",
-    "flatten": {
-      "prefix": "labels."
-    },
+    "flatten": true,
     "stringified": true
   },
   "tags": {

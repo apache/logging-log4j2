@@ -24,9 +24,7 @@
   },
   "labels": {
     "$resolver": "mdc",
-    "flatten": {
-      "prefix": "labels."
-    },
+    "flatten": true,
     "stringified": true
   },
   "tags": {
