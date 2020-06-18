@@ -186,7 +186,7 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
   property)
 
 | eventTemplateAdditionalFields
-| KeyValuePair[]
+| EventTemplateAdditionalField[]
 | additional key-value pairs appended to the root of the event template
 
 | stackTraceElementTemplate
@@ -227,15 +227,18 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
 [#additional-event-template-fields]
 === Additonal event template fields
 
-One can configure additional event template fields via
-`eventTemplateAdditionalFields` as follows:
+Additional event template field is a convenient short-cut to add custom fields
+to a template or override the fields of a template. Following configuration
+overrides the `host` field of the `GelfLayout.json` template and adds two new
+custom fields:
 
 [source,xml]
 ----
-<JsonTemplateLayout ...>
+<JsonTemplateLayout eventTemplateUri="classpath:GelfLayout.json">
     <EventTemplateAdditionalFields>
-        <EventTemplateAdditionalField key="serviceName" value="auth-service"/>
-        <EventTemplateAdditionalField key="containerId" value="6ede3f0ca7d9"/>
+        <EventTemplateAdditionalField key="host" value="www.apache.org"/>
+        <EventTemplateAdditionalField key="_serviceName" value="auth-service"/>
+        <EventTemplateAdditionalField key="_containerId" value="6ede3f0ca7d9"/>
     </EventTemplateAdditionalFields>
 </JsonTemplateLayout>
 ----
