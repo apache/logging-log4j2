@@ -733,8 +733,9 @@ parent such that keys are prefixed with `_`:
 a|
 [source]
 ----
-config      = [ stringified ]
+config      = [ stringified ] , [ fallbackKey ]
 stringified = "stringified" -> boolean
+fallbackKey = "fallbackKey" -> string
 ----
 a| `logEvent.getMessage()`
 | For simple string messages, the resolution is performed without allocations.
@@ -760,6 +761,26 @@ will be retained:
   "$resolver": "message"
 }
 ----
+
+Given the above configuration, a `SimpleMessage` will generate a `"sample log
+message"`, whereas a `MapMessage` will generate a `{"action": "login",
+"sessionId": "87asd97a"}`. Certain indexed log storage systems (e.g.,
+https://www.elastic.co/elasticsearch/[Elasticsearch]) will not allow both values
+to coexist due to type mismatch: one is a `string` while the other is an `object`.
+Here one can use a `fallbackKey` to work around the problem:
+
+[source,json]
+----
+{
+  "$resolver": "message",
+  "fallbackKey": "formattedMessage"
+}
+----
+
+Using this configuration, a `SimpleMessage` will generate a
+`{"formattedMessage": "sample log message"}` and a `MapMessage` will generate a
+`{"action": "login", "sessionId": "87asd97a"}`. Note that both emitted JSONs are
+of type `object` and have no type-conflicting fields.
 
 | ndc
 a|

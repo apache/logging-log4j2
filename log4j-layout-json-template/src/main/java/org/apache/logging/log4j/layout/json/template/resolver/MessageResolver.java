@@ -18,6 +18,7 @@ package org.apache.logging.log4j.layout.json.template.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.message.ObjectMessage;
@@ -30,8 +31,9 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * <h3>Configuration</h3>
  *
  * <pre>
- * config      = [ stringified ]
+ * config      = [ stringified ] , [ fallbackKey ]
  * stringified = "stringified" -> boolean
+ * fallbackKey = "fallbackKey" -> string
  * </pre>
  *
  * <h3>Examples</h3>
@@ -54,6 +56,28 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  *   "$resolver": "message"
  * }
  * </pre>
+ *
+ * Given the above configuration, a {@link SimpleMessage} will generate a
+ * <tt>"sample log message"</tt>, whereas a {@link MapMessage} will generate a
+ * <tt>{"action": "login", "sessionId": "87asd97a"}</tt>. Certain indexed log
+ * storage systems (e.g., <a
+ * href="https://www.elastic.co/elasticsearch/">Elasticsearch</a>) will not
+ * allow both values to coexist due to type mismatch: one is a <tt>string</tt>
+ * while the other is an <tt>object</tt>. Here one can use a
+ * <tt>fallbackKey</tt> to work around the problem:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "message",
+ *   "fallbackKey": "formattedMessage"
+ * }
+ * </pre>
+ *
+ * Using this configuration, a {@link SimpleMessage} will generate a
+ * <tt>{"formattedMessage": "sample log message"}</tt> and a {@link MapMessage}
+ * will generate a <tt>{"action": "login", "sessionId": "87asd97a"}</tt>. Note
+ * that both emitted JSONs are of type <tt>object</tt> and have no
+ * type-conflicting fields.
  */
 final class MessageResolver implements EventResolver {
 
@@ -72,9 +96,14 @@ final class MessageResolver implements EventResolver {
     private static EventResolver createInternalResolver(
             final TemplateResolverConfig config) {
         final boolean stringified = config.getBoolean("stringified", false);
+        final String fallbackKey = config.getString("fallbackKey");
+        if (stringified && fallbackKey != null) {
+            throw new IllegalArgumentException(
+                    "fallbackKey is not allowed when stringified is enable: " + config);
+        }
         return stringified
-                ? MessageResolver::resolveString
-                : MessageResolver::resolveObject;
+                ? createStringResolver(fallbackKey)
+                : createObjectResolver(fallbackKey);
     }
 
     @Override
@@ -84,16 +113,27 @@ final class MessageResolver implements EventResolver {
         internalResolver.resolve(logEvent, jsonWriter);
     }
 
-    private static void resolveString(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
-        final Message message = logEvent.getMessage();
-        resolveString(message, jsonWriter);
+    private static EventResolver createStringResolver(final String fallbackKey) {
+        return (final LogEvent logEvent, final JsonWriter jsonWriter) ->
+                resolveString(fallbackKey, logEvent, jsonWriter);
     }
 
     private static void resolveString(
+            final String fallbackKey,
+            final LogEvent logEvent,
+            final JsonWriter jsonWriter) {
+        final Message message = logEvent.getMessage();
+        resolveString(fallbackKey, message, jsonWriter);
+    }
+
+    private static void resolveString(
+            final String fallbackKey,
             final Message message,
             final JsonWriter jsonWriter) {
+        if (fallbackKey != null) {
+            jsonWriter.writeObjectStart();
+            jsonWriter.writeObjectKey(fallbackKey);
+        }
         if (message instanceof StringBuilderFormattable) {
             final StringBuilderFormattable formattable =
                     (StringBuilderFormattable) message;
@@ -102,48 +142,35 @@ final class MessageResolver implements EventResolver {
             final String formattedMessage = message.getFormattedMessage();
             jsonWriter.writeString(formattedMessage);
         }
+        if (fallbackKey != null) {
+            jsonWriter.writeObjectEnd();
+        }
     }
 
-    private static void resolveObject(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
+    private static EventResolver createObjectResolver(final String fallbackKey) {
+        return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
 
-        // Try SimpleMessage serializer.
-        final Message message = logEvent.getMessage();
-        if (writeSimpleMessage(jsonWriter, message)) {
-            return;
-        }
+            // Skip custom serializers for SimpleMessage.
+            final Message message = logEvent.getMessage();
+            final boolean simple = message instanceof SimpleMessage;
+            if (!simple) {
 
-        // Try MultiformatMessage serializer.
-        if (writeMultiformatMessage(jsonWriter, message)) {
-            return;
-        }
+                // Try MultiformatMessage serializer.
+                if (writeMultiformatMessage(jsonWriter, message)) {
+                    return;
+                }
 
-        // Try ObjectMessage serializer.
-        if (writeObjectMessage(jsonWriter, message)) {
-            return;
-        }
+                // Try ObjectMessage serializer.
+                if (writeObjectMessage(jsonWriter, message)) {
+                    return;
+                }
 
-        // Fallback to plain Object write.
-        resolveString(logEvent, jsonWriter);
+            }
 
-    }
+            // Fallback to plain String serializer.
+            resolveString(fallbackKey, logEvent, jsonWriter);
 
-    private static boolean writeSimpleMessage(
-            final JsonWriter jsonWriter,
-            final Message message) {
-
-        // Check type.
-        if (!(message instanceof SimpleMessage)) {
-            return false;
-        }
-        final SimpleMessage simpleMessage = (SimpleMessage) message;
-
-        // Write message.
-        final String formattedMessage = simpleMessage.getFormattedMessage();
-        jsonWriter.writeString(formattedMessage);
-        return true;
-
+        };
     }
 
     private static boolean writeMultiformatMessage(
@@ -165,16 +192,13 @@ final class MessageResolver implements EventResolver {
                 break;
             }
         }
-
-        // Write the formatted JSON, if supported.
-        if (jsonSupported) {
-            final String messageJson = multiformatMessage.getFormattedMessage(FORMATS);
-            jsonWriter.writeRawString(messageJson);
-            return true;
+        if (!jsonSupported) {
+            return false;
         }
 
-        // Fallback to the default message formatter.
-        resolveString((LogEvent) message, jsonWriter);
+        // Write the formatted JSON.
+        final String messageJson = multiformatMessage.getFormattedMessage(FORMATS);
+        jsonWriter.writeRawString(messageJson);
         return true;
 
     }

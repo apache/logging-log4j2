@@ -38,6 +38,7 @@ import org.apache.logging.log4j.layout.json.template.JsonTemplateLayout.EventTem
 import org.apache.logging.log4j.layout.json.template.util.JsonReader;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.layout.json.template.util.MapAccessor;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
@@ -317,6 +318,55 @@ public class JsonTemplateLayoutTest {
             assertThat(accessor.getInteger(new String[]{"message", "key2"})).isEqualTo(0xDEADBEEF);
             assertThat(accessor.getString(new String[]{"message", "key3", "key3.1"})).isEqualTo("val3.1");
         });
+
+    }
+
+    @Test
+    public void test_message_fallbackKey() {
+
+        // Create the event template.
+        final String eventTemplate = writeJson(Map(
+                "message", Map(
+                        "$resolver", "message",
+                        "fallbackKey", "formattedMessage")));
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        // Create a log event with a MapMessage.
+        final Message mapMessage = new StringMapMessage()
+                .with("key1", "val1");
+        final LogEvent mapMessageLogEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setLevel(Level.INFO)
+                .setMessage(mapMessage)
+                .setTimeMillis(System.currentTimeMillis())
+                .build();
+
+        // Check the serialized MapMessage.
+        usingSerializedLogEventAccessor(layout, mapMessageLogEvent, accessor ->
+                assertThat(accessor.getString(new String[]{"message", "key1"}))
+                        .isEqualTo("val1"));
+
+        // Create a log event with a SimpleMessage.
+        final Message simpleMessage = new SimpleMessage("simple");
+        final LogEvent simpleMessageLogEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setLevel(Level.INFO)
+                .setMessage(simpleMessage)
+                .setTimeMillis(System.currentTimeMillis())
+                .build();
+
+        // Check the serialized MapMessage.
+        usingSerializedLogEventAccessor(layout, simpleMessageLogEvent, accessor ->
+                assertThat(accessor.getString(new String[]{"message", "formattedMessage"}))
+                        .isEqualTo("simple"));
 
     }
 
