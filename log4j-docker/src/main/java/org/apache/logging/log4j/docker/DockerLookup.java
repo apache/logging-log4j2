@@ -53,6 +53,8 @@ public class DockerLookup extends AbstractLookup {
         }
         if (baseUri == null) {
             LOGGER.warn("No Docker URI provided. Docker information is unavailable");
+            container = null;
+            return;
         }
         Container current = null;
         try {

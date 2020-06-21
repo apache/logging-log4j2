@@ -32,11 +32,19 @@ public class KubernetesClientBuilder {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     public KubernetesClient createClient() {
-        return new DefaultKubernetesClient(kubernetesClientConfig());
+        Config config = kubernetesClientConfig();
+        return config != null ? new DefaultKubernetesClient(config) : null;
     }
 
     private Config kubernetesClientConfig() {
-        Config base = Config.autoConfigure(null);
+        Config base = null;
+        try {
+            base = Config.autoConfigure(null);
+        } catch (Exception ex) {
+            if (ex instanceof  NullPointerException) {
+                return null;
+            }
+        }
         KubernetesClientProperties props = new KubernetesClientProperties(base);
         Config properties = new ConfigBuilder(base)
                 .withApiVersion(props.getApiVersion())
