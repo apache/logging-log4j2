@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.14.0" date="2020-MM-DD" description="GA Release 2.14.0">
+      <action issue="LOG4J2-2877" dev="rgoers" type="fix">
+        Determine the container id to obtain container and image information.
+      </action>
       <action issue="LOG4J2-2844" dev="ggregory" type="fix">
         Null pointer exception when no network interfaces are available.
       </action>
@@ -43,7 +46,7 @@
         Update MongoDB tests to require Java 8 unconditionally now that Log4j requires Java 8.
       </action>
       <action dev="ggregory" type="update">
-		Update mongodb3.version from 3.12.1 to 3.12.4.
+		    Update mongodb3.version from 3.12.1 to 3.12.4.
       </action>
       <action dev="ggregory" type="update">
         Update com.fasterxml.jackson.* 2.10.2 -> 2.11.0.
