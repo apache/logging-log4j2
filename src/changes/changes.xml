@@ -171,7 +171,10 @@
         Null pointer exception when no network interfaces are available.
       </action>
     </release>
-    <release version="2.14.0" date="2020-05-10" description="GA Release 2.13.3">
+    <release version="2.14.0" date="2020-MM-DD" description="GA Release 2.14.0">
+      <action issue="LOG4J2-2877" dev="rgoers" type="fix">
+        Determine the container id to obtain container and image information.
+      </action>
       <action issue="LOG4J2-2848" dev="ggregory" type="add">
         Create module log4j-mongodb4 to use new major version 4 MongoDB driver.
       </action>
