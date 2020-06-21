@@ -39,7 +39,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     private static final String SIMPLE_NAME = "Log4j2 " + ConfigurationScheduler.class.getSimpleName();
     private static final int MAX_SCHEDULED_ITEMS = 5;
 
-    private ScheduledExecutorService executorService;
+    private volatile ScheduledExecutorService executorService;
     private int scheduledItems = 0;
     private final String name;
 
@@ -193,17 +193,21 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
 
     private ScheduledExecutorService getExecutorService() {
         if (executorService == null) {
-            if (scheduledItems > 0) {
-                LOGGER.debug("{} starting {} threads", name, scheduledItems);
-                scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
-                final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(scheduledItems,
-                        Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
-                executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
-                executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
-                this.executorService = executor;
+            synchronized (this) {
+                if (executorService == null) {
+                    if (scheduledItems > 0) {
+                        LOGGER.debug("{} starting {} threads", name, scheduledItems);
+                        scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
+                        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(scheduledItems,
+                                Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
+                        executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
+                        executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+                        this.executorService = executor;
 
-            } else {
-                LOGGER.debug("{}: No scheduled items", name);
+                    } else {
+                        LOGGER.debug("{}: No scheduled items", name);
+                    }
+                }
             }
         }
         return executorService;

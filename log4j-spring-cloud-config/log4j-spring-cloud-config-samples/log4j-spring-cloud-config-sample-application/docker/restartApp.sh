@@ -23,7 +23,7 @@ containerName=app-container
 networkName=docker_sample_network
 debug_port=5005
 #debug_expose="-p $debug_port:$debug_port"
-exposed_ports="-p 8080:4567 $debug_expose"
+exposed_ports="-p 8080:8080 $debug_expose"
 
 mvn clean package -DskipTests=true
 

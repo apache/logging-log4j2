@@ -18,6 +18,7 @@ package org.apache.logging.log4j.kubernetes;
 
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -57,50 +58,99 @@ public class KubernetesLookup extends AbstractLookup {
     private static Lock initLock = new ReentrantLock();
     private static boolean isSpringIncluded =
             LoaderUtil.isClassAvailable("org.apache.logging.log4j.spring.cloud.config.client.SpringEnvironmentHolder");
+    private Pod pod;
+    private Namespace namespace;
+    private URL masterUrl;
 
+    public KubernetesLookup() {
+        this.pod = null;
+        this.namespace = null;
+        this.masterUrl = null;
+        initialize();
+    }
+
+    KubernetesLookup(Pod pod, Namespace namespace, URL masterUrl) {
+        this.pod = pod;
+        this.namespace = namespace;
+        this.masterUrl = masterUrl;
+        initialize();
+    }
     private boolean initialize() {
         if (kubernetesInfo == null || (isSpringIncluded && !kubernetesInfo.isSpringActive)) {
             initLock.lock();
             boolean isSpringActive = isSpringActive();
             if (kubernetesInfo == null || (!kubernetesInfo.isSpringActive && isSpringActive)) {
                 try {
-                    KubernetesClient client = new KubernetesClientBuilder().createClient();
-                    if (client != null) {
-                        KubernetesInfo info = new KubernetesInfo();
-                        info.isSpringActive = isSpringActive;
-                        info.hostName = getHostname();
-                        Pod pod = getCurrentPod(info.hostName, client);
-                        if (pod != null) {
-                            info.app = pod.getMetadata().getLabels().get("app");
-                            final String app = info.app != null ? info.app : "";
-                            info.podTemplateHash = pod.getMetadata().getLabels().get("pod-template-hash");
-                            info.accountName = pod.getSpec().getServiceAccountName();
-                            info.clusterName = pod.getMetadata().getClusterName();
-                            info.hostIp = pod.getStatus().getHostIP();
-                            info.labels = pod.getMetadata().getLabels();
-                            info.podId = pod.getMetadata().getUid();
-                            info.podIp = pod.getStatus().getPodIP();
-                            info.podName = pod.getMetadata().getName();
-                            Container container = pod.getSpec().getContainers().stream()
-                                    .filter(c -> c.getName().equals(app)).findFirst().orElse(null);
-                            if (container != null) {
-                                info.containerName = container.getName();
-                                info.imageName = container.getImage();
-                            }
+                    KubernetesInfo info = new KubernetesInfo();
+                    KubernetesClient client = null;
+                    info.isSpringActive = isSpringActive;
+                    if (pod == null) {
+                        client = new KubernetesClientBuilder().createClient();
+                        if (client != null) {
+                            pod = getCurrentPod(System.getenv(HOSTNAME), client);
                             info.masterUrl = client.getMasterUrl();
-                            info.namespace = pod.getMetadata().getNamespace();
-                            Namespace namespace = client.namespaces().withName(info.namespace).get();
-                            if (namespace != null) {
-                                info.namespaceId = namespace.getMetadata().getUid();
+                            if (pod != null) {
+                                info.namespace = pod.getMetadata().getNamespace();
+                                namespace = namespace = client.namespaces().withName(info.namespace).get();
                             }
-                            ContainerStatus containerStatus = pod.getStatus().getContainerStatuses().stream()
-                                    .filter(cs -> cs.getName().equals(app)).findFirst().orElse(null);
-                            if (containerStatus != null) {
-                                info.containerId = containerStatus.getContainerID();
-                                info.imageId = containerStatus.getImageID();
-                            }
-                            kubernetesInfo = info;
+                        } else {
+                            LOGGER.warn("Kubernetes is not available for access");
                         }
+                    } else {
+                        info.masterUrl = masterUrl;
+                    }
+                    if (pod != null) {
+                        if (namespace != null) {
+                            info.namespaceId = namespace.getMetadata().getUid();
+                            info.namespaceAnnotations = namespace.getMetadata().getAnnotations();
+                            info.namespaceLabels = namespace.getMetadata().getLabels();
+                        }
+                        info.app = pod.getMetadata().getLabels().get("app");
+                        info.hostName = pod.getSpec().getNodeName();
+                        info.annotations = pod.getMetadata().getAnnotations();
+                        final String app = info.app != null ? info.app : "";
+                        info.podTemplateHash = pod.getMetadata().getLabels().get("pod-template-hash");
+                        info.accountName = pod.getSpec().getServiceAccountName();
+                        info.clusterName = pod.getMetadata().getClusterName();
+                        info.hostIp = pod.getStatus().getHostIP();
+                        info.labels = pod.getMetadata().getLabels();
+                        info.podId = pod.getMetadata().getUid();
+                        info.podIp = pod.getStatus().getPodIP();
+                        info.podName = pod.getMetadata().getName();
+                        ContainerStatus containerStatus = null;
+                        List<ContainerStatus> statuses = pod.getStatus().getContainerStatuses();
+                        if (statuses.size() == 1) {
+                            containerStatus = statuses.get(0);
+                        } else if (statuses.size() > 1) {
+                            String containerId = ContainerUtil.getContainerId();
+                            if (containerId != null) {
+                                containerStatus = statuses.stream()
+                                        .filter(cs -> cs.getContainerID().contains(containerId))
+                                        .findFirst().orElse(null);
+                            }
+                        }
+                        final String containerName;
+                        if (containerStatus != null) {
+                            info.containerId = containerStatus.getContainerID();
+                            info.imageId = containerStatus.getImageID();
+                            containerName = containerStatus.getName();
+                        } else {
+                            containerName = null;
+                        }
+                        Container container = null;
+                        List<Container> containers = pod.getSpec().getContainers();
+                        if (containers.size() == 1) {
+                            container = containers.get(0);
+                        } else if (containers.size() > 1 && containerName != null) {
+                            container = containers.stream().filter(c -> c.getName().equals(containerName))
+                                    .findFirst().orElse(null);
+                        }
+                        if (container != null) {
+                            info.containerName = container.getName();
+                            info.imageName = container.getImage();
+                        }
+
+                        kubernetesInfo = info;
                     }
                 } finally {
                     initLock.unlock();
@@ -112,12 +162,15 @@ public class KubernetesLookup extends AbstractLookup {
 
     @Override
     public String lookup(LogEvent event, String key) {
-        if (!initialize()) {
+        if (kubernetesInfo == null) {
             return null;
         }
         switch (key) {
             case "accountName": {
                 return kubernetesInfo.accountName;
+            }
+            case "annotations": {
+                return kubernetesInfo.annotations.toString();
             }
             case "containerId": {
                 return kubernetesInfo.containerId;
@@ -146,8 +199,14 @@ public class KubernetesLookup extends AbstractLookup {
             case "masterUrl": {
                 return kubernetesInfo.masterUrl.toString();
             }
+            case "namespaceAnnotations": {
+                return kubernetesInfo.namespaceAnnotations.toString();
+            }
             case "namespaceId": {
                 return kubernetesInfo.namespaceId;
+            }
+            case "namespaceLabels": {
+                return kubernetesInfo.namespaceLabels.toString();
             }
             case "namespaceName": {
                 return kubernetesInfo.namespace;
@@ -170,6 +229,13 @@ public class KubernetesLookup extends AbstractLookup {
             default:
                 return null;
         }
+    }
+
+    /**
+     * For unit testing only.
+     */
+    void clearInfo() {
+        kubernetesInfo = null;
     }
 
     private String getHostname() {
@@ -201,6 +267,7 @@ public class KubernetesLookup extends AbstractLookup {
     private static class KubernetesInfo {
         boolean isSpringActive;
         String accountName;
+        Map<String, String> annotations;
         String app;
         String clusterName;
         String containerId;
@@ -212,7 +279,9 @@ public class KubernetesLookup extends AbstractLookup {
         Map<String, String> labels;
         URL masterUrl;
         String namespace;
+        Map<String, String> namespaceAnnotations;
         String namespaceId;
+        Map<String, String> namespaceLabels;
         String podId;
         String podIp;
         String podName;
