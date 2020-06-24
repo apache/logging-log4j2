@@ -593,10 +593,13 @@ Resolve the argument coming right after `--userId`:
 a|
 [source]
 ----
-config = "key" -> string
+config      = key , [ stringified ]
+key         = "key" -> string
+stringified = "stringified" -> boolean
 ----
-| performs link:lookups.html#MapLookup[Map Lookup] for the given `key`
-| none
+| resolves the given `key` of ``MapMessage``s
+| `stringified` flag translates to `String.valueOf(value)`, hence mind
+  not-`String`-typed values.
 a|
 Resolve the `userRole` field of the message:
 

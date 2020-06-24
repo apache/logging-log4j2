@@ -17,9 +17,10 @@
 package org.apache.logging.log4j.layout.json.template.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 
 /**
  * {@link MapMessage} field resolver.
@@ -27,7 +28,9 @@ import org.apache.logging.log4j.message.MapMessage;
  * <h3>Configuration</h3>
  *
  * <pre>
- * config = "key" -> string
+ * config      = key , [ stringified ]
+ * key         = "key" -> string
+ * stringified = "stringified" -> boolean
  * </pre>
  *
  * <h3>Examples</h3>
@@ -43,20 +46,20 @@ import org.apache.logging.log4j.message.MapMessage;
  */
 final class MapResolver implements EventResolver {
 
-    private static final MapLookup MAP_LOOKUP = new MapLookup();
-
     private final String key;
+
+    private final boolean stringified;
 
     static String getName() {
         return "map";
     }
 
     MapResolver(final TemplateResolverConfig config) {
-        final String key = config.getString("key");
+        this.key = config.getString("key");
+        this.stringified = config.getBoolean("stringified", false);
         if (key == null) {
             throw new IllegalArgumentException("missing key: " + config);
         }
-        this.key = key;
     }
 
     @Override
@@ -68,8 +71,21 @@ final class MapResolver implements EventResolver {
     public void resolve(
             final LogEvent logEvent,
             final JsonWriter jsonWriter) {
-        final String resolvedValue = MAP_LOOKUP.lookup(logEvent, key);
-        jsonWriter.writeString(resolvedValue);
+        final Message message = logEvent.getMessage();
+        if (!(message instanceof MapMessage)) {
+            jsonWriter.writeNull();
+        } else {
+            @SuppressWarnings("unchecked")
+            MapMessage<?, Object> mapMessage = (MapMessage<?, Object>) message;
+            final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
+            final Object value = map.getValue(key);
+            if (stringified) {
+                final String stringifiedValue = String.valueOf(value);
+                jsonWriter.writeString(stringifiedValue);
+            } else {
+                jsonWriter.writeValue(value);
+            }
+        }
     }
 
 }

@@ -322,6 +322,47 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
+    public void test_MapMessage_keyed_access() {
+
+        // Create the event template.
+        final String key = "list";
+        final String eventTemplate = writeJson(Map(
+                "typedValue", Map(
+                        "$resolver", "map",
+                        "key", key),
+                "stringifiedValue", Map(
+                        "$resolver", "map",
+                        "key", key,
+                        "stringified", true)));
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        // Create the log event with a MapMessage.
+        final List<Integer> value = Arrays.asList(1, 2);
+        final StringMapMessage mapMessage = new StringMapMessage()
+                .with(key, value);
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setLevel(Level.INFO)
+                .setMessage(mapMessage)
+                .setTimeMillis(System.currentTimeMillis())
+                .build();
+
+        // Check the serialized event.
+        usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
+            assertThat(accessor.getObject("typedValue")).isEqualTo(value);
+            assertThat(accessor.getString("stringifiedValue")).isEqualTo(String.valueOf(value));
+        });
+
+    }
+
+    @Test
     public void test_message_fallbackKey() {
 
         // Create the event template.
