@@ -63,6 +63,8 @@ public class LogstashIT {
 
     private static final String SERVICE_NAME = "LogstashIT";
 
+    private static final String EVENT_DATASET = SERVICE_NAME + ".log";
+
     private static final GelfLayout GELF_LAYOUT = GelfLayout
             .newBuilder()
             .setConfiguration(CONFIGURATION)
@@ -97,6 +99,7 @@ public class LogstashIT {
             .setConfiguration(CONFIGURATION)
             .setCharset(CHARSET)
             .setServiceName(SERVICE_NAME)
+            .setEventDataset(EVENT_DATASET)
             .build();
 
     private static final JsonTemplateLayout JSON_TEMPLATE_ECS_LAYOUT = JsonTemplateLayout
@@ -114,6 +117,11 @@ public class LogstashIT {
                                             .newBuilder()
                                             .setKey("service.name")
                                             .setValue(SERVICE_NAME)
+                                            .build(),
+                                    EventTemplateAdditionalField
+                                            .newBuilder()
+                                            .setKey("event.dataset")
+                                            .setValue(EVENT_DATASET)
                                             .build()
                             })
                     .build())

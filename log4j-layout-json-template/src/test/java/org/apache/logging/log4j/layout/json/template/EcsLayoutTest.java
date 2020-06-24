@@ -20,7 +20,7 @@ public class EcsLayoutTest {
 
     private static final String SERVICE_NAME = "test";
 
-    private static final String EVENT_DATASET = "test.log";
+    private static final String EVENT_DATASET = SERVICE_NAME + ".log";
 
     private static final JsonTemplateLayout JSON_TEMPLATE_LAYOUT = JsonTemplateLayout
             .newBuilder()
