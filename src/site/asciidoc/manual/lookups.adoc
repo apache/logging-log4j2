@@ -377,7 +377,7 @@ result of a nested lookup.
 ----
 <File name="Application" fileName="application.log">
   <PatternLayout>
-    <pattern>%d %p %c{1.} [%t] $${lower:{${spring:spring.application.name}} %m%n</pattern>
+    <pattern>%d %p %c{1.} [%t] $${lower:${spring:spring.application.name}} %m%n</pattern>
   </PatternLayout>
 </File>
 ----
