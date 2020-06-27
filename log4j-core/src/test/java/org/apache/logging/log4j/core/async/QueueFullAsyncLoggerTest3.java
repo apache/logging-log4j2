@@ -127,5 +127,10 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
             latch.countDown();
             super.finalize();
         }
+
+        @Override
+        public StackTraceElement getSource() {
+            return null;
+        }
     }
 }

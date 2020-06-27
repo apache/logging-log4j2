@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.apache.logging.log4j.message.*;
 import org.apache.logging.log4j.junit.StatusLoggerRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
@@ -978,6 +979,11 @@ public class AbstractLoggerTest {
         interface FormattedMessageSupplier {
             String getFormattedMessage();
         }
+
+        @Override
+        public StackTraceElement getSource() {
+            return null;
+        }
     }
 
     private static class CountingLogger extends AbstractLogger {
@@ -1347,6 +1353,11 @@ public class AbstractLoggerTest {
         @Override
         public Throwable getThrowable() {
             return throwable;
+        }
+
+        @Override
+        public StackTraceElement getSource() {
+            return null;
         }
     }
 }

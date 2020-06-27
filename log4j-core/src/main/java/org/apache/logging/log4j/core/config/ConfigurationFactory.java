@@ -401,12 +401,12 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     String[] sources = parseConfigLocations(configLocationStr);
                     if (sources.length > 1) {
                         final List<AbstractConfiguration> configs = new ArrayList<>();
-                        for (final String sourceLocation : sources) {
-                            final Configuration config = getConfiguration(loggerContext, sourceLocation.trim());
+                        for (final String StackTraceElement : sources) {
+                            final Configuration config = getConfiguration(loggerContext, StackTraceElement.trim());
                             if (config != null && config instanceof AbstractConfiguration) {
                                 configs.add((AbstractConfiguration) config);
                             } else {
-                                LOGGER.error("Failed to created configuration at {}", sourceLocation);
+                                LOGGER.error("Failed to created configuration at {}", StackTraceElement);
                                 return null;
                             }
                         }

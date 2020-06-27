@@ -97,5 +97,10 @@ public class AsyncLoggerConfigErrorOnFormat {
         public Throwable getThrowable() {
             return null;
         }
+
+        @Override
+        public StackTraceElement getSource() {
+            return null;
+        }
     }
 }

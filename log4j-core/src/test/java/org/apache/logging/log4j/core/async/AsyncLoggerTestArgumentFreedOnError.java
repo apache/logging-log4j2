@@ -105,5 +105,10 @@ public class AsyncLoggerTestArgumentFreedOnError {
         public void formatTo(StringBuilder buffer) {
             throw new Error("Expected");
         }
+
+        @Override
+        public StackTraceElement getSource() {
+            return null;
+        }
     }
 }

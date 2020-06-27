@@ -69,6 +69,16 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     /**
+     * Creates a StructuredDataMessage using an ID (max 32 characters), message, and type (max 32 characters).
+     * @param id The String id.
+     * @param msg The message.
+     * @param type The message type.
+     */
+    public StructuredDataMessage(final String id, final String msg, final String type, StackTraceElement source) {
+        this(id, msg, type, MAX_LENGTH, source);
+    }
+
+    /**
      * Creates a StructuredDataMessage using an ID (user specified max characters), message, and type (user specified
      * maximum number of characters).
      * @param id The String id.
@@ -83,7 +93,24 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         this.type = type;
         this.maxLength = maxLength;
     }
-    
+
+    /**
+     * Creates a StructuredDataMessage using an ID (user specified max characters), message, and type (user specified
+     * maximum number of characters).
+     * @param id The String id.
+     * @param msg The message.
+     * @param type The message type.
+     * @param maxLength The maximum length of keys;
+     * @since 2.9
+     */
+    public StructuredDataMessage(final String id, final String msg, final String type, final int maxLength, final StackTraceElement source) {
+        super(source);
+        this.id = new StructuredDataId(id, null, null, maxLength);
+        this.message = msg;
+        this.type = type;
+        this.maxLength = maxLength;
+    }
+
     /**
      * Creates a StructuredDataMessage using an ID (max 32 characters), message, type (max 32 characters), and an
      * initial map of structured data to include.
@@ -95,6 +122,19 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     public StructuredDataMessage(final String id, final String msg, final String type,
                                  final Map<String, String> data) {
         this(id, msg, type, data, MAX_LENGTH);
+    }
+
+    /**
+     * Creates a StructuredDataMessage using an ID (max 32 characters), message, type (max 32 characters), and an
+     * initial map of structured data to include.
+     * @param id The String id.
+     * @param msg The message.
+     * @param type The message type.
+     * @param data The StructuredData map.
+     */
+    public StructuredDataMessage(final String id, final String msg, final String type,
+                                 final Map<String, String> data, StackTraceElement source) {
+        this(id, msg, type, data, MAX_LENGTH, source);
     }
 
     /**
@@ -117,6 +157,25 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     /**
+     * Creates a StructuredDataMessage using an (user specified max characters), message, and type (user specified
+     * maximum number of characters, and an initial map of structured data to include.
+     * @param id The String id.
+     * @param msg The message.
+     * @param type The message type.
+     * @param data The StructuredData map.
+     * @param maxLength The maximum length of keys;
+     * @since 2.9
+     */
+    public StructuredDataMessage(final String id, final String msg, final String type,
+                                 final Map<String, String> data, final int maxLength, StackTraceElement source) {
+        super(source, data);
+        this.id = new StructuredDataId(id, null, null, maxLength);
+        this.message = msg;
+        this.type = type;
+        this.maxLength = maxLength;
+    }
+
+    /**
      * Creates a StructuredDataMessage using a StructuredDataId, message, and type (max 32 characters).
      * @param id The StructuredDataId.
      * @param msg The message.
@@ -131,10 +190,36 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param id The StructuredDataId.
      * @param msg The message.
      * @param type The message type.
+     */
+    public StructuredDataMessage(final StructuredDataId id, final String msg, final String type, StackTraceElement source) {
+        this(id, msg, type, MAX_LENGTH, source);
+    }
+
+    /**
+     * Creates a StructuredDataMessage using a StructuredDataId, message, and type (max 32 characters).
+     * @param id The StructuredDataId.
+     * @param msg The message.
+     * @param type The message type.
      * @param maxLength The maximum length of keys;
      * @since 2.9
      */
     public StructuredDataMessage(final StructuredDataId id, final String msg, final String type, final int maxLength) {
+        this.id = id;
+        this.message = msg;
+        this.type = type;
+        this.maxLength = maxLength;
+    }
+
+    /**
+     * Creates a StructuredDataMessage using a StructuredDataId, message, and type (max 32 characters).
+     * @param id The StructuredDataId.
+     * @param msg The message.
+     * @param type The message type.
+     * @param maxLength The maximum length of keys;
+     * @since 2.9
+     */
+    public StructuredDataMessage(final StructuredDataId id, final String msg, final String type, final int maxLength, StackTraceElement source) {
+        super(source);
         this.id = id;
         this.message = msg;
         this.type = type;
@@ -161,12 +246,44 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param msg The message.
      * @param type The message type.
      * @param data The StructuredData map.
+     */
+    public StructuredDataMessage(final StructuredDataId id, final String msg, final String type,
+                                 final Map<String, String> data, StackTraceElement source) {
+        this(id, msg, type, data, MAX_LENGTH, source);
+    }
+
+    /**
+     * Creates a StructuredDataMessage using a StructuredDataId, message, type (max 32 characters), and an initial map
+     * of structured data to include.
+     * @param id The StructuredDataId.
+     * @param msg The message.
+     * @param type The message type.
+     * @param data The StructuredData map.
      * @param maxLength The maximum length of keys;
      * @since 2.9
      */
     public StructuredDataMessage(final StructuredDataId id, final String msg, final String type,
                                  final Map<String, String> data, final int maxLength) {
         super(data);
+        this.id = id;
+        this.message = msg;
+        this.type = type;
+        this.maxLength = maxLength;
+    }
+
+    /**
+     * Creates a StructuredDataMessage using a StructuredDataId, message, type (max 32 characters), and an initial map
+     * of structured data to include.
+     * @param id The StructuredDataId.
+     * @param msg The message.
+     * @param type The message type.
+     * @param data The StructuredData map.
+     * @param maxLength The maximum length of keys;
+     * @since 2.9
+     */
+    public StructuredDataMessage(final StructuredDataId id, final String msg, final String type,
+                                 final Map<String, String> data, final int maxLength, StackTraceElement source) {
+        super(source, data);
         this.id = id;
         this.message = msg;
         this.type = type;
@@ -181,6 +298,19 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      */
     private StructuredDataMessage(final StructuredDataMessage msg, final Map<String, String> map) {
         super(map);
+        this.id = msg.id;
+        this.message = msg.message;
+        this.type = msg.type;
+        this.maxLength = MAX_LENGTH;
+    }
+
+    /**
+     * Constructor based on a StructuredDataMessage.
+     * @param msg The StructuredDataMessage.
+     * @param map The StructuredData map.
+     */
+    private StructuredDataMessage(final StructuredDataMessage msg, final Map<String, String> map, StackTraceElement source) {
+        super(source, map);
         this.id = msg.id;
         this.message = msg.message;
         this.type = msg.type;

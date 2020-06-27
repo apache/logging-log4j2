@@ -562,7 +562,7 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     public void makeMessageImmutable() {
-        message = new MementoMessage(message.getFormattedMessage(), message.getFormat(), message.getParameters());
+        message = new MementoMessage(source, message.getFormattedMessage(), message.getFormat(), message.getParameters());
     }
 
     @Override

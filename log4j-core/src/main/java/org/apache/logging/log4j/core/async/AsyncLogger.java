@@ -286,7 +286,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 ThreadContext.getImmutableStack(), //
 
                 // location (expensive to calculate)
-                calcLocationIfRequested(fqcn), //
+                calcLocationIfRequested(fqcn, message), //
                 CLOCK, //
                 nanoClock //
         );
@@ -305,11 +305,14 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
      * @param fqcn fully qualified caller name.
      * @return the caller location if requested, {@code null} otherwise.
      */
-    private StackTraceElement calcLocationIfRequested(final String fqcn) {
+    private StackTraceElement calcLocationIfRequested(final String fqcn, final Message message) {
         // location: very expensive operation. LOG4J2-153:
         // Only include if "includeLocation=true" is specified,
         // exclude if not specified or if "false" was specified.
-        return includeLocation ? StackLocatorUtil.calcLocation(fqcn) : null;
+        StackTraceElement messageSource = message.getSource();
+        return messageSource == null ?
+                (includeLocation ? StackLocatorUtil.calcLocation(fqcn) : null) :
+                messageSource;
     }
 
     /**
@@ -341,7 +344,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         // calls the translateTo method on this AsyncLogger
         if (!disruptor.getRingBuffer().tryPublishEvent(this,
                 this, // asyncLogger: 0
-                (location = calcLocationIfRequested(fqcn)), // location: 1
+                (location = calcLocationIfRequested(fqcn, message)), // location: 1
                 fqcn, // 2
                 level, // 3
                 marker, // 4

@@ -28,6 +28,7 @@ public class ReusableObjectMessage implements ReusableMessage, ParameterVisitabl
     private static final long serialVersionUID = 6922476812535519960L;
 
     private transient Object obj;
+    private StackTraceElement source;
 
     public void set(final Object object) {
         this.obj = object;
@@ -112,6 +113,18 @@ public class ReusableObjectMessage implements ReusableMessage, ParameterVisitabl
         return emptyReplacement;
     }
 
+    @Override
+    public StackTraceElement swapSource(StackTraceElement source) {
+        StackTraceElement originalSource = this.source;
+        this.source = source;
+        return originalSource;
+    }
+
+    @Override
+    public StackTraceElement getSource() {
+        return source;
+    }
+
     /**
      * This message has exactly one parameter (the object), so always returns one.
      * @return 1
@@ -134,5 +147,6 @@ public class ReusableObjectMessage implements ReusableMessage, ParameterVisitabl
     @Override
     public void clear() {
         obj = null;
+        source = null;
     }
 }

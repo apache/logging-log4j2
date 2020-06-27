@@ -44,6 +44,7 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
     private transient Object[] varargs;
     private transient Object[] params = new Object[MAX_PARMS];
     private transient Throwable throwable;
+    private transient StackTraceElement source;
     transient boolean reserved = false; // LOG4J2-1583 prevent scrambled logs with nested logging calls
 
     /**
@@ -121,8 +122,9 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         return new ParameterizedMessage(messagePattern, getTrimmedParams());
     }
 
-    private void init(final String messagePattern, final int argCount, final Object[] paramArray) {
+    private void init(final StackTraceElement source, final String messagePattern, final int argCount, final Object[] paramArray) {
         this.varargs = null;
+        this.source = source;
         this.messagePattern = messagePattern;
         this.argCount = argCount;
         final int placeholderCount = count(messagePattern, indices);
@@ -147,64 +149,64 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         }
     }
 
-    ReusableParameterizedMessage set(final String messagePattern, final Object... arguments) {
-        init(messagePattern, arguments == null ? 0 : arguments.length, arguments);
+    ReusableParameterizedMessage set(final StackTraceElement source, final String messagePattern, final Object... arguments) {
+        init(source, messagePattern, arguments == null ? 0 : arguments.length, arguments);
         varargs = arguments;
         return this;
     }
 
-    ReusableParameterizedMessage set(final String messagePattern, final Object p0) {
+    ReusableParameterizedMessage set(final StackTraceElement source, final String messagePattern, final Object p0) {
         params[0] = p0;
-        init(messagePattern, 1, params);
+        init(source, messagePattern, 1, params);
         return this;
     }
 
-    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1) {
+    ReusableParameterizedMessage set(final StackTraceElement source, final String messagePattern, final Object p0, final Object p1) {
         params[0] = p0;
         params[1] = p1;
-        init(messagePattern, 2, params);
+        init(source, messagePattern, 2, params);
         return this;
     }
 
-    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2) {
+    ReusableParameterizedMessage set(final StackTraceElement source, final String messagePattern, final Object p0, final Object p1, final Object p2) {
         params[0] = p0;
         params[1] = p1;
         params[2] = p2;
-        init(messagePattern, 3, params);
+        init(source, messagePattern, 3, params);
         return this;
     }
 
-    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3) {
+    ReusableParameterizedMessage set(final StackTraceElement source, final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3) {
         params[0] = p0;
         params[1] = p1;
         params[2] = p2;
         params[3] = p3;
-        init(messagePattern, 4, params);
+        init(source, messagePattern, 4, params);
         return this;
     }
 
-    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
+    ReusableParameterizedMessage set(final StackTraceElement source, final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
         params[0] = p0;
         params[1] = p1;
         params[2] = p2;
         params[3] = p3;
         params[4] = p4;
-        init(messagePattern, 5, params);
+        init(source, messagePattern, 5, params);
         return this;
     }
 
-    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
+    ReusableParameterizedMessage set(final StackTraceElement source, final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
         params[0] = p0;
         params[1] = p1;
         params[2] = p2;
         params[3] = p3;
         params[4] = p4;
         params[5] = p5;
-        init(messagePattern, 6, params);
+        init(source, messagePattern, 6, params);
         return this;
     }
 
-    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+    ReusableParameterizedMessage set(final StackTraceElement source, final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6) {
         params[0] = p0;
         params[1] = p1;
@@ -213,11 +215,11 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         params[4] = p4;
         params[5] = p5;
         params[6] = p6;
-        init(messagePattern, 7, params);
+        init(source, messagePattern, 7, params);
         return this;
     }
 
-    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+    ReusableParameterizedMessage set(final StackTraceElement source, final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7) {
         params[0] = p0;
         params[1] = p1;
@@ -227,11 +229,11 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         params[5] = p5;
         params[6] = p6;
         params[7] = p7;
-        init(messagePattern, 8, params);
+        init(source, messagePattern, 8, params);
         return this;
     }
 
-    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+    ReusableParameterizedMessage set(final StackTraceElement source, final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7, final Object p8) {
         params[0] = p0;
         params[1] = p1;
@@ -242,11 +244,11 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         params[6] = p6;
         params[7] = p7;
         params[8] = p8;
-        init(messagePattern, 9, params);
+        init(source, messagePattern, 9, params);
         return this;
     }
 
-    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+    ReusableParameterizedMessage set(final StackTraceElement source, final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7, final Object p8, final Object p9) {
         params[0] = p0;
         params[1] = p1;
@@ -258,8 +260,68 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         params[7] = p7;
         params[8] = p8;
         params[9] = p9;
-        init(messagePattern, 10, params);
+        init(source, messagePattern, 10, params);
         return this;
+    }
+
+    ReusableParameterizedMessage set(final String messagePattern, final Object... arguments) {
+        return set((StackTraceElement) null, messagePattern, arguments);
+    }
+
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0) {
+        return set((StackTraceElement) null, messagePattern, p0);
+    }
+
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1) {
+        return set((StackTraceElement) null, messagePattern, p0, p1);
+    }
+
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2) {
+        return set((StackTraceElement) null, messagePattern, p0, p1, p2);
+    }
+
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3) {
+        return set((StackTraceElement) null, messagePattern, p0, p1, p2, p3);
+    }
+
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
+        return set((StackTraceElement) null, messagePattern, p0, p1, p2, p3, p4);
+    }
+
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
+        return set((StackTraceElement) null, messagePattern, p0, p1, p2, p3, p4, p5);
+    }
+
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+                                     final Object p6) {
+        return set((StackTraceElement) null, messagePattern, p0, p1, p2, p3, p4, p5, p6);
+    }
+
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+                                     final Object p6, final Object p7) {
+        return set((StackTraceElement) null, messagePattern, p0, p1, p2, p3, p4, p5, p6, p7);
+    }
+
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+                                     final Object p6, final Object p7, final Object p8) {
+        return set((StackTraceElement) null, messagePattern, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+    }
+
+    ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+                                     final Object p6, final Object p7, final Object p8, final Object p9) {
+        return set((StackTraceElement) null, messagePattern, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+    }
+
+    @Override
+    public StackTraceElement getSource() {
+        return source;
+    }
+
+    @Override
+    public StackTraceElement swapSource(StackTraceElement source) {
+        StackTraceElement originalSource = this.source;
+        this.source = source;
+        return originalSource;
     }
 
     /**

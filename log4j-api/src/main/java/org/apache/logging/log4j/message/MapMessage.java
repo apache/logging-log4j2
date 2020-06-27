@@ -100,12 +100,19 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     private final IndexedStringMap data;
+    private final StackTraceElement source;
 
     /**
      * Constructs a new instance.
      */
     public MapMessage() {
         this.data = new SortedArrayStringMap();
+        source = null;
+    }
+
+    public MapMessage(StackTraceElement source) {
+        this.data = new SortedArrayStringMap();
+        this.source = source;
     }
 
     /**
@@ -114,7 +121,17 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @param  initialCapacity the initial capacity.
      */
     public MapMessage(final int initialCapacity) {
+        this(null, initialCapacity);
+    }
+
+    /**
+     * Constructs a new instance.
+     *
+     * @param  initialCapacity the initial capacity.
+     */
+    public MapMessage(final StackTraceElement source, final int initialCapacity) {
         this.data = new SortedArrayStringMap(initialCapacity);
+        this.source = source;
     }
 
     /**
@@ -122,7 +139,16 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @param map The Map.
      */
     public MapMessage(final Map<String, V> map) {
+        this(null, map);
+    }
+
+    /**
+     * Constructs a new instance based on an existing Map.
+     * @param map The Map.
+     */
+    public MapMessage(final StackTraceElement source, final Map<String, V> map) {
         this.data = new SortedArrayStringMap(map);
+        this.source = source;
     }
 
     @Override
@@ -164,6 +190,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
             result.put(data.getKeyAt(i), (V) data.getValueAt(i));
         }
         return Collections.unmodifiableMap(result);
+    }
+
+    @Override
+    public StackTraceElement getSource() {
+        return source;
     }
 
     /**

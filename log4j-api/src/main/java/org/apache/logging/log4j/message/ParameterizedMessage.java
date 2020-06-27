@@ -78,6 +78,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     private transient Throwable throwable;
     private int[] indices;
     private int usedCount;
+    private StackTraceElement source;
 
     /**
      * Creates a parameterized message.
@@ -89,9 +90,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      */
     @Deprecated
     public ParameterizedMessage(final String messagePattern, final String[] arguments, final Throwable throwable) {
-        this.argArray = arguments;
-        this.throwable = throwable;
-        init(messagePattern);
+        this(null, messagePattern, arguments, throwable);
     }
 
     /**
@@ -102,6 +101,18 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param throwable A Throwable.
      */
     public ParameterizedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
+        this(null, messagePattern, arguments, throwable);
+    }
+
+    /**
+     * Creates a parameterized message.
+     * @param messagePattern The message "format" string. This will be a String containing "{}" placeholders
+     * where parameters should be substituted.
+     * @param arguments The arguments for substitution.
+     * @param throwable A Throwable.
+     */
+    public ParameterizedMessage(StackTraceElement source, final String messagePattern, final Object[] arguments, final Throwable throwable) {
+        this.source = source;
         this.argArray = arguments;
         this.throwable = throwable;
         init(messagePattern);
@@ -119,8 +130,24 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param arguments      the argument array to be converted.
      */
     public ParameterizedMessage(final String messagePattern, final Object... arguments) {
+        this((StackTraceElement) null, messagePattern, arguments);
+    }
+
+    /**
+     * Constructs a ParameterizedMessage which contains the arguments converted to String as well as an optional
+     * Throwable.
+     *
+     * <p>If the last argument is a Throwable and is NOT used up by a placeholder in the message pattern it is returned
+     * in {@link #getThrowable()} and won't be contained in the created String[].
+     * If it is used up {@link #getThrowable()} will return null even if the last argument was a Throwable!</p>
+     *
+     * @param messagePattern the message pattern that to be checked for placeholders.
+     * @param arguments      the argument array to be converted.
+     */
+    public ParameterizedMessage(final StackTraceElement source, final String messagePattern, final Object... arguments) {
         this.argArray = arguments;
         init(messagePattern);
+        this.source = source;
     }
 
     /**
@@ -129,7 +156,16 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param arg The parameter.
      */
     public ParameterizedMessage(final String messagePattern, final Object arg) {
-        this(messagePattern, new Object[]{arg});
+        this((StackTraceElement) null, messagePattern, new Object[]{arg});
+    }
+
+    /**
+     * Constructor with a pattern and a single parameter.
+     * @param messagePattern The message pattern.
+     * @param arg The parameter.
+     */
+    public ParameterizedMessage(final StackTraceElement source, final String messagePattern, final Object arg) {
+        this(source, messagePattern, new Object[]{arg});
     }
 
     /**
@@ -139,7 +175,17 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param arg1 The second parameter.
      */
     public ParameterizedMessage(final String messagePattern, final Object arg0, final Object arg1) {
-        this(messagePattern, new Object[]{arg0, arg1});
+        this((StackTraceElement) null, messagePattern, new Object[]{arg0, arg1});
+    }
+
+    /**
+     * Constructor with a pattern and two parameters.
+     * @param messagePattern The message pattern.
+     * @param arg0 The first parameter.
+     * @param arg1 The second parameter.
+     */
+    public ParameterizedMessage(final StackTraceElement source, final String messagePattern, final Object arg0, final Object arg1) {
+        this(source, messagePattern, new Object[]{arg0, arg1});
     }
 
     private void init(final String messagePattern) {
@@ -190,6 +236,11 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     @Override
     public Throwable getThrowable() {
         return throwable;
+    }
+
+    @Override
+    public StackTraceElement getSource() {
+        return source;
     }
 
     /**
@@ -328,7 +379,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     @Override
     public String toString() {
-        return "ParameterizedMessage[messagePattern=" + messagePattern + ", stringArgs=" +
+        return "ParameterizedMessage[source=" + source + ", messagePattern=" + messagePattern + ", stringArgs=" +
                 Arrays.toString(argArray) + ", throwable=" + throwable + ']';
     }
 }

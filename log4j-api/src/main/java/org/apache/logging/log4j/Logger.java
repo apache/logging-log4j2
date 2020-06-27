@@ -85,6 +85,15 @@ public interface Logger {
     void catching(Level level, Throwable t);
 
     /**
+     * Logs an exception or error that has been caught to a specific logging level, when the location
+     * of the log statement might be known at compile time.
+     *
+     * @param level The logging Level.
+     * @param t The Throwable.
+     */
+    void catching(StackTraceElement source, Level level, Throwable t);
+
+    /**
      * Logs an exception or error that has been caught. Normally, one may wish to provide additional information with an
      * exception while logging it; in these cases, one would not use this method. In other cases where simply logging
      * the fact that an exception was swallowed somewhere (e.g., at the top of the stack trace in a {@code main()}
@@ -93,6 +102,17 @@ public interface Logger {
      * @param t The Throwable.
      */
     void catching(Throwable t);
+
+    /**
+     * Logs an exception or error that has been caught, when the location of the log statement might be known at
+     * compile time.. Normally, one may wish to provide additional information with an exception while logging it; in
+     * these cases, one would not use this method. In other cases where simply logging the fact that an exception was
+     * swallowed somewhere (e.g., at the top of the stack trace in a {@code main()} method), this method is ideal for
+     * it.
+     *
+     * @param t The Throwable.
+     */
+    void catching(StackTraceElement source, Throwable t);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
@@ -2998,6 +3018,21 @@ public interface Logger {
     <T extends Throwable> T throwing(Level level, T t);
 
     /**
+     * Logs an exception or error to be thrown, when the location
+     * of the log statement might be known at compile time. This may be coded as:
+     *
+     * <pre>
+     * throw logger.throwing(source, Level.DEBUG, myException);
+     * </pre>
+     *
+     * @param <T> the Throwable type.
+     * @param level The logging Level.
+     * @param t The Throwable.
+     * @return the Throwable.
+     */
+    <T extends Throwable> T throwing(StackTraceElement source, Level level, T t);
+
+    /**
      * Logs an exception or error to be thrown. This may be coded as:
      *
      * <pre>
@@ -3009,6 +3044,20 @@ public interface Logger {
      * @return the Throwable.
      */
     <T extends Throwable> T throwing(T t);
+
+    /**
+     * Logs an exception or error to be thrown, when the location
+     * of the log statement might be known at compile time. This may be coded as:
+     *
+     * <pre>
+     * throw logger.throwing(source, myException);
+     * </pre>
+     *
+     * @param <T> the Throwable type.
+     * @param t The Throwable.
+     * @return the Throwable.
+     */
+    <T extends Throwable> T throwing(StackTraceElement source, T t);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#TRACE TRACE} level.
@@ -3551,6 +3600,8 @@ public interface Logger {
      */
     EntryMessage traceEntry();
 
+    EntryMessage traceEntry(StackTraceElement source);
+
     /**
      * Logs entry to a method along with its parameters. For example,
      *
@@ -3577,6 +3628,8 @@ public interface Logger {
      */
     EntryMessage traceEntry(String format, Object... params);
 
+    EntryMessage traceEntry(StackTraceElement source, String format, Object... params);
+
     /**
      * Logs entry to a method along with its parameters. For example,
      *
@@ -3595,6 +3648,8 @@ public interface Logger {
      * @since 2.6
      */
     EntryMessage traceEntry(Supplier<?>... paramSuppliers);
+
+    EntryMessage traceEntry(StackTraceElement source, Supplier<?>... paramSuppliers);
 
     /**
      * Logs entry to a method along with its parameters. For example,
@@ -3615,6 +3670,8 @@ public interface Logger {
      * @since 2.6
      */
     EntryMessage traceEntry(String format, Supplier<?>... paramSuppliers);
+
+    EntryMessage traceEntry(StackTraceElement source, String format, Supplier<?>... paramSuppliers);
 
     /**
      * Logs entry to a method using a Message to describe the parameters.
@@ -3639,12 +3696,21 @@ public interface Logger {
      */
     EntryMessage traceEntry(Message message);
 
+    EntryMessage traceEntry(StackTraceElement source, Message message);
+
     /**
      * Logs exit from a method. Used for methods that do not return anything.
      *
      * @since 2.6
      */
     void traceExit();
+
+    /**
+     * Logs exit from a method. Used for methods that do not return anything.
+     *
+     * @since
+     */
+    void traceExit(StackTraceElement source);
 
     /**
      * Logs exiting from a method with the result. This may be coded as:
@@ -3660,6 +3726,8 @@ public interface Logger {
      * @since 2.6
      */
     <R> R traceExit(R result);
+
+    <R> R traceExit(StackTraceElement source, R result);
 
     /**
      * Logs exiting from a method with the result. This may be coded as:
@@ -3677,6 +3745,8 @@ public interface Logger {
      */
     <R> R traceExit(String format, R result);
 
+    <R> R traceExit(StackTraceElement source, String format, R result);
+
     /**
      * Logs exiting from a method with no result. Allows custom formatting of the result. This may be coded as:
      *
@@ -3692,6 +3762,8 @@ public interface Logger {
      * @since 2.6
      */
     void traceExit(EntryMessage message);
+
+    void traceExit(StackTraceElement source, EntryMessage message);
 
     /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
@@ -3713,6 +3785,8 @@ public interface Logger {
      */
     <R> R traceExit(EntryMessage message, R result);
 
+    <R> R traceExit(StackTraceElement source, EntryMessage message, R result);
+
     /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
      *
@@ -3728,6 +3802,8 @@ public interface Logger {
      * @since 2.6
      */
     <R> R traceExit(Message message, R result);
+
+    <R> R traceExit(StackTraceElement source, Message message, R result);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.

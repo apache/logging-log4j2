@@ -35,11 +35,13 @@ public final class MementoMessage implements Message, StringBuilderFormattable {
     private final String formattedMessage;
     private final String format;
     private final Object[] parameters;
+    private final StackTraceElement source;
 
-    public MementoMessage(final String formattedMessage, final String format, final Object[] parameters) {
+    public MementoMessage(final StackTraceElement source, final String formattedMessage, final String format, final Object[] parameters) {
         this.formattedMessage = formattedMessage;
         this.format = format;
         this.parameters = parameters;
+        this.source = source;
     }
 
     @Override
@@ -70,6 +72,11 @@ public final class MementoMessage implements Message, StringBuilderFormattable {
     @Override
     public void formatTo(final StringBuilder buffer) {
         buffer.append(formattedMessage);
+    }
+
+    @Override
+    public StackTraceElement getSource() {
+        return source;
     }
 
     @Override

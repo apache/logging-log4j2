@@ -144,4 +144,12 @@ public final class SimpleMessageFactory extends AbstractMessageFactory {
             final Object p6, final Object p7, final Object p8, final Object p9) {
         return new SimpleMessage(message);
     }
+
+    /**
+     * @since
+     */
+    @Override
+    public Message newMessage(StackTraceElement source, String message, Object... params) {
+        return new SimpleMessage(source, message);
+    }
 }

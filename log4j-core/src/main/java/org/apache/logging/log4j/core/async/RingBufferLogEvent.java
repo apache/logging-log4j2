@@ -265,6 +265,13 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         return result;
     }
 
+    @Override
+    public StackTraceElement swapSource(StackTraceElement source) {
+        StackTraceElement original = this.location;
+        this.location = source;
+        return original;
+    }
+
     /*
      * @see ReusableMessage#getParameterCount
      */
@@ -285,7 +292,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     @Override
     public Message memento() {
         if (message == null) {
-            message = new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
+            message = new MementoMessage(getSource(), String.valueOf(messageText), messageFormat, getParameters());
         }
         return message;
     }

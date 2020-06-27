@@ -300,7 +300,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     @Override
     public Message memento() {
         if (message == null) {
-            message = new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
+            message = new MementoMessage(source, String.valueOf(messageText), messageFormat, getParameters());
         }
         return message;
     }
@@ -368,6 +368,13 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         }
         source = StackLocatorUtil.calcLocation(loggerFqcn);
         return source;
+    }
+
+    @Override
+    public StackTraceElement swapSource(StackTraceElement source) {
+        StackTraceElement originalSource = this.source;
+        this.source = source;
+        return originalSource;
     }
 
     @SuppressWarnings("unchecked")
