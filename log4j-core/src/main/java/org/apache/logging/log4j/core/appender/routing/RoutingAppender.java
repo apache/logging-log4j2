@@ -415,7 +415,7 @@ public final class RoutingAppender extends AbstractAppender {
 
     private static final class CreatedRouteAppenderControl extends RouteAppenderControl {
 
-        private volatile boolean pendingDeletion = false;
+        private volatile boolean pendingDeletion;
         private final AtomicInteger depth = new AtomicInteger();
 
         CreatedRouteAppenderControl(Appender appender) {
