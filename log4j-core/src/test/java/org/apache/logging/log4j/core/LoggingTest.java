@@ -86,11 +86,11 @@ public class LoggingTest {
         logger.info("This is a test");
         System.out.println(timer.stop());
         timer = new Timer("more", 100);
-        timer.start();
+/*        timer.start();
         for (int i=0; i < 100; ++i) {
             logger.info("This is another test");
         }
-        System.out.println(timer.stop());
+        System.out.println(timer.stop());*/
     }
 }
 

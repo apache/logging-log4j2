@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -43,6 +44,7 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
@@ -136,6 +138,7 @@ public class LoggerContext extends AbstractLifeCycle
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }
         this.configLocation = configLocn;
+        CompletableFuture.runAsync(ThreadContextDataInjector::initServiceProviders);
     }
 
     /**
@@ -164,6 +167,7 @@ public class LoggerContext extends AbstractLifeCycle
         } else {
             configLocation = null;
         }
+        CompletableFuture.runAsync(ThreadContextDataInjector::initServiceProviders);
     }
 
     public void addShutdownListener(LoggerContextShutdownAware listener) {

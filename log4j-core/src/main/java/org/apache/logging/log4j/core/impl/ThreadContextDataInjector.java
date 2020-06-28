@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -52,13 +54,45 @@ import org.apache.logging.log4j.util.StringMap;
  */
 public class ThreadContextDataInjector {
 
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * ContextDataProviders loaded via OSGi.
      */
     public static Collection<ContextDataProvider> contextDataProviders =
             new ConcurrentLinkedDeque<>();
+
+    private static volatile List<ContextDataProvider> serviceProviders = null;
+    private static final Lock providerLock = new ReentrantLock();
+
+    public static void initServiceProviders() {
+        if (serviceProviders == null) {
+            providerLock.lock();
+            try {
+                if (serviceProviders == null) {
+                    serviceProviders = getServiceProviders();
+                }
+            } finally {
+                providerLock.unlock();
+            }
+        }
+    }
+
+    private static List<ContextDataProvider> getServiceProviders() {
+        List<ContextDataProvider> providers = new ArrayList<>();
+        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+            try {
+                for (final ContextDataProvider provider : ServiceLoader.load(ContextDataProvider.class, classLoader)) {
+                    if (providers.stream().noneMatch((p) -> p.getClass().isAssignableFrom(provider.getClass()))) {
+                        providers.add(provider);
+                    }
+                }
+            } catch (final Throwable ex) {
+                LOGGER.debug("Unable to access Context Data Providers {}", ex.getMessage());
+            }
+        }
+        return providers;
+    }
 
     /**
      * Default {@code ContextDataInjector} for the legacy {@code Map<String, String>}-based ThreadContext (which is
@@ -248,17 +282,10 @@ public class ThreadContextDataInjector {
     }
 
     private static List<ContextDataProvider> getProviders() {
+        initServiceProviders();
         final List<ContextDataProvider> providers = new ArrayList<>(contextDataProviders);
-        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-            try {
-                for (final ContextDataProvider provider : ServiceLoader.load(ContextDataProvider.class, classLoader)) {
-                    if (providers.stream().noneMatch((p) -> p.getClass().isAssignableFrom(provider.getClass()))) {
-                        providers.add(provider);
-                    }
-                }
-            } catch (final Throwable ex) {
-                LOGGER.debug("Unable to access Context Data Providers {}", ex.getMessage());
-            }
+        if (serviceProviders != null) {
+            providers.addAll(serviceProviders);
         }
         return providers;
     }
