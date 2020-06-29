@@ -16,31 +16,9 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.io.File;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.message.StringFormatterMessageFactory;
-import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Timer;
 import org.junit.Before;
@@ -48,13 +26,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class LoggingTest {
 
