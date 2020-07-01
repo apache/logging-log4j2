@@ -34,7 +34,7 @@
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-appserver</projectDir>
     <tomcat.version>8.5.20</tomcat.version>
-    <jetty.version>8.2.0.v20160908</jetty.version> <!--  Jetty 9 requires Java 8 -->
+    <jetty.version>9.4.30.v20200611</jetty.version> <!--  Jetty 9 requires Java 8 -->
     <module.name>org.apache.logging.log4j.appserver</module.name>
   </properties>
 
