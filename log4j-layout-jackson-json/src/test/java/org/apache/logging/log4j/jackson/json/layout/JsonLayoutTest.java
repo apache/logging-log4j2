@@ -632,4 +632,18 @@ public class JsonLayoutTest {
 	private String toPropertySeparator(final boolean compact) {
         return compact ? ":" : " : ";
     }
+
+    @Test   // LOG4J2-2749 (#362)
+    public void testEmptyValuesAreIgnored() {
+        final AbstractJacksonLayout layout = JsonLayout
+                .newBuilder()
+                .setAdditionalFields(new KeyValuePair[] {
+                        new KeyValuePair("empty", "${ctx:empty:-}")
+                })
+                .setConfiguration(ctx.getConfiguration())
+                .build();
+        final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
+        assertFalse(str, str.contains("\"empty\""));
+    }
+
 }
