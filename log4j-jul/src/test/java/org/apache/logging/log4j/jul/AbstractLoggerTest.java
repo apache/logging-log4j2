@@ -85,6 +85,34 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
+    public void testLogFilter() throws Exception {
+        logger.setFilter(record -> false);
+        logger.severe("Informative message here.");
+        logger.warning("Informative message here.");
+        logger.info("Informative message here.");
+        logger.config("Informative message here.");
+        logger.fine("Informative message here.");
+        logger.finer("Informative message here.");
+        logger.finest("Informative message here.");
+        final List<LogEvent> events = eventAppender.getEvents();
+        assertThat(events, hasSize(0));
+    }
+
+    @Test
+    public void testAlteringLogFilter() throws Exception {
+        logger.setFilter(record -> { record.setMessage("This is not the message you are looking for."); return true; });
+        logger.info("Informative message here.");
+        final List<LogEvent> events = eventAppender.getEvents();
+        assertThat(events, hasSize(1));
+        final LogEvent event = events.get(0);
+        assertThat(event, instanceOf(Log4jLogEvent.class));
+        assertEquals(Level.INFO, event.getLevel());
+        assertEquals(LOGGER_NAME, event.getLoggerName());
+        assertEquals("This is not the message you are looking for.", event.getMessage().getFormattedMessage());
+        assertEquals(ApiLogger.class.getName(), event.getLoggerFqcn());
+    }
+
+    @Test
     public void testLogParamMarkers() {
         final Logger flowLogger = Logger.getLogger("TestFlow");
         flowLogger.logp(java.util.logging.Level.FINER, "sourceClass", "sourceMethod", "ENTER {0}", "params");

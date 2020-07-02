@@ -48,6 +48,7 @@ public class ApiLoggerTest extends AbstractLoggerTest {
     @Before
     public void setUp() throws Exception {
         logger = Logger.getLogger(LOGGER_NAME);
+        logger.setFilter(null);
         assertThat(logger.getLevel(), equalTo(java.util.logging.Level.FINE));
         eventAppender = ListAppender.getListAppender("TestAppender");
         flowAppender = ListAppender.getListAppender("FlowAppender");
