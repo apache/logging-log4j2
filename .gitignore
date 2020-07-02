@@ -27,3 +27,4 @@ target/
 velocity.log
 felix-cache/
 bin/
+.mvn/wrapper/MavenWrapperDownloader.java
