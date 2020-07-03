@@ -847,7 +847,7 @@
         <groupId>com.github.tomakehurst</groupId>
         <artifactId>wiremock</artifactId>
         <scope>test</scope>
-        <version>2.19.0</version>
+        <version>2.27.1</version>
       </dependency>
       <!-- Used for compressing to formats other than zip and gz -->
       <dependency>
