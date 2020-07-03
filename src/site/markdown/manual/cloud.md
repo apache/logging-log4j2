@@ -48,7 +48,8 @@ per logging call vs 1.5 microseconds when writing to the file.
 1. When performing audit logging using a framework such as log4j-audit guaranteed delivery of the audit events
 is required. Many of the options for writing the output, including writing to the standard output stream, do
 not guarantee delivery. In these cases the event must be delivered to a "forwarder" that acknowledges receipt
-only when it has placed the event in durable storage, such as what Apache Flume or Apache Kafka will do.
+only when it has placed the event in durable storage, such as what [Apache Flume](https://flume.apache.org/) 
+or [Apache Kafka](https://kafka.apache.org/) will do.
 
 ## Logging Approaches
 
@@ -58,7 +59,7 @@ be used for reporting and alerting. There are many ways to forward and collect e
 log analysis tools. 
 
 Note that any approach that bypasses Docker's logging drivers requires Log4j's 
-[Docker Loookup](lookups.html#DockerLookup) to allow Docker attributes to be injected into the log events.  
+[Docker Lookup](lookups.html#DockerLookup) to allow Docker attributes to be injected into the log events.  
 
 ### Logging to the Standard Output Stream
 
@@ -90,9 +91,9 @@ delivered so this method should not be used if a highly available solution is re
 ### Logging to a File
 
 While this is not the recommended 12-Factor approach, it performs very well. However, it requires that the 
-application declare a volume where the log files will reside and then configure the log forwarder to tail 
+application declares a volume where the log files will reside and then configures the log forwarder to tail 
 those files. Care must also be taken to automatically manage the disk space used for the logs, which Log4j 
-can perform via the Delete action on the [RollingFileAppender](appenders.html#RollingFileAppender).
+can perform via the "Delete" action on the [RollingFileAppender](appenders.html#RollingFileAppender).
 
 ![File](../images/DockerLogFile.png "Logging to a File")
 
@@ -400,7 +401,7 @@ Log4j's Kubernetes support may also be found at [Log4j-Kubernetes](../log4j-kube
 
 ## Appender Performance
 The numbers in the table below represent how much time in seconds was required for the application to 
-call logger.debug 100,000 times. These numbers only include the time taken to deliver to the specifically 
+call `logger.debug(...)` 100,000 times. These numbers only include the time taken to deliver to the specifically 
 noted endpoint and many not include the actual time required before they are available for viewing. All 
 measurements were performed on a MacBook Pro with a 2.9GHz Intel Core I9 processor with 6 physical and 12 
 logical cores, 32GB of 2400 MHz DDR4 RAM, and 1TB of Apple SSD storage. The VM used by Docker was managed 
