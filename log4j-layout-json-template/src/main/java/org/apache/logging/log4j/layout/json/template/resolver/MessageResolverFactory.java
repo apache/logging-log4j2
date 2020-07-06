@@ -35,7 +35,7 @@ final class MessageResolverFactory implements EventResolverFactory<MessageResolv
     public MessageResolver create(
             final EventResolverContext context,
             final TemplateResolverConfig config) {
-        return new MessageResolver(config);
+        return new MessageResolver(context.getConfiguration(), config);
     }
 
 }

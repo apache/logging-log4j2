@@ -215,7 +215,11 @@ public class JsonTemplateLayout implements StringLayout {
         final StringBuilder stringBuilder = jsonWriter.getStringBuilder();
         try {
             eventResolver.resolve(event, jsonWriter);
-            stringBuilder.append(eventDelimiter);
+            if (eventDelimiter != null && eventDelimiter.equalsIgnoreCase("null")) {
+                stringBuilder.append('\0');
+            } else {
+                stringBuilder.append(eventDelimiter);
+            }
             return stringBuilder.toString();
         } finally {
             contextRecycler.release(context);
@@ -235,7 +239,11 @@ public class JsonTemplateLayout implements StringLayout {
 
             // Render the JSON.
             eventResolver.resolve(event, jsonWriter);
-            stringBuilder.append(eventDelimiter);
+            if (eventDelimiter != null && eventDelimiter.equalsIgnoreCase("null")) {
+                stringBuilder.append('\0');
+            } else {
+                stringBuilder.append(eventDelimiter);
+            }
 
             // Write to the destination.
             if (encoder == null) {
@@ -635,7 +643,7 @@ public class JsonTemplateLayout implements StringLayout {
 
             @org.apache.logging.log4j.plugins.PluginBuilderAttribute
             private String value;
-            
+
             @org.apache.logging.log4j.plugins.PluginBuilderAttribute
             private Type type = Type.STRING;
 
