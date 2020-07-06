@@ -630,10 +630,13 @@ public class JsonTemplateLayout implements StringLayout {
         public static class Builder
                 implements org.apache.logging.log4j.core.util.Builder<EventTemplateAdditionalField> {
 
+            @org.apache.logging.log4j.plugins.PluginBuilderAttribute
             private String key;
 
+            @org.apache.logging.log4j.plugins.PluginBuilderAttribute
             private String value;
-
+            
+            @org.apache.logging.log4j.plugins.PluginBuilderAttribute
             private Type type = Type.STRING;
 
             public Builder setKey(final String key) {
