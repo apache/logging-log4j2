@@ -20,6 +20,6 @@ interface TemplateResolverFactory<V, C extends TemplateResolverContext<V, C>, R 
 
     String getName();
 
-    R create(C context, String key);
+    R create(C context, TemplateResolverConfig config);
 
 }

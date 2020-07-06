@@ -16,24 +16,28 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-final class ContextDataResolverFactory implements EventResolverFactory<ContextDataResolver> {
+final class ThreadContextStackResolverFactory
+        implements EventResolverFactory<ThreadContextStackResolver> {
 
-    private static final ContextDataResolverFactory INSTANCE = new ContextDataResolverFactory();
+    private static final ThreadContextStackResolverFactory INSTANCE
+            = new ThreadContextStackResolverFactory();
 
-    private ContextDataResolverFactory() {}
+    private ThreadContextStackResolverFactory() {}
 
-    static ContextDataResolverFactory getInstance() {
+    static ThreadContextStackResolverFactory getInstance() {
         return INSTANCE;
     }
 
     @Override
     public String getName() {
-        return ContextDataResolver.getName();
+        return ThreadContextStackResolver.getName();
     }
 
     @Override
-    public ContextDataResolver create(final EventResolverContext context, final String key) {
-        return new ContextDataResolver(context, key);
+    public ThreadContextStackResolver create(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        return new ThreadContextStackResolver(config);
     }
 
 }

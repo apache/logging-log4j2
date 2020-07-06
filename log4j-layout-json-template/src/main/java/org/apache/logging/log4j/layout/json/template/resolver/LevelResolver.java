@@ -26,6 +26,52 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Level resolver.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config         = field , [ severity ]
+ * field          = "field" -> ( "name" | "severity" )
+ * severity       = severity-field
+ * severity-field = "field" -> ( "keyword" | "code" )
+ * </pre>
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the level name:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "level",
+ *   "field": "name"
+ * }
+ * </pre>
+ *
+ * Resolve the severity keyword:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "level",
+ *   "field": "severity",
+ *   "severity": {
+ *     "field": "keyword"
+ *   }
+ * }
+ *
+ * Resolve the severity code:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "level",
+ *   "field": "severity",
+ *   "severity": {
+ *     "field": "code"
+ *   }
+ * }
+ * </pre>
+ */
 final class LevelResolver implements EventResolver {
 
     private static String[] SEVERITY_CODE_RESOLUTION_BY_STANDARD_LEVEL_ORDINAL;
@@ -56,16 +102,31 @@ final class LevelResolver implements EventResolver {
 
     private final EventResolver internalResolver;
 
-    LevelResolver(final EventResolverContext context, final String key) {
+    LevelResolver(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        this.internalResolver = createResolver(context, config);
+    }
+
+    private static EventResolver createResolver(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
         final JsonWriter jsonWriter = context.getJsonWriter();
-        if (key == null) {
-            internalResolver = createNameResolver(jsonWriter);
-        } else if ("severity".equals(key)) {
-            internalResolver = createSeverityNameResolver(jsonWriter);
-        } else if ("severity:code".equals(key)) {
-            internalResolver = SEVERITY_CODE_RESOLVER;
-        } else {
-            throw new IllegalArgumentException("unknown key: " + key);
+        final String fieldName = config.getString("field");
+        switch (fieldName) {
+            case "name": return createNameResolver(jsonWriter);
+            case "severity": {
+                final String severityFieldName =
+                        config.getString(new String[]{"severity", "field"});
+                switch (severityFieldName) {
+                    case "keyword": return createSeverityKeywordResolver(jsonWriter);
+                    case "code": return SEVERITY_CODE_RESOLVER;
+                    default:
+                        throw new IllegalArgumentException(
+                                "unknown severity field: " + config);
+                }
+            }
+            default: throw new IllegalArgumentException("unknown field: " + config);
         }
     }
 
@@ -85,15 +146,15 @@ final class LevelResolver implements EventResolver {
         };
     }
 
-    private static EventResolver createSeverityNameResolver(
+    private static EventResolver createSeverityKeywordResolver(
             final JsonWriter contextJsonWriter) {
         final Map<Level, String> resolutionByLevel = Arrays
                 .stream(Level.values())
                 .collect(Collectors.toMap(
                         Function.identity(),
                         (final Level level) -> contextJsonWriter.use(() -> {
-                            final String severityName = Severity.getSeverity(level).name();
-                            contextJsonWriter.writeString(severityName);
+                            final String severityKeyword = Severity.getSeverity(level).name();
+                            contextJsonWriter.writeString(severityKeyword);
                         })));
         return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
             final String resolution = resolutionByLevel.get(logEvent.getLevel());

@@ -32,7 +32,9 @@ final class EndOfBatchResolverFactory implements EventResolverFactory<EndOfBatch
     }
 
     @Override
-    public EndOfBatchResolver create(final EventResolverContext context, String key) {
+    public EndOfBatchResolver create(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
         return EndOfBatchResolver.getInstance();
     }
 

@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
-final class ExceptionResolverFactory implements EventResolverFactory<ExceptionResolver> {
+final class ExceptionResolverFactory
+        implements EventResolverFactory<ExceptionResolver> {
 
-    private static final ExceptionResolverFactory INSTANCE = new ExceptionResolverFactory();
+    private static final ExceptionResolverFactory INSTANCE =
+            new ExceptionResolverFactory();
 
     private ExceptionResolverFactory() {}
 
@@ -32,8 +34,10 @@ final class ExceptionResolverFactory implements EventResolverFactory<ExceptionRe
     }
 
     @Override
-    public ExceptionResolver create(final EventResolverContext context, final String key) {
-        return new ExceptionResolver(context, key);
+    public ExceptionResolver create(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        return new ExceptionResolver(context, config);
     }
 
 }

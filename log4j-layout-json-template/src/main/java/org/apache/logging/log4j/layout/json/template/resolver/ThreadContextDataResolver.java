@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,67 +19,143 @@ package org.apache.logging.log4j.layout.json.template.resolver;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.layout.json.template.util.Recycler;
-import org.apache.logging.log4j.layout.json.template.util.StringParameterParser;
+import org.apache.logging.log4j.layout.json.template.util.RecyclerFactory;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * Add Mapped Diagnostic Context (MDC).
+ * Mapped Diagnostic Context (MDC), aka. Thread Context Data, resolver.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config        = singleAccess | multiAccess
+ *
+ * singleAccess  = key , [ stringified ]
+ * key           = "key" -> string
+ * stringified   = "stringified" -> boolean
+ *
+ * multiAccess   = [ pattern ] , [ flatten ] , [ stringified ]
+ * pattern       = "pattern" -> string
+ * flatten       = "flatten" -> ( boolean | flattenConfig )
+ * flattenConfig = [ flattenPrefix ]
+ * flattenPrefix = "prefix" -> string
+ * </pre>
+ *
+ * Note that <tt>singleAccess</tt> resolves the MDC value as is, whilst
+ * <tt>multiAccess</tt> resolves a multitude of MDC values. If <tt>flatten</tt>
+ * is provided, <tt>multiAccess</tt> merges the values with the parent,
+ * otherwise creates a new JSON object containing the values.
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the <tt>userRole</tt> MDC value:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "mdc",
+ *   "key": "userRole"
+ * }
+ * </pre>
+ *
+ * Resolve the string representation of the <tt>userRank</tt> MDC value:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "mdc",
+ *   "key": "userRank",
+ *   "stringified": true
+ * }
+ * </pre>
+ *
+ * Resolve all MDC entries into an object:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "mdc"
+ * }
+ * </pre>
+ *
+ * Resolve all MDC entries into an object such that values are converted to
+ * string:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "mdc",
+ *   "stringified": true
+ * }
+ * </pre>
+ *
+ * Merge all MDC entries whose keys are matching with the
+ * <tt>user(Role|Rank)</tt> regex into the parent:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "mdc",
+ *   "flatten": true,
+ *   "pattern": "user(Role|Rank)"
+ * }
+ * </pre>
+ *
+ * After converting the corresponding entries to string, merge all MDC entries
+ * to parent such that keys are prefixed with <tt>_</tt>:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "mdc",
+ *   "stringified": true,
+ *   "flatten": {
+ *     "prefix": "_"
+ *   }
+ * }
+ * </pre>
  */
-final class ContextDataResolver implements EventResolver {
-
-    private enum Param {;
-
-        private static final String FLATTEN = "flatten";
-
-        private static final String PATTERN = "pattern";
-
-        private static final String KEY = "key";
-
-        private static final String STRINGIFY = "stringify";
-
-    }
-
-    private static final Set<String> PARAMS =
-            new LinkedHashSet<>(Arrays.asList(
-                    Param.FLATTEN,
-                    Param.PATTERN,
-                    Param.KEY,
-                    Param.STRINGIFY));
+final class ThreadContextDataResolver implements EventResolver {
 
     private final EventResolver internalResolver;
 
-    ContextDataResolver(final EventResolverContext context, final String spec) {
-        this.internalResolver = createResolver(context, spec);
+    ThreadContextDataResolver(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        this.internalResolver = createResolver(context, config);
     }
 
     private static EventResolver createResolver(
             final EventResolverContext context,
-            final String spec) {
-        final Map<String, StringParameterParser.Value> params = StringParameterParser.parse(spec, PARAMS);
-        final StringParameterParser.Value keyValue = params.get(Param.KEY);
-        if (keyValue != null) {
-            if (params.size() != 1) {
-                throw new IllegalArgumentException(
-                        "MDC key access doesn't take arguments: " + spec);
-            }
-            if (keyValue instanceof StringParameterParser.NullValue) {
-                throw new IllegalArgumentException("missing MDC key: " + spec);
-            }
-            final String key = keyValue.toString();
-            return createKeyResolver(key);
+            final TemplateResolverConfig config) {
+        final Object flattenObject = config.getObject("flatten");
+        final boolean flatten;
+        if (flattenObject == null) {
+            flatten = false;
+        } else if (flattenObject instanceof Boolean) {
+            flatten = (boolean) flattenObject;
+        } else if (flattenObject instanceof Map) {
+            flatten = true;
         } else {
-            return createResolver(context, spec, params);
+            throw new IllegalArgumentException("invalid flatten option: " + config);
+        }
+        final String key = config.getString("key");
+        final String prefix = config.getString(new String[] {"flatten", "prefix"});
+        final String pattern = config.getString("pattern");
+        final boolean stringified = config.getBoolean("stringified", false);
+        if (key != null) {
+            if (flatten) {
+                throw new IllegalArgumentException(
+                        "both key and flatten options cannot be supplied: " + config);
+            }
+            return createKeyResolver(key, stringified);
+        } else {
+            final RecyclerFactory recyclerFactory = context.getRecyclerFactory();
+            return createResolver(recyclerFactory, flatten, prefix, pattern, stringified);
         }
     }
 
-    private static EventResolver createKeyResolver(final String key) {
+    private static EventResolver createKeyResolver(
+            final String key,
+            final boolean stringified) {
         return new EventResolver() {
 
             @Override
@@ -92,62 +168,40 @@ final class ContextDataResolver implements EventResolver {
             public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
                 final ReadOnlyStringMap contextData = logEvent.getContextData();
                 final Object value = contextData == null ? null : contextData.getValue(key);
-                jsonWriter.writeValue(value);
+                if (stringified) {
+                    final String valueString = String.valueOf(value);
+                    jsonWriter.writeString(valueString);
+                } else {
+                    jsonWriter.writeValue(value);
+                }
             }
 
         };
     }
 
     private static EventResolver createResolver(
-            final EventResolverContext context,
-            final String spec,
-            final Map<String, StringParameterParser.Value> params) {
+            final RecyclerFactory recyclerFactory,
+            final boolean flatten,
+            final String prefix,
+            final String pattern,
+            final boolean stringified) {
 
-        // Read the flatten prefix.
-        final StringParameterParser.Value flattenValue = params.get(Param.FLATTEN);
-        final boolean flatten;
-        final String prefix;
-        if (flattenValue != null) {
-            flatten = true;
-            prefix = flattenValue.toString();
-        } else {
-            flatten = false;
-            prefix = null;
-        }
-
-        // Read the pattern.
-        final StringParameterParser.Value patternValue = params.get(Param.PATTERN);
-        final Pattern pattern;
-        if (patternValue == null) {
-            pattern = null;
-        } else if (patternValue instanceof StringParameterParser.NullValue) {
-            throw new IllegalArgumentException("missing MDC pattern: " + spec);
-        } else {
-            pattern = Pattern.compile(patternValue.toString());
-        }
-
-        // Read the stringify flag.
-        final StringParameterParser.Value stringifyValue = params.get(Param.STRINGIFY);
-        final boolean stringify;
-        if (stringifyValue == null) {
-            stringify = false;
-        } else if (!(stringifyValue instanceof StringParameterParser.NullValue)) {
-            throw new IllegalArgumentException(
-                    "MDC stringify directive doesn't take parameters: " + spec);
-        } else {
-            stringify = true;
-        }
+        // Compile the pattern.
+        final Pattern compiledPattern =
+                pattern == null
+                        ? null
+                        : Pattern.compile(pattern);
 
         // Create the recycler for the loop context.
         final Recycler<LoopContext> loopContextRecycler =
-                context.getRecyclerFactory().create(() -> {
+                recyclerFactory.create(() -> {
                     final LoopContext loopContext = new LoopContext();
                     if (prefix != null) {
                         loopContext.prefix = prefix;
                         loopContext.prefixedKey = new StringBuilder(prefix);
                     }
-                    loopContext.pattern = pattern;
-                    loopContext.stringify = stringify;
+                    loopContext.pattern = compiledPattern;
+                    loopContext.stringified = stringified;
                     return loopContext;
                 });
 
@@ -222,7 +276,7 @@ final class ContextDataResolver implements EventResolver {
 
         private Pattern pattern;
 
-        private boolean stringify;
+        private boolean stringified;
 
         private JsonWriter jsonWriter;
 
@@ -259,7 +313,7 @@ final class ContextDataResolver implements EventResolver {
                     loopContext.prefixedKey.append(key);
                     loopContext.jsonWriter.writeObjectKey(loopContext.prefixedKey);
                 }
-                if (loopContext.stringify && !(value instanceof String)) {
+                if (loopContext.stringified && !(value instanceof String)) {
                     final String valueString = String.valueOf(value);
                     loopContext.jsonWriter.writeString(valueString);
                 } else {

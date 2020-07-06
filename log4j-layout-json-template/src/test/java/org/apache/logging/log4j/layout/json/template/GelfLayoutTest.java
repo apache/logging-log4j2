@@ -4,11 +4,12 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.GelfLayout;
-import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.layout.json.template.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.data.Percentage;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -30,10 +31,12 @@ public class GelfLayoutTest {
                             .EventTemplateAdditionalFields
                             .newBuilder()
                             .setAdditionalFields(
-                                    new KeyValuePair[]{
-                                            new KeyValuePair(
-                                                    "host",
-                                                    HOST_NAME)
+                                    new EventTemplateAdditionalField[]{
+                                            EventTemplateAdditionalField
+                                                    .newBuilder()
+                                                    .setKey("host")
+                                                    .setValue(HOST_NAME)
+                                                    .build()
                                     })
                             .build())
             .build();
@@ -46,39 +49,37 @@ public class GelfLayoutTest {
             .build();
 
     @Test
-    public void test_lite_log_events() throws Exception {
+    public void test_lite_log_events() {
         final List<LogEvent> logEvents = LogEventFixture.createLiteLogEvents(1_000);
         test(logEvents);
     }
 
     @Test
-    public void test_full_log_events() throws Exception {
+    public void test_full_log_events() {
         final List<LogEvent> logEvents = LogEventFixture.createFullLogEvents(1_000);
         test(logEvents);
     }
 
-    private static void test(final Collection<LogEvent> logEvents) throws Exception {
+    private static void test(final Collection<LogEvent> logEvents) {
         for (final LogEvent logEvent : logEvents) {
             test(logEvent);
         }
     }
 
-    private static void test(final LogEvent logEvent) throws Exception {
+    private static void test(final LogEvent logEvent) {
         final Map<String, Object> jsonTemplateLayoutMap = renderUsingJsonTemplateLayout(logEvent);
         final Map<String, Object> gelfLayoutMap = renderUsingGelfLayout(logEvent);
-        verifyTimestamp(jsonTemplateLayoutMap, gelfLayoutMap);
+        verifyTimestamp(logEvent.getInstant(), jsonTemplateLayoutMap, gelfLayoutMap);
         Assertions.assertThat(jsonTemplateLayoutMap).isEqualTo(gelfLayoutMap);
     }
 
     private static Map<String, Object> renderUsingJsonTemplateLayout(
-            final LogEvent logEvent)
-            throws Exception {
+            final LogEvent logEvent) {
         return renderUsing(logEvent, JSON_TEMPLATE_LAYOUT);
     }
 
     private static Map<String, Object> renderUsingGelfLayout(
-            final LogEvent logEvent)
-            throws Exception {
+            final LogEvent logEvent) {
         return renderUsing(logEvent, GELF_LAYOUT);
     }
 
@@ -86,17 +87,23 @@ public class GelfLayoutTest {
      * Handle timestamps individually to avoid floating-point comparison hiccups.
      */
     private static void verifyTimestamp(
+            final Instant logEventInstant,
             final Map<String, Object> jsonTemplateLayoutMap,
             final Map<String, Object> gelfLayoutMap) {
-        final Number jsonTemplateLayoutTimestamp =
-                (Number) jsonTemplateLayoutMap.remove("timestamp");
-        final Number gelfLayoutTimestamp =
-                (Number) gelfLayoutMap.remove("timestamp");
+        final BigDecimal jsonTemplateLayoutTimestamp =
+                (BigDecimal) jsonTemplateLayoutMap.remove("timestamp");
+        final BigDecimal gelfLayoutTimestamp =
+                (BigDecimal) gelfLayoutMap.remove("timestamp");
+        final String description = String.format(
+                "instantEpochSecs=%d.%d, jsonTemplateLayoutTimestamp=%s, gelfLayoutTimestamp=%s",
+                logEventInstant.getEpochSecond(),
+                logEventInstant.getNanoOfSecond(),
+                jsonTemplateLayoutTimestamp,
+                gelfLayoutTimestamp);
         Assertions
-                .assertThat(jsonTemplateLayoutTimestamp.doubleValue())
-                .isCloseTo(
-                        gelfLayoutTimestamp.doubleValue(),
-                        Percentage.withPercentage(0.01));
+                .assertThat(jsonTemplateLayoutTimestamp.compareTo(gelfLayoutTimestamp))
+                .as(description)
+                .isEqualTo(0);
     }
 
 }

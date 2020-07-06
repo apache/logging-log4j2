@@ -32,8 +32,10 @@ final class ThreadResolverFactory implements EventResolverFactory<ThreadResolver
     }
 
     @Override
-    public ThreadResolver create(final EventResolverContext context, final String key) {
-        return new ThreadResolver(key);
+    public ThreadResolver create(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        return new ThreadResolver(config);
     }
 
 }

@@ -36,8 +36,8 @@ final class StackTraceElementObjectResolverFactory
     @Override
     public StackTraceElementObjectResolver create(
             final StackTraceElementObjectResolverContext context,
-            final String key) {
-        return new StackTraceElementObjectResolver(key);
+            final TemplateResolverConfig config) {
+        return new StackTraceElementObjectResolver(config);
     }
 
 }

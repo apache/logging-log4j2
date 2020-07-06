@@ -20,6 +20,26 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
+/**
+ * A {@link Marker} resolver.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config = "field" -> "name"
+ * </pre>
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the marker name:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "marker",
+ *   "field": "name"
+ * }
+ * </pre>
+ */
 final class MarkerResolver implements EventResolver {
 
     private static final TemplateResolver<LogEvent> NAME_RESOLVER =
@@ -34,15 +54,17 @@ final class MarkerResolver implements EventResolver {
 
     private final TemplateResolver<LogEvent> internalResolver;
 
-    MarkerResolver(final String key) {
-        this.internalResolver = createInternalResolver(key);
+    MarkerResolver(final TemplateResolverConfig config) {
+        this.internalResolver = createInternalResolver(config);
     }
 
-    private TemplateResolver<LogEvent> createInternalResolver(final String key) {
-        if ("name".equals(key)) {
+    private TemplateResolver<LogEvent> createInternalResolver(
+            final TemplateResolverConfig config) {
+        final String fieldName = config.getString("field");
+        if ("name".equals(fieldName)) {
             return NAME_RESOLVER;
         }
-        throw new IllegalArgumentException("unknown key: " + key);
+        throw new IllegalArgumentException("unknown field: " + config);
     }
 
     static String getName() {

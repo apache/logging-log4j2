@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.layout.json.template.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.layout.json.template.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.layout.json.template.util.JsonReader;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
@@ -28,21 +28,48 @@ import java.util.stream.Collectors;
 
 public enum TemplateResolvers {;
 
+    private static final String RESOLVER_FIELD_NAME = "$resolver";
+
+    private static abstract class UnresolvableTemplateResolver
+            implements TemplateResolver<Object> {
+
+        @Override
+        public final boolean isResolvable() {
+            return false;
+        }
+
+        @Override
+        public final boolean isResolvable(Object value) {
+            return false;
+        }
+
+    }
+
     private static final TemplateResolver<?> EMPTY_ARRAY_RESOLVER =
-            (final Object ignored, final JsonWriter jsonWriter) -> {
-                jsonWriter.writeArrayStart();
-                jsonWriter.writeArrayEnd();
+            new UnresolvableTemplateResolver() {
+                @Override
+                public void resolve(final Object value, final JsonWriter jsonWriter) {
+                    jsonWriter.writeArrayStart();
+                    jsonWriter.writeArrayEnd();
+                }
             };
 
     private static final TemplateResolver<?> EMPTY_OBJECT_RESOLVER =
-            (final Object ignored, final JsonWriter jsonWriter) -> {
-                jsonWriter.writeObjectStart();
-                jsonWriter.writeObjectEnd();
+            new UnresolvableTemplateResolver() {
+                @Override
+                public void resolve(final Object value, final JsonWriter jsonWriter) {
+                    jsonWriter.writeObjectStart();
+                    jsonWriter.writeObjectEnd();
+                }
             };
 
     private static final TemplateResolver<?> NULL_RESOLVER =
-            (final Object ignored, final JsonWriter jsonWriter) ->
+            new UnresolvableTemplateResolver() {
+                @Override
+                public void resolve(final Object value, final JsonWriter jsonWriter) {
                     jsonWriter.writeNull();
+                }
+            };
 
     public static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofTemplate(
             final C context,
@@ -60,33 +87,62 @@ public enum TemplateResolvers {;
         // Append the additional fields.
         if (context instanceof EventResolverContext) {
             final EventResolverContext eventResolverContext = (EventResolverContext) context;
-            final KeyValuePair[] additionalFields = eventResolverContext.getAdditionalFields();
-            if (additionalFields != null) {
-
-                // Check that the root is an object node.
-                final Map<String, Object> objectNode;
-                try {
-                    @SuppressWarnings("unchecked")
-                    final Map<String, Object> map = (Map<String, Object>) node;
-                    objectNode = map;
-                } catch (final ClassCastException error) {
-                    final String message = String.format(
-                            "was expecting an object to merge additional fields (class=%s)",
-                            node.getClass().getName());
-                    throw new IllegalArgumentException(message);
-                }
-
-                // Merge additional fields.
-                for (final KeyValuePair additionalField : additionalFields) {
-                    objectNode.put(additionalField.getKey(), additionalField.getValue());
-                }
-
-            }
+            final EventTemplateAdditionalField[] additionalFields = eventResolverContext.getAdditionalFields();
+            appendAdditionalFields(node, additionalFields);
         }
 
         // Resolve the template.
         return ofObject(context, node);
 
+    }
+
+    private static void appendAdditionalFields(
+            final Object node,
+            EventTemplateAdditionalField[] additionalFields) {
+        if (additionalFields.length > 0) {
+
+            // Check that the root is an object node.
+            final Map<String, Object> objectNode;
+            try {
+                @SuppressWarnings("unchecked")
+                final Map<String, Object> map = (Map<String, Object>) node;
+                objectNode = map;
+            } catch (final ClassCastException error) {
+                final String message = String.format(
+                        "was expecting an object to merge additional fields: %s",
+                        node.getClass().getName());
+                throw new IllegalArgumentException(message);
+            }
+
+            // Merge additional fields.
+            for (final EventTemplateAdditionalField additionalField : additionalFields) {
+                final String additionalFieldKey = additionalField.getKey();
+                final Object additionalFieldValue;
+                switch (additionalField.getType()) {
+                    case STRING:
+                        additionalFieldValue = additionalField.getValue();
+                        break;
+                    case JSON:
+                        try {
+                            additionalFieldValue =  JsonReader.read(additionalField.getValue());
+                        } catch (final Exception error) {
+                            final String message = String.format(
+                                    "failed reading JSON provided by additional field: %s",
+                                    additionalFieldKey);
+                            throw new IllegalArgumentException(message, error);
+                        }
+                        break;
+                    default: {
+                        final String message = String.format(
+                                "unknown type %s for additional field: %s",
+                                additionalFieldKey, additionalField.getType());
+                        throw new IllegalArgumentException(message);
+                    }
+                }
+                objectNode.put(additionalFieldKey, additionalFieldValue);
+            }
+
+        }
     }
 
     private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofObject(
@@ -167,6 +223,11 @@ public enum TemplateResolvers {;
             final C context,
             final Map<String, Object> map) {
 
+        // Check if this is a resolver request.
+        if (map.containsKey(RESOLVER_FIELD_NAME)) {
+            return ofResolver(context, map);
+        }
+
         // Create resolver for each object field.
         final List<String> fieldNames = new ArrayList<>();
         final List<TemplateResolver<V>> fieldResolvers = new ArrayList<>();
@@ -200,58 +261,99 @@ public enum TemplateResolvers {;
                 })
                 .collect(Collectors.toList());
 
-        // Create a parent resolver collecting each object field resolver execution.
-        return (value, jsonWriter) -> {
-            final StringBuilder jsonWriterStringBuilder = jsonWriter.getStringBuilder();
-            jsonWriter.writeObjectStart();
-            for (int resolvedFieldCount = 0, fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
-                final TemplateResolver<V> fieldResolver = fieldResolvers.get(fieldIndex);
-                final boolean resolvable = fieldResolver.isResolvable(value);
-                if (!resolvable) {
-                    continue;
+        return new TemplateResolver<V>() {
+
+            @Override
+            public boolean isResolvable() {
+                // We have already excluded unresolvable ones while collecting
+                // the resolvers. Hence it is safe to return true here.
+                return true;
+            }
+
+            /**
+             * The parent resolver checking if each child is resolvable given
+             * the passed {@code value}.
+             *
+             * This is an optimization to skip the rendering of a parent if all
+             * its children are not resolvable given the passed {@code value}.
+             */
+            @Override
+            public boolean isResolvable(final V value) {
+                for (int fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
+                    final TemplateResolver<V> fieldResolver = fieldResolvers.get(fieldIndex);
+                    final boolean resolvable = fieldResolver.isResolvable(value);
+                    if (resolvable) {
+                        return true;
+                    }
                 }
-                final boolean succeedingEntry = resolvedFieldCount > 0;
-                if (fieldResolver.isFlattening()) {
-                    final int initLength = jsonWriterStringBuilder.length();
-                    fieldResolver.resolve(value, jsonWriter, succeedingEntry);
-                    final boolean resolved = jsonWriterStringBuilder.length() > initLength;
-                    if (resolved) {
+                return false;
+            }
+
+            /**
+             * The parent resolver combining all child resolver executions.
+              */
+            @Override
+            public void resolve(final V value, final JsonWriter jsonWriter) {
+                final StringBuilder jsonWriterStringBuilder = jsonWriter.getStringBuilder();
+                jsonWriter.writeObjectStart();
+                for (int resolvedFieldCount = 0, fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
+                    final TemplateResolver<V> fieldResolver = fieldResolvers.get(fieldIndex);
+                    final boolean resolvable = fieldResolver.isResolvable(value);
+                    if (!resolvable) {
+                        continue;
+                    }
+                    final boolean succeedingEntry = resolvedFieldCount > 0;
+                    final boolean flattening = fieldResolver.isFlattening();
+                    if (flattening) {
+                        final int initLength = jsonWriterStringBuilder.length();
+                        fieldResolver.resolve(value, jsonWriter, succeedingEntry);
+                        final boolean resolved = jsonWriterStringBuilder.length() > initLength;
+                        if (resolved) {
+                            resolvedFieldCount++;
+                        }
+                    } else {
+                        if (succeedingEntry) {
+                            jsonWriter.writeSeparator();
+                        }
+                        final String fieldPrefix = fieldPrefixes.get(fieldIndex);
+                        jsonWriter.writeRawString(fieldPrefix);
+                        fieldResolver.resolve(value, jsonWriter, succeedingEntry);
                         resolvedFieldCount++;
                     }
-                } else {
-                    if (succeedingEntry) {
-                        jsonWriter.writeSeparator();
-                    }
-                    final String fieldPrefix = fieldPrefixes.get(fieldIndex);
-                    jsonWriter.writeRawString(fieldPrefix);
-                    fieldResolver.resolve(value, jsonWriter, succeedingEntry);
-                    resolvedFieldCount++;
                 }
+                jsonWriter.writeObjectEnd();
             }
-            jsonWriter.writeObjectEnd();
+
         };
+
+    }
+
+    private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofResolver(
+            final C context,
+            final Map<String, Object> map) {
+
+        // Extract the resolver name.
+        final Object resolverNameObject = map.get(RESOLVER_FIELD_NAME);
+        if (!(resolverNameObject instanceof String)) {
+            throw new IllegalArgumentException(
+                    "invalid resolver name: " + resolverNameObject);
+        }
+        final String resolverName = (String) resolverNameObject;
+
+        // Retrieve the resolver.
+        final TemplateResolverFactory<V, C, ? extends TemplateResolver<V>> resolverFactory =
+                context.getResolverFactoryByName().get(resolverName);
+        if (resolverFactory == null) {
+            throw new IllegalArgumentException("unknown resolver: " + resolverName);
+        }
+        final TemplateResolverConfig resolverConfig = new TemplateResolverConfig(map);
+        return resolverFactory.create(context, resolverConfig);
 
     }
 
     private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofString(
             final C context,
             final String fieldValue) {
-
-        // Try to resolve the directive as a ${json:xxx} parameter.
-        final TemplateResolverRequest resolverRequest = readResolverRequest(fieldValue);
-        if (resolverRequest != null) {
-            final TemplateResolverFactory<V, C, ? extends TemplateResolver<V>> resolverFactory =
-                    context.getResolverFactoryByName().get(resolverRequest.resolverName);
-            if (resolverFactory != null) {
-                return resolverFactory.create(context, resolverRequest.resolverKey);
-            }
-        }
-
-        // The rest is the fallback template resolver that delegates every other
-        // substitution to Log4j. This will be the case for every template value
-        // that does not use directives of pattern ${json:xxx}. This
-        // additionally serves as a mechanism to resolve values at runtime when
-        // this layout misses certain resolvers.
 
         // Check if substitution needed at all. (Copied logic from
         // AbstractJacksonLayout.valueNeedsLookup() method.)
@@ -264,11 +366,7 @@ public enum TemplateResolvers {;
                 return (final V value, final JsonWriter jsonWriter) -> {
                     final LogEvent logEvent = (LogEvent) value;
                     final String replacedText = context.getSubstitutor().replace(logEvent, fieldValue);
-                    if (replacedText == null) {
-                        jsonWriter.writeNull();
-                    } else {
-                        jsonWriter.writeString(replacedText);
-                    }
+                    jsonWriter.writeString(replacedText);
                 };
             }
 
@@ -291,52 +389,13 @@ public enum TemplateResolvers {;
 
         }
 
-        // Write the field value as is. (Blank value check has already been done at the top.)
+        // Write the field value as is.
         else {
             final String escapedFieldValue =
                     contextJsonWriter.use(() ->
                             contextJsonWriter.writeString(fieldValue));
             return (final V value, final JsonWriter jsonWriter) ->
                     jsonWriter.writeRawString(escapedFieldValue);
-        }
-
-    }
-
-    private static TemplateResolverRequest readResolverRequest(final String fieldValue) {
-
-        // Bail-out if cannot spot the template signature.
-        if (!fieldValue.startsWith("${json:") || !fieldValue.endsWith("}")) {
-            return null;
-        }
-
-        // Try to read both resolver name and key.
-        final int resolverNameStartIndex = 7;
-        final int fieldNameSeparatorIndex = fieldValue.indexOf(':', resolverNameStartIndex);
-        if (fieldNameSeparatorIndex < 0) {
-            final int resolverNameEndIndex = fieldValue.length() - 1;
-            final String resolverName = fieldValue.substring(resolverNameStartIndex, resolverNameEndIndex);
-            return new TemplateResolverRequest(resolverName, null);
-        } else {
-            @SuppressWarnings("UnnecessaryLocalVariable")
-            final int resolverNameEndIndex = fieldNameSeparatorIndex;
-            final int resolverKeyStartIndex = fieldNameSeparatorIndex + 1;
-            final int resolverKeyEndIndex = fieldValue.length() - 1;
-            final String resolverName = fieldValue.substring(resolverNameStartIndex, resolverNameEndIndex);
-            final String resolverKey = fieldValue.substring(resolverKeyStartIndex, resolverKeyEndIndex);
-            return new TemplateResolverRequest(resolverName, resolverKey);
-        }
-
-    }
-
-    private static final class TemplateResolverRequest {
-
-        private final String resolverName;
-
-        private final String resolverKey;
-
-        private TemplateResolverRequest(final String resolverName, final String resolverKey) {
-            this.resolverName = resolverName;
-            this.resolverKey = resolverKey;
         }
 
     }

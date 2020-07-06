@@ -18,6 +18,30 @@ package org.apache.logging.log4j.layout.json.template.resolver;
 
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
+/**
+ * {@link StackTraceElement} resolver.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config = "field" -> (
+ *            "className"  |
+ *            "fileName"   |
+ *            "methodName" |
+ *            "lineNumber" )
+ * </pre>
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the line number:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "source",
+ *   "field": "lineNumber"
+ * }
+ * </pre>
+ */
 final class StackTraceElementObjectResolver implements TemplateResolver<StackTraceElement> {
 
     private static final TemplateResolver<StackTraceElement> CLASS_NAME_RESOLVER =
@@ -38,18 +62,20 @@ final class StackTraceElementObjectResolver implements TemplateResolver<StackTra
 
     private final TemplateResolver<StackTraceElement> internalResolver;
 
-    StackTraceElementObjectResolver(final String key) {
-        this.internalResolver = createInternalResolver(key);
+    StackTraceElementObjectResolver(final TemplateResolverConfig config) {
+        this.internalResolver = createInternalResolver(config);
     }
 
-    private TemplateResolver<StackTraceElement> createInternalResolver(final String key) {
-        switch (key) {
+    private TemplateResolver<StackTraceElement> createInternalResolver(
+            final TemplateResolverConfig config) {
+        final String fieldName = config.getString("field");
+        switch (fieldName) {
             case "className": return CLASS_NAME_RESOLVER;
             case "methodName": return METHOD_NAME_RESOLVER;
             case "fileName": return FILE_NAME_RESOLVER;
             case "lineNumber": return LINE_NUMBER_RESOLVER;
         }
-        throw new IllegalArgumentException("unknown key: " + key);
+        throw new IllegalArgumentException("unknown field: " + config);
     }
 
     static String getName() {

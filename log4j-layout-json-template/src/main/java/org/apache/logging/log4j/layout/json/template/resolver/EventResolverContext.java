@@ -20,6 +20,8 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.layout.json.template.JsonTemplateLayout;
+import org.apache.logging.log4j.layout.json.template.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.layout.json.template.util.RecyclerFactory;
 
@@ -47,7 +49,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
     private final TemplateResolver<Throwable> stackTraceObjectResolver;
 
-    private final KeyValuePair[] additionalFields;
+    private final EventTemplateAdditionalField[] additionalFields;
 
     private EventResolverContext(final Builder builder) {
         this.configuration = builder.configuration;
@@ -112,7 +114,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         return stackTraceObjectResolver;
     }
 
-    KeyValuePair[] getAdditionalFields() {
+    EventTemplateAdditionalField[] getAdditionalFields() {
         return additionalFields;
     }
 
@@ -140,7 +142,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         private TemplateResolver<StackTraceElement> stackTraceElementObjectResolver;
 
-        private KeyValuePair[] eventTemplateAdditionalFields;
+        private EventTemplateAdditionalField[] eventTemplateAdditionalFields;
 
         private Builder() {
             // Do nothing.
@@ -193,7 +195,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         }
 
         public Builder setEventTemplateAdditionalFields(
-                final KeyValuePair[] eventTemplateAdditionalFields) {
+                final EventTemplateAdditionalField[] eventTemplateAdditionalFields) {
             this.eventTemplateAdditionalFields = eventTemplateAdditionalFields;
             return this;
         }

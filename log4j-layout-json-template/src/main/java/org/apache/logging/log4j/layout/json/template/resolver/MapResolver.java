@@ -17,22 +17,49 @@
 package org.apache.logging.log4j.layout.json.template.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 
+/**
+ * {@link MapMessage} field resolver.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config      = key , [ stringified ]
+ * key         = "key" -> string
+ * stringified = "stringified" -> boolean
+ * </pre>
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the <tt>userRole</tt> field of the message:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "map",
+ *   "key": "userRole"
+ * }
+ * </pre>
+ */
 final class MapResolver implements EventResolver {
 
-    private static final MapLookup MAP_LOOKUP = new MapLookup();
-
     private final String key;
+
+    private final boolean stringified;
 
     static String getName() {
         return "map";
     }
 
-    MapResolver(final String key) {
-        this.key = key;
+    MapResolver(final TemplateResolverConfig config) {
+        this.key = config.getString("key");
+        this.stringified = config.getBoolean("stringified", false);
+        if (key == null) {
+            throw new IllegalArgumentException("missing key: " + config);
+        }
     }
 
     @Override
@@ -44,19 +71,21 @@ final class MapResolver implements EventResolver {
     public void resolve(
             final LogEvent logEvent,
             final JsonWriter jsonWriter) {
-
-        // If the event message is not of type MapMessage, then do not even try
-        // to perform the map lookup.
-        if (!(logEvent.getMessage() instanceof MapMessage)) {
+        final Message message = logEvent.getMessage();
+        if (!(message instanceof MapMessage)) {
             jsonWriter.writeNull();
+        } else {
+            @SuppressWarnings("unchecked")
+            MapMessage<?, Object> mapMessage = (MapMessage<?, Object>) message;
+            final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
+            final Object value = map.getValue(key);
+            if (stringified) {
+                final String stringifiedValue = String.valueOf(value);
+                jsonWriter.writeString(stringifiedValue);
+            } else {
+                jsonWriter.writeValue(value);
+            }
         }
-
-        // Perform the map lookup against Log4j.
-        else {
-            final String resolvedValue = MAP_LOOKUP.lookup(logEvent, key);
-            jsonWriter.writeString(resolvedValue);
-        }
-
     }
 
 }

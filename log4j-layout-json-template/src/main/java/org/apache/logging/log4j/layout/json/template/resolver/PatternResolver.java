@@ -20,19 +20,45 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.Strings;
 
+/**
+ * Resolver delegating to {@link PatternLayout}.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config  = pattern
+ * pattern = "pattern" -> string
+ * </pre>
+ *
+ * <h3>Examples</h3>
+ *
+ * Inject string produced by <tt>%p %c{1.} [%t] %X{userId} %X %m%ex</tt> pattern:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "pattern",
+ *   "pattern": "%p %c{1.} [%t] %X{userId} %X %m%ex"
+ * }
+ * </pre>
+ */
 final class PatternResolver implements EventResolver {
 
     private final BiConsumer<StringBuilder, LogEvent> emitter;
 
     PatternResolver(
             final EventResolverContext context,
-            final String key) {
+            final TemplateResolverConfig config) {
+        final String pattern = config.getString("pattern");
+        if (Strings.isBlank(pattern)) {
+            throw new IllegalArgumentException("blank pattern: " + config);
+        }
         final PatternLayout patternLayout = PatternLayout
                 .newBuilder()
                 .setConfiguration(context.getConfiguration())
                 .setCharset(context.getCharset())
-                .setPattern(key)
+                .setPattern(pattern)
                 .build();
         this.emitter = (final StringBuilder stringBuilder, final LogEvent logEvent) ->
                 patternLayout.serialize(logEvent, stringBuilder);

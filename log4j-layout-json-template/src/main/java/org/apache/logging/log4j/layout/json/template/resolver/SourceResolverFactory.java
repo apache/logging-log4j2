@@ -32,8 +32,10 @@ final class SourceResolverFactory implements EventResolverFactory<SourceResolver
     }
 
     @Override
-    public SourceResolver create(final EventResolverContext context, final String key) {
-        return new SourceResolver(context, key);
+    public SourceResolver create(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        return new SourceResolver(context, config);
     }
 
 }

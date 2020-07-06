@@ -19,6 +19,34 @@ package org.apache.logging.log4j.layout.json.template.resolver;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
+/**
+ * Resolver for the {@link StackTraceElement} returned by {@link LogEvent#getSource()}.
+ *
+ * Note that this resolver is toggled by {@link
+ * org.apache.logging.log4j.layout.json.template.JsonTemplateLayout.Builder#setLocationInfoEnabled(boolean)}
+ * method.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config = "field" -> (
+ *            "className"  |
+ *            "fileName"   |
+ *            "methodName" |
+ *            "lineNumber" )
+ * </pre>
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the line number:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "source",
+ *   "field": "lineNumber"
+ * }
+ * </pre>
+ */
 final class SourceResolver implements EventResolver {
 
     private static final EventResolver NULL_RESOLVER =
@@ -73,24 +101,27 @@ final class SourceResolver implements EventResolver {
 
     private final EventResolver internalResolver;
 
-    SourceResolver(final EventResolverContext context, final String key) {
+    SourceResolver(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
         this.locationInfoEnabled = context.isLocationInfoEnabled();
-        this.internalResolver = createInternalResolver(context, key);
+        this.internalResolver = createInternalResolver(context, config);
     }
 
     private static EventResolver createInternalResolver(
             final EventResolverContext context,
-            final String key) {
+            final TemplateResolverConfig config) {
         if (!context.isLocationInfoEnabled()) {
             return NULL_RESOLVER;
         }
-        switch (key) {
+        final String fieldName = config.getString("field");
+        switch (fieldName) {
             case "className": return CLASS_NAME_RESOLVER;
             case "fileName": return FILE_NAME_RESOLVER;
             case "lineNumber": return LINE_NUMBER_RESOLVER;
             case "methodName": return METHOD_NAME_RESOLVER;
         }
-        throw new IllegalArgumentException("unknown key: " + key);
+        throw new IllegalArgumentException("unknown field: " + config);
     }
 
     static String getName() {

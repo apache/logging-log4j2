@@ -17,6 +17,26 @@
 
 package org.apache.logging.log4j.core.appender.rolling;
 
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.NullOutputStream;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Set;
+import java.util.concurrent.locks.LockSupport;
+
 import static org.apache.logging.log4j.hamcrest.FileMatchers.beforeNow;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasLength;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.isEmpty;
@@ -25,20 +45,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
-import java.util.concurrent.locks.LockSupport;
-
-import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.core.util.NullOutputStream;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
 
 /**
  * Tests the RollingRandomAccessFileManager class.
@@ -196,6 +205,65 @@ public class RollingRandomAccessFileManagerTest {
                 RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
                 null, null, null, null, null, null, null);
         assertThat(file, lastModified(equalTo(manager.getFileTime())));
+    }
+
+    @Test
+    public void testRolloverRetainsFileAttributes() throws Exception {
+
+        // Short-circuit if host doesn't support file attributes.
+        if (!FileUtils.isFilePosixAttributeViewSupported()) {
+            return;
+        }
+
+        // Create the initial file.
+        final File file = File.createTempFile("log4j2", "test");
+        LockSupport.parkNanos(1000000); // 1 millisec
+
+        // Set the initial file attributes.
+        final String filePermissionsString = "rwxrwxrwx";
+        final Set<PosixFilePermission> filePermissions =
+                PosixFilePermissions.fromString(filePermissionsString);
+        FileUtils.defineFilePosixAttributeView(file.toPath(), filePermissions, null, null);
+
+        // Create the manager.
+        final RolloverStrategy rolloverStrategy = DefaultRolloverStrategy
+                .newBuilder()
+                .setMax("7")
+                .setMin("1")
+                .setFileIndex("max")
+                .setStopCustomActionsOnError(false)
+                .setConfig(new DefaultConfiguration())
+                .build();
+        final RollingRandomAccessFileManager manager =
+                RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
+                        file.getAbsolutePath(),
+                        Strings.EMPTY,
+                        true,
+                        true,
+                        RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE,
+                        new SizeBasedTriggeringPolicy(Long.MAX_VALUE),
+                        rolloverStrategy,
+                        null,
+                        null,
+                        filePermissionsString,
+                        null,
+                        null,
+                        null);
+        assertNotNull(manager);
+        manager.initialize();
+
+        // Trigger a rollover.
+        manager.rollover();
+
+        // Verify the rolled over file attributes.
+        final Set<PosixFilePermission> actualFilePermissions = Files
+                .getFileAttributeView(
+                        Paths.get(manager.getFileName()),
+                        PosixFileAttributeView.class)
+                .readAttributes()
+                .permissions();
+        assertEquals(filePermissions, actualFilePermissions);
+
     }
 
 }

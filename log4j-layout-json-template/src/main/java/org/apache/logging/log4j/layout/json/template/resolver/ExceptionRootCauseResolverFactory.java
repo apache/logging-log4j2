@@ -32,8 +32,10 @@ final class ExceptionRootCauseResolverFactory implements EventResolverFactory<Ex
     }
 
     @Override
-    public ExceptionRootCauseResolver create(final EventResolverContext context, final String key) {
-        return new ExceptionRootCauseResolver(context, key);
+    public ExceptionRootCauseResolver create(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        return new ExceptionRootCauseResolver(context, config);
     }
 
 }

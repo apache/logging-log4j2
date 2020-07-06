@@ -19,6 +19,35 @@ package org.apache.logging.log4j.layout.json.template.resolver;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
+/**
+ * Logger resolver.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config = "field" -> ( "name" | "fqcn" )
+ * </pre>
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the logger name:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "logger",
+ *   "field": "name"
+ * }
+ * </pre>
+ *
+ * Resolve the logger's fully qualified class name:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "logger",
+ *   "field": "fqcn"
+ * }
+ * </pre>
+ */
 final class LoggerResolver implements EventResolver {
 
     private static final EventResolver NAME_RESOLVER =
@@ -35,16 +64,18 @@ final class LoggerResolver implements EventResolver {
 
     private final EventResolver internalResolver;
 
-    LoggerResolver(final String key) {
-        this.internalResolver = createInternalResolver(key);
+    LoggerResolver(final TemplateResolverConfig config) {
+        this.internalResolver = createInternalResolver(config);
     }
 
-    private static EventResolver createInternalResolver(final String key) {
-        switch (key) {
+    private static EventResolver createInternalResolver(
+            final TemplateResolverConfig config) {
+        final String fieldName = config.getString("field");
+        switch (fieldName) {
             case "name": return NAME_RESOLVER;
             case "fqcn": return FQCN_RESOLVER;
         }
-        throw new IllegalArgumentException("unknown key: " + key);
+        throw new IllegalArgumentException("unknown field: " + config);
     }
 
     static String getName() {

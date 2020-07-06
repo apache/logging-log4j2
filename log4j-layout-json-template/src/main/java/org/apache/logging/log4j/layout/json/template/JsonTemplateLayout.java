@@ -44,6 +44,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.Strings;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -51,8 +52,7 @@ import java.util.function.Supplier;
 
 @Plugin(name = "JsonTemplateLayout",
         category = Node.CATEGORY,
-        elementType = Layout.ELEMENT_TYPE,
-        printObject = true)
+        elementType = Layout.ELEMENT_TYPE)
 public class JsonTemplateLayout implements StringLayout {
 
     private static final Map<String, String> CONTENT_FORMAT =
@@ -485,6 +485,11 @@ public class JsonTemplateLayout implements StringLayout {
                 throw new IllegalArgumentException(
                         "both stackTraceElementTemplate and stackTraceElementTemplateUri are blank");
             }
+            if (maxStringLength <= 0) {
+                throw new IllegalArgumentException(
+                        "was expecting a non-zero positive maxStringLength: " +
+                                maxStringLength);
+            }
             Objects.requireNonNull(truncatedStringSuffix, "truncatedStringSuffix");
             Objects.requireNonNull(recyclerFactory, "recyclerFactory");
         }
@@ -494,19 +499,41 @@ public class JsonTemplateLayout implements StringLayout {
     // We need this ugly model and its builder just to be able to allow
     // key-value pairs in a dedicated element.
     @SuppressWarnings({"unused", "WeakerAccess"})
-    @Plugin(name = "EventTemplateAdditionalFields", category = Node.CATEGORY, printObject = true)
+    @Plugin(name = "EventTemplateAdditionalFields",
+            category = Node.CATEGORY,
+            printObject = true)
     public static final class EventTemplateAdditionalFields {
 
         private static final EventTemplateAdditionalFields EMPTY = newBuilder().build();
 
-        private final KeyValuePair[] additionalFields;
+        private final EventTemplateAdditionalField[] additionalFields;
 
         private EventTemplateAdditionalFields(final Builder builder) {
-            this.additionalFields = builder.additionalFields;
+            this.additionalFields = builder.additionalFields != null
+                    ? builder.additionalFields
+                    : new EventTemplateAdditionalField[0];
         }
 
-        public KeyValuePair[] getAdditionalFields() {
+        public EventTemplateAdditionalField[] getAdditionalFields() {
             return additionalFields;
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            if (this == object) return true;
+            if (object == null || getClass() != object.getClass()) return false;
+            EventTemplateAdditionalFields that = (EventTemplateAdditionalFields) object;
+            return Arrays.equals(additionalFields, that.additionalFields);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(additionalFields);
+        }
+
+        @Override
+        public String toString() {
+            return Arrays.toString(additionalFields);
         }
 
         @PluginBuilderFactory
@@ -518,15 +545,16 @@ public class JsonTemplateLayout implements StringLayout {
                 implements org.apache.logging.log4j.core.util.Builder<EventTemplateAdditionalFields> {
 
             @PluginElement("AdditionalField")
-            private KeyValuePair[] additionalFields;
+            private EventTemplateAdditionalField[] additionalFields;
 
             private Builder() {}
 
-            public KeyValuePair[] getAdditionalFields() {
+            public EventTemplateAdditionalField[] getAdditionalFields() {
                 return additionalFields;
             }
 
-            public Builder setAdditionalFields(final KeyValuePair[] additionalFields) {
+            public Builder setAdditionalFields(
+                    final EventTemplateAdditionalField[] additionalFields) {
                 this.additionalFields = additionalFields;
                 return this;
             }
@@ -534,6 +562,109 @@ public class JsonTemplateLayout implements StringLayout {
             @Override
             public EventTemplateAdditionalFields build() {
                 return new EventTemplateAdditionalFields(this);
+            }
+
+        }
+
+    }
+
+    @Plugin(name = "EventTemplateAdditionalField",
+            category = Node.CATEGORY,
+            printObject = true)
+    public static final class EventTemplateAdditionalField {
+
+        public enum Type { STRING, JSON }
+
+        private final String key;
+
+        private final String value;
+
+        private final Type type;
+
+        private EventTemplateAdditionalField(final Builder builder) {
+            this.key = builder.key;
+            this.value = builder.value;
+            this.type = builder.type;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public Type getType() {
+            return type;
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            if (this == object) return true;
+            if (object == null || getClass() != object.getClass()) return false;
+            EventTemplateAdditionalField that = (EventTemplateAdditionalField) object;
+            return key.equals(that.key) &&
+                    value.equals(that.value) &&
+                    type == that.type;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(key, value, type);
+        }
+
+        @Override
+        public String toString() {
+            final String formattedValue = Type.STRING.equals(type)
+                    ? String.format("\"%s\"", value)
+                    : value;
+            return String.format("%s=%s", key, formattedValue);
+        }
+
+        @PluginBuilderFactory
+        public static EventTemplateAdditionalField.Builder newBuilder() {
+            return new EventTemplateAdditionalField.Builder();
+        }
+
+        public static class Builder
+                implements org.apache.logging.log4j.core.util.Builder<EventTemplateAdditionalField> {
+
+            private String key;
+
+            private String value;
+
+            private Type type = Type.STRING;
+
+            public Builder setKey(final String key) {
+                this.key = key;
+                return this;
+            }
+
+            public Builder setValue(final String value) {
+                this.value = value;
+                return this;
+            }
+
+            public Builder setType(final Type type) {
+                this.type = type;
+                return this;
+            }
+
+            @Override
+            public EventTemplateAdditionalField build() {
+                validate();
+                return new EventTemplateAdditionalField(this);
+            }
+
+            private void validate() {
+                if (Strings.isBlank(key)) {
+                    throw new IllegalArgumentException("blank key");
+                }
+                if (Strings.isBlank(value)) {
+                    throw new IllegalArgumentException("blank value");
+                }
+                Objects.requireNonNull(type, "type");
             }
 
         }

@@ -19,6 +19,14 @@ package org.apache.logging.log4j.layout.json.template.resolver;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 
+/**
+ * Exception resolver.
+ *
+ * Note that this resolver is toggled by {@link
+ * org.apache.logging.log4j.layout.json.template.JsonTemplateLayout.Builder#setStackTraceEnabled(boolean)}.
+ *
+ * @see ExceptionInternalResolverFactory
+ */
 class ExceptionResolver implements EventResolver {
 
     private static final ExceptionInternalResolverFactory INTERNAL_RESOLVER_FACTORY =
@@ -51,15 +59,15 @@ class ExceptionResolver implements EventResolver {
                 }
 
                 @Override
-                EventResolver createStackTraceTextResolver(final EventResolverContext context) {
-                    StackTraceTextResolver stackTraceTextResolver =
-                            new StackTraceTextResolver(context);
+                EventResolver createStackTraceStringResolver(final EventResolverContext context) {
+                    StackTraceStringResolver stackTraceStringResolver =
+                            new StackTraceStringResolver(context);
                     return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
                         final Throwable exception = logEvent.getThrown();
                         if (exception == null) {
                             jsonWriter.writeNull();
                         } else {
-                            stackTraceTextResolver.resolve(exception, jsonWriter);
+                            stackTraceStringResolver.resolve(exception, jsonWriter);
                         }
                     };
                 }
@@ -82,9 +90,12 @@ class ExceptionResolver implements EventResolver {
 
     private final EventResolver internalResolver;
 
-    ExceptionResolver(final EventResolverContext context, final String key) {
+    ExceptionResolver(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
         this.stackTraceEnabled = context.isStackTraceEnabled();
-        this.internalResolver = INTERNAL_RESOLVER_FACTORY.createInternalResolver(context, key);
+        this.internalResolver = INTERNAL_RESOLVER_FACTORY
+                .createInternalResolver(context, config);
     }
 
     static String getName() {

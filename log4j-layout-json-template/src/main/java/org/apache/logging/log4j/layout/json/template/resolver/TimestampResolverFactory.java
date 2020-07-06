@@ -34,8 +34,8 @@ final class TimestampResolverFactory implements EventResolverFactory<TimestampRe
     @Override
     public TimestampResolver create(
             final EventResolverContext context,
-            final String key) {
-        return new TimestampResolver(key);
+            final TemplateResolverConfig config) {
+        return new TimestampResolver(config);
     }
 
 }

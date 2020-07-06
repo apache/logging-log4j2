@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.layout.json.template.resolver;
 
+/**
+ * Exception resolver factory.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config      = field , [ stringified ]
+ * field       = "field" -> ( "className" | "message" | "stackTrace" )
+ * stringified = "stringified" -> boolean
+ * </pre>
+ */
 abstract class ExceptionInternalResolverFactory {
 
     private static final EventResolver NULL_RESOLVER =
@@ -23,48 +34,34 @@ abstract class ExceptionInternalResolverFactory {
 
     EventResolver createInternalResolver(
             final EventResolverContext context,
-            final String key) {
-
-        // Split the key into its major and minor components.
-        String majorKey;
-        String minorKey;
-        final int colonIndex = key.indexOf(':');
-        if (colonIndex >= 0) {
-            majorKey = key.substring(0, colonIndex);
-            minorKey = key.substring(colonIndex + 1);
-        } else {
-            majorKey = key;
-            minorKey = "";
-        }
-
-        // Create the resolver.
-        switch (majorKey) {
+            final TemplateResolverConfig config) {
+        final String fieldName = config.getString("field");
+        switch (fieldName) {
             case "className": return createClassNameResolver();
             case "message": return createMessageResolver(context);
-            case "stackTrace": return createStackTraceResolver(context, minorKey);
+            case "stackTrace": return createStackTraceResolver(context, config);
         }
-        throw new IllegalArgumentException("unknown key: " + key);
+        throw new IllegalArgumentException("unknown field: " + config);
 
     }
 
     abstract EventResolver createClassNameResolver();
 
-    abstract EventResolver createMessageResolver(final EventResolverContext context);
+    abstract EventResolver createMessageResolver(EventResolverContext context);
 
     private EventResolver createStackTraceResolver(
             final EventResolverContext context,
-            final String minorKey) {
+            final TemplateResolverConfig config) {
         if (!context.isStackTraceEnabled()) {
             return NULL_RESOLVER;
         }
-        switch (minorKey) {
-            case "text": return createStackTraceTextResolver(context);
-            case "": return createStackTraceObjectResolver(context);
-        }
-        throw new IllegalArgumentException("unknown minor key: " + minorKey);
+        final boolean stringified = config.getBoolean("stringified", false);
+        return stringified
+                ? createStackTraceStringResolver(context)
+                : createStackTraceObjectResolver(context);
     }
 
-    abstract EventResolver createStackTraceTextResolver(EventResolverContext context);
+    abstract EventResolver createStackTraceStringResolver(EventResolverContext context);
 
     abstract EventResolver createStackTraceObjectResolver(EventResolverContext context);
 

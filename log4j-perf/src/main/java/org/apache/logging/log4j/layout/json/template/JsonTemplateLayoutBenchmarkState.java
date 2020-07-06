@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
+import org.apache.logging.log4j.layout.json.template.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.layout.json.template.JsonTemplateLayout.EventTemplateAdditionalFields;
 import org.apache.logging.log4j.layout.json.template.util.ThreadLocalRecyclerFactory;
 import org.openjdk.jmh.annotations.Scope;
@@ -88,9 +89,14 @@ public class JsonTemplateLayoutBenchmarkState {
     private static JsonTemplateLayout createJsonTemplateLayout4EcsLayout() {
         final EventTemplateAdditionalFields additionalFields = EventTemplateAdditionalFields
                 .newBuilder()
-                .setAdditionalFields(new KeyValuePair[]{
-                        new KeyValuePair("service.name", "benchmark")
-                })
+                .setAdditionalFields(
+                        new EventTemplateAdditionalField[]{
+                                EventTemplateAdditionalField
+                                        .newBuilder()
+                                        .setKey("service.name")
+                                        .setValue("benchmark")
+                                        .build()
+                        })
                 .build();
         return JsonTemplateLayout
                 .newBuilder()
@@ -111,12 +117,17 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
                 .setEventTemplateAdditionalFields(EventTemplateAdditionalFields
                         .newBuilder()
-                        .setAdditionalFields(new KeyValuePair[]{
-                                // Adding "host" as a constant rather than using
-                                // the "hostName" property lookup at runtime, which
-                                // is what GelfLayout does as well.
-                                new KeyValuePair("host", NetUtils.getLocalHostname())
-                        })
+                        .setAdditionalFields(
+                                new EventTemplateAdditionalField[]{
+                                        // Adding "host" as a constant rather than using
+                                        // the "hostName" property lookup at runtime, which
+                                        // is what GelfLayout does as well.
+                                        EventTemplateAdditionalField
+                                                .newBuilder()
+                                                .setKey("host")
+                                                .setValue(NetUtils.getLocalHostname())
+                                                .build()
+                                })
                         .build())
                 .build();
     }
@@ -135,7 +146,7 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setAdditionalFields(new KeyValuePair[]{
-                        new KeyValuePair("@version", "1")
+                        new KeyValuePair("@version", "\"1\"")
                 })
                 .build();
     }

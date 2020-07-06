@@ -1,26 +1,83 @@
 {
   "instant": {
-    "epochSecond": "${json:timestamp:epoch:secs,integral}",
-    "nanoOfSecond": "${json:timestamp:epoch:secs.nanos}"
+    "epochSecond": {
+      "$resolver": "timestamp",
+      "epoch": {
+        "unit": "secs",
+        "rounded": true
+      }
+    },
+    "nanoOfSecond": {
+      "$resolver": "timestamp",
+      "epoch": {
+        "unit": "secs.nanos"
+      }
+    }
   },
-  "thread": "${json:thread:name}",
-  "level": "${json:level}",
-  "loggerName": "${json:logger:name}",
-  "message": "${json:message}",
+  "thread": {
+    "$resolver": "thread",
+    "field": "name"
+  },
+  "level": {
+    "$resolver": "level",
+    "field": "name"
+  },
+  "loggerName": {
+    "$resolver": "logger",
+    "field": "name"
+  },
+  "message": {
+    "$resolver": "message",
+    "stringified": true
+  },
   "thrown": {
-    "message": "${json:exception:message}",
-    "name": "${json:exception:className}",
-    "extendedStackTrace": "${json:exception:stackTrace}"
+    "message": {
+      "$resolver": "exception",
+      "field": "message"
+    },
+    "name": {
+      "$resolver": "exception",
+      "field": "className"
+    },
+    "extendedStackTrace": {
+      "$resolver": "exception",
+      "field": "stackTrace"
+    }
   },
-  "contextStack": "${json:ndc}",
-  "endOfBatch": "${json:endOfBatch}",
-  "loggerFqcn": "${json:logger:fqcn}",
-  "threadId": "${json:thread:id}",
-  "threadPriority": "${json:thread:priority}",
+  "contextStack": {
+    "$resolver": "ndc"
+  },
+  "endOfBatch": {
+    "$resolver": "endOfBatch"
+  },
+  "loggerFqcn": {
+    "$resolver": "logger",
+    "field": "fqcn"
+  },
+  "threadId": {
+    "$resolver": "thread",
+    "field": "id"
+  },
+  "threadPriority": {
+    "$resolver": "thread",
+    "field": "priority"
+  },
   "source": {
-    "class": "${json:source:className}",
-    "method": "${json:source:methodName}",
-    "file": "${json:source:fileName}",
-    "line": "${json:source:lineNumber}"
+    "class": {
+      "$resolver": "source",
+      "field": "className"
+    },
+    "method": {
+      "$resolver": "source",
+      "field": "methodName"
+    },
+    "file": {
+      "$resolver": "source",
+      "field": "fileName"
+    },
+    "line": {
+      "$resolver": "source",
+      "field": "lineNumber"
+    }
   }
 }

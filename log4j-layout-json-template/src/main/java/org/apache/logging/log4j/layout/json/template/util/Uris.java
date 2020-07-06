@@ -39,7 +39,7 @@ public enum Uris {;
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
-     * Reads {@link URI}s of scheme <tt>classpath</tt> and <tt>file</tt>.
+     * Reads {@link URI} specs of scheme <tt>classpath</tt> and <tt>file</tt>.
      *
      * @param spec the {@link URI} spec, e.g., <tt>file:/holy/cow.txt</tt> or
      *             <tt>classpath:/holy/cat.txt</tt>
@@ -49,20 +49,34 @@ public enum Uris {;
         Objects.requireNonNull(spec, "spec");
         Objects.requireNonNull(charset, "charset");
         try {
-            return unsafeReadUri(spec, charset);
+            final URI uri = new URI(spec);
+            return unsafeReadUri(uri, charset);
         } catch (final Exception error) {
-            final String message = String.format(
-                    "failed reading URI (spec=%s, charset=%s)",
-                    spec, charset);
-            throw new RuntimeException(message, error);
+            throw new RuntimeException("failed reading URI: " + spec, error);
+        }
+    }
+
+    /**
+     * Reads {@link URI}s of scheme <tt>classpath</tt> and <tt>file</tt>.
+     *
+     * @param uri the {@link URI}, e.g., <tt>file:/holy/cow.txt</tt> or
+     *             <tt>classpath:/holy/cat.txt</tt>
+     * @param charset used {@link Charset} for decoding the file
+     */
+    public static String readUri(final URI uri, final Charset charset) {
+        Objects.requireNonNull(uri, "uri");
+        Objects.requireNonNull(charset, "charset");
+        try {
+            return unsafeReadUri(uri, charset);
+        } catch (final Exception error) {
+            throw new RuntimeException("failed reading URI: " + uri, error);
         }
     }
 
     private static String unsafeReadUri(
-            final String spec,
+            final URI uri,
             final Charset charset)
             throws Exception {
-        final URI uri = new URI(spec);
         final String uriScheme = uri.getScheme().toLowerCase();
         switch (uriScheme) {
             case "classpath":
@@ -70,11 +84,9 @@ public enum Uris {;
             case "file":
                 return readFileUri(uri, charset);
             default: {
-                final String message = String.format("unknown URI scheme (spec=%s)", spec);
-                throw new IllegalArgumentException(message);
+                throw new IllegalArgumentException("unknown scheme in URI: " + uri);
             }
         }
-
     }
 
     private static String readFileUri(

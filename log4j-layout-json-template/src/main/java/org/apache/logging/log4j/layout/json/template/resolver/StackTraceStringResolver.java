@@ -22,11 +22,11 @@ import org.apache.logging.log4j.layout.json.template.util.Recycler;
 
 import java.util.function.Supplier;
 
-final class StackTraceTextResolver implements StackTraceResolver {
+final class StackTraceStringResolver implements StackTraceResolver {
 
     private final Recycler<TruncatingBufferedPrintWriter> writerRecycler;
 
-    StackTraceTextResolver(final EventResolverContext context) {
+    StackTraceStringResolver(final EventResolverContext context) {
         final Supplier<TruncatingBufferedPrintWriter> writerSupplier =
                 () -> TruncatingBufferedPrintWriter.ofCapacity(
                         context.getMaxStringByteCount());
