@@ -737,6 +737,8 @@ a|
 [source]
 ----
 config      = [ stringified ] , [ fallbackKey ]
+pattern = "pattern" -> string
+includeStackTrace = "includeStacktrae" -> boolean
 stringified = "stringified" -> boolean
 fallbackKey = "fallbackKey" -> string
 ----
@@ -750,6 +752,17 @@ Resolve the message into a string:
 ----
 {
   "$resolver": "message",
+  "stringified": true
+}
+----
+
+Resolve the message into a string using a pattern:
+
+[source,json]
+----
+{
+  "$resolver": "message",
+  "pattern": ""[%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress, corpAcctNumber} %C{1.}.%M:%L - %m"",
   "stringified": true
 }
 ----

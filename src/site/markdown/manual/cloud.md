@@ -129,7 +129,10 @@ events first to Logstash and then to Elasticsearch.
 Log4j provides a multitude of JSON generating layouts. In particular, [JSON
 Template Layout](layouts.html#JSONTemplateLayout) allows full schema
 customization and bundles ELK-specific layouts by default, which makes it a
-great fit for the bill.
+great fit for the bill. Using the EcsLayout template as shown below will generate data in Kibana where
+the message displayed exactly matches the message passed to Log4j and most of the event attributes, including
+any exceptions, are present as individual attributes that can be displayed. Note, however that stack traces 
+will be formatted without newlines.
 
     <Socket name="Logstash"
             host="${sys:logstash.host}"
@@ -139,7 +142,7 @@ great fit for the bill.
         <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json">
             <EventTemplateAdditionalFields>
                 <EventTemplateAdditionalField key="containerId" value="${docker:containerId:-}"/>
-                <EventTemplateAdditionalField key="application" value="$${lower:${spring:spring.application.name:-spring}}"/>
+                <EventTemplateAdditionalField key="application" value="${lower:${spring:spring.application.name:-spring}}"/>
                 <EventTemplateAdditionalField key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
                 <EventTemplateAdditionalField key="kubernetes.containerId" value="${k8s:containerId:-}"/>
                 <EventTemplateAdditionalField key="kubernetes.containerName" value="${k8s:containerName:-}"/>
@@ -156,6 +159,119 @@ great fit for the bill.
                 <EventTemplateAdditionalField key="kubernetes.imageName" value="${k8s:imageName:-}"/>
             </EventTemplateAdditionalFields>
         </JsonTemplateLayout>
+    </Socket>
+    
+The JsonTemplateLayout can also be used to generate JSON that matches the GELF specification which can     
+format the message attribute using a pattern in accordance with the PatternLayout. For example, the following
+template, named EnhancedGelf.json, can be used to generate GELF-compliant data that can be passed to Logstash. 
+With this template the message attribute will include the thread id, level, specific ThreadContext attributes, 
+the class name, method name, and line number as well as the message. If an exception is included it will also 
+be included with newlines. This format follows very closely what you would see in a typical log file on disk 
+using the PatternLayout but has the additional advantage of including the attributes as separate fields that 
+can be queried.
+
+    {
+        "version": "1.1",
+        "host": "${hostName}",
+        "short_message": {
+            "$resolver": "message",
+            "stringified": true
+        },
+        "full_message": {
+            "$resolver": "message",
+            "pattern": "[%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress, corpAcctNumber} %C{1.}.%M:%L - %m",
+            "stringified": true
+        },
+        "timestamp": {
+            "$resolver": "timestamp",
+            "epoch": {
+                "unit": "secs"
+            }
+        },
+        "level": {
+            "$resolver": "level",
+            "field": "severity",
+            "severity": {
+                "field": "code"
+            }
+        },
+        "_logger": {
+            "$resolver": "logger",
+            "field": "name"
+        },
+        "_thread": {
+            "$resolver": "thread",
+            "field": "name"
+        },
+        "_mdc": {
+            "$resolver": "mdc",
+            "flatten": {
+                "prefix": "_"
+            },
+            "stringified": true
+        }
+    }
+    
+The logging configuration to use this template would be    
+
+    <Socket name="Elastic"
+            host="\${sys:logstash.search.host}"
+            port="12222"
+            protocol="tcp"
+            bufferedIo="true">
+      <JsonTemplateLayout eventTemplateUri="classpath:EnhancedGelf.json" eventDelimiter="null">
+        <EventTemplateAdditionalFields>
+          <EventTemplateAdditionalField key="containerId" value="${docker:containerId:-}"/>
+          <EventTemplateAdditionalField key="application" value="${lower:${spring:spring.application.name:-spring}}"/>
+          <EventTemplateAdditionalField key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
+          <EventTemplateAdditionalField key="kubernetes.containerId" value="${k8s:containerId:-}"/>
+          <EventTemplateAdditionalField key="kubernetes.containerName" value="${k8s:containerName:-}"/>
+          <EventTemplateAdditionalField key="kubernetes.host" value="${k8s:host:-}"/>
+          <EventTemplateAdditionalField key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
+          <EventTemplateAdditionalField key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
+          <EventTemplateAdditionalField key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
+          <EventTemplateAdditionalField key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
+          <EventTemplateAdditionalField key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
+          <EventTemplateAdditionalField key="kubernetes.podID" value="${k8s:podId:-}"/>
+          <EventTemplateAdditionalField key="kubernetes.podIP" value="${k8s:podIp:-}"/>
+          <EventTemplateAdditionalField key="kubernetes.podName" value="${k8s:podName:-}"/>
+          <EventTemplateAdditionalField key="kubernetes.imageId" value="${k8s:imageId:-}"/>
+          <EventTemplateAdditionalField key="kubernetes.imageName" value="${k8s:imageName:-}"/>
+        </EventTemplateAdditionalFields>
+      </JsonTemplateLayout>
+    </Socket>
+The significant difference with this configuration from the first example is that it references the 
+custom template and it specifies an event delimiter of a null character ('\0');   
+    
+Note: The level being passed with the above template does not strictly conform to the GELF spec as the
+Level being passed is the Log4j Level NOT the Level defined in the GELF spec. However, testing has shown 
+that Logstash, Elk, and Kibana are pretty tolerant of whatever data is passed to it.    
+    
+Finally, the GelfLayout can be used to generate GELF compliant output. Unlike the JsonTemplateLayout it 
+adheres closely to the GELF spec.    
+
+    <Socket name="Elastic" host="${sys:elastic.search.host}" port="12222" protocol="tcp" bufferedIo="true">
+      <GelfLayout includeStackTrace="true" host="${hostName}" includeThreadContext="true" includeNullDelimiter="true"
+                  compressionType="OFF">
+        <ThreadContextIncludes>requestId,sessionId,loginId,userId,ipAddress,callingHost</ThreadContextIncludes>
+        <MessagePattern>%d [%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress} %C{1.}.%M:%L - %m%n</MessagePattern>
+        <KeyValuePair key="containerId" value="${docker:containerId:-}"/>
+        <KeyValuePair key="application" value="${lower:${spring:spring.application.name:-spring}}"/>
+        <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
+        <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
+        <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
+        <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
+        <KeyValuePair key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
+        <KeyValuePair key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
+        <KeyValuePair key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
+        <KeyValuePair key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
+        <KeyValuePair key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
+        <KeyValuePair key="kubernetes.podID" value="${k8s:podId:-}"/>
+        <KeyValuePair key="kubernetes.podIP" value="${k8s:podIp:-}"/>
+        <KeyValuePair key="kubernetes.podName" value="${k8s:podName:-}"/>
+        <KeyValuePair key="kubernetes.imageId" value="${k8s:imageId:-}"/>
+        <KeyValuePair key="kubernetes.imageName" value="${k8s:imageName:-}"/>
+      </GelfLayout>
     </Socket>
 
 ### Logstash Configuration
@@ -182,11 +298,52 @@ and then forward these to (either console and/or) an Elasticsearch server.
       }
 
     }
+    
+When one of the GELF compliant formats is used Logstash should be configured as 
+
+   gelf {
+           host => "localhost"
+           use_tcp => true
+           use_udp => false
+           port => 12222
+           type => "gelf"
+         }
+       }
+   
+       filter {
+         # These are GELF/Syslog logging levels as defined in RFC 3164. Map the integer level to its human readable format.
+         translate {
+           field => "[level]"
+           destination => "[levelName]"
+           dictionary => {
+             "0" => "EMERG"
+             "1" => "ALERT"
+             "2" => "CRITICAL"
+             "3" => "ERROR"
+             "4" => "WARN"
+             "5" => "NOTICE"
+             "6" => "INFO"
+             "7" => "DEBUG"
+           }
+         }
+       }
+   
+       output {
+         # (Un)comment for debugging purposes
+         # stdout { codec => rubydebug }
+         # Modify the hosts value to reflect where elasticsearch is installed.
+         elasticsearch {
+           hosts => ["http://localhost:9200/"]
+           index => "app-%{application}-%{+YYYY.MM.dd}"
+         }
+       }
 
 ### Kibana
-With the above configurations the message field will contain a fully formatted log event just as it would  appear in 
-a file Appender. The ThreadContext attributes, custome fields, thread name, etc. will all be available as attributes
-on each log event that can be used for filtering.
+Using the EnhancedGelf template or the GelfLayout the above configurations the message field will contain a fully 
+formatted log event just as it would  appear in a file Appender. The ThreadContext attributes, custome fields, 
+thread name, etc. will all be available as attributes on each log event that can be used for filtering.
+The result will resemble
+![](../images/kibana.png)
 
 ## Managing Logging Configuration
 
