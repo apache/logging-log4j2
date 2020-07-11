@@ -26,15 +26,15 @@ supported by the Log4j 2 implementation.
 
 The `LoggerContextFactory` binds the Log4j API to its implementation.
 The Log4j `LogManager` locates a `LoggerContextFactory` by using
-java.util.ServiceLoader to locate all instances of
+`java.util.ServiceLoader` to locate all instances of
 `org.apache.logging.log4j.spi.Provider`. Each implementation must
-provide a class that extends`org.apache.logging.log4j.spi.Provider` and
+provide a class that extends `org.apache.logging.log4j.spi.Provider` and
 should have a no-arg constructor that delegates to Provider's
 constructor passing the Priority, the API versions it is compatible
 with, and the class that implements
 `org.apache.logging.log4j.spi.LoggerContextFactory`. Log4j will compare
-the current API version and if it is compatible the implementation will
-be added to the list of providers. The API version in
+the current API version and if it is compatible the implementation 
+will be added to the list of providers. The API version in
 `org.apache.logging.log4j.LogManager` is only changed when a feature is
 added to the API that implementations need to be aware of. If more than
 one valid implementation is located the value for the Priority will be
@@ -47,15 +47,15 @@ and bound to the LogManager. In Log4j 2 this is provided by
 Applications may change the LoggerContextFactory that will be used by
 
 1.  Create a binding to the logging implementation.
-..  Implement a new `LoggerContextFactory`.
-..  Implement a class that extends `org.apache.logging.spi.Provider.`
+..  Implement a new link:../log4j-core/apidocs/org/apache/logging/log4j/core/impl/Log4jContextFactory.html[`LoggerContextFactory`].
+..  Implement a class that extends link:../log4j-core/apidocs/org/apache/logging/spi/Provider.html[`org.apache.logging.spi.Provider`] 
 with a no-arg constructor that calls super-class's constructor with the
 Priority, the API version(s), `LoggerContextFactory` class, and
-optionally, a `ThreadContextMap` implementation class.
+optionally, a link:../log4j-core/apidocs/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`] implementation class.
 ..  Create a `META-INF/services/org.apache.logging.spi.Provider` file
 that contains the name of the class that implements
 `org.apache.logging.spi.Provider`.
-2.  Setting the system property log4j2.loggerContextFactory to the name
+2.  Setting the system property "log4j2.loggerContextFactory" to the name
 of the `LoggerContextFactory` class to use.
 3.  Setting the property "log4j2.loggerContextFactory" in a properties
 file named "log4j2.LogManager.properties" to the name of the
@@ -82,7 +82,7 @@ link:../log4j-core/apidocs/org/apache/logging/log4j/core/selector/BasicContextSe
   common LoggerContext.
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html[`ClassLoaderContextSelector`]::
   Associates LoggerContexts with the ClassLoader that created the caller
-  of the getLogger call. This is the default ContextSelector.
+  of the getLogger(...) call. This is the default ContextSelector.
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/selector/JndiContextSelector.html[`JndiContextSelector`]::
   Locates the LoggerContext by querying JNDI.
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html[`AsyncLoggerContextSelector`]::
@@ -106,18 +106,16 @@ the name of the class that should be searched first for a configuration.
 The second method is by defining the `ConfigurationFactory` as a `Plugin`.
 
 All the ConfigurationFactories are then processed in order. Each factory
-is called on its `getSupportedTypes` method to determine the file
+is called on its `getSupportedTypes()` method to determine the file
 extensions it supports. If a configuration file is located with one of
 the specified file extensions then control is passed to that
-`ConfigurationFactory` to load the configuration and create the
-`Configuration` object.
+`ConfigurationFactory` to load the configuration and create the link:../log4j-core/apidocs/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`] object.
 
-Most `Configuration` extend the `BaseConfiguration` class. This class
-expects that the subclass will process the configuration file and create
+Most `Configuration` extend the link:../log4j-core/apidocs/org/apache/logging/log4j/core/config/AbstractConfiguration.html[`AbstractConfiguration`] class. This class expects that the subclass will process the configuration file and create
 a hierarchy of `Node` objects. Each `Node` is fairly simple in that it
 consists of the name of the node, the name/value pairs associated with
 the node, The `PluginType` of the node and a List of all of its child
-Nodes. `BaseConfiguration` will then be passed the `Node` tree and
+Nodes. `Configuration` will then be passed the `Node` tree and
 instantiate the configuration objects from that.
 
 [source,java]
@@ -157,7 +155,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
 
 `LoggerConfig` objects are where Loggers created by applications tie into
 the configuration. The Log4j implementation requires that all
-LoggerConfigs be based on the LoggerConfig class, so applications
+LoggerConfigs are based on the LoggerConfig class, so applications
 wishing to make changes must do so by extending the `LoggerConfig` class.
 To declare the new `LoggerConfig`, declare it as a Plugin of type "Core"
 and providing the name that applications should specify as the element
@@ -258,7 +256,7 @@ public class SystemPropertiesLookup implements StrLookup {
 [#Filters]
 == Filters
 
-As might be expected, Filters are the used to reject or accept log
+As might be expected, Filters are used to reject or accept log
 events as they pass through the logging system. A Filter is declared
 using a `@Plugin` annotation of `type` "Core" and an `elementType` of "filter".
 The `name` attribute on the Plugin annotation is used to specify the name
@@ -267,7 +265,7 @@ of the element users should use to enable the Filter. Specifying the
 `toString` will format the arguments to the filter as the configuration is
 being processed. The Filter must also specify a `@PluginFactory` method
 or `@PluginFactoryBuilder` builder class and method
-that will be called to create the Filter
+that will be called to create the Filter.
 
 The example below shows a Filter used to reject LogEvents based upon
 their logging level. Notice the typical pattern where all the filter
@@ -408,6 +406,8 @@ public class SampleLayout extends AbstractStringLayout {
 
     protected SampleLayout(boolean locationInfo, boolean properties, boolean complete,
                            Charset charset) {
+        super(charset);
+        // handle the boolean parameters
     }
 
     @PluginFactory
@@ -455,8 +455,17 @@ public final class QueryConverter extends LogEventPatternConverter {
     public static QueryConverter newInstance(final String[] options) {
       return new QueryConverter(options);
     }
+    
+    @Override
+    public void format(LogEvent event, StringBuilder toAppendTo) {
+        // get the data from 'event', to the work and append the result to 'toAppendTo'.
+    }    
 }
 ----
+
+A pattern to use this converter could be specified as `... %q ...` or `... %q{argument} ...`. 
+The "argument" will be passed as first (and only) value to the `options` parameter of the 
+`newInstance(...)` method.
 
 [#Plugin_Builders]
 == Plugin Builders
@@ -570,13 +579,15 @@ ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLi
 [#Custom_ContextDataProvider]
 == Custom ContextDataProvider
 
-
-The `ContextDataProvider` (introduced in Log4j 2.13.2) is an interface applications and libraries can use to inject
-additional key-value pairs into the LogEvent's context data. Log4j's `ThreadContextDataInjector` uses
-`java.util.ServiceLoader` to locate and load `ContextDataProvider` instances. Log4j itself adds the ThreadContext data
-to the LogEvent using `org.apache.logging.log4j.core.impl.ThreadContextDataProvider`. Custom implementations
-should implement the `org.apache.logging.log4j.core.util.ContextDataProvider`interfaceand declare it as a service by
-defining the implmentation class in a file named
+The link:../log4j-core/apidocs/org/apache/logging/log4j/core/util/ContextDataProvider.html[`ContextDataProvider`] 
+(introduced in Log4j 2.13.2) is an interface applications and libraries can use to inject
+additional key-value pairs into the LogEvent's context data. Log4j's 
+link:../log4j-core/apidocs/org/apache/logging/log4j/core/impl/ThreadContextDataInjector.html[`ThreadContextDataInjector`] 
+uses `java.util.ServiceLoader` to locate and load `ContextDataProvider` instances.
+Log4j itself adds the ThreadContext data to the LogEvent using 
+`org.apache.logging.log4j.core.impl.ThreadContextDataProvider`. Custom implementations
+should implement the `org.apache.logging.log4j.core.util.ContextDataProvider` interface and 
+declare it as a service by defining the implmentation class in a file named
 `META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider`.
 
 == Custom ThreadContextMap implementations
@@ -585,10 +596,10 @@ A garbage-free `StringMap`-based context map can be installed by setting
 system property `log4j2.garbagefreeThreadContextMap` to true. (Log4j
 must be link:garbagefree.html#Config[enabled] to use ThreadLocals.)
 
-Any custom `ThreadContextMap` implementation can be installed by setting
-system property `log4j2.threadContextMap` to the fully qualified class
-name of the class implementing the `ThreadContextMap` interface. By also
-implementing the `ReadOnlyThreadContextMap` interface, your custom
+Any custom link:../log4j-core/apidocs/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
+implementation can be installed by setting system property `log4j2.threadContextMap` 
+to the fully qualified class name of the class implementing the `ThreadContextMap` 
+interface. By also implementing the `ReadOnlyThreadContextMap` interface, your custom
 `ThreadContextMap` implementation will be accessible to applications via the
 link:../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html#getThreadContextMap()[`ThreadContext::getThreadContextMap`]
 method.
