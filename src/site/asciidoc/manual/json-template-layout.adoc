@@ -207,6 +207,12 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
   `System.lineSeparator()` set by `log4j.layout.jsonTemplate.eventDelimiter`
   property)
 
+| nullEventDelimiterEnabled
+| boolean
+| append `\0` (`null`) character to the end of every emitted `eventDelimiter`
+  (defaults to `false` set by
+  `log4j.layout.jsonTemplate.nullEventDelimiterEnabled` property)
+
 | maxStringLength
 | int
 | truncate string values longer than the specified limit (defaults to 16384 set

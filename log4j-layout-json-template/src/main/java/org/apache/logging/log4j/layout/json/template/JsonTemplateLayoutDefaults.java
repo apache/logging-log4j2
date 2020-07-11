@@ -79,6 +79,11 @@ public enum JsonTemplateLayoutDefaults {;
                     "log4j.layout.jsonTemplate.eventDelimiter",
                     System.lineSeparator());
 
+    private static final boolean NULL_EVENT_DELIMITER_ENABLED =
+            PROPERTIES.getBooleanProperty(
+                    "log4j.layout.jsonTemplate.nullEventDelimiterEnabled",
+                    false);
+
     private static final int MAX_STRING_LENGTH = readMaxStringLength();
 
     private static final String TRUNCATED_STRING_SUFFIX =
@@ -187,6 +192,10 @@ public enum JsonTemplateLayoutDefaults {;
 
     public static String getEventDelimiter() {
         return EVENT_DELIMITER;
+    }
+
+    public static boolean isNullEventDelimiterEnabled() {
+        return NULL_EVENT_DELIMITER_ENABLED;
     }
 
     public static int getMaxStringLength() {

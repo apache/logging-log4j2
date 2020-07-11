@@ -92,7 +92,8 @@ public class JsonTemplateLayout implements StringLayout {
     private JsonTemplateLayout(final Builder builder) {
         this.charset = builder.charset;
         this.contentType = "application/json; charset=" + charset;
-        this.eventDelimiter = builder.eventDelimiter;
+        final String eventDelimiterSuffix = builder.isNullEventDelimiterEnabled() ? "\0" : "";
+        this.eventDelimiter = builder.eventDelimiter + eventDelimiterSuffix;
         final Configuration configuration = builder.configuration;
         final StrSubstitutor substitutor = configuration.getStrSubstitutor();
         final JsonWriter jsonWriter = JsonWriter
@@ -215,11 +216,7 @@ public class JsonTemplateLayout implements StringLayout {
         final StringBuilder stringBuilder = jsonWriter.getStringBuilder();
         try {
             eventResolver.resolve(event, jsonWriter);
-            if (eventDelimiter != null && eventDelimiter.equalsIgnoreCase("null")) {
-                stringBuilder.append('\0');
-            } else {
-                stringBuilder.append(eventDelimiter);
-            }
+            stringBuilder.append(eventDelimiter);
             return stringBuilder.toString();
         } finally {
             contextRecycler.release(context);
@@ -340,6 +337,10 @@ public class JsonTemplateLayout implements StringLayout {
         private String eventDelimiter = JsonTemplateLayoutDefaults.getEventDelimiter();
 
         @PluginBuilderAttribute
+        private boolean nullEventDelimiterEnabled =
+                JsonTemplateLayoutDefaults.isNullEventDelimiterEnabled();
+
+        @PluginBuilderAttribute
         private int maxStringLength = JsonTemplateLayoutDefaults.getMaxStringLength();
 
         @PluginBuilderAttribute
@@ -444,6 +445,16 @@ public class JsonTemplateLayout implements StringLayout {
 
         public Builder setEventDelimiter(final String eventDelimiter) {
             this.eventDelimiter = eventDelimiter;
+            return this;
+        }
+
+        public boolean isNullEventDelimiterEnabled() {
+            return nullEventDelimiterEnabled;
+        }
+
+        public Builder setNullEventDelimiterEnabled(
+                final boolean nullEventDelimiterEnabled) {
+            this.nullEventDelimiterEnabled = nullEventDelimiterEnabled;
             return this;
         }
 

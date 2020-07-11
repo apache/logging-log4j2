@@ -220,7 +220,7 @@ The logging configuration to use this template would be
             port="12222"
             protocol="tcp"
             bufferedIo="true">
-      <JsonTemplateLayout eventTemplateUri="classpath:EnhancedGelf.json" eventDelimiter="null">
+      <JsonTemplateLayout eventTemplateUri="classpath:EnhancedGelf.json" nullEventDelimiterEnabled="true">
         <EventTemplateAdditionalFields>
           <EventTemplateAdditionalField key="containerId" value="${docker:containerId:-}"/>
           <EventTemplateAdditionalField key="application" value="${lower:${spring:spring.application.name:-spring}}"/>
