@@ -828,6 +828,31 @@ Resolve all NDC values matching with the `pattern` regex:
 }
 ----
 
+| pattern
+a|
+[source]
+----
+config            = pattern , [ stackTraceEnabled ]
+pattern           = "pattern" -> string
+stackTraceEnabled = "stackTraceEnabled" -> boolean
+----
+a|
+Resolver delegating to link:layouts.html#PatternLayout[`PatternLayout`].
+
+The default value of `stackTraceEnabled` is inherited from the parent
+`JsonTemplateLayout`.
+| none
+a|
+Resolve the string produced by `%p %c{1.} [%t] %X{userId} %X %m%ex` pattern:
+
+[source,json]
+----
+{
+  "$resolver": "pattern",
+  "pattern": "%p %c{1.} [%t] %X{userId} %X %m%ex"
+}
+----
+
 | source
 a|
 [source]

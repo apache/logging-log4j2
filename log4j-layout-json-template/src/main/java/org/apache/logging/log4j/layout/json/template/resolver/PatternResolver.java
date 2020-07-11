@@ -22,19 +22,26 @@ import org.apache.logging.log4j.layout.json.template.util.JsonWriter;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.Strings;
 
+import java.util.Optional;
+
 /**
  * Resolver delegating to {@link PatternLayout}.
  *
  * <h3>Configuration</h3>
  *
  * <pre>
- * config  = pattern
- * pattern = "pattern" -> string
+ * config            = pattern , [ stackTraceEnabled ]
+ * pattern           = "pattern" -> string
+ * stackTraceEnabled = "stackTraceEnabled" -> boolean
  * </pre>
+ *
+ * The default value of <tt>stackTraceEnabled</tt> is inherited from the parent
+ * {@link org.apache.logging.log4j.layout.json.template.JsonTemplateLayout}.
  *
  * <h3>Examples</h3>
  *
- * Inject string produced by <tt>%p %c{1.} [%t] %X{userId} %X %m%ex</tt> pattern:
+ * Resolve the string produced by <tt>%p %c{1.} [%t] %X{userId} %X %m%ex</tt>
+ * pattern:
  *
  * <pre>
  * {
@@ -54,11 +61,15 @@ final class PatternResolver implements EventResolver {
         if (Strings.isBlank(pattern)) {
             throw new IllegalArgumentException("blank pattern: " + config);
         }
+        final boolean stackTraceEnabled = Optional
+                .ofNullable(config.getBoolean("stackTraceEnabled"))
+                .orElse(context.isStackTraceEnabled());
         final PatternLayout patternLayout = PatternLayout
                 .newBuilder()
                 .setConfiguration(context.getConfiguration())
                 .setCharset(context.getCharset())
                 .setPattern(pattern)
+                .setAlwaysWriteExceptions(stackTraceEnabled)
                 .build();
         this.emitter = (final StringBuilder stringBuilder, final LogEvent logEvent) ->
                 patternLayout.serialize(logEvent, stringBuilder);
