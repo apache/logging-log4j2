@@ -389,7 +389,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
                         logger.getName());
                 logger.addAppender(getAppender(appenderName), null, null);
             } else {
-                LOGGER.debug("Appender named [{}}] not found.", appenderName);
+                LOGGER.debug("Appender named [{}] not found.", appenderName);
             }
         }
     }
