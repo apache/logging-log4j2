@@ -60,6 +60,12 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Required for AsyncLogger testing -->
+    <dependency>
+      <groupId>com.lmax</groupId>
+      <artifactId>disruptor</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

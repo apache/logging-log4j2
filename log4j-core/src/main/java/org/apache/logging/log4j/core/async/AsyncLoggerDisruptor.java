@@ -85,6 +85,11 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
                     contextName);
             return;
         }
+        if (isStarting()) {
+            LOGGER.trace("[{}] AsyncLoggerDisruptor is already starting.", contextName);
+            return;
+        }
+        setStarting();
         LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
         ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLogger.RingBufferSize");
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLogger.WaitStrategy");
