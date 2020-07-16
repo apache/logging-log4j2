@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.util.Log4jThread;
 
 /**
  * Default router: enqueue the event for asynchronous logging in the background thread, unless the current thread is the
@@ -29,7 +30,13 @@ public class DefaultAsyncQueueFullPolicy implements AsyncQueueFullPolicy {
 
         // LOG4J2-471: prevent deadlock when RingBuffer is full and object
         // being logged calls Logger.log() from its toString() method
-        if (Thread.currentThread().getId() == backgroundThreadId) {
+        Thread currentThread = Thread.currentThread();
+        if (currentThread.getId() == backgroundThreadId
+                // Threads owned by log4j are most likely to result in
+                // deadlocks because they generally consume events.
+                // This prevents deadlocks between AsyncLoggerContext
+                // disruptors.
+                || currentThread instanceof Log4jThread) {
             return EventRoute.SYNCHRONOUS;
         }
         return EventRoute.ENQUEUE;
