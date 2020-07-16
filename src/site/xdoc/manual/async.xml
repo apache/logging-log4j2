@@ -255,6 +255,36 @@
             </td>
           </tr>
           <tr>
+            <td>log4j2.asyncLoggerTimeout</td>
+            <td>
+              <tt>10</tt>
+            </td>
+            <td>
+              Timeout in milliseconds of <tt>TimeoutBlockingWaitStrategy</tt>. See
+              the WaitStrategy System Property for details.
+            </td>
+          </tr>
+          <tr>
+            <td>log4j2.asyncLoggerSleepTimeNs</td>
+            <td>
+              <tt>100</tt>
+            </td>
+            <td>
+              Sleep time (in nanoseconds) of <tt>SleepingWaitStrategy</tt>. See
+              the WaitStrategy System Property for details.
+            </td>
+          </tr>
+          <tr>
+            <td>log4j2.asyncLoggerRetries</td>
+            <td>
+              <tt>200</tt>
+            </td>
+            <td>
+              Total number of spin cycles and <tt>Thread.yield()</tt> cycles of <tt>SleepingWaitStrategy</tt>. See
+              the WaitStrategy System Property for details.
+            </td>
+          </tr>
+          <tr>
             <td>AsyncLogger.SynchronizeEnqueueWhenQueueFull</td>
             <td>
               <tt>true</tt>
@@ -446,6 +476,36 @@
               <tt>Yield</tt> is a strategy that uses a Thread.yield() for waiting for log events after an initially spinning.
               Yield is a good compromise between performance and CPU resource, but may use more CPU than Sleep
               in order to get the message logged to disk sooner.
+            </td>
+          </tr>
+          <tr>
+            <td>log4j2.asyncLoggerConfigTimeout</td>
+            <td>
+              <tt>10</tt>
+            </td>
+            <td>
+              Timeout in milliseconds of <tt>TimeoutBlockingWaitStrategy</tt>. See
+              the WaitStrategy System Property for details.
+            </td>
+          </tr>
+          <tr>
+            <td>log4j2.asyncLoggerConfigSleepTimeNs</td>
+            <td>
+              <tt>100</tt>
+            </td>
+            <td>
+              Sleep time (in nanoseconds) of <tt>SleepingWaitStrategy</tt>. See
+              the WaitStrategy System Property for details.
+            </td>
+          </tr>
+          <tr>
+            <td>log4j2.asyncLoggerConfigRetries</td>
+            <td>
+              <tt>200</tt>
+            </td>
+            <td>
+              Total number of spin cycles and <tt>Thread.yield()</tt> cycles of <tt>SleepingWaitStrategy</tt>. See
+              the WaitStrategy System Property for details.
             </td>
           </tr>
           <tr>

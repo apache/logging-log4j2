@@ -2185,6 +2185,45 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
+    <td><a name="asyncLoggerTimeout"/>log4j2.asyncLoggerTimeout
+      <br />
+      (<a name="AsyncLogger.Timeout" />AsyncLogger.Timeout)
+    </td>
+    <td>LOG4J_ASYNC_LOGGER_TIMEOUT</td>
+    <td>
+      10
+    </td>
+    <td>
+      See <a href="async.html#SysPropsAllAsync">Async Logger System Properties</a> for details.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="asyncLoggerSleepTimeNs"/>log4j2.asyncLoggerSleepTimeNs
+      <br />
+      (<a name="AsyncLogger.SleepTimeNs" />AsyncLogger.SleepTimeNs)
+    </td>
+    <td>LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS</td>
+    <td>
+      100
+    </td>
+    <td>
+      See <a href="async.html#SysPropsAllAsync">Async Logger System Properties</a> for details.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="asyncLoggerRetries"/>log4j2.asyncLoggerRetries
+      <br />
+      (<a name="AsyncLogger.Retries" />AsyncLogger.Retries)
+    </td>
+    <td>LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS</td>
+    <td>
+      200
+    </td>
+    <td>
+      See <a href="async.html#SysPropsAllAsync">Async Logger System Properties</a> for details.
+    </td>
+  </tr>
+  <tr>
     <td><a name="AsyncLogger.SynchronizeEnqueueWhenQueueFull"/>AsyncLogger.SynchronizeEnqueueWhenQueueFull
     </td>
     <td>ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL</td>
