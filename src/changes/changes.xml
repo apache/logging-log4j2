@@ -197,6 +197,10 @@
         Disruptor and JUL no longer recursively start the AsyncLoggerDisruptor
         resulting in an extra disruptor background thread constantly waiting.
       </action>
+      <action issue="LOG4J2-2867" dev="ckozak" type="fix">
+        RingBufferLogEventTranslator uses a static ContextDataInjector instead of initializing a new object
+        on each thread.
+      </action>
     </release>
     <release version="2.13.3" date="2020-05-10" description="GA Release 2.13.3">
       <action issue="LOG4J2-2838" dev="rgoers" type="fix">
