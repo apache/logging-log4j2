@@ -78,6 +78,10 @@
       <action issue="LOG4J2-2895" dev="ckozak" type="fix">
         Fix potential deadlock in asynchronous logging by avoiding blocking for queue space on Log4jThreads
       </action>
+      <action issue="LOG4J2-2837" dev="ckozak" type="fix">
+        Disruptor and JUL no longer recursively start the AsyncLoggerDisruptor
+        resulting in an extra disruptor background thread constantly waiting.
+      </action>
     </release>
     <release version="2.13.3" date="2020-05-10" description="GA Release 2.13.3">
       <action issue="LOG4J2-2838" dev="rgoers" type="fix">
