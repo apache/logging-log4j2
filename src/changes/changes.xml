@@ -201,6 +201,9 @@
         RingBufferLogEventTranslator uses a static ContextDataInjector instead of initializing a new object
         on each thread.
       </action>
+      <action issue="LOG4J2-2858" dev="ckozak" type="add" due-to="Stepan Gorban">
+        More flexible configuration of the Disruptor WaitStrategy.
+      </action>
     </release>
     <release version="2.13.3" date="2020-05-10" description="GA Release 2.13.3">
       <action issue="LOG4J2-2838" dev="rgoers" type="fix">
