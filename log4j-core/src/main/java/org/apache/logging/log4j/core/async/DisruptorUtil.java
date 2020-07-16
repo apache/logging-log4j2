@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.core.async;
 
-import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -36,6 +35,7 @@ import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Utility methods for getting Disruptor related configuration.
@@ -60,36 +60,46 @@ final class DisruptorUtil {
     private DisruptorUtil() {
     }
 
-    static long getTimeout(final String propertyName, final long defaultTimeout) {
-        return PropertiesUtil.getProperties().getLongProperty(propertyName, defaultTimeout);
-    }
-
     static WaitStrategy createWaitStrategy(final String propertyName) {
-        final String key = propertyName.startsWith("AsyncLogger.")
-                ? "AsyncLogger.Timeout"
-                : "AsyncLoggerConfig.Timeout";
-        final long timeoutMillis = DisruptorUtil.getTimeout(key, 10L);
-        return createWaitStrategy(propertyName, timeoutMillis);
+        final String strategy = PropertiesUtil.getProperties().getStringProperty(propertyName, "Timeout");
+        LOGGER.trace("property {}={}", propertyName, strategy);
+        final String strategyUp = Strings.toRootUpperCase(strategy);
+        final long timeoutMillis = parseAdditionalLongProperty(propertyName, "Timeout", 10L);
+        // String (not enum) is deliberately used here to avoid IllegalArgumentException being thrown. In case of
+        // incorrect property value, default WaitStrategy is created.
+        switch (strategyUp) {
+            case "SLEEP":
+                final long sleepTimeNs =
+                        parseAdditionalLongProperty(propertyName, "SleepTimeNs", 100L);
+                final String key = getFullPropertyKey(propertyName, "Retries");
+                final int retries =
+                        PropertiesUtil.getProperties().getIntegerProperty(key, 200);
+                return new SleepingWaitStrategy(retries, sleepTimeNs);
+            case "YIELD":
+                return new YieldingWaitStrategy();
+            case "BLOCK":
+                return new BlockingWaitStrategy();
+            case "BUSYSPIN":
+                return new BusySpinWaitStrategy();
+            case "TIMEOUT":
+                return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
+            default:
+                return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
+        }
     }
 
-    static WaitStrategy createWaitStrategy(final String propertyName, final long timeoutMillis) {
-        final String strategy = PropertiesUtil.getProperties().getStringProperty(propertyName, "TIMEOUT");
-        LOGGER.trace("property {}={}", propertyName, strategy);
-        final String strategyUp = strategy.toUpperCase(Locale.ROOT); // TODO Refactor into Strings.toRootUpperCase(String)
-        switch (strategyUp) { // TODO Define a DisruptorWaitStrategy enum?
-        case "SLEEP":
-            return new SleepingWaitStrategy();
-        case "YIELD":
-            return new YieldingWaitStrategy();
-        case "BLOCK":
-            return new BlockingWaitStrategy();
-        case "BUSYSPIN":
-            return new BusySpinWaitStrategy();
-        case "TIMEOUT":
-            return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
-        default:
-            return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
-        }
+    private static String getFullPropertyKey(final String strategyKey, final String additionalKey) {
+        return strategyKey.startsWith("AsyncLogger.")
+                ? "AsyncLogger." + additionalKey
+                : "AsyncLoggerConfig." + additionalKey;
+    }
+
+    private static long parseAdditionalLongProperty(
+            final String propertyName,
+            final String additionalKey,
+            long defaultValue) {
+        final String key = getFullPropertyKey(propertyName, additionalKey);
+        return PropertiesUtil.getProperties().getLongProperty(key, defaultValue);
     }
 
     static int calculateRingBufferSize(final String propertyName) {

@@ -2056,6 +2056,30 @@ details.
 link:async.html#SysPropsAllAsync[Async Logger System Properties] for
 details.
 
+|[[asyncLoggerTimeout]]log4j2.asyncLoggerTimeout +
+([[AsyncLogger.Timeout]]AsyncLogger.Timeout)
+|LOG4J_ASYNC_LOGGER_TIMEOUT
+|10
+|See
+link:async.html#SysPropsAllAsync[Async Logger System Properties] for
+details.
+
+|[[asyncLoggerSleepTimeNs]]log4j2.asyncLoggerSleepTimeNs +
+([[AsyncLogger.SleepTimeNs]]AsyncLogger.SleepTimeNs)
+|LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS
+|100
+|See
+link:async.html#SysPropsAllAsync[Async Logger System Properties] for
+details.
+
+|[[asyncLoggerRetries]]log4j2.asyncLoggerRetries +
+([[AsyncLogger.Retries]]AsyncLogger.Retries)
+|LOG4J_ASYNC_LOGGER_RETRIES
+|200
+|See
+link:async.html#SysPropsAllAsync[Async Logger System Properties] for
+details.
+
 |[[AsyncLogger.SynchronizeEnqueueWhenQueueFull]]AsyncLogger.SynchronizeEnqueueWhenQueueFull
 |ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
 |true
@@ -2094,6 +2118,31 @@ System Properties] for details.
 |See
 link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
 System Properties] for details.
+
+|[[asyncLoggerConfigTimeout]]log4j2.asyncLoggerConfigTimeout +
+([[AsyncLoggerConfig.Timeout]]AsyncLoggerConfig.Timeout)
+|LOG4J_ASYNC_LOGGER_CONFIG_TIMEOUT
+|10
+|See
+link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
+System Properties] for details.
+
+|[[asyncLoggerConfigSleepTimeNs]]log4j2.asyncLoggerConfigSleepTimeNs +
+([[AsyncLoggerConfig.SleepTimeNs]]AsyncLoggerConfig.SleepTimeNs)
+|LOG4J_ASYNC_LOGGER_CONFIG_SLEEP_TIME_NS
+|100
+|See
+link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
+System Properties] for details.
+
+|[[asyncLoggerConfigRetries]]log4j2.asyncLoggerConfigRetries +
+([[AsyncLoggerConfig.Retries]]AsyncLoggerConfig.Retries)
+|LOG4J_ASYNC_LOGGER_CONFIG_RETRIES
+|200
+|See
+link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
+System Properties] for details.
+
 
 |[[AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull]]AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull
 |ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL

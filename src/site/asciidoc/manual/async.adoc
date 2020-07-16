@@ -209,7 +209,7 @@ keep up with for a long enough time to fill up the queue, the behaviour
 is determined by the
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy].
 
-|log4j2.asyncLoggerWaitStrategy
+|[[asyncLoggerWaitStrategy]]log4j2.asyncLoggerWaitStrategy
 |`Timeout`
 |Valid values: Block,
 Timeout, Sleep, Yield.
@@ -231,6 +231,23 @@ latency for actually getting the message logged.
 events after an initially spinning. Yield is a good compromise between
 performance and CPU resource, but may use more CPU than Sleep in order
 to get the message logged to disk sooner.
+
+|log4j2.asyncLoggerTimeout
+|`10`
+|Timeout in milliseconds of `TimeoutBlockingWaitStrategy`. See
+link:#asyncLoggerWaitStrategy[WaitStrategy System Property] for details.
+
+|log4j2.asyncLoggerSleepTimeNs
+|`100`
+|Sleep time (in nanoseconds) of `SleepingWaitStrategy`. See
+link:#asyncLoggerWaitStrategy[WaitStrategy System Property] for details.
+
+|log4j2.asyncLoggerRetries
+|`200`
+|Total number of spin cycles and `Thread.yield()` cycles of `SleepingWaitStrategy`. See
+link:#asyncLoggerWaitStrategy[WaitStrategy System Property] for details.
+
+
 
 |AsyncLogger.SynchronizeEnqueueWhenQueueFull
 |`true`
@@ -375,7 +392,7 @@ keep up with for a long enough time to fill up the queue, the behavious
 is determined by the
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy].
 
-|log4j2.asyncLoggerConfigWaitStrategy
+|[[asyncLoggerConfigWaitStrategy]]log4j2.asyncLoggerConfigWaitStrategy
 |`Timeout`
 |Valid values: Block,
 Timeout, Sleep, Yield. +
@@ -397,6 +414,21 @@ latency for actually getting the message logged. +
 events after an initially spinning. Yield is a good compromise between
 performance and CPU resource, but may use more CPU than Sleep in order
 to get the message logged to disk sooner.
+
+|log4j2.asyncLoggerConfigTimeout
+|`10`
+|Timeout in milliseconds of `TimeoutBlockingWaitStrategy`. See
+link:#asyncLoggerConfigWaitStrategy[WaitStrategy System Property] for details.
+
+|log4j2.asyncLoggerConfigSleepTimeNs
+|`100`
+|Sleep time (in nanoseconds) of `SleepingWaitStrategy`. See
+link:#asyncLoggerConfigWaitStrategy[WaitStrategy System Property] for details.
+
+|log4j2.asyncLoggerConfigRetries
+|`200`
+|Total number of spin cycles and `Thread.yield()` cycles of `SleepingWaitStrategy`. See
+link:#asyncLoggerConfigWaitStrategy[WaitStrategy System Property] for details.
 
 |AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull
 |`true`
