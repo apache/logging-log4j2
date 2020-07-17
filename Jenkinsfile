@@ -72,13 +72,11 @@ pipeline {
                             // additional warnings generated during build
                             // TODO: would be nice to be able to include checkstyle, cpd, pmd, and spotbugs,
                             //       but current site build takes too long
-                            /*
-                            recordIssues enabledForFailure: true,
-                                    sourceCodeEncoding: 'UTF-8',
-                                    referenceJobName: 'log4j/master',
-                                    tools: [mavenConsole(), errorProne(), java(),
-                                            taskScanner(highTags: 'FIXME', normalTags: 'TODO', includePattern: '**/*.java', excludePattern: '*/target/**')]
-                            */
+//                            recordIssues enabledForFailure: true,
+//                                    sourceCodeEncoding: 'UTF-8',
+//                                    referenceJobName: 'log4j/master',
+//                                    tools: [mavenConsole(), errorProne(), java(),
+//                                            taskScanner(highTags: 'FIXME', normalTags: 'TODO', includePattern: '**/*.java', excludePattern: '*/target/**')]
                         }
                     }
                 }
@@ -116,11 +114,9 @@ pipeline {
     }
     post {
         fixed {
-            /*
-            slackSend channel: 'logging',
-                    color: 'good',
-                    message: ":excellent: <${env.JOB_URL}|${env.JOB_NAME}> was fixed in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>."
-            */
+//            slackSend channel: 'logging',
+//                    color: 'good',
+//                    message: ":excellent: <${env.JOB_URL}|${env.JOB_NAME}> was fixed in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>."
             emailext to: 'notifications@logging.apache.org',
                     from: 'Mr. Jenkins <jenkins@ci-builds.apache.org>',
                     replyTo: 'dev@logging.apache.org',
@@ -128,23 +124,19 @@ pipeline {
                     body: '${SCRIPT, template="groovy-html.template"}'
         }
         failure {
-            /*
-            slackSend channel: 'logging',
-                    color: 'danger',
-                    message: ":doh: <${env.JOB_URL}|${env.JOB_NAME}> failed in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>. <${env.BUILD_URL}testReport/|Tests>."
-            */
+//            slackSend channel: 'logging',
+//                    color: 'danger',
+//                    message: ":doh: <${env.JOB_URL}|${env.JOB_NAME}> failed in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>. <${env.BUILD_URL}testReport/|Tests>."
             emailext to: 'notifications@logging.apache.org',
                     from: 'Mr. Jenkins <jenkins@ci-builds.apache.org>',
                     replyTo: 'dev@logging.apache.org',
                     subject: "[CI][FAILURE] ${env.JOB_NAME}#${env.BUILD_NUMBER} has potential issues",
                     body: '${SCRIPT, template="groovy-html.template"}'
         }
-        /*
-        unstable {
-            slackSend channel: 'logging',
-                    color: 'warning',
-                    message: ":disappear: <${env.JOB_URL}|${env.JOB_NAME}> is unstable in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>."
-        }
-        */
+//        unstable {
+//            slackSend channel: 'logging',
+//                    color: 'warning',
+//                    message: ":disappear: <${env.JOB_URL}|${env.JOB_NAME}> is unstable in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>."
+//        }
     }
 }
