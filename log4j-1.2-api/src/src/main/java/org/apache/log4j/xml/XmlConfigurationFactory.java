@@ -472,7 +472,7 @@ public class XmlConfigurationFactory extends ConfigurationFactory implements Con
                                         appender.getName());
                                 aa.addAppender(child);
                             } else {
-                                LOGGER.error("Requesting attachment of appender named [{}] to appender named [{}}]"
+                                LOGGER.error("Requesting attachment of appender named [{}] to appender named [{}]"
                                                 + "which does not implement org.apache.log4j.spi.AppenderAttachable.",
                                         refName, appender.getName());
                             }
@@ -590,7 +590,7 @@ public class XmlConfigurationFactory extends ConfigurationFactory implements Con
                                 loggerConfig.getName());
                         loggerConfig.addAppender(configuration.getAppender(refName), null, null);
                     } else {
-                        LOGGER.debug("Appender named [{}}] not found.", refName);
+                        LOGGER.debug("Appender named [{}] not found.", refName);
                     }
                     break;
                 }
@@ -667,7 +667,7 @@ public class XmlConfigurationFactory extends ConfigurationFactory implements Con
         }
 
         String priStr = subst(element.getAttribute(VALUE_ATTR));
-        LOGGER.debug("Level value for {} is [{}}].", catName, priStr);
+        LOGGER.debug("Level value for {} is [{}].", catName, priStr);
 
         if (INHERITED.equalsIgnoreCase(priStr) || NULL.equalsIgnoreCase(priStr)) {
             if (isRoot) {
