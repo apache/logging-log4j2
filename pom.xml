@@ -25,6 +25,7 @@
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
     <version>1</version>
+    <relativePath/>
   </parent>
   <description>Apache Log4j 2</description>
   <url>https://logging.apache.org/log4j/2.x/</url>
