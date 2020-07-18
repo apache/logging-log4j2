@@ -138,7 +138,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     private static final String OVERRIDE_PARAM = "override";
 
-    private static volatile List<ConfigurationFactory> factories = null;
+    private static volatile List<ConfigurationFactory> factories;
 
     private static ConfigurationFactory configFactory = new Factory();
 
@@ -149,7 +149,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     private static final String HTTPS = "https";
     private static final String HTTP = "http";
 
-    private static volatile AuthorizationProvider authorizationProvider = null;
+    private static volatile AuthorizationProvider authorizationProvider;
 
     /**
      * Returns the ConfigurationFactory.

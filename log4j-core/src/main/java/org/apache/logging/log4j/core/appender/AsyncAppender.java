@@ -342,7 +342,7 @@ public final class AsyncAppender extends AbstractAppender {
      */
     private class AsyncThread extends Log4jThread {
 
-        private volatile boolean shutdown = false;
+        private volatile boolean shutdown;
         private final List<AppenderControl> appenders;
         private final BlockingQueue<LogEvent> queue;
 

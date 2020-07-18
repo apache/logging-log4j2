@@ -66,8 +66,8 @@ public class RollingFileManager extends FileManager {
     private final Log4jThreadFactory threadFactory = Log4jThreadFactory.createThreadFactory("RollingFileManager");
     private volatile TriggeringPolicy triggeringPolicy;
     private volatile RolloverStrategy rolloverStrategy;
-    private volatile boolean renameEmptyFiles = false;
-    private volatile boolean initialized = false;
+    private volatile boolean renameEmptyFiles;
+    private volatile boolean initialized;
     private volatile String fileName;
     private final boolean directWrite;
 
