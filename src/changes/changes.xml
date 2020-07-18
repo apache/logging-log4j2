@@ -98,6 +98,9 @@
       <action issue="LOG4J2-2898" dev="ckozak" type="fix" due-to="Turbanov Andrey">
         Avoid initializing volatile fields with default values.
       </action>
+      <action issue="LOG4J2-2899" dev="ckozak" type="fix">
+        Fix log4j-1.2-api LogEventWrapper threadId and priority accessors when called multiple times.
+      </action>
     </release>
     <release version="2.13.3" date="2020-05-10" description="GA Release 2.13.3">
       <action issue="LOG4J2-2838" dev="rgoers" type="fix">
