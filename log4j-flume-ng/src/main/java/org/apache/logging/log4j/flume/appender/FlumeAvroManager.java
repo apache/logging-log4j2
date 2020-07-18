@@ -50,7 +50,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
 
     private final int current = 0;
 
-    private volatile RpcClient rpcClient = null;
+    private volatile RpcClient rpcClient;
 
     private BatchEvent batchEvent = new BatchEvent();
     private long nextSend = 0;

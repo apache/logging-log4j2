@@ -57,8 +57,8 @@ public class TimeFormatBenchmark {
     };
     FastDateFormat fastDateFormat = FastDateFormat.getInstance("HH:mm:ss.SSS");
     FixedDateFormat fixedDateFormat = FixedDateFormat.createIfSupported(new String[]{"ABSOLUTE"});
-    volatile long midnightToday = 0;
-    volatile long midnightTomorrow = 0;
+    volatile long midnightToday;
+    volatile long midnightTomorrow;
 
     @State(Scope.Thread)
     public static class BufferState {

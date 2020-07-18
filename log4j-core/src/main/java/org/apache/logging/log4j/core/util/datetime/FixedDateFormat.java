@@ -388,8 +388,8 @@ public class FixedDateFormat {
     private final int millisSeparatorLength;
     private final FixedTimeZoneFormat fixedTimeZoneFormat;
 
-    private volatile long midnightToday = 0;
-    private volatile long midnightTomorrow = 0;
+    private volatile long midnightToday;
+    private volatile long midnightTomorrow;
     private final int[] dstOffsets = new int[25];
 
     // cachedDate does not need to be volatile because

@@ -39,7 +39,7 @@ public class WatcherFactory {
     private static Logger LOGGER = StatusLogger.getLogger();
     private static PluginManager pluginManager = new PluginManager(Watcher.CATEGORY);
 
-    private static volatile WatcherFactory factory = null;
+    private static volatile WatcherFactory factory;
 
     private final Map<String, PluginType<?>> plugins;
 

@@ -60,7 +60,7 @@ public final class FailoverAppender extends AbstractAppender {
 
     private final long intervalNanos;
 
-    private volatile long nextCheckNanos = 0;
+    private volatile long nextCheckNanos;
 
     private FailoverAppender(final String name, final Filter filter, final String primary, final String[] failovers,
             final int intervalMillis, final Configuration config, final boolean ignoreExceptions,

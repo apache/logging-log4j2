@@ -61,7 +61,7 @@ public class ConfigurationSource {
     private final String location;
     private final InputStream stream;
     private volatile byte[] data;
-    private volatile Source source = null;
+    private volatile Source source;
     private final long lastModified;
     // Set when the configuration has been updated so reset can use it for the next lastModified timestamp.
     private volatile long modifiedMillis;

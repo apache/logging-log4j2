@@ -185,7 +185,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     private long backgroundThreadId; // LOG4J2-471
     private EventFactory<Log4jEventWrapper> factory;
     private EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig> translator;
-    private volatile boolean alreadyLoggedWarning = false;
+    private volatile boolean alreadyLoggedWarning;
 
     private final Object queueFullEnqueueLock = new Object();
 

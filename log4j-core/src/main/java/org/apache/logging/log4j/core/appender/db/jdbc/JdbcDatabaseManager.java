@@ -162,7 +162,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     private final class Reconnector extends Log4jThread {
 
         private final CountDownLatch latch = new CountDownLatch(1);
-        private volatile boolean shutdown = false;
+        private volatile boolean shutdown;
 
         private Reconnector() {
             super("JdbcDatabaseManager-Reconnector");

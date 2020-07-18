@@ -89,7 +89,7 @@ public class LoggerContext extends AbstractLifeCycle
 
     private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
-    private volatile List<LoggerContextShutdownAware> listeners = null;
+    private volatile List<LoggerContextShutdownAware> listeners;
 
     /**
      * The Configuration is volatile to guarantee that initialization of the Configuration has completed before the

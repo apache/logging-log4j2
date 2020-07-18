@@ -34,7 +34,7 @@ import org.apache.logging.log4j.util.Supplier;
 public class LockingReliabilityStrategy implements ReliabilityStrategy, LocationAwareReliabilityStrategy {
     private final LoggerConfig loggerConfig;
     private final ReadWriteLock reconfigureLock = new ReentrantReadWriteLock();
-    private volatile boolean isStopping = false;
+    private volatile boolean isStopping;
 
     public LockingReliabilityStrategy(final LoggerConfig loggerConfig) {
         this.loggerConfig = Objects.requireNonNull(loggerConfig, "loggerConfig was null");
