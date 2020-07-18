@@ -114,29 +114,16 @@ pipeline {
     }
     post {
         fixed {
-//            slackSend channel: 'logging',
-//                    color: 'good',
-//                    message: ":excellent: <${env.JOB_URL}|${env.JOB_NAME}> was fixed in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>."
             emailext to: 'notifications@logging.apache.org',
-                    from: 'Mr. Jenkins <jenkins@ci-builds.apache.org>',
-                    replyTo: 'dev@logging.apache.org',
-                    subject: "[CI][SUCCESS] ${env.JOB_NAME}#${env.BUILD_NUMBER} back to normal",
-                    body: '${SCRIPT, template="groovy-html.template"}'
+                from: 'Mr. Jenkins <jenkins@ci-builds.apache.org>',
+                subject: "[CI][SUCCESS] ${env.JOB_NAME}#${env.BUILD_NUMBER} back to normal",
+                body: '${SCRIPT, template="groovy-text.template"}'
         }
         failure {
-//            slackSend channel: 'logging',
-//                    color: 'danger',
-//                    message: ":doh: <${env.JOB_URL}|${env.JOB_NAME}> failed in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>. <${env.BUILD_URL}testReport/|Tests>."
             emailext to: 'notifications@logging.apache.org',
-                    from: 'Mr. Jenkins <jenkins@ci-builds.apache.org>',
-                    replyTo: 'dev@logging.apache.org',
-                    subject: "[CI][FAILURE] ${env.JOB_NAME}#${env.BUILD_NUMBER} has potential issues",
-                    body: '${SCRIPT, template="groovy-html.template"}'
+                from: 'Mr. Jenkins <jenkins@ci-builds.apache.org>',
+                subject: "[CI][FAILURE] ${env.JOB_NAME}#${env.BUILD_NUMBER} has potential issues",
+                body: '${SCRIPT, template="groovy-text.template"}'
         }
-//        unstable {
-//            slackSend channel: 'logging',
-//                    color: 'warning',
-//                    message: ":disappear: <${env.JOB_URL}|${env.JOB_NAME}> is unstable in <${env.BUILD_URL}|build #${env.BUILD_NUMBER}>."
-//        }
     }
 }
