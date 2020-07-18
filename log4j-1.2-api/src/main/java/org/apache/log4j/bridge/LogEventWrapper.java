@@ -20,6 +20,7 @@ import org.apache.log4j.NDC;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableInformation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -36,6 +37,7 @@ import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Exposes a Log4j 1 logging event as a Log4j 2 LogEvent.
@@ -45,17 +47,19 @@ public class LogEventWrapper implements LogEvent {
     private final LoggingEvent event;
     private final ContextDataMap contextData;
     private final MutableThreadContextStack contextStack;
-    private volatile Thread thread;
+    private Thread thread;
 
     public LogEventWrapper(LoggingEvent event) {
         this.event = event;
         this.contextData = new ContextDataMap(event.getProperties());
         this.contextStack = new MutableThreadContextStack(NDC.cloneStack());
+        this.thread = Objects.equals(event.getThreadName(), Thread.currentThread().getName())
+                ? Thread.currentThread() : null;
     }
 
     @Override
     public LogEvent toImmutable() {
-        return null;
+        return this;
     }
 
     @Override
@@ -125,12 +129,12 @@ public class LogEventWrapper implements LogEvent {
 
     @Override
     public int getThreadPriority() {
-            Thread thread = getThread();
-            return thread != null ? thread.getPriority() : 0;
+        Thread thread = getThread();
+        return thread != null ? thread.getPriority() : 0;
     }
 
     private Thread getThread() {
-        if (thread == null) {
+        if (thread == null && event.getThreadName() != null) {
             for (Thread thread : Thread.getAllStackTraces().keySet()) {
                 if (thread.getName().equals(event.getThreadName())) {
                     this.thread = thread;
@@ -138,15 +142,13 @@ public class LogEventWrapper implements LogEvent {
                 }
             }
         }
-        return null;
+        return thread;
     }
 
     @Override
     public Throwable getThrown() {
-        if (event.getThrowableInformation() != null) {
-            return event.getThrowableInformation().getThrowable();
-        }
-        return null;
+        ThrowableInformation throwableInformation = event.getThrowableInformation();
+        return throwableInformation == null ? null : throwableInformation.getThrowable();
     }
 
     @Override
