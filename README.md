@@ -3,10 +3,10 @@
 Apache Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x,
 and provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
 
-[![Jenkins build (3.x)](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci-builds.apache.org%2Fjob%2FLogging%2Fjob%2Flog4j%2Fjob%2Fmaster%2F&label=3.x)](https://ci-builds.apache.org/job/Logging/job/log4j/job/master/)
-[![Jenkins build (2.x)](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci-builds.apache.org%2Fjob%2FLogging%2Fjob%2Flog4j%2Fjob%2Frelease-2.x%2F&label=2.x)](https://ci-builds.apache.org/job/Logging/job/log4j/job/release-2.x/)
+[![Jenkins build (3.x)](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci-builds.apache.org%2Fjob%2FLogging%2Fjob%2Flog4j%2Fjob%2Fmaster%2F&label=3.x&logo=cloudbees)](https://ci-builds.apache.org/job/Logging/job/log4j/job/master/)
+[![Jenkins build (2.x)](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci-builds.apache.org%2Fjob%2FLogging%2Fjob%2Flog4j%2Fjob%2Frelease-2.x%2F&label=2.x&logo=cloudbees)](https://ci-builds.apache.org/job/Logging/job/log4j/job/release-2.x/)
 [![GitHub build (3.x)](https://github.com/apache/logging-log4j2/workflows/Maven/badge.svg)](https://github.com/apache/logging-log4j2/actions?query=workflow%3AMaven+branch%3Amaster)
-[![Maven Central](https://img.shields.io/maven-central/v/org.apache.logging.log4j/log4j-api.svg)](http://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api)
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.logging.log4j/log4j-api.svg?logo=apachemaven)](http://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api)
 
 
 ## Pull Requests on Github
