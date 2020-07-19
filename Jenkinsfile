@@ -33,6 +33,11 @@ pipeline {
         // fail parallel stages as soon as any of them fail
         parallelsAlwaysFailFast()
     }
+    triggers {
+        // TODO: this can be removed once gitbox webhooks are re-enabled
+        pollSCM 'H/5 * * * *'
+    }
+
     // https://jenkins.io/doc/book/pipeline/syntax/#agent
     // start with no Jenkins agent allocated as they will only be needed for the individual stages
     // therefore, anything in the top level post section can only contain steps that don't require a Jenkins agent
@@ -59,6 +64,12 @@ pipeline {
                         LANG = 'C.UTF-8'
                     }
                     steps {
+                        // https://issues.jenkins-ci.org/browse/JENKINS-43353
+                        script {
+                            def buildNumber = BUILD_NUMBER as int
+                            if (buildNumber > 1) milestone(buildNumber - 1)
+                            milestone(buildNumber)
+                        }
                         // build, test, and deploy snapshots
                         // note that the jenkins system property is set here to activate certain pom properties in
                         // some log4j modules that compile against system jars (e.g., log4j-jmx-gui)
