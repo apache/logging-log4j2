@@ -72,11 +72,11 @@ pipeline {
                             // additional warnings generated during build
                             // TODO: would be nice to be able to include checkstyle, cpd, pmd, and spotbugs,
                             //       but current site build takes too long
-//                            recordIssues enabledForFailure: true,
-//                                    sourceCodeEncoding: 'UTF-8',
-//                                    referenceJobName: 'log4j/master',
-//                                    tools: [mavenConsole(), errorProne(), java(),
-//                                            taskScanner(highTags: 'FIXME', normalTags: 'TODO', includePattern: '**/*.java', excludePattern: '*/target/**')]
+                            recordIssues enabledForFailure: true,
+                                    sourceCodeEncoding: 'UTF-8',
+                                    referenceJobName: 'log4j/master',
+                                    tools: [mavenConsole(), errorProne(), java(),
+                                            taskScanner(highTags: 'FIXME', normalTags: 'TODO', includePattern: '**/*.java', excludePattern: '*/target/**')]
                         }
                     }
                 }
