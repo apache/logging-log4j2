@@ -94,6 +94,14 @@ public class StackWalkBenchmark {
     }
 
     @Benchmark
+    public void baseline(Blackhole bh)  {
+
+        stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> {
+            return null;
+        });
+    }
+
+    @Benchmark
     public void stackWalkerArray(Blackhole bh)  {
 
         stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> {
