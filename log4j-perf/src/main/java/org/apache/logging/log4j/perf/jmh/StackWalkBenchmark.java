@@ -104,6 +104,14 @@ public class StackWalkBenchmark {
         });
     }
 
+    @Benchmark
+    public void baseline(Blackhole bh)  {
+
+        stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> {
+            return null;
+        });
+    }
+
     static final class FqcnCallerLocator implements Function<Stream<StackWalker.StackFrame>, StackWalker.StackFrame> {
 
         @Override
