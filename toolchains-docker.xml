@@ -16,27 +16,24 @@
   ~ limitations under the license.
   -->
 <toolchains>
-  <!-- JDK toolchains -->
   <toolchain>
     <type>jdk</type>
     <provides>
-      <version>1.7</version>
-      <vendor>sun</vendor>
+      <version>1.8</version>
+      <vendor>openjdk</vendor>
     </provides>
     <configuration>
-      <jdkHome>/docker-java-home</jdkHome>
+      <jdkHome>/usr/local/openjdk-8</jdkHome>
     </configuration>
   </toolchain>
   <toolchain>
     <type>jdk</type>
     <provides>
-      <version>9</version>
-      <vendor>sun</vendor>
+      <version>11</version>
+      <vendor>openjdk</vendor>
     </provides>
     <configuration>
-      <jdkHome>/docker-java-9-home</jdkHome>
+      <jdkHome>/usr/local/openjdk-11</jdkHome>
     </configuration>
   </toolchain>
-
-  <!-- other toolchains -->
 </toolchains>
