@@ -39,7 +39,7 @@ public class LegacyPropertiesCompatibilityTest {
     public static Object[][] data() {
         return new Object[][]{
             {"log4j2.configurationFile", "log4j.configurationFile"},
-            {"log4j2.mergeFactory", "log4j.mergeFactory"},
+            {"log4j2.mergeStrategy", "log4j.mergeStrategy"},
             {"log4j2.contextSelector", "Log4jContextSelector"},
             {"log4j2.logEventFactory", "Log4jLogEventFactory"},
             {"log4j2.configurationFactory", "log4j.configurationFactory"},

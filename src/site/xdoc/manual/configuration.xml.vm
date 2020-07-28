@@ -1700,11 +1700,11 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="mergeFactory"/>log4j2.mergeFactory
+    <td><a name="mergeStrategy"/>log4j2.mergeStrategy
       <br />
-      (<a name="log4j.mergeFactory"/>log4j.mergeFactory)
+      (<a name="log4j.mergeStrategy"/>log4j.mergeStrategy)
     </td>
-    <td>LOG4J_MERGE_FACTORY</td>
+    <td>LOG4J_MERGE_STRATEGY</td>
     <td>&nbsp;</td>
     <td>
       The name of the class that implements the MergeStrategy interface. If not specified
