@@ -1701,9 +1701,9 @@ configuration file locations.
 internal logging to the console if system property `log4j2.debug` is
 defined (with any or no value).
 
-|[[mergeFactory]]log4j2.mergeFactory +
-([[log4j.mergeFactory]]log4j.mergeFactory)
-|LOG4J_MERGE_FACTORY
+|[[mergeStrategy]]log4j2.mergeStrategy +
+([[log4j.mergeStrategy]]log4j.mergeStrategy)
+|LOG4J_MERGE_STRATEGY
 | 
 |The name of the class that implements the MergeStrategy interface. If not
 specified `DefaultMergeStrategy` will be used when creating a CompositeConfiguration.
