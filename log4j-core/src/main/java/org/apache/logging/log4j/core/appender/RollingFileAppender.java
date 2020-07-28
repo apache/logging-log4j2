@@ -134,7 +134,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
                                         .build();
                 }
             } else if (fileName == null && !(strategy instanceof DirectFileRolloverStrategy)) {
-                LOGGER.error("RollingFileAppender '{}': When no file name is provided a DirectFilenameRolloverStrategy must be configured", getName());
+                LOGGER.error("RollingFileAppender '{}': When no file name is provided a {} must be configured", getName(), DirectFileRolloverStrategy.class.getSimpleName());
                 return null;
             }
 
