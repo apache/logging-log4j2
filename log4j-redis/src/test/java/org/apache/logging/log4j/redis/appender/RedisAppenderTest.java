@@ -53,12 +53,12 @@ public final class RedisAppenderTest {
         initMocks();
 
         appender = new AppenderTestRedisAppenderBuilder()
-                        .withName("RedisAppender")
+                        .setName("RedisAppender")
                         .setKeys(DESTINATION_KEY)
                         .setHost(HOST)
                         .setPort(PORT)
                         .setImmediateFlush(true)
-                        .withLayout(PatternLayout.createDefaultLayout())
+                        .setLayout(PatternLayout.createDefaultLayout())
                         .build();
         logEvent = createLogEvent();
     }
@@ -91,13 +91,13 @@ public final class RedisAppenderTest {
     @Test
     public void testQueuesLogEvents() {
         appender = new AppenderTestRedisAppenderBuilder()
-                .withName("RedisAppender")
+                .setName("RedisAppender")
                 .setKeys(DESTINATION_KEY)
                 .setHost(HOST)
                 .setPort(PORT)
                 .setQueueCapacity(2)
                 .setImmediateFlush(false)
-                .withLayout(PatternLayout.newBuilder().withPattern("%m").build())
+                .setLayout(PatternLayout.newBuilder().setPattern("%m").build())
                 .build();
 
         appender.append(logEvent);
@@ -107,13 +107,13 @@ public final class RedisAppenderTest {
     @Test
     public void testAttemptsSendWhenQueueReachesCapacity() {
         appender = new AppenderTestRedisAppenderBuilder()
-                .withName("RedisAppender")
+                .setName("RedisAppender")
                 .setKeys(DESTINATION_KEY)
                 .setHost(HOST)
                 .setPort(PORT)
                 .setQueueCapacity(1)
                 .setImmediateFlush(false)
-                .withLayout(PatternLayout.newBuilder().withPattern("%m").build())
+                .setLayout(PatternLayout.newBuilder().setPattern("%m").build())
                 .build();
 
         appender.append(logEvent);
@@ -125,13 +125,13 @@ public final class RedisAppenderTest {
     @Test
     public void testFlushesQueueAtExceededCapacity() {
         appender = new AppenderTestRedisAppenderBuilder()
-                .withName("RedisAppender")
+                .setName("RedisAppender")
                 .setKeys(DESTINATION_KEY)
                 .setHost(HOST)
                 .setPort(PORT)
                 .setQueueCapacity(1)
                 .setImmediateFlush(false)
-                .withLayout(PatternLayout.newBuilder().withPattern("%m").build())
+                .setLayout(PatternLayout.newBuilder().setPattern("%m").build())
                 .build();
 
         appender.append(logEvent);
@@ -142,12 +142,12 @@ public final class RedisAppenderTest {
     @Test
     public void testFlushesQueueAtEndOfBatch() {
         appender = new AppenderTestRedisAppenderBuilder()
-                .withName("RedisAppender")
+                .setName("RedisAppender")
                 .setKeys(DESTINATION_KEY)
                 .setHost(HOST)
                 .setPort(PORT)
                 .setImmediateFlush(false)
-                .withLayout(PatternLayout.newBuilder().withPattern("%m").build())
+                .setLayout(PatternLayout.newBuilder().setPattern("%m").build())
                 .build();
         logEvent = createPartialLogEvent().setEndOfBatch(true).build();
 
@@ -158,12 +158,12 @@ public final class RedisAppenderTest {
     @Test
     public void testFlushesQueueOnAppenderStop() {
         appender = new AppenderTestRedisAppenderBuilder()
-                .withName("RedisAppender")
+                .setName("RedisAppender")
                 .setKeys(DESTINATION_KEY)
                 .setHost(HOST)
                 .setPort(PORT)
                 .setImmediateFlush(false)
-                .withLayout(PatternLayout.newBuilder().withPattern("%m").build())
+                .setLayout(PatternLayout.newBuilder().setPattern("%m").build())
                 .build();
         appender.append(logEvent);
         Mockito.verify(manager, Mockito.times(0)).sendBulk(any());

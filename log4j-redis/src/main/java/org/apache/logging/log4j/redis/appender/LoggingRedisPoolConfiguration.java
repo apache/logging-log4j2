@@ -18,9 +18,9 @@
 package org.apache.logging.log4j.redis.appender;
 
 import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import redis.clients.jedis.JedisPoolConfig;
 
 /**
@@ -41,12 +41,12 @@ class LoggingRedisPoolConfiguration extends JedisPoolConfig {
     /**
      * Creates a LoggingRedisPoolConfiguration from standard pool parameters.
      */
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new LoggingRedisPoolConfiguration.Builder();
     }
 
-    private static class Builder implements org.apache.logging.log4j.core.util.Builder<LoggingRedisPoolConfiguration> {
+    private static class Builder implements org.apache.logging.log4j.plugins.util.Builder<LoggingRedisPoolConfiguration> {
 
         @PluginBuilderAttribute("minIdle")
         private int minIdle = JedisPoolConfig.DEFAULT_MIN_IDLE;

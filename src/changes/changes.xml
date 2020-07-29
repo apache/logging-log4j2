@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2019-xx-xx" description="GA Release 3.0.0">
+      <action issue="LOG4J2-2400" dev="rgoers" type="add" due-to="Natalie Meurer">
+        Add Redis Appender.
+      </action>
       <action issue="LOG4J2-2749" dev="vy" type="fix" due-to="Oleksii Khomchenko">
         JsonLayout KeyValuePair should discard blank JSON keys.
       </action>
