@@ -28,7 +28,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
  */
 public class SLF4JLoggerContextFactory implements LoggerContextFactory {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
-    private static LoggerContext context = new SLF4JLoggerContext();
+    private static final LoggerContext context = new SLF4JLoggerContext();
 
     public SLF4JLoggerContextFactory() {
         // LOG4J2-230, LOG4J2-204 (improve error reporting when misconfigured)

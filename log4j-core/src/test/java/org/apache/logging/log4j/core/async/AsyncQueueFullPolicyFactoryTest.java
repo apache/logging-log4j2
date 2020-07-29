@@ -19,9 +19,12 @@ package org.apache.logging.log4j.core.async;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.util.Locale;
 
 import static org.junit.Assert.*;
 
@@ -32,7 +35,8 @@ import static org.junit.Assert.*;
 public class AsyncQueueFullPolicyFactoryTest {
 
     @Before
-    public void setUp() throws Exception {
+    @After
+    public void resetProperties() throws Exception {
         System.clearProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER);
         System.clearProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL);
         PropertiesUtil.getProperties().reload();
@@ -63,6 +67,14 @@ public class AsyncQueueFullPolicyFactoryTest {
     public void testCreateDiscardingRouterDefaultThresholdLevelInfo() throws Exception {
         System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
+        assertEquals(Level.INFO, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
+                getThresholdLevel());
+    }
+
+    @Test
+    public void testCreateDiscardingRouterCaseInsensitive() {
+        System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
+                AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER.toLowerCase(Locale.ENGLISH));
         assertEquals(Level.INFO, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
                 getThresholdLevel());
     }

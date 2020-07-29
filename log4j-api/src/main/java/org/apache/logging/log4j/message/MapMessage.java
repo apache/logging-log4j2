@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -57,19 +58,26 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * When set as the format specifier causes the Map to be formatted as XML.
      */
     public enum MapFormat {
-        
+
         /** The map should be formatted as XML. */
         XML,
-        
+
         /** The map should be formatted as JSON. */
         JSON,
-        
-        /** The map should be formatted the same as documented by java.util.AbstractMap.toString(). */
-        JAVA;
+
+        /** The map should be formatted the same as documented by {@link AbstractMap#toString()}. */
+        JAVA,
+
+        /**
+         * The map should be formatted the same as documented by {@link AbstractMap#toString()} but without quotes.
+         *
+         * @since 2.11.2
+         */
+        JAVA_UNQUOTED;
 
         /**
          * Maps a format name to an {@link MapFormat} while ignoring case.
-         * 
+         *
          * @param format a MapFormat name
          * @return a MapFormat
          */
@@ -77,16 +85,17 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
             return XML.name().equalsIgnoreCase(format) ? XML //
                     : JSON.name().equalsIgnoreCase(format) ? JSON //
                     : JAVA.name().equalsIgnoreCase(format) ? JAVA //
+                    : JAVA_UNQUOTED.name().equalsIgnoreCase(format) ? JAVA_UNQUOTED //
                     : null;
         }
 
         /**
          * All {@code MapFormat} names.
-         * 
+         *
          * @return All {@code MapFormat} names.
          */
         public static String[] names() {
-            return new String[] {XML.name(), JSON.name(), JAVA.name()};
+            return new String[] {XML.name(), JSON.name(), JAVA.name(), JAVA_UNQUOTED.name()};
         }
     }
 
@@ -101,7 +110,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Constructs a new instance.
-     * 
+     *
      * @param  initialCapacity the initial capacity.
      */
     public MapMessage(final int initialCapacity) {
@@ -185,13 +194,14 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Adds an item to the data Map.
-     * @param key The name of the data item.
+     * @param candidateKey The name of the data item.
      * @param value The value of the data item.
      */
-    public void put(final String key, final String value) {
+    public void put(final String candidateKey, final String value) {
         if (value == null) {
-            throw new IllegalArgumentException("No value provided for key " + key);
+            throw new IllegalArgumentException("No value provided for key " + candidateKey);
         }
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
     }
@@ -228,6 +238,17 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     /**
+     * Allows subclasses to change a candidate key to an actual key.
+     *
+     * @param candidateKey The candidate key.
+     * @return The candidate key.
+     * @since 2.12
+     */
+    protected String toKey(final String candidateKey) {
+        return candidateKey;
+    }
+
+    /**
      * Formats the Structured data as described in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>.
      *
      * @return The formatted String.
@@ -249,7 +270,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
             return asString();
         }
     }
-    
+
     /**
      * Performs the given action for each key-value pair in this data structure
      * until all entries have been processed or the action throws an exception.
@@ -300,7 +321,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     public <CV, S> void forEach(final TriConsumer<String, ? super CV, S> action, final S state) {
         data.forEach(action, state);
     }
-    
+
     /**
      * Formats the Structured data as described in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>.
      *
@@ -324,6 +345,9 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
                     asJava(sb);
                     break;
                 }
+                case JAVA_UNQUOTED:
+                    asJavaUnquoted(sb);
+                    break;
                 default : {
                     appendMap(sb);
                 }
@@ -400,34 +424,31 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     protected void asJson(final StringBuilder sb) {
-        sb.append('{');
-        for (int i = 0; i < data.size(); i++) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            sb.append(Chars.DQUOTE);
-            int start = sb.length();
-            sb.append(data.getKeyAt(i));
-            StringBuilders.escapeJson(sb, start);
-            sb.append(Chars.DQUOTE).append(':').append(Chars.DQUOTE);
-            start = sb.length();
-            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
-            StringBuilders.escapeJson(sb, start);
-            sb.append(Chars.DQUOTE);
-        }
-        sb.append('}');
+        MapMessageJsonFormatter.format(sb, data);
     }
 
+    protected void asJavaUnquoted(final StringBuilder sb) {
+        asJava(sb, false);
+    }
 
     protected void asJava(final StringBuilder sb) {
+        asJava(sb, true);
+    }
+
+    private void asJava(final StringBuilder sb, boolean quoted) {
         sb.append('{');
         for (int i = 0; i < data.size(); i++) {
             if (i > 0) {
                 sb.append(", ");
             }
-            sb.append(data.getKeyAt(i)).append(Chars.EQ).append(Chars.DQUOTE);
+            sb.append(data.getKeyAt(i)).append(Chars.EQ);
+            if (quoted) {
+                sb.append(Chars.DQUOTE);
+            }
             ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
-            sb.append(Chars.DQUOTE);
+            if (quoted) {
+                sb.append(Chars.DQUOTE);
+            }
         }
         sb.append('}');
     }
@@ -485,10 +506,12 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     public Throwable getThrowable() {
         return null;
     }
-    
+
     /**
      * Default implementation does nothing.
-     * 
+     * @param key The key.
+     * @param value The boolean value.
+     *
      * @since 2.9
      */
     protected void validate(final String key, final boolean value) {
@@ -497,7 +520,9 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     * @param key The key.
+     * @param value The byte value.
+     *
      * @since 2.9
      */
     protected void validate(final String key, final byte value) {
@@ -506,7 +531,9 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     * @param key The key.
+     * @param value The char value.
+     *
      * @since 2.9
      */
     protected void validate(final String key, final char value) {
@@ -515,7 +542,9 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     * @param key The key.
+     * @param value The double value.
+     *
      * @since 2.9
      */
     protected void validate(final String key, final double value) {
@@ -524,16 +553,20 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     * @param key The key.
+     * @param value The float value.
+     *
      * @since 2.9
      */
     protected void validate(final String key, final float value) {
         // do nothing
     }
-    
+
     /**
      * Default implementation does nothing.
-     * 
+     * @param key The key.
+     * @param value The integer value.
+     *
      * @since 2.9
      */
     protected void validate(final String key, final int value) {
@@ -542,16 +575,20 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     * @param key The key.
+     * @param value The long value.
+     *
      * @since 2.9
      */
     protected void validate(final String key, final long value) {
         // do nothing
     }
-    
+
     /**
      * Default implementation does nothing.
-     * 
+     * @param key The key.
+     * @param value The Object value.
+     *
      * @since 2.9
      */
     protected void validate(final String key, final Object value) {
@@ -560,7 +597,9 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     * @param key The key.
+     * @param value The short value.
+     *
      * @since 2.9
      */
     protected void validate(final String key, final short value) {
@@ -569,7 +608,9 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Default implementation does nothing.
-     * 
+     * @param key The key.
+     * @param value The string value.
+     *
      * @since 2.9
      */
     protected void validate(final String key, final String value) {
@@ -578,13 +619,14 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Adds an item to the data Map.
-     * @param key The name of the data item.
+     * @param candidateKey The name of the data item.
      * @param value The value of the data item.
      * @return this object
      * @since 2.9
      */
     @SuppressWarnings("unchecked")
-    public M with(final String key, final boolean value) {
+    public M with(final String candidateKey, final boolean value) {
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -592,13 +634,14 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Adds an item to the data Map.
-     * @param key The name of the data item.
+     * @param candidateKey The name of the data item.
      * @param value The value of the data item.
      * @return this object
      * @since 2.9
      */
     @SuppressWarnings("unchecked")
-    public M with(final String key, final byte value) {
+    public M with(final String candidateKey, final byte value) {
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -606,13 +649,14 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Adds an item to the data Map.
-     * @param key The name of the data item.
+     * @param candidateKey The name of the data item.
      * @param value The value of the data item.
      * @return this object
      * @since 2.9
      */
     @SuppressWarnings("unchecked")
-    public M with(final String key, final char value) {
+    public M with(final String candidateKey, final char value) {
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -621,13 +665,14 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Adds an item to the data Map.
-     * @param key The name of the data item.
+     * @param candidateKey The name of the data item.
      * @param value The value of the data item.
      * @return this object
      * @since 2.9
      */
     @SuppressWarnings("unchecked")
-    public M with(final String key, final double value) {
+    public M with(final String candidateKey, final double value) {
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -635,13 +680,14 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Adds an item to the data Map.
-     * @param key The name of the data item.
+     * @param candidateKey The name of the data item.
      * @param value The value of the data item.
      * @return this object
      * @since 2.9
      */
     @SuppressWarnings("unchecked")
-    public M with(final String key, final float value) {
+    public M with(final String candidateKey, final float value) {
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -649,13 +695,14 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Adds an item to the data Map.
-     * @param key The name of the data item.
+     * @param candidateKey The name of the data item.
      * @param value The value of the data item.
      * @return this object
      * @since 2.9
      */
     @SuppressWarnings("unchecked")
-    public M with(final String key, final int value) {
+    public M with(final String candidateKey, final int value) {
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -663,13 +710,14 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Adds an item to the data Map.
-     * @param key The name of the data item.
+     * @param candidateKey The name of the data item.
      * @param value The value of the data item.
      * @return this object
      * @since 2.9
      */
     @SuppressWarnings("unchecked")
-    public M with(final String key, final long value) {
+    public M with(final String candidateKey, final long value) {
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -677,13 +725,14 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Adds an item to the data Map.
-     * @param key The name of the data item.
+     * @param candidateKey The name of the data item.
      * @param value The value of the data item.
      * @return this object
      * @since 2.9
      */
     @SuppressWarnings("unchecked")
-    public M with(final String key, final Object value) {
+    public M with(final String candidateKey, final Object value) {
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -691,13 +740,14 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Adds an item to the data Map.
-     * @param key The name of the data item.
+     * @param candidateKey The name of the data item.
      * @param value The value of the data item.
      * @return this object
      * @since 2.9
      */
     @SuppressWarnings("unchecked")
-    public M with(final String key, final short value) {
+    public M with(final String candidateKey, final short value) {
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -705,12 +755,13 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Adds an item to the data Map in fluent style.
-     * @param key The name of the data item.
+     * @param candidateKey The name of the data item.
      * @param value The value of the data item.
      * @return {@code this}
      */
     @SuppressWarnings("unchecked")
-    public M with(final String key, final String value) {
+    public M with(final String candidateKey, final String value) {
+        final String key = toKey(candidateKey);
         put(key, value);
         return (M) this;
     }

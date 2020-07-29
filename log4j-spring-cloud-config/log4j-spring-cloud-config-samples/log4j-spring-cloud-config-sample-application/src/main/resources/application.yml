@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /sample
+
+security:
+  basic:
+    enabled: false
+
+management:
+  security:
+    enabled: false
+
+spring:
+  application:
+    name: sampleapp
+
+  cloud:
+    bus:
+      trace:
+        enabled: true
+    config:
+      watch:
+        enabled: true
+
+  rabbitmq:
+    addresses: rabbit
+    port: 5672
+    username: guest
+    password: guest
+
+log4j2:
+  debug: true

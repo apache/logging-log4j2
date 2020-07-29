@@ -64,9 +64,9 @@ public class PluginManagerPackagesTest {
         // So we don't create the custom plugin class until this test is run.
         final File orig = new File("target/test-classes/customplugin/FixedStringLayout.java.source");
         final File f = new File(orig.getParentFile(), "FixedStringLayout.java");
-        assertTrue("renamed source file OK", orig.renameTo(f));
+        assertTrue("renamed source file failed", orig.renameTo(f));
         compile(f);
-        assertTrue("reverted source file OK", f.renameTo(orig));
+        assertTrue("reverted source file failed", f.renameTo(orig));
 
         // load the compiled class
         Class.forName("customplugin.FixedStringLayout");

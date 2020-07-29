@@ -18,7 +18,7 @@
 
 # Apache Log4j Layout for Jackson YAML module
 
-As of Log4j 3.0.0, the layout based on Jackson YAML has moved from the existing module logj-core to the new modules log4j-layout-jackson-yaml.
+As of Log4j 3.0.0, the layout based on Jackson YAML has moved from the existing module log4j-core to the new modules log4j-layout-jackson-yaml.
 
 ## Requirements
 

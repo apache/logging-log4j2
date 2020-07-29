@@ -13,27 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# FROM openjdk:7-alpine
-# Reverted to debian yet alpine does not include jdk9
-FROM openjdk:7-jdk
-
-# Require while jdk9 is unstable on debian
-RUN echo 'deb http://deb.debian.org/debian unstable main' >> /etc/apt/sources.list
+FROM openjdk:8
 
 RUN set -ex \
-    && mkdir /src \
     && apt-get update \
-    && apt-get install -y \
-       curl \
-       openjdk-9-jdk-headless \
-    && ln -svT "/usr/lib/jvm/java-9-openjdk-$(dpkg --print-architecture)" /docker-java-9-home \
-    && cd /opt \
-    && curl -fsSL http://www-us.apache.org/dist/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.tar.gz -o maven.tar.gz \
-    && tar -xzf maven.tar.gz \
-    && rm -f maven.tar.gz
+    && apt-get install -y openjdk-11-jdk-headless \
+    && ln -svT "/usr/lib/jvm/java-11-openjdk-$(dpkg --print-architecture)" /usr/local/openjdk-11
+
+VOLUME /src /root/.m2/repository
 
 COPY . /src
 
 RUN set -ex \
     && cd /src \
-    && /opt/apache-maven-3.5.0/bin/mvn verify --global-toolchains toolchains-docker.xml
+    && ./mvnw --toolchains toolchains-docker.xml install

@@ -227,6 +227,59 @@ public final class Configurator {
     }
 
     /**
+     * Reconfigure using an already constructed Configuration.
+     * @param configuration The configuration.
+     * @since 2.13.0
+     */
+    public static void reconfigure(final Configuration configuration) {
+        try {
+            final Log4jContextFactory factory = getFactory();
+            if (factory != null) {
+                factory.getContext(FQCN, null, null, false)
+                        .reconfigure(configuration);
+            }
+        } catch (final Exception ex) {
+            LOGGER.error("There was a problem initializing the LoggerContext using configuration {}",
+                    configuration.getName(), ex);
+        }
+    }
+
+    /**
+     * Reload the existing reconfiguration.
+     * @since 2.12.0
+     */
+    public static void reconfigure() {
+        try {
+            Log4jContextFactory factory = getFactory();
+            if (factory != null) {
+                factory.getSelector().getContext(FQCN, null, false).reconfigure();
+            } else {
+                LOGGER.warn("Unable to reconfigure - Log4j has not been initialized.");
+            }
+        } catch (final Exception ex) {
+            LOGGER.error("Error encountered trying to reconfigure logging", ex);
+        }
+    }
+
+    /**
+     * Reconfigure with a potentially new configuration.
+     * @param uri The location of the configuration.
+     * @since 2.12.0
+     */
+    public static void reconfigure(final URI uri) {
+        try {
+            Log4jContextFactory factory = getFactory();
+            if (factory != null) {
+                factory.getSelector().getContext(FQCN, null, false).setConfigLocation(uri);
+            } else {
+                LOGGER.warn("Unable to reconfigure - Log4j has not been initialized.");
+            }
+        } catch (final Exception ex) {
+            LOGGER.error("Error encountered trying to reconfigure logging", ex);
+        }
+    }
+
+    /**
      * Sets the levels of <code>parentLogger</code> and all 'child' loggers to the given <code>level</code>.
      * @param parentLogger the parent logger
      * @param level the new level

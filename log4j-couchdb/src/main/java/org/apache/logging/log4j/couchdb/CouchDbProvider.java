@@ -19,16 +19,16 @@ package org.apache.logging.log4j.couchdb;
 import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
-import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.convert.TypeConverters;
+import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
+import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
@@ -83,14 +83,14 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
      */
     @PluginFactory
     public static CouchDbProvider createNoSqlProvider(
-            @PluginAttribute("databaseName") final String databaseName,
-            @PluginAttribute("protocol") String protocol,
-            @PluginAttribute(value = "server", defaultString = "localhost") @ValidHost final String server,
-            @PluginAttribute(value = "port", defaultString = "0") @ValidPort final String port,
-            @PluginAttribute("username") final String username,
-            @PluginAttribute(value = "password", sensitive = true) final String password,
-            @PluginAttribute("factoryClassName") final String factoryClassName,
-            @PluginAttribute("factoryMethodName") final String factoryMethodName) {
+            @PluginAttribute final String databaseName,
+            @PluginAttribute String protocol,
+            @PluginAttribute(defaultString = "localhost") @ValidHost final String server,
+            @PluginAttribute(defaultString = "0") @ValidPort final String port,
+            @PluginAttribute final String username,
+            @PluginAttribute(sensitive = true) final String password,
+            @PluginAttribute final String factoryClassName,
+            @PluginAttribute final String factoryMethodName) {
         CouchDbClient client;
         String description;
         if (Strings.isNotEmpty(factoryClassName) && Strings.isNotEmpty(factoryMethodName)) {

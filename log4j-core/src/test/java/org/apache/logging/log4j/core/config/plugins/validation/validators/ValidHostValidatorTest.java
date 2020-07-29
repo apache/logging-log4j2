@@ -17,12 +17,12 @@
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
-import org.apache.logging.log4j.core.config.plugins.validation.HostAndPort;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.validation.HostAndPort;
 import org.apache.logging.log4j.junit.StatusLoggerRule;
 import org.junit.Before;
 import org.junit.Rule;
@@ -72,8 +72,8 @@ public class ValidHostValidatorTest {
 
     private HostAndPort buildPlugin() {
         return (HostAndPort) new PluginBuilder(plugin)
-            .withConfiguration(new NullConfiguration())
-            .withConfigurationNode(node)
+            .setConfiguration(new NullConfiguration())
+            .setConfigurationNode(node)
             .build();
     }
 }

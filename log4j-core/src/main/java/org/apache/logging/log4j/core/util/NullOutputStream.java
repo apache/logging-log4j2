@@ -34,12 +34,6 @@ public class NullOutputStream extends OutputStream {
     private static final NullOutputStream INSTANCE = new NullOutputStream();
     
     /**
-     * @deprecated Deprecated in 2.7: use {@link #getInstance()}.
-     */
-    @Deprecated
-    public static final NullOutputStream NULL_OUTPUT_STREAM = INSTANCE;
-
-    /**
      * Gets the singleton instance.
      * 
      * @return the singleton instance.

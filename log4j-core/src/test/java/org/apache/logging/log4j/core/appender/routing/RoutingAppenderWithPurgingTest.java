@@ -17,11 +17,14 @@
 package org.apache.logging.log4j.core.appender.routing;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -84,19 +87,26 @@ public class RoutingAppenderWithPurgingTest {
         EventLogger.logEvent(msg);
         msg = new StructuredDataMessage("3", "This is a test 3", "Service");
         EventLogger.logEvent(msg);
-        final String[] files = {IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3, MANUAL_LOG_FILE1, MANUAL_LOG_FILE2, MANUAL_LOG_FILE3};
+        // '2' is a referenced list appender
+        final String[] files = {IDLE_LOG_FILE1, IDLE_LOG_FILE3, MANUAL_LOG_FILE1, MANUAL_LOG_FILE3};
         assertFileExistance(files);
+        Set<String> expectedAppenderKeys = new HashSet<>(2);
+        expectedAppenderKeys.add("1");
+        expectedAppenderKeys.add("3");
+        assertEquals(expectedAppenderKeys, routingAppenderManual.getAppenders().keySet());
 
-        assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 3, routingAppenderIdle.getAppenders().size());
+        assertFalse(((ListAppender) loggerContextRule.getAppender("ReferencedList")).getEvents().isEmpty());
+
+        assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 2, routingAppenderIdle.getAppenders().size());
         assertEquals("Incorrect number of appenders with IdlePurgePolicy with HangingAppender.",
-                3, routingAppenderIdleWithHangingAppender.getAppenders().size());
-        assertEquals("Incorrect number of appenders manual purge.", 3, routingAppenderManual.getAppenders().size());
+                2, routingAppenderIdleWithHangingAppender.getAppenders().size());
+        assertEquals("Incorrect number of appenders manual purge.", 2, routingAppenderManual.getAppenders().size());
 
         Thread.sleep(3000);
         EventLogger.logEvent(msg);
 
         assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 1, routingAppenderIdle.getAppenders().size());
-        assertEquals("Incorrect number of appenders with manual purge.", 3, routingAppenderManual.getAppenders().size());
+        assertEquals("Incorrect number of appenders with manual purge.", 2, routingAppenderManual.getAppenders().size());
 
         routingAppenderManual.deleteAppender("1");
         routingAppenderManual.deleteAppender("2");
@@ -104,6 +114,9 @@ public class RoutingAppenderWithPurgingTest {
 
         assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 1, routingAppenderIdle.getAppenders().size());
         assertEquals("Incorrect number of appenders with manual purge.", 0, routingAppenderManual.getAppenders().size());
+
+        assertFalse("Reference based routes should not be stoppable",
+                loggerContextRule.getAppender("ReferencedList").isStopped());
 
         msg = new StructuredDataMessage("5", "This is a test 5", "Service");
         EventLogger.logEvent(msg);

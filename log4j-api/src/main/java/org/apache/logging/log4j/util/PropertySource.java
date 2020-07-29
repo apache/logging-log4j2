@@ -45,7 +45,8 @@ public interface PropertySource {
      *
      * @param action action to perform on each key/value pair
      */
-    void forEach(BiConsumer<String, String> action);
+    default void forEach(BiConsumer<String, String> action) {
+    }
 
     /**
      * Converts a list of property name tokens into a normal form. For example, a list of tokens such as
@@ -54,7 +55,30 @@ public interface PropertySource {
      * @param tokens list of property name tokens
      * @return a normalized property name using the given tokens
      */
-    CharSequence getNormalForm(Iterable<? extends CharSequence> tokens);
+    default CharSequence getNormalForm(Iterable<? extends CharSequence> tokens) {
+        return null;
+    }
+
+    /**
+     * For PropertySources that cannot iterate over all the potential properties this provides a direct lookup.
+     * @param key The key to search for.
+     * @return The value or null;
+     * @since 2.13.0
+     */
+    default String getProperty(String key) {
+        return null;
+    }
+
+
+    /**
+     * For PropertySources that cannot iterate over all the potential properties this provides a direct lookup.
+     * @param key The key to search for.
+     * @return The value or null;
+     * @since 2.13.0
+     */
+    default boolean containsProperty(String key) {
+        return false;
+    }
 
     /**
      * Comparator for ordering PropertySource instances by priority.

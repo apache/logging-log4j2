@@ -24,10 +24,10 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
 /**
  *
@@ -38,7 +38,7 @@ public class DeadlockAppender extends AbstractAppender {
     private WorkerThread thread = null;
 
     private DeadlockAppender(final String name) {
-        super(name, null, null, false);
+        super(name, null, null, false, null);
         thread = new WorkerThread();
     }
 
@@ -69,7 +69,7 @@ public class DeadlockAppender extends AbstractAppender {
 
     @PluginFactory
     public static DeadlockAppender createAppender(
-        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name) {
+        @PluginAttribute @Required(message = "A name for the Appender must be specified") final String name) {
         return new DeadlockAppender(name);
     }
 

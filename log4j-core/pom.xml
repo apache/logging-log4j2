@@ -31,12 +31,17 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
+    <log4j2-logstash-layout.version>0.18</log4j2-logstash-layout.version>
   </properties>
   <dependencies>
     <!-- Naturally, all implementations require the log4j-api JAR -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-plugins</artifactId>
     </dependency>
     <!-- Classes and resources to be shaded into the core jar -->
     <dependency>
@@ -119,6 +124,13 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <!-- And test plugins -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-plugins</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
@@ -257,6 +269,12 @@
       <artifactId>commons-io</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Used for testing HTTP Watcher -->
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Other -->
     <dependency>
       <groupId>commons-codec</groupId>
@@ -275,7 +293,12 @@
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-all</artifactId>
+      <artifactId>groovy-jsr223</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-dateutil</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- GC-free -->
@@ -288,6 +311,25 @@
       <groupId>org.hdrhistogram</groupId>
       <artifactId>HdrHistogram</artifactId>
       <scope>test</scope>
+    </dependency>
+    <!-- For testing log4j 2 2.x plugins -->
+    <dependency>
+      <groupId>com.vlkan.log4j2</groupId>
+      <artifactId>log4j2-logstash-layout</artifactId>
+      <version>${log4j2-logstash-layout.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ivandzf</groupId>
+      <artifactId>log4j2-custom-layout</artifactId>
+      <version>1.1.0</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
   <build>
@@ -342,42 +384,11 @@
         </executions>
       </plugin>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <!-- disable annotation processing for first pass -->
-            <id>default-compile</id>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-              <proc>none</proc>
-            </configuration>
-          </execution>
-          <execution>
-            <!-- then do a processing-only pass to generate plugins .dat file -->
-            <id>process-plugins</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>process-classes</phase>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-              <proc>only</proc>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <excludedGroups>
             org.apache.logging.log4j.categories.PerformanceTests
           </excludedGroups>
-          <forkCount>1</forkCount>
-          <reuseForks>false</reuseForks>
           <systemPropertyVariables>
             <org.apache.activemq.SERIALIZABLE_PACKAGES>*</org.apache.activemq.SERIALIZABLE_PACKAGES>
           </systemPropertyVariables>
@@ -453,6 +464,12 @@
             <Import-Package>
               sun.reflect;resolution:=optional,
               org.apache.logging.log4j.util,
+              org.apache.logging.log4j.plugins,
+              org.apache.logging.log4j.plugins.convert,
+              org.apache.logging.log4j.plugins.processor,
+              org.apache.logging.log4j.plugins.util,
+              org.apache.logging.log4j.plugins.validation,
+              org.apache.logging.log4j.plugins.inject,
               *
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
@@ -498,6 +515,7 @@
         <version>${javadoc.plugin.version}</version>
         <configuration>
           <failOnError>false</failOnError>
+          <source>8</source>
           <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>

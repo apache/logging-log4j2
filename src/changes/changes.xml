@@ -30,7 +30,53 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="3.0.0" date="2018-xx-xx" description="GA Release 3.0.0">
+    <release version="3.0.0" date="2019-xx-xx" description="GA Release 3.0.0">
+      <action issue="LOG4J2-2400" dev="rgoers" type="add" due-to="Natalie Meurer">
+        Add Redis Appender.
+      </action>
+      <action issue="LOG4J2-2749" dev="vy" type="fix" due-to="Oleksii Khomchenko">
+        JsonLayout KeyValuePair should discard blank JSON keys.
+      </action>
+      <action issue="LOG4J2-2344" dev="vy" type="fix" due-to="dengliming">
+        Fix exception message in PropertiesConfigurationBuilder#createFilter().
+      </action>
+      <action issue="LOG4J2-2795" dev="rgoers" type="fix">
+        Reduce Log4j 2 initialization time by deferring loading Plugin classes.
+      </action>
+      <action issue="LOG4J2-2678" dev="rgoers" type="update" due-to="Federico D'Ambrosio">
+        Add LogEvent timestamp to ProducerRecord in KafkaAppender.
+      </action>
+      <actino issue="LOG4J2-2688" dev="rgoers" type="add" due-to="Romain Manni-Bucau">
+        Allow web lookup of session attributes.
+      </actino>
+      <action issue="LOG4J2-2701" dev="rgoers" type="update">
+        Update Jackson from 2.9.x to 2.10.1.
+      </action>
+      <action issue="LOG4J2-2700" dev="mattsicker" type="add">
+        Add support for injecting plugin configuration via builder methods.
+      </action>
+      <action issue="LOG4J2-860" dev="mattsicker" type="update">
+        Unify plugin builders and plugin factories.
+      </action>
+      <action issue="LOG4J2-2690" dev="rgoers" type="update">
+        Locate plugins in modules.
+      </action>
+      <action issue="LOG4J2-2617" dev="mattsicker" type="update">
+        Fix typo in method MergeStrategy.mergeConfigurations.
+      </action>
+      <action issue="LOG4J2-2683" dev="mattsicker" type="update">
+        Rename PluginVisitor and related classes to ConfigurationInjectionBuilder.
+      </action>
+      <action issue="LOG4J2-2523" dev="rgoers" type="update" due-to="Romain Manni-Bucau">
+        Allow web lookup to access more information.
+      </action>
+      <action issue="LOG4J2-2621" dev="rgoers" type="update">
+        Separate plugin support to its own module. Plugin annotation processor will now generate a Java source
+        file compatible with java.util.ServiceLoader instead of a binary file.
+      </action>
+      <action issue="LOG4J2-2025" dev="rgoers" type="add" due-to="Thies Wellpott">
+        Implement JUL Bridge Handler.
+      </action>
       <action issue="LOG4J2-2171" dev="rmannibucau" type="add">
         Allow to force LOG4J2 to use TCCL only.
       </action>
@@ -49,127 +95,702 @@
       <action issue="LOG4J2-2225" dev="rpopma" type="update">
         Moved time-related classes from core.util to core.time. Classes considered private moved to core.time.internal.
       </action>
-      <action issue="LOG4J2-2228" dev="ggregory" type="update" due-to="Gary Gregory">
+      <action issue="LOG4J2-2228" dev="ggregory" type="update">
         Split off ZeroMq/JeroMq support into a new module log4j-jeromq.
       </action>
-      <action issue="LOG4J2-2227" dev="ggregory" type="update" due-to="Gary Gregory">
+      <action issue="LOG4J2-2227" dev="ggregory" type="update">
         Split off Kafka support into a new module log4j-kafka.
       </action>
-      <action issue="LOG4J2-2230" dev="ggregory" type="update" due-to="Gary Gregory">
+      <action issue="LOG4J2-2230" dev="ggregory" type="update">
         Split off SMTP support into a new module log4j-smtp.
       </action>
-      <action issue="LOG4J2-2231" dev="ggregory" type="update" due-to="Gary Gregory">
+      <action issue="LOG4J2-2231" dev="ggregory" type="update">
         Move CSV layout from log4j-core to a new module log4j-csv.
       </action>
-      <action issue="LOG4J2-2232" dev="ggregory" type="update" due-to="Gary Gregory">
+      <action issue="LOG4J2-2232" dev="ggregory" type="update">
         Move JMS code to a new module log4j-jms.
       </action>
-      <action issue="LOG4J2-2233" dev="ggregory" type="update" due-to="Gary Gregory">
+      <action issue="LOG4J2-2233" dev="ggregory" type="update">
         Move JDBC code to a new module log4j-jdbc.
       </action>
-      <action issue="LOG4J2-2244" dev="ggregory" type="fix" due-to="Gary Gregory">
+      <action issue="LOG4J2-2244" dev="ggregory" type="fix">
         org.apache.logging.log4j.core.lookup.EnvironmentLookup may throw NPE.
       </action>
-      <action issue="LOG4J2-2237" dev="ggregory" type="update" due-to="Gary Gregory">
+      <action issue="LOG4J2-2237" dev="ggregory" type="update">
         Move Jackson-based layouts to their own modules: JSON, XML, and YAML.
       </action>
-      <action issue="LOG4J2-2082" dev="ggregory" type="update" due-to="Gary Gregory">
+      <action issue="LOG4J2-2082" dev="ggregory" type="update">
         Update Apache Flume from 1.7.0 to 1.8.0.
       </action>
-      <action issue="LOG4J2-2079" dev="ggregory" type="update" due-to="Gary Gregory">
+      <action issue="LOG4J2-2079" dev="ggregory" type="update" >
         Update Conversant Disruptor from 1.12.10 to 1.12.11.
       </action>
-      <action issue="LOG4J2-2258" dev="ggregory" type="update" due-to="Gary Gregory">
+      <action issue="LOG4J2-2258" dev="ggregory" type="update" >
         Update LMAX Disruptor from 3.3.7 to 3.3.8.
       </action>
-      <action issue="LOG4J2-2083" dev="ggregory" type="update" due-to="Gary Gregory">
+      <action issue="LOG4J2-2083" dev="ggregory" type="update">
         Update Eclipse javax.persistence from 2.1.1 to 2.2.0.
       </action>
       <action issue="LOG4J2-2083" dev="ggregory" type="update">
         Update build to expect Java 8 sources and generate Java 8 byte codes.
       </action>
-      <action issue="LOG4J2-2259" dev="ggregory" type="update">
-        Update MongoDB 3 module from driver 3.6.1 to 3.6.3.
-      </action>
-      <action issue="LOG4J2-2260" dev="ggregory" type="update">
-        [SMTP] Update javax.mail from 1.6.0 to 1.6.1.
-      </action>
-      <action issue="LOG4J2-2270" dev="ggregory" type="fix" due-to="Cyril Martin">
-        Strings::join, when called with [null] returns "null" instead of EMPTY.
-      </action>
-      <action issue="LOG4J2-2276" dev="ggregory" type="fix" due-to="Sean Baxter">
-        ConcurrentModificationException from org.apache.logging.log4j.status.StatusLogger.&lt;clinit>(StatusLogger.java:71).
-      </action>
-      <action issue="LOG4J2-2274" dev="ggregory" type="fix" due-to="Sebastien Lannez">
-        Allow EnvironmentPropertySource to run with a SecurityManager that rejects environment variable access.
-      </action>
-      <action issue="LOG4J2-2279" dev="ggregory" type="fix" due-to="Gary Gregory">
-        Allow SystemPropertiesPropertySource to run with a SecurityManager that rejects system property access.
-      </action>
       <action issue="LOG4J2-2279" dev="ggregory" type="fix" due-to="Remko Popma">
         Move ProcessIdUtil from log4j-api to log4j-core.
-      </action>
-      <action issue="LOG4J2-2283" dev="ggregory" type="fix" due-to="Vishnu Priya Matha">
-        ParserConfigurationException when using Log4j with oracle.xml.jaxp.JXDocumentBuilderFactory.
-      </action>
-      <action issue="LOG4J2-2300" dev="ggregory" type="fix">
-        PoolingDriverConnectionSource does not take into account properties, user name, and password.
-      </action>
-      <action issue="LOG4J2-2302" dev="ggregory" type="update">
-        Status logger should show the Log4j name and version when initializing itself.
-      </action>
-      <action issue="LOG4J2-2304" dev="ggregory" type="update" due-to="wumengsheng">
-        Log4j2 2.8.2 JMX unregister NullPointerException.
       </action>
       <action issue="LOG4J2-2306" dev="ckozak" type="fix">
         FixedDateFormat parses timezone offsets, -8:00 is interpreted as GMT-8:00.
       </action>
-      <action issue="LOG4J2-2307" dev="ckozak" type="fix">
-        MutableLogEvent and RingBufferLogEvent message mementos retain the original format string.
+      <action issue="LOG4J2-2380" dev="ggregory" type="update">
+        Update Conversant Disruptor 1.2.11 to 1.2.13.
       </action>
-      <action issue="LOG4J2-2032" dev="ckozak" type="fix" due-to="Kostiantyn Shchepanovskyi">
-        Curly braces in parameters are not treated as placeholders.
+      <action issue="LOG4J2-2383" dev="ggregory" type="update">
+        Update org.eclipse.persistence.jpa from 2.7.1 to 2.7.2
       </action>
-      <action issue="LOG4J2-2311" dev="ggregory" type="update">
-        Update Jackson from 2.9.4 to 2.9.5.
+      <action issue="LOG4J2-2387" dev="ggregory" type="update">
+        Update optional Apache Commons DBCP from 2.4.0 to 2.5.0.
       </action>
-      <action issue="LOG4J2-2313" dev="ggregory" type="update">
-        Update LMAX Disruptor from 3.3.8 to 3.4.2.
+      <action issue="LOG4J2-2473" dev="ggregory" type="update">
+        Update org.eclipse.persistence:javax.persistence from 2.2.0 to 2.2.1.
       </action>
-      <action issue="LOG4J2-2317" dev="ckozak" type="fix">
-        MutableLogEvent.getNonNullImmutableMessage and Log4jLogEvent.makeMessageImmutable retain format and parameters.
+      <action issue="LOG4J2-2492" dev="ggregory" type="update">
+        Update builder methods from the "with" prefix to the "set" prefix.
       </action>
-      <action issue="LOG4J2-2318" dev="ckozak" type="fix">
-        Messages are no longer mutated when the asynchronous queue is full. A warning is logged to the status logger instead.
+      <action issue="LOG4J2-2493" dev="ggregory" type="update">
+        Remove deprecated code.
       </action>
-      <action issue="LOG4J2-2320" dev="ckozak" type="fix">
-        Fix NPE in AbstractLogger when another exception is thrown, masking the root cause.
+      <action issue="LOG4J2-2405" dev="ggregory" type="update" due-to="Marco Herrn">
+        Better handling of %highlight pattern when using jul-bridge.
       </action>
-      <action issue="LOG4J2-548" dev="ggregory" type="update" due-to="Shehata, Paresh Varke, Eric Victorson, Martin Laforet">
-        Log4j 2.0 ERROR "Could not search jar" with JBoss EAP 6.2.
+      <action issue="LOG4J2-2545" dev="ckozak" type="fix">
+        RoutingAppender.BuilderlsetPurgePolicy fluently returns the builder instance.
       </action>
-      <action issue="LOG4J2-2321" dev="ckozak" type="fix">
-        AsyncLogger uses the correct level when unspecified. This provides parity between AsyncLogger and Logger.
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
+        Update tests from H2 1.4.197 to 1.4.199.
       </action>
-      <action issue="LOG4J2-2322" dev="ckozak" type="fix">
-        Custom ContextSelector implementations which select an AsyncLoggerContext disable LoggerConfig.includeLocation
-        by default for parity with AsyncLoggerContextSelector.
+      <action issue="LOG4J2-2570" dev="ggregory" type="update">
+        Update Jackson from 2.9.7 to 2.9.8.
       </action>
-      <action issue="LOG4J2-2269" dev="ckozak" type="fix">
-        MutableLogEvent references to other objects are cleared after each use.
-        Fix a memory leak causing references to parameters to be held after synchronous logging with thread locals enabled.
+      <action issue="LOG4J2-2571" dev="ggregory" type="update">
+        Update conversant disruptor from 1.2.13 to 1.2.15.
       </action>
-      <action issue="LOG4J2-2328" dev="ggregory" type="update">
-        Update JAnsi from 1.17 to 1.17.1.
+      <action issue="LOG4J2-2572" dev="ggregory" type="update">
+        Update Apache Flume from 1.8.0 to 1.9.0.
       </action>
-      <action issue="LOG4J2-2301" dev="ckozak" type="fix">
-        Mixed async loggers no longer forget parameter values, providing some appenders with an array of nulls.
-      </action>
-      <action issue="LOG4J2-2331" dev="ckozak" type="fix" due-to="Mike Baranski">
-        RollingFileManager debug logging avoids string concatenation and errant braces in favor of parameterized logging.
+      <action issue="LOG4J2-2844" dev="ggregory" type="fix">
+        Null pointer exception when no network interfaces are available.
       </action>
     </release>
-    <release version="2.11.1" date="2018-MM-DD" description="GA Release 2.11.1">
+    <release version="2.14.0" date="2020-MM-DD" description="GA Release 2.14.0">
+      <action issue="LOG4J2-2859" dev="rgoers" type="fix" due-to="Yanming Zhou">
+        Fixed typos where mergeFactory should be mergeStrategy.
+      </action>
+      <action issue="LOG4J2-2832" dev="rgoers" type="fix" due-to="Benjamin Asbach">
+        Correct class name printed in error message in RollingFileAppender.
+      </action>
+      <action issue="LOG4J2-2882" dev="rgoers" type="fix" due-to="Emmanuel Bourg">
+        Support java.util.logging filters when using that API.
+      </action>
+      <action issue="LOG4J2-2880" dev="rgoers" type="fix">
+        Create StackWalker benchmark. Revert back to StackWalker.walk based on benchmark results.
+      </action>
+      <action issue="LOG4J2-2867" dev="rgoers" type="fix">
+        Obtain ContextDataProviders asynchronously.
+      </action>
+      <action issue="LOG4J2-2877" dev="rgoers" type="fix">
+        Determine the container id to obtain container and image information.
+      </action>
+      <action issue="LOG4J2-2848" dev="ggregory" type="add">
+        Create module log4j-mongodb4 to use new major version 4 MongoDB driver.
+      </action>
+      <action issue="LOG4J2-2851" dev="ggregory" type="remove">
+        Drop log4j-mongodb2 module.
+      </action>
+      <action issue="LOG4J2-2895" dev="ckozak" type="fix">
+        Fix potential deadlock in asynchronous logging by avoiding blocking for queue space on Log4jThreads
+      </action>
+      <action issue="LOG4J2-2837" dev="ckozak" type="fix">
+        Disruptor and JUL no longer recursively start the AsyncLoggerDisruptor
+        resulting in an extra disruptor background thread constantly waiting.
+      </action>
+      <action issue="LOG4J2-2867" dev="ckozak" type="fix">
+        RingBufferLogEventTranslator uses a static ContextDataInjector instead of initializing a new object
+        on each thread.
+      </action>
+      <action issue="LOG4J2-2858" dev="ckozak" type="add" due-to="Stepan Gorban">
+        More flexible configuration of the Disruptor WaitStrategy.
+      </action>
+      <action issue="LOG4J2-2898" dev="ckozak" type="fix" due-to="Turbanov Andrey">
+        Avoid initializing volatile fields with default values.
+      </action>
+      <action issue="LOG4J2-2899" dev="ckozak" type="fix">
+        Fix log4j-1.2-api LogEventWrapper threadId and priority accessors when called multiple times.
+      </action>
+    </release>
+    <release version="2.13.3" date="2020-05-10" description="GA Release 2.13.3">
+      <action issue="LOG4J2-2838" dev="rgoers" type="fix">
+        Fix NullPointerException in ThreadContextDataInjector.
+      </action>
+    </release>
+    <release version="2.13.2" date="2020-04-23" description="GA Release 2.13.2">
+      <action issue="LOG4J2-2824" dev="rgoers" type="fix" due-to="CrazyBills">
+        Implement requiresLocation in GelfLayout to reflect whether location information is used in the message Pattern.
+      </action>
+      <action issue="LOG4J2-2588" dev="rgoers" type="fix">
+        Add option to restore printing timeMillis in the JsonLayout.
+      </action>
+      <action issue="LOG4J2-2766" dev="rgoers" type="fix">
+        Initialize pattern processor before triggering policy during reconriguration.
+      </action>
+      <action issue="LOG4J2-2457" dev="rgoers" type="update">
+        Allow the file extension in the file pattern to be modified during reconfiguration.
+      </action>
+      <action issue="LOG4J2-2810" dev="rgoers" type="fix">
+        Add information about using a url in log4j.configurationFile.
+      </action>
+      <action issue="LOG4J2-2813" dev="rgoers" type="fix" due-to="Keith D Gregory">
+        serializeToBytes was checking wrong variable for null.
+      </action>
+      <action issue="LOG4J2-2814" dev="rgoers" type="fix">
+        Fix Javadoc for ScriptPatternSelector.
+      </action>
+      <action issue="LOG4J2-2793" dev="rgoers" type="fix" due-to="Renukaprasad C">
+        Allow trailing and leading spaces in log level.
+      </action>
+      <action issue="LOG4J2-2520" dev="rgoers" type="update">
+        Allow servlet context path to be retrieved without "/".
+      </action>
+      <action issue="LOG4J2-2818" dev="rgoers" type="update">
+        Allow Spring Lookup to return default and active profiles.
+      </action>
+      <action issue="LOG4J2-2817" dev="rgoers" type="fix" due-to="Trejkaz">
+        Allow the file size action to parse the value without being sensitive to the current locale.
+      </action>
+      <action issue="LOG4J2-2815" dev="rgoers" type="update">
+        Allow Spring Boot applications to use composite configuratons.
+      </action>
+      <action issue="LOG4J2-1360" dev="rgoers" type="add" due-to="Kevin Leturc">
+        Provide a Log4j implementation of System.Logger.
+      </action>
+      <action issue="LOG4J2-2790" dev="rgoers" type="fix" due-to="Marius Volkhart">
+        Conditionally allocate PluginEntry during PluginCache loading.
+      </action>
+      <action issue="LOG4J2-2811" dev="rgoers" type="fix" due-to="Kuojian21">
+        Add missing includeLocation parameter when creating AsyncLogger.
+      </action>
+      <action issue="LOG4J2-2761" dev="rgoers" type="fix" due-to="Uwe Schindler">
+        Fix Exceptions when whitespace is in the file path and Java security manager is used.
+      </action>
+      <action issue="LOG4J2-2809" dev="rgoers" type="fix" due-to="Romain Manni-Bucau">
+        Avoid NullPointerException when StackWalker returns null.
+      </action>
+      <action issue="LOG4J2-2807" dev="rgoers" type="add">
+        Added EventLookup to retrieve fields from the log event.
+      </action>
+      <action issue="LOG4J2-2805" dev="rgoers" type="fix">
+        TimeFilter did not handle daylight saving time transitions and did not support a range over 2 days.
+      </action>
+      <action issue="LOG4J2-2779" dev="rgoers" type="update">
+        Add ContextDataProviders as an alternative to having to implement a ContextDataInjector.
+      </action>
+      <action issue="LOG4J2-2812" dev="ggregory" type="update">
+        [JDBC] Throw a AppenderLoggingException instead of an NPE in the JDBC database manager.
+      </action>
+    </release>
+    <release version="2.13.1" date="2020-02-25" description="GA Release 2.13.1">
+      <action issue="LOG4J2-2717" dev="rgoers" type="fix">
+        Slow initialization on Windows due to accessing network interfaces.
+      </action>
+      <action issue="LOG4J2-2789" dev="rgeors" type="update" due-to="Marius Volkhart">
+        Conditionally perform status logging calculations in PluginRegistry.
+      </action>
+      <action issue="LOG4J2-2756" dev="rgoers" type="fix">
+        Prevent LoggerContext from being garbage collected while being created.
+      </action>
+      <action issue="LOG4J2-2769" dev="rgoers" type="fix">
+        Do not log an error if Files.move does not work.
+      </action>
+      <action issue="LOG4J2-2039" dev="rgoers" type="fix">
+        RolloverFails when file matches pattern but index is too large.
+      </action>
+      <action issue="LOG4J2-2784" dev="rgoers" type="fix">
+        Counter stuck at 10 and overwriting files when leading zeros used in the file pattern count.
+      </action>
+      <action issue="LOG4J2-2746" dev="rgoers" type="fix">
+        ClassLoaderContextSelector was not locating the LoggerContext during shutdown.
+      </action>
+      <action issue="LOG4J2-2649" dev="rgoers" type="fix">
+        GraalVM does not allow use of MethodHandles.
+      </action>
+      <action issue="LOG4J2-2211" dev="rgoers" type="fix">
+        Allow Lookup keys with leading dashes by using a slash as an escape character.
+      </action>
+      <action issue="LOG4J2-2782" dev="rgoers" type="update">
+        Use LinkedBlockingQueue instead of synchronized collction in StatusConfiguration.
+      </action>
+      <action issue="LOG4J2-2781" dev="rgoers" type="fix" due-to="qxo">
+        ServletContainerInitializer was obtaining the StatusLogger too soon.
+      </action>
+      <action issue="LOG4J2-2703" dev="goers" type="fix" due-to="Volkan Yazici">
+        MapMessage.getFormattedMesssage() would incorrectly format objects.
+      </action>
+      <action issue="LOG4J2-2760" dev="rgoers" type="fix" due-to="Christoph Kaser">
+        Always write header on a new OutputStream.
+      </action>
+      <action issue="LOG4J2-2777" dev="rgoers" type="update" due-to="joongs4">
+        Add a retry count attribute to the KafkaAppender.
+      </action>
+      <action issue="LOG4J2-2776" dev="rgoers" type="fix" due-to="Christoph Kaser">
+        An error message in RollingFileAppender uses a placeholder for the name but does not specify the name
+        argument in the logging call
+      </action>
+      <action issue="LOG4J2-2758" dev="rgoers" type="fix" due-to="Christoph Kaser">
+        NullPointerException when using a custom DirectFileRolloverStrategy without a file name.
+      </action>
+      <action issue="LOG4J2-2768" dev="rgoers" type="fix" due-to="Marius Volkhart">
+        Add mulit-parameter overloads to LogBuilder.
+      </action>
+      <action issue="LOG4J2-2770" dev="rgoers" type="fix" due-to="Bill Kuker">
+        Fixed NullPointerException after reconfiguring via JMX.
+      </action>
+      <action issue="LOG4J2-2759" dev="rgoers" type="fix">
+        RollingFileAppender was not rolling on startup if createOnDemand was set to true.
+      </action>
+      <action issue="LOG4J2-2767" dev="rgoers" type="fix">
+        Warn if pattern is missing on Routes element. Use default route.
+      </action>
+      <action issue="LOG4J2-2415" dev="ckozak" type="fix" due-to="Andrey Turbanov">
+        Fix lock contention in the classloader using new versions of slf4j without EventData on slf4j logger creation.
+      </action>
+      <action issue="LOG4J2-2677" dev="ckozak" type="fix">
+        Rollover handles parallel file deletion gracefully.
+      </action>
+      <action issue="LOG4J2-2744" dev="ckozak" type="fix">
+        Remove unnecessary EventLogger references from log4j-slf4j18-impl due to removal from slf4j.
+      </action>
+      <action issue="LOG4J2-2745" dev="ckozak" type="update">
+        Update log4j-slf4j18-impl slf4j version to 1.8.0-beta4 from 1.8.0-alpha2.
+      </action>
+      <action issue="LOG4J2-2747" dev="ckozak" type="fix">
+        Fix a memory leak using fully asynchronous logging when the queue is full using the 'discard' asynchronous queue full strategy.
+      </action>
+      <action issue="LOG4J2-2739" dev="ckozak" type="fix">
+        Fix erroneous log4j-jul recursive logger detection resulting in some no-op JUL loggers and 'WARN Recursive call to getLogger' being reported by the status logger.
+      </action>
+      <action issue="LOG4J2-2748" dev="ckozak" type="add">
+        Implement ISO8601_PERIOD_MICROS fixed date format matching ISO8601_PERIOD with support for microsecond precision.
+      </action>
+      <action issue="LOG4J2-2735" dev="ckozak" type="fix" due-to="Andy Wilkinson">
+        PluginCache output is reproducible allowing the annotation processor to produce deterministic results.
+      </action>
+      <action issue="LOG4J2-2751" dev="ckozak" type="fix">
+        Fix StackLocator.getCallerClass performance in cases where Reflection.getCallerClass is not accessible.
+      </action>
+      <action issue="LOG4J2-2752" dev="ckozak" type="fix">
+        MutableLogEvent and RingBufferLogEvent avoid StringBuffer and parameter array allocation unless reusable messages are used.
+      </action>
+      <action issue="LOG4J2-2754" dev="ckozak" type="fix">
+        LoaderUtil.getClassLoaders may discover additional loaders and no longer erroneously returns a result with a null element in some environments.
+      </action>
+      <action issue="LOG4J2-2762" dev="ggregory" type="fix" due-to="Gary Gregory">
+        [JDBC] MS-SQL Server JDBC driver throws SQLServerException when inserting a null value for a VARBINARY column.
+      </action>
+      <action issue="LOG4J2-2770" dev="ggregory" type="fix" due-to="Bill Kuker">
+        NullPointerException after reconfiguring via JMX.
+      </action>
+    </release>
+    <release version="2.13.0" date="2019-12-11" description="GA Release 2.13.0">
+      <action issue="LOG4J2-2058" dev="rgoers" type="fix">
+        Prevent recursive calls to java.util.LogManager.getLogger().
+      </action>
+      <action issue="LOG4J2-2725" dev="ckozak" type="fix" due-to="Dzmitry Anikechanka">
+        LOG4J2-2725 - Added try/finally around event.execute() for RingBufferLogEventHandler to clear memory
+        correctly in case of exception/error
+      </action>
+      <action issue="LOG4J2-2635" dev="rgoers" type="fix" due-to="Filipp Gunbin">
+        Wrong java version check in ThreadNameCachingStrategy.
+      </action>
+      <action issue="LOG4J2-2674" dev="rgoers" type="fix" due-to="Anton Korenkov">
+        Use a less confusing name for the CompositeConfiguration source.
+      </action>
+      <action issue="LOG4J2-2732" dev="rgoers" type="add" due-to="Matt Pavlovich">
+        Add ThreadContext.putIfNotNull method.
+      </action>
+      <action issue="LOG4J2-2731" dev="rgoers" type="add">
+        Add a Level Patttern Selector.
+      </action>
+      <action issue="LOG4J2-2727" dev="rogers" type="fix" due-to="Clément Mathieu">
+        Add setKey method to Kafka Appender Builder.
+      </action>
+      <action issue="LOG4J2-2707" dev="rgoers" type="fix" due-to="Christian Frank">
+        ArrayIndexOutOfBoundsException could occur with MAC address longer than 6 bytes.
+      </action>
+      <action issue="LOG4J2-63" dev="rgoers" type="add">
+        Add experimental support for Log4j 1 configuration files.
+      </action>
+      <action issue="LOG4J2-2712" dev="rgoers" type="fix">
+        The rolling file appenders would fail to compress the file after rollover if the file name matched the
+        file pattern.
+      </action>
+      <action issue="LOG4J2-2716" dev="rgoers" type="add">
+        Add the ability to lookup Kubernetes attributes in the Log4j configuration. Allow Log4j properties to
+        be retrieved from the Spring environment if it is available.
+      </action>
+      <action issue="LOG4J2-2710" dev="rgoers" type="add">
+        Allow Spring Boot application properties to be accessed in the Log4j 2 configuration. Add
+        lower and upper case Lookups.
+      </action>
+      <action issue="LOG4J2-2709" dev="rgoers" type="update">
+        Allow message portion of GELF layout to be formatted using a PatternLayout. Allow
+        ThreadContext attributes to be explicitly included or excluded in the GelfLayout.
+      </action>
+      <action issue="LOG4J2-2693" dev="mattsicker" type="fix">
+        @PluginValue does not support attribute names besides "value".
+      </action>
+      <action issue="LOG4J-2672" dev="rgoers" type="fix" due-to="Stephen Colebourne">
+        Add automatic module names where missing.
+      </action>
+      <action issue="LOG4J2-2639" dev="rgoers" type="add">
+        Add builder pattern to Logger interface.
+      </action>
+      <action issue="LOG4J2-2673" dev="ggregory" type="fix" due-to="Yuichi Sugimura">
+        OutputStreamAppender.Builder ignores setFilter().
+      </action>
+      <action issue="LOG4J2-2725" dev="ckozak" type="fix" due-to="Dzmitry Anikechanka">
+        Prevent a memory leak when async loggers throw errors.
+      </action>
+    </release>
+    <release version="2.12.1" date="2019-08-06" description="GA Release 2.12.1">
+      <action issue="LOG4J2-1946" dev="rgoers" type="fix" due-to="Igor Perelyotov">
+        Allow file renames to work when files are missing from the sequence.
+      </action>
+      <action issue="LOG4J2-2650" dev="rgoers" type="fix" due-to="Mattia Bertorello">
+        Support emulating a MAC address when using ipv6.
+      </action>
+      <action issue="LOG4J2-2366" dev="rgoers" type="fix">
+        Remove references to LoggerContext when it is shutdown.
+      </action>
+      <action issue="LOG4J2-2556" dev="rgoers" type="update">
+        Make Log4j Core optional for Log4j 1.2 API.
+      </action>
+      <action issue="LOG4J2-2575" dev="rgoers" type="fix" due-to="Nathan Friess">
+        CronExpression.getBeforeTime() would sometimes return incorrect result.
+      </action>
+      <action issue="LOG4J2-2644" dev="rgoers" type="fix">
+        Improve the performance of capturing location information.
+      </action>
+      <action issue="LOG4J2-2646" dev="ggregory" type="update">
+        Update MongoDB 3 driver from 3.10.1 to 3.10.2.
+      </action>
+      <action issue="LOG4J2-2657" dev="ggregory" type="update">
+        Improve exception messages in the JDBC appender.
+      </action>
+      <action issue="LOG4J2-2658" dev="ckozak" type="fix">
+        AbstractAction.reportException records a warning to the status logger, providing more information when file
+        based appenders fail to compress rolled data asynchronously.
+      </action>
+      <action issue="LOG4J2-2659" dev="ckozak" type="fix">
+        AbstractAction handles and records unchecked RuntimeException and Error in addition to IOException.
+      </action>
+      <action issue="LOG4J2-2660" dev="ggregory" type="update">
+        Retry when JDBC throws a java.sql.SQLTransactionRollbackException in commitAndClose().
+      </action>
+      <action issue="LOG4J2-2667" dev="ggregory" type="fix" due-to="Gary Gregory, Edith Chui">
+        "Values not bound to statement" when using JDBC appender, appender does not respect bufferSize="0".
+      </action>
+    </release>
+    <release version="2.12.0" date="2019-06-23" description="GA Release 2.12.0">
+      <action issue="LOG4J2-2547" dev="rgoers" type="fix">
+        RollingRandomAccessFileAppender error message referenced incorrect class name.
+      </action>
+      <action issue="LOG4J2-2622" dev="rgoers" type="fix">
+        StructuredDataId was ignoring maxLength atribute.
+      </action>
+      <action issue="LOG4J2-2636" dev="rgoers" type="fix">
+        RFC5424Layout was not properly setting default Structured Element id for the MDC
+      </action>
+      <action issue="LOG4J2-2403" dev="rgoers" type="add" due-to="hupfdule">
+        Allow zero padding the counter of a RollingFileAppender.
+      </action>
+      <action issue="LOG4J2-2427" dev="rgoers" type="add" due-to="Rimaljit Kaur">
+        Add filter that will match events when no marker is present.
+      </action>
+      <action issue="LOG4J2-1143" dev="rgoers" type="fix" due-to="Pascal Heinrich">
+        Lookups were not found if the plugin key was not lowercase.
+      </action>
+      <action issue="LOG4J2-2406" dev="rgoers" type="add">
+        Add reconfiguration methods to Configurator.
+      </action>
+      <action issue="LOG4J2-1852" dev="rgoers" type="fix" due-to="Tanner Altares">
+        Locate plugins within a Jar using a URL Connection.
+      </action>
+      <action issue="LOG4J2-2610" dev="rgoers" type="fix">
+        Explicitly set file creation time.
+      </action>
+      <action issue="LOG4J2-2561" dev="rgoers" type="fix" due-to="Ulrich Enslin">
+        JEP223 version detection fix for JDK 9 and up.
+      </action>
+      <action issue="LOG4J2-1103" dev="rgoers" type="fix" due-to="Seán Dunne">
+        FailoverAppender was failing with ERROR appender Failover has no parameter that matches element Failovers.
+      </action>
+      <action issue="LOG4J2-2602" dev="rgoers" type="fix">
+        Update file time when size based triggering policy is used without a time-based triggering policy.
+      </action>
+      <action issue="LOG4J2-2597" dev="rgoers" type="fix">
+        Throw better exception message when both log4j-slf4j-impl and log4j-to-slf4j are present.
+      </action>
+      <action issue="LOG4J2-913" dev="rgoers" type="add">
+        Add support for reconfiguration via HTTP(S), Docker, and Spring Cloud Configuration.
+      </action>
+      <action issue="LOG4J2-2586" dev="rgoers" type="add">
+        TCP Appender should support a host name resolving to multiple IP addresses.
+      </action>
+      <action issue="LOG4J2-2559" dev="ggregory" type="fix" due-to="Li Lei, Gary Gregory">
+        NullPointerException in JdbcAppender.createAppender().
+      </action>
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
+        Update tests from H2 1.4.197 to 1.4.199.
+      </action>
+      <action issue="LOG4J2-2570" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update Jackson from 2.9.7 to 2.9.8.
+      </action>
+      <action issue="LOG4J2-2574" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update MongoDB 3 module driver from 3.9.0 to 3.10.1.
+      </action>
+      <action issue="LOG4J2-2592" dev="ggregory" type="fix" due-to="Dávid Kaya, Gary Gregory">
+        StackOverflowException when server not reachable with SocketAppender.
+      </action>
+      <action issue="LOG4J2-2337" dev="ggregory" type="add" due-to="Arvind Sahare, Patrice Ferrot">
+        Allow custom end-of-line with JsonLayout.
+      </action>
+      <action issue="LOG4J2-2598" dev="ckozak" type="add" due-to="Carter Kozak">
+        GZIP compression on rollover supports configurable compression levels.
+      </action>
+      <action issue="LOG4J2-2603" dev="ggregory" type="fix" due-to="Gary Gregory">
+        java.lang.StackOverflowError at org.apache.logging.log4j.junit.AbstractExternalFileCleaner.println(AbstractExternalFileCleaner.java:169).
+      </action>
+      <action issue="LOG4J2-2564" dev="ckozak" type="fix">
+        MapPatternConverter is properly created from the '%K', '%map', and '%MAP' patterns.
+        PatternConverter instanceOf methods with unknown parameter types no longer elide those with known parameters.
+      </action>
+      <action issue="LOG4J2-2611" dev="ckozak" type="add">
+        AsyncQueueFullPolicy configuration short values "Default" and "Discard" are case insensitive to avoid confusion.
+      </action>
+      <action issue="LOG4J2-2612" dev="ggregory" type="fix">
+        NullPointerException at org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager.writeInternal(JdbcDatabaseManager.java:803).
+      </action>
+      <action issue="LOG4J2-2619" dev="ggregory" type="update">
+        Update Jackson from 2.9.8 to 2.9.9.
+      </action>
+      <action issue="LOG4J2-2631" dev="ckozak" type="fix">
+        RoutingAppender PurgePolicy implementations no longer stop appenders referenced from the logger configuration,
+        only those that have been created by the RoutingAppender. Note that RoutingAppender.getAppenders no longer
+        includes entries for referenced appenders, only those which it has created.
+      </action>
+      <action issue="LOG4J2-2629" dev="ckozak" type="fix">
+        Fix a race allowing events not to be recorded when a RoutingAppender purge policy attempts to delete an idle
+        appender at exactly the same time as a new event is recorded.
+      </action>
+      <action issue="LOG4J2-2606" dev="ckozak" type="fix">
+        Asynchronous logging when the queue is full no longer results in heavy CPU utilization and low throughput.
+      </action>
+      <action issue="LOG4J2-2634" dev="ckozak" type="update">
+        Refactor several AsyncLogger methods below the 35 byte threshold for inlining.
+      </action>
+      <action issue="LOG4J2-2634" dev="ggregory" type="add">
+        Add and use method org.apache.logging.log4j.message.MapMessage.toKey(String) for simpler subclasses.
+      </action>
+    </release>
+    <release version="2.11.2" date="2018-MM-DD" description="GA Release 2.11.2">
+      <action issue="LOG4J2-2500" dev="rgoers" type="fix">
+        Document that Properties element must be the first configuration element.
+      </action>
+      <action issue="LOG4J2-2543" dev="rgoers" type="fix" due-to="Dermot Hardy">
+        Add Log4j-to-SLF4J to BOM pom.xml.
+      </action>
+      <action issue="LOG4J2-2061" dev="rgoers" type="fix">
+        Use the file pattern as the FileManager "name" when no filename is present.
+      </action>
+      <action issue="LOG4J2-2009" dev="rgoers" type="fix">
+        Expose LoggerContext.setConfiguration as a public method.
+      </action>
+      <action issue="LOG4J2-2542" dev="rgoers" type="fix">
+        CronTriggeringPolicy was not rolling properly, especially when used with the SizeBasedTriggeringPolicy.
+      </action>
+      <action issue="LOG4J2-2266" dev="rgoers" type="fix">
+        Load PropertySources from any accessible ClassLoader. Hide any exceptions that may occur accessing a PropertySource.
+      </action>
+      <action issue="LOG4J2-1570" dev="rgoers" type="fix">
+        Logging with a lambda expression with a method call that also logs would cause logs within method call to reference line num and method name of the parent method.
+      </action>
+      <action issue="LOG4J2-1576" dev="rgoers" type="update">
+        Switch from CLIRR to RevAPI for detecting API changes.
+      </action>
+      <action issue="LOG4J2-2485" dev="rgoers" type="fix" due-to="Giovanni Matteo Fumarola">
+        SizeBasedTriggeringPolicy was not honored when using the DirectWriteRolloverStrategy if the machine restarts.
+      </action>
+      <action issue="LOG4J2-1906" dev="rgoers" type="fix">
+        Direct write was creating files with the wrong date/time.
+      </action>
+      <action issue="LOG4J2-2453" dev="rgoers" type="fix" due-to="theit">
+        Add Log4j-slf4j18-impl dependency to bom pom.
+      </action>
+      <action issue="LOG4J2-2515" dev="rgoers" type="fix" due-to="MakarovS">
+        Configuration documentation referenced incorrect method name.
+      </action>
+      <action issue="LOG4J2-2514" dev="rgoers" type="fix" due-to="smilebrian0515">
+        Make Strings.toRootUpperCase a static method so it can be accessed.
+      </action>
+      <action issue="LOG4J2-1571" dev="rgoers" type="fix" due-to="torbenmoeller">
+        Fixed Appenders section in Extending Log4j.
+      </action>
+      <action issue="LOG4J2-2391" dev="ckozak" type="update">
+        Improve exception logging performance. ThrowableProxy construction uses a faster
+        method to discover the current stack trace. ThrowablePatternConverter and
+        ExtendedThrowablePatternConverter default configurations no longer allocate
+        an additional buffer for stack trace contents.
+      </action>
+      <action issue="LOG4J2-2397" dev="ggregory" type="fix" due-to="EckelDong">
+        Predeployment of PersistenceUnit that using Log4j as session logger failed (#198).
+      </action>
+      <action issue="LOG4J2-2365" dev="ckozak" type="fix" due-to="Eugene Zimichev">
+        NameAbbreviator correctly abbreviates first fragments (#188).
+      </action>
+      <action issue="LOG4J2-2201" dev="ckozak" type="fix">
+        Fix memory leak in ReusableParameterizedMessage.
+      </action>
+      <action issue="LOG4J2-2363" dev="ckozak" type="fix" due-to="Brian Laub">
+        ReusableObjectMessage parameter is properly passed to appenders (#203).
+      </action>
+      <action issue="LOG4J2-2418" dev="ggregory" type="fix" due-to="Jonas Rutishauser">
+        NullPointerException when closing never used RollingRandomAccessFileAppender.
+      </action>
+      <action issue="LOG4J2-2422" dev="ggregory" type="fix" due-to="rswart, Gary Gregory">
+        Handle some unchecked exceptions while loading plugins.
+      </action>
+      <action issue="LOG4J2-2441" dev="ckozak" type="fix">
+        Setting a null ErrorHandler on AbstractAppender is not allowed and will no-op as expected.
+      </action>
+      <action issue="LOG4J2-2444" dev="ckozak" type="fix">
+        ErrorHandler is invoked with a LogEvent and Throwable when possible, where previously only a string was used.
+      </action>
+      <action issue="LOG4J2-2446" dev="ggregory" type="add">
+        Add a Base64 string lookup.
+      </action>
+      <action issue="LOG4J2-2447" dev="ggregory" type="update">
+        Let the NullAppender default its name to "null".
+      </action>
+      <action issue="LOG4J2-2468" dev="ggregory" type="update">
+        Update Jackson from 2.9.6 to 2.9.7.
+      </action>
+      <action issue="LOG4J2-2469" dev="ggregory" type="update">
+        Update Apache Commons Compress from 1.17 to 1.18.
+      </action>
+      <action issue="LOG4J2-2470" dev="ggregory" type="update">
+        Update Apache Commons CSV from 1.5 to 1.6.
+      </action>
+      <action issue="LOG4J2-2471" dev="ggregory" type="update">
+        Update javax.mail from 1.6.1 to 1.6.2.
+      </action>
+      <action issue="LOG4J2-2472" dev="ggregory" type="update">
+        Update mongo-java-driver 3 from 3.8.0 to 3.8.2.
+      </action>
+      <action issue="LOG4J2-2413" dev="ggregory" type="fix" due-to="Andres Luuk, Gary Gregory">
+        Exceptions are added to all columns when a JDBC Appender's ColumnMapping uses a Pattern.
+      </action>
+      <action issue="LOG4J2-2466" dev="ggregory" type="fix" due-to="Paolo Bonanomi, Gary Gregory">
+        ColumnMapping literal not working.
+      </action>
+      <action issue="LOG4J2-2478" dev="ckozak" type="fix" due-to="Diego Elias Costa">
+        AbstractStringLayoutStringEncodingBenchmark returns the computed variables on each benchmark to avoid DCE.
+      </action>
+      <action issue="LOG4J2-2134" dev="ggregory" type="fix" due-to="David del Amo Mateos, Gary Gregory">
+        StackOverflowError at AwaitCompletionReliabilityStrategy.
+      </action>
+      <action issue="LOG4J2-2481" dev="ggregory" type="fix">
+        Avoid NullPointerExceptions in org.apache.logging.log4j.core.config.AbstractConfiguration for null arguments.
+      </action>
+      <action issue="LOG4J2-2457" dev="ggregory" type="fix" due-to="Heiko Schwanke, Gary Gregory">
+        RollingRandomAccessFileManager ignores new file patterns from programmatic reconfiguration.
+      </action>
+      <action issue="LOG4J2-2482" dev="ggregory" type="fix" due-to="Rob Gansevles">
+        BasicContextSelector cannot be used in a OSGI application.
+      </action>
+      <action issue="LOG4J2-2476" dev="ggregory" type="fix" due-to="Al Bundy">
+        org.apache.log4j.SimpleLayout and ConsoleAppender missing in log4j-1.2-api.
+      </action>
+      <action issue="LOG4J2-2489" dev="ggregory" type="update">
+        JDBC Appender should release parameter resources ASAP.
+      </action>
+      <action issue="LOG4J2-2491" dev="ggregory" type="update">
+        Allow all Appenders to optionally carry a Property array.
+      </action>
+      <action issue="LOG4J2-2497" dev="ggregory" type="fix">
+        JmsAppender reconnectIntervalMillis cannot be set from a configuration file.
+      </action>
+      <action issue="LOG4J2-2499" dev="ggregory" type="fix">
+        JMS Appender may throw a NullPointerException when JMS is not up while the Appender is starting.
+      </action>
+      <action issue="LOG4J2-2496" dev="ggregory" type="add">
+        JDBC Appender should reconnect to the database when a connection goes stale.
+      </action>
+      <action issue="LOG4J2-2503" dev="ggregory" type="update">
+        Update MongoDB driver from 3.8.2 to 3.9.0 for log4j-mongodb3 module.
+      </action>
+      <action issue="LOG4J2-2505" dev="ggregory" type="add">
+        Let JDBC PoolingDriverConnectionSource with Apache Commons DBCP configure a PoolableConnectionFactory.
+      </action>
+      <action issue="LOG4J2-2508" dev="ggregory" type="fix">
+        JDBC Appender fails when using both parameter, source, and literal ColumnMapping elements.
+      </action>
+      <action issue="LOG4J2-2509" dev="ggregory" type="add">
+        Allow a JDBC Appender to truncate strings to match a table's metadata column length limit.
+      </action>
+      <action issue="LOG4J2-1246" dev="ggregory" type="add">
+        PatternLayout %date conversion pattern should render time zone designator for ISO-ISO8601.
+      </action>
+      <action issue="LOG4J2-2527" dev="ckozak" type="fix">
+        Prevent ConcurrentModificationException while iterating over ListAppender events.
+      </action>
+      <action issue="LOG4J2-2522" dev="ckozak" type="fix" due-to="Adam Lesiak">
+        Fix regression using MapMessageLookup.lookup with MapMessages that do not implement StringMapMessage.
+      </action>
+      <action issue="LOG4J2-2530" dev="ckozak" type="fix" due-to="Travis Spencer">
+        Generalize checks using MapMessage implementations with do not extend StringMapMessage.
+        Introduce new JAVA_UNQUOTED MapMessage format type based on the JAVA formatting, but without
+        quoted values.
+      </action>
+      <action issue="LOG4J2-2533" dev="ckozak" type="fix" due-to="Michail Prusakov">
+        Fix a regression introduced by LOG4J2-2301 in 2.11.1 allowing allocation to occur in AsyncLoggerConfig.
+      </action>
+      <action issue="LOG4J2-2618" dev="ggregory" type="fix">
+        Possible ClassCastException in org.apache.logging.log4j.core.script.ScriptManager.ScriptManager(Configuration, WatchManager)
+      </action>
+      <action issue="LOG4J2-2619" dev="ggregory" type="update">
+        Update Jackson from 2.9.8 to 2.9.9.
+      </action>
+    </release>
+    <release version="2.11.1" date="2018-07-22" description="GA Release 2.11.1">
+      <action issue="LOG4J2-2389" dev="rgoers" type="fix" due-to="Liu Wen">
+        ThrowableProxy was saving and retrieving cache entries using different keys.
+      </action>
+      <action issue="LOG4J2-2316" dev="rgoers" type="fix">
+        If root LoggerConfig does not have a Level return ERROR.
+      </action>
+      <action issue="LOG4J2-2390" dev="rgoers" type="fix" due-to="anton-balaniuc">
+        Fix broken links in log4j web documentation.
+      </action>
+      <action issue="LOG4J2-1721" dev="rgoers" type="update" due-to="Phokham Nonava">
+        Allow composite configuration for context parameter.
+      </action>
+      <action issue="LOG4J2-2343" dev="rgoers" type="fix" due-to="Raymond Augé">
+        The OSGi Activator specified an incorrect version.
+      </action>
+      <action issue="LOG4J2-2305" dev="rgoers" type="fix" due-to="Björn Kautler">
+        Make java.util.ServiceLoader properly work in OSGi by using the Service Loader Mediator Specification.
+      </action>
+      <action issue="LOG4J2-2305" dev="rgoers" type="fix">
+        Split the SLF4J binding into 2 implementations - one for SLF4J 1.7.x and one for SLF4J 1.8+.
+      </action>
       <action issue="LOG4J2-2268" dev="rgoers" type="fix" due-to="Tilman Hausherr">
         Improve plugin error message when elements are missing.
       </action>
@@ -228,6 +849,74 @@
       </action>
       <action issue="LOG4J2-2331" dev="ckozak" type="fix" due-to="Mike Baranski">
         RollingFileManager debug logging avoids string concatenation and errant braces in favor of parameterized logging.
+      </action>
+      <action issue="LOG4J2-2333" dev="ckozak" type="fix">
+        Handle errors thrown in default disruptor ExceptionHandler implementations to avoid killing background threads.
+      </action>
+      <action issue="LOG4J2-2334" dev="ggregory" type="fix">
+        Add API org.apache.logging.log4j.core.appender.AsyncAppender.getQueueSize().
+      </action>
+      <action issue="LOG4J2-2336" dev="ckozak" type="fix">
+        Remove duplicate hyphen from the AsyncLoggerConfig background thread name.
+      </action>
+      <action issue="LOG4J2-2347" dev="ggregory" type="fix">
+        Update Apache Commons Compress from 1.16.1 to 1.17.
+      </action>
+      <action issue="LOG4J2-2351" dev="ckozak" type="update">
+        Added AbstractLogEvent.getMutableInstant to allow the MutableInstant instance to be modified by classes extending AbstractLogEvent.
+      </action>
+      <action issue="LOG4J2-2352" dev="ckozak" type="fix">
+        RingBufferLogEvent memento messages provide the expected format string, and no longer attempt to substitute parameters into curly braces in parameter toString values.
+        Both RingBufferLogEvent and MutableLogEvent memento implementations memoize results to avoid rebuilding formatted string values.
+      </action>
+      <action issue="LOG4J2-2355" dev="ckozak" type="fix" due-to="Henrik Brautaset Aronsen">
+        PropertiesUtil ignores non-string system properties. Fixes a NoClassDefFoundError initializing StatusLogger
+        caused by an NPE while initializing the static PropertiesUtil field.
+      </action>
+      <action issue="LOG4J2-2357" dev="ggregory" type="update">
+        Update Jackson from 2.9.5 to 2.9.6.
+      </action>
+      <action issue="LOG4J2-2358" dev="ggregory" type="update">
+        Update Kafka client from 1.0.0 to 1.1.0.
+      </action>
+      <action issue="LOG4J2-2362" dev="ckozak" type="fix">
+        Fixed a memory leak in which ReusableObjectMessage would hold a reference to the most recently logged object.
+      </action>
+      <action issue="LOG4J2-2312" dev="ckozak" type="fix">
+        Jackson layouts used with AsyncLoggerContextSelector output the expected format rather than only a JSON string of the message text.
+      </action>
+      <action issue="LOG4J2-2364" dev="ckozak" type="fix">
+        Fixed a memory leak in which ReusableParameterizedMessage would hold a reference to the most recently
+        logged throwable and provided varargs array.
+      </action>
+      <action issue="LOG4J2-2368" dev="ckozak" type="fix">
+        Nested logging doesn't clobber AbstractStringLayout cached StringBuidlers
+      </action>
+      <action issue="LOG4J2-2373" dev="ckozak" type="fix" due-to="Kevin Meurer">
+        StringBuilders.escapeJson implementation runs in linear time. Escaping large JSON strings
+        in EncodingPatternConverter and MapMessage will perform significantly better.
+      </action>
+      <action issue="LOG4J2-2376" dev="ckozak" type="fix" due-to="Kevin Meurer">
+        StringBuilders.escapeXml implementation runs in linear time. Escaping large XML strings
+        in EncodingPatternConverter and MapMessage will perform significantly better.
+      </action>
+      <action issue="LOG4J2-2377" dev="ggregory" type="fix" due-to="Mirko Rzehak, Gary Gregory">
+        NullPointerException in org.apache.logging.log4j.util.LoaderUtil.getClassLoaders() when using Bootstrap class loader.
+      </action>
+      <action issue="LOG4J2-2382" dev="ggregory" type="update">
+        Update Mongodb 3 driver from 3.6.3 to 3.8.0.
+      </action>
+      <action issue="LOG4J2-2384" dev="ggregory" type="update">
+        Update Kafka client from 1.1.0 to 1.1.1.
+      </action>
+      <action issue="LOG4J2-2385" dev="ggregory" type="update">
+        Update Groovy from 2.4.13 to 2.5.1.
+      </action>
+      <action issue="LOG4J2-2386" dev="ggregory" type="update">
+        Update optional Apache Commons DBCP from 2.2.0 to 2.4.0.
+      </action>
+      <action issue="LOG4J2-2388" dev="ggregory" type="fix" due-to="Failled">
+        Thread indefinitely blocked when logging a message in an interrupted thread.
       </action>
     </release>
     <release version="2.11.0" date="2018-xx-xx" description="GA Release 2.11.0">
@@ -1617,7 +2306,7 @@
         Removed deprecated Core API org.apache.logging.log4j.core.util.Constants.UTF_8.
       </action>
       <action issue="LOG4J2-1544" dev="ggregory" type="update">
-        Removed deprecated Core API org.apache.logging.log4j.core.util.Assert.requireNonNull(T, String).
+        Removed deprecated Core API org.apache.logging.log4j.util.Assert.requireNonNull(T, String).
       </action>
       <action issue="LOG4J2-1545" dev="ggregory" type="update">
         Removed deprecated Web API org.apache.logging.log4j.web.WebLookup.getServletContext().

@@ -33,7 +33,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
     private static final int MAX_RECONNECTS = 3;
     private static final int MINIMUM_TIMEOUT = 1000;
 
-    private static AvroManagerFactory factory = new AvroManagerFactory();
+    private static final AvroManagerFactory factory = new AvroManagerFactory();
 
     private final Agent[] agents;
 
@@ -50,7 +50,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
 
     private final int current = 0;
 
-    private RpcClient rpcClient = null;
+    private volatile RpcClient rpcClient;
 
     private BatchEvent batchEvent = new BatchEvent();
     private long nextSend = 0;
@@ -97,9 +97,9 @@ public class FlumeAvroManager extends AbstractFlumeManager {
 
         if (batchSize <= 0) {
             batchSize = 1;
-        }
-
-        final StringBuilder sb = new StringBuilder("FlumeAvro[");
+        };
+        final StringBuilder sb = new StringBuilder(name);
+        sb.append(" FlumeAvro[");
         boolean first = true;
         for (final Agent agent : agents) {
             if (!first) {
@@ -149,9 +149,13 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         return delayMillis;
     }
 
-    public synchronized void send(final BatchEvent events) {
+    public void send(final BatchEvent events) {
         if (rpcClient == null) {
-            rpcClient = connect(agents, retries, connectTimeoutMillis, requestTimeoutMillis);
+            synchronized (this) {
+                if (rpcClient == null) {
+                    rpcClient = connect(agents, retries, connectTimeoutMillis, requestTimeoutMillis);
+                }
+            }
         }
 
         if (rpcClient != null) {
@@ -175,7 +179,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
     }
 
     @Override
-    public synchronized void send(final Event event)  {
+    public void send(final Event event)  {
         if (batchSize == 1) {
             if (rpcClient == null) {
                 rpcClient = connect(agents, retries, connectTimeoutMillis, requestTimeoutMillis);
@@ -199,14 +203,22 @@ public class FlumeAvroManager extends AbstractFlumeManager {
                 throw new AppenderLoggingException("No Flume agents are available");
             }
         } else {
-            batchEvent.addEvent(event);
-            final int eventCount = batchEvent.getEvents().size();
-            if (eventCount == 1) {
-                nextSend = System.nanoTime() + delayNanos;
+            int eventCount;
+            BatchEvent batch = null;
+            synchronized(batchEvent) {
+                batchEvent.addEvent(event);
+                eventCount = batchEvent.size();
+                long now = System.nanoTime();
+                if (eventCount == 1) {
+                    nextSend = now + delayNanos;
+                }
+                if (eventCount >= batchSize || now >= nextSend) {
+                    batch = batchEvent;
+                    batchEvent = new BatchEvent();
+                }
             }
-            if (eventCount >= batchSize || System.nanoTime() >= nextSend) {
-                send(batchEvent);
-                batchEvent = new BatchEvent();
+            if (batch != null) {
+                send(batch);
             }
         }
     }

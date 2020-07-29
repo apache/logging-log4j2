@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
-import java.sql.DriverManager;
-
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
+import java.sql.DriverManager;
 
 /**
  * A {@link ConnectionSource} that uses a JDBC connection string, a user name, and a password to call
@@ -41,7 +41,7 @@ public class DriverManagerConnectionSource extends AbstractDriverManagerConnecti
      *            This builder type or a subclass.
      */
     public static class Builder<B extends Builder<B>> extends AbstractDriverManagerConnectionSource.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<DriverManagerConnectionSource> {
+            implements org.apache.logging.log4j.plugins.util.Builder<DriverManagerConnectionSource> {
 
         @Override
         public DriverManagerConnectionSource build() {
@@ -51,7 +51,7 @@ public class DriverManagerConnectionSource extends AbstractDriverManagerConnecti
 
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }

@@ -27,11 +27,11 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
@@ -212,19 +212,6 @@ public class MapFilter extends AbstractFilter {
         return isAnd;
     }
 
-    /** @deprecated  use {@link #getStringMap()} instead */
-    @Deprecated
-    protected Map<String, List<String>> getMap() {
-        final Map<String, List<String>> result = new HashMap<>(map.size());
-        map.forEach(new BiConsumer<String, List<String>>() {
-            @Override
-            public void accept(final String key, final List<String> value) {
-                result.put(key, value);
-            }
-        });
-        return result;
-    }
-
     /**
      * Returns the IndexedStringMap with {@code List<String>} values that this MapFilter was constructed with.
      * @return the IndexedStringMap with {@code List<String>} values to match against
@@ -237,10 +224,10 @@ public class MapFilter extends AbstractFilter {
     // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static MapFilter createFilter(
-            @PluginElement("Pairs") final KeyValuePair[] pairs,
-            @PluginAttribute("operator") final String oper,
-            @PluginAttribute("onMatch") final Result match,
-            @PluginAttribute("onMismatch") final Result mismatch) {
+            @PluginElement final KeyValuePair[] pairs,
+            @PluginAttribute final String operator,
+            @PluginAttribute final Result onMatch,
+            @PluginAttribute final Result onMismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("keys and values must be specified for the MapFilter");
             return null;
@@ -270,7 +257,7 @@ public class MapFilter extends AbstractFilter {
             LOGGER.error("MapFilter is not configured with any valid key value pairs");
             return null;
         }
-        final boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        return new MapFilter(map, isAnd, match, mismatch);
+        final boolean isAnd = operator == null || !operator.equalsIgnoreCase("or");
+        return new MapFilter(map, isAnd, onMatch, onMismatch);
     }
 }

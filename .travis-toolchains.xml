@@ -25,18 +25,18 @@
       <vendor>oracle</vendor>
     </provides>
     <configuration>
-      <jdkHome>/usr/lib/jvm/java-8-oracle</jdkHome>
+      <jdkHome>/usr/lib/jvm/java-8-openjdk-amd64</jdkHome>
     </configuration>
   </toolchain>
   <toolchain>
     <type>jdk</type>
     <provides>
-      <id>java9</id>
-      <version>9</version>
+      <id>java11</id>
+      <version>11</version>
       <vendor>oracle</vendor>
     </provides>
     <configuration>
-      <jdkHome>/usr/lib/jvm/java-9-oracle</jdkHome>
+      <jdkHome>/usr/local/lib/jvm/openjdk11</jdkHome>
     </configuration>
   </toolchain>
 </toolchains>

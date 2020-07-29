@@ -16,20 +16,20 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginNode;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.PluginNode;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A deferred plugin for appenders.
@@ -37,7 +37,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "AppenderSet", category = Core.CATEGORY_NAME, printObject = true, deferChildren = true)
 public class AppenderSet {
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<AppenderSet> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<AppenderSet> {
 
         @PluginNode
         private Node node;
@@ -82,12 +82,12 @@ public class AppenderSet {
             return configuration;
         }
 
-        public Builder withNode(@SuppressWarnings("hiding") final Node node) {
+        public Builder setNode(@SuppressWarnings("hiding") final Node node) {
             this.node = node;
             return this;
         }
 
-        public Builder withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+        public Builder setConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
@@ -104,7 +104,7 @@ public class AppenderSet {
     private final Configuration configuration;
     private final Map<String, Node> nodeMap;
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
@@ -114,13 +114,13 @@ public class AppenderSet {
         this.nodeMap = appenders;
     }
 
-    public Appender createAppender(final String appenderName, final String actualName) {
-        final Node node = nodeMap.get(appenderName);
+    public Appender createAppender(final String actualAppenderName, final String sourceAppenderName) {
+        final Node node = nodeMap.get(actualAppenderName);
         if (node == null) {
-            LOGGER.error("No node named {} in {}", appenderName, this);
+            LOGGER.error("No node named {} in {}", actualAppenderName, this);
             return null;
         }
-        node.getAttributes().put("name", actualName);
+        node.getAttributes().put("name", sourceAppenderName);
         if (node.getType().getElementName().equals(Appender.ELEMENT_TYPE)) {
             final Node appNode = new Node(node);
             configuration.createConfiguration(appNode, null);
@@ -132,7 +132,7 @@ public class AppenderSet {
             LOGGER.error("Unable to create Appender of type " + node.getName());
             return null;
         }
-        LOGGER.error("No Appender was configured for name {} " + appenderName);
+        LOGGER.error("No Appender was configured for name {} " + actualAppenderName);
         return null;
     }
 }

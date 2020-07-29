@@ -17,9 +17,13 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import java.io.IOException;
 import java.nio.file.FileVisitOption;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileTime;
 import java.util.Collections;
@@ -90,5 +94,25 @@ public class SortingVisitorTest {
         assertEquals("1st: oldest first; sorted=" + found, aaa, found.get(0).getPath());
         assertEquals("2nd; sorted=" + found, bbb, found.get(1).getPath());
         assertEquals("3rd: most recent sorted; list=" + found, ccc, found.get(2).getPath());
+    }
+
+    @Test
+    public void testNoSuchFileFailure() throws IOException {
+        SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
+        assertEquals(
+                FileVisitResult.CONTINUE,
+                visitor.visitFileFailed(Paths.get("doesNotExist"), new NoSuchFileException("doesNotExist")));
+    }
+
+    @Test
+    public void testIOException() {
+        SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
+        IOException exception = new IOException();
+        try {
+            visitor.visitFileFailed(Paths.get("doesNotExist"), exception);
+            fail();
+        } catch (IOException e) {
+            assertSame(exception, e);
+        }
     }
 }

@@ -16,30 +16,28 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
+import org.apache.logging.log4j.core.pattern.PatternFormatter;
+import org.apache.logging.log4j.core.pattern.PatternParser;
+import org.apache.logging.log4j.core.pattern.RegexReplacement;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
+
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
-import org.apache.logging.log4j.core.pattern.PatternFormatter;
-import org.apache.logging.log4j.core.pattern.PatternParser;
-import org.apache.logging.log4j.core.pattern.RegexReplacement;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * A flexible layout configurable with pattern string.
@@ -142,32 +140,9 @@ public final class PatternLayout extends AbstractStringLayout {
         return new SerializerBuilder();
     }
 
-    /**
-     * Deprecated, use {@link #newSerializerBuilder()} instead.
-     *
-     * @param configuration
-     * @param replace
-     * @param pattern
-     * @param defaultPattern
-     * @param patternSelector
-     * @param alwaysWriteExceptions
-     * @param noConsoleNoAnsi
-     * @return a new Serializer.
-     * @deprecated Use {@link #newSerializerBuilder()} instead.
-     */
-    @Deprecated
-    public static Serializer createSerializer(final Configuration configuration, final RegexReplacement replace,
-            final String pattern, final String defaultPattern, final PatternSelector patternSelector,
-            final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi) {
-        final SerializerBuilder builder = newSerializerBuilder();
-        builder.setAlwaysWriteExceptions(alwaysWriteExceptions);
-        builder.setConfiguration(configuration);
-        builder.setDefaultPattern(defaultPattern);
-        builder.setNoConsoleNoAnsi(noConsoleNoAnsi);
-        builder.setPattern(pattern);
-        builder.setPatternSelector(patternSelector);
-        builder.setReplace(replace);
-        return builder.build();
+    @Override
+    public boolean requiresLocation() {
+        return eventSerializer.requiresLocation();
     }
 
     /**
@@ -207,6 +182,10 @@ public final class PatternLayout extends AbstractStringLayout {
     @Override
     public String toSerializable(final LogEvent event) {
         return eventSerializer.toSerializable(event);
+    }
+
+    public void serialize(final LogEvent event, StringBuilder stringBuilder) {
+        eventSerializer.toSerializable(event, stringBuilder);
     }
 
     @Override
@@ -256,56 +235,6 @@ public final class PatternLayout extends AbstractStringLayout {
         return patternSelector == null ? conversionPattern : patternSelector.toString();
     }
 
-    /**
-     * Creates a pattern layout.
-     *
-     * @param pattern
-     *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
-     * @param patternSelector
-     *        Allows different patterns to be used based on some selection criteria.
-     * @param config
-     *        The Configuration. Some Converters require access to the Interpolator.
-     * @param replace
-     *        A Regex replacement String.
-     * @param charset
-     *        The character set. The platform default is used if not specified.
-     * @param alwaysWriteExceptions
-     *        If {@code "true"} (default) exceptions are always written even if the pattern contains no exception tokens.
-     * @param noConsoleNoAnsi
-     *        If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
-     * @param headerPattern
-     *        The footer to place at the top of the document, once.
-     * @param footerPattern
-     *        The footer to place at the bottom of the document, once.
-     * @return The PatternLayout.
-     * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.
-     */
-    @PluginFactory
-    @Deprecated
-    public static PatternLayout createLayout(
-            @PluginAttribute(value = "pattern", defaultString = DEFAULT_CONVERSION_PATTERN) final String pattern,
-            @PluginElement("PatternSelector") final PatternSelector patternSelector,
-            @PluginConfiguration final Configuration config,
-            @PluginElement("Replace") final RegexReplacement replace,
-            // LOG4J2-783 use platform default by default, so do not specify defaultString for charset
-            @PluginAttribute(value = "charset") final Charset charset,
-            @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
-            @PluginAttribute(value = "noConsoleNoAnsi") final boolean noConsoleNoAnsi,
-            @PluginAttribute("header") final String headerPattern,
-            @PluginAttribute("footer") final String footerPattern) {
-        return newBuilder()
-            .withPattern(pattern)
-            .withPatternSelector(patternSelector)
-            .withConfiguration(config)
-            .withRegexReplacement(replace)
-            .withCharset(charset)
-            .withAlwaysWriteExceptions(alwaysWriteExceptions)
-            .withNoConsoleNoAnsi(noConsoleNoAnsi)
-            .withHeader(headerPattern)
-            .withFooter(footerPattern)
-            .build();
-    }
-
     private static class PatternSerializer implements Serializer, Serializer2 {
 
         private final PatternFormatter[] formatters;
@@ -353,9 +282,19 @@ public final class PatternLayout extends AbstractStringLayout {
             builder.append("]");
             return builder.toString();
         }
+
+        @Override
+        public boolean requiresLocation() {
+            for (PatternFormatter formatter : formatters) {
+                if (formatter.requiresLocation()) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
-    public static class SerializerBuilder implements org.apache.logging.log4j.core.util.Builder<Serializer> {
+    public static class SerializerBuilder implements org.apache.logging.log4j.plugins.util.Builder<Serializer> {
 
         private Configuration configuration;
         private RegexReplacement replace;
@@ -465,6 +404,11 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         @Override
+        public boolean requiresLocation() {
+            return patternSelector.requiresLocation();
+        }
+
+        @Override
         public String toString() {
             final StringBuilder builder = new StringBuilder();
             builder.append(super.toString());
@@ -498,7 +442,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * @see #DEFAULT_CONVERSION_PATTERN Default conversion pattern
      */
     public static PatternLayout createDefaultLayout(final Configuration configuration) {
-        return newBuilder().withConfiguration(configuration).build();
+        return newBuilder().setConfiguration(configuration).build();
     }
 
     /**
@@ -506,7 +450,7 @@ public final class PatternLayout extends AbstractStringLayout {
      *
      * @return a PatternLayout builder.
      */
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
@@ -514,7 +458,7 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Custom PatternLayout builder. Use the {@link PatternLayout#newBuilder() builder factory method} to create this.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<PatternLayout> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<PatternLayout> {
 
         @PluginBuilderAttribute
         private String pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
@@ -561,7 +505,7 @@ public final class PatternLayout extends AbstractStringLayout {
          * @param pattern
          *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
          */
-        public Builder withPattern(final String pattern) {
+        public Builder setPattern(final String pattern) {
             this.pattern = pattern;
             return this;
         }
@@ -570,7 +514,7 @@ public final class PatternLayout extends AbstractStringLayout {
          * @param patternSelector
          *        Allows different patterns to be used based on some selection criteria.
          */
-        public Builder withPatternSelector(final PatternSelector patternSelector) {
+        public Builder setPatternSelector(final PatternSelector patternSelector) {
             this.patternSelector = patternSelector;
             return this;
         }
@@ -579,7 +523,7 @@ public final class PatternLayout extends AbstractStringLayout {
          * @param configuration
          *        The Configuration. Some Converters require access to the Interpolator.
          */
-        public Builder withConfiguration(final Configuration configuration) {
+        public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
@@ -588,7 +532,7 @@ public final class PatternLayout extends AbstractStringLayout {
          * @param regexReplacement
          *        A Regex replacement
          */
-        public Builder withRegexReplacement(final RegexReplacement regexReplacement) {
+        public Builder setRegexReplacement(final RegexReplacement regexReplacement) {
             this.regexReplacement = regexReplacement;
             return this;
         }
@@ -597,7 +541,7 @@ public final class PatternLayout extends AbstractStringLayout {
          * @param charset
          *        The character set. The platform default is used if not specified.
          */
-        public Builder withCharset(final Charset charset) {
+        public Builder setCharset(final Charset charset) {
             // LOG4J2-783 if null, use platform default by default
             if (charset != null) {
                 this.charset = charset;
@@ -609,7 +553,7 @@ public final class PatternLayout extends AbstractStringLayout {
          * @param alwaysWriteExceptions
          *        If {@code "true"} (default) exceptions are always written even if the pattern contains no exception tokens.
          */
-        public Builder withAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
+        public Builder setAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
             this.alwaysWriteExceptions = alwaysWriteExceptions;
             return this;
         }
@@ -619,7 +563,7 @@ public final class PatternLayout extends AbstractStringLayout {
          *        If {@code "true"} (default is value of system property `log4j.skipJansi`, or `true` if undefined),
          *        do not output ANSI escape codes
          */
-        public Builder withDisableAnsi(final boolean disableAnsi) {
+        public Builder setDisableAnsi(final boolean disableAnsi) {
             this.disableAnsi = disableAnsi;
             return this;
         }
@@ -628,7 +572,7 @@ public final class PatternLayout extends AbstractStringLayout {
          * @param noConsoleNoAnsi
          *        If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
          */
-        public Builder withNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
+        public Builder setNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
             this.noConsoleNoAnsi = noConsoleNoAnsi;
             return this;
         }
@@ -637,7 +581,7 @@ public final class PatternLayout extends AbstractStringLayout {
          * @param header
          *        The footer to place at the top of the document, once.
          */
-        public Builder withHeader(final String header) {
+        public Builder setHeader(final String header) {
             this.header = header;
             return this;
         }
@@ -646,7 +590,7 @@ public final class PatternLayout extends AbstractStringLayout {
          * @param footer
          *        The footer to place at the bottom of the document, once.
          */
-        public Builder withFooter(final String footer) {
+        public Builder setFooter(final String footer) {
             this.footer = footer;
             return this;
         }

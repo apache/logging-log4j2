@@ -16,10 +16,7 @@
  */
 package org.apache.logging.log4j.jpa.appender;
 
-import java.util.Map;
-
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,8 +24,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.jpa.appender.BasicLogEventEntity;
-import org.apache.logging.log4j.jpa.converter.ContextMapJsonAttributeConverter;
 
 @Entity
 @Table(name = "jpaBasicLogEntry")
@@ -57,10 +52,4 @@ public class TestBasicEntity extends BasicLogEventEntity {
         this.id = id;
     }
 
-    @Override
-    @Convert(converter = ContextMapJsonAttributeConverter.class)
-    @Column(name = "contextMapJson")
-    public Map<String, String> getContextMap() {
-        return super.getContextMap();
-    }
 }

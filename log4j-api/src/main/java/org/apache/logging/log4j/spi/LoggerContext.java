@@ -30,6 +30,59 @@ public interface LoggerContext {
     Object getExternalContext();
 
     /**
+     * Retrieve an object by its name.
+     * @param key The object's key.
+     * @return The Object that is associated with the key, if any.
+     * @since 2.13.0
+     */
+    default Object getObject(String key) {
+        return null;
+    }
+
+    /**
+     * Store an object into the LoggerContext by name for later use.
+     * @param key The object's key.
+     * @param value The object.
+     * @return The previous object or null.
+     * @since 2.13.0
+     */
+    default Object putObject(String key, Object value) {
+        return null;
+    }
+
+    /**
+     * Store an object into the LoggerContext by name for later use if an object is not already stored with that key.
+     * @param key The object's key.
+     * @param value The object.
+     * @return The previous object or null.
+     * @since 2.13.0
+     */
+    default Object putObjectIfAbsent(String key, Object value) {
+        return null;
+    }
+
+    /**
+     * Remove an object if it is present.
+     * @param key The object's key.
+     * @return The object if it was present, null if it was not.
+     * @since 2.13.0
+     */
+    default Object removeObject(String key) {
+        return null;
+    }
+
+    /**
+     * Remove an object if it is present and the provided object is stored.
+     * @param key The object's key.
+     * @param value The object.
+     * @return The object if it was present, null if it was not.
+     * @since 2.13.0
+     */
+    default boolean removeObject(String key, Object value) {
+        return false;
+    }
+
+    /**
      * Returns an ExtendedLogger.
      * @param name The name of the Logger to return.
      * @return The logger with the specified name.

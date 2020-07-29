@@ -43,6 +43,26 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 == English
 
+* https://www.ralphgoers.com/post/getting-the-most-out-of-the-log4j-2-api[Getting the most out of the Log4j 2 API]
+(January 1, 2020)
+* https://www.baeldung.com/log4j2-programmatic-config[Programmatic Configuration with Log4j 2]
+(December 31, 2019)
+* https://www.ralphgoers.com/post/log4j-1-compatibility-in-log4j-2[Log4j 1 Compatiblity in Log4j 2]
+(December 22, 2019)
+* https://www.ralphgoers.com/post/why-was-log4j-2-created[Why was Log4j 2 created]
+(December 14, 2019)
+* https://www.marcobehler.com/guides/a-guide-to-logging-in-java[A guide to logging in Java]
+(June 23, 2019)
+* https://www.alibabacloud.com/blog/exploring-the-secrets-of-java-logs-log4j-2-log-system_594821[Exploring the Secrets of Java Logs: Log4j 2 Log System]
+(May 17, 2019)
+* https://www.mkyong.com/logging/apache-log4j-2-tutorials/[Apache Log4j 2 Tutorials]
+(March 27, 2019)
+* https://stackify.com/compare-java-logging-frameworks/[Java Logging Frameworks: log4j vs logback vs log4j2]
+(October 30, 2018)
+* https://howtodoinjava.com/log4j2[Log4j2 Tutorial]
+(June 3, 2018)
+* https://crunchify.com/java-how-to-create-your-own-logging-level-in-log4j-configuring-log4j[In Java How to Create your own Logging Level using Log4j (Configuring Log4j 2)]
+{May 30, 2018)
 * https://www.javacodegeeks.com/2018/03/tales-from-the-field-migrating-from-log4j-to-log4j2.html[Tales from the Field: Migrating from Log4J to Log4J2]
 (March 12th, 2018)
 * https://www.youtube.com/watch?v=sdOiA1Xql0o[Log4J2 and Java configuration with properties file]
@@ -52,8 +72,6 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 * https://www.youtube.com/watch?v=KKO5wGi_vEc[Spring Boot - log4j 2 configuration example]
 (December 30,2017)
 * https://examples.javacodegeeks.com/enterprise-java/log4j/log4j-2-best-practices-example/[Log4j 2 Best Practices example]
-(November 14, 2017)
-* http://www.baeldung.com/log4j2-appenders-layouts-filters[Intro to Log4j2 - Appenders, Layouts and Filters]
 (November 14, 2017)
 * http://musigma.org/logging/2017/11/06/logging.html[Logging Fundamentals]
 (November 6, 2017)

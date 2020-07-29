@@ -25,8 +25,7 @@ available to test classes. For instance, to use the ListAppender:
     </Configuration>
 
 Note that if you don't specify a layout for a ListAppender, your log messages will be stored in a list of LogEvents.
-If you use a SerializedLayout, your log messages will be stored in a list of byte arrays. If you specify any other
-type of layout, your log messages will be stored in a list of strings. For more details, check out the class
+With a layout, your log messages will be stored in a list of strings. For more details, check out the class
 `org.apache.logging.log4j.test.appender.ListAppender`.
 
 Specifying Configuration Files in JUnit Tests

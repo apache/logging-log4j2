@@ -50,6 +50,7 @@ public class NameAbbreviatorTest {
                 { "3", "core.pattern.NameAbbreviatorTest" },
                 { "1.", "o.a.l.l.c.p.NameAbbreviatorTest" },
                 { "1.1.~", "o.a.~.~.~.~.NameAbbreviatorTest" },
+                { "1.1.1.*", "o.a.l.log4j.core.pattern.NameAbbreviatorTest" },
                 { ".", "......NameAbbreviatorTest" }
             }
         );
@@ -65,6 +66,16 @@ public class NameAbbreviatorTest {
     }
 
     @Test
+    public void testAbbreviatorPatternsAppendLongPrefix() throws Exception {
+        final NameAbbreviator abbreviator = NameAbbreviator.getAbbreviator(this.pattern);
+        final String PREFIX = "some random text big enough to be larger than abbreviated string ";
+        final StringBuilder destination = new StringBuilder(PREFIX);
+        abbreviator.abbreviate(this.getClass().getName(), destination);
+        final String actual = destination.toString();
+        assertEquals(PREFIX + expected, actual);
+    }
+
+    @Test
     public void testAbbreviatorPatternsAppend() throws Exception {
         final NameAbbreviator abbreviator = NameAbbreviator.getAbbreviator(this.pattern);
         final String PREFIX = "some random text";
@@ -73,5 +84,4 @@ public class NameAbbreviatorTest {
         final String actual = destination.toString();
         assertEquals(PREFIX + expected, actual);
     }
-
 }

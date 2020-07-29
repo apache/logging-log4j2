@@ -19,8 +19,12 @@ package org.apache.logging.log4j.core.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,16 +38,20 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.net.UrlConnectionFactory;
+import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.core.util.ReflectionUtil;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -86,8 +94,14 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      */
     public static final String CONFIGURATION_FILE_PROPERTY = "log4j.configurationFile";
 
+    public static final String LOG4J1_CONFIGURATION_FILE_PROPERTY = "log4j.configuration";
+
+    public static final String LOG4J1_EXPERIMENTAL = "log4j1.compatibility";
+
+    public static final String AUTHORIZATION_PROVIDER = "log4j2.authorizationProvider";
+
     /**
-     * Plugin category used to inject a ConfigurationFactory {@link org.apache.logging.log4j.core.config.plugins.Plugin}
+     * Plugin category used to inject a ConfigurationFactory {@link org.apache.logging.log4j.plugins.Plugin}
      * class.
      *
      * @since 2.1
@@ -109,6 +123,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      */
     protected static final String DEFAULT_PREFIX = "log4j2";
 
+    protected static final String LOG4J1_VERSION = "1";
+    protected static final String LOG4J2_VERSION = "2";
+
     /**
      * The name of the classloader URI scheme.
      */
@@ -119,13 +136,20 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      */
     private static final String CLASS_PATH_SCHEME = "classpath";
 
-    private static volatile List<ConfigurationFactory> factories = null;
+    private static final String OVERRIDE_PARAM = "override";
+
+    private static volatile List<ConfigurationFactory> factories;
 
     private static ConfigurationFactory configFactory = new Factory();
 
     protected final StrSubstitutor substitutor = new StrSubstitutor(new Interpolator());
 
     private static final Lock LOCK = new ReentrantLock();
+
+    private static final String HTTPS = "https";
+    private static final String HTTP = "http";
+
+    private static volatile AuthorizationProvider authorizationProvider;
 
     /**
      * Returns the ConfigurationFactory.
@@ -139,7 +163,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             try {
                 if (factories == null) {
                     final List<ConfigurationFactory> list = new ArrayList<>();
-                    final String factoryClass = PropertiesUtil.getProperties().getStringProperty(CONFIGURATION_FACTORY_PROPERTY);
+                    PropertiesUtil props = PropertiesUtil.getProperties();
+                    final String factoryClass = props.getStringProperty(CONFIGURATION_FACTORY_PROPERTY);
                     if (factoryClass != null) {
                         addFactory(list, factoryClass);
                     }
@@ -161,6 +186,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     // see above comments about double-checked locking
                     //noinspection NonThreadSafeLazyInitialization
                     factories = Collections.unmodifiableList(list);
+                    authorizationProvider = authorizationProvider(props);
                 }
             } finally {
                 LOCK.unlock();
@@ -171,9 +197,34 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         return configFactory;
     }
 
+    public static AuthorizationProvider authorizationProvider(PropertiesUtil props) {
+        final String authClass = props.getStringProperty(AUTHORIZATION_PROVIDER);
+        AuthorizationProvider provider = null;
+        if (authClass != null) {
+            try {
+                Object obj = LoaderUtil.newInstanceOf(authClass);
+                if (obj instanceof AuthorizationProvider) {
+                    provider = (AuthorizationProvider) obj;
+                } else {
+                    LOGGER.warn("{} is not an AuthorizationProvider, using default", obj.getClass().getName());
+                }
+            } catch (Exception ex) {
+                LOGGER.warn("Unable to create {}, using default: {}", authClass, ex.getMessage());
+            }
+        }
+        if (provider == null) {
+            provider = new BasicAuthorizationProvider(props);
+        }
+        return provider;
+    }
+
+    public static AuthorizationProvider getAuthorizationProvider() {
+        return authorizationProvider;
+    }
+
     private static void addFactory(final Collection<ConfigurationFactory> list, final String factoryClass) {
         try {
-            addFactory(list, LoaderUtil.loadClass(factoryClass).asSubclass(ConfigurationFactory.class));
+            addFactory(list, Loader.loadClass(factoryClass).asSubclass(ConfigurationFactory.class));
         } catch (final Exception ex) {
             LOGGER.error("Unable to load class {}", factoryClass, ex);
         }
@@ -215,6 +266,18 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     protected abstract String[] getSupportedTypes();
+
+    protected String getTestPrefix() {
+        return TEST_PREFIX;
+    }
+
+    protected String getDefaultPrefix() {
+        return DEFAULT_PREFIX;
+    }
+
+    protected String getVersion() {
+        return LOG4J2_VERSION;
+    }
 
     protected boolean isActive() {
         return true;
@@ -293,7 +356,13 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     protected ConfigurationSource getInputFromString(final String config, final ClassLoader loader) {
         try {
             final URL url = new URL(config);
-            return new ConfigurationSource(url.openStream(), FileUtils.fileFromUri(url.toURI()));
+            URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
+            File file = FileUtils.fileFromUri(url.toURI());
+            if (file != null) {
+                return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
+            } else {
+                return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
+            }
         } catch (final Exception ex) {
             final ConfigurationSource source = ConfigurationSource.fromResource(config, loader);
             if (source == null) {
@@ -329,7 +398,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                 final String configLocationStr = this.substitutor.replace(PropertiesUtil.getProperties()
                         .getStringProperty(CONFIGURATION_FILE_PROPERTY));
                 if (configLocationStr != null) {
-                    final String[] sources = configLocationStr.split(",");
+                    String[] sources = parseConfigLocations(configLocationStr);
                     if (sources.length > 1) {
                         final List<AbstractConfiguration> configs = new ArrayList<>();
                         for (final String sourceLocation : sources) {
@@ -344,6 +413,13 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                         return new CompositeConfiguration(configs);
                     }
                     return getConfiguration(loggerContext, configLocationStr);
+                } else {
+                    final String log4j1ConfigStr = this.substitutor.replace(PropertiesUtil.getProperties()
+                            .getStringProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY));
+                    if (log4j1ConfigStr != null) {
+                        System.setProperty(LOG4J1_EXPERIMENTAL, "true");
+                        return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr);
+                    }
                 }
                 for (final ConfigurationFactory factory : getFactories()) {
                     final String[] types = factory.getSupportedTypes();
@@ -360,6 +436,20 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                 }
             } else {
                 // configLocation != null
+                String[] sources = parseConfigLocations(configLocation);
+                if (sources.length > 1) {
+                    final List<AbstractConfiguration> configs = new ArrayList<>();
+                    for (final String sourceLocation : sources) {
+                        final Configuration config = getConfiguration(loggerContext, sourceLocation.trim());
+                        if (config instanceof AbstractConfiguration) {
+                            configs.add((AbstractConfiguration) config);
+                        } else {
+                            LOGGER.error("Failed to created configuration at {}", sourceLocation);
+                            return null;
+                        }
+                    }
+                    return new CompositeConfiguration(configs);
+                }
                 final String configLocationStr = configLocation.toString();
                 for (final ConfigurationFactory factory : getFactories()) {
                     final String[] types = factory.getSupportedTypes();
@@ -389,7 +479,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             if (config != null) {
                 return config;
             }
-            LOGGER.error("No Log4j 2 configuration file found. " +
+            LOGGER.warn("No Log4j 2 configuration file found. " +
                     "Using default configuration (logging only errors to the console), " +
                     "or user programmatically provided configurations. " +
                     "Set system property 'log4j2.debug' " +
@@ -399,6 +489,11 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         }
 
         private Configuration getConfiguration(final LoggerContext loggerContext, final String configLocationStr) {
+            return getConfiguration(null, loggerContext, configLocationStr);
+        }
+
+        private Configuration getConfiguration(String requiredVersion, final LoggerContext loggerContext,
+                final String configLocationStr) {
             ConfigurationSource source = null;
             try {
                 source = ConfigurationSource.fromUri(NetUtils.toURI(configLocationStr));
@@ -412,6 +507,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             }
             if (source != null) {
                 for (final ConfigurationFactory factory : getFactories()) {
+                    if (requiredVersion != null && !factory.getVersion().equals(requiredVersion)) {
+                        continue;
+                    }
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
@@ -433,7 +531,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
             for (final ConfigurationFactory factory : getFactories()) {
                 String configName;
-                final String prefix = isTest ? TEST_PREFIX : DEFAULT_PREFIX;
+                final String prefix = isTest ? factory.getTestPrefix() : factory.getDefaultPrefix();
                 final String [] types = factory.getSupportedTypes();
                 if (types == null) {
                     continue;
@@ -485,6 +583,41 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             }
             LOGGER.error("Cannot process configuration, input source is null");
             return null;
+        }
+
+        private String[] parseConfigLocations(URI configLocations) {
+            final String[] uris = configLocations.toString().split("\\?");
+            final List<String> locations = new ArrayList<>();
+            if (uris.length > 1) {
+                locations.add(uris[0]);
+                final String[] pairs = configLocations.getQuery().split("&");
+                for (String pair : pairs) {
+                    final int idx = pair.indexOf("=");
+                    try {
+                        final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "UTF-8") : pair;
+                        if (key.equalsIgnoreCase(OVERRIDE_PARAM)) {
+                            locations.add(URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+                        }
+                    } catch (UnsupportedEncodingException ex) {
+                        LOGGER.warn("Invalid query parameter in {}", configLocations);
+                    }
+                }
+                return locations.toArray(new String[0]);
+            }
+            return new String[] {uris[0]};
+        }
+
+        private String[] parseConfigLocations(String configLocations) {
+            final String[] uris = configLocations.split(",");
+            if (uris.length > 1) {
+                return uris;
+            }
+            try {
+                return parseConfigLocations(new URI(configLocations));
+            } catch (URISyntaxException ex) {
+                LOGGER.warn("Error parsing URI {}", configLocations);
+            }
+            return new String[] {configLocations};
         }
     }
 

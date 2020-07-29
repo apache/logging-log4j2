@@ -17,8 +17,11 @@
 package org.apache.logging.log4j.util;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <em>Consider this class private.</em> Determines the caller's class.
@@ -30,7 +33,6 @@ public class StackLocator {
     private final static StackWalker stackWalker = StackWalker.getInstance();
 
     private final static StackLocator INSTANCE = new StackLocator();
-
 
     public static StackLocator getInstance() {
         return INSTANCE;
@@ -56,11 +58,14 @@ public class StackLocator {
     }
 
     public Class<?> getCallerClass(final int depth) {
-        ;
         return walker.walk(s -> s.skip(depth).findFirst()).map(StackWalker.StackFrame::getDeclaringClass).orElse(null);
     }
 
     public Stack<Class<?>> getCurrentStackTrace() {
+        // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
+        if (PrivateSecurityManagerStackTraceUtil.isEnabled()) {
+            return PrivateSecurityManagerStackTraceUtil.getCurrentStackTrace();
+        }
         Stack<Class<?>> stack = new Stack<Class<?>>();
         List<Class<?>> classes = walker.walk(s -> s.map(f -> f.getDeclaringClass()).collect(Collectors.toList()));
         stack.addAll(classes);
@@ -71,12 +76,11 @@ public class StackLocator {
         return stackWalker.walk(
                 s -> s.dropWhile(f -> !f.getClassName().equals(fqcnOfLogger)) // drop the top frames until we reach the logger
                         .dropWhile(f -> f.getClassName().equals(fqcnOfLogger)) // drop the logger frames
-                        .findFirst())
-                .get()
-                .toStackTraceElement();
+                        .findFirst()).map(StackWalker.StackFrame::toStackTraceElement).orElse(null);
     }
 
     public StackTraceElement getStackTraceElement(final int depth) {
-        return stackWalker.walk(s -> s.skip(depth).findFirst()).get().toStackTraceElement();
+        return stackWalker.walk(s -> s.skip(depth).findFirst())
+                .map(StackWalker.StackFrame::toStackTraceElement).orElse(null);
     }
 }

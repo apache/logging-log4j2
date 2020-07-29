@@ -86,7 +86,7 @@ is 1024. Note that when using a disruptor-style `BlockingQueue`, this
 buffer size must be a power of 2.
 
 When the application is logging faster than the underlying appender can
-keep up with for a long enough time to fill up the queue, the behavious
+keep up with for a long enough time to fill up the queue, the behaviour
 is determined by the
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[`AsyncQueueFullPolicy`].
 
@@ -839,7 +839,7 @@ an embedded Flume Agent.
 == JDBCAppender
 
 As of Log4j 2.11.0, JDBC support has moved from the existing module
-`logj-core` to the new module `log4j-jdbc`.
+`log4j-core` to the new module `log4j-jdbc`.
 
 The JDBCAppender writes log events to a relational database table using
 standard JDBC. It can be configured to obtain JDBC connections using a
@@ -911,6 +911,16 @@ ColumnConfig plugin). If a `literal` attribute is given, then its value
 will be used as is in the `INSERT` query without any escaping.
 Otherwise, the layout or pattern specified will be converted into the
 configured type and stored in that column.
+
+|immediateFail |boolean |false |When set to true, log events will not
+wait to try to reconnect and will fail immediately if the JDBC resources
+are not available. New in 2.11.2.
+
+|reconnectIntervalMillis |long |5000 |If set to a value greater than 0,
+after an error, the JDBCDatabaseManager will attempt to reconnect to the database
+after waiting the specified number of milliseconds. If the reconnect
+fails then an exception will be thrown (which can be caught by the
+application if `ignoreExceptions` is set to `false`). New in 2.11.2.
 |=======================================================================
 
 When configuring the JDBCAppender, you must specify a `ConnectionSource`
@@ -988,6 +998,31 @@ to `example`. You can use the JDBC connection string prefix
 `jdbc:apache:commons:dbcp:` followed by the pool name if you want to use
 a pooled connection elsewhere. For example:
 `jdbc:apache:commons:dbcp:example`.
+
+|PoolableConnectionFactory |PoolableConnectionFactory element |Defines a PoolableConnectionFactory.
+|=======================================================================
+
+[#JDBCPoolableConnectionFactory]
+.PoolableConnectionFactory Parameters (Apache Commons DBCP)
+[cols=",,",options="header",]
+|=======================================================================
+|Parameter Name |Type |Description
+|autoCommitOnReturn |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|cacheState |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|connectionInitSqls |Strings | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultAutoCommit |Boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultCatalog |String | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultQueryTimeoutSeconds |Integer | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultReadOnly |Boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|defaultTransactionIsolation |int | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|disconnectionSqlCodes |Strings | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|fastFailValidation |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|maxConnLifetimeMillis |long | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|maxOpenPreparedStatements |int | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|poolStatements |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|rollbackOnReturn |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|validationQuery |String | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
+|validationQueryTimeoutSeconds |int | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
 |=======================================================================
 
 When configuring the JDBCAppender, use the nested `<Column>` elements to
@@ -1213,7 +1248,7 @@ table based on a Log4j `MapMessage` instead of values from `LogEvent`s.
 
 [[JMSQueueAppender]] [[JMSTopicAppender]]
 As of Log4j 2.11.0, JPA support has moved from the existing module
-`logj-core` to the new module `log4j-jms`.
+`log4j-core` to the new module `log4j-jms`.
 
 The JMS Appender sends the formatted log event to a JMS Destination.
 
@@ -1342,7 +1377,7 @@ layout of the appender to `MessageLayout` with `<MessageLayout />`
 == JPAAppender
 
 As of Log4j 2.11.0, JPA support has moved from the existing module
-`logj-core` to the new module `log4j-jpa`.
+`log4j-core` to the new module `log4j-jpa`.
 
 The JPAAppender writes log events to a relational database table using
 the Java Persistence API 2.1. It requires the API and a provider
@@ -1601,7 +1636,7 @@ Here is a sample HttpAppender configuration snippet:
 == KafkaAppender
 
 As of Log4j 2.11.0, https://kafka.apache.org/[Apache Kafka] support has
-moved from the existing module `logj-core` to the new module
+moved from the existing module `log4j-core` to the new module
 `log4j-kafka`.
 
 The KafkaAppender logs events to an https://kafka.apache.org/[Apache
@@ -1895,126 +1930,16 @@ databases if represented in a JSON format:
 [#NoSQLAppenderMongoDB]
 == NoSQLAppenderMongoDB
 
-Starting with Log4 2.11.0, we provide two MongoDB modules:
+We provide the following MongoDB modules:
 
-* `log4j-mongodb2` defines the configuration element
-link:#NoSQLAppenderMongoDB2[`MongoDb2`] matching the MongoDB Driver
-version 2.
-* `log4j-mongodb3` defines the configuration element
+* Added in 2.11.0: `log4j-mongodb3` defines the configuration element
 link:#NoSQLAppenderMongoDB3[`MongoDb3`] matching the MongoDB Driver
 version 3.
+* Added in 2.14.0: `log4j-mongodb4` defines the configuration element
+link:#NoSQLAppenderMongoDB4[`MongoDb4`] matching the MongoDB Driver
+version 4.
 
-We no longer provide the module `log4j-mongodb`.
-
-The module `log4j-mongodb2` aliases the old configuration element
-`MongoDb` to link:#NoSQLAppenderMongoDB2[`MongoDb2`].
-
-[#NoSQLAppenderMongoDB2]
-== NoSQLAppenderMongoDB2
-
-This section details specializations of the
-link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the
-MongoDB driver version 2. The NoSQLAppender Appender writes log events
-to a NoSQL database using an internal lightweight provider interface.
-
-.MongoDB2 Provider Parameters
-[cols=",,",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-|collectionName |String |_Required._ The name of the MongoDB collection
-to insert the events into.
-
-|writeConcernConstant |Field |By default, the MongoDB provider inserts
-records with the instructions `com.mongodb.WriteConcern.ACKNOWLEDGED`.
-Use this optional attribute to specify the name of a constant other than
-`ACKNOWLEDGED`.
-
-|writeConcernConstantClass |Class |If you specify
-`writeConcernConstant`, you can use this attribute to specify a class
-other than `com.mongodb.WriteConcern` to find the constant on (to create
-your own custom instructions).
-
-|factoryClassName |Class |To provide a connection to the MongoDB
-database, you can use this attribute and `factoryMethodName` to specify
-a class and static method to get the connection from. The method must
-return a `com.mongodb.DB` or a `com.mongodb.MongoClient`. If the `DB` is
-not authenticated, you must also specify a `username` and `password`. If
-you use the factory method for providing a connection, you must not
-specify the `databaseName`, `server`, or `port` attributes.
-
-|factoryMethodName |Method |See the documentation for attribute
-`factoryClassName`.
-
-|databaseName |String |If you do not specify a `factoryClassName` and
-`factoryMethodName` for providing a MongoDB connection, you must specify
-a MongoDB database name using this attribute. You must also specify a
-`username` and `password`. You can optionally also specify a `server`
-(defaults to localhost), and a `port` (defaults to the default MongoDB
-port).
-
-|server |String |See the documentation for attribute `databaseName`.
-
-|port |int |See the documentation for attribute `databaseName`.
-
-|username |String |See the documentation for attributes `databaseName`
-and `factoryClassName`.
-
-|password |String |See the documentation for attributes `databaseName`
-and `factoryClassName`.
-
-|capped |boolean |Enable support for
-https://docs.mongodb.com/manual/core/capped-collections/[capped
-collections]
-
-|collectionSize |int |Specify the size in bytes of the capped collection
-to use if enabled. The minimum size is 4096 bytes, and larger sizes will
-be increased to the nearest integer multiple of 256. See the capped
-collection documentation linked above for more information.
-|=======================================================================
-
-This appender is link:messages.html#MapMessage[MapMessage]-aware.
-
-Here are a few sample configurations for the NoSQLAppender and MongoDB2
-provider:
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error">
-  <Appenders>
-    <NoSql name="databaseAppender">
-      <MongoDb2 databaseName="applicationDb" collectionName="applicationLog" server="mongo.example.org"
-               username="loggingUser" password="abc123" />
-    </NoSql>
-  </Appenders>
-  <Loggers>
-    <Root level="warn">
-      <AppenderRef ref="databaseAppender"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error">
-  <Appenders>
-    <NoSql name="databaseAppender">
-      <MongoDb2 collectionName="applicationLog" factoryClassName="org.example.db.ConnectionFactory"
-               factoryMethodName="getNewMongoClient" />
-    </NoSql>
-  </Appenders>
-  <Loggers>
-    <Root level="warn">
-      <AppenderRef ref="databaseAppender"/>
-    </Root>
-  </Loggers>
-</Configuration>
-----
-
-Starting in Log4j version 2.11.0, the provider element name is
-`MongoDb2`. The name `MongoDb` is now a deprecated alias for `MongoDb2`.
+We no longer provide the modules `log4j-mongodb` and `log4j-mongodb2`.
 
 [#NoSQLAppenderMongoDB3]
 == NoSQLAppenderMongoDB3
@@ -2116,6 +2041,74 @@ provider:
   <Loggers>
     <Root level="warn">
       <AppenderRef ref="databaseAppender"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[#NoSQLAppenderMongoDB4]
+== NoSQLAppenderMongoDB4
+
+This section details specializations of the
+link:#NoSQLAppender[NoSQLAppender] provider for MongoDB using the
+MongoDB driver version 4. The NoSQLAppender Appender writes log events
+to a NoSQL database using an internal lightweight provider interface.
+
+.MongoDB3 Provider Parameters
+[cols=",,",options="header",]
+|=======================================================================
+|Parameter Name |Type |Description
+|connection |String |_Required._ The MongoDB 
+http://mongodb.github.io/mongo-java-driver/4.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html?is-external=true"[connection string] 
+in the format `mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database.collection][?options]]`.
+
+|capped |boolean |Enable support for
+https://docs.mongodb.com/manual/core/capped-collections/[capped
+collections]
+
+|collectionSize |int |Specify the size in bytes of the capped collection
+to use if enabled. The minimum size is 4096 bytes, and larger sizes will
+be increased to the nearest integer multiple of 256. See the capped
+collection documentation linked above for more information.
+|=======================================================================
+
+This appender is link:messages.html#MapMessage[MapMessage]-aware.
+
+Here are a few sample configurations for the NoSQLAppender and MongoDB4
+provider:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <NoSql name="MongoDbAppender">
+      <MongoDb4 connection="mongodb://log4jUser:12345678@localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
+    </NoSql>
+  </Appenders>
+  <Loggers>
+    <Root level="ALL">
+      <AppenderRef ref="MongoDbAppender" />
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <NoSql name="MongoDbAppender">
+      <MongoDb4 
+        connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" 
+        capped="true" 
+        collectionSize="1073741824"/>
+    </NoSql>
+  </Appenders>
+  <Loggers>
+    <Root level="ALL">
+      <AppenderRef ref="MongoDbAppender" />
     </Root>
   </Loggers>
 </Configuration>
@@ -2274,6 +2267,97 @@ Here is a sample RandomAccessFile configuration:
   </Loggers>
 </Configuration>
 ----
+
+
+[#RedisAppender]
+== RedisAppender
+
+Log4j2 supports a RedisAppender as part of the `log4j2-redis` module. The RedisAppender logs events to a https://redis.io/[Redis] queue. Each log event is appended via the standard
+https://redis.io/commands/rpush[RPUSH] command.
+
+.RedisAppender Parameters
+[cols=",,",options="header",]
+|=======================================================================
+|Parameter Name |Type |Description
+
+|name |String |The name of the Appender. Required.
+
+|layout |Layout |The Layout to use to format the LogEvent. Required,
+there is no default. _New since 2.9, in previous versions <PatternLayout
+pattern="%m"/> was default._
+
+|filter |Filter |A Filter to determine if the event should be handled by
+this Appender. More than one Filter may be used by using a
+CompositeFilter.
+
+|host |String |The hostname on which Redis is running (required).
+
+|port |int |The port on which Redis is running. Default: 6379.
+
+|keys |String |The keys of the queue to which each log message should be sent, separated by commas (e.g. "key-one,key-two,key-three"). Default: "logEvents".
+
+|ignoreExceptions |boolean |The default is `true`, causing exceptions
+encountered while appending events to be internally logged and then
+ignored. When set to `false` exceptions will be propagated to the
+caller, instead. You must set this to `false` when wrapping this
+Appender in a link:#FailoverAppender[FailoverAppender].
+
+|immediateFlush | boolean | Whether to immediately send logs to redis rather than sending at the end of a batch. Default: true.
+
+|queueCapacity | int | The maximum number of logs to hold in memory before sending to Redis. Default: 20.
+
+|SslConfiguration |SslConfiguration |Contains the configuration for the KeyStore and
+TrustStore. See link:#SSL[SSL].
+
+|RedisPoolConfiguration |LoggingRedisPoolConfiguration |Granular configuration of the resource pool for the Redis
+client connection. Available parameters include maxIdle, minIdle, testOnBorrow, testOnReturn, testWhileIdle, numTestsPerEvictionRun, and timeBetweenEvictionRunsMillis.
+|=======================================================================
+
+Here is a sample RedisAppender configuration snippet in XML:
+
+[source,prettyprint,linenums]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+  ...
+  <Appenders>
+    <Redis name"RedisAppend" host="localhost" port=6379 keys="key-one,key-two" immediateFlush=false>
+      <PatternLayout>
+        <Pattern>%m</Pattern>
+      </PatternLayout>
+    </Redis>
+    <Async name="Async">
+      <AppenderRef ref="RedisAppend"/>
+    </Async>
+  </Appenders>
+----
+You can also configure the appender easily in YML:
+[source,prettyprint,linenums]
+----
+Configuration:
+  Appenders:
+    Redis:
+      name: RedisAppend
+      host: localhost
+      port: 6379
+      Keys: key-one,key-two
+      PatternLayout:
+        pattern: "%m"
+----
+
+
+This appender operates synchronously by default and will block until the record
+has been acknowledged by the Redis server. Wrap with
+http://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender[Async
+appender] and/or set syncSend to `false` to log asynchronously (as in the first example above).
+
+=== Redis vs. Kafka
+
+In a logging context, Redis may play a similar role to Kafka, serving as a message broker
+in logging pipelines. In general, Redis may be preferred to Kafka in situations where
+an in-memory queue is desired. A fairly simple breakdown of the diffferent approaches can be found
+https://stackoverflow.com/questions/37990784/difference-between-redis-and-kafka[on StackOverflow here].
+
+If you prefer to use Kafka, please refer to the supported <<KafkaAppender>>.
 
 [#RewriteAppender]
 == RewriteAppender
@@ -2511,7 +2595,10 @@ file. The format of the pattern is dependent on the RolloverPolicy that
 is used. The DefaultRolloverPolicy will accept both a date/time pattern
 compatible with
 https://download.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`]
-and/or a %i which represents an integer counter. The pattern also
+and/or a %i which represents an integer counter. The integer counter
+allows specifying a padding, like %3i for space-padding the counter to
+3 digits or (usually more useful) %03i for zero-padding the counter to
+3 digits. The pattern also
 supports interpolation at runtime so any of the Lookups (such as the
 link:./lookups.html#DateLookup[DateLookup]) can be included in the
 pattern.
@@ -2605,7 +2692,11 @@ and when the current date no longer matches the log’s start date.
 
 Cron Triggering Policy
 
-The `CronTriggeringPolicy` triggers rollover based on a cron expression.
+The `CronTriggeringPolicy` triggers rollover based on a cron expression. This policy
+is controlled by a timer and is asynchronous to processing log events, so it is possible that log events
+from the previous or next time period may appear at the beginning or end of the log file.
+The filePattern attribute of the Appender should contain a timestamp otherwise the target file will be
+overwritten on each rollover.
 
 .CronTriggeringPolicy Parameters
 [cols=",,",options="header",]
@@ -2647,9 +2738,12 @@ and falls back to Log4J initialization time instead.)
 
 SizeBased Triggering Policy
 
-The `SizeBasedTriggeringPolicy` causes a rollover once the file has
-reached the specified size. The size can be specified in bytes, with the
-suffix KB, MB or GB, for example `20MB`.
+The `SizeBasedTriggeringPolicy` causes a rollover once the file has reached the specified size. The size can be
+specified in bytes, with the suffix KB, MB or GB, for example `20MB`.
+When combined with a time based triggering policy the file pattern must contain a `%i`
+otherwise the target file will be overwritten on every rollover as the SizeBased Triggering Policy
+will not cause the timestamp value in the file name to change. When used without a time based
+triggering policy the SizeBased Triggering Policy will cause the timestamp value to change.
 
 TimeBased Triggering Policy
 
@@ -2708,10 +2802,36 @@ for Java]. The pattern may also contain lookup references that can be
 resolved at runtime such as is shown in the example below.
 
 The default rollover strategy supports three variations for incrementing
-the counter. The first is the "fixed window" strategy. To illustrate how
-it works, suppose that the min attribute is set to 1, the max attribute
-is set to 3, the file name is "foo.log", and the file name pattern is
-"foo-%i.log".
+the counter. To illustrate how it works, suppose that the min attribute 
+is set to 1, the max attribute is set to 3, the file name is "foo.log", 
+and the file name pattern is "foo-%i.log".
+
+[cols=",,,",options="header",]
+|=======================================================================
+|Number of rollovers |Active output target |Archived log files
+|Description
+|0 |foo.log |- |All logging is going to the initial file.
+
+|1 |foo.log |foo-1.log |During the first rollover foo.log is renamed to
+foo-1.log. A new foo.log file is created and starts being written to.
+
+|2 |foo.log |foo-2.log, foo-1.log |During the second rollover foo.log is
+renamed to foo-2.log. A new foo.log file is created and starts being
+written to.
+
+|3 |foo.log |foo-3.log, foo-2.log, foo-1.log |During the third rollover
+foo.log is renamed to foo-3.log. A new foo.log file is created and
+starts being written to.
+
+|4 |foo.log |foo-3.log, foo-2.log, foo-1.log |In the fourth and
+subsequent rollovers, foo-1.log is deleted, foo-2.log is renamed to
+foo-1.log, foo-3.log is renamed to foo-2.log and foo.log is renamed to
+foo-3.log. A new foo.log file is created and starts being written to.
+|=======================================================================
+
+By way of contrast, when the fileIndex attribute is set to "min" but all
+the other settings are the same the "fixed window" strategy will be 
+performed.
 
 [cols=",,,",options="header",]
 |=======================================================================
@@ -2735,32 +2855,6 @@ starts being written to.
 subsequent rollovers, foo-3.log is deleted, foo-2.log is renamed to
 foo-3.log, foo-1.log is renamed to foo-2.log and foo.log is renamed to
 foo-1.log. A new foo.log file is created and starts being written to.
-|=======================================================================
-
-By way of contrast, when the fileIndex attribute is set to "max" but all
-the other settings are the same the following actions will be performed.
-
-[cols=",,,",options="header",]
-|=======================================================================
-|Number of rollovers |Active output target |Archived log files
-|Description
-|0 |foo.log |- |All logging is going to the initial file.
-
-|1 |foo.log |foo-1.log |During the first rollover foo.log is renamed to
-foo-1.log. A new foo.log file is created and starts being written to.
-
-|2 |foo.log |foo-1.log, foo-2.log |During the second rollover foo.log is
-renamed to foo-2.log. A new foo.log file is created and starts being
-written to.
-
-|3 |foo.log |foo-1.log, foo-2.log, foo-3.log |During the third rollover
-foo.log is renamed to foo-3.log. A new foo.log file is created and
-starts being written to.
-
-|4 |foo.log |foo-1.log, foo-2.log, foo-3.log |In the fourth and
-subsequent rollovers, foo-1.log is deleted, foo-2.log is renamed to
-foo-1.log, foo-3.log is renamed to foo-2.log and foo.log is renamed to
-foo-3.log. A new foo.log file is created and starts being written to.
 |=======================================================================
 
 Finally, as of release 2.8, if the fileIndex attribute is set to "nomax"
@@ -2799,7 +2893,7 @@ DirectWrite Rollover Strategy
 The DirectWriteRolloverStrategy causes log events to be written directly
 to files represented by the file pattern. With this strategy file
 renames are not performed. If the size-based triggering policy causes
-multiple files to be written durring the specified time period they will
+multiple files to be written during the specified time period they will
 be numbered starting at one and continually incremented until a
 time-based rollover occurs.
 
@@ -3387,7 +3481,7 @@ https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttri
 attribute view.
 
 |fileGroup |String a|
-File group to define whene action is executed.
+File group to define when action is executed.
 
 Underlying files system shall support
 https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFileAttributeView.html[POSIX]
@@ -3887,7 +3981,7 @@ created as needed.
 == SMTPAppender
 
 As of Log4j 2.11.0, Simple Mail Transfer Protocol (SMTP) support has
-moved from the existing module `logj-core` to the new module
+moved from the existing module `log4j-core` to the new module
 `log4j-smtp`.
 
 Sends an e-mail when a specific logging event occurs, typically on
@@ -4021,7 +4115,13 @@ example, "SelectIt".
 The `SocketAppender` is an OutputStreamAppender that writes its output
 to a remote destination specified by a host and port. The data can be
 sent over either TCP or UDP and can be sent in any format. You can
-optionally secure communication with link:#SSL[SSL].
+optionally secure communication with link:#SSL[SSL]. Note that the TCP and SSL
+variants write to the socket as a stream and do not expect response from
+the target destination. Due to limitations in the TCP protocol that
+means that when the target server closes its connection some log events
+may continue to appear to succeed until a closed connection exception
+is raised, causing those events to be lost. If guaranteed delivery is
+required a protocol that requires acknowledgements must be used.
 
 .`SocketAppender` Parameters
 [cols=",,",options="header",]
@@ -4033,7 +4133,9 @@ optionally secure communication with link:#SSL[SSL].
 log events. This parameter is required.
 
 |port |integer |The port on the host that is listening for log events.
-This parameter must be specified.
+This parameter must be specified.If the host name resolves to multiple
+IP addresses the TCP and SSL variations will fail over to the next IP
+address when a connection is lost.
 
 |protocol |String |"TCP" (default), "SSL" or "UDP".
 
@@ -4407,7 +4509,7 @@ conforms with either the BSD Syslog format or the RFC 5424 format.
 == JeroMQAppender
 
 As of Log4j 2.11.0, ZeroMQ/JeroMQ support has moved from the existing
-module `logj-core` to the new module `log4j-jeromq`.
+module `log4j-core` to the new module `log4j-jeromq`.
 
 The ZeroMQ appender uses the https://github.com/zeromq/jeromq[JeroMQ]
 library to send log events to one or more ZeroMQ endpoints.

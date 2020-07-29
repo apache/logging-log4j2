@@ -15,7 +15,7 @@
     limitations under the License.
 ////
 = Layouts
-Ralph Goers <rgoers@apache.org>; Gary Gregory <ggregory@apache.org>
+Ralph Goers <rgoers@apache.org>; Gary Gregory <ggregory@apache.org>; Volkan Yazıcı <vy@apache.org>
 
 An Appender uses a Layout to format a LogEvent into a form that meets
 the needs of whatever will be consuming the log event. In Log4j 1.x and
@@ -41,7 +41,7 @@ performance significantly.
 == CSV Layouts
 
 As of Log4j 2.11.0, CSV support has moved from the existing module
-`logj-core` to the new module `log4j-csv`.
+`log4j-core` to the new module `log4j-csv`.
 
 This layout creates
 https://en.wikipedia.org/wiki/Comma-separated_values[Comma Separated
@@ -225,13 +225,33 @@ will be included.
 |boolean
 |Whether to include NULL byte as delimiter after each event (optional, default to false).
 Useful for Graylog GELF TCP input. Cannot be used with compression.
+
+|messagePattern
+|String
+|The pattern to use to format the String. If not supplied only the text derived from the logging
+message will be used. See <<PatternLayout>> for information on the pattern
+strings
+
+|threadContextExcludes
+|String
+|A comma separated list of ThreadContext attributes to exclude when formatting the event. This
+attribute only applies when includeThreadContext="true" is specified. If threadContextIncludes
+are also specified this attribute will be ignored.
+
+|threadContextIncludes
+|String
+|A comma separated list of ThreadContext attributes to include when formatting the event. This
+attribute only applies when includeThreadContext="true" is specified. If threadContextExcludes
+are also specified this attribute will override them. ThreadContext fields specified here that
+have no value will be omitted.
 |===
 
 To include any custom field in the output, use following syntax:
 
 [source,xml]
 ----
-<GelfLayout>
+<GelfLayout includeThreadContext="true" threadContextIncludes="loginId,requestId">
+  <MessagePattern>%d %5p [%t] %c{1} %X{loginId, requestId} - %m%n</MessagePattern>
   <KeyValuePair key="additionalField1" value="constant value"/>
   <KeyValuePair key="additionalField2" value="$${ctx:key}"/>
 </GelfLayout>
@@ -367,11 +387,10 @@ character "[" at the start of the document, "]" and the end, nor comma
 
 === Pretty vs. compact JSON
 
-By default, the JSON layout is not compact (a.k.a. not "pretty") with
-`compact="false"`, which means the appender uses end-of-line characters
-and indents lines to format the text. If `compact="true"`, then no
-end-of-line or indentation is used. Message content may contain, of
-course, escaped end-of-lines.
+The compact attribute determines whether the output will be "pretty" or not. The default value is "false",
+which means the appender uses end-of-line characters and indents lines to format the text. If
+`compact="true"`,  then no end-of-line or indentation is used, which will cause the output
+to take less space. Of course, the message content may contain, escaped end-of-lines.
 
 .JsonLayout Parameters
 [cols="1m,1,4"]
@@ -395,6 +414,10 @@ indentation. Defaults to false.
 |If true, the appender appends an end-of-line after
 each record. Defaults to false. Use with eventEol=true and compact=true
 to get one record per line.
+
+|endOfLine
+|String
+|If set, overrides the default end-of-line string. E.g. set it to "\n" and use with eventEol=true and compact=true to have one record per line separated by "\n" instead of "\r\n". Defaults to null (i.e. not set).
 
 |complete
 |boolean
@@ -429,6 +452,11 @@ expensive operation and may impact performance. Use with caution.
 https://docs.oracle.com/javase/6/docs/api/java/lang/Throwable.html[Throwable]
 (optional, default to true).
 
+|includeTimeMillis
+|boolean
+|If true, the timeMillis attribute is included in the Json payload instead of the instant. timeMillis
+will contain the number of milliseconds since midnight, January 1, 1970 UTC.
+
 |stacktraceAsString
 |boolean
 |Whether to format the stacktrace as a
@@ -461,6 +489,111 @@ values support link:lookups.html[lookups].
 
 Additional link:../runtime-dependencies.html[runtime dependencies] are
 required for using JsonLayout.
+
+[#JSONTemplateLayout]
+== JSON Template Layout
+
+`JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON
+emitting layout. It encodes ``LogEvent``s according to the structure described
+by the JSON template provided. For instance, given the following JSON template
+modelling the https://github.com/logstash/log4j-jsonevent-layout[the official
+Logstash `JSONEventLayoutV1`]
+
+[source,json]
+----
+{
+  "mdc": {
+    "$resolver": "mdc"
+  },
+  "exception": {
+    "exception_class": {
+      "$resolver": "exception",
+      "field": "className"
+    },
+    "exception_message": {
+      "$resolver": "exception",
+      "field": "message",
+      "stringified": true
+    },
+    "stacktrace": {
+      "$resolver": "exception",
+      "field": "stackTrace",
+      "stringified": true
+    }
+  },
+  "line_number": {
+    "$resolver": "source",
+    "field": "lineNumber"
+  },
+  "class": {
+    "$resolver": "source",
+    "field": "className"
+  },
+  "@version": 1,
+  "source_host": "${hostName}",
+  "message": {
+    "$resolver": "message",
+    "stringified": true
+  },
+  "thread_name": {
+    "$resolver": "thread",
+    "field": "name"
+  },
+  "@timestamp": {
+    "$resolver": "timestamp"
+  },
+  "level": {
+    "$resolver": "level",
+    "field": "name"
+  },
+  "file": {
+    "$resolver": "source",
+    "field": "fileName"
+  },
+  "method": {
+    "$resolver": "source",
+    "field": "methodName"
+  },
+  "logger_name": {
+    "$resolver": "logger",
+    "field": "name"
+  }
+}
+----
+
+in combination with the below Log4j configuration:
+
+[source,xml]
+----
+<JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"/>
+----
+
+JSON Template Layout will render JSON documents as follows:
+
+[source,json]
+----
+{
+  "exception": {
+    "exception_class": "java.lang.RuntimeException",
+    "exception_message": "test",
+    "stacktrace": "java.lang.RuntimeException: test\n\tat org.apache.logging.log4j.JsonTemplateLayoutDemo.main(JsonTemplateLayoutDemo.java:11)\n"
+  },
+  "line_number": 12,
+  "class": "org.apache.logging.log4j.JsonTemplateLayoutDemo",
+  "@version": 1,
+  "source_host": "varlik",
+  "message": "Hello, error!",
+  "thread_name": "main",
+  "@timestamp": "2017-05-25T19:56:23.370+02:00",
+  "level": "ERROR",
+  "file": "JsonTemplateLayoutDemo.java",
+  "method": "main",
+  "logger_name": "org.apache.logging.log4j.JsonTemplateLayoutDemo"
+}
+----
+
+See link:json-template-layout.html[JSON Template Layout] page for the complete
+documentation.
 
 [#PatternLayout]
 == Pattern Layout
@@ -674,12 +807,7 @@ operation and may impact performance. Use with caution.
 be followed by a set of braces containing a date and time pattern string per
 https://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
 
-The predefined formats are `DEFAULT`, `ABSOLUTE`, `COMPACT`, `DATE`,
-`ISO8601`, and `ISO8601_BASIC`.
-
-You can also use a set of braces containing a time zone id per
-https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[java.util.TimeZone.getTimeZone].
-If no date format specifier is given then the DEFAULT format is used.
+The predefined _named_ formats are:
 
 [cols=",",options="header",]
 !===
@@ -700,6 +828,15 @@ If no date format specifier is given then the DEFAULT format is used.
 !%d{ISO8601_BASIC}
 !20121102T143402,781
 
+!%d{ISO8601_OFFSET_DATE_TIME_HH}
+!2012-11-02'T'14:34:02,781-07
+
+!%d{ISO8601_OFFSET_DATE_TIME_HHMM}
+!2012-11-02'T'14:34:02,781-0700
+
+!%d{ISO8601_OFFSET_DATE_TIME_HHCMM}
+!2012-11-02'T'14:34:02,781-07:00
+
 !%d{ABSOLUTE}
 !14:34:02,781
 
@@ -715,6 +852,23 @@ If no date format specifier is given then the DEFAULT format is used.
 !%d{COMPACT}
 !20121102143402781
 
+!%d{UNIX}
+!1351866842
+
+!%d{UNIX_MILLIS}
+!1351866842781
+!===
+
+You can also use a set of braces containing a time zone id per
+https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[java.util.TimeZone.getTimeZone].
+If no date format specifier is given then the DEFAULT format is used.
+
+You can define custom date formats:
+
+[cols=",",options="header",]
+!===
+!Pattern !Example
+
 !%d{HH:mm:ss,SSS}
 !14:34:02,123
 
@@ -729,12 +883,6 @@ If no date format specifier is given then the DEFAULT format is used.
 
 !%d{HH:mm:ss}{GMT+0}
 !18:34:02
-
-!%d{UNIX}
-!1351866842
-
-!%d{UNIX_MILLIS}
-!1351866842781
 !===
 
 %d{UNIX} outputs the UNIX time in seconds. %d{UNIX_MILLIS} outputs the
@@ -1490,7 +1638,8 @@ minimum width is reached. The default is to pad on the left (right
 justify) but you can specify right padding with the left justification
 flag. The padding character is space. If the data item is larger than
 the minimum field width, the field is expanded to accommodate the data.
-The value is never truncated.
+The value is never truncated. To use zeros as the padding character prepend
+the _minimum field width_ with a zero.
 
 This behavior can be changed using the _maximum field width_ modifier
 which is designated by a period followed by a decimal constant. If the
@@ -1625,6 +1774,23 @@ defaultPattern attribute, which is used when other criteria don't match,
 and a set of PatternMatch elements that identify the various patterns
 that can be selected.
 
+[#LevelPatternSelector]
+==== LevelPatternSelector
+
+The LevelPatternSelector selects patterns based on the log level of
+the log event. If the Level in the log event is equal to (ignoring case)
+ the name specified on the PatternMatch key attribute, then
+the pattern specified on that PatternMatch element will be used.
+
+[source,xml]
+----
+<PatternLayout>
+  <MarkerPatternSelector defaultPattern="[%-5level] %c{1.} %msg%n">
+    <PatternMatch key="FLOW" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
+  </MarkerPatternSelector>
+</PatternLayout>
+----
+
 [#MarkerPatternSelector]
 ==== MarkerPatternSelector
 
@@ -1649,7 +1815,7 @@ The ScriptPatternSelector executes a script as descibed in the
 link:../configuration.html#Scripts[Scripts] section of the Configuration
 chapter. The script is passed all the properties configured in the
 Properties section of the configuration, the StrSubstitutor used by the
-Confguration in the "substitutor" vairables, and the log event in the
+Confguration in the "substitutor" variables, and the log event in the
 "logEvent" variable, and is expected to return the value of the
 PatternMatch key that should be used, or null if the default pattern
 should be used.

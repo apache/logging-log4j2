@@ -1,0 +1,104 @@
+<!-- vim: set syn=markdown : -->
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+#set($dollar = '$')
+#set($h1='#')
+#set($h2='##')
+
+$h1 Log4j Kubernetes Support
+
+Log4j supports Kubernetes by providing a Lookup to retrieve container information.
+
+$h2 Accessing Kubernetes
+
+The Log4j Kubernetes support requires access to the Docker REST interface. In many cases the REST service
+can be accessed automatically. If needed the Kubernetes client can be configured any of the standard
+Log4j configuration locations or via the Spring Boot configuration. Note, however, that since Spring Boot
+causes logging to initialize 3 times and since the Spring environment is only available during the last
+Log4j initialization Spring properties will only be available to Log4j in the last initialization.
+
+$h2 Lookup Attributes
+
+Log4j Kubernetes provides access to the following container attributes:
+
+* accountName - The service account name.
+* clusterName - The name of the cluster the application is running in.
+* containerId - The full id assigned to the container.
+* containerName - The name assigned to the container.
+* host - The name of the host.
+* hostIp - The host's ip address.
+* imageId - The id assigned to the image.
+* imageName - The name assigned to the image.
+* labels - All labels formatted in a list.
+* labels.app - The application name.
+* labels.podTemplateHash - The pod's template hash value.
+* masterUrl - The url needed to access the API server.
+* namespaceId - The id of the namespace the various kubernetes components are located within.
+* namespaceName - The namespace the various kubernetes components are located within.
+* podId - The pod's id number.
+* podIp - The pod's ip address.
+* podName - The name of the pod.
+
+#set( $D = '${' )
+#set( $container = 'k8s:containerId}')
+Attributes may be accessed by adding
+```
+$D$container
+```
+to the configuration. Note that kubernetes variables are only resolved once during logging initialization so they
+shouldn't be referenced with more than one '$' character.
+
+$h2 Configuration
+
+Much of the configuration needed to access the Kubernetes API server is provided automatically by Kubernetes.
+However, it is not uncommon to need to provide the url required to access the Kubernetes API server or the
+namespace the application is assigned to. The properties below may either be configured using the Log4j
+variable names and located by Log4j's normal property resolution mechansim or Log4j will resolve the
+spring properties when the application is running in Spring Boot and the Spring Environment has been created.
+Note that Spring Boot initializes logging 3 times and only the last will have a Spring Environment present.
+
+| Log4j Property Name     | Spring Property Name  | Default   | Description |
+|------------------------ |----------------------:|----------:|------------:|
+| log4j2.kubernetes.client.apiVersion | spring.cloud.kubernetes.client.apiVersion | v1 | Kubernetes API Version |
+| log4j2.kubernetes.client.caCertData | spring.cloud.kubernetes.client.caCertData | | Kubernetes API CACertData |
+| log4j2.kubernetes.client.caCertFile | spring.cloud.kubernetes.client.caCertFile | | Kubernetes API CACertFile |
+| log4j2.kubernetes.client.clientCertData | spring.cloud.kubernetes.client.clientCertData | | Kubernetes API ClientCertData |
+| log4j2.kubernetes.client.clientCertFile | spring.cloud.kubernetes.client.clientCertFile | | Kubernetes API ClientCertFile |
+| log4j2.kubernetes.client.clientKeyAlgo | spring.cloud.kubernetes.client.clientKeyAlgo | RSA | Kubernetes API ClientKeyAlgo |
+| log4j2.kubernetes.client.clientKeyData | spring.cloud.kubernetes.client.clientKeyData | | Kubernetes API ClientKeyData |
+| log4j2.kubernetes.client.clientKeyFile | spring.cloud.kubernetes.client.clientKeyFile | | Kubernetes API ClientKeyFile |
+| log4j2.kubernetes.client.clientKeyPassPhrase | spring.cloud.kubernetes.client.clientKeyPassphrase | changeit | Kubernetes API ClientKeyPassphrase |
+| log4j2.kubernetes.client.connectionTimeout | spring.cloud.kubernetes.client.connectionTimeout | 10s | Connection timeout |
+| log4j2.kubernetes.client.httpProxy | spring.cloud.kubernetes.client.http-proxy | | |
+| log4j2.kubernetes.client.httpsProxy | spring.cloud.kubernetes.client.https-proxy | | |
+| log4j2.kubernetes.client.loggingInberval | spring.cloud.kubernetes.client.loggingInterval | 20s | Logging interval |
+| log4j2.kubernetes.client.masterUrl | spring.cloud.kubernetes.client.masterUrl | kubernetes.default.svc | Kubernetes API Master Node URL |
+| log4j2.kubernetes.client.namespacce | spring.cloud.kubernetes.client.namespace | default | Kubernetes Namespace |
+| log4j2.kubernetes.client.noProxy | spring.cloud.kubernetes.client.noProxy | | |
+| log4j2.kubernetes.client.password | spring.cloud.kubernetes.client.password | | Kubernetes API Password |
+| log4j2.kubernetes.client.proxyPassword | spring.cloud.kubernetes.client.proxyPassword | | |
+| log4j2.kubernetes.client.proxyUsername | spring.cloud.kubernetes.client.proxyUsername | | |
+| log4j2.kubernetes.client.requestTimeout | spring.cloud.kubernetes.client.requestTimeout | 10s | Request timeout |
+| log4j2.kubernetes.client.rollingTimeout | spring.cloud.kubernetes.client.rollingTimeout | 900s | Rolling timeout |
+| log4j2.kubernetes.client.trustCerts | spring.cloud.kubernetes.client.trustCerts | false | Kubernetes API Trust Certificates |
+| log4j2.kubernetes.client.username | spring.cloud.kubernetes.client.username | | Kubernetes API Username |
+| log4j2.kubernetes.client.watchReconnectInterval | spring.cloud.kubernetes.client.watchReconnectInterval | 1s | Reconnect Interval |
+| log4j2.kubernetes.client.watchReconnectLimit | spring.cloud.kubernetes.client.watchReconnectLimit | -1 | Reconnect Interval limit retries |
+
+$h2 Requirements
+Log4j Kubernetes requires Log4j Core, Log4j API and a minimum of Java 8.
+For more information, see [Runtime Dependencies](../runtime-dependencies.html).

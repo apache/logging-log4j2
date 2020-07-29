@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.LifeCycle;
  * Configuration element for {@link JdbcAppender}. If you want to use the {@link JdbcAppender} but none of the provided
  * connection sources meet your needs, you can simply create your own connection source.
  */
-public interface ConnectionSource extends LifeCycle{
+public interface ConnectionSource extends LifeCycle {
     
     /**
      * This should return a new connection every time it is called.

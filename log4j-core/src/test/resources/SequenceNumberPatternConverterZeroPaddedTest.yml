@@ -1,0 +1,15 @@
+Configuration:
+  status: OFF
+  name: SequenceNumberPatternConverterTest
+
+  Appenders:
+    List:
+      - name: Padded
+        PatternLayout:
+          pattern: '%03sn'
+
+  Loggers:
+    Root:
+      level: INFO
+      AppenderRef:
+        - ref: Padded

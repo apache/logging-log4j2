@@ -20,14 +20,6 @@
          xmlns="http://maven.apache.org/DECORATION/1.4.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.4.0 http://maven.apache.org/xsd/decoration-1.4.0.xsd">
-  <bannerLeft>
-    <name>Logging Services</name>
-    <src>../images/ls-logo.jpg</src>
-    <href>../index.html</href>
-  </bannerLeft>
-  <bannerRight>
-    <src>../images/logo.jpg</src>
-  </bannerRight>
   <body>
     <links>
       <item name="Apache" href="http://www.apache.org/" />
@@ -57,8 +49,5 @@
       <item name="Surefire Report" href="../surefire-report.html" />
       <item name="RAT Report" href="../rat-report.html" />
     </menu>
-    <footer><div class="row span16">Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, and the
-      Apache Logging project logo are trademarks of The Apache Software Foundation.</div>
-    </footer>
   </body>
 </project>

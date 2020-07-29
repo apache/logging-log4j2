@@ -123,7 +123,6 @@ public class ReusableLogEventFactoryTest {
         final ReusableLogEventFactory factory = new ReusableLogEventFactory();
         final LogEvent event = callCreateEvent(factory, "logger", Level.INFO, new SimpleMessage("xyz"), null);
         try {
-            assertNotNull(event.getContextMap());
             assertNotNull(event.getContextData());
             assertNotNull(event.getContextStack());
         } finally {

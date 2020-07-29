@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import com.google.common.io.ByteStreams;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -24,14 +23,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -49,21 +44,33 @@ public class EventParameterMemoryLeakTest {
     }
 
     @Test
+    @SuppressWarnings("UnusedAssignment") // parameter set to null to allow garbage collection
     public void testParametersAreNotLeaked() throws Exception {
         final File file = new File("target", "EventParameterMemoryLeakTest.log");
         assertTrue("Deleted old file before test", !file.exists() || file.delete());
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         CountDownLatch latch = new CountDownLatch(1);
-        log.info("Message with parameter {}", new ParameterObject("paramValue", latch));
+        Object parameter = new ParameterObject("paramValue", latch);
+        log.info("Message with parameter {}", parameter);
+        log.info(parameter);
+        log.info("test", new ObjectThrowable(parameter));
+        log.info("test {}", "hello", new ObjectThrowable(parameter));
+        parameter = null;
         CoreLoggerContexts.stopLoggerContext(file);
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
         final String line2 = reader.readLine();
+        final String line3 = reader.readLine();
+        final String line4 = reader.readLine();
+        final String line5 = reader.readLine();
         reader.close();
         file.delete();
         assertThat(line1, containsString("Message with parameter paramValue"));
-        assertNull("Expected only a single line", line2);
+        assertThat(line2, containsString("paramValue"));
+        assertThat(line3, containsString("paramValue"));
+        assertThat(line4, containsString("paramValue"));
+        assertNull("Expected only three lines", line5);
         GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
         gcHelper.run();
         try {
@@ -93,46 +100,17 @@ public class EventParameterMemoryLeakTest {
         }
     }
 
-    private static final class GarbageCollectionHelper implements Closeable, Runnable {
-        private static final OutputStream sink = ByteStreams.nullOutputStream();
-        public final AtomicBoolean running = new AtomicBoolean();
-        private final CountDownLatch latch = new CountDownLatch(1);
-        private final Thread gcThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (running.get()) {
-                        // Allocate data to help suggest a GC
-                        try {
-                            // 1mb of heap
-                            sink.write(new byte[1024 * 1024]);
-                        } catch (IOException ignored) {
-                        }
-                        // May no-op depending on the jvm configuration
-                        System.gc();
-                    }
-                } finally {
-                    latch.countDown();
-                }
-            }
-        });
+    private static final class ObjectThrowable extends RuntimeException {
+        private final Object object;
 
-        @Override
-        public void run() {
-            if (running.compareAndSet(false, true)) {
-                gcThread.start();
-            }
+        ObjectThrowable(Object object) {
+            super(String.valueOf(object));
+            this.object = object;
         }
 
         @Override
-        public void close() {
-            running.set(false);
-            try {
-                assertTrue("GarbageCollectionHelper did not shut down cleanly",
-                        latch.await(10, TimeUnit.SECONDS));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        public String toString() {
+            return "ObjectThrowable " + object;
         }
     }
 }

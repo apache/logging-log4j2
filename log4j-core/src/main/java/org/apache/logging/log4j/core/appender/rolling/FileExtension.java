@@ -39,7 +39,7 @@ public enum FileExtension {
         @Override
         Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                                     final int compressionLevel) {
-            return new GzCompressAction(source(renameTo), target(compressedName), deleteSource);
+            return new GzCompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
         }
     },
     BZIP2(".bz2") {

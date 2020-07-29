@@ -29,7 +29,7 @@ public class ClassicLogger extends AbstractLogger {
 
     @Override
     protected StringLayout createLayout() {
-        return PatternLayout.newBuilder().withCharset(StandardCharsets.UTF_8).withPattern("%m").build();
+        return PatternLayout.newBuilder().setCharset(StandardCharsets.UTF_8).setPattern("%m").build();
     }
 
     public void log(final String message, final Object... params) {

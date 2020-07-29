@@ -16,23 +16,23 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Selects the pattern to use based on the Marker in the LogEvent.
@@ -43,7 +43,7 @@ public class MarkerPatternSelector implements PatternSelector {
     /**
      * Custom MarkerPatternSelector builder. Use the {@link MarkerPatternSelector#newBuilder() builder factory method} to create this.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<MarkerPatternSelector> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<MarkerPatternSelector> {
 
         @PluginElement("PatternMatch")
         private PatternMatch[] properties;
@@ -116,28 +116,24 @@ public class MarkerPatternSelector implements PatternSelector {
 
     private final String defaultPattern;
 
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
-
-    /**
-     * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.
-     */
-    @Deprecated
-    public MarkerPatternSelector(final PatternMatch[] properties, final String defaultPattern,
-                                 final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
-                                 final Configuration config) {
-        this(properties, defaultPattern, alwaysWriteExceptions, false, noConsoleNoAnsi, config);
-    }
+    private final boolean requiresLocation;
 
     private MarkerPatternSelector(final PatternMatch[] properties, final String defaultPattern,
                                  final boolean alwaysWriteExceptions, final boolean disableAnsi,
                                  final boolean noConsoleNoAnsi, final Configuration config) {
         final PatternParser parser = PatternLayout.createPatternParser(config);
+        boolean needsLocation = false;
         for (final PatternMatch property : properties) {
             try {
                 final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions,
                         disableAnsi, noConsoleNoAnsi);
-                formatterMap.put(property.getKey(), list.toArray(new PatternFormatter[list.size()]));
+                PatternFormatter[] formatters = list.toArray(new PatternFormatter[list.size()]);
+                formatterMap.put(property.getKey(), formatters);
+                for (int i = 0; !needsLocation && i < formatters.length; ++i) {
+                    needsLocation = formatters[i].requiresLocation();
+                }
                 patternMap.put(property.getKey(), property.getPattern());
             } catch (final RuntimeException ex) {
                 throw new IllegalArgumentException("Cannot parse pattern '" + property.getPattern() + "'", ex);
@@ -148,9 +144,18 @@ public class MarkerPatternSelector implements PatternSelector {
                     noConsoleNoAnsi);
             defaultFormatters = list.toArray(new PatternFormatter[list.size()]);
             this.defaultPattern = defaultPattern;
+            for (int i = 0; !needsLocation && i < defaultFormatters.length; ++i) {
+                needsLocation = defaultFormatters[i].requiresLocation();
+            }
         } catch (final RuntimeException ex) {
             throw new IllegalArgumentException("Cannot parse pattern '" + defaultPattern + "'", ex);
         }
+        requiresLocation = needsLocation;
+    }
+
+    @Override
+    public boolean requiresLocation() {
+        return requiresLocation;
     }
 
     @Override
@@ -172,35 +177,9 @@ public class MarkerPatternSelector implements PatternSelector {
      *
      * @return a ScriptPatternSelector builder.
      */
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    /**
-     * Deprecated, use {@link #newBuilder()} instead.
-     * @param properties
-     * @param defaultPattern
-     * @param alwaysWriteExceptions
-     * @param noConsoleNoAnsi
-     * @param configuration
-     * @return a new MarkerPatternSelector.
-     * @deprecated Use {@link #newBuilder()} instead.
-     */
-    @Deprecated
-    public static MarkerPatternSelector createSelector(
-            final PatternMatch[] properties,
-            final String defaultPattern,
-            final boolean alwaysWriteExceptions,
-            final boolean noConsoleNoAnsi,
-            final Configuration configuration) {
-        final Builder builder = newBuilder();
-        builder.setProperties(properties);
-        builder.setDefaultPattern(defaultPattern);
-        builder.setAlwaysWriteExceptions(alwaysWriteExceptions);
-        builder.setNoConsoleNoAnsi(noConsoleNoAnsi);
-        builder.setConfiguration(configuration);
-        return builder.build();
     }
 
     @Override

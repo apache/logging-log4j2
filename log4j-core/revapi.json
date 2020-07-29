@@ -1,0 +1,36 @@
+[
+  {
+    "extension": "revapi.java",
+    "configuration": {
+      "filter": {
+        "classes": {
+          "exclude": [
+            "org\\.apache\\.logging\\.log4j\\.corel\\.impl\\.ContextAnchor",
+            "org\\.apache\\.logging\\.log4j\\.core\\.async\\.AsyncLoggerDisruptor",
+            "org\\.apache\\.logging\\.log4j\\.core\\.async\\.RingBufferLogEvent\\.Factory",
+            "org\\.apache\\.logging\\.log4j\\.core\\.layout\\.AbstractJacksonLayout",
+            "org\\.apache\\.logging\\.log4j\\.core\\.layout\\.AbstractJacksonLayout\\.ResolvableKeyValuePair",
+            "org\\.apache\\.logging\\.log4j\\.core\\.net\\.SmtpManager\\.FactoryData",
+            "org\\.apache\\.logging\\.log4j\\.core\\.net\\.TcpSocketManager\\.FactoryData",
+            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.CronExpression\\.ValueSet",
+            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.NumberRule",
+            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.Rule"
+          ]
+        },
+        "packages": {
+          "exclude": [
+            "org.apache.logging.log4j.core.jmx",
+            "org.apache.logging.log4j.core.jackson",
+            "org.apache.logging.log4j.core.time.internal",
+            "org.apache.logging.log4j.core.util.datetime"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "extension": "revapi.ignore",
+    "configuration": [
+    ]
+  }
+]

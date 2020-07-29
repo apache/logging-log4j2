@@ -23,8 +23,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.net.Advertiser;
 
 /**
@@ -104,47 +105,47 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
             return fileGroup;
         }
 
-        public B withAdvertise(final boolean advertise) {
+        public B setAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
-        public B withAdvertiseUri(final String advertiseUri) {
+        public B setAdvertiseUri(final String advertiseUri) {
             this.advertiseUri = advertiseUri;
             return asBuilder();
         }
 
-        public B withAppend(final boolean append) {
+        public B setAppend(final boolean append) {
             this.append = append;
             return asBuilder();
         }
 
-        public B withFileName(final String fileName) {
+        public B setFileName(final String fileName) {
             this.fileName = fileName;
             return asBuilder();
         }
 
-        public B withCreateOnDemand(final boolean createOnDemand) {
+        public B setCreateOnDemand(final boolean createOnDemand) {
             this.createOnDemand = createOnDemand;
             return asBuilder();
         }
 
-        public B withLocking(final boolean locking) {
+        public B setLocking(final boolean locking) {
             this.locking = locking;
             return asBuilder();
         }
 
-        public B withFilePermissions(final String filePermissions) {
+        public B setFilePermissions(final String filePermissions) {
             this.filePermissions = filePermissions;
             return asBuilder();
         }
 
-        public B withFileOwner(final String fileOwner) {
+        public B setFileOwner(final String fileOwner) {
             this.fileOwner = fileOwner;
             return asBuilder();
         }
 
-        public B withFileGroup(final String fileGroup) {
+        public B setFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
             return asBuilder();
         }
@@ -159,9 +160,9 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
 
     private AbstractFileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final M manager, final String filename, final boolean ignoreExceptions,
-            final boolean immediateFlush, final Advertiser advertiser) {
+            final boolean immediateFlush, final Advertiser advertiser, Property[] properties) {
 
-        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
+        super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());

@@ -67,7 +67,7 @@ public class QueueFullAsyncLoggerLoggingFromToStringTest extends QueueFullAbstra
         blockingAppender = context.getRequiredAppender("Blocking", BlockingAppender.class);
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 50000)
     public void testLoggingFromToStringCausesOutOfOrderMessages() throws InterruptedException {
         final Logger logger = LogManager.getLogger(this.getClass());
 

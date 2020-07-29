@@ -31,7 +31,7 @@ public class SyslogAppenderCustomLayoutTest extends SyslogAppenderTest {
     @Override
     protected Builder newSyslogAppenderBuilder(final String protocol, final String format, final boolean newLine) {
         final Builder builder = super.newSyslogAppenderBuilder(protocol, format, newLine);
-        builder.withLayout(SyslogLayout.newBuilder().setFacility(Facility.LOCAL3).setIncludeNewLine(true).build());
+        builder.setLayout(SyslogLayout.newBuilder().setFacility(Facility.LOCAL3).setIncludeNewLine(true).build());
         return builder;
     }
 

@@ -27,6 +27,16 @@ class JsonJacksonFactory extends AbstractJacksonFactory {
     }
 
     @Override
+    protected String getPropertyNameForTimeMillis() {
+        return JsonConstants.ELT_TIME_MILLIS;
+    }
+
+    @Override
+    protected String getPropertyNameForInstant() {
+        return JsonConstants.ELT_INSTANT;
+    }
+
+    @Override
     protected String getPropertyNameForNanoTime() {
         return JsonConstants.ELT_NANO_TIME;
     }

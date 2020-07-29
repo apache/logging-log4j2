@@ -28,10 +28,10 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.Scheduled;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * Policy is purging appenders that were not in use specified time in minutes
@@ -73,9 +73,10 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     public void purge() {
         final long createTime = System.currentTimeMillis() - timeToLive;
         for (final Entry<String, Long> entry : appendersUsage.entrySet()) {
-            if (entry.getValue() < createTime) {
-                LOGGER.debug("Removing appender " + entry.getKey());
-                if (appendersUsage.remove(entry.getKey(), entry.getValue())) {
+            long entryValue = entry.getValue();
+            if (entryValue < createTime) {
+                if (appendersUsage.remove(entry.getKey(), entryValue)) {
+                    LOGGER.debug("Removing appender {}", entry.getKey());
                     routingAppender.deleteAppender(entry.getKey());
                 }
             }
@@ -129,9 +130,9 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
      */
     @PluginFactory
     public static PurgePolicy createPurgePolicy(
-        @PluginAttribute("timeToLive") final String timeToLive,
-        @PluginAttribute("checkInterval") final String checkInterval,
-        @PluginAttribute("timeUnit") final String timeUnit,
+        @PluginAttribute final String timeToLive,
+        @PluginAttribute final String checkInterval,
+        @PluginAttribute final String timeUnit,
         @PluginConfiguration final Configuration configuration) {
 
         if (timeToLive == null) {

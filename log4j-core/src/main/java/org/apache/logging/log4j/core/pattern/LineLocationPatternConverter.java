@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * Returns the event's line location information in a StringBuilder.
@@ -59,5 +59,10 @@ public final class LineLocationPatternConverter extends LogEventPatternConverter
         if (element != null) {
             output.append(element.getLineNumber());
         }
+    }
+
+    @Override
+    public boolean requiresLocation() {
+        return true;
     }
 }

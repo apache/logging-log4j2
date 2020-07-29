@@ -20,11 +20,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.StructuredDataId;
 
@@ -71,10 +71,10 @@ public final class LoggerFields {
      */
     @PluginFactory
     public static LoggerFields createLoggerFields(
-        @PluginElement("LoggerFields") final KeyValuePair[] keyValuePairs,
-        @PluginAttribute("sdId") final String sdId,
-        @PluginAttribute("enterpriseId") final String enterpriseId,
-        @PluginAttribute(value = "discardIfAllFieldsAreEmpty") final boolean discardIfAllFieldsAreEmpty) {
+        @PluginElement final KeyValuePair[] keyValuePairs,
+        @PluginAttribute final String sdId,
+        @PluginAttribute final String enterpriseId,
+        @PluginAttribute final boolean discardIfAllFieldsAreEmpty) {
         final Map<String, String> map = new HashMap<>();
 
         for (final KeyValuePair keyValuePair : keyValuePairs) {

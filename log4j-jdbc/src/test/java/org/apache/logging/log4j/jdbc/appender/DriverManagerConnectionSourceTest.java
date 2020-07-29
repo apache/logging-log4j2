@@ -37,7 +37,7 @@ public class DriverManagerConnectionSourceTest {
         };
         // @formatter:off
         DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING)
+            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
             .setProperties(properties)
             .build();
         // @formatter:on
@@ -50,7 +50,7 @@ public class DriverManagerConnectionSourceTest {
     public void testH2UserAndPassword() throws SQLException {
         // @formatter:off
         DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING)
+            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
             .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
             .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
             .build();

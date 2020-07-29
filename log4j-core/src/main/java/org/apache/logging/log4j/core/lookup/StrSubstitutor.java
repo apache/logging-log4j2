@@ -158,7 +158,11 @@ public class StrSubstitutor implements ConfigurationAware {
     /**
      * Constant for the default value delimiter of a variable.
      */
-    public static final StrMatcher DEFAULT_VALUE_DELIMITER = StrMatcher.stringMatcher(":-");
+    public static final String DEFAULT_VALUE_DELIMITER_STRING = ":-";
+    public static final StrMatcher DEFAULT_VALUE_DELIMITER = StrMatcher.stringMatcher(DEFAULT_VALUE_DELIMITER_STRING);
+
+    public static final String ESCAPE_DELIMITER_STRING = ":\\-";
+    public static final StrMatcher DEFAULT_VALUE_ESCAPE_DELIMITER = StrMatcher.stringMatcher(ESCAPE_DELIMITER_STRING);
 
     private static final int BUF_SIZE = 256;
 
@@ -180,7 +184,13 @@ public class StrSubstitutor implements ConfigurationAware {
     /**
      * Stores the default variable value delimiter
      */
+    private String valueDelimiterString;
     private StrMatcher valueDelimiterMatcher;
+
+    /**
+     * Escape string to avoid matching the value delimiter matcher;
+     */
+    private StrMatcher valueEscapeDelimiterMatcher;
 
     /**
      * Variable resolution is delegated to an implementer of VariableResolver.
@@ -323,7 +333,9 @@ public class StrSubstitutor implements ConfigurationAware {
     public StrSubstitutor(final StrLookup variableResolver, final StrMatcher prefixMatcher,
                           final StrMatcher suffixMatcher,
                           final char escape) {
-        this(variableResolver, prefixMatcher, suffixMatcher, escape, DEFAULT_VALUE_DELIMITER);
+        this(variableResolver, prefixMatcher, suffixMatcher, escape, DEFAULT_VALUE_DELIMITER,
+                DEFAULT_VALUE_ESCAPE_DELIMITER);
+        this.valueDelimiterString = DEFAULT_VALUE_DELIMITER_STRING;
     }
 
     /**
@@ -336,13 +348,35 @@ public class StrSubstitutor implements ConfigurationAware {
      * @param valueDelimiterMatcher  the variable default value delimiter matcher, may be null
      * @throws IllegalArgumentException if the prefix or suffix is null
      */
-    public StrSubstitutor(
-            final StrLookup variableResolver, final StrMatcher prefixMatcher, final StrMatcher suffixMatcher, final char escape, final StrMatcher valueDelimiterMatcher) {
+    public StrSubstitutor(final StrLookup variableResolver, final StrMatcher prefixMatcher,
+            final StrMatcher suffixMatcher, final char escape, final StrMatcher valueDelimiterMatcher) {
         this.setVariableResolver(variableResolver);
         this.setVariablePrefixMatcher(prefixMatcher);
         this.setVariableSuffixMatcher(suffixMatcher);
         this.setEscapeChar(escape);
         this.setValueDelimiterMatcher(valueDelimiterMatcher);
+    }
+
+    /**
+     * Creates a new instance and initializes it.
+     *
+     * @param variableResolver  the variable resolver, may be null
+     * @param prefixMatcher  the prefix for variables, not null
+     * @param suffixMatcher  the suffix for variables, not null
+     * @param escape  the escape character
+     * @param valueDelimiterMatcher  the variable default value delimiter matcher, may be null
+     * @param valueEscapeMatcher the matcher to escape defaulting, may be null.
+     * @throws IllegalArgumentException if the prefix or suffix is null
+     */
+    public StrSubstitutor(final StrLookup variableResolver, final StrMatcher prefixMatcher,
+            final StrMatcher suffixMatcher, final char escape, final StrMatcher valueDelimiterMatcher,
+            final StrMatcher valueEscapeMatcher) {
+        this.setVariableResolver(variableResolver);
+        this.setVariablePrefixMatcher(prefixMatcher);
+        this.setVariableSuffixMatcher(suffixMatcher);
+        this.setEscapeChar(escape);
+        this.setValueDelimiterMatcher(valueDelimiterMatcher);
+        valueEscapeDelimiterMatcher = valueEscapeMatcher;
     }
 
     //-----------------------------------------------------------------------
@@ -960,10 +994,32 @@ public class StrSubstitutor implements ConfigurationAware {
                                                 && prefixMatcher.isMatch(varNameExprChars, i, i, varNameExprChars.length) != 0) {
                                             break;
                                         }
-                                        if ((valueDelimiterMatchLen = valueDelimiterMatcher.isMatch(varNameExprChars, i)) != 0) {
-                                            varName = varNameExpr.substring(0, i);
-                                            varDefaultValue = varNameExpr.substring(i + valueDelimiterMatchLen);
-                                            break;
+                                        if (valueEscapeDelimiterMatcher != null) {
+                                            int matchLen = valueEscapeDelimiterMatcher.isMatch(varNameExprChars, i);
+                                            if (matchLen != 0) {
+                                                String varNamePrefix = varNameExpr.substring(0, i) + Interpolator.PREFIX_SEPARATOR;
+                                                varName = varNamePrefix + varNameExpr.substring(i + matchLen - 1);
+                                                for (int j = i + matchLen; j < varNameExprChars.length; ++j){
+                                                    if ((valueDelimiterMatchLen = valueDelimiterMatcher.isMatch(varNameExprChars, j)) != 0) {
+                                                        varName = varNamePrefix + varNameExpr.substring(i + matchLen, j);
+                                                        varDefaultValue = varNameExpr.substring(j + valueDelimiterMatchLen);
+                                                        break;
+                                                    }
+                                                }
+                                                break;
+                                            } else {
+                                                if ((valueDelimiterMatchLen = valueDelimiterMatcher.isMatch(varNameExprChars, i)) != 0) {
+                                                    varName = varNameExpr.substring(0, i);
+                                                    varDefaultValue = varNameExpr.substring(i + valueDelimiterMatchLen);
+                                                    break;
+                                                }
+                                            }
+                                        } else {
+                                            if ((valueDelimiterMatchLen = valueDelimiterMatcher.isMatch(varNameExprChars, i)) != 0) {
+                                                varName = varNameExpr.substring(0, i);
+                                                varDefaultValue = varNameExpr.substring(i + valueDelimiterMatchLen);
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -1294,6 +1350,9 @@ public class StrSubstitutor implements ConfigurationAware {
             setValueDelimiterMatcher(null);
             return this;
         }
+        String escapeValue = valueDelimiter.substring(0, valueDelimiter.length() - 1) + "\\"
+                + valueDelimiter.substring(valueDelimiter.length() - 1);
+        valueEscapeDelimiterMatcher = StrMatcher.stringMatcher(escapeValue);
         return setValueDelimiterMatcher(StrMatcher.stringMatcher(valueDelimiter));
     }
 

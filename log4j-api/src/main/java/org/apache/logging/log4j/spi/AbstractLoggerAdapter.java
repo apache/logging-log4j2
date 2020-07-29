@@ -16,15 +16,16 @@
  */
 package org.apache.logging.log4j.spi;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.util.LoaderUtil;
+
+import java.util.HashSet;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Provides an abstract base class to use for implementing LoggerAdapter.
@@ -32,12 +33,12 @@ import org.apache.logging.log4j.util.LoaderUtil;
  * @param <L> the Logger class to adapt
  * @since 2.1
  */
-public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
+public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L>, LoggerContextShutdownAware {
 
     /**
      * A map to store loggers for their given LoggerContexts.
      */
-    protected final Map<LoggerContext, ConcurrentMap<String, L>> registry = new WeakHashMap<>();
+    protected final Map<LoggerContext, ConcurrentMap<String, L>> registry = new ConcurrentHashMap<>();
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock (true);
 
@@ -51,6 +52,11 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
         }
         loggers.putIfAbsent(name, newLogger(name, context));
         return loggers.get(name);
+    }
+
+    @Override
+    public void contextShutdown(LoggerContext loggerContext) {
+        registry.remove(loggerContext);
     }
 
     /**
@@ -77,11 +83,22 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
             if (loggers == null) {
                 loggers = new ConcurrentHashMap<> ();
                 registry.put (context, loggers);
+                if (context instanceof LoggerContextShutdownEnabled) {
+                    ((LoggerContextShutdownEnabled) context).addShutdownListener(this);
+                }
             }
             return loggers;
         } finally {
             lock.writeLock ().unlock ();
         }
+    }
+
+    /**
+     * For unit testing. Consider to be private.
+     * @return The Set of LoggerContexts.
+     */
+    public Set<LoggerContext> getLoggerContexts() {
+        return new HashSet<>(registry.keySet());
     }
 
     /**

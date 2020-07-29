@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Objects;
+import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -47,20 +49,41 @@ public final class GzCompressAction extends AbstractAction {
     private final boolean deleteSource;
 
     /**
+     * GZIP compression level to use.
+     *
+     * @see Deflater#setLevel(int)
+     */
+    private final int compressionLevel;
+
+    /**
      * Create new instance of GzCompressAction.
      *
      * @param source       file to compress, may not be null.
      * @param destination  compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion.  Failure to delete
      *                     does not cause an exception to be thrown or affect return value.
+     * @param compressionLevel
+     *                     Gzip deflater compression level.
      */
-    public GzCompressAction(final File source, final File destination, final boolean deleteSource) {
+    public GzCompressAction(
+            final File source, final File destination, final boolean deleteSource, final int compressionLevel) {
         Objects.requireNonNull(source, "source");
         Objects.requireNonNull(destination, "destination");
 
         this.source = source;
         this.destination = destination;
         this.deleteSource = deleteSource;
+        this.compressionLevel = compressionLevel;
+    }
+
+    /**
+     * Prefer the constructor with compression level.
+     *
+     * @deprecated Prefer {@link GzCompressAction#GzCompressAction(File, File, boolean, int)}.
+     */
+    @Deprecated
+    public GzCompressAction(final File source, final File destination, final boolean deleteSource) {
+        this(source, destination, deleteSource, Deflater.DEFAULT_COMPRESSION);
     }
 
     /**
@@ -71,7 +94,7 @@ public final class GzCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
-        return execute(source, destination, deleteSource);
+        return execute(source, destination, deleteSource, compressionLevel);
     }
 
     /**
@@ -83,13 +106,38 @@ public final class GzCompressAction extends AbstractAction {
      *                     does not cause an exception to be thrown or affect return value.
      * @return true if source file compressed.
      * @throws IOException on IO exception.
+     * @deprecated In favor of {@link #execute(File, File, boolean, int)}.
      */
+    @Deprecated
     public static boolean execute(final File source, final File destination, final boolean deleteSource)
             throws IOException {
+        return execute(source, destination, deleteSource, Deflater.DEFAULT_COMPRESSION);
+    }
+
+    /**
+     * Compress a file.
+     *
+     * @param source       file to compress, may not be null.
+     * @param destination  compressed file, may not be null.
+     * @param deleteSource if true, attempt to delete file on completion.  Failure to delete
+     *                     does not cause an exception to be thrown or affect return value.
+     * @param compressionLevel
+     *                     Gzip deflater compression level.
+     * @return true if source file compressed.
+     * @throws IOException on IO exception.
+     */
+    public static boolean execute(
+            final File source,
+            final File destination,
+            final boolean deleteSource,
+            final int compressionLevel) throws IOException {
         if (source.exists()) {
             try (final FileInputStream fis = new FileInputStream(source);
-                    final BufferedOutputStream os = new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(
-                            destination)))) {
+                 final OutputStream fos = new FileOutputStream(destination);
+                 final OutputStream gzipOut = new ConfigurableLevelGZIPOutputStream(
+                         fos, BUF_SIZE, compressionLevel);
+                 // Reduce native invocations by buffering data into GZIPOutputStream
+                 final OutputStream os = new BufferedOutputStream(gzipOut, BUF_SIZE)) {
                 final byte[] inbuf = new byte[BUF_SIZE];
                 int n;
 
@@ -99,7 +147,7 @@ public final class GzCompressAction extends AbstractAction {
             }
 
             if (deleteSource && !source.delete()) {
-                LOGGER.warn("Unable to delete " + source.toString() + '.');
+                LOGGER.warn("Unable to delete {}.", source);
             }
 
             return true;
@@ -108,6 +156,13 @@ public final class GzCompressAction extends AbstractAction {
         return false;
     }
 
+    private static final class ConfigurableLevelGZIPOutputStream extends GZIPOutputStream {
+
+        ConfigurableLevelGZIPOutputStream(OutputStream out, int bufSize, int level) throws IOException {
+            super(out, bufSize);
+            def.setLevel(level);
+        }
+    }
 
     /**
      * Capture exception.

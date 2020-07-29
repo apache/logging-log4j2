@@ -192,8 +192,6 @@ public final class ThreadContext {
     private static final String DISABLE_STACK = "disableThreadContextStack";
     private static final String DISABLE_ALL = "disableThreadContext";
 
-    private static boolean disableAll;
-    private static boolean useMap;
     private static boolean useStack;
     private static ThreadContextMap contextMap;
     private static ThreadContextStack contextStack;
@@ -214,9 +212,9 @@ public final class ThreadContext {
         ThreadContextMapFactory.init();
         contextMap = null;
         final PropertiesUtil managerProps = PropertiesUtil.getProperties();
-        disableAll = managerProps.getBooleanProperty(DISABLE_ALL);
+        boolean disableAll = managerProps.getBooleanProperty(DISABLE_ALL);
         useStack = !(managerProps.getBooleanProperty(DISABLE_STACK) || disableAll);
-        useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || disableAll);
+        boolean useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || disableAll);
 
         contextStack = new DefaultThreadContextStack(useStack);
         if (!useMap) {
@@ -244,6 +242,24 @@ public final class ThreadContext {
      */
     public static void put(final String key, final String value) {
         contextMap.put(key, value);
+    }
+
+    /**
+     * Puts a context value (the <code>value</code> parameter) as identified with the <code>key</code> parameter into
+     * the current thread's context map if the key does not exist.
+     *
+     * <p>
+     * If the current thread does not have a context map it is created as a side effect.
+     * </p>
+     *
+     * @param key The key name.
+     * @param value The key value.
+     * @since 2.13.0
+     */
+    public static void putIfNull(final String key, final String value) {
+        if(!contextMap.containsKey(key)) {
+            contextMap.put(key, value);
+        }
     }
 
     /**

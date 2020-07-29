@@ -140,6 +140,7 @@
                project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
+          <source>8</source>
         </configuration>
         <reportSets>
           <reportSet>

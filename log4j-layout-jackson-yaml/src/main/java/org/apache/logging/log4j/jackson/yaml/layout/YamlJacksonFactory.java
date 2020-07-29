@@ -37,6 +37,16 @@ class YamlJacksonFactory extends AbstractJacksonFactory {
     }
 
     @Override
+    protected String getPropertyNameForTimeMillis() {
+        return YamlConstants.ELT_TIME_MILLIS;
+    }
+
+    @Override
+    protected String getPropertyNameForInstant() {
+        return YamlConstants.ELT_INSTANT;
+    }
+
+    @Override
     protected String getPropertyNameForNanoTime() {
         return YamlConstants.ELT_NANO_TIME;
     }

@@ -1,0 +1,21 @@
+version: "3"
+services:
+  sampleapp:
+    container_name: sampleapp
+    image: sampleapp
+    environment:
+      DOCKER_URI: http://socat:1234
+      SERVICE_PARAMS: --spring.config.location=classpath:/,classpath:/application-local-docker.yml
+    ports:
+      - "5005:5005"
+      - "8080:8080"
+    networks:
+      sample_network:
+        aliases:
+          - sampleapp
+
+networks:
+  sample_network:
+
+volumes:
+  pgdata:

@@ -16,6 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.util.Strings;
+
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -28,18 +40,6 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * File posix attribute view action.
@@ -74,7 +74,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
         this.fileGroup = fileGroup;
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
@@ -82,7 +82,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
     /**
      * Builder for the posix view attribute action.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<PosixViewAttributeAction> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<PosixViewAttributeAction> {
 
         @PluginConfiguration
         private Configuration configuration;
@@ -145,7 +145,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param configuration {@link AbstractPathAction#getStrSubstitutor()}
          * @return This builder
          */
-        public Builder withConfiguration(final Configuration configuration) {
+        public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
@@ -156,7 +156,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param subst {@link AbstractPathAction#getStrSubstitutor()}
          * @return This builder
          */
-        public Builder withSubst(final StrSubstitutor subst) {
+        public Builder setSubst(final StrSubstitutor subst) {
             this.subst = subst;
             return this;
         }
@@ -166,7 +166,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param basePath {@link AbstractPathAction#getBasePath()}
          * @return This builder
          */
-        public Builder withBasePath(final String basePath) {
+        public Builder setBasePath(final String basePath) {
             this.basePath = basePath;
             return this;
         }
@@ -176,7 +176,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param followLinks Follow synonyms links
          * @return This builder
          */
-        public Builder withFollowLinks(final boolean followLinks) {
+        public Builder setFollowLinks(final boolean followLinks) {
             this.followLinks = followLinks;
             return this;
         }
@@ -186,7 +186,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param maxDepth Max search depth 
          * @return This builder
          */
-        public Builder withMaxDepth(final int maxDepth) {
+        public Builder setMaxDepth(final int maxDepth) {
             this.maxDepth = maxDepth;
             return this;
         }
@@ -197,7 +197,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param pathConditions {@link AbstractPathAction#getPathConditions()}
          * @return This builder
          */
-        public Builder withPathConditions(final PathCondition[] pathConditions) {
+        public Builder setPathConditions(final PathCondition[] pathConditions) {
             this.pathConditions = pathConditions;
             return this;
         }
@@ -211,7 +211,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param filePermissionsString Permissions to apply
          * @return This builder
          */
-        public Builder withFilePermissionsString(final String filePermissionsString) {
+        public Builder setFilePermissionsString(final String filePermissionsString) {
             this.filePermissionsString = filePermissionsString;
             return this;
         }
@@ -221,7 +221,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param filePermissions Permissions to apply
          * @return This builder
          */
-        public Builder withFilePermissions(final Set<PosixFilePermission> filePermissions) {
+        public Builder setFilePermissions(final Set<PosixFilePermission> filePermissions) {
             this.filePermissions = filePermissions;
             return this;
         }
@@ -231,7 +231,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param fileOwner File owner
          * @return This builder
          */
-        public Builder withFileOwner(final String fileOwner) {
+        public Builder setFileOwner(final String fileOwner) {
             this.fileOwner = fileOwner;
             return this;
         }
@@ -241,7 +241,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * @param fileGroup File group
          * @return This builder
          */
-        public Builder withFileGroup(final String fileGroup) {
+        public Builder setFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
             return this;
         }

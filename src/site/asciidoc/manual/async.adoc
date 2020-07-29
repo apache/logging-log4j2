@@ -205,11 +205,11 @@ at first use and will never grow or shrink during the life of the
 system.
 
 When the application is logging faster than the underlying appender can
-keep up with for a long enough time to fill up the queue, the behavious
+keep up with for a long enough time to fill up the queue, the behaviour
 is determined by the
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy].
 
-|log4j2.asyncLoggerWaitStrategy
+|[[asyncLoggerWaitStrategy]]log4j2.asyncLoggerWaitStrategy
 |`Timeout`
 |Valid values: Block,
 Timeout, Sleep, Yield.
@@ -231,6 +231,32 @@ latency for actually getting the message logged.
 events after an initially spinning. Yield is a good compromise between
 performance and CPU resource, but may use more CPU than Sleep in order
 to get the message logged to disk sooner.
+
+|log4j2.asyncLoggerTimeout
+|`10`
+|Timeout in milliseconds of `TimeoutBlockingWaitStrategy`. See
+link:#asyncLoggerWaitStrategy[WaitStrategy System Property] for details.
+
+|log4j2.asyncLoggerSleepTimeNs
+|`100`
+|Sleep time (in nanoseconds) of `SleepingWaitStrategy`. See
+link:#asyncLoggerWaitStrategy[WaitStrategy System Property] for details.
+
+|log4j2.asyncLoggerRetries
+|`200`
+|Total number of spin cycles and `Thread.yield()` cycles of `SleepingWaitStrategy`. See
+link:#asyncLoggerWaitStrategy[WaitStrategy System Property] for details.
+
+
+
+|AsyncLogger.SynchronizeEnqueueWhenQueueFull
+|`true`
+|Synchronizes access to the Disruptor ring buffer for blocking enqueue operations when the queue is full.
+Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application
+was logging more than the underlying appender could keep up with and the ring buffer became full,
+especially when the number of application threads vastly outnumbered the number of cores.
+CPU utilization is significantly reduced by restricting access to the enqueue operation. Setting this value
+to `false` may lead to very high CPU utilization when the async logging queue is full.
 
 |log4j2.asyncLoggerThreadNameStrategy
 |`CACHED`
@@ -366,7 +392,7 @@ keep up with for a long enough time to fill up the queue, the behavious
 is determined by the
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy].
 
-|log4j2.asyncLoggerConfigWaitStrategy
+|[[asyncLoggerConfigWaitStrategy]]log4j2.asyncLoggerConfigWaitStrategy
 |`Timeout`
 |Valid values: Block,
 Timeout, Sleep, Yield. +
@@ -388,6 +414,31 @@ latency for actually getting the message logged. +
 events after an initially spinning. Yield is a good compromise between
 performance and CPU resource, but may use more CPU than Sleep in order
 to get the message logged to disk sooner.
+
+|log4j2.asyncLoggerConfigTimeout
+|`10`
+|Timeout in milliseconds of `TimeoutBlockingWaitStrategy`. See
+link:#asyncLoggerConfigWaitStrategy[WaitStrategy System Property] for details.
+
+|log4j2.asyncLoggerConfigSleepTimeNs
+|`100`
+|Sleep time (in nanoseconds) of `SleepingWaitStrategy`. See
+link:#asyncLoggerConfigWaitStrategy[WaitStrategy System Property] for details.
+
+|log4j2.asyncLoggerConfigRetries
+|`200`
+|Total number of spin cycles and `Thread.yield()` cycles of `SleepingWaitStrategy`. See
+link:#asyncLoggerConfigWaitStrategy[WaitStrategy System Property] for details.
+
+|AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull
+|`true`
+|Synchronizes access to the Disruptor ring buffer for blocking enqueue operations when the queue is full.
+Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application
+was logging more than the underlying appender could keep up with and the ring buffer became full,
+especially when the number of application threads vastly outnumbered the number of cores.
+CPU utilization is significantly reduced by restricting access to the enqueue operation. Setting this value
+to `false` may lead to very high CPU utilization when the async logging queue is full.
+
 |===
 
 There are also a few system properties that can be used to maintain

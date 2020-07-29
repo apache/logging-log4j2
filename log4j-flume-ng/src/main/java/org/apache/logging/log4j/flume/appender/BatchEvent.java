@@ -35,4 +35,8 @@ public class BatchEvent {
     public List<Event> getEvents() {
         return events;
     }
+
+    public int size() {
+        return events.size();
+    }
 }

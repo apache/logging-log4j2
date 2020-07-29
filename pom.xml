@@ -24,11 +24,9 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>1</version>
+    <version>2</version>
+    <relativePath/>
   </parent>
-  <prerequisites>
-    <maven>3.0.5</maven>
-  </prerequisites>
   <description>Apache Log4j 2</description>
   <url>https://logging.apache.org/log4j/2.x/</url>
   <issueManagement>
@@ -120,6 +118,15 @@
       </roles>
       <timezone>Europe/Stockholm</timezone>
     </developer>
+    <developer>
+      <id>ckozak</id>
+      <name>Carter Kozak</name>
+      <email>ckozak@apache.org</email>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>America/New York</timezone>
+    </developer>
   </developers>
   <!-- Contributors -->
   <contributors>
@@ -164,9 +171,9 @@
     </mailingList>
   </mailingLists>
   <scm>
-    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</connection>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</developerConnection>
-    <url>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</url>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</developerConnection>
+    <url>https://gitbox.apache.org/repos/asf?p=logging-log4j2.git</url>
     <tag>log4j-${Log4jReleaseVersion}</tag>
   </scm>
   <properties>
@@ -181,19 +188,22 @@
     <slf4jVersion>1.7.25</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.9.5</jackson2Version>
+    <jackson2Version>2.11.1</jackson2Version>
     <springVersion>3.2.18.RELEASE</springVersion>
-    <flumeVersion>1.8.0</flumeVersion>
+    <kubernetes-client.version>4.6.1</kubernetes-client.version>
+    <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.2</disruptorVersion>
-    <conversantDisruptorVersion>1.2.11</conversantDisruptorVersion>
-    <mongodb2.version>2.14.3</mongodb2.version>
-    <mongodb3.version>3.6.3</mongodb3.version>
-    <compiler.plugin.version>3.7.0</compiler.plugin.version>
-    <pmd.plugin.version>3.9.0</pmd.plugin.version>
-    <spotbugs.plugin.version>3.1.0-RC7</spotbugs.plugin.version>
-    <spotbugs.version>3.1.2</spotbugs.version>
+    <conversantDisruptorVersion>1.2.15</conversantDisruptorVersion>
+    <elastic.version>7.6.2</elastic.version>
+    <mongodb3.version>3.12.4</mongodb3.version>
+    <mongodb4.version>4.0.3</mongodb4.version>
+    <groovy.version>2.5.6</groovy.version>
+    <compiler.plugin.version>3.8.1</compiler.plugin.version>
+    <pmd.plugin.version>3.10.0</pmd.plugin.version>
+    <spotbugs.plugin.version>3.1.5</spotbugs.plugin.version>
+    <spotbugs.version>3.1.7</spotbugs.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
-    <javadoc.plugin.version>3.0.0</javadoc.plugin.version>
+    <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
     <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
@@ -201,38 +211,39 @@
     <failsafe.plugin.version>2.21.0</failsafe.plugin.version>
     <checkstyle.plugin.version>3.0.0</checkstyle.plugin.version>
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
-    <rat.plugin.version>0.12</rat.plugin.version>
+    <rat.plugin.version>0.13</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
     <cobertura.plugin.version>2.7</cobertura.plugin.version>
-    <jacoco.plugin.version>0.8.1</jacoco.plugin.version>
+    <jacoco.plugin.version>0.8.5</jacoco.plugin.version>
     <release.plugin.version>2.5.3</release.plugin.version>
     <scm.plugin.version>1.9.5</scm.plugin.version>
     <jxr.plugin.version>2.5</jxr.plugin.version>
-    <clirr.plugin.version>2.8</clirr.plugin.version>
-    <!-- Maven site 3.7 uses the wrong stylesheet? -->
-    <site.plugin.version>3.4</site.plugin.version>
+    <revapi.plugin.version>0.10.5</revapi.plugin.version>
+    <revapi.skip>true</revapi.skip>
+    <site.plugin.version>3.8.2</site.plugin.version>
     <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
     <!-- See https://maven.apache.org/plugins/maven-site-plugin/migrate.html -->
     <velocity.plugin.version>1.5</velocity.plugin.version>
     <asciidoc.plugin.version>1.5.6</asciidoc.plugin.version>
-    <errorprone.version>2.3.0</errorprone.version>
-    <plexus.errorprone.version>2.8.4</plexus.errorprone.version>
+    <errorprone.version>2.3.2</errorprone.version>
+    <plexus.errorprone.version>2.8.5</plexus.errorprone.version>
     <remote.resources.plugin.version>1.5</remote.resources.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
-    <javax.persistence>2.2.0</javax.persistence>
+    <javax.persistence>2.2.1</javax.persistence>
     <osgi.api.version>6.0.0</osgi.api.version>
-    <activemq.version>5.15.3</activemq.version>
+    <activemq.version>5.15.9</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
-    <mockitoVersion>2.13.0</mockitoVersion>
+    <mockitoVersion>2.25.1</mockitoVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
-    <javaTargetVersion>1.7</javaTargetVersion>
+    <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />
   </properties>
   <pluginRepositories>
@@ -287,17 +298,17 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
-        <version>3.5.3</version>
+        <version>3.6.0</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
-        <version>1.11</version>
+        <version>1.12</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.7</version>
+        <version>3.9</version>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -322,6 +333,29 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-plugins-java9</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-plugins</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-1.2-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-plugins</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -350,7 +384,24 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-layout-json-template</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j18-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -365,11 +416,6 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-1.2-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-flume-ng</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -381,6 +427,11 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jul</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jpl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -591,7 +642,7 @@
       <dependency>
         <groupId>com.sun.mail</groupId>
         <artifactId>javax.mail</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.spec.javax.jms</groupId>
@@ -607,7 +658,7 @@
       <dependency>
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
-        <version>1.0.0</version>
+        <version>1.1.1</version>
       </dependency>
       <dependency>
         <groupId>org.zeromq</groupId>
@@ -642,15 +693,27 @@
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.14.0</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-all</artifactId>
         <version>1.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>4.0.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -705,40 +768,30 @@
         <version>${springVersion}</version>
       </dependency>
       <dependency>
+        <groupId>io.fabric8</groupId>
+        <artifactId>kubernetes-client</artifactId>
+        <version>${kubernetes-client.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
-        <version>2.4.0</version>
+        <version>2.4.1</version>
       </dependency>
       <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>1.4.197</version>
+        <version>1.4.199</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
         <artifactId>org.eclipse.persistence.jpa</artifactId>
-        <version>2.7.1</version>
+        <version>2.7.4</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
         <artifactId>javax.persistence</artifactId>
         <version>${javax.persistence}</version>
         <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.mongodb</groupId>
-        <artifactId>mongo-java-driver</artifactId>
-        <version>${mongodb2.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mongodb</groupId>
-        <artifactId>mongodb-driver</artifactId>
-        <version>${mongodb3.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mongodb</groupId>
-        <artifactId>bson</artifactId>
-        <version>${mongodb3.version}</version>
       </dependency>
       <dependency>
         <groupId>org.lightcouch</groupId>
@@ -758,19 +811,19 @@
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit</artifactId>
-        <version>1.28.2</version>
+        <version>1.31.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
-        <version>2.5.1</version>
+        <version>2.6.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-matchers</artifactId>
-        <version>2.5.1</version>
+        <version>2.6.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -779,18 +832,29 @@
         <version>2.6</version>
         <scope>test</scope>
       </dependency>
+      <!-- Used for testing JsonTemplateLayout -->
+      <dependency>
+        <groupId>co.elastic.logging</groupId>
+        <artifactId>log4j2-ecs-layout</artifactId>
+        <version>0.4.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.elasticsearch.client</groupId>
+        <artifactId>elasticsearch-rest-high-level-client</artifactId>
+        <version>${elastic.version}</version>
+      </dependency>
       <!-- Used for testing HttpAppender -->
       <dependency>
         <groupId>com.github.tomakehurst</groupId>
         <artifactId>wiremock</artifactId>
         <scope>test</scope>
-        <version>2.16.0</version>
+        <version>2.19.0</version>
       </dependency>
       <!-- Used for compressing to formats other than zip and gz -->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.16.1</version>
+        <version>1.18</version>
       </dependency>
       <dependency>
         <groupId>org.tukaani</groupId>
@@ -802,7 +866,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-csv</artifactId>
-        <version>1.5</version>
+        <version>1.6</version>
       </dependency>
       <!-- GC-free -->
       <dependency>
@@ -822,14 +886,19 @@
       </dependency>
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-all</artifactId>
-        <version>2.4.13</version>
+        <artifactId>groovy-jsr223</artifactId>
+        <version>${groovy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-dateutil</artifactId>
+        <version>${groovy.version}</version>
       </dependency>
       <dependency>
         <!-- Testing MongoDB -->
         <groupId>de.flapdoodle.embed</groupId>
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <version>2.0.3</version>
+        <version>2.2.0</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -908,6 +977,7 @@
             </compilerArguments>
             <compilerId>javac-with-errorprone</compilerId>
             <forceJavacCompilerUse>true</forceJavacCompilerUse>
+            <parameters>true</parameters>
           </configuration>
           <dependencies>
             <dependency>
@@ -951,14 +1021,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jxr-plugin</artifactId>
           <version>${jxr.plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>clirr-maven-plugin</artifactId>
-          <version>${clirr.plugin.version}</version>
-          <configuration>
-            <minSeverity>${minSeverity}</minSeverity>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.eluder.coveralls</groupId>
@@ -1033,6 +1095,11 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>docker-maven-plugin</artifactId>
+          <version>0.33.0</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -1077,8 +1144,8 @@
           <systemPropertyVariables>
             <java.awt.headless>true</java.awt.headless>
           </systemPropertyVariables>
-          <forkCount>2C</forkCount>
-          <reuseForks>true</reuseForks>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
           <excludes>
             <exclude>${log4j.skip.test1}</exclude>
             <exclude>${log4j.skip.test2}</exclude>
@@ -1108,19 +1175,32 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.12</version>
+        <executions>
+          <execution>
+            <id>timestamp-property</id>
+            <goals>
+              <goal>timestamp-property</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <name>currentYear</name>
+              <pattern>yyyy</pattern>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>${site.plugin.version}</version>
         <dependencies>
           <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>${velocity.plugin.version}</version>
-          </dependency>
-          <dependency>
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-ssh</artifactId>
-            <version>3.0.0</version>
+            <version>3.1.0</version>
           </dependency>
           <dependency>
             <groupId>org.asciidoctor</groupId>
@@ -1137,8 +1217,6 @@
           <moduleExcludes>
             <xdoc>navigation.xml,changes.xml</xdoc>
           </moduleExcludes>
-          <templateDirectory>${log4jParentDir}/src/site</templateDirectory>
-          <template>site.vm</template>
           <asciidoc>
             <attributes>
               <!-- copy any site properties wanted in asciidoc files -->
@@ -1227,6 +1305,13 @@
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
             <exclude>RELEASE-NOTES.md</exclude>
+            <exclude>**/*.yml</exclude>
+            <exclude>**/*.yaml</exclude>
+            <exclude>**/*.json</exclude>
+            <excllude>**/images/*.drawio</excllude>
+            <exclude>**/fluent-bit.conf</exclude>
+            <exclude>**/rabbitmq.config</exclude>
+            <exclude>**/MANIFEST.MF</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -1255,6 +1340,62 @@
             <goals>
               <goal>generate</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.revapi</groupId>
+        <artifactId>revapi-maven-plugin</artifactId>
+        <version>${revapi.plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.revapi</groupId>
+            <artifactId>revapi-java</artifactId>
+            <version>0.18.2</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <goals><goal>check</goal></goals>
+            <configuration>
+              <checkDependencies>false</checkDependencies>
+              <skip>${revapi.skip}</skip>
+              <failOnMissingConfigurationFiles>false</failOnMissingConfigurationFiles>
+              <analysisConfigurationFiles>
+                <path>revapi.json</path>
+              </analysisConfigurationFiles>
+              <analysisConfiguration><![CDATA[
+[
+  {
+     "extension": "revapi.java",
+     "configuration": {
+       "missing-classes": {
+         "behavior": "report",
+         "ignoreMissingAnnotations": false
+       },
+       "reportUsesFor": [
+          "java.missing.newClass",
+          "java.class.nonPublicPartOfAPI"
+       ],
+       "filter": {
+         "classes": {
+           "regex": true,
+           "include": [
+             "org\\.apache\\.logging\\.log4j(\\..+)?"
+           ]
+         },
+         "packages": {
+           "regex": true,
+           "include": [
+             "org\\.apache\\.logging\\.log4j(\\..+)?"
+           ]
+         }
+       }
+     }
+  }
+]
+              ]]></analysisConfiguration>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -1354,8 +1495,27 @@
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
             <exclude>RELEASE-NOTES.txt</exclude>
+            <exclude>**/*.yml</exclude>
+            <exclude>**/*.yaml</exclude>
+            <exclude>**/*.json</exclude>
+            <excllude>**/images/*.drawio</excllude>
+            <exclude>**/fluent-bit.conf</exclude>
+            <exclude>**/rabbitmq.config</exclude>
+            <exclude>**/MANIFEST.MF</exclude>
           </excludes>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.revapi</groupId>
+        <artifactId>revapi-maven-plugin</artifactId>
+        <version>${revapi.plugin.version}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>
@@ -1370,15 +1530,19 @@
   <modules>
     <module>log4j-api-java9</module>
     <module>log4j-api</module>
+    <module>log4j-plugins-java9</module>
+    <module>log4j-plugins</module>
     <module>log4j-core-java9</module>
     <module>log4j-core</module>
     <module>log4j-layout-jackson</module>
     <module>log4j-layout-jackson-json</module>
     <module>log4j-layout-jackson-xml</module>
     <module>log4j-layout-jackson-yaml</module>
+    <module>log4j-layout-json-template</module>
     <module>log4j-core-its</module>
     <module>log4j-1.2-api</module>
     <module>log4j-slf4j-impl</module>
+    <module>log4j-slf4j18-impl</module>
     <module>log4j-to-slf4j</module>
     <module>log4j-jcl</module>
     <module>log4j-csv</module>
@@ -1393,18 +1557,23 @@
     <module>log4j-jeromq</module>
     <module>log4j-jms</module>
     <module>log4j-kafka</module>
+    <module>log4j-redis</module>
     <module>log4j-couchdb</module>
-    <module>log4j-mongodb2</module>
     <module>log4j-mongodb3</module>
+    <module>log4j-mongodb4</module>
     <module>log4j-cassandra</module>
     <module>log4j-web</module>
     <module>log4j-perf</module>
     <module>log4j-iostreams</module>
     <module>log4j-jul</module>
+    <module>log4j-jpl</module>
     <module>log4j-liquibase</module>
     <module>log4j-appserver</module>
     <module>log4j-smtp</module>
     <module>log4j-osgi</module>
+    <module>log4j-docker</module>
+    <module>log4j-kubernetes</module>
+    <module>log4j-spring-cloud-config</module>
   </modules>
   <profiles>
     <profile>
@@ -1523,6 +1692,13 @@
                 <!-- Other -->
                 <exclude>felix-cache/**</exclude>
                 <exclude>RELEASE-NOTES.md</exclude>
+                <exclude>**/*.yml</exclude>
+                <exclude>**/*.yaml</exclude>
+                <exclude>**/*.json</exclude>
+                <excllude>**/images/*.drawio</excllude>
+                <exclude>**/fluent-bit.conf</exclude>
+                <exclude>**/rabbitmq.config</exclude>
+                <exclude>**/MANIFEST.MF</exclude>
               </excludes>
             </configuration>
             <executions>
@@ -1575,59 +1751,6 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
               <argLine>-agentpath:"${yourkit.home}/bin/mac/libyjpagent.jnilib"</argLine>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>jdk7</id>
-      <activation>
-        <jdk>1.7</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <argLine>-XX:MaxPermSize=512m</argLine>
-            </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <configuration>
-              <argLine>-XX:MaxPermSize=512m</argLine>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>useJava7</id>
-      <activation>
-        <property>
-          <name>useJava7</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-toolchains-plugin</artifactId>
-            <version>1.1</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>toolchain</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <toolchains>
-                <jdk>
-                  <version>1.7</version>
-                </jdk>
-              </toolchains>
             </configuration>
           </plugin>
         </plugins>

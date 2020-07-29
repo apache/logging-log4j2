@@ -17,96 +17,96 @@
 
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.inject.AbstractConfigurationInjector;
+import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
+
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import java.util.Optional;
 
 /**
- * PluginVisitor implementation for {@link PluginElement}. Supports arrays as well as singular values.
+ *  @deprecated Provided to support legacy plugins.
  */
-public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
-    public PluginElementVisitor() {
-        super(PluginElement.class);
-    }
-
+// copy of PluginElementInjector
+public class PluginElementVisitor extends AbstractConfigurationInjector<PluginElement, Configuration> {
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
-                        final StringBuilder log) {
-        final String name = this.annotation.value();
-        if (this.conversionType.isArray()) {
-            setConversionType(this.conversionType.getComponentType());
+    public void inject(final Object factory) {
+        final Optional<Class<?>> componentType = getComponentType(conversionType);
+        if (componentType.isPresent()) {
+            final Class<?> compType = componentType.get();
             final List<Object> values = new ArrayList<>();
             final Collection<Node> used = new ArrayList<>();
-            log.append("={");
+            debugLog.append("={");
             boolean first = true;
             for (final Node child : node.getChildren()) {
-                final PluginType<?> childType = child.getType();
-                if (name.equalsIgnoreCase(childType.getElementName()) ||
-                    this.conversionType.isAssignableFrom(childType.getPluginClass())) {
+                final PluginType<?> type = child.getType();
+                if (name.equalsIgnoreCase(type.getElementName()) || compType.isAssignableFrom(type.getPluginClass())) {
                     if (!first) {
-                        log.append(", ");
+                        debugLog.append(", ");
                     }
                     first = false;
                     used.add(child);
                     final Object childObject = child.getObject();
                     if (childObject == null) {
-                        LOGGER.error("Null object returned for {} in {}.", child.getName(), node.getName());
-                        continue;
+                        LOGGER.warn("Skipping null object returned for element {} in node {}", child.getName(), node.getName());
+                    } else if (childObject.getClass().isArray()) {
+                        Object[] children = (Object[]) childObject;
+                        debugLog.append(Arrays.toString(children)).append('}');
+                        node.getChildren().removeAll(used);
+                        configurationBinder.bindObject(factory, children);
+                        return;
+                    } else {
+                        debugLog.append(child.toString());
+                        values.add(childObject);
                     }
-                    if (childObject.getClass().isArray()) {
-                        log.append(Arrays.toString((Object[]) childObject)).append('}');
-                        return childObject;
-                    }
-                    log.append(child.toString());
-                    values.add(childObject);
                 }
             }
-            log.append('}');
-            // note that we need to return an empty array instead of null if the types are correct
-            if (!values.isEmpty() && !this.conversionType.isAssignableFrom(values.get(0).getClass())) {
-                LOGGER.error("Attempted to assign attribute {} to list of type {} which is incompatible with {}.",
-                    name, values.get(0).getClass(), this.conversionType);
-                return null;
+            debugLog.append('}');
+            if (!values.isEmpty() && !TypeUtil.isAssignable(compType, values.get(0).getClass())) {
+                LOGGER.error("Cannot assign element {} a list of {} as it is incompatible with {}", name, values.get(0).getClass(), compType);
+                return;
             }
             node.getChildren().removeAll(used);
-            // we need to use reflection here because values.toArray() will cause type errors at runtime
-            final Object[] array = (Object[]) Array.newInstance(this.conversionType, values.size());
-            for (int i = 0; i < array.length; i++) {
-                array[i] = values.get(i);
+            // using List::toArray here would cause type mismatch later on
+            final Object[] vals = (Object[]) Array.newInstance(compType, values.size());
+            for (int i = 0; i < vals.length; i++) {
+                vals[i] = values.get(i);
             }
-            return array;
+            configurationBinder.bindObject(factory, vals);
+        } else {
+            final Optional<Node> matchingChild = node.getChildren().stream().filter(this::isRequestedNode).findAny();
+            if (matchingChild.isPresent()) {
+                final Node child = matchingChild.get();
+                debugLog.append(child.getName()).append('(').append(child.toString()).append(')');
+                node.getChildren().remove(child);
+                configurationBinder.bindObject(factory, child.getObject());
+            } else {
+                debugLog.append(name).append("=null");
+                configurationBinder.bindObject(factory, null);
+            }
         }
-        final Node namedNode = findNamedNode(name, node.getChildren());
-        if (namedNode == null) {
-            log.append(name).append("=null");
-            return null;
-        }
-        log.append(namedNode.getName()).append('(').append(namedNode.toString()).append(')');
-        node.getChildren().remove(namedNode);
-        return namedNode.getObject();
     }
 
-    private Node findNamedNode(final String name, final Iterable<Node> children) {
-        for (final Node child : children) {
-            final PluginType<?> childType = child.getType();
-            if (childType == null) {
-                //System.out.println();
-            }
-            if (name.equalsIgnoreCase(childType.getElementName()) ||
-                this.conversionType.isAssignableFrom(childType.getPluginClass())) {
-                // FIXME: check child.getObject() for null?
-                // doing so would be more consistent with the array version
-                return child;
+    private boolean isRequestedNode(final Node child) {
+        final PluginType<?> type = child.getType();
+        return name.equalsIgnoreCase(type.getElementName()) || TypeUtil.isAssignable(conversionType, type.getPluginClass());
+    }
+
+    private static Optional<Class<?>> getComponentType(final Type type) {
+        if (type instanceof Class<?>) {
+            final Class<?> clazz = (Class<?>) type;
+            if (clazz.isArray()) {
+                return Optional.of(clazz.getComponentType());
             }
         }
-        return null;
+        return Optional.empty();
     }
 }

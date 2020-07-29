@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.ThreadContext;
 
+@Deprecated // use WebLookup
 public class ServletRequestThreadContext {
 
     public static void put(final String key, final ServletRequest servletRequest) {

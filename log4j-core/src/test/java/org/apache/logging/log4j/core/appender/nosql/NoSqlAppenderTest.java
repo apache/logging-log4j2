@@ -31,14 +31,14 @@ public class NoSqlAppenderTest {
 
     @Test
     public void testNoProvider() {
-        final NoSqlAppender appender = NoSqlAppender.createAppender("myName01", null, null, null, null);
+        final NoSqlAppender appender = NoSqlAppender.newBuilder().setName("myName01").build();
 
         assertNull("The appender should be null.", appender);
     }
 
     @Test
     public void testProvider() {
-        final NoSqlAppender appender = NoSqlAppender.createAppender("myName01", null, null, null, provider);
+        final NoSqlAppender appender = NoSqlAppender.newBuilder().setName("myName01").setProvider(provider).build();
 
         assertNotNull("The appender should not be null.", appender);
         assertEquals("The toString value is not correct.",
@@ -50,12 +50,14 @@ public class NoSqlAppenderTest {
 
     @Test
     public void testProviderBuffer() {
-        final NoSqlAppender appender = NoSqlAppender.createAppender("anotherName02", null, null, "25", provider);
+        final NoSqlAppender appender = NoSqlAppender.newBuilder().setName("anotherName02").setProvider(provider)
+                .setBufferSize(25).build();
 
         assertNotNull("The appender should not be null.", appender);
         assertEquals("The toString value is not correct.",
                 "anotherName02{ manager=noSqlManager{ description=anotherName02, bufferSize=25, provider=" + provider
-                        + " } }", appender.toString());
+                        + " } }",
+                appender.toString());
 
         appender.stop();
     }

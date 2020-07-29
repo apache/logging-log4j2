@@ -7,7 +7,7 @@
           immediateFlush="true"
           append="false">
       <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+        <Pattern>%d %p %c{1.} [%t] %m %throwable{short.message}%n</Pattern>
       </PatternLayout>
     </File>
   </Appenders>

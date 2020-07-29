@@ -51,7 +51,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
     
     private static final String SYS_PROP_KEY_CLASS_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#ClassName";
     private static final String SYS_PROP_KEY_DISPLAY_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#DisplayName";
-    private final String configLocation;
+    private final String configurationLocation;
     private LoggerContext loggerContext;
     private Class<? extends ContextSelector> contextSelectorClass;
     private String testClassName;
@@ -68,36 +68,36 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
     /**
      * Constructs a new LoggerContextRule for a given configuration file.
      *
-     * @param configLocation
+     * @param configurationLocation
      *            path to configuration file
      */
-    public LoggerContextRule(final String configLocation) {
-        this(configLocation, null);
+    public LoggerContextRule(final String configurationLocation) {
+        this(configurationLocation, null);
     }
 
     /**
      * Constructs a new LoggerContextRule for a given configuration file and a custom {@link ContextSelector} class.
      *
-     * @param configLocation
+     * @param configurationLocation
      *            path to configuration file
      * @param contextSelectorClass
      *            custom ContextSelector class to use instead of default
      */
-    public LoggerContextRule(final String configLocation, final Class<? extends ContextSelector> contextSelectorClass) {
-        this(configLocation, contextSelectorClass, AbstractLifeCycle.DEFAULT_STOP_TIMEOUT,
+    public LoggerContextRule(final String configurationLocation, final Class<? extends ContextSelector> contextSelectorClass) {
+        this(configurationLocation, contextSelectorClass, AbstractLifeCycle.DEFAULT_STOP_TIMEOUT,
                 AbstractLifeCycle.DEFAULT_STOP_TIMEUNIT);
     }
 
-    public LoggerContextRule(final String configLocation, final Class<? extends ContextSelector> contextSelectorClass,
+    public LoggerContextRule(final String configurationLocation, final Class<? extends ContextSelector> contextSelectorClass,
             final long shutdownTimeout, final TimeUnit shutdownTimeUnit) {
-        this.configLocation = configLocation;
+        this.configurationLocation = configurationLocation;
         this.contextSelectorClass = contextSelectorClass;
         this.shutdownTimeout = shutdownTimeout;
         this.shutdownTimeUnit = shutdownTimeUnit;
     }
 
-    public LoggerContextRule(final String config, final int shutdownTimeout, final TimeUnit shutdownTimeUnit) {
-        this(config, null, shutdownTimeout, shutdownTimeUnit);
+    public LoggerContextRule(final String configurationLocation, final int shutdownTimeout, final TimeUnit shutdownTimeUnit) {
+        this(configurationLocation, null, shutdownTimeout, shutdownTimeUnit);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
                 System.setProperty(SYS_PROP_KEY_CLASS_NAME, description.getClassName());
                 System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, description.getDisplayName());
                 loggerContext = Configurator.initialize(description.getDisplayName(),
-                        description.getTestClass().getClassLoader(), configLocation);
+                        description.getTestClass().getClassLoader(), configurationLocation);
                 try {
                     base.evaluate();
                 } finally {
@@ -145,9 +145,10 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
      *            the name of the Appender to look up.
      * @return the named Appender or {@code null} if it wasn't defined in the configuration.
      */
-    public Appender getAppender(final String name) {
-        return getConfiguration().getAppenders().get(name);
-    }
+    @SuppressWarnings("unchecked") // Assume the call site knows what it is doing.
+     public <T extends Appender> T getAppender(final String name) {
+         return (T) getConfiguration().getAppenders().get(name);
+     }
 
     /**
      * Gets a named Appender for this LoggerContext.
@@ -171,6 +172,15 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
      */
     public Configuration getConfiguration() {
         return loggerContext.getConfiguration();
+    }
+
+    /**
+     * Gets the configuration location.
+     * 
+     * @return the configuration location.
+     */
+    public String getConfigurationLocation() {
+        return configurationLocation;
     }
 
     /**
@@ -282,7 +292,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         builder.append("LoggerContextRule [configLocation=");
-        builder.append(configLocation);
+        builder.append(configurationLocation);
         builder.append(", contextSelectorClass=");
         builder.append(contextSelectorClass);
         builder.append("]");

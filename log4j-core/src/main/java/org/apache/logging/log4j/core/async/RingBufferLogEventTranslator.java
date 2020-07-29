@@ -37,7 +37,7 @@ import com.lmax.disruptor.EventTranslator;
 public class RingBufferLogEventTranslator implements
         EventTranslator<RingBufferLogEvent> {
 
-    private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
+    private static final ContextDataInjector INJECTOR = ContextDataInjectorFactory.createInjector();
     private AsyncLogger asyncLogger;
     String loggerName;
     protected Marker marker;
@@ -60,7 +60,7 @@ public class RingBufferLogEventTranslator implements
         event.setValues(asyncLogger, loggerName, marker, fqcn, level, message, thrown,
                 // config properties are taken care of in the EventHandler thread
                 // in the AsyncLogger#actualAsyncLog method
-                injector.injectContextData(null, (StringMap) event.getContextData()), contextStack,
+                INJECTOR.injectContextData(null, (StringMap) event.getContextData()), contextStack,
                 threadId, threadName, threadPriority, location, clock, nanoClock);
 
         clear(); // clear the translator
@@ -69,7 +69,7 @@ public class RingBufferLogEventTranslator implements
     /**
      * Release references held by this object to allow objects to be garbage-collected.
      */
-    private void clear() {
+    void clear() {
         setBasicValues(null, // asyncLogger
                 null, // loggerName
                 null, // marker

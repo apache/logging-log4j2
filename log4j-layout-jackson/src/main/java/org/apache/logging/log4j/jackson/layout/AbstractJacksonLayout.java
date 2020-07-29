@@ -42,9 +42,9 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.impl.MutableLogEvent;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.KeyValuePair;
@@ -65,6 +65,9 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         @PluginBuilderAttribute
         private boolean eventEol;
+
+        @PluginBuilderAttribute
+        private String endOfLine;
 
         @PluginBuilderAttribute
         private boolean compact;
@@ -96,6 +99,10 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         public boolean getEventEol() {
             return eventEol;
+        }
+
+        public String getEndOfLine() {
+            return endOfLine;
         }
 
         public boolean isCompact() {
@@ -153,6 +160,11 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         public B setEventEol(final boolean eventEol) {
             this.eventEol = eventEol;
+            return asBuilder();
+        }
+
+        public B setEndOfLine(final String endOfLine) {
+            this.endOfLine = endOfLine;
             return asBuilder();
         }
 
@@ -245,7 +257,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         // TODO Jackson-based layouts have certain filters set up for Log4jLogEvent.
         // TODO Need to set up the same filters for MutableLogEvent but don't know how...
         // This is a workaround.
-        return event instanceof MutableLogEvent ? ((MutableLogEvent) event).createMemento() : event;
+        return event instanceof Log4jLogEvent ? event : Log4jLogEvent.createMemento(event);
     }
     private static ResolvableKeyValuePair[] prepareAdditionalFields(final Configuration config,
             final KeyValuePair[] additionalFields) {
@@ -283,30 +295,24 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     protected final ResolvableKeyValuePair[] additionalFields;
 
-    @Deprecated
-    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
-            final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
-            final Serializer footerSerializer) {
-        this(config, objectWriter, charset, compact, complete, eventEol, headerSerializer, footerSerializer, false);
-    }
-
-    @Deprecated
-    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
-            final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
-            final Serializer footerSerializer, final boolean includeNullDelimiter) {
-        this(config, objectWriter, charset, compact, complete, eventEol, headerSerializer, footerSerializer,
-                includeNullDelimiter, null);
-    }
-
     protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
             final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
             final Serializer footerSerializer, final boolean includeNullDelimiter,
+            final KeyValuePair[] additionalFields) {
+        this(config, objectWriter, charset, compact, complete, eventEol, null,
+                headerSerializer, footerSerializer, includeNullDelimiter, additionalFields);
+    }
+    
+
+    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
+            final boolean compact, final boolean complete, final boolean eventEol, String endOfLine,
+            final Serializer headerSerializer, final Serializer footerSerializer, final boolean includeNullDelimiter,
             final KeyValuePair[] additionalFields) {
         super(config, charset, headerSerializer, footerSerializer);
         this.objectWriter = objectWriter;
         this.compact = compact;
         this.complete = complete;
-        this.eol = compact && !eventEol ? COMPACT_EOL : DEFAULT_EOL;
+        this.eol = endOfLine != null ? endOfLine : compact && !eventEol ? COMPACT_EOL : DEFAULT_EOL;
         this.includeNullDelimiter = includeNullDelimiter;
         this.additionalFields = prepareAdditionalFields(config, additionalFields);
     }

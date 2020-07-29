@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.net.Facility;
+import org.apache.logging.log4j.core.net.Priority;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.util.Chars;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -25,17 +36,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.net.Facility;
-import org.apache.logging.log4j.core.net.Priority;
-import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.util.Chars;
 
 /**
  * Formats a log event as a BSD Log record.
@@ -55,7 +55,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      * @param <B> the builder type
      */
     public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<SyslogLayout> {
+            implements org.apache.logging.log4j.plugins.util.Builder<SyslogLayout> {
         
         public Builder() {
             super();
@@ -105,7 +105,7 @@ public final class SyslogLayout extends AbstractStringLayout {
 
     }
     
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
@@ -195,22 +195,6 @@ public final class SyslogLayout extends AbstractStringLayout {
         result.put("dateFormat", dateFormat.toPattern());
         result.put("format", "<LEVEL>TIMESTAMP PROP(HOSTNAME) MESSAGE");
         return result;
-    }
-
-    /**
-     * Creates a SyslogLayout.
-     * 
-     * @param facility The Facility is used to try to classify the message.
-     * @param includeNewLine If true a newline will be appended to the result.
-     * @param escapeNL Pattern to use for replacing newlines.
-     * @param charset The character set.
-     * @return A SyslogLayout.
-     * @deprecated Use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static SyslogLayout createLayout(final Facility facility, final boolean includeNewLine,
-                                            final String escapeNL, final Charset charset) {
-        return new SyslogLayout(facility, includeNewLine, escapeNL, charset);
     }
 
     /**

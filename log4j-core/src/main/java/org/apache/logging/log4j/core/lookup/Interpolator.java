@@ -24,10 +24,10 @@ import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.core.util.ReflectionUtil;
+import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 
@@ -36,16 +36,22 @@ import org.apache.logging.log4j.util.Constants;
  */
 public class Interpolator extends AbstractConfigurationAwareLookup {
 
+    /** Constant for the prefix separator. */
+    public static final char PREFIX_SEPARATOR = ':';
+
     private static final String LOOKUP_KEY_WEB = "web";
+
+    private static final String LOOKUP_KEY_DOCKER = "docker";
+
+    private static final String LOOKUP_KEY_KUBERNETES = "kubernetes";
+
+    private static final String LOOKUP_KEY_SPRING = "spring";
 
     private static final String LOOKUP_KEY_JNDI = "jndi";
 
     private static final String LOOKUP_KEY_JVMRUNARGS = "jvmrunargs";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-
-    /** Constant for the prefix separator. */
-    private static final char PREFIX_SEPARATOR = ':';
 
     private final Map<String, StrLookup> strLookupMap = new HashMap<>();
 
@@ -71,7 +77,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                strLookupMap.put(entry.getKey(), ReflectionUtil.instantiate(clazz));
+                strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
             } catch (final Throwable t) {
                 handleError(entry.getKey(), t);
             }
@@ -97,6 +103,9 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         strLookupMap.put("main", MainMapLookup.MAIN_SINGLETON);
         strLookupMap.put("marker", new MarkerLookup());
         strLookupMap.put("java", new JavaLookup());
+        strLookupMap.put("base64", new Base64StrLookup());
+        strLookupMap.put("lower", new LowerLookup());
+        strLookupMap.put("upper", new UpperLookup());
         // JNDI
         try {
             // [LOG4J2-703] We might be on Android
@@ -126,6 +135,26 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         } else {
             LOGGER.debug("Not in a ServletContext environment, thus not loading WebLookup plugin.");
         }
+        try {
+            strLookupMap.put(LOOKUP_KEY_DOCKER,
+                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.docker.DockerLookup", StrLookup.class));
+        } catch (final Exception ignored) {
+            handleError(LOOKUP_KEY_DOCKER, ignored);
+        }
+        try {
+            strLookupMap.put(LOOKUP_KEY_SPRING,
+                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.spring.cloud.config.client.SpringLookup", StrLookup.class));
+        } catch (final Exception ignored) {
+            handleError(LOOKUP_KEY_SPRING, ignored);
+        }
+        try {
+            strLookupMap.put(LOOKUP_KEY_KUBERNETES,
+                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.kubernetes.KubernetesLookup", StrLookup.class));
+        } catch (final Exception ignored) {
+            handleError(LOOKUP_KEY_KUBERNETES, ignored);
+        } catch (final NoClassDefFoundError error) {
+            handleError(LOOKUP_KEY_KUBERNETES, error);
+        }
     }
 
     public Map<String, StrLookup> getStrLookupMap() {
@@ -150,6 +179,13 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
                 LOGGER.info("Log4j appears to be running in a Servlet environment, but there's no log4j-web module " +
                         "available. If you want better web container support, please add the log4j-web JAR to your " +
                         "web archive or server lib directory.");
+                break;
+            case LOOKUP_KEY_DOCKER: case LOOKUP_KEY_SPRING:
+                break;
+            case LOOKUP_KEY_KUBERNETES:
+                if (t instanceof NoClassDefFoundError) {
+                    LOGGER.warn("Unable to create Kubernetes lookup due to missing dependency: {}", t.getMessage());
+                }
                 break;
             default:
                 LOGGER.error("Unable to create Lookup for {}", lookupKey, t);

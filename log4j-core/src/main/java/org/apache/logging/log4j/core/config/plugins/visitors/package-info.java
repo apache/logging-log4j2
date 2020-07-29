@@ -16,9 +16,7 @@
  */
 
 /**
- * Visitor classes for extracting values from a Configuration or Node corresponding to a plugin annotation.
- * Visitor implementations must implement {@link org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor},
- * and the corresponding annotation must be annotated with
- * {@link org.apache.logging.log4j.core.config.plugins.PluginVisitorStrategy}.
+ * Legacy injector strategies for legacy annotations. Plugins should use the updated annotations provided in
+ * {@code org.apache.logging.log4j.plugins}.
  */
 package org.apache.logging.log4j.core.config.plugins.visitors;

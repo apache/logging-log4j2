@@ -27,13 +27,13 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.Strings;
 
@@ -69,8 +69,8 @@ public final class JeroMqAppender extends AbstractAppender {
             final long maxMsgSize, final long rcvHwm, final long receiveBufferSize, final int receiveTimeOut,
             final long reconnectIVL, final long reconnectIVLMax, final long sendBufferSize, final int sendTimeOut,
             final long sndHWM, final int tcpKeepAlive, final long tcpKeepAliveCount, final long tcpKeepAliveIdle,
-            final long tcpKeepAliveInterval, final boolean xpubVerbose) {
-        super(name, filter, layout, ignoreExceptions);
+            final long tcpKeepAliveInterval, final boolean xpubVerbose, Property[] properties) {
+        super(name, filter, layout, ignoreExceptions, properties);
         this.manager = JeroMqManager.getJeroMqManager(name, affinity, backlog, delayAttachOnConnect, identity, ipv4Only,
             linger, maxMsgSize, rcvHwm, receiveBufferSize, receiveTimeOut, reconnectIVL, reconnectIVLMax,
             sendBufferSize, sendTimeOut, sndHWM, tcpKeepAlive, tcpKeepAliveCount, tcpKeepAliveIdle,
@@ -83,33 +83,33 @@ public final class JeroMqAppender extends AbstractAppender {
     @PluginFactory
     public static JeroMqAppender createAppender(
             // @formatter:off
-            @Required(message = "No name provided for JeroMqAppender") @PluginAttribute("name") final String name,
-            @PluginElement("Layout") Layout<?> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginElement("Properties") final Property[] properties,
+            @Required(message = "No name provided for JeroMqAppender") @PluginAttribute final String name,
+            @PluginElement Layout<?> layout,
+            @PluginElement final Filter filter,
+            @PluginElement final Property[] properties,
             // Super attributes
-            @PluginAttribute("ignoreExceptions") final boolean ignoreExceptions,
+            @PluginAttribute final boolean ignoreExceptions,
             // ZMQ attributes; defaults picked from zmq.Options.
-            @PluginAttribute(value = "affinity", defaultLong = 0) final long affinity,
-            @PluginAttribute(value = "backlog", defaultLong = DEFAULT_BACKLOG) final long backlog,
-            @PluginAttribute(value = "delayAttachOnConnect") final boolean delayAttachOnConnect,
-            @PluginAttribute(value = "identity") final byte[] identity,
-            @PluginAttribute(value = "ipv4Only", defaultBoolean = true) final boolean ipv4Only,
-            @PluginAttribute(value = "linger", defaultLong = -1) final long linger,
-            @PluginAttribute(value = "maxMsgSize", defaultLong = -1) final long maxMsgSize,
-            @PluginAttribute(value = "rcvHwm", defaultLong = DEFAULT_RCV_HWM) final long rcvHwm,
-            @PluginAttribute(value = "receiveBufferSize", defaultLong = 0) final long receiveBufferSize,
-            @PluginAttribute(value = "receiveTimeOut", defaultLong = -1) final int receiveTimeOut,
-            @PluginAttribute(value = "reconnectIVL", defaultLong = DEFAULT_IVL) final long reconnectIVL,
-            @PluginAttribute(value = "reconnectIVLMax", defaultLong = 0) final long reconnectIVLMax,
-            @PluginAttribute(value = "sendBufferSize", defaultLong = 0) final long sendBufferSize,
-            @PluginAttribute(value = "sendTimeOut", defaultLong = -1) final int sendTimeOut,
-            @PluginAttribute(value = "sndHwm", defaultLong = DEFAULT_SND_HWM) final long sndHwm,
-            @PluginAttribute(value = "tcpKeepAlive", defaultInt = -1) final int tcpKeepAlive,
-            @PluginAttribute(value = "tcpKeepAliveCount", defaultLong = -1) final long tcpKeepAliveCount,
-            @PluginAttribute(value = "tcpKeepAliveIdle", defaultLong = -1) final long tcpKeepAliveIdle,
-            @PluginAttribute(value = "tcpKeepAliveInterval", defaultLong = -1) final long tcpKeepAliveInterval,
-            @PluginAttribute(value = "xpubVerbose") final boolean xpubVerbose
+            @PluginAttribute(defaultLong = 0) final long affinity,
+            @PluginAttribute(defaultLong = DEFAULT_BACKLOG) final long backlog,
+            @PluginAttribute final boolean delayAttachOnConnect,
+            @PluginAttribute final byte[] identity,
+            @PluginAttribute(defaultBoolean = true) final boolean ipv4Only,
+            @PluginAttribute(defaultLong = -1) final long linger,
+            @PluginAttribute(defaultLong = -1) final long maxMsgSize,
+            @PluginAttribute(defaultLong = DEFAULT_RCV_HWM) final long rcvHwm,
+            @PluginAttribute(defaultLong = 0) final long receiveBufferSize,
+            @PluginAttribute(defaultLong = -1) final int receiveTimeOut,
+            @PluginAttribute(defaultLong = DEFAULT_IVL) final long reconnectIVL,
+            @PluginAttribute(defaultLong = 0) final long reconnectIVLMax,
+            @PluginAttribute(defaultLong = 0) final long sendBufferSize,
+            @PluginAttribute(defaultLong = -1) final int sendTimeOut,
+            @PluginAttribute(defaultLong = DEFAULT_SND_HWM) final long sndHwm,
+            @PluginAttribute(defaultInt = -1) final int tcpKeepAlive,
+            @PluginAttribute(defaultLong = -1) final long tcpKeepAliveCount,
+            @PluginAttribute(defaultLong = -1) final long tcpKeepAliveIdle,
+            @PluginAttribute(defaultLong = -1) final long tcpKeepAliveInterval,
+            @PluginAttribute final boolean xpubVerbose
             // @formatter:on
     ) {
         if (layout == null) {
@@ -134,7 +134,7 @@ public final class JeroMqAppender extends AbstractAppender {
         return new JeroMqAppender(name, filter, layout, ignoreExceptions, endpoints, affinity, backlog,
                 delayAttachOnConnect, identity, ipv4Only, linger, maxMsgSize, rcvHwm, receiveBufferSize,
                 receiveTimeOut, reconnectIVL, reconnectIVLMax, sendBufferSize, sendTimeOut, sndHwm, tcpKeepAlive,
-                tcpKeepAliveCount, tcpKeepAliveIdle, tcpKeepAliveInterval, xpubVerbose);
+                tcpKeepAliveCount, tcpKeepAliveIdle, tcpKeepAliveInterval, xpubVerbose, Property.EMPTY_ARRAY);
     }
 
     @Override

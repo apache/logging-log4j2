@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="OFF" name="XMLConfigTest">
+<Configuration status="ERROR" name="XMLConfigTest">
   <Properties>
     <Property name="filename">target/rolling3/rollingtest.log</Property>
   </Properties>
@@ -26,14 +26,13 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
-    <RollingFile name="RollingFile" fileName="${filename}" filePattern="target/rolling3/test/test1-%d{MM-dd-yy-HH-mm}-%i.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
+    <RollingFile name="RollingFile" fileName="${filename}" filePattern="target/rolling3/test/rollingfile_%d{yyyy-MM-dd-HH-mm-ss}_%i.log">
+      <PatternLayout pattern="%d{yyyy-MM-dd-HH-mm-ss} [%level] [%c] %msg%n"/>
       <Policies>
         <TimeBasedTriggeringPolicy />
         <SizeBasedTriggeringPolicy size="500" />
       </Policies>
+      <DefaultRolloverStrategy max="9"/>
     </RollingFile>
     <List name="List">
       <ThresholdFilter level="error"/>

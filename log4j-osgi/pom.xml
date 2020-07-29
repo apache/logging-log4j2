@@ -70,14 +70,6 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <forkCount>2C</forkCount>
-          <reuseForks>true</reuseForks>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
           <execution>
@@ -119,11 +111,6 @@
   <reporting>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>clirr-maven-plugin</artifactId>
-        <version>${clirr.plugin.version}</version>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
         <version>${changes.plugin.version}</version>
@@ -164,6 +151,7 @@
                project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
+          <source>8</source>
           <links>
             <link>http://www.osgi.org/javadoc/r4v43/core/</link>
           </links>

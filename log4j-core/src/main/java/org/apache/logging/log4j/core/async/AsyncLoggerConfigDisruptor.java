@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
+import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.ReusableMessage;
@@ -184,7 +185,9 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     private long backgroundThreadId; // LOG4J2-471
     private EventFactory<Log4jEventWrapper> factory;
     private EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig> translator;
-    private volatile boolean alreadyLoggedWarning = false;
+    private volatile boolean alreadyLoggedWarning;
+
+    private final Object queueFullEnqueueLock = new Object();
 
     public AsyncLoggerConfigDisruptor() {
     }
@@ -214,7 +217,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
         ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLoggerConfig.RingBufferSize");
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLoggerConfig.WaitStrategy");
 
-        final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLoggerConfig-", true, Thread.NORM_PRIORITY) {
+        final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLoggerConfig", true, Thread.NORM_PRIORITY) {
             @Override
             public Thread newThread(final Runnable r) {
                 final Thread result = super.newThread(r);
@@ -369,7 +372,24 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     }
 
     private void enqueue(final LogEvent logEvent, final AsyncLoggerConfig asyncLoggerConfig) {
-        disruptor.getRingBuffer().publishEvent(translator, logEvent, asyncLoggerConfig);
+        if (synchronizeEnqueueWhenQueueFull()) {
+            synchronized (queueFullEnqueueLock) {
+                disruptor.getRingBuffer().publishEvent(translator, logEvent, asyncLoggerConfig);
+            }
+        } else {
+            disruptor.getRingBuffer().publishEvent(translator, logEvent, asyncLoggerConfig);
+        }
+    }
+
+    private boolean synchronizeEnqueueWhenQueueFull() {
+        return DisruptorUtil.ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
+                // Background thread must never block
+                && backgroundThreadId != Thread.currentThread().getId()
+                // Threads owned by log4j are most likely to result in
+                // deadlocks because they generally consume events.
+                // This prevents deadlocks between AsyncLoggerContext
+                // disruptors.
+                && !(Thread.currentThread() instanceof Log4jThread);
     }
 
     @Override

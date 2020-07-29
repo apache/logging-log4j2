@@ -67,6 +67,45 @@ be formatted as specified.
 </RollingFile>
 ----
 
+[#DockerLookup]
+== Docker Lookup
+
+The DockerLookup can be used to lookup attributes from the Docker container the application is running in.
+
+Log4j Docker provides access to the following container attributes:
+[cols="1m,4a"]
+|===
+|Key |Description
+
+|containerId
+|The full id assigned to the container.
+
+|containerName
+|The name assigned to the container.
+
+|imageId
+|The id assigned to the image.
+
+|imageName
+|The name assigned to the image.
+
+|shortContainerId
+|The first 12 characters of the container id.
+
+|shortImageId
+|The first 12 characters of the image id.
+|===
+
+----
+<JsonLayout properties="true" compact="true" eventEol="true">
+  <KeyValuePair key="containerId" value="${docker:containerId}"/>
+  <KeyValuePair key="containerName" value="${docker:containerName}"/>
+  <KeyValuePair key="imageName" value="${docker:imageName}"/>
+</JsonLayout>
+----
+
+This Lookup is subject to the requirements listed at link:../log4j-docker/index.html[Log4j Docker Support]
+
 [#EnvironmentLookup]
 == Environment Lookup
 
@@ -96,6 +135,80 @@ when the `USER` environment variable is undefined, the default value
     <pattern>%d %p %c{1.} [%t] $${env:USER:-jdoe} %m%n</pattern>
   </PatternLayout>
 </File>
+----
+[#EventLookup]
+== Event Lookup
+
+The EventLookup provides access to fields within the log event from the configuration.
+
+[cols="1m,4a"]
+|===
+|Key |Description
+
+|Exception
+|Returns the simple class name of the Exception, if one is included in the event.
+
+|Level
+|Returns the logging Level of the event.
+
+|Logger
+|Returns the name of the Logger.
+
+|Marker
+|Returns the name of the Marker associated with the log event, if one is present.
+
+|Message
+|Returns the formatted Message string.
+
+|ThreadId
+|Returns the thread id associated with the log event.
+
+|ThreadName
+|Returns the name of the thread associate with the log event.
+
+|Timestamp
+|Returns the time in milliseconds when the event occurred.
+
+|===
+
+In this example the RoutingAppender picks a route based on the presence of a Marker named "AUDIT" being
+present in the log event.
+[source,prettyprint,linenums]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" name="RoutingTest">
+  <Appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT" />
+    <Flume name="AuditLogger" compress="true">
+      <Agent host="192.168.10.101" port="8800"/>
+      <Agent host="192.168.10.102" port="8800"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+    </Flume>
+    <Routing name="Routing">
+      <Routes>
+        <Route pattern="$${event:Marker}">
+          <RollingFile
+              name="Rolling-${mdc:UserId}"
+              fileName="${mdc:UserId}.log"
+              filePattern="${mdc:UserId}.%i.log.gz">
+            <PatternLayout>
+              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+        </Route>
+        <Route ref="AuditLogger" key="AUDIT"/>
+        <Route ref="STDOUT" key="STDOUT"/>
+      </Routes>
+      <IdlePurgePolicy timeToLive="15" timeUnit="minutes"/>
+    </Routing>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="Routing" />
+    </Root>
+  </Loggers>
+</Configuration>
 ----
 
 [#JavaLookup]
@@ -182,6 +295,58 @@ https://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.htm
 
 *Java's JMX module is not available on Android or on Google App Engine.*
 
+[#KubernetesLookup]
+== Kubernetes Lookup
+
+The KubernetesLookup can be used to lookup attributes from the Kubernetes environment for the container
+the application is running in.
+
+Log4j Kubernetes provides access to the following container attributes:
+[cols="1m,4a"]
+|===
+|Attribute |Description
+|accountName|The service account name
+|clusterName|The name of the cluster the application is deployed in
+|containerId|>The full id assigned to the container
+|containerName|The name assigned to the container
+|host|The name assigned to the host operating system
+|hostIp|The host's ip address
+|imageId|The id assigned to the container image
+|imageName|The name assigned to the container image
+|labels|All labels formatted in a list
+|labesl.app|The application name
+|labels.podTemplateHash|The pod's template hash value
+|masterUrl|The URL used to access the API server
+|namespaceId|The id of the namespace the various kubernetes components are located within
+|namespaceName|The namespace the various kubernetes components are located within
+|podId|The pod's ip number
+|podIp|The pod's ip address
+|podName|The name of the pod
+
+      <GelfLayout includeStackTrace="true" host="${hostName}" includeThreadContext="true" includeNullDelimiter="true" compressionType="OFF">
+        <ThreadContextIncludes>requestId,sessionId,loginId,userId,ipAddress,callingHost</ThreadContextIncludes>
+        <MessagePattern>%d [%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress} %C{1.}.%M:%L - %m%n</MessagePattern>
+        <KeyValuePair key="docker.containerId" value="${docker:containerId:-}"/>
+        <KeyValuePair key="application" value="$${lower:${spring:spring.application.name}}"/>
+        <KeyValuePair key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
+        <KeyValuePair key="kubernetes.clusterName" value="${k8s:clusterName:-}/>
+        <KeyValuePair key="kubernetes.containerId" value="${k8s:containerId:-}"/>
+        <KeyValuePair key="kubernetes.containerName" value="${k8s:containerName:-}"/>
+        <KeyValuePair key="kubernetes.host" value="${k8s:host:-}"/>
+        <KeyValuePair key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
+        <KeyValuePair key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
+        <KeyValuePair key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
+        <KeyValuePair key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
+        <KeyValuePair key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
+        <KeyValuePair key="kubernetes.podID" value="${k8s:podId:-}"/>
+        <KeyValuePair key="kubernetes.podIP" value="${k8s:podIp:-}"/>
+        <KeyValuePair key="kubernetes.podName" value="${k8s:podName:-}"/>
+        <KeyValuePair key="kubernetes.imageId" value="${k8s:imageId:-}"/>
+        <KeyValuePair key="kubernetes.imageName" value="${k8s:imageName:-}"/>
+      </GelfLayout>]]></pre>
+
+This Lookup is subject to the configuration requirements listed at link:../log4j-kubernetes/index.html[Log4j Kubernetes Support]
+
 [#Log4jConfigLookup]
 == Log4j Configuration Location Lookup
 
@@ -198,6 +363,21 @@ relative to the log4j configuration file.
 <File name="Application" fileName="${log4j:configParentLocation}/logs/application.log">
   <PatternLayout>
     <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+  </PatternLayout>
+</File>
+----
+
+[#LowerLookup]
+== Lower Lookup
+
+The LowerLookup converts the passed in argument to lower case. Presumably the value will be the
+result of a nested lookup.
+
+[source,xml]
+----
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${lower:${spring:spring.application.name}} %m%n</pattern>
   </PatternLayout>
 </File>
 ----
@@ -224,6 +404,11 @@ configuration. The key that follows the `main:` prefix can either be a
 0-based index into the argument list, or a string, where
 `${main:myString}` is substituted with the value that follows `myString`
 in the main argument list.
+
+Note: Many applications use leading dashes to identify command arguments. Specifying
+`${main:--file}` would result in the lookup failing because it would look for a variable
+named "main" with a default value of "-file". To avoid this the ":" separating the Lookup name from the
+key must be followed by a backslash as an escape character as in `${main:\--file}`.
 
 For example, suppose the static void main String[] arguments are:
 
@@ -252,14 +437,18 @@ Then the following substitutions are possible:
 |${main:4}
 |bar
 
-|${main:--file}
+|${main:\--file}
 |foo.txt
 
-|${main:-x}
+|${main:\-x}
 |bar
 
 |${main:bar}
 |null
+|===
+
+|${main:\--quiet:-true}
+|true
 |===
 
 Example usage:
@@ -411,6 +600,31 @@ while "type" would have to be an item in the Map in a MapMessage.
 </Routing>
 ----
 
+[#SpringLookup]
+== Spring Boot Lookup
+
+
+The Spring Boot Lookup retrieves the values of Spring properties from the Spring configuration as well as
+values of the active and default profiles. Specifying a key of `profiles.active` will reutrn the active
+profiles while a key of `profiles.default` will return the default profiles. The default and active
+profiles can be an array. If more than one profile is present they will be returned as a comma separated
+list. To retrieve a single item from the array append `[{index}]` to the key. For example, to return the
+first active profile in the list specify `profiles.active[0]`.
+
+This Lookup will return null values until Spring Boot initializes application logging.
+
+
+[source,xml]
+----
+<File name="Application" fileName="application-${spring:profiles.active[0]}.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${spring:spring.application.name} %m%n</pattern>
+  </PatternLayout>
+</File>
+----
+
+This Lookup requires log4j-spring-cloud-config-client be included in the application.
+
 [#SystemPropertiesLookup]
 == System Properties Lookup
 
@@ -438,6 +652,21 @@ when the `logPath` system property is undefined, the default value
 </Appenders>
 ----
 
+[#UpperLookup]
+== Upper Lookup
+
+The LowerLookup converts the passed in argument to upper case. Presumably the value will be the
+result of a nested lookup.
+
+[source,xml]
+----
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${upper:{${spring:spring.application.name}} %m%n</pattern>
+  </PatternLayout>
+</File>
+----
+
 [#WebLookup]
 == Web Lookup
 
@@ -455,8 +684,50 @@ retrieved:
 |attr._name_
 |Returns the ServletContext attribute with the specified name
 
+|request.attr._name_
+|Returns the ServletRequest attribute with the specified name - requires Log4jServletFilter
+
+|header._name_
+|Returns the HttpServletRequest header with the specified name - requires Log4jServletFilter
+
+|cookie._name_
+|Returns the HttpServletRequest cookie with the specified name - requires Log4jServletFilter
+
+|header._name_
+|Returns the HttpServletRequest header with the specified name - requires Log4jServletFilter
+
+|request._method_
+|Returns the HttpServletRequest method - requires Log4jServletFilter
+
+|request._uri_
+|Returns the HttpServletRequest URI - requires Log4jServletFilter
+
+|request._url_
+|Returns the HttpServletRequest URL - requires Log4jServletFilter
+
+|request._remoteAddress_
+|Returns the HttpServletRequest remote address - requires Log4jServletFilter
+
+|request._remoteHost_
+|Returns the HttpServletRequest remote host - requires Log4jServletFilter
+
+|request.parameter._name_
+|Returns the HttpServletRequest parameter - requires Log4jServletFilter
+
+|request.principal
+|Returns the HttpServletRequest principal name - requires Log4jServletFilter
+
+|session.id
+|Returns the HttpSession id or null if none is started - requires Log4jServletFilter
+
+|session.attr._name_
+|Returns the HttpSession attribute value (using _toString()_ if not null) or null if absent - requires Log4jServletFilter
+
 |contextPath
 |The context path of the web application
+
+|contextPathName
+|The first token in the context path of the web application splitting on "/" characters.
 
 |effectiveMajorVersion
 |Gets the major version of the Servlet specification that the application
@@ -495,4 +766,23 @@ located then the corresponding value will be returned.
 <Appenders>
   <File name="ApplicationLog" fileName="${web:rootDir}/app.log"/>
 </Appenders>
+----
+
+=== Request lookups and asynchronous calls
+
+Servlet 3.0 supports asynchronous calls, by default the request tracking - and therefore request related lookups,
+will not work. To make it work you can extract the servlet context attribute `log4j.requestExecutor` which
+is a `BiConsumer<ServletRequest, Runnable>` and call it passing the correct request and task to execute
+synchronously. During this task execution the lookups will be set up properly:
+
+[source,java]
+----
+@GET // example using JAX-RS asynchronous feature backed by servlet AsyncContext
+public void get(@Suspended AsyncResponse response,
+                @Context ServletContext context,
+                @Context ServletRequest request) {
+   final BiConsumer<ServletRequest, Runnable> log4jWrapper =
+        (BiConsumer<ServletRequest, Runnable>) context.getAttribute("log4j.requestExecutor");
+   myThreadPool.submit(() -> log4jWrapper.accept(request, () -> response.resume(doInternalGet()));
+}
 ----

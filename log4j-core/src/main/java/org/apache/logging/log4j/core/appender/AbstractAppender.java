@@ -26,10 +26,11 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Integers;
@@ -72,17 +73,17 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return layout;
         }
 
-        public B withName(final String name) {
+        public B setName(final String name) {
             this.name = name;
             return asBuilder();
         }
 
-        public B withIgnoreExceptions(final boolean ignoreExceptions) {
+        public B setIgnoreExceptions(final boolean ignoreExceptions) {
             this.ignoreExceptions = ignoreExceptions;
             return asBuilder();
         }
 
-        public B withLayout(final Layout<? extends Serializable> layout) {
+        public B setLayout(final Layout<? extends Serializable> layout) {
             this.layout = layout;
             return asBuilder();
         }
@@ -96,18 +97,9 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         
         public Layout<? extends Serializable> getOrCreateLayout(final Charset charset) {
             if (layout == null) {
-                return PatternLayout.newBuilder().withCharset(charset).build();
+                return PatternLayout.newBuilder().setCharset(charset).build();
             }
             return layout;
-        }
-
-        /**
-         * @deprecated Use {@link #setConfiguration(Configuration)}
-         */
-        @Deprecated
-        public B withConfiguration(final Configuration configuration) {
-            this.configuration = configuration;
-            return asBuilder();
         }
 
         public B setConfiguration(final Configuration configuration) {
@@ -127,17 +119,6 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
     private ErrorHandler handler = new DefaultErrorHandler(this);
 
     /**
-     * Constructor that defaults to suppressing exceptions.
-     * 
-     * @param name The Appender name.
-     * @param filter The Filter to associate with the Appender.
-     * @param layout The layout to use to format the event.
-     */
-    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
-        this(name, filter, layout, true);
-    }
-
-    /**
      * Constructor.
      * 
      * @param name The Appender name.
@@ -145,13 +126,43 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      * @param layout The layout to use to format the event.
      * @param ignoreExceptions If true, exceptions will be logged and suppressed. If false errors will be logged and
      *            then passed to the application.
+     * @param properties Optional properties
      */
     protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions) {
-        super(filter);
+            final boolean ignoreExceptions, final Property[] properties) {
+        super(filter, properties);
         this.name = Objects.requireNonNull(name, "name");
         this.layout = layout;
         this.ignoreExceptions = ignoreExceptions;
+    }
+
+    /**
+     * Constructor that defaults to suppressing exceptions.
+     *
+     * @param name The Appender name.
+     * @param filter The Filter to associate with the Appender.
+     * @param layout The layout to use to format the event.
+     * @deprecated Use {@link #AbstractAppender(String, Filter, Layout, boolean, Property[])}.
+     */
+    @Deprecated
+    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
+        this(name, filter, layout, true, Property.EMPTY_ARRAY);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param name The Appender name.
+     * @param filter The Filter to associate with the Appender.
+     * @param layout The layout to use to format the event.
+     * @param ignoreExceptions If true, exceptions will be logged and suppressed. If false errors will be logged and
+     *            then passed to the application.
+     * @deprecated Use {@link #AbstractAppender(String, Filter, Layout, boolean, Property[])}
+     */
+    @Deprecated
+    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions) {
+        this(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
     }
 
     public static int parseInt(final String s, final int defaultValue) {
@@ -161,6 +172,11 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             LOGGER.error("Could not parse \"{}\" as an integer,  using default value {}: {}", s, defaultValue, e);
             return defaultValue;
         }
+    }
+
+    @Override
+    public boolean requiresLocation() {
+        return layout != null && layout.requiresLocation();
     }
 
     /**
@@ -244,6 +260,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
     public void setHandler(final ErrorHandler handler) {
         if (handler == null) {
             LOGGER.error("The handler cannot be set to null");
+            return;
         }
         if (isStarted()) {
             LOGGER.error("The handler cannot be changed once the appender is started");

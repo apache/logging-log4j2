@@ -21,11 +21,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -77,6 +75,26 @@ public final class LoaderUtil {
     }
 
     /**
+     * Returns the ClassLoader to use.
+     * @return the ClassLoader.
+     */
+    public static ClassLoader getClassLoader() {
+        return getClassLoader(LoaderUtil.class, null);
+    }
+
+    // TODO: this method could use some explanation
+    public static ClassLoader getClassLoader(final Class<?> class1, final Class<?> class2) {
+        final ClassLoader threadContextClassLoader = getThreadContextClassLoader();
+        final ClassLoader loader1 = class1 == null ? null : class1.getClassLoader();
+        final ClassLoader loader2 = class2 == null ? null : class2.getClassLoader();
+
+        if (isChild(threadContextClassLoader, loader1)) {
+            return isChild(threadContextClassLoader, loader2) ? threadContextClassLoader : loader2;
+        }
+        return isChild(loader1, loader2) ? loader1 : loader2;
+    }
+
+    /**
      * Gets the current Thread ClassLoader. Returns the system ClassLoader if the TCCL is {@code null}. If the system
      * ClassLoader is {@code null} as well, then the ClassLoader for this class is returned. If running with a
      * {@link SecurityManager} that does not allow access to the Thread ClassLoader or system ClassLoader, then the
@@ -91,6 +109,26 @@ public final class LoaderUtil {
             return LoaderUtil.class.getClassLoader();
         }
         return SECURITY_MANAGER == null ? TCCL_GETTER.run() : AccessController.doPrivileged(TCCL_GETTER);
+    }
+
+    /**
+     * Determines if one ClassLoader is a child of another ClassLoader. Note that a {@code null} ClassLoader is
+     * interpreted as the system ClassLoader as per convention.
+     *
+     * @param loader1 the ClassLoader to check for childhood.
+     * @param loader2 the ClassLoader to check for parenthood.
+     * @return {@code true} if the first ClassLoader is a strict descendant of the second ClassLoader.
+     */
+    private static boolean isChild(final ClassLoader loader1, final ClassLoader loader2) {
+        if (loader1 != null && loader2 != null) {
+            ClassLoader parent = loader1.getParent();
+            while (parent != null && parent != loader2) {
+                parent = parent.getParent();
+            }
+            // once parent is null, we're at the system CL, which would indicate they have separate ancestry
+            return parent != null;
+        }
+        return loader1 != null;
     }
 
     /**
@@ -109,28 +147,31 @@ public final class LoaderUtil {
     }
 
     public static ClassLoader[] getClassLoaders() {
-        List<ClassLoader> classLoaders = new ArrayList<>();
-        ClassLoader tcl = getThreadContextClassLoader();
-        classLoaders.add(tcl);
-        if (!isForceTccl()) {
-            ClassLoader current = LoaderUtil.class.getClassLoader();
-            if (current != tcl) {
-                classLoaders.add(current);
-                ClassLoader parent = current.getParent();
-                while (parent != null && !classLoaders.contains(parent)) {
-                    classLoaders.add(parent);
-                }
-            }
-            ClassLoader parent = tcl.getParent();
-            while (parent != null && !classLoaders.contains(parent)) {
-                classLoaders.add(parent);
-                parent = parent.getParent();
-            }
-            if (!classLoaders.contains(ClassLoader.getSystemClassLoader())) {
-                classLoaders.add(ClassLoader.getSystemClassLoader());
+        final Collection<ClassLoader> classLoaders = new LinkedHashSet<>();
+        final ClassLoader tcl = getThreadContextClassLoader();
+        if (tcl != null) {
+            classLoaders.add(tcl);
+        }
+	if (!isForceTccl()) {
+            accumulateClassLoaders(LoaderUtil.class.getClassLoader(), classLoaders);
+            accumulateClassLoaders(tcl == null ? null : tcl.getParent(), classLoaders);
+            final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+            if (systemClassLoader != null) {
+                classLoaders.add(systemClassLoader);
             }
         }
         return classLoaders.toArray(new ClassLoader[classLoaders.size()]);
+    }
+
+    /**
+     * Adds the provided loader to the loaders collection, and traverses up the tree until either a null
+     * value or a classloader which has already been added is encountered.
+     */
+    private static void accumulateClassLoaders(ClassLoader loader, Collection<ClassLoader> loaders) {
+        // Some implementations may use null to represent the bootstrap class loader.
+        if (loader != null && loaders.add(loader)) {
+            accumulateClassLoaders(loader.getParent(), loaders);
+        }
     }
 
     /**
@@ -166,16 +207,20 @@ public final class LoaderUtil {
             return Class.forName(className);
         }
         try {
-            return getThreadContextClassLoader().loadClass(className);
+            ClassLoader tccl = getThreadContextClassLoader();
+            if (tccl != null) {
+                return tccl.loadClass(className);
+            }
         } catch (final Throwable ignored) {
-            return Class.forName(className);
         }
+        return Class.forName(className);
     }
 
     /**
      * Loads and instantiates a Class using the default constructor.
      *
      * @param clazz The class.
+     * @param <T> The Class's type.
      * @return new instance of the class.
      * @throws IllegalAccessException if the class can't be instantiated through a public constructor
      * @throws InstantiationException if there was an exception whilst instantiating the class
@@ -196,6 +241,7 @@ public final class LoaderUtil {
      * Loads and instantiates a Class using the default constructor.
      *
      * @param className The class name.
+     * @param <T> The class's type.
      * @return new instance of the class.
      * @throws ClassNotFoundException if the class isn't available to the usual ClassLoaders
      * @throws IllegalAccessException if the class can't be instantiated through a public constructor
@@ -228,7 +274,7 @@ public final class LoaderUtil {
     public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz)
             throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
             IllegalAccessException {
-        return clazz.cast(newInstanceOf(className));
+        return newInstanceOf(loadClass(className).asSubclass(clazz));
     }
 
     /**

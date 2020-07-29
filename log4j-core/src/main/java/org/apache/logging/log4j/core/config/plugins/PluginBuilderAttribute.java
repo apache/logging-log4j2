@@ -17,22 +17,24 @@
 
 package org.apache.logging.log4j.core.config.plugins;
 
+import org.apache.logging.log4j.core.config.plugins.visitors.PluginBuilderAttributeVisitor;
+import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
+import org.apache.logging.log4j.util.Strings;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.logging.log4j.core.config.plugins.visitors.PluginBuilderAttributeVisitor;
-import org.apache.logging.log4j.util.Strings;
-
 /**
  * Marks a field as a Plugin Attribute.
+ * @deprecated Exists for compatibility with Log4j 2 2.x plugins. Not used for Log4j 2 3.x plugins.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-@PluginVisitorStrategy(PluginBuilderAttributeVisitor.class)
+@InjectorStrategy(PluginBuilderAttributeVisitor.class)
 public @interface PluginBuilderAttribute {
 
     /**

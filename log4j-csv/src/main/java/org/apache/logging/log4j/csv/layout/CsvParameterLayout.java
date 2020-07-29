@@ -24,11 +24,11 @@ import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -62,16 +62,16 @@ public class CsvParameterLayout extends AbstractCsvLayout {
     public static AbstractCsvLayout createLayout(
             // @formatter:off
             @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "format", defaultString = DEFAULT_FORMAT) final String format,
-            @PluginAttribute("delimiter") final Character delimiter,
-            @PluginAttribute("escape") final Character escape,
-            @PluginAttribute("quote") final Character quote,
-            @PluginAttribute("quoteMode") final QuoteMode quoteMode,
-            @PluginAttribute("nullString") final String nullString,
-            @PluginAttribute("recordSeparator") final String recordSeparator,
-            @PluginAttribute(value = "charset", defaultString = DEFAULT_CHARSET) final Charset charset,
-            @PluginAttribute("header") final String header, 
-            @PluginAttribute("footer") final String footer)
+            @PluginAttribute(defaultString = DEFAULT_FORMAT) final String format,
+            @PluginAttribute final Character delimiter,
+            @PluginAttribute final Character escape,
+            @PluginAttribute final Character quote,
+            @PluginAttribute final QuoteMode quoteMode,
+            @PluginAttribute final String nullString,
+            @PluginAttribute final String recordSeparator,
+            @PluginAttribute(defaultString = DEFAULT_CHARSET) final Charset charset,
+            @PluginAttribute final String header,
+            @PluginAttribute final String footer)
             // @formatter:on
     {
 

@@ -19,7 +19,6 @@ package org.apache.logging.log4j;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.MessageFactory2;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
 
@@ -33,12 +32,12 @@ import org.apache.logging.log4j.util.Supplier;
  * {@link LogManager#getLogger()} method). Thus, the simplest way to use this would be like so:
  * </p>
  *
- * <pre>
+ * <pre><code>
  * public class MyClass {
  *     private static final Logger LOGGER = LogManager.getLogger();
  *     // ...
  * }
- * </pre>
+ * </code></pre>
  * <p>
  * For ease of filtering, searching, sorting, etc., it is generally a good idea to create Loggers for each class rather
  * than sharing Loggers. Instead, {@link Marker Markers} should be used for shared, filterable identification.
@@ -52,13 +51,13 @@ import org.apache.logging.log4j.util.Supplier;
  * allow client code to lazily log messages without explicitly checking if the requested log level is enabled. For
  * example, previously one would write:
  *
- * <pre>
+ * <pre><code>
  * // pre-Java 8 style optimization: explicitly check the log level
  * // to make sure the expensiveOperation() method is only called if necessary
  * if (logger.isTraceEnabled()) {
  *     logger.trace(&quot;Some long-running operation returned {}&quot;, expensiveOperation());
  * }
- * </pre>
+ * </code></pre>
  * <p>
  * With Java 8, the same effect can be achieved with a lambda expression:
  *
@@ -69,7 +68,7 @@ import org.apache.logging.log4j.util.Supplier;
  * </pre>
  *
  * <p>
- * Note that although {@link MessageSupplier} is provided, using {@link Supplier Supplier<Message>} works just the
+ * Note that although {@link MessageSupplier} is provided, using {@link Supplier {@code Supplier&lt;Message&gt;}} works just the
  * same. MessageSupplier was deprecated in 2.6 and un-deprecated in 2.8.1. Anonymous class usage of these APIs
  * should prefer using Supplier instead.
  * </p>
@@ -621,34 +620,6 @@ public interface Logger {
             Object p8, Object p9);
 
     /**
-     * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
-     * logged.
-     * @deprecated Use {@link #traceEntry()} instead which performs the same function.
-     */
-    @Deprecated
-    void entry();
-
-    /**
-     * Logs entry to a method along with its parameters (consider using one of the {@code traceEntry(...)} methods instead.)
-     * <p>
-     * For example:
-     * </p>
-     * <pre>
-     * public void doSomething(String foo, int bar) {
-     *     LOGGER.entry(foo, bar);
-     *     // do something
-     * }
-     * </pre>
-     * <p>
-     * The use of methods such as this are more effective when combined with aspect-oriented programming or other
-     * bytecode manipulation tools. It can be rather tedious (and messy) to use this type of method manually.
-     * </p>
-     *
-     * @param params The parameters to the method.
-     */
-    void entry(Object... params);
-
-    /**
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement
@@ -1173,28 +1144,6 @@ public interface Logger {
      */
     void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
             Object p8, Object p9);
-
-    /**
-     * Logs exit from a method. Used for methods that do not return anything.
-     * @deprecated Use {@link #traceExit()} instead which performs the same function.
-     */
-    @Deprecated
-    void exit();
-
-    /**
-     * Logs exiting from a method with the result. This may be coded as:
-     *
-     * <pre>
-     * return LOGGER.exit(myResult);
-     * </pre>
-     *
-     * @param <R> The type of the parameter and object being returned.
-     * @param result The result being returned from the method call.
-     * @return the result.
-     * @deprecated Use {@link #traceExit(Object)} instead which performs the same function.
-     */
-    @Deprecated
-    <R> R exit(R result);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.
@@ -1732,13 +1681,8 @@ public interface Logger {
     /**
      * Gets the message factory used to convert message Objects and Strings/CharSequences into actual log Messages.
      *
-     * Since version 2.6, Log4j internally uses message factories that implement the {@link MessageFactory2} interface.
-     * From version 2.6.2, the return type of this method was changed from {@link MessageFactory} to
-     * {@code <MF extends MessageFactory> MF}. The returned factory will always implement {@link MessageFactory2},
-     * but the return type of this method could not be changed to {@link MessageFactory2} without breaking binary
-     * compatibility.
-     *
-     * @return the message factory, as an instance of {@link MessageFactory2}
+     * @param <MF> The type of the MessageFactory.
+     * @return the message factory, as an instance of {@link MessageFactory}
      */
     <MF extends MessageFactory> MF getMessageFactory();
 
@@ -3552,20 +3496,20 @@ public interface Logger {
     /**
      * Logs entry to a method along with its parameters. For example,
      *
-     * <pre>
+     * <pre><code>
      * public void doSomething(String foo, int bar) {
      *     LOGGER.traceEntry("Parameters: {} and {}", foo, bar);
      *     // do something
      * }
-     * </pre>
+     * </code></pre>
      * or:
-     * <pre>
+     * <pre><code>
      * public int doSomething(String foo, int bar) {
      *     Message m = LOGGER.traceEntry("doSomething(foo={}, bar={})", foo, bar);
      *     // do something
      *     return traceExit(m, value);
      * }
-     * </pre>
+     * </code></pre>
      *
      * @param format The format String for the parameters.
      * @param params The parameters to the method.
@@ -3579,10 +3523,12 @@ public interface Logger {
      * Logs entry to a method along with its parameters. For example,
      *
      * <pre>
+     * <code>
      * public void doSomething(Request foo) {
-     *     LOGGER.traceEntry(()->gson.toJson(foo));
+     *     LOGGER.traceEntry(()-&gt;gson.toJson(foo));
      *     // do something
      * }
+     * </code>
      * </pre>
      *
      * @param paramSuppliers The Suppliers for the parameters to the method.
@@ -3596,10 +3542,12 @@ public interface Logger {
      * Logs entry to a method along with its parameters. For example,
      *
      * <pre>
+     * <code>
      * public void doSomething(String foo, int bar) {
-     *     LOGGER.traceEntry("Parameters: {} and {}", ()->gson.toJson(foo), ()-> bar);
+     *     LOGGER.traceEntry("Parameters: {} and {}", ()-&gt;gson.toJson(foo), ()-&gt; bar);
      *     // do something
      * }
+     * </code>
      * </pre>
      *
      * @param format The format String for the parameters.
@@ -3612,12 +3560,12 @@ public interface Logger {
 
     /**
      * Logs entry to a method using a Message to describe the parameters.
-     * <pre>
+     * <pre><code>
      * public void doSomething(Request foo) {
      *     LOGGER.traceEntry(new JsonMessage(foo));
      *     // do something
      * }
-     * </pre>
+     * </code></pre>
      * <p>
      * Avoid passing a {@code ReusableMessage} to this method (therefore, also avoid passing messages created by
      * calling {@code logger.getMessageFactory().newMessage("some message")}): Log4j will replace such messages with
@@ -3643,9 +3591,9 @@ public interface Logger {
     /**
      * Logs exiting from a method with the result. This may be coded as:
      *
-     * <pre>
+     * <pre><code>
      * return LOGGER.traceExit(myResult);
-     * </pre>
+     * </code></pre>
      *
      * @param <R> The type of the parameter and object being returned.
      * @param result The result being returned from the method call.
@@ -3658,9 +3606,9 @@ public interface Logger {
     /**
      * Logs exiting from a method with the result. This may be coded as:
      *
-     * <pre>
+     * <pre><code>
      * return LOGGER.traceExit("Result: {}", myResult);
-     * </pre>
+     * </code></pre>
      *
      * @param <R> The type of the parameter and object being returned.
      * @param format The format String for the result.
@@ -3674,13 +3622,13 @@ public interface Logger {
     /**
      * Logs exiting from a method with no result. Allows custom formatting of the result. This may be coded as:
      *
-     * <pre>
+     * <pre><code>
      * public long doSomething(int a, int b) {
      *    EntryMessage m = traceEntry("doSomething(a={}, b={})", a, b);
      *    // ...
      *    return LOGGER.traceExit(m);
      * }
-     * </pre>
+     * </code></pre>
      * @param message The Message containing the formatted result.
      *
      * @since 2.6
@@ -3690,13 +3638,13 @@ public interface Logger {
     /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
      *
-     * <pre>
+     * <pre><code>
      * public long doSomething(int a, int b) {
      *    EntryMessage m = traceEntry("doSomething(a={}, b={})", a, b);
      *    // ...
      *    return LOGGER.traceExit(m, myResult);
      * }
-     * </pre>
+     * </code></pre>
      * @param message The Message containing the formatted result.
      * @param result The result being returned from the method call.
      *
@@ -3710,9 +3658,9 @@ public interface Logger {
     /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
      *
-     * <pre>
+     * <pre><code>
      * return LOGGER.traceExit(new JsonMessage(myResult), myResult);
-     * </pre>
+     * </code></pre>
      * @param message The Message containing the formatted result.
      * @param result The result being returned from the method call.
      *
@@ -4248,5 +4196,87 @@ public interface Logger {
      */
     void warn(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
             Object p8, Object p9);
+
+    /**
+     * Logs a Message.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param location The location of the caller.
+     * @param message The message format.
+     * @param throwable the exception to log, including its stack trace.
+     * @since 2.13.0
+     */
+    default void logMessage(Level level, Marker marker, String fqcn, StackTraceElement location, Message message,
+            Throwable throwable) {
+
+    }
+
+    /**
+     * Construct a trace log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atTrace() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Construct a trace log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atDebug() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Construct a trace log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atInfo() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Construct a trace log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atWarn() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Construct a trace log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atError() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Construct a trace log event.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atFatal() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Construct a log event that will always be logged.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder always() {
+        return LogBuilder.NOOP;
+    }
+    /**
+     * Construct a log event.
+     * @param level The Logging Level.
+     * @return a LogBuilder.
+     * @since 2.13.0
+     */
+    default LogBuilder atLevel(Level level) {
+        return LogBuilder.NOOP;
+    }
 
 }

@@ -18,21 +18,21 @@
       <KeyValuePair key="id" value="Login"/>
       <KeyValuePair key="id" value="Logout"/>
     </StructuredDataFilter>
-    <TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+    <!--<TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="NEUTRAL"/>-->
   </Filters>
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%p %c{1.} [%t] %X{aKey} %X %m%ex%n" />
     </Console>
     <File name="File" fileName="target/gcfreefileMixed.log" bufferedIO="false">
-      <TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+      <!--<TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="NEUTRAL"/>-->
       <PatternLayout>
         <Pattern>%d{yyyy-MM-dd'T'HH:mm:ss,SSS}{UTC} %r %enc{'/} %notEmpty{[%marker]} %sn %markerSimpleName %MAP %maxLen{%marker}{10} %equals{%markerSimpleName}{test}{substitute} %p %c{1.} [%t] %m%n %highlight{%style{%d}{bright,cyan} %p %c{1.} [%t] %m%n}</Pattern>
       </PatternLayout>
     </File>
     <RollingFile name="RollingFile" fileName="target/gcfreeRollingFileMixed.log"
         filePattern="target/gcfree-%d{MM-dd-yy-HH-mm-ss}.log.gz">
-      <TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+      <!--<TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="NEUTRAL"/>-->
       <PatternLayout>
         <Pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSS}{UTC} %r %sn %markerSimpleName %MAP %maxLen{%marker}{10} %p %c{1.} [%t] %m%n %highlight{%style{%d}{bright,cyan} %p %c{1.} [%t] %m%n}</Pattern>
       </PatternLayout>
@@ -41,7 +41,7 @@
       </Policies>
     </RollingFile>
     <RandomAccessFile name="RandomAccessFile" fileName="target/gcfreeRAFMixed.log" immediateFlush="false" append="false">
-      <TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+      <!--<TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="NEUTRAL"/>-->
       <PatternLayout>
         <Pattern>%d{DEFAULT}{UTC} %r %sn %markerSimpleName %MAP %maxLen{%marker}{10} %p %c{1.} [%t] %X{aKey} %m %ex%n %highlight{%style{%d}{bright,cyan} %p %c{1.} [%t] %X{aKey} %m %ex%n}</Pattern>
       </PatternLayout>

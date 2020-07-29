@@ -32,4 +32,5 @@ public class YamlConstants {
     static final String ELT_EXTENDED_STACK_TRACE = "extendedStackTrace";
     static final String ELT_NANO_TIME = "nanoTime";
     static final String ELT_INSTANT = "instant";
+    static final String ELT_TIME_MILLIS = "timeMillis";
 }

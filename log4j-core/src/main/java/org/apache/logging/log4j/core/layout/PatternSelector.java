@@ -27,4 +27,8 @@ public interface PatternSelector {
     String ELEMENT_TYPE = "patternSelector";
 
     PatternFormatter[] getFormatters(LogEvent event);
+
+    default boolean requiresLocation() {
+        return false;
+    }
 }

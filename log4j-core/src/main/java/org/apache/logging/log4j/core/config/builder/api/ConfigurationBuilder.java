@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.util.Builder;
+import org.apache.logging.log4j.plugins.util.Builder;
 
 /**
  * Interface for building logging configurations.

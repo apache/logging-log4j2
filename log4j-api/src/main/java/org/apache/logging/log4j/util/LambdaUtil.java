@@ -81,6 +81,7 @@ public final class LambdaUtil {
      * Returns a Message, either the value supplied by the specified function, or a new Message created by the specified
      * Factory.
      * @param supplier a lambda expression or {@code null}
+     * @param messageFactory The MessageFactory.
      * @return the Message resulting from evaluating the lambda expression or the Message created by the factory for
      * supplied values that are not of type Message
      */

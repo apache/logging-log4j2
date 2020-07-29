@@ -46,6 +46,24 @@
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>
+    <!-- log4j-plugins -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-plugins</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-plugins</artifactId>
+      <version>${project.version}</version>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-plugins</artifactId>
+      <version>${project.version}</version>
+      <classifier>javadoc</classifier>
+    </dependency>
     <!-- log4j-core -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -304,6 +322,23 @@
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j18-impl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j18-impl</artifactId>
+      <version>${project.version}</version>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j18-impl</artifactId>
+      <version>${project.version}</version>
+      <classifier>javadoc</classifier>
+    </dependency>
     <!-- log4j-to-slf4j -->        
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -499,6 +534,40 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-appserver</artifactId>
+      <version>${project.version}</version>
+      <classifier>javadoc</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-docker</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-docker</artifactId>
+      <version>${project.version}</version>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-docker</artifactId>
+      <version>${project.version}</version>
+      <classifier>javadoc</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-spring-cloud-config-client</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-spring-cloud-config-client</artifactId>
+      <version>${project.version}</version>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-spring-cloud-config-client</artifactId>
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>

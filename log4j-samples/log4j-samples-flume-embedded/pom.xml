@@ -28,6 +28,7 @@
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <deploy.plugin.version>2.8.2</deploy.plugin.version>
   </properties>
   <dependencies>
     <dependency>

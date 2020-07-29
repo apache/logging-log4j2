@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+  <Appenders>
+    <RandomAccessFile name="File"
+          fileName="target/AsyncLoggerConfigErrorOnFormat.log"
+          bufferedIO="false"
+          immediateFlush="true"
+          append="false">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
+      </PatternLayout>
+    </RandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <AsyncRoot level="info">
+      <AppenderRef ref="File"/>
+    </AsyncRoot>
+  </Loggers>
+</Configuration>

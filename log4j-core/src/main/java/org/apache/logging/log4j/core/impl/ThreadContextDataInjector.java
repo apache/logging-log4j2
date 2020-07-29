@@ -16,14 +16,24 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -44,6 +54,47 @@ import org.apache.logging.log4j.util.StringMap;
  */
 public class ThreadContextDataInjector {
 
+    private static Logger LOGGER = StatusLogger.getLogger();
+
+    /**
+     * ContextDataProviders loaded via OSGi.
+     */
+    public static Collection<ContextDataProvider> contextDataProviders =
+            new ConcurrentLinkedDeque<>();
+
+    private static volatile List<ContextDataProvider> serviceProviders = null;
+    private static final Lock providerLock = new ReentrantLock();
+
+    public static void initServiceProviders() {
+        if (serviceProviders == null) {
+            providerLock.lock();
+            try {
+                if (serviceProviders == null) {
+                    serviceProviders = getServiceProviders();
+                }
+            } finally {
+                providerLock.unlock();
+            }
+        }
+    }
+
+    private static List<ContextDataProvider> getServiceProviders() {
+        List<ContextDataProvider> providers = new ArrayList<>();
+        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+            try {
+                for (final ContextDataProvider provider : ServiceLoader.load(ContextDataProvider.class, classLoader)) {
+                    if (providers.stream().noneMatch((p) -> p.getClass().isAssignableFrom(provider.getClass()))) {
+                        providers.add(provider);
+                    }
+                }
+            } catch (final Throwable ex) {
+                LOGGER.debug("Unable to access Context Data Providers {}", ex.getMessage());
+            }
+        }
+        return providers;
+    }
+
+
     /**
      * Default {@code ContextDataInjector} for the legacy {@code Map<String, String>}-based ThreadContext (which is
      * also the ThreadContext implementation used for web applications).
@@ -52,24 +103,39 @@ public class ThreadContextDataInjector {
      */
     public static class ForDefaultThreadContextMap implements ContextDataInjector {
 
+        private final List<ContextDataProvider> providers;
+
+        public ForDefaultThreadContextMap() {
+            providers = getProviders();
+        }
+
         /**
          * Puts key-value pairs from both the specified list of properties as well as the thread context into the
          * specified reusable StringMap.
          *
          * @param props list of configuration properties, may be {@code null}
-         * @param ignore a {@code StringMap} instance from the log event
+         * @param contextData a {@code StringMap} instance from the log event
          * @return a {@code StringMap} combining configuration properties with thread context data
          */
         @Override
-        public StringMap injectContextData(final List<Property> props, final StringMap ignore) {
+        public StringMap injectContextData(final List<Property> props, final StringMap contextData) {
 
-            final Map<String, String> copy = ThreadContext.getImmutableContext();
+            final Map<String, String> copy;
+
+            if (providers.size() == 1) {
+                copy = providers.get(0).supplyContextData();
+            } else {
+                copy = new HashMap<>();
+                for (ContextDataProvider provider : providers) {
+                    copy.putAll(provider.supplyContextData());
+                }
+            }
 
             // The DefaultThreadContextMap stores context data in a Map<String, String>.
             // This is a copy-on-write data structure so we are sure ThreadContext changes will not affect our copy.
-            // If there are no configuration properties returning a thin wrapper around the copy
+            // If there are no configuration properties or providers returning a thin wrapper around the copy
             // is faster than copying the elements into the LogEvent's reusable StringMap.
-            if (props == null || props.isEmpty()) {
+            if ((props == null || props.isEmpty())) {
                 // this will replace the LogEvent's context data with the returned instance.
                 // NOTE: must mark as frozen or downstream components may attempt to modify (UnsupportedOperationEx)
                 return copy.isEmpty() ? ContextDataFactory.emptyFrozenContextData() : frozenStringMap(copy);
@@ -114,6 +180,12 @@ public class ThreadContextDataInjector {
      * This injector always puts key-value pairs into the specified reusable StringMap.
      */
     public static class ForGarbageFreeThreadContextMap implements ContextDataInjector {
+        private final List<ContextDataProvider> providers;
+
+        public ForGarbageFreeThreadContextMap() {
+            this.providers = getProviders();
+        }
+
         /**
          * Puts key-value pairs from both the specified list of properties as well as the thread context into the
          * specified reusable StringMap.
@@ -128,9 +200,9 @@ public class ThreadContextDataInjector {
             // StringMap. We cannot return the ThreadContext's internal data structure because it may be modified later
             // and such modifications should not be reflected in the log event.
             copyProperties(props, reusable);
-
-            final ReadOnlyStringMap immutableCopy = ThreadContext.getThreadContextMap().getReadOnlyContextData();
-            reusable.putAll(immutableCopy);
+            for (int i = 0; i < providers.size(); ++i) {
+                reusable.putAll(providers.get(i).supplyStringMap());
+            }
             return reusable;
         }
 
@@ -149,6 +221,11 @@ public class ThreadContextDataInjector {
      * specified reusable StringMap.
      */
     public static class ForCopyOnWriteThreadContextMap implements ContextDataInjector {
+        private final List<ContextDataProvider> providers;
+
+        public ForCopyOnWriteThreadContextMap() {
+            this.providers = getProviders();
+        }
         /**
          * If there are no configuration properties, this injector will return the thread context's internal data
          * structure. Otherwise the configuration properties are combined with the thread context key-value pairs into the
@@ -162,17 +239,25 @@ public class ThreadContextDataInjector {
         public StringMap injectContextData(final List<Property> props, final StringMap ignore) {
             // If there are no configuration properties we want to just return the ThreadContext's StringMap:
             // it is a copy-on-write data structure so we are sure ThreadContext changes will not affect our copy.
-            final StringMap immutableCopy = ThreadContext.getThreadContextMap().getReadOnlyContextData();
-            if (props == null || props.isEmpty()) {
-                return immutableCopy; // this will replace the LogEvent's context data with the returned instance
+            if (providers.size() == 1 && (props == null || props.isEmpty())) {
+                // this will replace the LogEvent's context data with the returned instance
+                return providers.get(0).supplyStringMap();
+            }
+            int count = props == null ? 0 : props.size();
+            StringMap[] maps = new StringMap[providers.size()];
+            for (int i = 0; i < providers.size(); ++i) {
+                maps[i] = providers.get(i).supplyStringMap();
+                count += maps[i].size();
             }
             // However, if the list of Properties is non-empty we need to combine the properties and the ThreadContext
             // data. Note that we cannot reuse the specified StringMap: some Loggers may have properties defined
             // and others not, so the LogEvent's context data may have been replaced with an immutable copy from
             // the ThreadContext - this will throw an UnsupportedOperationException if we try to modify it.
-            final StringMap result = ContextDataFactory.createContextData(props.size() + immutableCopy.size());
+            final StringMap result = ContextDataFactory.createContextData(count);
             copyProperties(props, result);
-            result.putAll(immutableCopy);
+            for (StringMap map : maps) {
+                result.putAll(map);
+            }
             return result;
         }
 
@@ -195,5 +280,14 @@ public class ThreadContextDataInjector {
                 result.putValue(prop.getName(), prop.getValue());
             }
         }
+    }
+
+    private static List<ContextDataProvider> getProviders() {
+        initServiceProviders();
+        final List<ContextDataProvider> providers = new ArrayList<>(contextDataProviders);
+        if (serviceProviders != null) {
+            providers.addAll(serviceProviders);
+        }
+        return providers;
     }
 }

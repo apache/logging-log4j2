@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.util.ProcessIdUtil;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.core.util.ProcessIdUtil;
 
 @Plugin(name = "ProcessIdPatternConverter", category = "Converter")
 @ConverterKeys({ "pid", "processId" })

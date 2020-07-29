@@ -60,18 +60,13 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
         @Override
         public RingBufferLogEvent newInstance() {
-            final RingBufferLogEvent result = new RingBufferLogEvent();
-            if (Constants.ENABLE_THREADLOCALS) {
-                result.messageText = new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE);
-                result.parameters = new Object[10];
-            }
-            return result;
+            return new RingBufferLogEvent();
         }
     }
 
     private int threadPriority;
     private long threadId;
-    private MutableInstant instant = new MutableInstant();
+    private final MutableInstant instant = new MutableInstant();
     private long nanoTime;
     private short parameterCount;
     private boolean includeLocation;
@@ -134,10 +129,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
             final ReusableMessage reusable = (ReusableMessage) msg;
             reusable.formatTo(getMessageTextForWriting());
             messageFormat = reusable.getFormat();
-            if (parameters != null) {
-                parameters = reusable.swapParameters(parameters);
-                parameterCount = reusable.getParameterCount();
-            }
+            parameters = reusable.swapParameters(parameters == null ? new Object[10] : parameters);
+            parameterCount = reusable.getParameterCount();
         } else {
             this.message = InternalAsyncUtil.makeMessageImmutable(msg);
         }
@@ -145,8 +138,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     private StringBuilder getMessageTextForWriting() {
         if (messageText == null) {
-            // Should never happen:
-            // only happens if user logs a custom reused message when Constants.ENABLE_THREADLOCALS is false
+            // Happens the first time messageText is requested or if a user logs
+            // a custom reused message when Constants.ENABLE_THREADLOCALS is false
             messageText = new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE);
         }
         messageText.setLength(0);
@@ -293,11 +286,10 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     @Override
     public Message memento() {
-        if (message != null) {
-            return message;
+        if (message == null) {
+            message = new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
         }
-        final Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
-        return new ParameterizedMessage(messageText.toString(), params);
+        return message;
     }
 
     // CharSequence impl
@@ -315,11 +307,6 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     @Override
     public CharSequence subSequence(final int start, final int end) {
         return messageText.subSequence(start, end);
-    }
-
-
-    private Message getNonNullImmutableMessage() {
-        return message != null ? message : new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
     }
 
     @Override
@@ -352,12 +339,6 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     void setContextData(final StringMap contextData) {
         this.contextData = contextData;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Map<String, String> getContextMap() {
-        return contextData.toMap();
     }
 
     @Override
@@ -424,12 +405,18 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         }
 
         // ensure that excessively long char[] arrays are not kept in memory forever
-        StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+        if (Constants.ENABLE_THREADLOCALS) {
+            StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
 
-        if (parameters != null) {
-            for (int i = 0; i < parameters.length; i++) {
-                parameters[i] = null;
+            if (parameters != null) {
+                Arrays.fill(parameters, null);
             }
+        } else {
+            // A user may have manually logged a ReusableMessage implementation, when thread locals are
+            // disabled we remove the reference in order to avoid permanently holding references to these
+            // buffers.
+            messageText = null;
+            parameters = null;
         }
     }
 
@@ -461,7 +448,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
                 .setLoggerFqcn(fqcn) //
                 .setLoggerName(loggerName) //
                 .setMarker(marker) //
-                .setMessage(getNonNullImmutableMessage()) // ensure non-null & immutable
+                .setMessage(memento()) // ensure non-null & immutable
                 .setNanoTime(nanoTime) //
                 .setSource(location) //
                 .setThreadId(threadId) //

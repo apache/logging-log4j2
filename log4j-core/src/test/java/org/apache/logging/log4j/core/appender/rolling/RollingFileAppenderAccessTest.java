@@ -40,10 +40,10 @@ public class RollingFileAppenderAccessTest {
             file.deleteOnExit();
             // @formatter:off
             final RollingFileAppender appender = RollingFileAppender.newBuilder()
-                    .withFileName(file.getCanonicalPath())
-                    .withFilePattern("FilePattern")
-                    .withName("Name")
-                    .withPolicy(OnStartupTriggeringPolicy.createPolicy(1))
+                    .setFileName(file.getCanonicalPath())
+                    .setFilePattern("FilePattern")
+                    .setName("Name")
+                    .setPolicy(OnStartupTriggeringPolicy.createPolicy(1))
                     .setConfiguration(config)
                     .build();
             // @formatter:on
@@ -66,9 +66,15 @@ public class RollingFileAppenderAccessTest {
             final Configuration config = ctx.getConfiguration();
             final File file = File.createTempFile("RollingFileAppenderAccessTest", ".tmp");
             file.deleteOnExit();
-            final RollingFileAppender appender = RollingFileAppender.createAppender(file.getCanonicalPath(),
-                    "FilePattern", null, "Name", null, null, null, OnStartupTriggeringPolicy.createPolicy(1), null,
-                    null, null, null, null, null, config);
+            // @formatter:off
+            final RollingFileAppender appender = RollingFileAppender.newBuilder()
+                .setFileName(file.getCanonicalPath())
+                .setFilePattern("FilePattern")
+                .setName("Name")
+                .setPolicy(OnStartupTriggeringPolicy.createPolicy(1))
+                .setConfiguration(config)
+                .build();
+            // @formatter:on
             final RollingFileManager manager = appender.getManager();
             // Since the RolloverStrategy and TriggeringPolicy are immutable, we could also use generics to type their
             // access.

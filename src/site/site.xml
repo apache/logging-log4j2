@@ -19,6 +19,19 @@
          xmlns="http://maven.apache.org/DECORATION/1.4.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.4.0 http://maven.apache.org/xsd/decoration-1.4.0.xsd">
+  <bannerLeft>
+    <src>images/ls-logo.jpg</src>
+    <href>http://logging.apache.org</href>
+  </bannerLeft>
+  <bannerRight>
+    <src>images/logo.png</src>
+    <href>http://logging.apache.org/log4j/2.x</href>
+  </bannerRight>
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>1.8</version>
+  </skin>
   <body>
     <links>
       <item name="Logging Wiki" href="https://cwiki.apache.org/confluence/display/LOGGING/Log4j"/>
@@ -28,7 +41,7 @@
       <item name="GitHub" href="https://github.com/apache/logging-log4j2"/>
     </links>
 
-    <menu name="Apache Log4j™ 2" inherit="top" img="icon-home">
+    <menu name="Apache Log4j™ 2" inherit="top" img="img/glyphicons/home.png">
       <item name="About" href="/index.html"/>
       <item name="Download" href="/download.html"/>
       <item name="Javadoc" href="/javadoc.html" collapse="true">
@@ -61,21 +74,25 @@
         <item name="Trade-offs" href="/performance.html#tradeoffs" />
       </item>
       <item name="Articles and Tutorials" href="/articles.html"/>
+      <item name="Security" href="/security.html"/>
+      <item name="Support" href="/support.html"/>
       <item name="Thanks" href="/thanks.html"/>
     </menu>
 
-    <menu name="For Contributors" inherit="top" img="icon-pencil">
+    <menu name="For Contributors" inherit="top" img="img/glyphicons/pencil.png">
       <item name="Building Log4j from Source" href="/build.html"/>
       <item name="Guidelines" href="/guidelines.html"/>
       <item name="Style Guide" href="/javastyle.html"/>
     </menu>
 
-    <menu name="Manual" inherit="top" img="icon-book">
+    <menu name="Manual" inherit="top" img="img/glyphicons/book.png">
       <item name="Introduction" href="/manual/index.html"/>
       <item name="Architecture" href="/manual/architecture.html"/>
+      <item name="Log4j 1.x Compatibility" href="manual/compatibility.html"/>
       <item name="Log4j 1.x Migration" href="manual/migration.html"/>
 
       <item name="Java API" href="/manual/api.html" collapse="true">
+        <item name="Log Builder" href="manual/logbuilder.html"/>
         <item name="Flow Tracing" href="manual/flowtracing.html"/>
         <item name="Markers" href="manual/markers.html"/>
         <item name="Event Logging" href="/manual/eventlogging.html"/>
@@ -108,6 +125,12 @@
         <item name="System Properties" href="/manual/configuration.html#SystemProperties"/>
       </item>
 
+      <item name="Usage" href="/manual/usage.html" collapse="true">
+        <item name="Static vs non-Static Loggers"/>
+        <item name="Logger Name vs Class Name"/>
+        <item name="Logging in the Cloud" href="/manual/cloud.html"/>
+      </item>
+
       <item name="Web Applications and JSPs" href="/manual/webapp.html" collapse="true">
         <item name="Servlet 3.0 and Newer" href="/manual/webapp.html#Servlet-3.0" />
         <item name="Servlet 2.5" href="/manual/webapp.html#Servlet-2.5" />
@@ -120,15 +143,21 @@
       <item name="Lookups" href="/manual/lookups.html" collapse="true">
         <item name="Context Map" href="/manual/lookups.html#ContextMapLookup"/>
         <item name="Date" href="/manual/lookups.html#DateLookup"/>
+        <item name="Docker" href="manual/lookups.html#DockerLookup"/>
         <item name="Environment" href="/manual/lookups.html#EnvironmentLookup"/>
+        <item name="Event" href="/manual/lookups.html#EventLookup"/>
         <item name="Java" href="/manual/lookups.html#JavaLookup"/>
         <item name="JNDI" href="/manual/lookups.html#JndiLookup"/>
         <item name="JVM Arguments" href="/manual/lookups.html#JmxRuntimeInputArgumentsLookup"/>
+        <item name="Kubernetes" href="/manual/lookups.html#KubernetesLookup"/>
         <item name="Log4j Config" href="/manual/lookups.html#Log4jConfigLookup"/>
+        <item name="Lower" href="/manual/lookups.html#LowerLookup"/>
         <item name="Main Arguments" href="/manual/lookups.html#AppMainArgsLookup"/>
         <item name="Map" href="/manual/lookups.html#MapLookup"/>
+        <item name="Spring" href="/manual/lookups.html#SpringLookup"/>
         <item name="Structured Data" href="/manual/lookups.html#StructuredDataLookup"/>
         <item name="System Properties" href="/manual/lookups.html#SystemPropertiesLookup"/>
+        <item name="Upper" href="/manual/lookups.html#UpperLookup"/>
         <item name="Web" href="/manual/lookups.html#WebLookup"/>
       </item>
 
@@ -147,11 +176,12 @@
         <item name="Memory Mapped File" href="/manual/appenders.html#MemoryMappedFileAppender"/>
         <item name="NoSQL" href="/manual/appenders.html#NoSQLAppender"/>
         <item name="NoSQL for MongoDB" href="/manual/appenders.html#NoSQLAppenderMongoDB"/>
-        <item name="NoSQL for MongoDB 2" href="/manual/appenders.html#NoSQLAppenderMongoDB2"/>
         <item name="NoSQL for MongoDB 3" href="/manual/appenders.html#NoSQLAppenderMongoDB3"/>
+        <item name="NoSQL for MongoDB 4" href="/manual/appenders.html#NoSQLAppenderMongoDB4"/>
         <item name="NoSQL for CouchDB" href="/manual/appenders.html#NoSQLAppenderCouchDB"/>
         <item name="Output Stream" href="/manual/appenders.html#OutputStreamAppender"/>
         <item name="Random Access File" href="/manual/appenders.html#RandomAccessFileAppender"/>
+        <item name="Redis" href="/manual/appenders.html#RedisAppender"/>
         <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>
         <item name="Rolling File" href="/manual/appenders.html#RollingFileAppender"/>
         <item name="Rolling Random Access File" href="/manual/appenders.html#RollingRandomAccessFileAppender"/>
@@ -169,6 +199,7 @@
         <item name="GELF" href="/manual/layouts.html#GELFLayout"/>
         <item name="HTML" href="/manual/layouts.html#HTMLLayout"/>
         <item name="JSON" href="/manual/layouts.html#JSONLayout"/>
+        <item name="JSON Template" href="/manual/json-template-layout.html"/>
         <item name="Pattern" href="/manual/layouts.html#PatternLayout"/>
         <item name="RFC-5424" href="/manual/layouts.html#RFC5424Layout"/>
         <item name="Serialized" href="/manual/layouts.html#SerializedLayout"/>
@@ -262,22 +293,24 @@
 
     </menu>
 
-    <menu name="Related Projects" inherit="top" img="icon-tags">
+    <menu name="Related Projects" inherit="top" img="img/glyphicons/tag.png">
       <item name="Log4j-Scala" href="http://logging.apache.org/log4j/scala/index.html"/>
     </menu>
 
-    <menu name="Legacy" inherit="top" img="icon-tags">
-      <item name="Log4j 1.2" href="http://logging.apache.org/log4j/1.2/"/>
-      <item name="Log4j 2.3" href="http://logging.apache.org/log4j/log4j-2.3/"/>
+    <menu name="Legacy" inherit="top" img="img/glyphicons/link.png">
+      <item name="Log4j 1.2 - End of Life" href="http://logging.apache.org/log4j/1.2/"/>
+      <item name="Log4j 2.3 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3/"/>
+      <item name="Log4j 2.12.1 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.1/"/>
     </menu>
 
-    <menu name="Components" inherit="top" img="icon-cog">
+    <menu name="Components" inherit="top" img="img/glyphicons/cog.png">
       <item name="API" href="log4j-api/index.html"/>
       <item name="Implementation" href="log4j-core/index.html"/>
       <item name="Commons Logging Bridge" href="log4j-jcl/index.html"/>
       <item name="Log4j 1.2 API" href="log4j-1.2-api/index.html"/>
       <item name="SLF4J Binding" href="log4j-slf4j-impl/index.html"/>
       <item name="JUL Adapter" href="log4j-jul/index.html"/>
+      <item name="JDK Platform Logger" href="log4j-jpl/index.html"/>
       <item name="Log4j 2 to SLF4J Adapter" href="log4j-to-slf4j/index.html"/>
       <item name="Apache Flume Appender" href="log4j-flume-ng/index.html"/>
       <item name="Log4j Tag Library" href="log4j-taglib/index.html"/>
@@ -285,15 +318,17 @@
       <item name="Log4j Web Application Support" href="log4j-web/index.html"/>
       <item name="Log4j Application Server Integration" href="log4j-appserver/index.html"/>
       <item name="Log4j CouchDB appender" href="log4j-couchdb/index.html"/>
-      <item name="Log4j MongoDB2 appender" href="log4j-mongodb2/index.html"/>
       <item name="Log4j MongoDB3 appender" href="log4j-mongodb3/index.html"/>
+      <item name="Log4j MongoDB4 appender" href="log4j-mongodb4/index.html"/>
       <item name="Log4j Cassandra appender" href="log4j-cassandra/index.html"/>
       <item name="Log4j IO Streams" href="log4j-iostreams/index.html"/>
       <item name="Log4j Liquibase Binding" href="log4j-liquibase/index.html"/>
+      <item name="Log4j Docker Support" href="log4j-docker/index.html"/>
+      <item name="Lob4j Kubernetes Support" href="log4j-kubernetes/index.html"/>
+      <item name="Log4j Spring Cloud Config Client" href="log4j-spring-cloud-config/log4j-spring-cloud-config-client/index.html"/>
     </menu>
 
-    <menu name="Project Information" img="icon-info-sign">
-      <item name="Dependencies" href="/dependencies.html" />
+    <menu name="Project Information" img="img/glyphicons/info.png">
       <item name="Dependency Convergence" href="/dependency-convergence.html" />
       <item name="Dependency Management" href="/dependency-management.html" />
       <item name="Project Team" href="/team-list.html" />
@@ -304,10 +339,13 @@
       <item name="Project Summary" href="/project-summary.html" />
     </menu>
 
-    <menu name="Project Reports" img="icon-cog">
+    <menu name="Project Reports" img="img/glyphicons/layers.png">
       <item name="Changes Report" href="/changes-report.html" />
       <item name="JIRA Report" href="/jira-report.html" />
       <item name="RAT Report" href="/rat-report.html" />
     </menu>
+    <footer><![CDATA[<p align="center">Copyright &copy; ${project.inceptionYear}-${currentYear} <a class="external" href="http://www.apache.org">The Apache Software Foundation</a>. All Rights Reserved.<br>
+      Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, and the Apache Logging project logo are trademarks of The Apache Software Foundation.</p>]]>
+    </footer>
   </body>
 </project>

@@ -20,10 +20,10 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
 /**
  *
@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 public class AlwaysFailAppender extends AbstractAppender {
 
     private AlwaysFailAppender(final String name) {
-        super(name, null, null, false);
+        super(name, null, null, false, null);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class AlwaysFailAppender extends AbstractAppender {
 
     @PluginFactory
     public static AlwaysFailAppender createAppender(
-        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name) {
+        @PluginAttribute @Required(message = "A name for the Appender must be specified") final String name) {
         return new AlwaysFailAppender(name);
     }
 

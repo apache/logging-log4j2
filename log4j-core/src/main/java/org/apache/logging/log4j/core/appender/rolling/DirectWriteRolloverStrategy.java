@@ -16,6 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
+import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
+import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
+import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,23 +41,6 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
-
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.appender.rolling.action.Action;
-import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
-import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
-import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
-import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * When rolling over, <code>DirectWriteRolloverStrategy</code> writes directly to the file as resolved by the file
@@ -64,7 +62,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
     /**
      * Builds DirectWriteRolloverStrategy instances.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<DirectWriteRolloverStrategy> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<DirectWriteRolloverStrategy> {
         @PluginBuilderAttribute("maxFiles")
         private String maxFiles;
 
@@ -110,7 +108,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param maxFiles The maximum number of files that match the date portion of the pattern to keep.
          * @return This builder for chaining convenience
          */
-        public Builder withMaxFiles(final String maxFiles) {
+        public Builder setMaxFiles(final String maxFiles) {
             this.maxFiles = maxFiles;
             return this;
         }
@@ -125,7 +123,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
          * @return This builder for chaining convenience
          */
-        public Builder withCompressionLevelStr(final String compressionLevelStr) {
+        public Builder setCompressionLevelStr(final String compressionLevelStr) {
             this.compressionLevelStr = compressionLevelStr;
             return this;
         }
@@ -140,7 +138,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param customActions custom actions to perform asynchronously after rollover
          * @return This builder for chaining convenience
          */
-        public Builder withCustomActions(final Action[] customActions) {
+        public Builder setCustomActions(final Action... customActions) {
             this.customActions = customActions;
             return this;
         }
@@ -155,7 +153,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
          * @return This builder for chaining convenience
          */
-        public Builder withStopCustomActionsOnError(final boolean stopCustomActionsOnError) {
+        public Builder setStopCustomActionsOnError(final boolean stopCustomActionsOnError) {
             this.stopCustomActionsOnError = stopCustomActionsOnError;
             return this;
         }
@@ -170,7 +168,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param tempCompressedFilePattern File pattern of the working file pattern used during compression, if null no temporary file are used
          * @return This builder for chaining convenience
          */
-        public Builder withTempCompressedFilePattern(final String tempCompressedFilePattern) {
+        public Builder setTempCompressedFilePattern(final String tempCompressedFilePattern) {
             this.tempCompressedFilePattern = tempCompressedFilePattern;
             return this;
         }
@@ -185,45 +183,15 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
          * @param config The Configuration.
          * @return This builder for chaining convenience
          */
-        public Builder withConfig(final Configuration config) {
+        public Builder setConfig(final Configuration config) {
             this.config = config;
             return this;
         }
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    /**
-     * Creates the DirectWriteRolloverStrategy.
-     *
-     * @param maxFiles The maximum number of files that match the date portion of the pattern to keep.
-     * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
-     * @param customActions custom actions to perform asynchronously after rollover
-     * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
-     * @param config The Configuration.
-     * @return A DirectWriteRolloverStrategy.
-     * @deprecated Since 2.9 Usage of Builder API is preferable
-     */
-    @Deprecated
-    @PluginFactory
-    public static DirectWriteRolloverStrategy createStrategy(
-            // @formatter:off
-            @PluginAttribute("maxFiles") final String maxFiles,
-            @PluginAttribute("compressionLevel") final String compressionLevelStr,
-            @PluginElement("Actions") final Action[] customActions,
-            @PluginAttribute(value = "stopCustomActionsOnError", defaultBoolean = true)
-                    final boolean stopCustomActionsOnError,
-            @PluginConfiguration final Configuration config) {
-            return newBuilder().withMaxFiles(maxFiles)
-                    .withCompressionLevelStr(compressionLevelStr)
-                    .withCustomActions(customActions)
-                    .withStopCustomActionsOnError(stopCustomActionsOnError)
-                    .withConfig(config)
-                    .build();
-            // @formatter:on
     }
 
     /**
@@ -236,21 +204,6 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
     private volatile String currentFileName;
     private int nextIndex = -1;
     private final PatternProcessor tempCompressedFilePattern;
-
-    /**
-     * Constructs a new instance.
-     *
-     * @param maxFiles The maximum number of files that match the date portion of the pattern to keep.
-     * @param customActions custom actions to perform asynchronously after rollover
-     * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
-     * @deprecated Since 2.9 Added tempCompressedFilePatternString parameter
-     */
-    @Deprecated
-    protected DirectWriteRolloverStrategy(final int maxFiles, final int compressionLevel,
-                                          final StrSubstitutor strSubstitutor, final Action[] customActions,
-                                          final boolean stopCustomActionsOnError) {
-        this(maxFiles, compressionLevel, strSubstitutor, customActions, stopCustomActionsOnError, null);
-    }
 
     /**
      * Constructs a new instance.
@@ -323,6 +276,11 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         return currentFileName;
     }
 
+	@Override
+	public void clearCurrentFileName() {
+		currentFileName = null;
+	}
+
     /**
      * Performs the rollover.
      *
@@ -375,14 +333,14 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
             // Propagate posix attribute view to compressed file
             // @formatter:off
             final Action posixAttributeViewAction = PosixViewAttributeAction.newBuilder()
-                                                    .withBasePath(compressedName)
-                                                    .withFollowLinks(false)
-                                                    .withMaxDepth(1)
-                                                    .withPathConditions(new PathCondition[0])
-                                                    .withSubst(getStrSubstitutor())
-                                                    .withFilePermissions(manager.getFilePermissions())
-                                                    .withFileOwner(manager.getFileOwner())
-                                                    .withFileGroup(manager.getFileGroup())
+                                                    .setBasePath(compressedName)
+                                                    .setFollowLinks(false)
+                                                    .setMaxDepth(1)
+                                                    .setPathConditions(new PathCondition[0])
+                                                    .setSubst(getStrSubstitutor())
+                                                    .setFilePermissions(manager.getFilePermissions())
+                                                    .setFileOwner(manager.getFileOwner())
+                                                    .setFileGroup(manager.getFileGroup())
                                                     .build();
             // @formatter:on
             compressAction = new CompositeAction(Arrays.asList(compressAction, posixAttributeViewAction), false);

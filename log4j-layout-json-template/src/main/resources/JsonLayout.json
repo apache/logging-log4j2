@@ -1,0 +1,83 @@
+{
+  "instant": {
+    "epochSecond": {
+      "$resolver": "timestamp",
+      "epoch": {
+        "unit": "secs",
+        "rounded": true
+      }
+    },
+    "nanoOfSecond": {
+      "$resolver": "timestamp",
+      "epoch": {
+        "unit": "secs.nanos"
+      }
+    }
+  },
+  "thread": {
+    "$resolver": "thread",
+    "field": "name"
+  },
+  "level": {
+    "$resolver": "level",
+    "field": "name"
+  },
+  "loggerName": {
+    "$resolver": "logger",
+    "field": "name"
+  },
+  "message": {
+    "$resolver": "message",
+    "stringified": true
+  },
+  "thrown": {
+    "message": {
+      "$resolver": "exception",
+      "field": "message"
+    },
+    "name": {
+      "$resolver": "exception",
+      "field": "className"
+    },
+    "extendedStackTrace": {
+      "$resolver": "exception",
+      "field": "stackTrace"
+    }
+  },
+  "contextStack": {
+    "$resolver": "ndc"
+  },
+  "endOfBatch": {
+    "$resolver": "endOfBatch"
+  },
+  "loggerFqcn": {
+    "$resolver": "logger",
+    "field": "fqcn"
+  },
+  "threadId": {
+    "$resolver": "thread",
+    "field": "id"
+  },
+  "threadPriority": {
+    "$resolver": "thread",
+    "field": "priority"
+  },
+  "source": {
+    "class": {
+      "$resolver": "source",
+      "field": "className"
+    },
+    "method": {
+      "$resolver": "source",
+      "field": "methodName"
+    },
+    "file": {
+      "$resolver": "source",
+      "field": "fileName"
+    },
+    "line": {
+      "$resolver": "source",
+      "field": "lineNumber"
+    }
+  }
+}

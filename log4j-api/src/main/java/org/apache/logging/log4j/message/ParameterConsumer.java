@@ -19,7 +19,7 @@ public interface ParameterConsumer<S> {
      *
      * @param parameter the parameter
      * @param parameterIndex Index of the parameter
-     * @param state
+     * @param state The state data.
      */
     void accept(Object parameter, int parameterIndex, S state);
 

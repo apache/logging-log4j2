@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.util.Date;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**

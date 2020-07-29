@@ -17,7 +17,7 @@
 package org.apache.log4j.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.pattern.ConverterKeys;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
@@ -79,7 +79,7 @@ public final class Log4j1MdcPatternConverter extends LogEventPatternConverter {
         }
     }
 
-    private static TriConsumer<String, Object, StringBuilder> APPEND_EACH = new TriConsumer<String, Object, StringBuilder>() {
+    private static final TriConsumer<String, Object, StringBuilder> APPEND_EACH = new TriConsumer<String, Object, StringBuilder>() {
         @Override
         public void accept(final String key, final Object value, final StringBuilder toAppendTo) {
             toAppendTo.append('{').append(key).append(',').append(value).append('}');

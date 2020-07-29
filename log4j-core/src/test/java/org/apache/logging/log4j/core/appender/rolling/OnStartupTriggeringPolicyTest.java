@@ -26,6 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.core.config.Configuration;
@@ -33,14 +35,13 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.junit.CleanFolders;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * Tests {@link OnStartupTriggeringPolicy}.
  */
-//@Ignore
+// @Ignore
 public class OnStartupTriggeringPolicyTest {
 
     private static final String TARGET_FOLDER = "target/rollOnStartup";
@@ -52,10 +53,12 @@ public class OnStartupTriggeringPolicyTest {
     private static final FastDateFormat formatter = FastDateFormat.getInstance("MM-dd-yyyy");
 
     @Rule
-    public CleanFolders rule = new CleanFolders("target/rollOnStartup");
+    public CleanFolders rule = new CleanFolders(TARGET_FOLDER);
 
     @Test
     public void testPolicy() throws Exception {
+        //System.setProperty("log4j2.debug", "true");
+        //System.setProperty("log4j2.StatusLogger.level", "trace");
         final Configuration configuration = new DefaultConfiguration();
         final Path target = Paths.get(TARGET_FILE);
         target.toFile().getParentFile().mkdirs();
@@ -71,14 +74,16 @@ public class OnStartupTriggeringPolicyTest {
         assertTrue(size > 0);
         assertEquals(copied, size);
 
-        Assert.assertTrue(target.toFile().setLastModified(timeStamp));
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%msg").withConfiguration(configuration)
+        final FileTime fileTime = FileTime.fromMillis(timeStamp);
+        final BasicFileAttributeView attrs = Files.getFileAttributeView(target, BasicFileAttributeView.class);
+        attrs.setTimes(fileTime, fileTime, fileTime);
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("%msg").setConfiguration(configuration)
                 .build();
-        final RolloverStrategy strategy = DefaultRolloverStrategy.createStrategy(null, null, null, "0", null, true,
-                configuration);
+        final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder().setCompressionLevelStr("0")
+                .setStopCustomActionsOnError(true).setConfig(configuration).build();
         final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy(1);
-        try (final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true, false,
-                policy, strategy, null, layout, 8192, true, false, null, null, null, configuration)) {
+        try (final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true,
+                false, policy, strategy, null, layout, 8192, true, false, null, null, null, configuration)) {
             manager.initialize();
             final String files = Arrays.toString(new File(TARGET_FOLDER).listFiles());
             assertTrue(target.toString() + ", files = " + files, Files.exists(target));

@@ -20,9 +20,9 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -50,7 +50,7 @@ public final class CustomLevelConfig {
     @PluginFactory
     public static CustomLevelConfig createLevel(// @formatter:off
             @PluginAttribute("name") final String levelName,
-            @PluginAttribute("intLevel") final int intLevel) {
+            @PluginAttribute final int intLevel) {
         // @formatter:on
 
         StatusLogger.getLogger().debug("Creating CustomLevel(name='{}', intValue={})", levelName, intLevel);

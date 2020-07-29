@@ -20,7 +20,7 @@ import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * Maps JVM input arguments (but not main arguments) using JMX to acquire JVM arguments.

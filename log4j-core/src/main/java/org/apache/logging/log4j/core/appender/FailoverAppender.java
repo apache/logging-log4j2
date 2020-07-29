@@ -28,14 +28,16 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
 /**
  * The FailoverAppender will capture exceptions in an Appender and then route the event
@@ -59,17 +61,17 @@ public final class FailoverAppender extends AbstractAppender {
 
     private final long intervalNanos;
 
-    private volatile long nextCheckNanos = 0;
+    private volatile long nextCheckNanos;
 
     private FailoverAppender(final String name, final Filter filter, final String primary, final String[] failovers,
-                             final int intervalMillis, final Configuration config, final boolean ignoreExceptions) {
-        super(name, filter, null, ignoreExceptions);
+            final int intervalMillis, final Configuration config, final boolean ignoreExceptions,
+            Property[] properties) {
+        super(name, filter, null, ignoreExceptions, properties);
         this.primaryRef = primary;
         this.failovers = failovers;
         this.config = config;
         this.intervalNanos = TimeUnit.MILLISECONDS.toNanos(intervalMillis);
     }
-
 
     @Override
     public void start() {
@@ -181,38 +183,22 @@ public final class FailoverAppender extends AbstractAppender {
      */
     @PluginFactory
     public static FailoverAppender createAppender(
-            @PluginAttribute("name") final String name,
-            @PluginAttribute("primary") final String primary,
-            @PluginElement("Failovers") final String[] failovers,
+            @PluginAttribute @Required(message = "A name for the Appender must be specified") final String name,
+            @PluginAttribute @Required(message = "A primary Appender must be specified") final String primary,
+            @PluginElement @Required(message = "At least one failover Appender must be specified") final String[] failovers,
             @PluginAliases("retryInterval") // deprecated
-            @PluginAttribute("retryIntervalSeconds") final String retryIntervalSeconds,
+            @PluginAttribute(defaultInt = DEFAULT_INTERVAL_SECONDS) final int retryIntervalSeconds,
             @PluginConfiguration final Configuration config,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("ignoreExceptions") final String ignore) {
-        if (name == null) {
-            LOGGER.error("A name for the Appender must be specified");
-            return null;
-        }
-        if (primary == null) {
-            LOGGER.error("A primary Appender must be specified");
-            return null;
-        }
-        if (failovers == null || failovers.length == 0) {
-            LOGGER.error("At least one failover Appender must be specified");
-            return null;
-        }
+            @PluginElement final Filter filter,
+            @PluginAttribute(defaultBoolean = true) final boolean ignoreExceptions) {
 
-        final int seconds = parseInt(retryIntervalSeconds, DEFAULT_INTERVAL_SECONDS);
         int retryIntervalMillis;
-        if (seconds >= 0) {
-            retryIntervalMillis = seconds * Constants.MILLIS_IN_SECONDS;
+        if (retryIntervalSeconds >= 0) {
+            retryIntervalMillis = retryIntervalSeconds * Constants.MILLIS_IN_SECONDS;
         } else {
-            LOGGER.warn("Interval " + retryIntervalSeconds + " is less than zero. Using default");
+            LOGGER.warn("Interval {} is less than zero. Using default", retryIntervalSeconds);
             retryIntervalMillis = DEFAULT_INTERVAL_SECONDS * Constants.MILLIS_IN_SECONDS;
         }
-
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-
-        return new FailoverAppender(name, filter, primary, failovers, retryIntervalMillis, config, ignoreExceptions);
+        return new FailoverAppender(name, filter, primary, failovers, retryIntervalMillis, config, ignoreExceptions, Property.EMPTY_ARRAY);
     }
 }

@@ -16,23 +16,22 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.net.Advertiser;
-import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Memory Mapped File Appender.
@@ -49,7 +48,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
      *            The type to build
      */
     public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<MemoryMappedFileAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<MemoryMappedFileAppender> {
 
         @PluginBuilderAttribute("fileName")
         private String fileName;
@@ -88,7 +87,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             }
 
             return new MemoryMappedFileAppender(name, layout, getFilter(), manager, fileName, isIgnoreExceptions(), false,
-                    advertise ? getConfiguration().getAdvertiser() : null);
+                    advertise ? getConfiguration().getAdvertiser() : null, getPropertyArray());
         }
 
         public B setFileName(final String fileName) {
@@ -128,8 +127,8 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
 
     private MemoryMappedFileAppender(final String name, final Layout<? extends Serializable> layout,
             final Filter filter, final MemoryMappedFileManager manager, final String filename,
-            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {
-        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
+            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser, Property[] properties) {
+        super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());
@@ -188,67 +187,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
         return getManager().getRegionLength();
     }
 
-    /**
-     * Create a Memory Mapped File Appender.
-     *
-     * @param fileName The name and path of the file.
-     * @param append "True" if the file should be appended to, "false" if it should be overwritten. The default is
-     *            "true".
-     * @param name The name of the Appender.
-     * @param immediateFlush "true" if the contents should be flushed on every write, "false" otherwise. The default is
-     *            "false".
-     * @param regionLengthStr The buffer size, defaults to {@value MemoryMappedFileManager#DEFAULT_REGION_LENGTH}.
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
-     *            are propagated to the caller.
-     * @param layout The layout to use to format the event. If no layout is provided the default PatternLayout will be
-     *            used.
-     * @param filter The filter, if any, to use.
-     * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
-     * @param advertiseURI The advertised URI which can be used to retrieve the file contents.
-     * @param config The Configuration.
-     * @return The FileAppender.
-     * @deprecated Use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static <B extends Builder<B>> MemoryMappedFileAppender createAppender(
-            // @formatter:off
-            final String fileName, //
-            final String append, //
-            final String name, //
-            final String immediateFlush, //
-            final String regionLengthStr, //
-            final String ignore, //
-            final Layout<? extends Serializable> layout, //
-            final Filter filter, //
-            final String advertise, //
-            final String advertiseURI, //
-            final Configuration config) {
-            // @formatter:on
-
-        final boolean isAppend = Booleans.parseBoolean(append, true);
-        final boolean isImmediateFlush = Booleans.parseBoolean(immediateFlush, false);
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final boolean isAdvertise = Boolean.parseBoolean(advertise);
-        final int regionLength = Integers.parseInt(regionLengthStr, MemoryMappedFileManager.DEFAULT_REGION_LENGTH);
-
-        // @formatter:off
-        return MemoryMappedFileAppender.<B>newBuilder()
-            .setAdvertise(isAdvertise)
-            .setAdvertiseURI(advertiseURI)
-            .setAppend(isAppend)
-            .setConfiguration(config)
-            .setFileName(fileName)
-            .withFilter(filter)
-            .withIgnoreExceptions(ignoreExceptions)
-            .withImmediateFlush(isImmediateFlush)
-            .withLayout(layout)
-            .withName(name)
-            .setRegionLength(regionLength)
-            .build();
-        // @formatter:on
-    }
-
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }

@@ -45,9 +45,9 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static org.junit.Assert.assertEquals;
 
 public class GelfLayoutTest {
-    
+
     static ConfigurationFactory configFactory = new BasicConfigurationFactory();
-    
+
     private static final String HOSTNAME = "TheHost";
     private static final String KEY1 = "Key1";
     private static final String KEY2 = "Key2";
@@ -61,7 +61,7 @@ public class GelfLayoutTest {
     private static final String VALUE1 = "Value1";
 
     @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     @AfterClass
     public static void cleanupClass() {
@@ -264,5 +264,28 @@ public class GelfLayoutTest {
         assertEquals("1.100", GelfLayout.formatTimestamp(1100L).toString());
         assertEquals("1458741206.653", GelfLayout.formatTimestamp(1458741206653L).toString());
         assertEquals("9223372036854775.807", GelfLayout.formatTimestamp(Long.MAX_VALUE).toString());
+    }
+
+    private void testRequiresLocation(String messagePattern, Boolean requiresLocation) {
+        GelfLayout layout = GelfLayout.newBuilder()
+            .setMessagePattern(messagePattern)
+            .build();
+
+        assertEquals(layout.requiresLocation(), requiresLocation);
+    }
+
+    @Test
+    public void testRequiresLocationPatternNotSet() {
+        testRequiresLocation(null, false);
+    }
+
+    @Test
+    public void testRequiresLocationPatternNotContainsLocation() {
+        testRequiresLocation("%m %n", false);
+    }
+
+    @Test
+    public void testRequiresLocationPatternContainsLocation() {
+        testRequiresLocation("%C %m %t", true);
     }
 }

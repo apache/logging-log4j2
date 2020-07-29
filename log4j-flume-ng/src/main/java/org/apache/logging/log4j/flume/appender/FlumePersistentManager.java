@@ -51,13 +51,13 @@ import org.apache.flume.event.SimpleEvent;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -76,7 +76,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private static final long LOCK_TIMEOUT_SLEEP_MILLIS = 500;
 
-    private static BDBManagerFactory factory = new BDBManagerFactory();
+    private static final BDBManagerFactory factory = new BDBManagerFactory();
 
     private final Database database;
 
@@ -196,17 +196,12 @@ public class FlumePersistentManager extends FlumeAvroManager {
             }
             final Future<Integer> future = threadPool.submit(new BDBWriter(keyData, eventData, environment, database,
                 gate, dbCount, getBatchSize(), lockTimeoutRetryCount));
-            boolean interrupted = false;
-            int ieCount = 0;
-            do {
-                try {
-                    future.get();
-                } catch (final InterruptedException ie) {
-                    interrupted = true;
-                    ++ieCount;
-                }
-            } while (interrupted && ieCount <= 1);
-
+            try {
+            	future.get();
+            } catch (final InterruptedException ie) {
+            	// preserve interruption status
+            	Thread.currentThread().interrupt();
+            }
         } catch (final Exception ex) {
             throw new LoggingException("Exception occurred writing log event", ex);
         }
@@ -474,7 +469,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
      * Thread that sends data to Flume and pulls it from Berkeley DB.
      */
     private static class WriterThread extends Log4jThread  {
-        private volatile boolean shutdown = false;
+        private volatile boolean shutdown;
         private final Database database;
         private final Environment environment;
         private final FlumePersistentManager manager;

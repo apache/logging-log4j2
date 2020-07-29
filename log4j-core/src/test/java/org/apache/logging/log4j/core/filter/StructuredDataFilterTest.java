@@ -16,19 +16,23 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -72,11 +76,11 @@ public class StructuredDataFilterTest {
         assertTrue("Not a StructuredDataFilter", filter instanceof  StructuredDataFilter);
         final StructuredDataFilter sdFilter = (StructuredDataFilter) filter;
         assertFalse("Should not be And filter", sdFilter.isAnd());
-        final Map<String, List<String>> map = sdFilter.getMap();
+        final IndexedReadOnlyStringMap map = sdFilter.getStringMap();
         assertNotNull("No Map", map);
         assertFalse("No elements in Map", map.isEmpty());
         assertEquals("Incorrect number of elements in Map", 1, map.size());
         assertTrue("Map does not contain key eventId", map.containsKey("eventId"));
-        assertEquals("List does not contain 2 elements", 2, map.get("eventId").size());
+        assertEquals("List does not contain 2 elements", 2, map.<Collection<?>>getValue("eventId").size());
     }
 }

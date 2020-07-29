@@ -1,0 +1,108 @@
+[
+  {
+    "extension": "revapi.ignore",
+    "configuration": [
+      {
+        "code": "java.method.removed",
+        "old": "method void org.apache.logging.log4j.core.appender.db.jpa.JpaDatabaseManager::writeInternal(org.apache.logging.log4j.core.LogEvent)",
+        "justification": "Method not needed"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.AbstractLogEventWrapperEntity",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.BasicLogEventEntity",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.JpaAppender",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.JpaDatabaseManager",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.converter.ContextDataAttributeConverter",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.converter.ContextDataJsonAttributeConverter",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapAttributeConverter",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapJsonAttributeConverter",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.converter.ContextStackAttributeConverter",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.converter.ContextStackJsonAttributeConverter",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.converter.InstantAttributeConverter",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.converter.LevelAttributeConverter",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.converter.MarkerAttributeConverter",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.converter.StackTraceElementAttributeConverter",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.appender.db.jpa.converter.ThrowableAttributeConverter",
+        "justification": "Package was renamed to conform to the Java 9 module system"
+        
+      }
+    ]
+  }
+]

@@ -19,7 +19,9 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
@@ -116,14 +118,11 @@ public class FileRenameAction extends AbstractAction {
             }
             try {
                 try {
-                    Files.move(Paths.get(source.getAbsolutePath()), Paths.get(destination.getAbsolutePath()),
-                            StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
-                    LOGGER.trace("Renamed file {} to {} with Files.move", source.getAbsolutePath(),
-                            destination.getAbsolutePath());
-                    return true;
+                    return moveFile(Paths.get(source.getAbsolutePath()), Paths.get(destination.getAbsolutePath()));
                 } catch (final IOException exMove) {
-                    LOGGER.error("Unable to move file {} to {}: {} {}", source.getAbsolutePath(),
-                            destination.getAbsolutePath(), exMove.getClass().getName(), exMove.getMessage());
+                    LOGGER.debug("Unable to move file {} to {}: {} {} - will try to copy and delete",
+                            source.getAbsolutePath(), destination.getAbsolutePath(), exMove.getClass().getName(),
+                            exMove.getMessage());
                     boolean result = source.renameTo(destination);
                     if (!result) {
                         try {
@@ -139,6 +138,7 @@ public class FileRenameAction extends AbstractAction {
                                         exDelete.getClass().getName(), exDelete.getMessage());
                                 try {
                                     new PrintWriter(source.getAbsolutePath()).close();
+                                    result = true;
                                     LOGGER.trace("Renamed file {} to {} with copy and truncation",
                                             source.getAbsolutePath(), destination.getAbsolutePath());
                                 } catch (final IOException exOwerwrite) {
@@ -171,6 +171,21 @@ public class FileRenameAction extends AbstractAction {
         }
 
         return false;
+    }
+
+    private static boolean moveFile(Path source, Path target)  throws IOException {
+        try {
+            Files.move(source, target,
+                    StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            LOGGER.trace("Renamed file {} to {} with Files.move", source.toFile().getAbsolutePath(),
+                    target.toFile().getAbsolutePath());
+            return true;
+        } catch (final AtomicMoveNotSupportedException ex) {
+            Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
+            LOGGER.trace("Renamed file {} to {} with Files.move", source.toFile().getAbsolutePath(),
+                    target.toFile().getAbsolutePath());
+            return true;
+        }
     }
 
     @Override

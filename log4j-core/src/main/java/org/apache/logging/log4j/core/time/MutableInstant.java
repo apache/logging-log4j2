@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 /**
  * An instantaneous point on the time line, used for high-precision log event timestamps.
- * Modelled on <a href="https://docs.oracle.com/javase/9/docs/api/index.html?java/time/class-use/Instant.html">java.time.Instant</a>,
+ * Modeled on <a href="https://docs.oracle.com/javase/9/docs/api/index.html?java/time/class-use/Instant.html">java.time.Instant</a>,
  * except that this version is mutable to prevent allocating temporary objects that need to be garbage-collected later.
  * <p>
  * Instances of this class are <em>not</em> thread-safe and should not be shared between threads.

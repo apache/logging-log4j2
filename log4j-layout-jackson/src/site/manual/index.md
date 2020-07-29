@@ -18,7 +18,7 @@
 
 # Apache Log4j Layout for Jackson module
 
-As of Log4j 3.0.0, common code for layouts based on Jackson have moved from the existing module logj-core to the new modules log4j-layout-jackson.
+As of Log4j 3.0.0, common code for layouts based on Jackson have moved from the existing module log4j-core to the new modules log4j-layout-jackson.
 
 ## Requirements
 

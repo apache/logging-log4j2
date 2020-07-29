@@ -27,6 +27,8 @@ import org.apache.logging.log4j.util.StringMap;
 /**
  * Responsible for initializing the context data of LogEvents. Context data is data that is set by the application to be
  * included in all subsequent log events.
+ * <p><b>NOTE: It is no longer recommended that custom implementations of this interface be provided as it is
+ * difficult to do. Instead, provide a custom ContextDataProvider.</b></p>
  * <p>
  * The source of the context data is implementation-specific. The default source for context data is the ThreadContext.
  * </p><p>

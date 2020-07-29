@@ -17,19 +17,25 @@
 
 package org.apache.logging.log4j.core.async;
 
-import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import com.lmax.disruptor.*;
+import com.lmax.disruptor.BlockingWaitStrategy;
+import com.lmax.disruptor.BusySpinWaitStrategy;
+import com.lmax.disruptor.ExceptionHandler;
+import com.lmax.disruptor.SleepingWaitStrategy;
+import com.lmax.disruptor.TimeoutBlockingWaitStrategy;
+import com.lmax.disruptor.WaitStrategy;
+import com.lmax.disruptor.YieldingWaitStrategy;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Utility methods for getting Disruptor related configuration.
@@ -40,39 +46,60 @@ final class DisruptorUtil {
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
     private static final int RINGBUFFER_NO_GC_DEFAULT_SIZE = 4 * 1024;
 
+    /**
+     * LOG4J2-2606: Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application
+     * was logging more than the underlying appender could keep up with and the ringbuffer became full,
+     * especially when the number of application threads vastly outnumbered the number of cores.
+     * CPU utilization is significantly reduced by restricting access to the enqueue operation.
+     */
+    static final boolean ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
+            .getBooleanProperty("AsyncLogger.SynchronizeEnqueueWhenQueueFull", true);
+    static final boolean ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
+            .getBooleanProperty("AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", true);
+
     private DisruptorUtil() {
     }
 
-    static long getTimeout(final String propertyName, final long defaultTimeout) {
-        return PropertiesUtil.getProperties().getLongProperty(propertyName, defaultTimeout);
-    }
-
     static WaitStrategy createWaitStrategy(final String propertyName) {
-        final String key = propertyName.startsWith("AsyncLogger.")
-                ? "AsyncLogger.Timeout"
-                : "AsyncLoggerConfig.Timeout";
-        final long timeoutMillis = DisruptorUtil.getTimeout(key, 10L);
-        return createWaitStrategy(propertyName, timeoutMillis);
+        final String strategy = PropertiesUtil.getProperties().getStringProperty(propertyName, "Timeout");
+        LOGGER.trace("property {}={}", propertyName, strategy);
+        final String strategyUp = Strings.toRootUpperCase(strategy);
+        final long timeoutMillis = parseAdditionalLongProperty(propertyName, "Timeout", 10L);
+        // String (not enum) is deliberately used here to avoid IllegalArgumentException being thrown. In case of
+        // incorrect property value, default WaitStrategy is created.
+        switch (strategyUp) {
+            case "SLEEP":
+                final long sleepTimeNs =
+                        parseAdditionalLongProperty(propertyName, "SleepTimeNs", 100L);
+                final String key = getFullPropertyKey(propertyName, "Retries");
+                final int retries =
+                        PropertiesUtil.getProperties().getIntegerProperty(key, 200);
+                return new SleepingWaitStrategy(retries, sleepTimeNs);
+            case "YIELD":
+                return new YieldingWaitStrategy();
+            case "BLOCK":
+                return new BlockingWaitStrategy();
+            case "BUSYSPIN":
+                return new BusySpinWaitStrategy();
+            case "TIMEOUT":
+                return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
+            default:
+                return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
+        }
     }
 
-    static WaitStrategy createWaitStrategy(final String propertyName, final long timeoutMillis) {
-        final String strategy = PropertiesUtil.getProperties().getStringProperty(propertyName, "TIMEOUT");
-        LOGGER.trace("property {}={}", propertyName, strategy);
-        final String strategyUp = strategy.toUpperCase(Locale.ROOT); // TODO Refactor into Strings.toRootUpperCase(String)
-        switch (strategyUp) { // TODO Define a DisruptorWaitStrategy enum?
-        case "SLEEP":
-            return new SleepingWaitStrategy();
-        case "YIELD":
-            return new YieldingWaitStrategy();
-        case "BLOCK":
-            return new BlockingWaitStrategy();
-        case "BUSYSPIN":
-            return new BusySpinWaitStrategy();
-        case "TIMEOUT":
-            return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
-        default:
-            return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
-        }
+    private static String getFullPropertyKey(final String strategyKey, final String additionalKey) {
+        return strategyKey.startsWith("AsyncLogger.")
+                ? "AsyncLogger." + additionalKey
+                : "AsyncLoggerConfig." + additionalKey;
+    }
+
+    private static long parseAdditionalLongProperty(
+            final String propertyName,
+            final String additionalKey,
+            long defaultValue) {
+        final String key = getFullPropertyKey(propertyName, additionalKey);
+        return PropertiesUtil.getProperties().getLongProperty(key, defaultValue);
     }
 
     static int calculateRingBufferSize(final String propertyName) {
@@ -101,7 +128,7 @@ final class DisruptorUtil {
         try {
             @SuppressWarnings("unchecked")
             final Class<? extends ExceptionHandler<RingBufferLogEvent>> klass =
-                (Class<? extends ExceptionHandler<RingBufferLogEvent>>) LoaderUtil.loadClass(cls);
+                (Class<? extends ExceptionHandler<RingBufferLogEvent>>) Loader.loadClass(cls);
             return klass.newInstance();
         } catch (final Exception ignored) {
             LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: error creating {}: ", cls, ignored);
@@ -117,7 +144,7 @@ final class DisruptorUtil {
         try {
             @SuppressWarnings("unchecked")
             final Class<? extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>> klass =
-                    (Class<? extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>>) LoaderUtil.loadClass(cls);
+                    (Class<? extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>>) Loader.loadClass(cls);
             return klass.newInstance();
         } catch (final Exception ignored) {
             LOGGER.debug("Invalid AsyncLoggerConfig.ExceptionHandler value: error creating {}: ", cls, ignored);

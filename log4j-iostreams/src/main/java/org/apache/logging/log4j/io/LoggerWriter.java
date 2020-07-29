@@ -22,6 +22,7 @@ import java.io.Writer;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.io.internal.InternalWriter;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
@@ -33,17 +34,15 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 public class LoggerWriter extends Writer {
     private static final String FQCN = LoggerWriter.class.getName();
 
-    private final CharStreamLogger logger;
-    private final String fqcn;
+    private final InternalWriter writer;
 
     protected LoggerWriter(final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
-        this.logger = new CharStreamLogger(logger, level, marker);
-        this.fqcn = fqcn == null ? FQCN : fqcn;
+        this.writer = new InternalWriter(logger, fqcn == null ? FQCN : fqcn, level, marker);
     }
 
     @Override
     public void close() throws IOException {
-        this.logger.close(this.fqcn);
+        writer.close();
     }
 
     @Override
@@ -53,31 +52,31 @@ public class LoggerWriter extends Writer {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "[fqcn=" + this.fqcn + ", logger=" + this.logger + "]";
+        return this.getClass().getSimpleName() + "[fqcn=" + writer.toString();
     }
 
     @Override
     public void write(final char[] cbuf) throws IOException {
-        this.logger.put(this.fqcn, cbuf, 0, cbuf.length);
+        writer.write(cbuf);
     }
 
     @Override
     public void write(final char[] cbuf, final int off, final int len) throws IOException {
-        this.logger.put(this.fqcn, cbuf, off, len);
+        writer.write(cbuf, off, len);
     }
 
     @Override
     public void write(final int c) throws IOException {
-        this.logger.put(this.fqcn, (char) c);
+        writer.write(c);
     }
 
     @Override
     public void write(final String str) throws IOException {
-        this.logger.put(this.fqcn, str, 0, str.length());
+        writer.write(str);
     }
 
     @Override
     public void write(final String str, final int off, final int len) throws IOException {
-        this.logger.put(this.fqcn, str, off, len);
+        writer.write(str, off, len);
     }
 }

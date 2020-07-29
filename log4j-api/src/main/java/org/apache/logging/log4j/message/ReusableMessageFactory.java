@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public final class ReusableMessageFactory implements MessageFactory2, Serializable {
+public final class ReusableMessageFactory implements MessageFactory, Serializable {
 
     /**
      * Instance of ReusableMessageFactory..
@@ -38,9 +38,9 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
     public static final ReusableMessageFactory INSTANCE = new ReusableMessageFactory();
 
     private static final long serialVersionUID = -8970940216592525651L;
-    private static ThreadLocal<ReusableParameterizedMessage> threadLocalParameterized = new ThreadLocal<>();
-    private static ThreadLocal<ReusableSimpleMessage> threadLocalSimpleMessage = new ThreadLocal<>();
-    private static ThreadLocal<ReusableObjectMessage> threadLocalObjectMessage = new ThreadLocal<>();
+    private static final ThreadLocal<ReusableParameterizedMessage> threadLocalParameterized = new ThreadLocal<>();
+    private static final ThreadLocal<ReusableSimpleMessage> threadLocalSimpleMessage = new ThreadLocal<>();
+    private static final ThreadLocal<ReusableObjectMessage> threadLocalObjectMessage = new ThreadLocal<>();
 
     /**
      * Constructs a message factory.
@@ -77,15 +77,15 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
     }
 
     /**
-     * Switches the {@code reserved} flag off if the specified message is a ReusableParameterizedMessage,
-     * otherwise does nothing. This flag is used internally to verify that a reusable message is no longer in use and
+     * Invokes {@link Clearable#clear()} when possible.
+     * This flag is used internally to verify that a reusable message is no longer in use and
      * can be reused.
      * @param message the message to make available again
      * @since 2.7
      */
     public static void release(final Message message) { // LOG4J2-1583
-        if (message instanceof ReusableParameterizedMessage) {
-            ((ReusableParameterizedMessage) message).reserved = false;
+        if (message instanceof Clearable) {
+            ((Clearable) message).clear();
         }
     }
 

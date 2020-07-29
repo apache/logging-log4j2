@@ -53,4 +53,24 @@ public class DefaultLogEventFactory implements LogEventFactory {
                                 final List<Property> properties, final Throwable t) {
         return new Log4jLogEvent(loggerName, marker, fqcn, level, data, properties, t);
     }
+
+    /**
+     * Creates a log event.
+     *
+     * @param loggerName The name of the Logger.
+     * @param marker An optional Marker.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param location The location of the caller
+     * @param level The event Level.
+     * @param data The Message.
+     * @param properties Properties to be added to the log event.
+     * @param t An optional Throwable.
+     * @return The LogEvent.
+     */
+    @Override
+    public LogEvent createEvent(final String loggerName, final Marker marker, final String fqcn,
+            final StackTraceElement location, final Level level, final Message data,
+            final List<Property> properties, final Throwable t) {
+        return new Log4jLogEvent(loggerName, marker, fqcn, location, level, data, properties, t);
+    }
 }

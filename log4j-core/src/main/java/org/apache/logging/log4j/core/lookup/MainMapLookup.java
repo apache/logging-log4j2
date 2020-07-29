@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.lookup;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * A map-based lookup for main arguments.
@@ -64,9 +64,13 @@ public class MainMapLookup extends MapLookup {
      * Second using the argument at position n as the key to access the value at n+1.
      * </p>
      * <ul>
-     * <li>{@code "main:--file"} = {@code "path/file.txt"}</li>
-     * <li>{@code "main:-x"} = {@code "2"}</li>
+     * <li>{@code "main:\--file"} = {@code "path/file.txt"}</li>
+     * <li>{@code "main:\-x"} = {@code "2"}</li>
      * </ul>
+     *<p>Note: Many applications use leading dashes to identify command arguments. Specifying {@code "main:--file}
+     * would result in the lookup failing because it would look for a variable named "main" with a default
+     * value of "-file". To avoid this the ":" separating the Lookup name from the key must be followed by
+     * a backslash as an escape character.</p>
      *
      * @param args
      *        An application's {@code public static main(String[])} arguments.

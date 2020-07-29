@@ -26,10 +26,10 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.Before;
@@ -58,9 +58,24 @@ public class LoggerTest {
     private final List<String> results = logger.getEntries();
 
     @Test
+    public void builder() {
+        logger.atDebug().withLocation().log("Hello");
+        logger.atError().withMarker(marker).log("Hello {}", "John");
+        logger.atWarn().withThrowable(new Throwable("This is a test")).log((Message) new SimpleMessage("Log4j rocks!"));
+        assertEquals(3, results.size());
+        assertThat("Incorrect message 1", results.get(0),
+                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:62) Hello"));
+        assertThat("Incorrect message 2", results.get(1), equalTo("test ERROR Hello John"));
+        assertThat("Incorrect message 3", results.get(2),
+                startsWith(" WARN Log4j rocks! java.lang.Throwable: This is a test"));
+        assertThat("Throwable incorrect in message 3", results.get(2),
+                containsString("at org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:64)"));
+    }
+
+    @Test
     public void basicFlow() {
-        logger.entry();
-        logger.exit();
+        logger.traceEntry();
+        logger.traceExit();
         assertEquals(2, results.size());
         assertThat("Incorrect Entry", results.get(0), equalTo("ENTER[ FLOW ] TRACE Enter"));
         assertThat("incorrect Exit", results.get(1), equalTo("EXIT[ FLOW ] TRACE Exit"));
@@ -253,9 +268,6 @@ public class LoggerTest {
     }
 
     private static void assertMessageFactoryInstanceOf(MessageFactory factory, final Class<?> cls) {
-        if (factory instanceof MessageFactory2Adapter) {
-            factory = ((MessageFactory2Adapter) factory).getOriginal();
-        }
         assertTrue(factory.getClass().isAssignableFrom(cls));
     }
 
@@ -327,9 +339,6 @@ public class LoggerTest {
 
     private void assertEqualMessageFactory(final MessageFactory messageFactory, final TestLogger testLogger) {
         MessageFactory actual = testLogger.getMessageFactory();
-        if (actual instanceof MessageFactory2Adapter) {
-            actual = ((MessageFactory2Adapter) actual).getOriginal();
-        }
         assertEquals(messageFactory, actual);
     }
 

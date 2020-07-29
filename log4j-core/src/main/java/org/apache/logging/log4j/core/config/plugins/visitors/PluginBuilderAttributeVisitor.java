@@ -17,39 +17,34 @@
 
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
-import java.util.Map;
-
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.plugins.inject.AbstractConfigurationInjector;
+import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 
-/**
- * PluginVisitor for PluginBuilderAttribute. If {@code null} is returned for the
- * {@link #visit(org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.config.Node, org.apache.logging.log4j.core.LogEvent, StringBuilder)}
- * method, then the default value of the field should remain untouched.
- *
- * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
- */
-public class PluginBuilderAttributeVisitor extends AbstractPluginVisitor<PluginBuilderAttribute> {
+import java.util.Optional;
 
-    public PluginBuilderAttributeVisitor() {
-        super(PluginBuilderAttribute.class);
+/**
+ * @deprecated Provided for support for PluginBuilderAttribute.
+ */
+// copy of PluginBuilderAttributeInjector
+public class PluginBuilderAttributeVisitor extends AbstractConfigurationInjector<PluginBuilderAttribute, Configuration> {
+    @Override
+    public void inject(final Object factory) {
+        final Optional<String> value = findAndRemoveNodeAttribute().map(stringSubstitutionStrategy);
+        if (value.isPresent()) {
+            final String str = value.get();
+            debugLog(str);
+            configurationBinder.bindString(factory, str);
+        } else {
+            debugLog.append(name).append("=null");
+            configurationBinder.bindObject(factory, null);
+        }
     }
 
-    @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
-                        final StringBuilder log) {
-        final String overridden = this.annotation.value();
-        final String name = overridden.isEmpty() ? this.member.getName() : overridden;
-        final Map<String, String> attributes = node.getAttributes();
-        final String rawValue = removeAttributeValue(attributes, name, this.aliases);
-        final String replacedValue = this.substitutor.replace(event, rawValue);
-        final Object value = convert(replacedValue, null);
-        final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
-        StringBuilders.appendKeyDqValue(log, name, debugValue);
-        return value;
+    private void debugLog(final Object value) {
+        final Object debugValue = annotation.sensitive() ? NameUtil.md5(value + getClass().getName()) : value;
+        StringBuilders.appendKeyDqValue(debugLog, name, debugValue);
     }
 }

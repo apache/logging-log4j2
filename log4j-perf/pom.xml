@@ -38,9 +38,10 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Apache Log4J Performance Tests</docLabel>
     <projectDir>/log4j-perf</projectDir>
-    <jmh.version>1.19</jmh.version>
+    <jmh.version>1.21</jmh.version>
     <javac.target>1.7</javac.target>
     <uberjar.name>benchmarks</uberjar.name>
+    <revapi.skip>true</revapi.skip>
   </properties>
 
   <dependencies>
@@ -61,6 +62,10 @@
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-plugins</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
     </dependency>
     <dependency>
@@ -72,6 +77,22 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-jpa</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-layout-jackson-json</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-layout-json-template</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-layout-json-template</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -147,6 +168,10 @@
       <artifactId>jackson-databind</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>co.elastic.logging</groupId>
+      <artifactId>log4j2-ecs-layout</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -165,7 +190,7 @@
         <configuration>
           <toolchains>
             <jdk>
-              <version>9</version>
+              <version>[11, )</version>
             </jdk>
           </toolchains>
         </configuration>
@@ -196,6 +221,7 @@
               <minimizeJar>false</minimizeJar>
               <finalName>${uberjar.name}</finalName>
               <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>org.openjdk.jmh.Main</mainClass>
                   <manifestEntries>

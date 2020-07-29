@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.pattern.ArrayPatternConverter;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
+import org.apache.logging.log4j.core.pattern.FileDatePatternConverter;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
@@ -52,10 +53,13 @@ public class PatternProcessor {
 
     private final ArrayPatternConverter[] patternConverters;
     private final FormattingInfo[] patternFields;
+    private final FileExtension fileExtension;
 
     private long prevFileTime = 0;
     private long nextFileTime = 0;
     private long currentFileTime = 0;
+
+    private boolean isTimeBased = false;
 
     private RolloverFrequency frequency = null;
 
@@ -77,6 +81,7 @@ public class PatternProcessor {
     public PatternProcessor(final String pattern) {
         this.pattern = pattern;
         final PatternParser parser = createPatternParser();
+        // FIXME: this seems to expect List<ArrayPatternConverter> in practice; types need to be fixed around this
         final List<PatternConverter> converters = new ArrayList<>();
         final List<FormattingInfo> fields = new ArrayList<>();
         parser.parse(pattern, converters, fields, false, false, false);
@@ -84,11 +89,15 @@ public class PatternProcessor {
         patternFields = fields.toArray(infoArray);
         final ArrayPatternConverter[] converterArray = new ArrayPatternConverter[converters.size()];
         patternConverters = converters.toArray(converterArray);
+        this.fileExtension = FileExtension.lookupForFile(pattern);
 
         for (final ArrayPatternConverter converter : patternConverters) {
+            // TODO: extract common interface
             if (converter instanceof DatePatternConverter) {
                 final DatePatternConverter dateConverter = (DatePatternConverter) converter;
                 frequency = calculateFrequency(dateConverter.getPattern());
+            } else if (converter instanceof FileDatePatternConverter) {
+                frequency = calculateFrequency(((FileDatePatternConverter) converter).getPattern());
             }
         }
     }
@@ -106,6 +115,10 @@ public class PatternProcessor {
         this.currentFileTime = copy.currentFileTime;
     }
 
+    public void setTimeBased(boolean isTimeBased) {
+        this.isTimeBased = isTimeBased;
+    }
+
     public long getCurrentFileTime() {
         return currentFileTime;
     }
@@ -121,6 +134,10 @@ public class PatternProcessor {
     public void setPrevFileTime(final long prevFileTime) {
         LOGGER.debug("Setting prev file time to {}", new Date(prevFileTime));
         this.prevFileTime = prevFileTime;
+    }
+
+    public FileExtension getFileExtension() {
+        return fileExtension;
     }
 
     /**
@@ -213,7 +230,9 @@ public class PatternProcessor {
     }
 
     public void updateTime() {
-        prevFileTime = nextFileTime;
+        if (nextFileTime != 0 || !isTimeBased) {
+			prevFileTime = nextFileTime;
+		}
     }
 
     private long debugGetNextTime(final long nextTime) {
@@ -266,7 +285,9 @@ public class PatternProcessor {
                                      final Object obj) {
         // LOG4J2-628: we deliberately use System time, not the log4j.Clock time
         // for creating the file name of rolled-over files.
-        final long time = useCurrentTime && currentFileTime != 0 ? currentFileTime :
+		LOGGER.debug("Formatting file name. useCurrentTime={}, currentFileTime={}, prevFileTime={}",
+			useCurrentTime, currentFileTime, prevFileTime);
+		final long time = useCurrentTime ? currentFileTime != 0 ? currentFileTime : System.currentTimeMillis() :
                 prevFileTime != 0 ? prevFileTime : System.currentTimeMillis();
         formatFileName(buf, new Date(time), obj);
         final LogEvent event = new Log4jLogEvent.Builder().setTimeMillis(time).build();

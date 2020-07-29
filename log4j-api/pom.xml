@@ -142,19 +142,11 @@
             <id>default-compile</id>
             <!-- recompile everything for target VM except the module-info.java -->
             <configuration>
-              <source>1.7</source>
-              <target>1.7</target>
+              <source>1.8</source>
+              <target>1.8</target>
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <forkCount>2C</forkCount>
-          <reuseForks>true</reuseForks>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -230,9 +222,6 @@
             <Export-Package>org.apache.logging.log4j.*</Export-Package>
             <Import-Package>
               sun.reflect;resolution:=optional,
-              org.apache.logging.log4j.core.osgi;resolution:=optional,
-              org.apache.logging.log4j.core.util;resolution:=optional,
-              org.apache.logging.log4j.core.async;resolution:=optional,
               *
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
@@ -249,11 +238,6 @@
   </build>
   <reporting>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>clirr-maven-plugin</artifactId>
-        <version>${clirr.plugin.version}</version>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
@@ -300,6 +284,7 @@
           <links>
             <link>http://www.osgi.org/javadoc/r4v43/core/</link>
           </links>
+          <source>8</source>
         </configuration>
         <reportSets>
           <reportSet>

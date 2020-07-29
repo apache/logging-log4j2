@@ -27,6 +27,19 @@ The API for Log4j is separate from the implementation making it clear for applic
 methods they can use while ensuring forward compatibility. This allows the Log4j team to improve the implementation
 safely and in a compatible manner.
 
+
+The Log4j API is a logging facade that may, of course, be used with the Log4j implementation, but may also be used
+in front of other logging implementations such as Logback. The Log4j API has several advantages over SLF4J:
+
+. The Log4j API supports logging [Messages](manual/messages.html) instead of just Strings.
+. The Log4j API supports lambda expressions.
+. The Log4j API provides many more logging methods than SLF4J.
+. In addition to the "parameterized logging" format supported by SLF4J, the Log4j API also supports events using
+the java.text.MessageFormat syntax as well printf-style messages.
+. The Log4j API provides a LogManager.shutdown() method. The underlying logging implementation must implement the
+Terminable interface for the method to have effect.
+. Other constructs such as Markers, log Levels, and ThreadContext (aka MDC) are fully supported.
+
 === Improved Performance
 
 Log4j 2 contains next-generation Asynchronous Loggers based on the LMAX Disruptor library. In multi-threaded scenarios
@@ -82,6 +95,10 @@ level is not enabled, the same effect can be achieved with less code.
 In Log4j 2, link:manual/customloglevels.html[custom log levels] can easily be defined in code or in configuration. No
 subclassing is required.
 
+=== Log Builder API
+In addition to using one of the many log methods in the Log4j API, log events can be constructed using a builder. See
+link:manual/logbuilder.html[Log Builder] for more information.
+
 === Garbage-free
 
 During steady state logging, Log4j 2 is link:manual/garbagefree.html[garbage-free] in stand-alone applications, and low
@@ -91,6 +108,19 @@ garbage in web applications. This reduces pressure on the garbage collector and 
 
 Version 2.10.0 introduces a the module log4j-appserver to improve integration with Apache Tomcat and Eclipse Jetty.
 
+=== Cloud Enabled
+
+Version 2.12.0 introduces support for accessing Docker container information via a Lookup and for accessing
+and updating the Log4j configuration through Spring Cloud Configuration. This support was enhanced in
+version 2.13.0 to add support for accessing Spring Boot properties as well as Kubernetes information.
+See link:manual/cloud.html[Logging in the Cloud] for details.
+
+=== Compatible with Log4j 1.x
+
+The Log4j-1.2-api module of Log4j 2 provides compatiblity for applications using the Log4j 1 logging methods. As
+of Log4j 2.13.0 Log4j 2 also provides experimental support for Log4j 1.x configuration files. See
+link:manual/compatiblity.html[Log4j 2 Compatiblity with Log4j 1] for more information.
+
 == Documentation
 
 The Log4j 2 User's Guide is available on this link:manual/index.html[site] or as a downloadable
@@ -98,8 +128,9 @@ link:log4j-users-guide.pdf[PDF].
 
 == Requirements
 
-Log4j 2.4 and greater requires Java 7, versions 2.0-alpha1 to 2.3 required Java 6. Some features require optional
-dependencies; the documentation for these features specifies the dependencies.
+Log4j 2.13.0 and greater require Java 8. Version 2.4 through 2.12.1 required Java 7 and versions 2.0-alpha1 to 2.3
+required Java 6. Some features require optional dependencies; the documentation for these features specifies the
+dependencies.
 
 == News
 

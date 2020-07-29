@@ -17,10 +17,10 @@
 
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * Key/Value pair configuration item.
@@ -64,12 +64,12 @@ public final class KeyValuePair {
         return key + '=' + value;
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<KeyValuePair> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<KeyValuePair> {
 
         @PluginBuilderAttribute
         private String key;

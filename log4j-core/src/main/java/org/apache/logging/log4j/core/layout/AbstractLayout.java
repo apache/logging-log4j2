@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -110,20 +110,6 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
      * The header to include when the stream is opened. May be null.
      */
     protected final byte[] header;
-
-    /**
-     * Constructs a layout with an optional header and footer.
-     *
-     * @param header
-     *            The header to include when the stream is opened. May be null.
-     * @param footer
-     *            The footer to add when the stream is closed. May be null.
-     * @deprecated Use {@link #AbstractLayout(Configuration, byte[], byte[])}
-     */
-    @Deprecated
-    public AbstractLayout(final byte[] header, final byte[] footer) {
-        this(null, header, footer);
-    }
 
     /**
      * Constructs a layout with an optional header and footer.

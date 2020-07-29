@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.TriConsumer;
 /**
  * Provides a read-only {@code StringMap} view of a {@code Map<String, String>}.
  */
-class JdkMapAdapterStringMap implements StringMap {
+public class JdkMapAdapterStringMap implements StringMap {
     private static final long serialVersionUID = -7348247784983193612L;
     private static final String FROZEN = "Frozen collection cannot be modified";
     private static final Comparator<? super String> NULL_FIRST_COMPARATOR = new Comparator<String>() {
@@ -143,7 +143,7 @@ class JdkMapAdapterStringMap implements StringMap {
         sortedKeys = null;
     }
 
-    private static TriConsumer<String, String, Map<String, String>> PUT_ALL = new TriConsumer<String, String, Map<String, String>>() {
+    private static final TriConsumer<String, String, Map<String, String>> PUT_ALL = new TriConsumer<String, String, Map<String, String>>() {
         @Override
         public void accept(final String key, final String value, final Map<String, String> stringStringMap) {
             stringStringMap.put(key, value);

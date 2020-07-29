@@ -29,7 +29,6 @@ import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -71,22 +70,8 @@ public class LoggerTest {
     }
 
     @Test
-    public void basicFlowDepreacted() {
-        logger.entry();
-        logger.exit();
-        assertThat(list.strList, hasSize(2));
-    }
-
-    @Test
-    public void simpleFlowDeprecated() {
-        logger.entry(CONFIG);
-        logger.exit(0);
-        assertThat(list.strList, hasSize(2));
-    }
-
-    @Test
     public void simpleFlow() {
-        logger.entry(CONFIG);
+        logger.traceEntry(CONFIG);
         logger.traceExit(0);
         assertThat(list.strList, hasSize(2));
     }
@@ -140,15 +125,12 @@ public class LoggerTest {
         return testLogger;
     }
 
-    private static void checkMessageFactory(final MessageFactory messageFactory1, final Logger testLogger1) {
-        if (messageFactory1 == null) {
-            assertEquals(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS, testLogger1.getMessageFactory().getClass());
+    private static void checkMessageFactory(final MessageFactory messageFactory, final Logger testLogger) {
+        if (messageFactory == null) {
+            assertEquals(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS, testLogger.getMessageFactory().getClass());
         } else {
-            MessageFactory actual = testLogger1.getMessageFactory();
-            if (actual instanceof MessageFactory2Adapter) {
-                actual = ((MessageFactory2Adapter) actual).getOriginal();
-            }
-            assertEquals(messageFactory1, actual);
+            MessageFactory actual = testLogger.getMessageFactory();
+            assertEquals(messageFactory, actual);
         }
     }
 

@@ -26,15 +26,16 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.util.Timer;
 
 /**
  * An Appender that uses the Avro protocol to route events to Flume.
@@ -61,6 +62,9 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
 
     private final FlumeEventFactory factory;
 
+    private final Timer timer = new Timer("FlumeEvent", 5000);
+    private volatile long count;
+
     /**
      * Which Manager will be used by the appender instance.
      */
@@ -73,10 +77,10 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     }
 
     private FlumeAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-                          final boolean ignoreExceptions, final String includes, final String excludes,
-                          final String required, final String mdcPrefix, final String eventPrefix,
-                          final boolean compress, final FlumeEventFactory factory, final AbstractFlumeManager manager) {
-        super(name, filter, layout, ignoreExceptions);
+            final boolean ignoreExceptions, final String includes, final String excludes, final String required,
+            final String mdcPrefix, final String eventPrefix, final boolean compress, final FlumeEventFactory factory,
+            final Property[] properties, final AbstractFlumeManager manager) {
+        super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
         this.mdcIncludes = includes;
         this.mdcExcludes = excludes;
@@ -101,10 +105,25 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                 }
             }
         }
+        timer.startOrResume();
         final FlumeEvent flumeEvent = factory.createEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
         flumeEvent.setBody(getLayout().toByteArray(flumeEvent));
+        if (update()) {
+            String msg = timer.stop();
+            LOGGER.debug(msg);
+        } else {
+            timer.pause();
+        }
         manager.send(flumeEvent);
+    }
+
+    private synchronized boolean update() {
+        if (++count == 5000) {
+            count = 0;
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -166,32 +185,32 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      * @return A Flume Avro Appender.
      */
     @PluginFactory
-    public static FlumeAppender createAppender(@PluginElement("Agents") final Agent[] agents,
-                                               @PluginElement("Properties") final Property[] properties,
-                                               @PluginAttribute("hosts") final String hosts,
-                                               @PluginAttribute("embedded") final String embedded,
-                                               @PluginAttribute("type") final String type,
-                                               @PluginAttribute("dataDir") final String dataDir,
+    public static FlumeAppender createAppender(@PluginElement final Agent[] agents,
+                                               @PluginElement final Property[] properties,
+                                               @PluginAttribute final String hosts,
+                                               @PluginAttribute final String embedded,
+                                               @PluginAttribute final String type,
+                                               @PluginAttribute final String dataDir,
                                                @PluginAliases("connectTimeout")
                                                @PluginAttribute("connectTimeoutMillis") final String connectionTimeoutMillis,
                                                @PluginAliases("requestTimeout")
-                                               @PluginAttribute("requestTimeoutMillis") final String requestTimeoutMillis,
-                                               @PluginAttribute("agentRetries") final String agentRetries,
+                                               @PluginAttribute final String requestTimeoutMillis,
+                                               @PluginAttribute final String agentRetries,
                                                @PluginAliases("maxDelay") // deprecated
-                                               @PluginAttribute("maxDelayMillis") final String maxDelayMillis,
-                                               @PluginAttribute("name") final String name,
+                                               @PluginAttribute final String maxDelayMillis,
+                                               @PluginAttribute final String name,
                                                @PluginAttribute("ignoreExceptions") final String ignore,
                                                @PluginAttribute("mdcExcludes") final String excludes,
                                                @PluginAttribute("mdcIncludes") final String includes,
                                                @PluginAttribute("mdcRequired") final String required,
-                                               @PluginAttribute("mdcPrefix") final String mdcPrefix,
-                                               @PluginAttribute("eventPrefix") final String eventPrefix,
+                                               @PluginAttribute final String mdcPrefix,
+                                               @PluginAttribute final String eventPrefix,
                                                @PluginAttribute("compress") final String compressBody,
-                                               @PluginAttribute("batchSize") final String batchSize,
-                                               @PluginAttribute("lockTimeoutRetries") final String lockTimeoutRetries,
-                                               @PluginElement("FlumeEventFactory") final FlumeEventFactory factory,
-                                               @PluginElement("Layout") Layout<? extends Serializable> layout,
-                                               @PluginElement("Filter") final Filter filter) {
+                                               @PluginAttribute final String batchSize,
+                                               @PluginAttribute final String lockTimeoutRetries,
+                                               @PluginElement final FlumeEventFactory factory,
+                                               @PluginElement Layout<? extends Serializable> layout,
+                                               @PluginElement final Filter filter) {
 
         final boolean embed = embedded != null ? Boolean.parseBoolean(embedded) :
             (agents == null || agents.length == 0 || hosts == null || hosts.isEmpty()) && properties != null && properties.length > 0;
@@ -264,7 +283,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         }
 
         return new FlumeAppender(name, filter, layout,  ignoreExceptions, includes,
-            excludes, required, mdcPrefix, eventPrefix, compress, factory, manager);
+            excludes, required, mdcPrefix, eventPrefix, compress, factory, Property.EMPTY_ARRAY, manager);
     }
 
     private static Agent[] getAgents(Agent[] agents, final String hosts) {

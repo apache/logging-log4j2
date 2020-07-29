@@ -18,7 +18,7 @@
 
 # Apache Log4j Kafka module
 
-As of Log4j 2.11.0, Kafka support has moved from the existing module logj-core to the new module log4j-kafka.
+As of Log4j 2.11.0, Kafka support has moved from the existing module log4j-core to the new module log4j-kafka.
 
 ## Requirements
 

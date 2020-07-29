@@ -100,7 +100,7 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
     }
 
     private void loadProvider(final BundleContext bundleContext, final BundleWiring bundleWiring) {
-        final String filter = "(APIVersion>=2.60)";
+        final String filter = "(APIVersion>=2.6.0)";
         try {
             final Collection<ServiceReference<Provider>> serviceReferences = bundleContext.getServiceReferences(Provider.class, filter);
             Provider maxProvider = null;

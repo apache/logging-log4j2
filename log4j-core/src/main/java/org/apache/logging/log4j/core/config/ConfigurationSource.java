@@ -28,27 +28,41 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Represents the source for the logging configuration.
  */
 public class ConfigurationSource {
+
     /**
      * ConfigurationSource to use with Configurations that do not require a "real" configuration source.
      */
-    public static final ConfigurationSource NULL_SOURCE = new ConfigurationSource(new byte[0]);
+    public static final ConfigurationSource NULL_SOURCE = new ConfigurationSource(new byte[0], null, 0);
+    /**
+     * ConfigurationSource to use with {@link org.apache.logging.log4j.core.config.composite.CompositeConfiguration}.
+     */
+    public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(new byte[0], null, 0);
+    private static final String HTTPS = "https";
+    private static final String HTTP = "http";
 
     private final File file;
     private final URL url;
     private final String location;
     private final InputStream stream;
-    private final byte[] data;
+    private volatile byte[] data;
+    private volatile Source source;
+    private final long lastModified;
+    // Set when the configuration has been updated so reset can use it for the next lastModified timestamp.
+    private volatile long modifiedMillis;
 
     /**
      * Constructs a new {@code ConfigurationSource} with the specified input stream that originated from the specified
@@ -63,6 +77,30 @@ public class ConfigurationSource {
         this.location = file.getAbsolutePath();
         this.url = null;
         this.data = null;
+        long modified = 0;
+        try {
+            modified = file.lastModified();
+        } catch (Exception ex) {
+            // There is a problem with the file. It will be handled somewhere else.
+        }
+        this.lastModified = modified;
+    }
+
+    /**
+     * Constructs a new {@code ConfigurationSource} with the specified input stream that originated from the specified
+     * url.
+     *
+     * @param stream the input stream
+     * @param url the URL where the input stream originated
+     * @param lastModified when the source was last modified.
+     */
+    public ConfigurationSource(final InputStream stream, final URL url, long lastModified) {
+        this.stream = Objects.requireNonNull(stream, "stream is null");
+        this.url = Objects.requireNonNull(url, "URL is null");
+        this.location = url.toString();
+        this.file = null;
+        this.data = null;
+        this.lastModified = lastModified;
     }
 
     /**
@@ -78,6 +116,7 @@ public class ConfigurationSource {
         this.location = url.toString();
         this.file = null;
         this.data = null;
+        this.lastModified = 0;
     }
 
     /**
@@ -88,15 +127,29 @@ public class ConfigurationSource {
      * @throws IOException if an exception occurred reading from the specified stream
      */
     public ConfigurationSource(final InputStream stream) throws IOException {
-        this(toByteArray(stream));
+        this(toByteArray(stream), null, 0);
     }
 
-    private ConfigurationSource(final byte[] data) {
+    public ConfigurationSource(final Source source, final byte[] data, long lastModified) throws IOException {
+        Objects.requireNonNull(source, "source is null");
+        this.data = Objects.requireNonNull(data, "data is null");
+        this.stream = new ByteArrayInputStream(data);
+        this.file = source.getFile();
+        this.url = source.getURI().toURL();
+        this.location = source.getLocation();
+        this.lastModified = lastModified;
+    }
+
+    private ConfigurationSource(final byte[] data, final URL url, long lastModified) {
         this.data = Objects.requireNonNull(data, "data is null");
         this.stream = new ByteArrayInputStream(data);
         this.file = null;
-        this.url = null;
+        this.url = url;
         this.location = null;
+        this.lastModified = lastModified;
+        if ( url == null ) {
+        	this.data = data;
+        }
     }
 
     /**
@@ -139,6 +192,18 @@ public class ConfigurationSource {
         return url;
     }
 
+    public void setSource(Source source) {
+        this.source = source;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    public void setModifiedMillis(long modifiedMillis) {
+        this.modifiedMillis = modifiedMillis;
+    }
+
     /**
      * Returns a URI representing the configuration resource or null if it cannot be determined.
      * @return The URI.
@@ -171,6 +236,14 @@ public class ConfigurationSource {
     }
 
     /**
+     * Returns the time the resource was last modified or 0 if it is not available.
+     * @return the last modified time of the resource.
+     */
+    public long getLastModified() {
+        return lastModified;
+    }
+
+    /**
      * Returns a string describing the configuration source file or URL, or {@code null} if this configuration source
      * has neither a file nor an URL.
      *
@@ -196,13 +269,19 @@ public class ConfigurationSource {
      * @throws IOException if a problem occurred while opening the new input stream
      */
     public ConfigurationSource resetInputStream() throws IOException {
-        if (file != null) {
+        if (source != null) {
+            return new ConfigurationSource(source, data, this.lastModified);
+        } else if (file != null) {
             return new ConfigurationSource(new FileInputStream(file), file);
+        } else if (url != null && data != null) {
+            // Creates a ConfigurationSource without accessing the URL since the data was provided.
+            return new ConfigurationSource(data, url, modifiedMillis == 0 ? lastModified : modifiedMillis);
         } else if (url != null) {
-            return new ConfigurationSource(url.openStream(), url);
-        } else {
-            return new ConfigurationSource(data);
+            return fromUri(getURI());
+        } else if (data != null) {
+            return new ConfigurationSource(data, null, lastModified);
         }
+        return null;
     }
 
     @Override
@@ -212,6 +291,9 @@ public class ConfigurationSource {
         }
         if (this == NULL_SOURCE) {
             return "NULL_SOURCE";
+        }
+        if (this == COMPOSITE_SOURCE) {
+            return "COMPOSITE_SOURCE";
         }
         final int length = data == null ? -1 : data.length;
         return "stream (" + length + " bytes, unknown location)";
@@ -244,7 +326,11 @@ public class ConfigurationSource {
             return null;
         }
         try {
-            return new ConfigurationSource(configLocation.toURL().openStream(), configLocation.toURL());
+            URL url = configLocation.toURL();
+            URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
+            InputStream is = urlConnection.getInputStream();
+            long lastModified = urlConnection.getLastModified();
+            return new ConfigurationSource(is, configLocation.toURL(), lastModified);
         } catch (final MalformedURLException ex) {
             ConfigurationFactory.LOGGER.error("Invalid URL {}", configLocation.toString(), ex);
         } catch (final Exception ex) {

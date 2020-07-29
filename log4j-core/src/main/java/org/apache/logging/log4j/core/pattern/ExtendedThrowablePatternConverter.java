@@ -18,9 +18,8 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Outputs the Throwable portion of the LoggingEvent as a full stack trace
@@ -68,13 +67,12 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
                 super.format(event, toAppendTo);
                 return;
             }
-            final String extStackTrace = proxy.getExtendedStackTraceAsString(options.getIgnorePackages(),
-                    options.getTextRenderer(), getSuffix(event), options.getSeparator());
             final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(' ');
             }
-            toAppendTo.append(extStackTrace);
+            proxy.formatExtendedStackTraceTo(toAppendTo, options.getIgnorePackages(),
+                    options.getTextRenderer(), getSuffix(event), options.getSeparator());
         }
     }
 

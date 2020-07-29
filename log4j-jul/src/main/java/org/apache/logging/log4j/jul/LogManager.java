@@ -18,6 +18,8 @@ package org.apache.logging.log4j.jul;
 
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.logging.log4j.LoggingException;
@@ -41,6 +43,8 @@ public class LogManager extends java.util.logging.LogManager {
 
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
     private final AbstractLoggerAdapter loggerAdapter;
+    // Contains the set of logger names that are actively being requested using getLogger.
+    private final ThreadLocal<Set<String>> recursive = ThreadLocal.withInitial(HashSet::new);
 
     public LogManager() {
         super();
@@ -86,7 +90,17 @@ public class LogManager extends java.util.logging.LogManager {
     @Override
     public Logger getLogger(final String name) {
         LOGGER.trace("Call to LogManager.getLogger({})", name);
-        return loggerAdapter.getLogger(name);
+        Set<String> activeRequests = recursive.get();
+        if (activeRequests.add(name)) {
+            try {
+                return loggerAdapter.getLogger(name);
+            } finally {
+                activeRequests.remove(name);
+            }
+        } else {
+            LOGGER.warn("Recursive call to getLogger for {} ignored.", name);
+            return new NoOpLogger(name);
+        }
     }
 
     @Override

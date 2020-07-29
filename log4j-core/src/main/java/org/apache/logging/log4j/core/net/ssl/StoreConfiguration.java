@@ -36,22 +36,6 @@ public class StoreConfiguration<T> {
     }
 
     /**
-     * @deprecated Use {@link #StoreConfiguration(String, PasswordProvider)}
-     */
-    @Deprecated
-    public StoreConfiguration(final String location, final char[] password) {
-        this(location, new MemoryPasswordProvider(password));
-    }
-
-    /**
-     * @deprecated Use {@link #StoreConfiguration(String, PasswordProvider)}
-     */
-    @Deprecated
-    public StoreConfiguration(final String location, final String password) {
-        this(location, new MemoryPasswordProvider(password == null ? null : password.toCharArray()));
-    }
-
-    /**
      * Clears the secret fields in this object.
      */
     public void clearSecrets() {
@@ -67,30 +51,12 @@ public class StoreConfiguration<T> {
         this.location = location;
     }
 
-    /**
-     *
-     * @deprecated Use getPasswordAsCharArray()
-     */
-    @Deprecated
-    public String getPassword() {
-        return String.valueOf(this.passwordProvider.getPassword());
-    }
-
-    public char[] getPasswordAsCharArray() {
+    public char[] getPassword() {
         return this.passwordProvider.getPassword();
     }
 
     public void setPassword(final char[] password) {
         this.passwordProvider = new MemoryPasswordProvider(password);
-    }
-
-    /**
-     *
-     * @deprecated Use getPasswordAsCharArray()
-     */
-    @Deprecated
-    public void setPassword(final String password) {
-        this.passwordProvider = new MemoryPasswordProvider(password == null ? null : password.toCharArray());
     }
 
     /**

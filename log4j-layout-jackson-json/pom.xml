@@ -55,6 +55,11 @@
       <type>test-jar</type>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.lmax</groupId>
+      <artifactId>disruptor</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -113,6 +118,7 @@
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
+          <source>8</source>
         </configuration>
         <reportSets>
           <reportSet>

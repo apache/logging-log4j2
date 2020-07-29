@@ -172,7 +172,6 @@ public class MapRewritePolicyTest {
             orig.getThrown() == null ? null : orig.getThrownProxy().getExtendedStackTrace(),
             changed.getThrown() == null ? null : changed.getThrownProxy().getExtendedStackTrace()
         );
-        assertEquals("ContextMap changed", orig.getContextMap(), changed.getContextMap());
         assertEquals("ContextData changed", orig.getContextData(), changed.getContextData());
         assertEquals("ContextStack changed", orig.getContextStack(), changed.getContextStack());
         assertEquals("ThreadName changed", orig.getThreadName(), changed.getThreadName());

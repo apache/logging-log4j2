@@ -35,12 +35,15 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.TlsSyslogFrame;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.layout.internal.ExcludeChecker;
+import org.apache.logging.log4j.core.layout.internal.IncludeChecker;
+import org.apache.logging.log4j.core.layout.internal.ListChecker;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
@@ -55,7 +58,7 @@ import org.apache.logging.log4j.message.MessageCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.util.ProcessIdUtil;
+import org.apache.logging.log4j.core.util.ProcessIdUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
@@ -112,7 +115,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final List<String> mdcIncludes;
     private final List<String> mdcRequired;
     private final ListChecker listChecker;
-    private final ListChecker noopChecker = new NoopChecker();
     private final boolean includeNewLine;
     private final String escapeNewLine;
     private final boolean useTlsMessageFormat;
@@ -138,20 +140,20 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         this.includeMdc = includeMDC;
         this.includeNewLine = includeNL;
         this.escapeNewLine = escapeNL == null ? null : Matcher.quoteReplacement(escapeNL);
-        this.mdcId = id == null ? DEFAULT_MDCID : id;
-        this.mdcSdId = new StructuredDataId(mdcId, enterpriseNumber, null, null);
+        this.mdcId = mdcId != null ? mdcId : id == null ? DEFAULT_MDCID : id;
+        this.mdcSdId = new StructuredDataId(this.mdcId, enterpriseNumber, null, null);
         this.mdcPrefix = mdcPrefix;
         this.eventPrefix = eventPrefix;
         this.appName = appName;
         this.messageId = messageId;
         this.useTlsMessageFormat = useTLSMessageFormat;
         this.localHostName = NetUtils.getLocalHostname();
-        ListChecker c = null;
+        ListChecker checker = null;
         if (excludes != null) {
             final String[] array = excludes.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {
-                c = new ExcludeChecker();
                 mdcExcludes = new ArrayList<>(array.length);
+                checker = new ExcludeChecker(mdcExcludes);
                 for (final String str : array) {
                     mdcExcludes.add(str.trim());
                 }
@@ -164,8 +166,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         if (includes != null) {
             final String[] array = includes.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {
-                c = new IncludeChecker();
                 mdcIncludes = new ArrayList<>(array.length);
+                checker = new IncludeChecker(mdcIncludes);
                 for (final String str : array) {
                     mdcIncludes.add(str.trim());
                 }
@@ -189,7 +191,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         } else {
             mdcRequired = null;
         }
-        this.listChecker = c != null ? c : noopChecker;
+        this.listChecker = checker != null ? checker : ListChecker.NOOP_CHECKER;
         final String name = config == null ? null : config.getName();
         configName = Strings.isNotEmpty(name) ? name : null;
         this.fieldFormatters = createFieldFormatters(loggerFields, config);
@@ -513,7 +515,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         sb.append('[');
         sb.append(id);
         if (!mdcSdId.toString().equals(id)) {
-            appendMap(data.getPrefix(), data.getFields(), sb, noopChecker);
+            appendMap(data.getPrefix(), data.getFields(), sb, ListChecker.NOOP_CHECKER);
         } else {
             appendMap(data.getPrefix(), data.getFields(), sb, checker);
         }
@@ -566,43 +568,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         return PARAM_VALUE_ESCAPE_PATTERN.matcher(value).replaceAll("\\\\$0");
     }
 
-    /**
-     * Interface used to check keys in a Map.
-     */
-    private interface ListChecker {
-        boolean check(String key);
-    }
-
-    /**
-     * Includes only the listed keys.
-     */
-    private class IncludeChecker implements ListChecker {
-        @Override
-        public boolean check(final String key) {
-            return mdcIncludes.contains(key);
-        }
-    }
-
-    /**
-     * Excludes the listed keys.
-     */
-    private class ExcludeChecker implements ListChecker {
-        @Override
-        public boolean check(final String key) {
-            return !mdcExcludes.contains(key);
-        }
-    }
-
-    /**
-     * Does nothing.
-     */
-    private class NoopChecker implements ListChecker {
-        @Override
-        public boolean check(final String key) {
-            return true;
-        }
-    }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -643,25 +608,24 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     @PluginFactory
     public static Rfc5424Layout createLayout(
             // @formatter:off
-            @PluginAttribute(value = "facility", defaultString = "LOCAL0") final Facility facility,
-            @PluginAttribute("id") final String id,
-            @PluginAttribute(value = "enterpriseNumber", defaultInt = DEFAULT_ENTERPRISE_NUMBER)
-            final int enterpriseNumber,
-            @PluginAttribute(value = "includeMDC", defaultBoolean = true) final boolean includeMDC,
-            @PluginAttribute(value = "mdcId", defaultString = DEFAULT_MDCID) final String mdcId,
-            @PluginAttribute("mdcPrefix") final String mdcPrefix,
-            @PluginAttribute("eventPrefix") final String eventPrefix,
-            @PluginAttribute(value = "newLine") final boolean newLine,
+            @PluginAttribute(defaultString = "LOCAL0") final Facility facility,
+            @PluginAttribute final String id,
+            @PluginAttribute(defaultInt = DEFAULT_ENTERPRISE_NUMBER) final int enterpriseNumber,
+            @PluginAttribute(defaultBoolean = true) final boolean includeMDC,
+            @PluginAttribute(defaultString = DEFAULT_MDCID) final String mdcId,
+            @PluginAttribute final String mdcPrefix,
+            @PluginAttribute final String eventPrefix,
+            @PluginAttribute final boolean newLine,
             @PluginAttribute("newLineEscape") final String escapeNL,
-            @PluginAttribute("appName") final String appName,
+            @PluginAttribute final String appName,
             @PluginAttribute("messageId") final String msgId,
             @PluginAttribute("mdcExcludes") final String excludes,
             @PluginAttribute("mdcIncludes") String includes,
             @PluginAttribute("mdcRequired") final String required,
-            @PluginAttribute("exceptionPattern") final String exceptionPattern,
+            @PluginAttribute final String exceptionPattern,
             // RFC 5425
-            @PluginAttribute(value = "useTlsMessageFormat") final boolean useTlsMessageFormat,
-            @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
+            @PluginAttribute final boolean useTlsMessageFormat,
+            @PluginElement final LoggerFields[] loggerFields,
             @PluginConfiguration final Configuration config) {
         // @formatter:on
         if (includes != null && excludes != null) {

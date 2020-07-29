@@ -24,7 +24,7 @@
     <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-1.2-api</artifactId>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
   <name>Apache Log4j 1.x Compatibility API</name>
   <description>The Apache Log4j 1.x Compatibility API</description>
   <properties>
@@ -63,6 +63,7 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -159,6 +160,7 @@
                project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
+          <source>8</source>
         </configuration>
         <reportSets>
           <reportSet>

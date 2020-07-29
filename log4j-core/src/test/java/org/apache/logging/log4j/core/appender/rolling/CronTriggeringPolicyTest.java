@@ -29,12 +29,12 @@ import org.junit.Test;
 public class CronTriggeringPolicyTest {
 
     private static final String CRON_EXPRESSION = "0 0 0 * * ?";
-    
+
     private NullConfiguration configuration;
 
-     // TODO Need a CleanRegexFiles("testcmd.\\.log\\..*");
-     //@Rule
-     //public CleanFiles cleanFiles = new CleanFiles("testcmd1.log", "testcmd2.log", "testcmd3.log");
+    // TODO Need a CleanRegexFiles("testcmd.\\.log\\..*");
+    // @Rule
+    // public CleanFiles cleanFiles = new CleanFiles("testcmd1.log", "testcmd2.log", "testcmd3.log");
 
     @Before
     public void before() {
@@ -46,17 +46,18 @@ public class CronTriggeringPolicyTest {
     }
 
     private DefaultRolloverStrategy createStrategy() {
-        return DefaultRolloverStrategy.createStrategy("7", "1", "max", null, null, false, configuration);
+        return DefaultRolloverStrategy.newBuilder().setMax("7").setMin("1").setFileIndex("max")
+                .setStopCustomActionsOnError(false).setConfig(configuration).build();
     }
 
     private void testBuilder() {
         // @formatter:off
         final RollingFileAppender raf = RollingFileAppender.newBuilder()
-            .withName("test1")
-            .withFileName("target/testcmd1.log")
-            .withFilePattern("target/testcmd1.log.%d{yyyy-MM-dd}")
-            .withPolicy(createPolicy())
-            .withStrategy(createStrategy())
+            .setName("test1")
+            .setFileName("target/testcmd1.log")
+            .setFilePattern("target/testcmd1.log.%d{yyyy-MM-dd}")
+            .setPolicy(createPolicy())
+            .setStrategy(createStrategy())
             .setConfiguration(configuration)
             .build();
         // @formatter:on
@@ -88,17 +89,16 @@ public class CronTriggeringPolicyTest {
     public void testRollingRandomAccessFileAppender() {
         // @formatter:off
         RollingRandomAccessFileAppender.newBuilder()
-            .withName("test2")
-            .withFileName("target/testcmd2.log")
-            .withFilePattern("target/testcmd2.log.%d{yyyy-MM-dd}")
-            .withPolicy(createPolicy())
-            .withStrategy(createStrategy())
+            .setName("test2")
+            .setFileName("target/testcmd2.log")
+            .setFilePattern("target/testcmd2.log.%d{yyyy-MM-dd}")
+            .setPolicy(createPolicy())
+            .setStrategy(createStrategy())
             .setConfiguration(configuration)
             .build();
         // @formatter:on
     }
 
-    
     /**
      * Tests LOG4J2-1474 CronTriggeringPolicy raise exception and fail to rollover log file when evaluateOnStartup is
      * true.

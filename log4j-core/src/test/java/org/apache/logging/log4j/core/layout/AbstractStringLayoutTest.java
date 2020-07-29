@@ -74,4 +74,5 @@ public class AbstractStringLayoutTest {
         assertEquals("capacity, trimmed to MAX_STRING_BUILDER_SIZE", ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, sb3.capacity());
         assertEquals("empty, ready for use", 0, sb3.length());
     }
+
 }

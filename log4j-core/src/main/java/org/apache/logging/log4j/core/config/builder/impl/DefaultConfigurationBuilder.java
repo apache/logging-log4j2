@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -60,12 +61,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private static final String EOL = System.lineSeparator();
     
     private final Component root = new Component();
-    private Component loggers;
-    private Component appenders;
-    private Component filters;
-    private Component properties;
-    private Component customLevels;
-    private Component scripts;
+    private final Component loggers;
+    private final Component appenders;
+    private final Component filters;
+    private final Component properties;
+    private final Component customLevels;
+    private final Component scripts;
     private final Class<T> clazz;
     private ConfigurationSource source;
     private int monitorInterval;
@@ -170,19 +171,18 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             }
             final Constructor<T> constructor = clazz.getConstructor(LoggerContext.class, ConfigurationSource.class, Component.class);
             configuration = constructor.newInstance(loggerContext, source, root);
-            configuration.setMonitorInterval(monitorInterval);
             configuration.getRootNode().getAttributes().putAll(root.getAttributes());
             if (name != null) {
                 configuration.setName(name);
             }
             if (level != null) {
-                configuration.getStatusConfiguration().withStatus(level);
+                configuration.getStatusConfiguration().setStatus(level);
             }
             if (verbosity != null) {
-                configuration.getStatusConfiguration().withVerbosity(verbosity);
+                configuration.getStatusConfiguration().setVerbosity(verbosity);
             }
             if (destination != null) {
-                configuration.getStatusConfiguration().withDestination(destination);
+                configuration.getStatusConfiguration().setDestination(destination);
             }
             if (packages != null) {
                 configuration.setPluginPackages(packages);
@@ -196,6 +196,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (advertiser != null) {
                 configuration.createAdvertiser(advertiser, source);
             }
+            configuration.setMonitorInterval(monitorInterval);
         } catch (final Exception ex) {
             throw new IllegalArgumentException("Invalid Configuration class specified", ex);
         }
@@ -382,7 +383,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public LoggerComponentBuilder newAsyncLogger(final String name, final String level, final boolean includeLocation) {
-        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger");
+        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger", includeLocation);
     }
 
     @Override

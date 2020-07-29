@@ -23,8 +23,8 @@ import java.io.Serializable;
  * as an {@link ErrorHandler}. Typical Appender implementations coordinate with an
  * implementation of {@link org.apache.logging.log4j.core.appender.AbstractManager} to handle external resources
  * such as streams, connections, and other shared state. As Appenders are plugins, concrete implementations need to
- * be annotated with {@link org.apache.logging.log4j.core.config.plugins.Plugin} and need to provide a static
- * factory method annotated with {@link org.apache.logging.log4j.core.config.plugins.PluginFactory}.
+ * be annotated with {@link org.apache.logging.log4j.plugins.Plugin} and need to provide a static
+ * factory method annotated with {@link org.apache.logging.log4j.plugins.PluginFactory}.
  *
  * <p>Most core plugins are written using a related Manager class that handle the actual task of serializing a
  * {@link LogEvent} to some output location. For instance, many Appenders can take
@@ -37,7 +37,7 @@ import java.io.Serializable;
 public interface Appender extends LifeCycle {
 
     /**
-     * Main {@linkplain org.apache.logging.log4j.core.config.plugins.Plugin#elementType() plugin element type} for
+     * Main {@linkplain org.apache.logging.log4j.plugins.Plugin#elementType() plugin element type} for
      * Appender plugins.
      *
      * @since 2.6
@@ -89,4 +89,12 @@ public interface Appender extends LifeCycle {
      * @param handler the ErrorHandler to use for handling exceptions.
      */
     void setHandler(ErrorHandler handler);
+
+    /**
+     * Appenders should return true if they require location information.
+     * @return true if the Appender requires location information.
+     */
+    default boolean requiresLocation() {
+        return false;
+    }
 }

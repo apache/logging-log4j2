@@ -30,6 +30,7 @@
     <List name="List">
       <ThresholdFilter level="debug"/>
     </List>
+    <List name="ReferencedList"/>
     <Routing name="RoutingPurgeIdle">
       <Routes pattern="$${sd:id}">
         <Route>
@@ -39,15 +40,17 @@
             </PatternLayout>
           </File>
         </Route>
+        <Route ref="ReferencedList" key="2"/>
       </Routes>
       <IdlePurgePolicy timeToLive="2" timeUnit="seconds" />
     </Routing>
-    
+
     <Routing name="RoutingPurgeIdleWithHangingAppender">
       <Routes pattern="$${sd:id}">
         <Route>
           <Hanging name="Routing-${sd:id}" shutdownDelay="10000"/>
         </Route>
+        <Route ref="ReferencedList" key="2"/>
       </Routes>
       <IdlePurgePolicy timeToLive="2" timeUnit="seconds" />
     </Routing>
@@ -61,6 +64,7 @@
             </PatternLayout>
           </File>
         </Route>
+        <Route ref="ReferencedList" key="2"/>
       </Routes>
     </Routing>
   </Appenders>

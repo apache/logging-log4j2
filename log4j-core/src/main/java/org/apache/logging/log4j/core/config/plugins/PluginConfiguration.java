@@ -16,22 +16,24 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
+import org.apache.logging.log4j.core.config.plugins.inject.PluginConfigurationInjector;
+import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.logging.log4j.core.config.plugins.visitors.PluginConfigurationVisitor;
-
 /**
- * Identifies a parameter or field as a Configuration.
- * @see org.apache.logging.log4j.core.config.Configuration
+ * Identifies the current {@link org.apache.logging.log4j.core.config.Configuration}. This can be injected as a
+ * parameter to a static {@linkplain org.apache.logging.log4j.plugins.PluginFactory factory method}, or as a field
+ * or single-parameter method in a plugin {@linkplain org.apache.logging.log4j.plugins.util.Builder builder class}.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD})
-@PluginVisitorStrategy(PluginConfigurationVisitor.class)
+@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
+@InjectorStrategy(PluginConfigurationInjector.class)
 public @interface PluginConfiguration {
     // empty
 }

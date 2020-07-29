@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
@@ -121,7 +122,7 @@ public class LoggerTest {
         final CountingAppender coutingAppender = new CountingAppender();
         coutingAppender.start();
         try {
-            loggerA.getLogger().addAppender(coutingAppender);
+            ((org.apache.logging.log4j.core.Logger) loggerA.getLogger()).addAppender(coutingAppender);
 
             assertEquals(0, coutingAppender.counter);
             loggerAB.debug(MSG);
@@ -134,7 +135,7 @@ public class LoggerTest {
             assertEquals(4, coutingAppender.counter);
             coutingAppender.stop();
         } finally {
-            loggerA.getLogger().removeAppender(coutingAppender);
+            ((org.apache.logging.log4j.core.Logger) loggerA.getLogger()).removeAppender(coutingAppender);
         }
     }
 
@@ -154,8 +155,8 @@ public class LoggerTest {
         ca2.start();
 
         try {
-            a.getLogger().addAppender(ca1);
-            abc.getLogger().addAppender(ca2);
+            ((org.apache.logging.log4j.core.Logger) a.getLogger()).addAppender(ca1);
+            ((org.apache.logging.log4j.core.Logger) abc.getLogger()).addAppender(ca2);
 
             assertEquals(ca1.counter, 0);
             assertEquals(ca2.counter, 0);
@@ -174,8 +175,8 @@ public class LoggerTest {
             ca1.stop();
             ca2.stop();
         } finally {
-            a.getLogger().removeAppender(ca1);
-            abc.getLogger().removeAppender(ca2);
+            ((org.apache.logging.log4j.core.Logger) a.getLogger()).removeAppender(ca1);
+            ((org.apache.logging.log4j.core.Logger) abc.getLogger()).removeAppender(ca2);
         }}
 
     /**
@@ -196,9 +197,9 @@ public class LoggerTest {
         final CountingAppender caABC = new CountingAppender();
         caABC.start();
         try {
-            root.getLogger().addAppender(caRoot);
-            a.getLogger().addAppender(caA);
-            abc.getLogger().addAppender(caABC);
+            ((org.apache.logging.log4j.core.Logger) root.getLogger()).addAppender(caRoot);
+            ((org.apache.logging.log4j.core.Logger) a.getLogger()).addAppender(caA);
+            ((org.apache.logging.log4j.core.Logger) abc.getLogger()).addAppender(caABC);
 
             assertEquals(caRoot.counter, 0);
             assertEquals(caA.counter, 0);
@@ -224,9 +225,9 @@ public class LoggerTest {
             caA.stop();
             caABC.stop();
         } finally {
-            root.getLogger().removeAppender(caRoot);
-            a.getLogger().removeAppender(caA);
-            abc.getLogger().removeAppender(caABC);
+            ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(caRoot);
+            ((org.apache.logging.log4j.core.Logger) a.getLogger()).removeAppender(caA);
+            ((org.apache.logging.log4j.core.Logger) abc.getLogger()).removeAppender(caABC);
         }}
 
     /* Don't support getLoggerRepository
@@ -389,7 +390,7 @@ public class LoggerTest {
         final ListAppender appender = new ListAppender("List");
         appender.start();
         final Logger root = Logger.getRootLogger();
-        root.getLogger().addAppender(appender);
+        ((org.apache.logging.log4j.core.Logger) root.getLogger()).addAppender(appender);
         root.setLevel(Level.INFO);
 
         final Logger tracer = Logger.getLogger("com.example.Tracer");
@@ -405,7 +406,7 @@ public class LoggerTest {
         assertEquals(org.apache.logging.log4j.Level.TRACE, event.getLevel());
         assertEquals("Message 1", event.getMessage().getFormat());
         appender.stop();
-        root.getLogger().removeAppender(appender);
+        ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(appender);
     }
 
     /**
@@ -417,7 +418,7 @@ public class LoggerTest {
         appender.start();
         final Logger root = Logger.getRootLogger();
         try {
-            root.getLogger().addAppender(appender);
+            ((org.apache.logging.log4j.core.Logger) root.getLogger()).addAppender(appender);
             root.setLevel(Level.INFO);
 
             final Logger tracer = Logger.getLogger("com.example.Tracer");
@@ -435,7 +436,7 @@ public class LoggerTest {
             assertEquals("Message 1", event.getMessage().getFormattedMessage());
             appender.stop();
         } finally {
-            root.getLogger().removeAppender(appender);
+            ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(appender);
         }
     }
 
@@ -448,7 +449,7 @@ public class LoggerTest {
         appender.start();
         final Logger root = Logger.getRootLogger();
         try {
-            root.getLogger().addAppender(appender);
+            ((org.apache.logging.log4j.core.Logger) root.getLogger()).addAppender(appender);
             root.setLevel(Level.INFO);
 
             final Logger tracer = Logger.getLogger("com.example.Tracer");
@@ -458,19 +459,19 @@ public class LoggerTest {
             assertFalse(root.isTraceEnabled());
             appender.stop();
         } finally {
-            root.getLogger().removeAppender(appender);
+            ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(appender);
         }
     }
 
     @Test
     @SuppressWarnings("deprecation")
     public void testLog() {
-        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%d %C %L %m").build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("%d %C %L %m").build();
         final ListAppender appender = new ListAppender("List", null, layout, false, false);
         appender.start();
         final Logger root = Logger.getRootLogger();
         try {
-            root.getLogger().addAppender(appender);
+            ((org.apache.logging.log4j.core.Logger) root.getLogger()).addAppender(appender);
             root.setLevel(Level.INFO);
             final MyLogger log = new MyLogger(root);
             log.logInfo("This is a test", null);
@@ -482,7 +483,7 @@ public class LoggerTest {
             assertTrue("Message contains incorrect class name: " + msg, msg.contains(LoggerTest.class.getName()));
             appender.stop();
         } finally {
-            root.getLogger().removeAppender(appender);
+            ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(appender);
         }
     }
 
@@ -507,7 +508,7 @@ public class LoggerTest {
         int counter;
 
         CountingAppender() {
-            super("Counter", null, null);
+            super("Counter", null, null, true, Property.EMPTY_ARRAY);
             counter = 0;
         }
 

@@ -28,12 +28,12 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
@@ -197,10 +197,10 @@ public class ThreadContextMapFilter extends MapFilter {
     // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static ThreadContextMapFilter createFilter(
-            @PluginElement("Pairs") final KeyValuePair[] pairs,
-            @PluginAttribute("operator") final String oper,
-            @PluginAttribute("onMatch") final Result match,
-            @PluginAttribute("onMismatch") final Result mismatch) {
+            @PluginElement final KeyValuePair[] pairs,
+            @PluginAttribute final String operator,
+            @PluginAttribute final Result onMatch,
+            @PluginAttribute final Result onMismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("key and value pairs must be specified for the ThreadContextMapFilter");
             return null;
@@ -230,7 +230,7 @@ public class ThreadContextMapFilter extends MapFilter {
             LOGGER.error("ThreadContextMapFilter is not configured with any valid key value pairs");
             return null;
         }
-        final boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        return new ThreadContextMapFilter(map, isAnd, match, mismatch);
+        final boolean isAnd = operator == null || !operator.equalsIgnoreCase("or");
+        return new ThreadContextMapFilter(map, isAnd, onMatch, onMismatch);
     }
 }

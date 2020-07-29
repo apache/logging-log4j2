@@ -31,6 +31,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Integration Tests Documentation</docLabel>
     <projectDir>/log4j-core-its</projectDir>
+    <revapi.skip>true</revapi.skip>
   </properties>
   <dependencies>
     <dependency>

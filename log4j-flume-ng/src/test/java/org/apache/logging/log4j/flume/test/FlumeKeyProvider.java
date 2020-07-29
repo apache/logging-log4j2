@@ -19,7 +19,7 @@ package org.apache.logging.log4j.flume.test;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
 
 /**

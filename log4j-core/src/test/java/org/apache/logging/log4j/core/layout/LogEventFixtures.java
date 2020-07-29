@@ -88,7 +88,6 @@ public class LogEventFixtures {
             final boolean includeContext, final boolean includeStacktrace) {
         assertEquals(expected.getClass(), actual.getClass());
         assertEquals(includeContext ? expected.getContextData() : ContextDataFactory.createContextData(), actual.getContextData());
-        assertEquals(includeContext ? expected.getContextMap() : Collections.EMPTY_MAP, actual.getContextMap());
         assertEquals(expected.getContextStack(), actual.getContextStack());
         assertEquals(expected.getLevel(), actual.getLevel());
         assertEquals(expected.getLoggerName(), actual.getLoggerName());

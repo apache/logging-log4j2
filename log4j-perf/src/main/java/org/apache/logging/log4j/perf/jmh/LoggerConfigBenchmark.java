@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -52,7 +53,7 @@ import org.openjdk.jmh.infra.Blackhole;
 public class LoggerConfigBenchmark {
 
     private final CopyOnWriteArraySet<AppenderControl> appenderSet = new CopyOnWriteArraySet<>();
-    private volatile Filter filter = null;
+    private volatile Filter filter;
     private final boolean additive = true;
     private final boolean includeLocation = true;
     private LoggerConfig parent;
@@ -68,7 +69,7 @@ public class LoggerConfigBenchmark {
         private final AtomicInteger count = new AtomicInteger();
 
         protected SimpleListAppender() {
-            super("list", null, null);
+            super("list", null, null, true, Property.EMPTY_ARRAY);
         }
 
         @Override

@@ -18,9 +18,9 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  *
@@ -92,7 +92,7 @@ public class SizeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
      * @return A SizeBasedTriggeringPolicy.
      */
     @PluginFactory
-    public static SizeBasedTriggeringPolicy createPolicy(@PluginAttribute("size") final String size) {
+    public static SizeBasedTriggeringPolicy createPolicy(@PluginAttribute final String size) {
 
         final long maxSize = size == null ? MAX_FILE_SIZE : FileSize.parse(size, MAX_FILE_SIZE);
         return new SizeBasedTriggeringPolicy(maxSize);

@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
+import org.apache.logging.log4j.core.config.plugins.visitors.PluginAttributeVisitor;
+import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
+import org.apache.logging.log4j.util.Strings;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import org.apache.logging.log4j.core.config.plugins.visitors.PluginAttributeVisitor;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Identifies a Plugin Attribute and its default value. Note that only one of the defaultFoo attributes will be
@@ -31,11 +32,12 @@ import org.apache.logging.log4j.util.Strings;
  * attribute will be used for some <i>Type</i>. However, for more complex types (including enums), the default
  * string value is used instead and should correspond to the string that would correctly convert to the appropriate
  * enum value using {@link Enum#valueOf(Class, String) Enum.valueOf}.
+ * @deprecated Exists for compatibility with Log4j 2 2.x plugins. Not used for Log4j 2 3.x plugins.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-@PluginVisitorStrategy(PluginAttributeVisitor.class)
+@InjectorStrategy(PluginAttributeVisitor.class)
 public @interface PluginAttribute {
 
     /**
@@ -88,7 +90,6 @@ public @interface PluginAttribute {
      */
     String defaultString() default Strings.EMPTY;
 
-    // TODO: could we allow a blank value and infer the attribute name through reflection?
     /**
      * Specifies the name of the attribute (case-insensitive) this annotation corresponds to.
      */

@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.util.WatchManager;
+import org.apache.logging.log4j.plugins.Node;
 
 /**
  * Interface that must be implemented to create a configuration.
@@ -40,7 +41,6 @@ import org.apache.logging.log4j.core.util.WatchManager;
  * </p>
  *
  * @see AbstractConfiguration
- * @see org.apache.logging.log4j.core.LifeCycle2
  */
 public interface Configuration extends Filterable {
 
@@ -135,7 +135,10 @@ public interface Configuration extends Filterable {
     /**
      * Returns the source of this configuration.
      *
-     * @return the source of this configuration
+     * @return the source of this configuration, never {@code null}, but may be
+     * {@link org.apache.logging.log4j.core.config.ConfigurationSource#NULL_SOURCE}
+     * or
+     * {@link org.apache.logging.log4j.core.config.ConfigurationSource#COMPOSITE_SOURCE}
      */
     ConfigurationSource getConfigurationSource();
 

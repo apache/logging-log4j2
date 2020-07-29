@@ -18,12 +18,12 @@ package org.apache.logging.log4j.core.config;
 
 import java.util.Objects;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginValue;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.PluginValue;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -32,7 +32,10 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "property", category = Node.CATEGORY, printObject = true)
 public final class Property {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
+    /**
+     * @since 2.11.2
+     */
+    public static final Property[] EMPTY_ARRAY = new Property[0];
 
     private final String name;
     private final String value;
@@ -77,11 +80,8 @@ public final class Property {
      */
     @PluginFactory
     public static Property createProperty(
-            @PluginAttribute("name") final String name,
-            @PluginValue("value") final String value) {
-        if (name == null) {
-            LOGGER.error("Property name cannot be null");
-        }
+            @PluginAttribute @Required(message = "Property name cannot be null") final String name,
+            @PluginValue final String value) {
         return new Property(name, value);
     }
 

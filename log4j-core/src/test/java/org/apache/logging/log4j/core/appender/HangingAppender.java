@@ -24,11 +24,12 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
 @Plugin(name = "Hanging", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class HangingAppender extends AbstractAppender {
@@ -40,7 +41,7 @@ public class HangingAppender extends AbstractAppender {
     private final long shutdownDelay;
 
     public HangingAppender(final String name, final long delay, final long startupDelay, final long shutdownDelay) {
-        super(name, null, null);
+        super(name, null, null, true, Property.EMPTY_ARRAY);
         this.delay = delay;
         this.startupDelay = startupDelay;
         this.shutdownDelay = shutdownDelay;
@@ -57,14 +58,14 @@ public class HangingAppender extends AbstractAppender {
 
     @PluginFactory
     public static HangingAppender createAppender(
-            @PluginAttribute("name")
+            @PluginAttribute
             @Required(message = "No name provided for HangingAppender")
             final String name,
-            @PluginAttribute("delay") final long delay,
-            @PluginAttribute("startupDelay") final long startupDelay,
-            @PluginAttribute("shutdownDelay") final long shutdownDelay,
-            @PluginElement("Layout") final Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter) {
+            @PluginAttribute final long delay,
+            @PluginAttribute final long startupDelay,
+            @PluginAttribute final long shutdownDelay,
+            @PluginElement final Layout<? extends Serializable> layout,
+            @PluginElement final Filter filter) {
         return new HangingAppender(name, delay, startupDelay, shutdownDelay);
     }
 

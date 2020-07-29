@@ -19,12 +19,14 @@ package org.apache.logging.log4j.core.appender;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
- * An Appender that ignores log events. Use for compatibility with version 1.2.
+ * An Appender that ignores log events. Use for compatibility with version 1.2 and handy for composing a
+ * {@link ScriptAppenderSelector}.
  */
 @Plugin(name = NullAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class NullAppender extends AbstractAppender {
@@ -32,12 +34,13 @@ public class NullAppender extends AbstractAppender {
     public static final String PLUGIN_NAME = "Null";
 
     @PluginFactory
-    public static NullAppender createAppender(@PluginAttribute("name") final String name) {
+    public static NullAppender createAppender(
+            @PluginAttribute(defaultString = "null") final String name) {
         return new NullAppender(name);
     }
 
     private NullAppender(final String name) {
-        super(name, null, null);
+        super(name, null, null, true, Property.EMPTY_ARRAY);
         // Do nothing
     }
 

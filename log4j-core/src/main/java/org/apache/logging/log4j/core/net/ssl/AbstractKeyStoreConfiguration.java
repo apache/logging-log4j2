@@ -42,24 +42,6 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
         this.keyStore = this.load();
     }
 
-    /**
-     * @deprecated Use {@link #AbstractKeyStoreConfiguration(String, PasswordProvider, String)} instead
-     */
-    @Deprecated
-    public AbstractKeyStoreConfiguration(final String location, final char[] password, final String keyStoreType)
-            throws StoreConfigurationException {
-        this(location, new MemoryPasswordProvider(password), keyStoreType);
-    }
-
-    /**
-     * @deprecated Use {@link #AbstractKeyStoreConfiguration(String, PasswordProvider, String)} instead
-     */
-    @Deprecated
-    public AbstractKeyStoreConfiguration(final String location, final String password, final String keyStoreType)
-            throws StoreConfigurationException {
-        this(location, new MemoryPasswordProvider(password == null ? null : password.toCharArray()), keyStoreType);
-    }
-
     @Override
     protected KeyStore load() throws StoreConfigurationException {
         final String loadLocation = this.getLocation();
@@ -70,7 +52,7 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
             }
             try (final InputStream fin = openInputStream(loadLocation)) {
                 final KeyStore ks = KeyStore.getInstance(this.keyStoreType);
-                char[] password = this.getPasswordAsCharArray();
+                char[] password = this.getPassword();
                 try {
                     ks.load(fin, password);
                 } finally {

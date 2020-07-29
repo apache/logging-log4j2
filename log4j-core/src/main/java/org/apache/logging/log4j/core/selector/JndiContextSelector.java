@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.core.LoggerContext;
@@ -93,6 +94,33 @@ public class JndiContextSelector implements NamedContextSelector {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     @Override
+    public void shutdown(String fqcn, ClassLoader loader, boolean currentContext, boolean allContexts) {
+        LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+        if (ctx == null) {
+            String loggingContextName = getContextName();
+            if (loggingContextName != null) {
+                ctx = CONTEXT_MAP.get(loggingContextName);
+            }
+        }
+        if (ctx != null) {
+            ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    @Override
+    public boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {
+        LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+        if (ctx == null) {
+            String loggingContextName = getContextName();
+            if (loggingContextName == null) {
+                return false;
+            }
+            ctx = CONTEXT_MAP.get(loggingContextName);
+        }
+        return ctx != null && ctx.isStarted();
+    }
+
+    @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         return getContext(fqcn, loader, currentContext, null);
     }
@@ -106,6 +134,12 @@ public class JndiContextSelector implements NamedContextSelector {
             return lc;
         }
 
+        String loggingContextName = getContextName();
+
+        return loggingContextName == null ? CONTEXT : locateContext(loggingContextName, null, configLocation);
+    }
+
+    private String getContextName() {
         String loggingContextName = null;
 
         try (final JndiManager jndiManager = JndiManager.getDefaultManager()) {
@@ -113,8 +147,7 @@ public class JndiContextSelector implements NamedContextSelector {
         } catch (final NamingException ne) {
             LOGGER.error("Unable to lookup {}", Constants.JNDI_CONTEXT_NAME, ne);
         }
-
-        return loggingContextName == null ? CONTEXT : locateContext(loggingContextName, null, configLocation);
+        return loggingContextName;
     }
 
     @Override

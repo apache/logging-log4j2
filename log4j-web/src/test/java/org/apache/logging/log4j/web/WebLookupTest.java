@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockServletContext;
 
 import static org.junit.Assert.*;
@@ -37,6 +38,7 @@ public class WebLookupTest {
     public void testLookup() throws Exception {
         ContextAnchor.THREAD_CONTEXT.remove();
         final ServletContext servletContext = new MockServletContext();
+        ((MockServletContext) servletContext).setContextPath("/WebApp");
         servletContext.setAttribute("TestAttr", "AttrValue");
         servletContext.setInitParameter("TestParam", "ParamValue");
         servletContext.setAttribute("Name1", "Ben");
@@ -64,6 +66,9 @@ public class WebLookupTest {
             value = substitutor.replace("${web:Name2}");
             assertNotNull("No value for Name2", value);
             assertEquals("Incorrect value for Name2: " + value, "Jerry", value);
+            value = substitutor.replace("${web:contextPathName}");
+            assertNotNull("No value for context name", value);
+            assertEquals("Incorrect value for context name", "WebApp", value);
         } catch (final IllegalStateException e) {
             fail("Failed to initialize Log4j properly." + e.getMessage());
         }
@@ -75,6 +80,7 @@ public class WebLookupTest {
     public void testLookup2() throws Exception {
         ContextAnchor.THREAD_CONTEXT.remove();
         final ServletContext servletContext = new MockServletContext();
+        ((MockServletContext) servletContext).setContextPath("/");
         servletContext.setAttribute("TestAttr", "AttrValue");
         servletContext.setInitParameter("myapp.logdir", "target");
         servletContext.setAttribute("Name1", "Ben");
@@ -95,8 +101,81 @@ public class WebLookupTest {
                 assertEquals("target/myapp.log", fa.getFileName());
             }
         }
+        final StrSubstitutor substitutor = config.getStrSubstitutor();
+        String value = substitutor.replace("${web:contextPathName:-default}");
+        assertNotNull("No value for context name", value);
+        assertEquals("Incorrect value for context name", "default", value);
         initializer.stop();
         ContextAnchor.THREAD_CONTEXT.remove();
+    }
+
+    @Test
+    public void testRequestAttributeLookups() {
+        final Log4jWebLifeCycle initializer = startInitializer();
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setAttribute("foo", "bar");
+        Log4jServletFilter.CURRENT_REQUEST.set(request);
+        final WebLookup lookup = new WebLookup();
+        assertEquals("bar", lookup.lookup(null, "request.attr.foo"));
+        assertNull(lookup.lookup(null, "request.attr.missing"));
+        Log4jServletFilter.CURRENT_REQUEST.remove();
+        assertNull(lookup.lookup(null, "request.attr.missing"));
+        assertNull(lookup.lookup(null, "request.attr.foo"));
+        initializer.stop();
+        ContextAnchor.THREAD_CONTEXT.remove();
+    }
+
+    @Test
+    public void testRequestHeaderLookups() {
+        final Log4jWebLifeCycle initializer = startInitializer();
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("foo", "bar");
+        Log4jServletFilter.CURRENT_REQUEST.set(request);
+        final WebLookup lookup = new WebLookup();
+        assertEquals("bar", lookup.lookup(null, "header.foo"));
+        assertNull(lookup.lookup(null, "header.missing"));
+        Log4jServletFilter.CURRENT_REQUEST.remove();
+        assertNull(lookup.lookup(null, "header.foo"));
+        assertNull(lookup.lookup(null, "header.missing"));
+        initializer.stop();
+        ContextAnchor.THREAD_CONTEXT.remove();
+    }
+
+    @Test
+    public void testSessionId() {
+        final Log4jWebLifeCycle initializer = startInitializer();
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.getSession();
+        Log4jServletFilter.CURRENT_REQUEST.set(request);
+        final WebLookup lookup = new WebLookup();
+        assertNotNull(lookup.lookup(null, "session.id"));
+        Log4jServletFilter.CURRENT_REQUEST.remove();
+        assertNull(lookup.lookup(null, "session.id"));
+        initializer.stop();
+        ContextAnchor.THREAD_CONTEXT.remove();
+    }
+
+    @Test
+    public void testSessionAttribute() {
+        final Log4jWebLifeCycle initializer = startInitializer();
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.getSession().setAttribute("foo", "bar");
+        Log4jServletFilter.CURRENT_REQUEST.set(request);
+        final WebLookup lookup = new WebLookup();
+        assertEquals("bar", lookup.lookup(null, "session.attr.foo"));
+        Log4jServletFilter.CURRENT_REQUEST.remove();
+        assertNull(lookup.lookup(null, "session.attr.foo"));
+        initializer.stop();
+        ContextAnchor.THREAD_CONTEXT.remove();
+    }
+
+    private Log4jWebLifeCycle startInitializer() {
+        ContextAnchor.THREAD_CONTEXT.remove();
+        final ServletContext servletContext = new MockServletContext();
+        final Log4jWebLifeCycle initializer = WebLoggerContextUtils.getWebLifeCycle(servletContext);
+        initializer.start();
+        initializer.setLoggerContext();
+        return initializer;
     }
 
 }

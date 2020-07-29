@@ -14,68 +14,79 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
-import java.util.Map;
-
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.plugins.inject.AbstractConfigurationInjector;
+import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.Strings;
+
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 /**
- * PluginVisitor implementation for {@link PluginAttribute}.
+ * @deprecated Provided to support legacy plugins.
  */
-public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribute> {
-    public PluginAttributeVisitor() {
-        super(PluginAttribute.class);
+// copy of PluginAttributeInjector
+public class PluginAttributeVisitor extends AbstractConfigurationInjector<PluginAttribute, Configuration> {
+
+    private static final Map<Type, Function<PluginAttribute, Object>> DEFAULT_VALUE_EXTRACTORS;
+
+    static {
+        final Map<Class<?>, Function<PluginAttribute, Object>> extractors = new ConcurrentHashMap<>();
+        extractors.put(int.class, PluginAttribute::defaultInt);
+        extractors.put(Integer.class, PluginAttribute::defaultInt);
+        extractors.put(long.class, PluginAttribute::defaultLong);
+        extractors.put(Long.class, PluginAttribute::defaultLong);
+        extractors.put(boolean.class, PluginAttribute::defaultBoolean);
+        extractors.put(Boolean.class, PluginAttribute::defaultBoolean);
+        extractors.put(float.class, PluginAttribute::defaultFloat);
+        extractors.put(Float.class, PluginAttribute::defaultFloat);
+        extractors.put(double.class, PluginAttribute::defaultDouble);
+        extractors.put(Double.class, PluginAttribute::defaultDouble);
+        extractors.put(byte.class, PluginAttribute::defaultByte);
+        extractors.put(Byte.class, PluginAttribute::defaultByte);
+        extractors.put(char.class, PluginAttribute::defaultChar);
+        extractors.put(Character.class, PluginAttribute::defaultChar);
+        extractors.put(short.class, PluginAttribute::defaultShort);
+        extractors.put(Short.class, PluginAttribute::defaultShort);
+        extractors.put(Class.class, PluginAttribute::defaultClass);
+        DEFAULT_VALUE_EXTRACTORS = Collections.unmodifiableMap(extractors);
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
-                        final StringBuilder log) {
-        final String name = this.annotation.value();
-        final Map<String, String> attributes = node.getAttributes();
-        final String rawValue = removeAttributeValue(attributes, name, this.aliases);
-        final String replacedValue = this.substitutor.replace(event, rawValue);
-        final Object defaultValue = findDefaultValue(event);
-        final Object value = convert(replacedValue, defaultValue);
-        final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
-        StringBuilders.appendKeyDqValue(log, name, debugValue);
-        return value;
+    public void inject(final Object factory) {
+        final Optional<String> value = findAndRemoveNodeAttribute().map(stringSubstitutionStrategy);
+        if (value.isPresent()) {
+            configurationBinder.bindString(factory, value.get());
+        } else {
+            injectDefaultValue(factory);
+        }
     }
 
-    private Object findDefaultValue(final LogEvent event) {
-        if (this.conversionType == int.class || this.conversionType == Integer.class) {
-            return this.annotation.defaultInt();
+    private void injectDefaultValue(final Object factory) {
+        final Function<PluginAttribute, Object> extractor = DEFAULT_VALUE_EXTRACTORS.get(conversionType);
+        if (extractor != null) {
+            final Object value = extractor.apply(annotation);
+            debugLog(value);
+            configurationBinder.bindObject(factory, value);
+        } else {
+            final String value = stringSubstitutionStrategy.apply(annotation.defaultString());
+            if (Strings.isNotBlank(value)) {
+                debugLog(value);
+                configurationBinder.bindString(factory, value);
+            }
         }
-        if (this.conversionType == long.class || this.conversionType == Long.class) {
-            return this.annotation.defaultLong();
-        }
-        if (this.conversionType == boolean.class || this.conversionType == Boolean.class) {
-            return this.annotation.defaultBoolean();
-        }
-        if (this.conversionType == float.class || this.conversionType == Float.class) {
-            return this.annotation.defaultFloat();
-        }
-        if (this.conversionType == double.class || this.conversionType == Double.class) {
-            return this.annotation.defaultDouble();
-        }
-        if (this.conversionType == byte.class || this.conversionType == Byte.class) {
-            return this.annotation.defaultByte();
-        }
-        if (this.conversionType == char.class || this.conversionType == Character.class) {
-            return this.annotation.defaultChar();
-        }
-        if (this.conversionType == short.class || this.conversionType == Short.class) {
-            return this.annotation.defaultShort();
-        }
-        if (this.conversionType == Class.class) {
-            return this.annotation.defaultClass();
-        }
-        return this.substitutor.replace(event, this.annotation.defaultString());
+    }
+
+    private void debugLog(final Object value) {
+        final Object debugValue = annotation.sensitive() ? NameUtil.md5(value + getClass().getName()) : value;
+        StringBuilders.appendKeyDqValue(debugLog, name, debugValue);
     }
 }

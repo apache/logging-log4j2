@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -46,7 +46,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
     private static final int MAX_LENGTH = 255;
     private static final int DEFAULT_PORT = 4555;
 
-    private static Object jmDNS = initializeJmDns();
+    private static final Object jmDNS = initializeJmDns();
     private static Class<?> jmDNSClass;
     private static Class<?> serviceInfoClass;
 
@@ -189,7 +189,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
         try {
             jmDNSClass = LoaderUtil.loadClass("javax.jmdns.JmDNS");
             serviceInfoClass = LoaderUtil.loadClass("javax.jmdns.ServiceInfo");
-            // if version 3 is available, use it to constuct a serviceInfo instance, otherwise support the version1 API
+            // if version 3 is available, use it to construct a serviceInfo instance, otherwise support the version1 API
             boolean isVersion3 = false;
             try {
                 // create method is in version 3, not version 1

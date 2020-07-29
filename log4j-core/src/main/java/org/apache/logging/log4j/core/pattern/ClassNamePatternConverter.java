@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 
 
 /**
@@ -63,5 +63,10 @@ public final class ClassNamePatternConverter extends NamePatternConverter {
         } else {
             abbreviate(element.getClassName(), toAppendTo);
         }
+    }
+
+    @Override
+    public boolean requiresLocation() {
+        return true;
     }
 }

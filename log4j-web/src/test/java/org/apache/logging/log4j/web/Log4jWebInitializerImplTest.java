@@ -16,9 +16,13 @@
  */
 package org.apache.logging.log4j.web;
 
+import java.net.URI;
+import java.net.URL;
+import java.util.HashSet;
 import javax.servlet.ServletContext;
-
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,7 +34,16 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -42,7 +55,7 @@ public class Log4jWebInitializerImplTest {
     @Captor
     private ArgumentCaptor<Log4jWebLifeCycle> initializerCaptor;
     @Captor
-    private ArgumentCaptor<org.apache.logging.log4j.spi.LoggerContext> loggerContextCaptor;
+    private ArgumentCaptor<LoggerContext> loggerContextCaptor;
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
@@ -312,5 +325,83 @@ public class Log4jWebInitializerImplTest {
         this.initializerImpl.setLoggerContext();
 
         assertNull("The context should finally still be null.", ContextAnchor.THREAD_CONTEXT.get());
+    }
+
+    @Test
+    public void testMissingLocationParameterWithNoMatchingResourceSetsNoConfigLocation() {
+        given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(new HashSet<String>());
+
+        this.initializerImpl.start();
+
+        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        assertNotNull("The context attribute should not be null.", loggerContextCaptor.getValue());
+
+        assertThat(loggerContextCaptor.getValue().getConfigLocation(), is(nullValue()));
+
+        this.initializerImpl.stop();
+    }
+
+    @Test
+    public void testMissingLocationParameterWithOneMatchingResourceUsesResourceConfigLocation() throws Exception {
+        given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(new HashSet<>(singletonList("/WEB-INF/log4j2.xml")));
+        given(servletContext.getResource("/WEB-INF/log4j2.xml")).willReturn(new URL("file:/a/b/c/WEB-INF/log4j2.xml"));
+
+        this.initializerImpl.start();
+
+        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        assertNotNull("The context attribute should not be null.", loggerContextCaptor.getValue());
+
+        assertThat(loggerContextCaptor.getValue().getConfigLocation(), is(URI.create("file:/a/b/c/WEB-INF/log4j2.xml")));
+
+        this.initializerImpl.stop();
+    }
+
+    @Test
+    public void testMissingLocationParameterWithManyMatchingResourcesUsesFirstMatchingResourceConfigLocation() throws Exception {
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn("mycontext");
+        given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(
+                new HashSet<>(asList("/WEB-INF/a.xml", "/WEB-INF/log4j2-mycontext.xml", "/WEB-INF/log4j2.xml")));
+        given(servletContext.getResource("/WEB-INF/log4j2-mycontext.xml")).willReturn(
+                new URL("file:/a/b/c/WEB-INF/log4j2-mycontext.xml"));
+
+        this.initializerImpl.start();
+
+        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        assertNotNull("The context attribute should not be null.", loggerContextCaptor.getValue());
+
+        assertThat(loggerContextCaptor.getValue().getConfigLocation(),
+                is(URI.create("file:/a/b/c/WEB-INF/log4j2-mycontext.xml")));
+
+        this.initializerImpl.stop();
+    }
+
+    @Test
+    public void testCompositeLocationParameterWithEmptyUriListSetsDefaultConfiguration() {
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(",,,");
+
+        this.initializerImpl.start();
+
+        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        assertNotNull("The context attribute should not be null.", loggerContextCaptor.getValue());
+
+        assertThat(loggerContextCaptor.getValue().getConfiguration(), is(instanceOf(DefaultConfiguration.class)));
+
+        this.initializerImpl.stop();
+    }
+
+    @Test
+    public void testCompositeLocationParameterSetsCompositeConfiguration() {
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn("mycontext");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(
+                "/a.txt,,/WEB-INF/log4j2-mycontext.xml");
+
+        this.initializerImpl.start();
+
+        then(servletContext).should().setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), loggerContextCaptor.capture());
+        assertNotNull("The context attribute should not be null.", loggerContextCaptor.getValue());
+
+        assertThat(loggerContextCaptor.getValue().getConfiguration(), is(instanceOf(CompositeConfiguration.class)));
+
+        this.initializerImpl.stop();
     }
 }

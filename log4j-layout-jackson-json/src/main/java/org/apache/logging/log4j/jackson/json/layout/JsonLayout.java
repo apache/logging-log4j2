@@ -16,30 +16,30 @@
  */
 package org.apache.logging.log4j.jackson.json.layout;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
+import org.apache.logging.log4j.jackson.XmlConstants;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
-import org.apache.logging.log4j.jackson.XmlConstants;
-
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 /**
  * Appends a series of JSON events as strings serialized as bytes.
@@ -76,7 +76,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 public final class JsonLayout extends AbstractJacksonLayout {
 
     public static class Builder<B extends Builder<B>> extends AbstractJacksonLayout.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<JsonLayout> {
+            implements org.apache.logging.log4j.plugins.util.Builder<JsonLayout> {
 
         @PluginBuilderAttribute
         private boolean propertiesAsList;
@@ -98,8 +98,8 @@ public final class JsonLayout extends AbstractJacksonLayout {
             final String headerPattern = toStringOrNull(getHeader());
             final String footerPattern = toStringOrNull(getFooter());
             return new JsonLayout(getConfiguration(), isLocationInfo(), isProperties(), encodeThreadContextAsList,
-                    isComplete(), isCompact(), getEventEol(), headerPattern, footerPattern, getCharset(),
-                    isIncludeStacktrace(), isStacktraceAsString(), isIncludeNullDelimiter(),
+                    isComplete(), isCompact(), getEventEol(), getEndOfLine(), headerPattern, footerPattern, getCharset(),
+                    isIncludeStacktrace(), isStacktraceAsString(), isIncludeNullDelimiter(), isIncludeTimeMillis(),
                     getAdditionalFields(), getObjectMessageAsJsonObject());
         }
 
@@ -136,7 +136,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
     @JsonRootName(XmlConstants.ELT_EVENT)
     public static class JsonLogEventWithAdditionalFields extends LogEventWithAdditionalFields {
 
-        public JsonLogEventWithAdditionalFields(final Object logEvent, final Map<String, String> additionalFields) {
+        public JsonLogEventWithAdditionalFields(final LogEvent logEvent, final Map<String, String> additionalFields) {
             super(logEvent, additionalFields);
         }
 
@@ -148,7 +148,8 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
         @Override
         @JsonUnwrapped
-        public Object getLogEvent() {
+        @JsonSerialize(as = LogEvent.class)
+        public LogEvent getLogEvent() {
             return super.getLogEvent();
         }
     }
@@ -166,91 +167,25 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @return A JSON Layout.
      */
     public static JsonLayout createDefaultLayout() {
-        return new JsonLayout(new DefaultConfiguration(), false, false, false, false, false, false,
-                DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, null, false);
+        return new JsonLayout(new DefaultConfiguration(), false, false, false, false, false, false, null,
+                DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, false, null, false);
     }
 
-    /**
-     * Creates a JSON Layout.
-     * @param config
-     *           The plugin configuration.
-     * @param locationInfo
-     *            If "true", includes the location information in the generated JSON.
-     * @param properties
-     *            If "true", includes the thread context map in the generated JSON.
-     * @param propertiesAsList
-     *            If true, the thread context map is included as a list of map entry objects, where each entry has
-     *            a "key" attribute (whose value is the key) and a "value" attribute (whose value is the value).
-     *            Defaults to false, in which case the thread context map is included as a simple map of key-value
-     *            pairs.
-     * @param complete
-     *            If "true", includes the JSON header and footer, and comma between records.
-     * @param compact
-     *            If "true", does not use end-of-lines and indentation, defaults to "false".
-     * @param eventEol
-     *            If "true", forces an EOL after each log event (even if compact is "true"), defaults to "false". This
-     *            allows one even per line, even in compact mode.
-     * @param headerPattern
-     *            The header pattern, defaults to {@code "["} if null.
-     * @param footerPattern
-     *            The header pattern, defaults to {@code "]"} if null.
-     * @param charset
-     *            The character set to use, if {@code null}, uses "UTF-8".
-     * @param includeStacktrace
-     *            If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".
-     * @return A JSON Layout.
-     *
-     * @deprecated Use {@link #newBuilder()} instead
-     */
-    @Deprecated
-    public static JsonLayout createLayout(
-            final Configuration config,
-            final boolean locationInfo,
-            final boolean properties,
-            final boolean propertiesAsList,
-            final boolean complete,
-            final boolean compact,
-            final boolean eventEol,
-            final String headerPattern,
-            final String footerPattern,
-            final Charset charset,
-            final boolean includeStacktrace) {
-        final boolean encodeThreadContextAsList = properties && propertiesAsList;
-        return new JsonLayout(config, locationInfo, properties, encodeThreadContextAsList, complete, compact, eventEol,
-                headerPattern, footerPattern, charset, includeStacktrace, false, false, null, false);
-    }
-
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
 
-    /**
-     * @deprecated Use {@link #newBuilder()} instead
-     */
-    @Deprecated
-    protected JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
-            final boolean encodeThreadContextAsList,
-            final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
-            final String footerPattern, final Charset charset, final boolean includeStacktrace) {
-        super(config, new JsonJacksonFactory(encodeThreadContextAsList, includeStacktrace, false, false).newWriter(
-                locationInfo, properties, compact),
-                charset, compact, complete, eventEol,
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
-                PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
-                false, null);
-    }
-
     private JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
                        final boolean encodeThreadContextAsList,
-                       final boolean complete, final boolean compact, final boolean eventEol,
+                       final boolean complete, final boolean compact, final boolean eventEol, final String endOfLine,
                        final String headerPattern, final String footerPattern, final Charset charset,
                        final boolean includeStacktrace, final boolean stacktraceAsString,
-                       final boolean includeNullDelimiter,
+                       final boolean includeNullDelimiter, final boolean includeTimeMillis,
                        final KeyValuePair[] additionalFields, final boolean objectMessageAsJsonObject) {
         super(config, new JsonJacksonFactory(encodeThreadContextAsList, includeStacktrace, stacktraceAsString, objectMessageAsJsonObject).newWriter(
-                locationInfo, properties, compact),
-                charset, compact, complete, eventEol,
+                locationInfo, properties, compact, includeTimeMillis),
+                charset, compact, complete, eventEol, endOfLine,
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern).setDefaultPattern(DEFAULT_HEADER).build(),
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(footerPattern).setDefaultPattern(DEFAULT_FOOTER).build(),
                 includeNullDelimiter,

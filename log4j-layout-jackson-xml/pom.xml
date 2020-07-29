@@ -35,6 +35,11 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-1.2-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
     </dependency>
@@ -117,6 +122,7 @@
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
+          <source>8</source>
         </configuration>
         <reportSets>
           <reportSet>

@@ -1,0 +1,23 @@
+[
+  {
+    "extension": "revapi.java",
+    "configuration": {
+      "filter": {
+        "classes": {
+          "exclude": [
+          ]
+        }
+      }
+    }
+  },
+  {
+    "extension": "revapi.ignore",
+    "configuration": [
+      {
+        "code": "java.class.nonPublicPartOfAPI",
+        "new": "class org.apache.logging.log4j.smtp.appender.SmtpManager.FactoryData",
+        "justification": "Internal component"
+      }
+    ]
+  }
+]

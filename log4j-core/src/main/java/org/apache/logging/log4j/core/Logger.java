@@ -139,11 +139,23 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     }
 
     @Override
+    protected boolean requiresLocation() {
+        return privateConfig.requiresLocation;
+    }
+
+    @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message,
             final Throwable t) {
         final Message msg = message == null ? new SimpleMessage(Strings.EMPTY) : message;
         final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
         strategy.log(this, getName(), fqcn, marker, level, msg, t);
+    }
+
+    @Override
+    protected void log(final Level level, final Marker marker, final String fqcn, final StackTraceElement location,
+            final Message message, final Throwable throwable) {
+        final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
+        strategy.log(this, getName(), fqcn, location, marker, level, message, throwable);
     }
 
     @Override
@@ -377,6 +389,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         private final Level loggerConfigLevel;
         private final int intLevel;
         private final Logger logger;
+        private final boolean requiresLocation;
 
         public PrivateConfig(final Configuration config, final Logger logger) {
             this.config = config;
@@ -384,6 +397,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
             this.loggerConfigLevel = this.loggerConfig.getLevel();
             this.intLevel = this.loggerConfigLevel.intLevel();
             this.logger = logger;
+            this.requiresLocation = this.loggerConfig.requiresLocation();
         }
 
         public PrivateConfig(final PrivateConfig pc, final Level level) {
@@ -392,6 +406,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
             this.loggerConfigLevel = level;
             this.intLevel = this.loggerConfigLevel.intLevel();
             this.logger = pc.logger;
+            this.requiresLocation = this.loggerConfig.requiresLocation();
         }
 
         public PrivateConfig(final PrivateConfig pc, final LoggerConfig lc) {
@@ -400,6 +415,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
             this.loggerConfigLevel = lc.getLevel();
             this.intLevel = this.loggerConfigLevel.intLevel();
             this.logger = pc.logger;
+            this.requiresLocation = this.loggerConfig.requiresLocation();
         }
 
         // LOG4J2-151: changed visibility to public

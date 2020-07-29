@@ -1,1 +1,1 @@
-return logEvent.marker?.isInstanceOf('FLOW') || logEvent.contextMap.containsKey('UserId')
+return logEvent.marker?.isInstanceOf('FLOW') || logEvent.contextData.containsKey('UserId')

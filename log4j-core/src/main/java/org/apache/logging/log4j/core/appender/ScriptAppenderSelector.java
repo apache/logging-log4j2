@@ -16,25 +16,25 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Serializable;
-import java.util.Objects;
-
-import javax.script.Bindings;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
+
+import javax.script.Bindings;
+import java.io.Serializable;
+import java.util.Objects;
 
 @Plugin(name = "ScriptAppenderSelector", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class ScriptAppenderSelector extends AbstractAppender {
@@ -42,7 +42,7 @@ public class ScriptAppenderSelector extends AbstractAppender {
     /**
      * Builds an appender.
      */
-    public static final class Builder implements org.apache.logging.log4j.core.util.Builder<Appender> {
+    public static final class Builder implements org.apache.logging.log4j.plugins.util.Builder<Appender> {
 
         @PluginElement("AppenderSet")
         @Required
@@ -81,10 +81,12 @@ public class ScriptAppenderSelector extends AbstractAppender {
             final ScriptManager scriptManager = configuration.getScriptManager();
             scriptManager.addScript(script);
             final Bindings bindings = scriptManager.createBindings(script);
+            LOGGER.debug("ScriptAppenderSelector '{}' executing {} '{}': {}", name, script.getLanguage(),
+                    script.getName(), script.getScriptText());
             final Object object = scriptManager.execute(script.getName(), bindings);
-            final String appenderName = Objects.toString(object, null);
-            final Appender appender = appenderSet.createAppender(appenderName, name);
-            return appender;
+            final String actualAppenderName = Objects.toString(object, null);
+            LOGGER.debug("ScriptAppenderSelector '{}' selected '{}'", name, actualAppenderName);
+            return appenderSet.createAppender(actualAppenderName, name);
         }
 
         public AppenderSet getAppenderSet() {
@@ -103,35 +105,35 @@ public class ScriptAppenderSelector extends AbstractAppender {
             return script;
         }
 
-        public Builder withAppenderNodeSet(@SuppressWarnings("hiding") final AppenderSet appenderSet) {
+        public Builder setAppenderNodeSet(@SuppressWarnings("hiding") final AppenderSet appenderSet) {
             this.appenderSet = appenderSet;
             return this;
         }
 
-        public Builder withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+        public Builder setConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
 
-        public Builder withName(@SuppressWarnings("hiding") final String name) {
+        public Builder setName(@SuppressWarnings("hiding") final String name) {
             this.name = name;
             return this;
         }
 
-        public Builder withScript(@SuppressWarnings("hiding") final AbstractScript script) {
+        public Builder setScript(@SuppressWarnings("hiding") final AbstractScript script) {
             this.script = script;
             return this;
         }
 
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
 
     private ScriptAppenderSelector(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
-        super(name, filter, layout);
+        super(name, filter, layout, true, Property.EMPTY_ARRAY);
     }
 
     @Override

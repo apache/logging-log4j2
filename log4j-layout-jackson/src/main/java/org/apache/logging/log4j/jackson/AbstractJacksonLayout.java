@@ -22,15 +22,22 @@ import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.impl.MutableLogEvent;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.StringBuilderWriter;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -41,6 +48,9 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         @PluginBuilderAttribute
         private boolean eventEol;
+
+        @PluginBuilderAttribute
+        private String endOfLine;
 
         @PluginBuilderAttribute
         private boolean compact;
@@ -63,6 +73,9 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private boolean includeNullDelimiter = false;
 
+        @PluginBuilderAttribute
+        private boolean includeTimeMillis = false;
+
         @PluginElement("AdditionalField")
         private KeyValuePair[] additionalFields;
 
@@ -72,6 +85,10 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         public boolean getEventEol() {
             return eventEol;
+        }
+
+        public String getEndOfLine() {
+            return endOfLine;
         }
 
         public boolean isCompact() {
@@ -84,6 +101,10 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         public boolean isIncludeNullDelimiter() {
             return includeNullDelimiter;
+        }
+
+        public boolean isIncludeTimeMillis() {
+            return includeTimeMillis;
         }
 
         /**
@@ -109,7 +130,7 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         /**
          * Additional fields to set on each log event.
-         *
+         * @param additionalFields The additional Key/Value pairs to add.
          * @return this builder
          */
         public B setAdditionalFields(final KeyValuePair[] additionalFields) {
@@ -132,13 +153,28 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
             return asBuilder();
         }
 
+        public B setEndOfLine(final String endOfLine) {
+            this.endOfLine = endOfLine;
+            return asBuilder();
+        }
+
         /**
          * Whether to include NULL byte as delimiter after each event (optional, default to false).
-         *
+         * @param includeNullDelimiter true if a null delimiter should be included.
          * @return this builder
          */
         public B setIncludeNullDelimiter(final boolean includeNullDelimiter) {
             this.includeNullDelimiter = includeNullDelimiter;
+            return asBuilder();
+        }
+
+        /**
+         * Whether to include the timestamp (in addition to the Instant) (optional, default to false).
+         *
+         * @return this builder
+         */
+        public B setIncludeTimeMillis(final boolean includeTimeMillis) {
+            this.includeTimeMillis = includeTimeMillis;
             return asBuilder();
         }
 
@@ -166,7 +202,7 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
         /**
          * Whether to format the stacktrace as a string, and not a nested object (optional, defaults to false).
-         *
+         * @param stacktraceAsString true if the stacktrace should be formatted as a String.
          * @return this builder
          */
         public B setStacktraceAsString(final boolean stacktraceAsString) {
@@ -183,10 +219,10 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
      */
     public static class LogEventWithAdditionalFields {
 
-        private final Object logEvent;
+        private final LogEvent logEvent;
         private final Map<String, String> additionalFields;
 
-        public LogEventWithAdditionalFields(final Object logEvent, final Map<String, String> additionalFields) {
+        public LogEventWithAdditionalFields(final LogEvent logEvent, final Map<String, String> additionalFields) {
             this.logEvent = logEvent;
             this.additionalFields = additionalFields;
         }
@@ -195,7 +231,7 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
             return additionalFields;
         }
 
-        public Object getLogEvent() {
+        public LogEvent getLogEvent() {
             return logEvent;
         }
     }
@@ -215,12 +251,7 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     protected static final String DEFAULT_EOL = "\r\n";
     protected static final String COMPACT_EOL = Strings.EMPTY;
-    private static LogEvent convertMutableToLog4jEvent(final LogEvent event) {
-        // TODO Jackson-based layouts have certain filters set up for Log4jLogEvent.
-        // TODO Need to set up the same filters for MutableLogEvent but don't know how...
-        // This is a workaround.
-        return event instanceof MutableLogEvent ? ((MutableLogEvent) event).createMemento() : event;
-    }
+
     private static ResolvableKeyValuePair[] prepareAdditionalFields(final Configuration config,
             final KeyValuePair[] additionalFields) {
         if (additionalFields == null || additionalFields.length == 0) {
@@ -258,30 +289,23 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     protected final ResolvableKeyValuePair[] additionalFields;
 
-    @Deprecated
-    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
-            final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
-            final Serializer footerSerializer) {
-        this(config, objectWriter, charset, compact, complete, eventEol, headerSerializer, footerSerializer, false);
-    }
-
-    @Deprecated
-    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
-            final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
-            final Serializer footerSerializer, final boolean includeNullDelimiter) {
-        this(config, objectWriter, charset, compact, complete, eventEol, headerSerializer, footerSerializer,
-                includeNullDelimiter, null);
-    }
-
     protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
             final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
             final Serializer footerSerializer, final boolean includeNullDelimiter,
+            final KeyValuePair[] additionalFields) {
+        this(config, objectWriter, charset, compact, complete, eventEol, null, headerSerializer, footerSerializer,
+                includeNullDelimiter, additionalFields);
+    }
+
+    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
+            final boolean compact, final boolean complete, final boolean eventEol, final String endOfLine,
+            final Serializer headerSerializer, final Serializer footerSerializer, final boolean includeNullDelimiter,
             final KeyValuePair[] additionalFields) {
         super(config, charset, headerSerializer, footerSerializer);
         this.objectWriter = objectWriter;
         this.compact = compact;
         this.complete = complete;
-        this.eol = compact && !eventEol ? COMPACT_EOL : DEFAULT_EOL;
+        this.eol = endOfLine != null ? endOfLine : compact && !eventEol ? COMPACT_EOL : DEFAULT_EOL;
         this.includeNullDelimiter = includeNullDelimiter;
         this.additionalFields = prepareAdditionalFields(config, additionalFields);
     }
@@ -330,7 +354,7 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
     }
 
     public void toSerializable(final LogEvent event, final Writer writer) throws IOException {
-        objectWriter.writeValue(writer, wrapLogEvent(convertMutableToLog4jEvent(event)));
+        objectWriter.writeValue(writer, wrapLogEvent(event));
         writer.write(eol);
         if (includeNullDelimiter) {
             writer.write('\0');
@@ -344,8 +368,125 @@ public abstract class AbstractJacksonLayout extends AbstractStringLayout {
             final Map<String, String> additionalFieldsMap = resolveAdditionalFields(event);
             // This class combines LogEvent with AdditionalFields during serialization
             return createLogEventWithAdditionalFields(event, additionalFieldsMap);
+        } else if (event instanceof Message) {
+            // If the LogEvent implements the Message interface Jackson will not treat is as a LogEvent.
+            return new ReadOnlyLogEventWrapper(event);
+            // No additional fields, return original object
         }
-        // No additional fields, return original object
         return event;
+    }
+    private static class ReadOnlyLogEventWrapper implements LogEvent {
+
+        @JsonIgnore
+        private final LogEvent event;
+
+        public ReadOnlyLogEventWrapper(LogEvent event) {
+            this.event = event;
+        }
+
+        @Override
+        public LogEvent toImmutable() {
+            return event.toImmutable();
+        }
+
+        @Override
+        public ReadOnlyStringMap getContextData() {
+            return event.getContextData();
+        }
+
+        @Override
+        public ThreadContext.ContextStack getContextStack() {
+            return event.getContextStack();
+        }
+
+        @Override
+        public String getLoggerFqcn() {
+            return event.getLoggerFqcn();
+        }
+
+        @Override
+        public Level getLevel() {
+            return event.getLevel();
+        }
+
+        @Override
+        public String getLoggerName() {
+            return event.getLoggerName();
+        }
+
+        @Override
+        public Marker getMarker() {
+            return event.getMarker();
+        }
+
+        @Override
+        public Message getMessage() {
+            return event.getMessage();
+        }
+
+        @Override
+        public long getTimeMillis() {
+            return event.getTimeMillis();
+        }
+
+        @Override
+        public Instant getInstant() {
+            return event.getInstant();
+        }
+
+        @Override
+        public StackTraceElement getSource() {
+            return event.getSource();
+        }
+
+        @Override
+        public String getThreadName() {
+            return event.getThreadName();
+        }
+
+        @Override
+        public long getThreadId() {
+            return event.getThreadId();
+        }
+
+        @Override
+        public int getThreadPriority() {
+            return event.getThreadPriority();
+        }
+
+        @Override
+        public Throwable getThrown() {
+            return event.getThrown();
+        }
+
+        @Override
+        public ThrowableProxy getThrownProxy() {
+            return event.getThrownProxy();
+        }
+
+        @Override
+        public boolean isEndOfBatch() {
+            return event.isEndOfBatch();
+        }
+
+        @Override
+        public boolean isIncludeLocation() {
+            return event.isIncludeLocation();
+        }
+
+        @Override
+        public void setEndOfBatch(boolean endOfBatch) {
+
+        }
+
+        @Override
+        public void setIncludeLocation(boolean locationRequired) {
+
+        }
+
+        @Override
+        public long getNanoTime() {
+            return event.getNanoTime();
+        }
     }
 }

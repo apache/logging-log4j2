@@ -19,6 +19,7 @@ package org.apache.logging.log4j.util;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * <em>Consider this class private.</em>
@@ -54,14 +55,23 @@ public final class Strings {
     }
 
     /**
-     * Checks if a String is blank. A blank string is one that is {@code null}, empty, or when trimmed using
-     * {@link String#trim()} is empty.
+     * Checks if a String is blank. A blank string is one that is either
+     * {@code null}, empty, or all characters are {@link Character#isWhitespace(char)}.
      *
      * @param s the String to check, may be {@code null}
-     * @return {@code true} if the String is {@code null}, empty, or trims to empty.
+     * @return {@code true} if the String is {@code null}, empty, or or all characters are {@link Character#isWhitespace(char)}
      */
     public static boolean isBlank(final String s) {
-        return s == null || s.trim().isEmpty();
+        if (s == null || s.isEmpty()) {
+            return true;
+        }
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (!Character.isWhitespace(c)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -128,6 +138,43 @@ public final class Strings {
     }
 
     /**
+     * <p>Gets the leftmost {@code len} characters of a String.</p>
+     *
+     * <p>If {@code len} characters are not available, or the
+     * String is {@code null}, the String will be returned without
+     * an exception. An empty String is returned if len is negative.</p>
+     *
+     * <pre>
+     * StringUtils.left(null, *)    = null
+     * StringUtils.left(*, -ve)     = ""
+     * StringUtils.left("", *)      = ""
+     * StringUtils.left("abc", 0)   = ""
+     * StringUtils.left("abc", 2)   = "ab"
+     * StringUtils.left("abc", 4)   = "abc"
+     * </pre>
+     *
+     * <p>
+     * Copied from Apache Commons Lang org.apache.commons.lang3.StringUtils.
+     * </p>
+     * 
+     * @param str  the String to get the leftmost characters from, may be null
+     * @param len  the length of the required String
+     * @return the leftmost characters, {@code null} if null String input
+     */
+    public static String left(final String str, final int len) {
+        if (str == null) {
+            return null;
+        }
+        if (len < 0) {
+            return EMPTY;
+        }
+        if (str.length() <= len) {
+            return str;
+        }
+        return str.substring(0, len);
+    }
+
+    /**
      * Returns a quoted string.
      * 
      * @param str a String
@@ -143,7 +190,7 @@ public final class Strings {
      * @return a new string
      * @see String#toLowerCase(Locale)
      */
-    public String toRootUpperCase(final String str) {
+    public static String toRootUpperCase(final String str) {
         return str.toUpperCase(Locale.ROOT);
     }
     
@@ -174,6 +221,18 @@ public final class Strings {
     public static String trimToNull(final String str) {
         final String ts = str == null ? null : str.trim();
         return isEmpty(ts) ? null : ts;
+    }
+
+    /**
+     * Removes control characters from both ends of this String returning {@code Optional.empty()} if the String is
+     * empty ("") after the trim or if it is {@code null}.
+     * @param str The String to trim.
+     * @return An Optional containing the String.
+     *
+     * @see #trimToNull(String)
+     */
+    public static Optional<String> trimToOptional(final String str) {
+        return Optional.ofNullable(str).map(String::trim).filter(s -> !s.isEmpty());
     }
 
     /**
@@ -234,6 +293,25 @@ public final class Strings {
         }
 
         return buf.toString();
+    }
+
+    /**
+     * Creates a new string repeating given {@code str} {@code count} times.
+     * @param str input string
+     * @param count the repetition count
+     * @return the new string
+     * @throws IllegalArgumentException if either {@code str} is null or {@code count} is negative
+     */
+    public static String repeat(final String str, final int count) {
+        Objects.requireNonNull(str, "str");
+        if (count < 0) {
+            throw new IllegalArgumentException("count");
+        }
+        StringBuilder sb = new StringBuilder(str.length() * count);
+        for (int index = 0; index < count; index++) {
+            sb.append(str);
+        }
+        return sb.toString();
     }
 
 }

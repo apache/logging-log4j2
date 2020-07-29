@@ -120,8 +120,8 @@ public class Unbox {
             return false;
         }
     }
-    private static ThreadLocal<State> threadLocalState = new ThreadLocal<>();
-    private static WebSafeState webSafeState = new WebSafeState();
+    private static final ThreadLocal<State> threadLocalState = new ThreadLocal<>();
+    private static final WebSafeState webSafeState = new WebSafeState();
 
     private Unbox() {
         // this is a utility

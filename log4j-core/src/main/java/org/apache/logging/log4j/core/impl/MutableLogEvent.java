@@ -47,7 +47,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
 
     private int threadPriority;
     private long threadId;
-    private MutableInstant instant = new MutableInstant();
+    private final MutableInstant instant = new MutableInstant();
     private long nanoTime;
     private short parameterCount;
     private boolean includeLocation;
@@ -69,7 +69,8 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     transient boolean reserved = false;
 
     public MutableLogEvent() {
-        this(new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE), new Object[10]);
+        // messageText and the parameter array are lazily initialized
+        this(null, null);
     }
 
     public MutableLogEvent(final StringBuilder msgText, final Object[] replacementParameters) {
@@ -148,9 +149,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
 
         if (parameters != null) {
-            for (int i = 0; i < parameters.length; i++) {
-                parameters[i] = null;
-            }
+            Arrays.fill(parameters, null);
         }
 
         // primitive fields that cannot be cleared:
@@ -214,10 +213,8 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
             final ReusableMessage reusable = (ReusableMessage) msg;
             reusable.formatTo(getMessageTextForWriting());
             this.messageFormat = msg.getFormat();
-            if (parameters != null) {
-                parameters = reusable.swapParameters(parameters);
-                parameterCount = reusable.getParameterCount();
-            }
+            parameters = reusable.swapParameters(parameters == null ? new Object[10] : parameters);
+            parameterCount = reusable.getParameterCount();
         } else {
             this.message = InternalAsyncUtil.makeMessageImmutable(msg);
         }
@@ -225,8 +222,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
 
     private StringBuilder getMessageTextForWriting() {
         if (messageText == null) {
-            // Should never happen:
-            // only happens if user logs a custom reused message when Constants.ENABLE_THREADLOCALS is false
+            // Happens the first time messageText is requested
             messageText = new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE);
         }
         messageText.setLength(0);
@@ -305,11 +301,10 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
 
     @Override
     public Message memento() {
-        if (message != null) {
-            return message;
+        if (message == null) {
+            message = new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
         }
-        final Object[] params = parameters == null ? new Object[0] : Arrays.copyOf(parameters, parameterCount);
-        return new MementoMessage(messageText.toString(), messageFormat, params);
+        return message;
     }
 
     @Override
@@ -356,6 +351,10 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return thrownProxy;
     }
 
+    public void setSource(StackTraceElement source) {
+        this.source = source;
+    }
+
     /**
      * Returns the StackTraceElement for the caller. This will be the entry that occurs right
      * before the first occurrence of FQCN as a class name.
@@ -377,11 +376,6 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     @Override
     public ReadOnlyStringMap getContextData() {
         return contextData;
-    }
-
-    @Override
-    public Map<String, String> getContextMap() {
-        return contextData.toMap();
     }
 
     public void setContextData(final StringMap mutableContextData) {
@@ -488,7 +482,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
                 .setLoggerFqcn(loggerFqcn) //
                 .setLoggerName(loggerName) //
                 .setMarker(marker) //
-                .setMessage(getNonNullImmutableMessage()) // ensure non-null & immutable
+                .setMessage(memento()) // ensure non-null & immutable
                 .setNanoTime(nanoTime) //
                 .setSource(source) //
                 .setThreadId(threadId) //
@@ -498,9 +492,5 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
                 .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
                 .setInstant(instant) //
         ;
-    }
-
-    private Message getNonNullImmutableMessage() {
-        return message != null ? message : new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
     }
 }

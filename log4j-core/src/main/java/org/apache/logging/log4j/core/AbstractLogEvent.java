@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.Collections;
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -37,7 +34,7 @@ public abstract class AbstractLogEvent implements LogEvent {
 
     private static final long serialVersionUID = 1L;
 
-    private MutableInstant instant = new MutableInstant();
+    private volatile MutableInstant instant;
 
     /**
      * Subclasses should implement this method to provide an immutable version.
@@ -50,14 +47,6 @@ public abstract class AbstractLogEvent implements LogEvent {
     @Override
     public ReadOnlyStringMap getContextData() {
         return null;
-    }
-
-    /**
-     * Returns {@link Collections#emptyMap()}.
-     */
-    @Override
-    public Map<String, String> getContextMap() {
-        return Collections.emptyMap();
     }
 
     @Override
@@ -127,6 +116,13 @@ public abstract class AbstractLogEvent implements LogEvent {
 
     @Override
     public Instant getInstant() {
+        return getMutableInstant();
+    }
+
+    protected final MutableInstant getMutableInstant() {
+        if (instant == null) {
+            instant = new MutableInstant();
+        }
         return instant;
     }
 

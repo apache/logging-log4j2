@@ -75,6 +75,7 @@ public class RollingAppenderSizeTest {
                 // @formatter:off
                {"log4j-rolling-gz-lazy.xml", ".gz", true},
                {"log4j-rolling-gz.xml", ".gz", false},
+               {"log4j-rolling-numbered-gz.xml", ".gz", false},
                {"log4j-rolling-zip-lazy.xml", ".zip", true},
                {"log4j-rolling-zip.xml", ".zip", false},
                 // Apache Commons Compress
@@ -150,7 +151,7 @@ public class RollingAppenderSizeTest {
                         in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(), fis);
                     } catch (final CompressorException ce) {
                         ce.printStackTrace();
-                        fail("Error creating intput stream from " + file.toString() + ": " + ce.getMessage());
+                        fail("Error creating input stream from " + file.toString() + ": " + ce.getMessage());
                     }
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     assertNotNull("No input stream for " + file.getName(), in);

@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LifeCycle2;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.Version;
@@ -50,8 +50,6 @@ import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDisruptor;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.Interpolator;
@@ -65,9 +63,15 @@ import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.util.NameUtil;
+import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.util.WatchManager;
+import org.apache.logging.log4j.core.util.Watcher;
+import org.apache.logging.log4j.core.util.WatcherFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -240,6 +244,41 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.debug("Configuration {} initialized", this);
     }
 
+    protected void initializeWatchers(Reconfigurable reconfigurable, ConfigurationSource configSource,
+            int monitorIntervalSeconds) {
+        if (configSource.getFile() != null || configSource.getURL() != null) {
+            if (monitorIntervalSeconds > 0) {
+                watchManager.setIntervalSeconds(monitorIntervalSeconds);
+                if (configSource.getFile() != null) {
+                    final Source cfgSource = new Source(configSource);
+                    final long lastModifeid = configSource.getFile().lastModified();
+                    final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(this, reconfigurable,
+                            listeners, lastModifeid);
+                    watchManager.watch(cfgSource, watcher);
+                } else {
+                    if (configSource.getURL() != null) {
+                        monitorSource(reconfigurable, configSource);
+                    }
+                }
+            } else if (watchManager.hasEventListeners() && configSource.getURL() != null && monitorIntervalSeconds >= 0) {
+                monitorSource(reconfigurable, configSource);
+            }
+        }
+    }
+
+    private void monitorSource(Reconfigurable reconfigurable, ConfigurationSource configSource) {
+        if (configSource.getLastModified() > 0) {
+            final Source cfgSource = new Source(configSource);
+            final Watcher watcher = WatcherFactory.getInstance(pluginPackages)
+                    .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
+            if (watcher != null) {
+                watchManager.watch(cfgSource, watcher);
+            }
+        } else {
+            LOGGER.info("{} does not support dynamic reconfiguration", configSource.getURI());
+        }
+    }
+
 	/**
      * Start the configuration.
      */
@@ -251,7 +290,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.debug("Starting configuration {}", this);
         this.setStarting();
-        if (watchManager.getIntervalSeconds() > 0) {
+        if (watchManager.getIntervalSeconds() >= 0) {
             watchManager.start();
         }
         if (hasAsyncLoggers()) {
@@ -338,11 +377,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             // LOG4J2-511, LOG4J2-392 stop AsyncAppenders first
             LOGGER.trace("{} stopping {} AsyncAppenders.", cls, async.size());
             for (final Appender appender : async) {
-                if (appender instanceof LifeCycle2) {
-                    ((LifeCycle2) appender).stop(timeout, timeUnit);
-                } else {
-                    appender.stop();
-                }
+                ((LifeCycle) appender).stop(timeout, timeUnit);
             }
         }
 
@@ -356,11 +391,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         int appenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
             if (array[i].isStarted()) { // then stop remaining Appenders
-                if (array[i] instanceof LifeCycle2) {
-                    ((LifeCycle2) array[i]).stop(timeout, timeUnit);
-                } else {
-                    array[i].stop();
-                }
+                ((LifeCycle) array[i]).stop(timeout, timeUnit);
                 appenderCount++;
             }
         }
@@ -582,8 +613,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // LOG4J2-1176 facilitate memory leak investigation
         setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
         final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
-                .withPattern(DefaultConfiguration.DEFAULT_PATTERN)
-                .withConfiguration(this)
+                .setPattern(DefaultConfiguration.DEFAULT_PATTERN)
+                .setConfiguration(this)
                 .build();
         final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(layout);
         appender.start();
@@ -646,7 +677,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Appender> T getAppender(final String appenderName) {
-        return (T) appenders.get(appenderName);
+        return appenderName != null ? (T) appenders.get(appenderName) : null;
     }
 
     /**
@@ -666,7 +697,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public void addAppender(final Appender appender) {
-        appenders.putIfAbsent(appender.getName(), appender);
+        if (appender != null) {
+            appenders.putIfAbsent(appender.getName(), appender);
+        }
     }
 
     @Override
@@ -707,6 +740,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public synchronized void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger,
             final Appender appender) {
+        if (appender == null || logger == null) {
+            return;
+        }
         final String loggerName = logger.getName();
         appenders.putIfAbsent(appender.getName(), appender);
         final LoggerConfig lc = getLoggerConfig(loggerName);
@@ -782,7 +818,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         for (final LoggerConfig logger : loggerConfigs.values()) {
             logger.removeAppender(appenderName);
         }
-        final Appender app = appenders.remove(appenderName);
+        final Appender app = appenderName != null ? appenders.remove(appenderName) : null;
 
         if (app != null) {
             app.stop();
@@ -904,27 +940,27 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Invokes a static factory method to either create the desired object or to create a builder object that creates
      * the desired object. In the case of a factory method, it should be annotated with
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginFactory}, and each parameter should be annotated with
+     * {@link org.apache.logging.log4j.plugins.PluginFactory}, and each parameter should be annotated with
      * an appropriate plugin annotation depending on what that parameter describes. Parameters annotated with
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginAttribute} must be a type that can be converted from a
-     * string using one of the {@link org.apache.logging.log4j.core.config.plugins.convert.TypeConverter TypeConverters}
-     * . Parameters with {@link org.apache.logging.log4j.core.config.plugins.PluginElement} may be any plugin class or
+     * {@link org.apache.logging.log4j.plugins.PluginAttribute} must be a type that can be converted from a
+     * string using one of the {@link org.apache.logging.log4j.plugins.convert.TypeConverter TypeConverters}
+     * . Parameters with {@link org.apache.logging.log4j.plugins.PluginElement} may be any plugin class or
      * an array of a plugin class. Collections and Maps are currently not supported, although the factory method that is
      * called can create these from an array.
      *
      * Plugins can also be created using a builder class that implements
-     * {@link org.apache.logging.log4j.core.util.Builder}. In that case, a static method annotated with
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute} should create the builder class, and
+     * {@link org.apache.logging.log4j.plugins.util.Builder}. In that case, a static method annotated with
+     * {@link org.apache.logging.log4j.plugins.PluginBuilderAttribute} should create the builder class, and
      * the various fields in the builder class should be annotated similarly to the method parameters. However, instead
      * of using PluginAttribute, one should use
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute} where the default value can be
+     * {@link org.apache.logging.log4j.plugins.PluginBuilderAttribute} where the default value can be
      * specified as the default field value instead of as an additional annotation parameter.
      *
      * In either case, there are also annotations for specifying a
      * {@link org.apache.logging.log4j.core.config.Configuration} (
      * {@link org.apache.logging.log4j.core.config.plugins.PluginConfiguration}) or a
-     * {@link org.apache.logging.log4j.core.config.Node} (
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginNode}).
+     * {@link org.apache.logging.log4j.plugins.Node} (
+     * {@link org.apache.logging.log4j.plugins.PluginNode}).
      *
      * Although the happy path works, more work still needs to be done to log incorrect parameters. These will generally
      * result in unhelpful InvocationTargetExceptions.
@@ -934,8 +970,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param event the LogEvent that spurred the creation of this plugin
      * @return the created plugin object or {@code null} if there was an error setting it up.
      * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
-     * @see org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor
-     * @see org.apache.logging.log4j.core.config.plugins.convert.TypeConverter
+     * @see org.apache.logging.log4j.plugins.inject.ConfigurationInjector
+     * @see org.apache.logging.log4j.plugins.convert.TypeConverter
      */
     private Object createPluginObject(final PluginType<?> type, final Node node, final LogEvent event) {
         final Class<?> clazz = type.getPluginClass();
@@ -956,7 +992,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
         }
 
-        return new PluginBuilder(type).withConfiguration(this).withConfigurationNode(node).forLogEvent(event).build();
+        return new PluginBuilder(type).setConfiguration(this).setConfigurationNode(node).forLogEvent(event).build();
     }
 
     private static Map<String, ?> createPluginMap(final Node node) {

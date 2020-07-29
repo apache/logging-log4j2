@@ -30,10 +30,10 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -46,13 +46,15 @@ public class SslConfiguration {
     private final TrustStoreConfiguration trustStoreConfig;
     private final SSLContext sslContext;
     private final String protocol;
+    private final boolean verifyHostName;
 
     private SslConfiguration(final String protocol, final KeyStoreConfiguration keyStoreConfig,
-            final TrustStoreConfiguration trustStoreConfig) {
+            final TrustStoreConfiguration trustStoreConfig, boolean verifyHostName) {
         this.keyStoreConfig = keyStoreConfig;
         this.trustStoreConfig = trustStoreConfig;
         this.protocol = protocol == null ? SslConfigurationDefaults.PROTOCOL : protocol;
         this.sslContext = this.createSslContext();
+        this.verifyHostName = verifyHostName;
     }
 
     /**
@@ -127,7 +129,7 @@ public class SslConfiguration {
         try {
             return createSslContext(true, false);
         } catch (final KeyStoreConfigurationException dummy) {
-             LOGGER.debug("Exception occured while using default keystore. This should be a BUG");
+             LOGGER.debug("Exception occurred while using default keystore. This should be a BUG");
              return null;
         }
     }
@@ -137,7 +139,7 @@ public class SslConfiguration {
             return createSslContext(false, true);
         }
         catch (final TrustStoreConfigurationException dummy) {
-            LOGGER.debug("Exception occured while using default truststore. This should be a BUG");
+            LOGGER.debug("Exception occurred while using default truststore. This should be a BUG");
             return null;
         }
     }
@@ -228,11 +230,31 @@ public class SslConfiguration {
     @PluginFactory
     public static SslConfiguration createSSLConfiguration(
             // @formatter:off
-            @PluginAttribute("protocol") final String protocol,
-            @PluginElement("KeyStore") final KeyStoreConfiguration keyStoreConfig, 
-            @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig) {
+            @PluginAttribute final String protocol,
+            @PluginElement final KeyStoreConfiguration keyStoreConfig,
+            @PluginElement final TrustStoreConfiguration trustStoreConfig) {
             // @formatter:on
-        return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig);
+        return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, false);
+    }
+
+    /**
+     * Creates an SslConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.
+     *
+     * @param protocol The protocol, see http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext
+     * @param keyStoreConfig The KeyStoreConfiguration.
+     * @param trustStoreConfig The TrustStoreConfiguration.
+     * @param verifyHostName whether or not to perform host name verification
+     * @return a new SslConfiguration
+     * @since 2.12
+     */
+    public static SslConfiguration createSSLConfiguration(
+            // @formatter:off
+            @PluginAttribute final String protocol,
+            @PluginElement final KeyStoreConfiguration keyStoreConfig,
+            @PluginElement final TrustStoreConfiguration trustStoreConfig,
+            @PluginAttribute final boolean verifyHostName) {
+        // @formatter:on
+        return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, verifyHostName);
     }
 
     @Override
@@ -303,5 +325,9 @@ public class SslConfiguration {
 
     public String getProtocol() {
         return protocol;
+    }
+
+    public boolean isVerifyHostName() {
+        return verifyHostName;
     }
 }

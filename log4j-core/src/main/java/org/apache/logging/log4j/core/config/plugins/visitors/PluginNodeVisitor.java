@@ -17,27 +17,23 @@
 
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
+import org.apache.logging.log4j.plugins.inject.AbstractConfigurationInjector;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 /**
- * PluginVisitor implementation for {@link PluginNode}.
+ *  @deprecated Provided to support legacy plugins.
  */
-public class PluginNodeVisitor extends AbstractPluginVisitor<PluginNode> {
-    public PluginNodeVisitor() {
-        super(PluginNode.class);
-    }
-
+// copy of PluginNodeInjector
+public class PluginNodeVisitor extends AbstractConfigurationInjector<PluginNode, Configuration> {
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
-                        final StringBuilder log) {
-        if (this.conversionType.isInstance(node)) {
-            log.append("Node=").append(node.getName());
-            return node;
+    public void inject(final Object factory) {
+        if (TypeUtil.isAssignable(conversionType, node.getClass())) {
+            debugLog.append("Node=").append(node.getName());
+            configurationBinder.bindObject(factory, node);
+        } else {
+            LOGGER.error("Element with type {} annotated with @PluginNode not compatible with type {}.", conversionType, node.getClass());
         }
-        LOGGER.warn("Variable annotated with @PluginNode is not compatible with the type {}.", node.getClass());
-        return null;
     }
 }

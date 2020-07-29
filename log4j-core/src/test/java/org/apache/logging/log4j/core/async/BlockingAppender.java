@@ -28,11 +28,12 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 
 /**
@@ -41,11 +42,12 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 @Plugin(name = "Blocking", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class BlockingAppender extends AbstractAppender {
     private static final long serialVersionUID = 1L;
+    // logEvents may be nulled to disable event tracking, this is useful in scenarios testing garbage collection.
     public List<LogEvent> logEvents = new CopyOnWriteArrayList<>();
     public CountDownLatch countDownLatch = null;
 
     public BlockingAppender(final String name) {
-        super(name, null, null);
+        super(name, null, null, true, Property.EMPTY_ARRAY);
     }
 
     @Override
@@ -55,7 +57,10 @@ public class BlockingAppender extends AbstractAppender {
         event.getMessage().getFormattedMessage();
 
         // may be a reusable event, make a copy, don't keep a reference to the original event
-        logEvents.add(Log4jLogEvent.createMemento(event));
+        List<LogEvent> events = logEvents;
+        if (events != null) {
+            events.add(Log4jLogEvent.createMemento(event));
+        }
 
         if (countDownLatch == null) {
             return;
@@ -70,11 +75,11 @@ public class BlockingAppender extends AbstractAppender {
 
     @PluginFactory
     public static BlockingAppender createAppender(
-            @PluginAttribute("name")
+            @PluginAttribute
             @Required(message = "No name provided for HangingAppender")
             final String name,
-            @PluginElement("Layout") final Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter) {
+            @PluginElement final Layout<? extends Serializable> layout,
+            @PluginElement final Filter filter) {
         return new BlockingAppender(name);
     }
 

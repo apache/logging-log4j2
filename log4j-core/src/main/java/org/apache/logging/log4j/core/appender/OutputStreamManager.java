@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * Manages an OutputStream so that it can be shared by multiple Appenders and will
@@ -42,13 +43,11 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader) {
-        // Can't use new ctor because it throws an exception
         this(os, streamName, layout, writeHeader, Constants.ENCODER_BYTE_BUFFER_SIZE);
     }
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader, final int bufferSize) {
-        // Can't use new ctor because it throws an exception
         this(os, streamName, layout, writeHeader, ByteBuffer.wrap(new byte[bufferSize]));
     }
 
@@ -62,17 +61,10 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         super(null, streamName);
         this.outputStream = os;
         this.layout = layout;
-        if (writeHeader && layout != null) {
-            final byte[] header = layout.getHeader();
-            if (header != null) {
-                try {
-                    getOutputStream().write(header, 0, header.length);
-                } catch (final IOException e) {
-                    logError("Unable to write header", e);
-                }
-            }
-        }
         this.byteBuffer = Objects.requireNonNull(byteBuffer, "byteBuffer");
+        if (writeHeader) {
+            writeHeader(os);
+        }
     }
 
     /**
@@ -90,15 +82,8 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         this.layout = layout;
         this.byteBuffer = Objects.requireNonNull(byteBuffer, "byteBuffer");
         this.outputStream = os;
-        if (writeHeader && layout != null) {
-            final byte[] header = layout.getHeader();
-            if (header != null) {
-                try {
-                    getOutputStream().write(header, 0, header.length);
-                } catch (final IOException e) {
-                    logError("Unable to write header for " + streamName, e);
-                }
-            }
+        if (writeHeader) {
+            writeHeader(os);
         }
     }
 
@@ -138,6 +123,19 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         return closeOutputStream();
     }
 
+    protected void writeHeader(OutputStream os) {
+        if (layout != null && os != null) {
+            final byte[] header = layout.getHeader();
+            if (header != null) {
+                try {
+                    os.write(header, 0, header.length);
+                } catch (final IOException e) {
+                    logError("Unable to write header", e);
+                }
+            }
+        }
+    }
+
     /**
      * Writes the footer.
      */
@@ -171,17 +169,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
     }
 
     protected void setOutputStream(final OutputStream os) {
-        final byte[] header = layout.getHeader();
-        if (header != null) {
-            try {
-                os.write(header, 0, header.length);
-                this.outputStream = os; // only update field if os.write() succeeded
-            } catch (final IOException ioe) {
-                logError("Unable to write header", ioe);
-            }
-        } else {
-            this.outputStream = os;
-        }
+        this.outputStream = os;
     }
 
     /**
@@ -313,6 +301,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         }
         try {
             stream.close();
+            LOGGER.debug("OutputStream closed");
         } catch (final IOException ex) {
             logError("Unable to close stream", ex);
             return false;

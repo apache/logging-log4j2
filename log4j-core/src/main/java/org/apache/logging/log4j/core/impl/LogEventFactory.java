@@ -32,4 +32,9 @@ public interface LogEventFactory {
 
     LogEvent createEvent(String loggerName, Marker marker, String fqcn, Level level, Message data,
                          List<Property> properties, Throwable t);
+
+    default LogEvent createEvent(String loggerName, Marker marker, String fqcn, StackTraceElement location, Level level,
+            Message data, List<Property> properties, Throwable t) {
+        return createEvent(loggerName, marker, fqcn, level, data, properties, t);
+    }
 }

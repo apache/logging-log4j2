@@ -1471,7 +1471,7 @@ public final class CronExpression {
                         cl.set(Calendar.MONTH, mon);
                         // no '- 1' here because we are promoting the month
                         continue;
-                    } else if (daysToAdd > 0) { // are we swithing days?
+                    } else if (daysToAdd > 0) { // are we switching days?
                         cl.set(Calendar.SECOND, 0);
                         cl.set(Calendar.MINUTE, 0);
                         cl.set(Calendar.HOUR_OF_DAY, 0);
@@ -1572,8 +1572,13 @@ public final class CronExpression {
     protected Date getTimeBefore(final Date targetDate) {
         final Calendar cl = Calendar.getInstance(getTimeZone());
 
+        // CronTrigger does not deal with milliseconds, so truncate target
+        cl.setTime(targetDate);
+        cl.set(Calendar.MILLISECOND, 0);
+        final Date targetDateNoMs = cl.getTime();
+
         // to match this
-        Date start = targetDate;
+        Date start = targetDateNoMs;
         final long minIncrement = findMinIncrement();
         Date prevFireTime;
         do {
@@ -1583,7 +1588,7 @@ public final class CronExpression {
                 return null;
             }
             start = prevCheckDate;
-        } while (prevFireTime.compareTo(targetDate) >= 0);
+        } while (prevFireTime.compareTo(targetDateNoMs) >= 0);
         return prevFireTime;
     }
 

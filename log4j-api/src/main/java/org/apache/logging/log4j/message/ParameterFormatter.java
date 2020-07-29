@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -59,8 +60,8 @@ final class ParameterFormatter {
     private static final char DELIM_START = '{';
     private static final char DELIM_STOP = '}';
     private static final char ESCAPE_CHAR = '\\';
-
-    private static ThreadLocal<SimpleDateFormat> threadLocalSimpleDateFormat = new ThreadLocal<>();
+    private static final DateTimeFormatter FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").withZone(ZoneId.systemDefault());
 
     private ParameterFormatter() {
     }
@@ -467,19 +468,8 @@ final class ParameterFormatter {
         if (!(o instanceof Date)) {
             return false;
         }
-        final Date date = (Date) o;
-        final SimpleDateFormat format = getSimpleDateFormat();
-        str.append(format.format(date));
+        str.append(FORMATTER.format(((Date) o).toInstant()));
         return true;
-    }
-
-    private static SimpleDateFormat getSimpleDateFormat() {
-        SimpleDateFormat result = threadLocalSimpleDateFormat.get();
-        if (result == null) {
-            result = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            threadLocalSimpleDateFormat.set(result);
-        }
-        return result;
     }
 
     /**

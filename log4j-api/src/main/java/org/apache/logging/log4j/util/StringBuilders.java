@@ -35,7 +35,9 @@ public final class StringBuilders {
      * @return {@code "value"}
      */
     public static StringBuilder appendDqValue(final StringBuilder sb, final Object value) {
-        return sb.append(Chars.DQUOTE).append(value).append(Chars.DQUOTE);
+        sb.append(Chars.DQUOTE);
+        appendValue(sb, value);
+        return sb.append(Chars.DQUOTE);
     }
 
     /**
@@ -58,7 +60,8 @@ public final class StringBuilders {
      * @return the specified StringBuilder
      */
     public static StringBuilder appendKeyDqValue(final StringBuilder sb, final String key, final Object value) {
-        return sb.append(key).append(Chars.EQ).append(Chars.DQUOTE).append(value).append(Chars.DQUOTE);
+        sb.append(key).append(Chars.EQ);
+        return appendDqValue(sb, value);
     }
 
     /**
@@ -169,77 +172,143 @@ public final class StringBuilders {
     }
 
     public static void escapeJson(final StringBuilder toAppendTo, final int start) {
-        for (int i = toAppendTo.length() - 1; i >= start; i--) { // backwards: length may change
+        int escapeCount = 0;
+        for (int i = start; i < toAppendTo.length(); i++) {
             final char c = toAppendTo.charAt(i);
             switch (c) {
                 case '\b':
-                    toAppendTo.setCharAt(i, '\\');
-                    toAppendTo.insert(i + 1, 'b');
+                case '\t':
+                case '\f':
+                case '\n':
+                case '\r':
+                case '"':
+                case '\\':
+                    escapeCount++;
+                    break;
+                default:
+                    if (Character.isISOControl(c)) {
+                        escapeCount += 5;
+                    }
+            }
+        }
+
+        int lastChar = toAppendTo.length() - 1;
+        toAppendTo.setLength(toAppendTo.length() + escapeCount);
+        int lastPos = toAppendTo.length() - 1;
+
+        for (int i = lastChar; lastPos > i; i--) {
+            final char c = toAppendTo.charAt(i);
+            switch (c) {
+                case '\b':
+                    lastPos = escapeAndDecrement(toAppendTo, lastPos, 'b');
                     break;
 
                 case '\t':
-                    toAppendTo.setCharAt(i, '\\');
-                    toAppendTo.insert(i + 1, 't');
+                    lastPos = escapeAndDecrement(toAppendTo, lastPos, 't');
                     break;
 
                 case '\f':
-                    toAppendTo.setCharAt(i, '\\');
-                    toAppendTo.insert(i + 1, 'f');
+                    lastPos = escapeAndDecrement(toAppendTo, lastPos, 'f');
                     break;
 
                 case '\n':
-                    // Json string newline character must be encoded as literal "\n"
-                    toAppendTo.setCharAt(i, '\\');
-                    toAppendTo.insert(i + 1, 'n');
+                    lastPos = escapeAndDecrement(toAppendTo, lastPos, 'n');
                     break;
 
                 case '\r':
-                    toAppendTo.setCharAt(i, '\\');
-                    toAppendTo.insert(i + 1, 'r');
+                    lastPos = escapeAndDecrement(toAppendTo, lastPos, 'r');
                     break;
 
                 case '"':
                 case '\\':
-                    // only " and \ need to be escaped; other escapes are optional
-                    toAppendTo.insert(i, '\\');
+                    lastPos = escapeAndDecrement(toAppendTo, lastPos, c);
                     break;
 
                 default:
                     if (Character.isISOControl(c)) {
-                        // all iso control characters are in U+00xx
-                        toAppendTo.setCharAt(i, '\\');
-                        toAppendTo.insert(i + 1, "u0000");
-                        toAppendTo.setCharAt(i + 4, Chars.getUpperCaseHex((c & 0xF0) >> 4));
-                        toAppendTo.setCharAt(i + 5, Chars.getUpperCaseHex(c & 0xF));
+                        // all iso control characters are in U+00xx, JSON output format is "\\u00XX"
+                        toAppendTo.setCharAt(lastPos--, Chars.getUpperCaseHex(c & 0xF));
+                        toAppendTo.setCharAt(lastPos--, Chars.getUpperCaseHex((c & 0xF0) >> 4));
+                        toAppendTo.setCharAt(lastPos--, '0');
+                        toAppendTo.setCharAt(lastPos--, '0');
+                        toAppendTo.setCharAt(lastPos--, 'u');
+                        toAppendTo.setCharAt(lastPos--, '\\');
+                    } else {
+                        toAppendTo.setCharAt(lastPos, c);
+                        lastPos--;
                     }
             }
         }
     }
 
+    private static int escapeAndDecrement(StringBuilder toAppendTo, int lastPos, char c) {
+        toAppendTo.setCharAt(lastPos--, c);
+        toAppendTo.setCharAt(lastPos--, '\\');
+        return lastPos;
+    }
+
     public static void escapeXml(final StringBuilder toAppendTo, final int start) {
-        for (int i = toAppendTo.length() - 1; i >= start; i--) { // backwards: length may change
+        int escapeCount = 0;
+        for (int i = start; i < toAppendTo.length(); i++) {
             final char c = toAppendTo.charAt(i);
             switch (c) {
                 case '&':
-                    toAppendTo.setCharAt(i, '&');
-                    toAppendTo.insert(i + 1, "amp;");
+                    escapeCount += 4;
                     break;
                 case '<':
-                    toAppendTo.setCharAt(i, '&');
-                    toAppendTo.insert(i + 1, "lt;");
-                    break;
                 case '>':
-                    toAppendTo.setCharAt(i, '&');
-                    toAppendTo.insert(i + 1, "gt;");
+                    escapeCount += 3;
                     break;
                 case '"':
-                    toAppendTo.setCharAt(i, '&');
-                    toAppendTo.insert(i + 1, "quot;");
+                case '\'':
+                    escapeCount += 5;
+            }
+        }
+
+        int lastChar = toAppendTo.length() - 1;
+        toAppendTo.setLength(toAppendTo.length() + escapeCount);
+        int lastPos = toAppendTo.length() - 1;
+
+        for (int i = lastChar; lastPos > i; i--) {
+            final char c = toAppendTo.charAt(i);
+            switch (c) {
+                case '&':
+                    toAppendTo.setCharAt(lastPos--, ';');
+                    toAppendTo.setCharAt(lastPos--, 'p');
+                    toAppendTo.setCharAt(lastPos--, 'm');
+                    toAppendTo.setCharAt(lastPos--, 'a');
+                    toAppendTo.setCharAt(lastPos--, '&');
+                    break;
+                case '<':
+                    toAppendTo.setCharAt(lastPos--, ';');
+                    toAppendTo.setCharAt(lastPos--, 't');
+                    toAppendTo.setCharAt(lastPos--, 'l');
+                    toAppendTo.setCharAt(lastPos--, '&');
+                    break;
+                case '>':
+                    toAppendTo.setCharAt(lastPos--, ';');
+                    toAppendTo.setCharAt(lastPos--, 't');
+                    toAppendTo.setCharAt(lastPos--, 'g');
+                    toAppendTo.setCharAt(lastPos--, '&');
+                    break;
+                case '"':
+                    toAppendTo.setCharAt(lastPos--, ';');
+                    toAppendTo.setCharAt(lastPos--, 't');
+                    toAppendTo.setCharAt(lastPos--, 'o');
+                    toAppendTo.setCharAt(lastPos--, 'u');
+                    toAppendTo.setCharAt(lastPos--, 'q');
+                    toAppendTo.setCharAt(lastPos--, '&');
                     break;
                 case '\'':
-                    toAppendTo.setCharAt(i, '&');
-                    toAppendTo.insert(i + 1, "apos;");
+                    toAppendTo.setCharAt(lastPos--, ';');
+                    toAppendTo.setCharAt(lastPos--, 's');
+                    toAppendTo.setCharAt(lastPos--, 'o');
+                    toAppendTo.setCharAt(lastPos--, 'p');
+                    toAppendTo.setCharAt(lastPos--, 'a');
+                    toAppendTo.setCharAt(lastPos--, '&');
                     break;
+                default:
+                    toAppendTo.setCharAt(lastPos--, c);
             }
         }
     }

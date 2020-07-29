@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.jackson.yaml.layout;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +30,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.layout.LogEventFixtures;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.util.KeyValuePair;
@@ -49,6 +45,9 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Tests the YamlLayout class.
@@ -77,8 +76,7 @@ public class YamlLayoutTest {
 
     private void checkAt(final String expected, final int lineIndex, final List<String> list) {
         final String trimedLine = list.get(lineIndex).trim();
-        assertTrue("Incorrect line index " + lineIndex + ": " + Strings.dquote(trimedLine),
-                trimedLine.equals(expected));
+        assertEquals("Incorrect line index " + lineIndex + ": " + Strings.dquote(trimedLine), trimedLine, expected);
     }
 
     private void checkContains(final String expected, final List<String> list) {
@@ -95,7 +93,7 @@ public class YamlLayoutTest {
         // "name":"value"
         //final String expected = String.format("- key: \"%s\"\n  value: \"%s\"", key, value);
         final String expected = String.format("%s: \"%s\"", key, value);
-        assertTrue("Cannot find " + expected + " in " + str, str.contains(expected));
+        assertThat(str, containsString(expected));
     }
 
     private void checkProperty(final String key, final String value, final boolean compact, final String str,
@@ -103,17 +101,17 @@ public class YamlLayoutTest {
         final String propSep = this.toPropertySeparator(compact, isValue);
         // {"key":"MDC.B","value":"B_Value"}
         final String expected = String.format("%s%s\"%s\"", key, propSep, value);
-        assertTrue("Cannot find " + expected + " in " + str, str.contains(expected));
+        assertThat(str, containsString(expected));
     }
 
     private void checkPropertyName(final String name, final boolean compact, final String str, final boolean isValue) {
         final String propSep = this.toPropertySeparator(compact, isValue);
-        assertTrue(str, str.contains(name + propSep));
+        assertThat(str, containsString(name + propSep));
     }
 
     private void checkPropertyNameAbsent(final String name, final boolean compact, final String str, final boolean isValue) {
         final String propSep = this.toPropertySeparator(compact, isValue);
-        assertFalse(str, str.contains(name + propSep));
+        assertThat(str, not(containsString(name + propSep)));
     }
 
     private String prepareYAMLForStacktraceTests(final boolean stacktraceAsString) {
@@ -123,7 +121,7 @@ public class YamlLayoutTest {
                 .setIncludeStacktrace(true)
                 .setStacktraceAsString(stacktraceAsString)
                 .build();
-        // @formatter:off
+        // @formatter:on
         return layout.toSerializable(expected);
     }
 
@@ -140,8 +138,28 @@ public class YamlLayoutTest {
                 .setConfiguration(ctx.getConfiguration())
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
-        assertTrue(str, str.contains("KEY1: \"VALUE1\""));
-        assertTrue(str, str.contains("KEY2: \"" + new JavaLookup().getRuntime() + "\""));
+        assertThat(str, containsString("KEY1: \"VALUE1\""));
+        assertThat(str, containsString("KEY2: \"" + new JavaLookup().getRuntime() + "\""));
+    }
+
+    @Test
+    public void testMutableLogEvent() throws Exception {
+        final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setLocationInfo(false)
+                .setProperties(false)
+                .setIncludeStacktrace(false)
+                .setAdditionalFields(new KeyValuePair[] {
+                        new KeyValuePair("KEY1", "VALUE1"),
+                        new KeyValuePair("KEY2", "${java:runtime}"), })
+                .setCharset(StandardCharsets.UTF_8)
+                .setConfiguration(ctx.getConfiguration())
+                .build();
+        Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
+        final MutableLogEvent mutableEvent = new MutableLogEvent();
+        mutableEvent.initFrom(logEvent);
+        final String strLogEvent = layout.toSerializable(logEvent);
+        final String strMutableEvent = layout.toSerializable(mutableEvent);
+        assertEquals(strMutableEvent, strLogEvent, strMutableEvent);
     }
 
     private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean eventEol,
@@ -272,7 +290,7 @@ public class YamlLayoutTest {
                 .setIncludeNullDelimiter(false)
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
-        assertFalse(str.endsWith("\0"));
+        assertThat(str, not(endsWith("\0")));
     }
 
     @Test
@@ -281,7 +299,7 @@ public class YamlLayoutTest {
                 .setIncludeNullDelimiter(true)
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
-        assertTrue(str.endsWith("\0"));
+        assertThat(str, endsWith("\0"));
     }
 
     /**
@@ -296,7 +314,9 @@ public class YamlLayoutTest {
         final Configuration configuration = rootLogger.getContext().getConfiguration();
         // set up appender
         // Use [[ and ]] to test header and footer (instead of [ and ])
-        final AbstractJacksonLayout layout = YamlLayout.createLayout(configuration, true, true, "[[", "]]", null, true);
+        final AbstractJacksonLayout layout = YamlLayout.newBuilder().setConfiguration(configuration).setLocationInfo(true).setProperties(true)
+                .setHeader("[[".getBytes(StandardCharsets.UTF_8)).setFooter("]]".getBytes(StandardCharsets.UTF_8))
+                .setIncludeStacktrace(true).build();
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -348,7 +368,7 @@ public class YamlLayoutTest {
                 .setThreadName("threadName") //
                 .setTimeMillis(1).build();
         final String str = layout.toSerializable(expected);
-        assertTrue(str, str.contains("loggerName: \"a.B\""));
+        assertThat(str, containsString("loggerName: \"a.B\""));
         final Log4jLogEvent actual = new Log4jYamlObjectMapper(false, true, false).readValue(str, Log4jLogEvent.class);
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
         assertEquals(expected, actual);
@@ -367,13 +387,13 @@ public class YamlLayoutTest {
     @Test
     public void testStacktraceAsNonString() throws Exception {
         final String str = prepareYAMLForStacktraceTests(false);
-        assertTrue(str, str.contains("extendedStackTrace:\n    - "));
+        assertThat(str, containsString("extendedStackTrace:\n    - "));
     }
 
     @Test
     public void testStacktraceAsString() throws Exception {
         final String str = prepareYAMLForStacktraceTests(true);
-        assertTrue(str, str.contains("extendedStackTrace: \"java.lang.NullPointerException"));
+        assertThat(str, containsString("extendedStackTrace: \"java.lang.NullPointerException"));
     }
 
     private String toPropertySeparator(final boolean compact, final boolean value) {

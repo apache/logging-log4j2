@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j.jackson.json.layout;
 
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
@@ -101,17 +100,13 @@ public class ConcurrentLoggingWithJsonLayoutTest {
         }
 
         // if any error occurred, fail this test
-        if (!thrown.isEmpty()) {
-            throw thrown.get(0);
-        }
+        assertThat(thrown, equalTo(Collections.emptyList()));
 
         // simple test to ensure content is not corrupted
-        if (new File(PATH).exists()) {
-            final List<String> lines = Files.readAllLines(new File(PATH).toPath(), Charset.defaultCharset());
-            for (final String line : lines) {
-                assertThat(line, startsWith("{\"thread\":"));
-                assertThat(line, endsWith("\"threadPriority\":5}"));
-            }
+        final List<String> lines = Files.readAllLines(new File(PATH).toPath(), Charset.defaultCharset());
+        for (final String line : lines) {
+            assertThat(line, startsWith("{\"instant\":{\"epochSecond\":"));
+            assertThat(line, containsString("\"threadPriority\":5"));
         }
     }
 }

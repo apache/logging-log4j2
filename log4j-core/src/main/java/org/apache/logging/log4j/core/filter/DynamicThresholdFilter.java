@@ -26,11 +26,11 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
@@ -59,11 +59,11 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static DynamicThresholdFilter createFilter(
-            @PluginAttribute("key") final String key,
-            @PluginElement("Pairs") final KeyValuePair[] pairs,
-            @PluginAttribute("defaultThreshold") final Level defaultThreshold,
-            @PluginAttribute("onMatch") final Result onMatch,
-            @PluginAttribute("onMismatch") final Result onMismatch) {
+            @PluginAttribute final String key,
+            @PluginElement final KeyValuePair[] pairs,
+            @PluginAttribute final Level defaultThreshold,
+            @PluginAttribute final Result onMatch,
+            @PluginAttribute final Result onMismatch) {
         final Map<String, Level> map = new HashMap<>();
         for (final KeyValuePair pair : pairs) {
             map.put(pair.getKey(), Level.toLevel(pair.getValue()));

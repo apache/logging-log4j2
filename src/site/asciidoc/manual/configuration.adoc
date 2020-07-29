@@ -55,7 +55,9 @@ for properties, and one for XML.
 
 1.  Log4j will inspect the `"log4j.configurationFile"` system property
 and, if set, will attempt to load the configuration using the
-`ConfigurationFactory` that matches the file extension.
+`ConfigurationFactory` that matches the file extension. Note that this
+is not restricted to a location on the local file system and may contain
+a URL.
 2.  If no system property is set the properties ConfigurationFactory
 will look for `log4j2-test.properties` in the classpath.
 3.  If no such file is found the YAML ConfigurationFactory will look for
@@ -399,7 +401,7 @@ advertise individual FileAppender or SocketAppender configurations. The
 only Advertiser plugin provided is "multicastdns".
 
 |dest
-|Either "err", which will send output to stderr, or a file path or URL.
+|Either "err" for stderr, "out" for stdout, a file path, or a URL.
 
 |monitorInterval
 |The minimum amount of time, in seconds, that must
@@ -456,7 +458,7 @@ configurations.
 |===
 
 [[XML]]
-=== XML
+=== Configuration with XML
 
 Log4j can be configured using two XML flavors; concise and strict. The
 concise format makes configuration very easy as the element names match
@@ -734,6 +736,7 @@ Configuration:
   appenders:
     Console:
       name: STDOUT
+      target: SYSTEM_OUT
       PatternLayout:
         Pattern: "%m%n"
     File:
@@ -773,8 +776,90 @@ Configuration:
 Additional link:../runtime-dependencies.html[runtime dependencies] are
 required for using YAML configuration files.
 
+[#Properties]
+=== Configuration with Properties
+
+As of version 2.4, Log4j now supports configuration via properties
+files. Note that the property syntax is NOT the same as the syntax used
+in Log4j 1. Like the XML and JSON configurations, properties
+configurations define the configuration in terms of plugins and
+attributes to the plugins.
+
+Prior to version 2.6, the properties configuration requires that you
+list the identifiers of the appenders, filters and loggers, in a comma
+separated list in properties with those names. Each of those components
+will then be expected to be defined in sets of properties that begin
+with _component.<.identifier>._. The identifier does not have to match
+the name of the component being defined but must uniquely identify all
+the attributes and subcomponents that are part of the component. If the
+list of identifiers is not present the identifier must not contain a '.'.
+Each individual component MUST have a "type" attribute specified that
+identifies the component's Plugin type.
+
+As of version 2.6, this list of identifiers is no longer required as
+names are inferred upon first usage, however if you wish to use more
+complex identifies you must still use the list. If the list is present
+it will be used.
+
+Unlike the base components, when creating subcomponents you cannot
+specify an element containing a list of identifiers. Instead, you must
+define the wrapper element with its type as is shown in the policies
+definition in the rolling file appender below. You then define each of
+the subcomponents below that wrapper element, as the
+TimeBasedTriggeringPolicy and SizeBasedTriggeringPolicy are defined
+below.
+
+Properties configuration files support the advertiser, monitorInterval,
+name, packages, shutdownHook, shutdownTimeout, status, verbose, and dest
+attributes. See link:#ConfigurationSyntax[Configuration Syntax] for the
+definitions of these attributes.
+
+[source,properties]
+----
+status = error
+dest = err
+name = PropertiesConfig
+
+property.filename = target/rolling/rollingtest.log
+
+filter.threshold.type = ThresholdFilter
+filter.threshold.level = debug
+
+appender.console.type = Console
+appender.console.name = STDOUT
+appender.console.layout.type = PatternLayout
+appender.console.layout.pattern = %m%n
+appender.console.filter.threshold.type = ThresholdFilter
+appender.console.filter.threshold.level = error
+
+appender.rolling.type = RollingFile
+appender.rolling.name = RollingFile
+appender.rolling.fileName = ${filename}
+appender.rolling.filePattern = target/rolling2/test1-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz
+appender.rolling.layout.type = PatternLayout
+appender.rolling.layout.pattern = %d %p %C{1.} [%t] %m%n
+appender.rolling.policies.type = Policies
+appender.rolling.policies.time.type = TimeBasedTriggeringPolicy
+appender.rolling.policies.time.interval = 2
+appender.rolling.policies.time.modulate = true
+appender.rolling.policies.size.type = SizeBasedTriggeringPolicy
+appender.rolling.policies.size.size=100MB
+appender.rolling.strategy.type = DefaultRolloverStrategy
+appender.rolling.strategy.max = 5
+
+logger.rolling.name = com.example.my.app
+logger.rolling.level = debug
+logger.rolling.additivity = false
+logger.rolling.appenderRef.rolling.ref = RollingFile
+
+rootLogger.level = info
+rootLogger.appenderRef.stdout.ref = STDOUT
+          
+----
+
+
 [#Loggers]
-=== Configuring loggers
+=== Configuring Loggers
 
 An understanding of how loggers work in Log4j is critical before trying
 to configure them. Please reference the Log4j
@@ -789,6 +874,16 @@ The level may be configured with one of TRACE, DEBUG, INFO, WARN, ERROR,
 ALL or OFF. If no level is specified it will default to ERROR. The
 additivity attribute may be assigned a value of true or false. If the
 attribute is omitted the default value of true will be used.
+
+Capturing location information (the class name, file name, method name, and line number of the caller)
+can be slow. Log4j tries to optimize this by reducing the size of the stack that must be traversed
+to find the caller of the logging method. It does this by determining if any component that might
+be accessed requires location information. This can cause performance issues if a logger is configured
+at a level like trace or debug with the expectation that most logs will be filtered on an Appender
+reference or Appender as Log4j will calculate the location information even though the log event
+is going to be discarded. To disable this behavior the `includeLocation` attribute
+can be set to false on the LoggerConfig. This will cause Log4j to defer calculating the location
+information until absolutely necessary.
 
 A LoggerConfig (including the root LoggerConfig) can be configured with
 properties that will be added to the properties copied from the
@@ -817,7 +912,7 @@ has no parent.
 === Configuring Appenders
 
 An appender is configured either using the specific appender plugin's
-name or with an appender element and the type attibute containing the
+name or with an appender element and the type attribute containing the
 appender plugin's name. In addition each appender must have a name
 attribute specified with a value that is unique within the set of
 appenders. The name will be used by loggers to reference the appender as
@@ -905,87 +1000,6 @@ can be configured on the ConsoleAppender.
 </Configuration>
 ----
 
-[#Properties]
-=== Configuration with Properties
-
-As of version 2.4, Log4j now supports configuration via properties
-files. Note that the property syntax is NOT the same as the syntax used
-in Log4j 1. Like the XML and JSON configurations, properties
-configurations define the configuration in terms of plugins and
-attributes to the plugins.
-
-Prior to version 2.6, the properties configuration requires that you
-list the identifiers of the appenders, filters and loggers, in a comma
-separated list in properties with those names. Each of those components
-will then be expected to be defined in sets of properties that begin
-with _component.<.identifier>._. The identifier does not have to match
-the name of the component being defined but must uniquely identify all
-the attributes and subcomponents that are part of the component. If the
-list of identifiers is not present the identier must not contain a '.'.
-Each individual component MUST have a "type" attribute specified that
-identifies the component's Plugin type.
-
-As of version 2.6, this list of identifiers is no longer required as
-names are inferred upon first usage, however if you wish to use more
-complex identifies you must still use the list. If the list is present
-it will be used.
-
-Unlike the base components, when creating subcomponents you cannot
-specify an element containing a list of identifiers. Instead, you must
-define the wrapper element with its type as is shown in the policies
-definition in the rolling file appender below. You then define each of
-the subcomponents below that wrapper element, as the
-TimeBasedTriggeringPolicy and SizeBasedTriggeringPolicy are defined
-below.
-
-Properties configuration files support the advertiser, monitorInterval,
-name, packages, shutdownHook, shutdownTimeout, status, verbose, and dest
-attributes. See link:#ConfigurationSyntax[Configuration Syntax] for the
-definitions of these attributes.
-
-[source,properties]
-----
-status = error
-dest = err
-name = PropertiesConfig
-
-property.filename = target/rolling/rollingtest.log
-
-filter.threshold.type = ThresholdFilter
-filter.threshold.level = debug
-
-appender.console.type = Console
-appender.console.name = STDOUT
-appender.console.layout.type = PatternLayout
-appender.console.layout.pattern = %m%n
-appender.console.filter.threshold.type = ThresholdFilter
-appender.console.filter.threshold.level = error
-
-appender.rolling.type = RollingFile
-appender.rolling.name = RollingFile
-appender.rolling.fileName = ${filename}
-appender.rolling.filePattern = target/rolling2/test1-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz
-appender.rolling.layout.type = PatternLayout
-appender.rolling.layout.pattern = %d %p %C{1.} [%t] %m%n
-appender.rolling.policies.type = Policies
-appender.rolling.policies.time.type = TimeBasedTriggeringPolicy
-appender.rolling.policies.time.interval = 2
-appender.rolling.policies.time.modulate = true
-appender.rolling.policies.size.type = SizeBasedTriggeringPolicy
-appender.rolling.policies.size.size=100MB
-appender.rolling.strategy.type = DefaultRolloverStrategy
-appender.rolling.strategy.max = 5
-
-logger.rolling.name = com.example.my.app
-logger.rolling.level = debug
-logger.rolling.additivity = false
-logger.rolling.appenderRef.rolling.ref = RollingFile
-
-rootLogger.level = info
-rootLogger.appenderRef.stdout.ref = STDOUT
-          
-----
-
 [#PropertySubstitution]
 == Property Substitution
 
@@ -1051,11 +1065,24 @@ originate from. To accommodate this, Log4j also supports the syntax
 `${prefix:name}` where the prefix identifies tells Log4j that variable
 name should be evaluated in a specific context. See the
 link:lookups.html[Lookups] manual page for more details. The contexts
-that are built in to Logj4 are:
+that are built in to Log4j are:
 
 [cols="1m,5"]
 |===
 |Prefix |Context
+
+              <tr>
+                <td>base64</td>
+                <td>
+                  Base64 encoded data. The format is <code>${dollar}{base64:Base64_encoded_data}</code>.
+                  For example:
+                  <code>${dollar}{base64:SGVsbG8gV29ybGQhCg==}</code> yields <code>Hello World!</code>.
+                </td>
+              </tr>
+
+|base64
+|Base64 encoded data. The format is `${base64:Base64_encoded_data}`.
+For example: `${base64:SGVsbG8gV29ybGQhCg==}` yields `Hello World!`.
 
 |bundle
 |Resource bundle. The format is `${bundle:BundleName:BundleKey}`.
@@ -1103,11 +1130,21 @@ elements from the Map.
 `${sys:some.property:-default_value}`.
 |===
 
-A default property map can be declared in the configuration file. If the
-value cannot be located in the specified lookup the value in the default
-property map will be used. The default map is pre-populated with a value
+[#DefaultProperties]
+== Default Properties
+A default property map can be declared in the configuration file by placing a Properties
+element directly after the Configuration element and before any Loggers, Filters,
+Appenders, etc. are declared. If the value cannot be located in the specified lookup the
+value in the default property map will be used. The default map is pre-populated with a value
 for "hostName" that is the current system's host name or IP address and
-the "contextName" with is the value of the current logging context.
+the "contextName" with is the value of the current logging context. See many places
+a Properties element is used in this section for examples.
+
+Default properties may also be specified in the Lookup by using the syntax `${lookupName:key:-defaultValue}`.
+In some cases the key might contain a leading '-'. When this is the case an escape character must be
+included, such as ``${main:\--file:-app.properties}`. This would use the
+`MainMapLookup` for a key named `--file`. If the key is not found then
+<code>app.properties</code> would be used as the default value.
 
 [#RuntimeLookup]
 == Lookup Variables with Multiple Leading '$' Characters
@@ -1361,10 +1398,11 @@ file that includes two other files:
 == Composite Configuration
 
 Log4j allows multiple configuration files to be used by specifying them
-as a list of comma separated file paths on log4j.configurationFile. The
-merge logic can be controlled by specifying a class that implements the
-MergeStrategy interface on the log4j.mergeStrategy property. The default
-merge strategy will merge the files using the following rules:
+as a list of comma separated file paths on log4j.configurationFile or,
+when using urls, by adding secondary configuration locations as query
+parameters named "override". The merge logic can be controlled by specifying
+a class that implements the MergeStrategy interface on the log4j.mergeStrategy
+property. The default merge strategy will merge the files using the following rules:
 
 1.  The global configuration attributes are aggregated with those in
 later configurations replacing those in previous configurations, with
@@ -1574,7 +1612,7 @@ public class AwesomeTest {
 
     @Test
     public void testSomeAwesomeFeature() {
-        final LoggerContext ctx = init.getContext();
+        final LoggerContext ctx = init.getLoggerContext();
         final Logger logger = init.getLogger("org.apache.logging.log4j.my.awesome.test.logger");
         final Configuration cfg = init.getConfiguration();
         final ListAppender app = init.getListAppender("List");
@@ -1651,7 +1689,9 @@ variable; and _Legacy Property Name_ for the pre-2.10 name.
 |LOG4J_CONFIGURATION_FILE
 | 
 |Path to an Log4j 2 configuration file. May
-also contain a comma separated list of configuration file names.
+also contain a comma separated list of configuration file names. May contain a URL.
+When specified as a URL the "override" query parameter may be used to specify additional
+configuration file locations.
 
 |[[debug]]log4j2.debug +
 ([[log4j2.debug]]log4j2.debug)
@@ -1661,9 +1701,9 @@ also contain a comma separated list of configuration file names.
 internal logging to the console if system property `log4j2.debug` is
 defined (with any or no value).
 
-|[[mergeFactory]]log4j2.mergeFactory +
-([[log4j.mergeFactory]]log4j.mergeFactory)
-|LOG4J_MERGE_FACTORY
+|[[mergeStrategy]]log4j2.mergeStrategy +
+([[log4j.mergeStrategy]]log4j.mergeStrategy)
+|LOG4J_MERGE_STRATEGY
 | 
 |The name of the class that implements the MergeStrategy interface. If not
 specified `DefaultMergeStrategy` will be used when creating a CompositeConfiguration.
@@ -2003,7 +2043,7 @@ details.
 |[[asyncLoggerRingBufferSize]]log4j2.asyncLoggerRingBufferSize +
 ([[AsyncLogger.RingBufferSize]]AsyncLogger.RingBufferSize)
 |LOG4J_ASYNC_LOGGER_RING_BUFFER_SIZE
-|256 * 1024
+|256 * 1024 or 4 * 1024 in garbage-free mode
 |See
 link:async.html#SysPropsAllAsync[Async Logger System Properties] for
 details.
@@ -2012,6 +2052,37 @@ details.
 ([[AsyncLogger.WaitStrategy]]AsyncLogger.WaitStrategy)
 |LOG4J_ASYNC_LOGGER_WAIT_STRATEGY
 |Timeout
+|See
+link:async.html#SysPropsAllAsync[Async Logger System Properties] for
+details.
+
+|[[asyncLoggerTimeout]]log4j2.asyncLoggerTimeout +
+([[AsyncLogger.Timeout]]AsyncLogger.Timeout)
+|LOG4J_ASYNC_LOGGER_TIMEOUT
+|10
+|See
+link:async.html#SysPropsAllAsync[Async Logger System Properties] for
+details.
+
+|[[asyncLoggerSleepTimeNs]]log4j2.asyncLoggerSleepTimeNs +
+([[AsyncLogger.SleepTimeNs]]AsyncLogger.SleepTimeNs)
+|LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS
+|100
+|See
+link:async.html#SysPropsAllAsync[Async Logger System Properties] for
+details.
+
+|[[asyncLoggerRetries]]log4j2.asyncLoggerRetries +
+([[AsyncLogger.Retries]]AsyncLogger.Retries)
+|LOG4J_ASYNC_LOGGER_RETRIES
+|200
+|See
+link:async.html#SysPropsAllAsync[Async Logger System Properties] for
+details.
+
+|[[AsyncLogger.SynchronizeEnqueueWhenQueueFull]]AsyncLogger.SynchronizeEnqueueWhenQueueFull
+|ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
+|true
 |See
 link:async.html#SysPropsAllAsync[Async Logger System Properties] for
 details.
@@ -2035,7 +2106,7 @@ System Properties] for details.
 |[[asyncLoggerConfigRingBufferSize]]log4j2.asyncLoggerConfigRingBufferSize +
 ([[AsyncLoggerConfig.RingBufferSize]]AsyncLoggerConfig.RingBufferSize)
 |LOG4J_ASYNC_LOGGER_CONFIG_RING_BUFFER_SIZE
-|256 * 1024
+|256 * 1024 or 4 * 1024 in garbage-free mode
 |See
 link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
 System Properties] for details.
@@ -2048,6 +2119,38 @@ System Properties] for details.
 link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
 System Properties] for details.
 
+|[[asyncLoggerConfigTimeout]]log4j2.asyncLoggerConfigTimeout +
+([[AsyncLoggerConfig.Timeout]]AsyncLoggerConfig.Timeout)
+|LOG4J_ASYNC_LOGGER_CONFIG_TIMEOUT
+|10
+|See
+link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
+System Properties] for details.
+
+|[[asyncLoggerConfigSleepTimeNs]]log4j2.asyncLoggerConfigSleepTimeNs +
+([[AsyncLoggerConfig.SleepTimeNs]]AsyncLoggerConfig.SleepTimeNs)
+|LOG4J_ASYNC_LOGGER_CONFIG_SLEEP_TIME_NS
+|100
+|See
+link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
+System Properties] for details.
+
+|[[asyncLoggerConfigRetries]]log4j2.asyncLoggerConfigRetries +
+([[AsyncLoggerConfig.Retries]]AsyncLoggerConfig.Retries)
+|LOG4J_ASYNC_LOGGER_CONFIG_RETRIES
+|200
+|See
+link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
+System Properties] for details.
+
+
+|[[AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull]]AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull
+|ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
+|true
+|See
+link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
+System Properties] for details.
+
 |[[julLoggerAdapter]]log4j2.julLoggerAdapter +
 ([[log4j.jul.LoggerAdapter]]log4j.jul.LoggerAdapter)
 |LOG4J_JUL_LOGGER_ADAPTER
@@ -2056,7 +2159,7 @@ System Properties] for details.
 |Default LoggerAdapter to use in the JUL adapter.
 By default, if log4j-core is available, then the class
 `org.apache.logging.log4j.jul .CoreLoggerAdapter` will be used.
-Otherwise, the `ApiLogggerAdapter` will be used. Custom implementations
+Otherwise, the `ApiLoggerAdapter` will be used. Custom implementations
 must provide a public default constructor.
 
 |[[formatMsgAsync]]log4j2.formatMsgAsync +
@@ -2197,4 +2300,84 @@ LoggerContext is started. For debug purposes.
 |Disables message
 pattern lookups globally when set to `true`. This is equivalent to
 defining all message patterns using `%m{nolookups}`.
+
+|[[trustStoreLocation]]log4j2.trustStoreLocation +
+([[log4j2.trustStoreLocation]]log4j2.trustStoreLocation)
+|LOG4J_TRUST_STORE_LOCATION
+|
+|The location of the trust store. If not provided the default trust store will be used.
+
+|[[trustStorePassword]]log4j2.trustStorePassword +
+([[log4j2.trustStorePassword]]log4j2.trustStorePassword)
+|LOG4J_TRUST_STORE_PASSWORD
+|
+|Password needed to access the trust store.
+
+|[[trustStorePasswordFile]]log4j2.trustStorePasswordFile +
+([[log4j2.trustStorePasswordFile]]log4j2.trustStorePasswordFile)
+|LOG4J_TRUST_STORE_PASSWORD_FILE
+|
+|The location of a file that contains the password for the trust store.
+
+|[[trustStorePasswordEnvironmentVariable]]log4j2.trustStorePasswordEnvironmentVariable +
+([[log4j2.trustStorePasswordEnvironmentVariable]]log4j2.trustStorePasswordEnvironmentVariable)
+|LOG4J_TRUST_STORE_PASSWORD_ENVIRONMENT_VARIABLE
+|
+|The name of the environment variable that contains the trust store password.
+
+|[[trustStoreType]]log4j2.trustStoreType +
+([[log4j2.trustStoreType]]log4j2.trustStoreType)
+|LOG4J_TRUST_STORE_TYPE
+|
+|The type of key store used for the trust store.
+
+|[[trustStoreKeyManagerFactoryAlgorithm]]log4j2.trustStoreKeyManagerFactoryAlgorithm +
+([[log4j2.trustStoreKeyManagerFactoryAlgorithm]]log4j2.trustStoreKeyStoreFactoryAlgorithm)
+|LOG4J_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM
+|
+|Java cryptographic algorithm.
+
+|[[keyStoreLocation]]log4j2.keyStoreLocation +
+([[log4j2.trustStoreLocation]]log4j2.trustStoreLocation)
+|LOG4J_KEY_STORE_LOCATION
+|
+|The location of the key store. If not provided the default key store will be used.
+
+|[[keyStorePassword]]log4j2.keyStorePassword +
+([[log4j2.keyStorePassword]]log4j2.keyStorePassword)
+|LOG4J_KEY_STORE_PASSWORD
+|
+|Password needed to access the trust store.
+
+|[[keyStorePasswordFile]]log4j2.keyStorePasswordFile +
+([[log4j2.keyStorePasswordFile]]log4j2.keyStorePasswordFile)
+|LOG4J_KEY_STORE_PASSWORD_FILE
+|
+|The location of a file that contains the password for the key store.
+
+|[[keyStorePasswordEnvironmentVariable]]log4j2.keyStorePasswordEnvironmentVariable +
+([[log4j2.keyStorePasswordEnvironmentVariable]]log4j2.keyStorePasswordEnvironmentVariable)
+|LOG4J_KEY_STORE_PASSWORD_ENVIRONMENT_VARIABLE
+|
+|The name of the environment variable that contains the key store password.
+
+|[[keyStoreType]]log4j2.keyStoreType +
+([[log4j2.keyStoreType]]log4j2.keyStoreType)
+|LOG4J_KEY_STORE_TYPE
+|
+|The type of key store used for the trust store.
+
+|[[keyStoreKeyManagerFactoryAlgorithm]]log4j2.keyStoreKeyManagerFactoryAlgorithm +
+([[log4j2.keyStoreKeyManagerFactoryAlgorithm]]log4j2.keyStoreKeyStoreFactoryAlgorithm)
+|LOG4J_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM
+|
+|Java cryptographic algorithm.
+
+
+|[[sslVerifyHostName]]log4j2.sslVerifyHostName +
+([[log4j2.sslVerifyHostName]]log4j2.sslVerifyHostName)
+|LOG4J_SSL_VERIFY_HOSTNAME
+|false
+|true or false if the host name should be verified
+
 |===

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -27,10 +28,10 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.CronScheduledFuture;
 import org.apache.logging.log4j.core.config.Scheduled;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.CronExpression;
 
 /**
@@ -70,6 +71,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
         aManager.getPatternProcessor().setCurrentFileTime(lastRegularRoll.getTime());
         LOGGER.debug("LastRollForFile {}, LastRegularRole {}", lastRollForFile, lastRegularRoll);
         aManager.getPatternProcessor().setPrevFileTime(lastRegularRoll.getTime());
+        aManager.getPatternProcessor().setTimeBased(true);
         if (checkOnStartup && lastRollForFile != null && lastRegularRoll != null &&
                 lastRollForFile.before(lastRegularRoll)) {
             lastRollDate = lastRollForFile;
@@ -118,8 +120,8 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
      */
     @PluginFactory
     public static CronTriggeringPolicy createPolicy(@PluginConfiguration final Configuration configuration,
-            @PluginAttribute("evaluateOnStartup") final String evaluateOnStartup,
-            @PluginAttribute("schedule") final String schedule) {
+            @PluginAttribute final String evaluateOnStartup,
+            @PluginAttribute final String schedule) {
         CronExpression cronExpression;
         final boolean checkOnStartup = Boolean.parseBoolean(evaluateOnStartup);
         if (schedule == null) {
@@ -145,10 +147,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     }
 
     private void rollover() {
-        manager.getPatternProcessor().setPrevFileTime(lastRollDate.getTime());
-        final Date thisRoll = cronExpression.getPrevFireTime(new Date());
-        manager.getPatternProcessor().setCurrentFileTime(thisRoll.getTime());
-        manager.rollover();
+		manager.rollover(cronExpression.getPrevFireTime(new Date()).getTime(), lastRollDate.getTime());
         if (future != null) {
             lastRollDate = future.getFireTime();
         }

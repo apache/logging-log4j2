@@ -24,11 +24,12 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
@@ -88,13 +89,23 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     public interface Serializer {
         String toSerializable(final LogEvent event);
+
+        default boolean requiresLocation() {
+            return false;
+        }
+
+        default StringBuilder toSerializable(final LogEvent event, final StringBuilder builder) {
+            builder.append(toSerializable(event));
+            return builder;
+        }
     }
 
     /**
      * Variation of {@link Serializer} that avoids allocating temporary objects.
+     * As of 2.13 this interface was merged into the Serializer interface.
      * @since 2.6
      */
-    public interface Serializer2 {
+    public interface Serializer2  {
         StringBuilder toSerializable(final LogEvent event, final StringBuilder builder);
     }
 
@@ -114,6 +125,10 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      * @return a {@code StringBuilder}
      */
     protected static StringBuilder getStringBuilder() {
+        if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-2368
+            // Recursive logging may clobber the cached StringBuilder.
+            return new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
+        }
         StringBuilder result = threadLocal.get();
         if (result == null) {
             result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
@@ -126,14 +141,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     // LOG4J2-1151: If the built-in JDK 8 encoders are available we should use them.
     private static boolean isPreJava8() {
-        final String version = System.getProperty("java.version");
-        final String[] parts = version.split("\\.");
-        try {
-            final int major = Integer.parseInt(parts[1]);
-            return major < 8;
-        } catch (final Exception ex) {
-            return true;
-        }
+        return org.apache.logging.log4j.util.Constants.JAVA_MAJOR_VERSION < 8;
     }
 
     private static int size(final String property, final int defaultValue) {
@@ -271,7 +279,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     protected byte[] serializeToBytes(final Serializer serializer, final byte[] defaultValue) {
         final String serializable = serializeToString(serializer);
-        if (serializer == null) {
+        if (serializable == null) {
             return defaultValue;
         }
         return StringEncoder.toBytes(serializable, getCharset());

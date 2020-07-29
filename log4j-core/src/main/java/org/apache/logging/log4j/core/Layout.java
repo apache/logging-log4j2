@@ -47,7 +47,7 @@ import org.apache.logging.log4j.core.layout.Encoder;
 public interface Layout<T extends Serializable> extends Encoder<LogEvent> {
 
     /**
-     * Main {@linkplain org.apache.logging.log4j.core.config.plugins.Plugin#elementType() plugin element type} for
+     * Main {@linkplain org.apache.logging.log4j.plugins.Plugin#elementType() plugin element type} for
      * Layout plugins.
      *
      * @since 2.1
@@ -96,4 +96,12 @@ public interface Layout<T extends Serializable> extends Encoder<LogEvent> {
      * format descriptors are specified.
      */
     Map<String, String> getContentFormat();
+
+    /**
+     * Indicates whether this Layout requires location information.
+     * @return returns true if the Layout requires location information.
+     */
+    default boolean requiresLocation() {
+        return false;
+    }
 }

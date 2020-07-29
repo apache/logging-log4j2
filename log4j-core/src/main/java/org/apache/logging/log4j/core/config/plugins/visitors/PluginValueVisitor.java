@@ -17,27 +17,21 @@
 
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
+import org.apache.logging.log4j.plugins.inject.AbstractConfigurationInjector;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * PluginVisitor implementation for {@link PluginValue}.
+ *  @deprecated Provided to support legacy plugins.
  */
-public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue> {
-    public PluginValueVisitor() {
-        super(PluginValue.class);
-    }
-
+// copy of PluginValueInjector
+public class PluginValueVisitor extends AbstractConfigurationInjector<PluginValue, Configuration> {
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
-            final StringBuilder log) {
-        final String name = this.annotation.value();
+    public void inject(final Object factory) {
         final String elementValue = node.getValue();
-        final String attributeValue = node.getAttributes().get("value");
+        final String attributeValue = node.getAttributes().get(name);
         String rawValue = null; // if neither is specified, return null (LOG4J2-1313)
         if (Strings.isNotEmpty(elementValue)) {
             if (Strings.isNotEmpty(attributeValue)) {
@@ -47,10 +41,10 @@ public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue> {
             }
             rawValue = elementValue;
         } else {
-            rawValue = removeAttributeValue(node.getAttributes(), "value");
+            rawValue = findAndRemoveNodeAttribute().orElse(null);
         }
-        final String value = this.substitutor.replace(event, rawValue);
-        StringBuilders.appendKeyDqValue(log, name, value);
-        return value;
+        final String value = stringSubstitutionStrategy.apply(rawValue);
+        StringBuilders.appendKeyDqValue(debugLog, name, value);
+        configurationBinder.bindString(factory, value);
     }
 }

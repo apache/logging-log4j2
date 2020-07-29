@@ -24,8 +24,8 @@ import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
+
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.util.FileUtils;
@@ -44,10 +44,10 @@ public class StatusConfiguration {
     private static final Level DEFAULT_STATUS = Level.ERROR;
     private static final Verbosity DEFAULT_VERBOSITY = Verbosity.QUIET;
 
-    private final Collection<String> errorMessages = Collections.synchronizedCollection(new LinkedList<String>());
+    private final Collection<String> errorMessages = new LinkedBlockingQueue<String>();
     private final StatusLogger logger = StatusLogger.getLogger();
 
-    private volatile boolean initialized = false;
+    private volatile boolean initialized;
 
     private PrintStream destination = DEFAULT_STREAM;
     private Level status = DEFAULT_STATUS;
@@ -94,7 +94,7 @@ public class StatusConfiguration {
      * @param destination where status log messages should be output.
      * @return {@code this}
      */
-    public StatusConfiguration withDestination(final String destination) {
+    public StatusConfiguration setDestination(final String destination) {
         try {
             this.destination = parseStreamName(destination);
         } catch (final URISyntaxException e) {
@@ -131,7 +131,7 @@ public class StatusConfiguration {
      * @return {@code this}
      * @see Level
      */
-    public StatusConfiguration withStatus(final String status) {
+    public StatusConfiguration setStatus(final String status) {
         this.status = Level.toLevel(status, null);
         if (this.status == null) {
             this.error("Invalid status level specified: " + status + ". Defaulting to ERROR.");
@@ -146,19 +146,19 @@ public class StatusConfiguration {
      * @param status logger level to filter below.
      * @return {@code this}
      */
-    public StatusConfiguration withStatus(final Level status) {
+    public StatusConfiguration setStatus(final Level status) {
         this.status = status;
         return this;
     }
 
     /**
      * Specifies the verbosity level to log at. This only applies to classes configured by
-     * {@link #withVerboseClasses(String...) verboseClasses}.
+     * {@link #setVerboseClasses(String...) verboseClasses}.
      *
      * @param verbosity basic filter for status logger messages.
      * @return {@code this}
      */
-    public StatusConfiguration withVerbosity(final String verbosity) {
+    public StatusConfiguration setVerbosity(final String verbosity) {
         this.verbosity = Verbosity.toVerbosity(verbosity);
         return this;
     }
@@ -169,7 +169,7 @@ public class StatusConfiguration {
      * @param verboseClasses names of classes to filter if not using VERBOSE.
      * @return {@code this}
      */
-    public StatusConfiguration withVerboseClasses(final String... verboseClasses) {
+    public StatusConfiguration setVerboseClasses(final String... verboseClasses) {
         this.verboseClasses = verboseClasses;
         return this;
     }

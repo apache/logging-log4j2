@@ -36,6 +36,12 @@
         <artifactId>log4j-api</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- Plugins -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-plugins</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Core Log4j -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -64,6 +70,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-layout-jackson-yaml</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- JSON template layout -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-layout-json-template</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Legacy Log4j 1.2 API -->
@@ -126,6 +138,18 @@
         <artifactId>log4j-slf4j-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- SLF4J 1.8.x Compatibility API -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j18-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- SLF4J Adapter -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-to-slf4j</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Web Application Support -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -186,7 +210,13 @@
         <artifactId>log4j-jul</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- java.util.logging adapter -->
+      <!-- Java System Platform Loggerr -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jpl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Liquibase adapter -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-liquibase</artifactId>
@@ -198,6 +228,30 @@
         <artifactId>log4j-smtp</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- Application Service Support -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-appserver</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Docker support -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-docker</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Kubernetes support -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-kubernetes</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Spring Cloud Config Client -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-spring-cloud-config-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
@@ -205,7 +259,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.7</version>
+        <version>3.7.1</version>
         <configuration>
           <skip>true</skip>
           <skipDeploy>true</skipDeploy>

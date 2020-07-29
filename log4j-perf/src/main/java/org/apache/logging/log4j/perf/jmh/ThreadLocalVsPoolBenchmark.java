@@ -17,14 +17,7 @@
 
 package org.apache.logging.log4j.perf.jmh;
 
-import java.nio.charset.Charset;
-import java.util.Deque;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedDeque;
-
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -34,14 +27,16 @@ import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.StringMap;
+import org.jctools.queues.MpmcArrayQueue;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
+import java.util.List;
+
 /**
- * Checks PatternLayout performance when reusing the StringBuilder in a ThreadLocal, an ObjectPool or when creating a
- * new instance for each log event.
+ * Checks {@link PatternFormatter} performance with various StringBuilder
+ * caching strategies: no-op, ThreadLocal, and JCTools MPMC queue.
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
 // (Quick build: mvn -DskipTests=true clean package -pl log4j-perf -am )
@@ -58,160 +53,159 @@ import org.openjdk.jmh.annotations.State;
 @State(Scope.Benchmark)
 public class ThreadLocalVsPoolBenchmark {
 
-    static final Charset CHARSET_DEFAULT = Charset.defaultCharset();
-    static final String LOG4JPATTERN = "%d %5p [%t] %c{1} %X{transactionId} - %m%n";
-    static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
+    private static final LogEvent LOG_EVENT = createLogEvent();
 
-    /**
-     * The LogEvent to serialize.
-     */
-    private final static LogEvent LOG4J2EVENT = createLog4j2Event();
+    private static final List<PatternFormatter> FORMATTERS = createFormatters();
 
-    /**
-     * Initial converter for pattern.
-     */
-    private final static PatternFormatter[] formatters = createFormatters();
-
-    private final StringBuilderPool pool = new StringBuilderPool(DEFAULT_STRING_BUILDER_SIZE);
-    private static ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
-
-    /**
-     */
-    private static PatternFormatter[] createFormatters() {
-        final Configuration config = new DefaultConfiguration();
-        final PatternParser parser = new PatternParser(config, "Converter", LogEventPatternConverter.class);
-        final List<PatternFormatter> result = parser.parse(LOG4JPATTERN, false, true);
-        return result.toArray(new PatternFormatter[result.size()]);
-    }
-
-    @Benchmark
-    public byte[] newInstance() {
-        return serializeWithNewInstance(LOG4J2EVENT).getBytes(CHARSET_DEFAULT);
-    }
-
-    @Benchmark
-    public byte[] threadLocal() {
-        return serializeWithThreadLocal(LOG4J2EVENT).getBytes(CHARSET_DEFAULT);
-    }
-
-    @Benchmark
-    public byte[] objectPool() {
-        return serializeWithPool(LOG4J2EVENT).getBytes(CHARSET_DEFAULT);
-    }
-
-    @Benchmark
-    public String _stringNewInstance() {
-        return serializeWithNewInstance(LOG4J2EVENT);
-    }
-
-    @Benchmark
-    public String _stringThreadLocal() {
-        return serializeWithThreadLocal(LOG4J2EVENT);
-    }
-
-    @Benchmark
-    public String _stringObjectPool() {
-        return serializeWithPool(LOG4J2EVENT);
-    }
-
-    private String serializeWithNewInstance(final LogEvent event) {
-        final StringBuilder buf = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-        return serialize(event, buf);
-    }
-
-    private String serializeWithThreadLocal(final LogEvent event) {
-        StringBuilder buf = threadLocal.get();
-        if (buf == null) {
-            buf = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-            threadLocal.set(buf);
-        }
-        buf.setLength(0);
-        return serialize(event, buf);
-    }
-
-    private String serializeWithPool(final LogEvent event) {
-        final StringBuilder buf = pool.borrowObject();
-        try {
-            buf.setLength(0);
-            return serialize(event, buf);
-        } finally {
-            pool.returnObject(buf);
-        }
-    }
-
-    private String serialize(final LogEvent event, final StringBuilder buf) {
-        final int len = formatters.length;
-        for (int i = 0; i < len; i++) {
-            formatters[i].format(event, buf);
-        }
-        return buf.toString();
-    }
-
-    private static LogEvent createLog4j2Event() {
-        final Marker marker = null;
-        final String fqcn = "com.mycom.myproject.mypackage.MyClass";
+    private static LogEvent createLogEvent() {
+        final String loggerName = "name(ignored)";
+        final String loggerFqcn = "com.mycom.myproject.mypackage.MyClass";
         final Level level = Level.DEBUG;
-        final String STR = "AB!(%087936DZYXQWEIOP$#^~-=/><nb"; // length=32
-        final Message message = new SimpleMessage(STR);
-        final Throwable t = null;
-        final StringMap mdc = null;
-        final ContextStack ndc = null;
-        final String threadName = null;
-        final StackTraceElement location = null;
+        final String messageString = "AB!(%087936DZYXQWEIOP$#^~-=/><nb"; // length=32
+        final Message message = new SimpleMessage(messageString);
         final long timestamp = 12345678;
-
-        return Log4jLogEvent.newBuilder() //
-                .setLoggerName("name(ignored)") //
-                .setMarker(marker) //
-                .setLoggerFqcn(fqcn) //
-                .setLevel(level) //
-                .setMessage(message) //
-                .setThrown(t) //
-                .setContextData(mdc) //
-                .setContextStack(ndc) //
-                .setThreadName(threadName) //
-                .setSource(location) //
-                .setTimeMillis(timestamp) //
+        return Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(loggerName)
+                .setLoggerFqcn(loggerFqcn)
+                .setLevel(level)
+                .setMessage(message)
+                .setTimeMillis(timestamp)
                 .build();
     }
-}
 
-/**
- * 
- */
-abstract class ObjectPool<T> {
-    private final Deque<T> pool = new ConcurrentLinkedDeque<>();
-
-    public T borrowObject() {
-        final T object = pool.poll();
-        return object == null ? createObject() : object;
+    private static List<PatternFormatter> createFormatters() {
+        final Configuration config = new DefaultConfiguration();
+        final PatternParser parser = new PatternParser(config, "Converter", LogEventPatternConverter.class);
+        return parser.parse("%d %5p [%t] %c{1} %X{transactionId} - %m%n", false, true);
     }
 
-    public void returnObject(final T object) {
-        pool.add(object);
+    private static abstract class StringBuilderPool {
+
+        abstract StringBuilder acquire();
+
+        abstract void release(StringBuilder stringBuilder);
+
+        StringBuilder createStringBuilder() {
+            return new StringBuilder(1024 * 32);
+        }
+
     }
 
-    protected abstract T createObject();
-}
+    private static final class AllocatePool extends StringBuilderPool {
 
-/**
- * 
- */
-class StringBuilderPool extends ObjectPool<StringBuilder> {
-    private final int initialSize;
+        private static final AllocatePool INSTANCE = new AllocatePool();
 
-    public StringBuilderPool(final int stringBuilderSize) {
-        this.initialSize = stringBuilderSize;
+        @Override
+        public StringBuilder acquire() {
+            return createStringBuilder();
+        }
+
+        @Override
+        public void release(final StringBuilder stringBuilder) {}
+
     }
 
-    @Override
-    public void returnObject(final StringBuilder stringBuilder) {
-        stringBuilder.setLength(0);
-        super.returnObject(stringBuilder);
+    private static final class ThreadLocalPool extends StringBuilderPool {
+
+        private static final ThreadLocalPool INSTANCE = new ThreadLocalPool();
+
+        private final ThreadLocal<StringBuilder> stringBuilderRef =
+                ThreadLocal.withInitial(this::createStringBuilder);
+
+        @Override
+        public StringBuilder acquire() {
+            return stringBuilderRef.get();
+        }
+
+        @Override
+        public void release(final StringBuilder stringBuilder) {
+            stringBuilder.setLength(0);
+        }
+
     }
 
-    @Override
-    protected StringBuilder createObject() {
-        return new StringBuilder(initialSize);
+    private static final class JcPool extends StringBuilderPool {
+
+        private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
+
+        private static final int MPMC_REQUIRED_MIN_CAPACITY = 2;
+
+        // Putting the under-provisioned instance to a wrapper class to prevent
+        // the initialization of JcPool itself when there are insufficient CPU
+        // cores.
+        private enum UnderProvisionedInstanceHolder {;
+
+            private static final JcPool INSTANCE = createInstance();
+
+            private static JcPool createInstance() {
+                if (CPU_COUNT <= MPMC_REQUIRED_MIN_CAPACITY) {
+                    throw new IllegalArgumentException("insufficient CPU cores");
+                }
+                return new JcPool(MPMC_REQUIRED_MIN_CAPACITY);
+            }
+
+        }
+
+        private static final JcPool RIGHT_PROVISIONED_INSTANCE =
+                new JcPool(Math.max(MPMC_REQUIRED_MIN_CAPACITY, CPU_COUNT));
+
+        private final MpmcArrayQueue<StringBuilder> stringBuilders;
+
+        private JcPool(final int capacity) {
+            this.stringBuilders = new MpmcArrayQueue<>(capacity);
+        }
+
+        @Override
+        public StringBuilder acquire() {
+            final StringBuilder stringBuilder = stringBuilders.poll();
+            return stringBuilder != null
+                    ? stringBuilder
+                    : createStringBuilder();
+        }
+
+        @Override
+        public void release(final StringBuilder stringBuilder) {
+            stringBuilder.setLength(0);
+            stringBuilders.offer(stringBuilder);
+        }
+
     }
+
+    @Benchmark
+    public int allocate() {
+        return findSerializedLength(AllocatePool.INSTANCE);
+    }
+
+    @Benchmark
+    public int threadLocal() {
+        return findSerializedLength(ThreadLocalPool.INSTANCE);
+    }
+
+    @Benchmark
+    public int rightProvedJc() {
+        return findSerializedLength(JcPool.RIGHT_PROVISIONED_INSTANCE);
+    }
+
+    @Benchmark
+    public int underProvedJc() {
+        return findSerializedLength(JcPool.UnderProvisionedInstanceHolder.INSTANCE);
+    }
+
+    private int findSerializedLength(final StringBuilderPool pool) {
+        final StringBuilder stringBuilder = pool.acquire();
+        serialize(stringBuilder);
+        final int length = stringBuilder.length();
+        pool.release(stringBuilder);
+        return length;
+    }
+
+    private void serialize(final StringBuilder stringBuilder) {
+        // noinspection ForLoopReplaceableByForEach (avoid iterator instantiation)
+        for (int formatterIndex = 0; formatterIndex < FORMATTERS.size(); formatterIndex++) {
+            PatternFormatter formatter = FORMATTERS.get(formatterIndex);
+            formatter.format(LOG_EVENT, stringBuilder);
+        }
+    }
+
 }

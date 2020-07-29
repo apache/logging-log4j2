@@ -16,22 +16,22 @@
  */
 package org.apache.logging.log4j.jackson.xml.layout;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
+import org.apache.logging.log4j.jackson.XmlConstants;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
-import org.apache.logging.log4j.jackson.XmlConstants;
-
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
  * Appends a series of {@code event} elements as defined in the <a href="log4j.dtd">log4j.dtd</a>.
@@ -67,7 +67,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 public final class XmlLayout extends AbstractJacksonLayout {
 
     public static class Builder<B extends Builder<B>> extends AbstractJacksonLayout.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<XmlLayout> {
+            implements org.apache.logging.log4j.plugins.util.Builder<XmlLayout> {
 
         public Builder() {
             super();
@@ -78,15 +78,22 @@ public final class XmlLayout extends AbstractJacksonLayout {
         public XmlLayout build() {
             return new XmlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(), isCompact(),
                     getCharset(), isIncludeStacktrace(), isStacktraceAsString(), isIncludeNullDelimiter(),
-                    getAdditionalFields());
+                    isIncludeNullDelimiter(), getAdditionalFields());
         }
     }
 
     @JacksonXmlRootElement(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_EVENT)
     public static class XmlLogEventWithAdditionalFields extends LogEventWithAdditionalFields {
 
-        public XmlLogEventWithAdditionalFields(final Object logEvent, final Map<String, String> additionalFields) {
+        public XmlLogEventWithAdditionalFields(final LogEvent logEvent, final Map<String, String> additionalFields) {
             super(logEvent, additionalFields);
+
+        }
+
+        @Override
+        @JsonSerialize(as = LogEvent.class)
+        public LogEvent getLogEvent() {
+            return super.getLogEvent();
         }
 
     }
@@ -99,56 +106,21 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * @return an XML Layout.
      */
     public static XmlLayout createDefaultLayout() {
-        return new XmlLayout(null, false, false, false, false, StandardCharsets.UTF_8, true, false, false, null);
+        return new XmlLayout(null, false, false, false, false, StandardCharsets.UTF_8, true, false, false, false, null);
     }
 
-    /**
-     * Creates an XML Layout.
-     *
-     * @param locationInfo
-     *            If "true", includes the location information in the generated XML.
-     * @param properties
-     *            If "true", includes the thread context map in the generated XML.
-     * @param complete
-     *            If "true", includes the XML header and footer, defaults to "false".
-     * @param compact
-     *            If "true", does not use end-of-lines and indentation, defaults to "false".
-     * @param charset
-     *            The character set to use, if {@code null}, uses "UTF-8".
-     * @param includeStacktrace
-     *            If "true", includes the stacktrace of any Throwable in the generated XML, defaults to "true".
-     * @return An XML Layout.
-     *
-     * @deprecated Use {@link #newBuilder()} instead
-     */
-    @Deprecated
-    public static XmlLayout createLayout(final boolean locationInfo, final boolean properties, final boolean complete,
-            final boolean compact, final Charset charset, final boolean includeStacktrace) {
-        return new XmlLayout(null, locationInfo, properties, complete, compact, charset, includeStacktrace, false,
-                false, null);
-    }
-
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
 
-    /**
-     * @deprecated Use {@link #newBuilder()} instead
-     */
-    @Deprecated
-    protected XmlLayout(final boolean locationInfo, final boolean properties, final boolean complete,
-            final boolean compact, final Charset charset, final boolean includeStacktrace) {
-        this(null, locationInfo, properties, complete, compact, charset, includeStacktrace, false, false, null);
-    }
-
     private XmlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
             final boolean complete, final boolean compact, final Charset charset, final boolean includeStacktrace,
-            final boolean stacktraceAsString, final boolean includeNullDelimiter,
+            final boolean stacktraceAsString, final boolean includeNullDelimiter, final boolean includeTimeMillis,
             final KeyValuePair[] additionalFields) {
         super(config,
                 new XmlJacksonFactory(includeStacktrace, stacktraceAsString).newWriter(locationInfo, properties,
-                        compact),
+                        compact, includeTimeMillis),
                 charset, compact, complete, false, null, null, includeNullDelimiter, additionalFields);
     }
 

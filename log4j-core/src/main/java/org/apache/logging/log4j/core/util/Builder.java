@@ -30,6 +30,7 @@ package org.apache.logging.log4j.core.util;
  * </p>
  *
  * @param <T> This builder creates instances of this class.
+ * @deprecated Present only for compatibility with Log4j 2 2.x plugins. Use Builder from log4j-plugins.
  */
 public interface Builder<T> {
 

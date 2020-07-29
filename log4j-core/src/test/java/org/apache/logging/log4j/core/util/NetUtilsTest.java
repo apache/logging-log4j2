@@ -32,7 +32,7 @@ public class NetUtilsTest {
     private static final boolean IS_WINDOWS = PropertiesUtil.getProperties().isOsWindows();
 
     @Test
-    public void testToUriWithoutBackslashes() throws URISyntaxException {
+    public void testToUriWithoutBackslashes() {
         final String config = "file:///path/to/something/on/unix";
         final URI uri = NetUtils.toURI(config);
 
@@ -41,7 +41,7 @@ public class NetUtilsTest {
     }
 
     @Test
-    public void testToUriWindowsWithBackslashes() throws URISyntaxException {
+    public void testToUriWindowsWithBackslashes() {
         Assume.assumeTrue(IS_WINDOWS);
         final String config = "file:///D:\\path\\to\\something/on/windows";
         final URI uri = NetUtils.toURI(config);
@@ -51,7 +51,7 @@ public class NetUtilsTest {
     }
 
     @Test
-    public void testToUriWindowsAbsolutePath() throws URISyntaxException {
+    public void testToUriWindowsAbsolutePath() {
         Assume.assumeTrue(IS_WINDOWS);
         final String config = "D:\\path\\to\\something\\on\\windows";
         final URI uri = NetUtils.toURI(config);

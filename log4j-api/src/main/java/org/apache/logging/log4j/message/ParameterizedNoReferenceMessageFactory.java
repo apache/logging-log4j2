@@ -18,9 +18,10 @@ package org.apache.logging.log4j.message;
 
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.io.Serializable;
+
 /**
- * Creates {@link FormattedMessage} instances for {@link MessageFactory2} methods (and {@link MessageFactory} by
- * extension.)
+ * Creates {@link FormattedMessage} instances for {@link MessageFactory} methods.
  * <p>
  * Creates {@link SimpleMessage} objects that do not retain a reference to the parameter object.
  * </p>
@@ -31,13 +32,14 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <p>
  * This class is immutable.
  * </p>
+ * <h3></h3>
  * <h4>Note to implementors</h4>
  * <p>
- * This class does <em>not</em> implement any {@link MessageFactory2} methods and lets the superclass funnel those calls
+ * This class does <em>not</em> implement any {@link MessageFactory} methods and lets the superclass funnel those calls
  * through {@link #newMessage(String, Object...)}.
  * </p>
  */
-public final class ParameterizedNoReferenceMessageFactory extends AbstractMessageFactory {
+public final class ParameterizedNoReferenceMessageFactory implements MessageFactory, Serializable {
     private static final long serialVersionUID = 5027639245636870500L;
 
     /**

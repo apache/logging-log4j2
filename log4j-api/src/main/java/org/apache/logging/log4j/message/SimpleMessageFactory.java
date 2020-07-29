@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.Serializable;
+
 /**
- * Creates {@link FormattedMessage} instances for {@link MessageFactory2} methods (and {@link MessageFactory} by
- * extension.)
+ * Creates {@link FormattedMessage} instances for {@link MessageFactory} methods.
  * <p>
  * This uses is the simplest possible implementation of {@link Message}, the where you give the message to the
  * constructor argument as a String.
@@ -29,15 +30,16 @@ package org.apache.logging.log4j.message;
  * <p>
  * This class is immutable.
  * </p>
- * 
+ *
+ * <h3></h3>
  * <h4>Note to implementors</h4>
  * <p>
- * This class implements all {@link MessageFactory2} methods.
+ * This class implements all {@link MessageFactory} methods.
  * </p>
  * 
  * @since 2.5
  */
-public final class SimpleMessageFactory extends AbstractMessageFactory {
+public final class SimpleMessageFactory implements MessageFactory, Serializable {
 
     /**
      * Instance of StringFormatterMessageFactory.

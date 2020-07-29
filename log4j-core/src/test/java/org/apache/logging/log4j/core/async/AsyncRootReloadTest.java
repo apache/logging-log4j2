@@ -51,7 +51,7 @@ public class AsyncRootReloadTest {
         final File configFile = FileUtils.fileFromUri(url.toURI());
 
         final Logger logger = LogManager.getLogger(AsyncRootReloadTest.class);
-        logger.info("Log4j configured, will be reconfigured in aprox. 5 sec");
+        logger.info("Log4j configured, will be reconfigured in approx. 5 sec");
 
         configFile.setLastModified(System.currentTimeMillis());
 

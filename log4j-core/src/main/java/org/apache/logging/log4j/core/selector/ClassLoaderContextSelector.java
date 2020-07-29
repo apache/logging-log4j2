@@ -25,10 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
@@ -43,7 +45,7 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
  *
  * This ContextSelector should not be used with a Servlet Filter such as the Log4jServletFilter.
  */
-public class ClassLoaderContextSelector implements ContextSelector {
+public class ClassLoaderContextSelector implements ContextSelector, LoggerContextShutdownAware {
 
     private static final AtomicReference<LoggerContext> DEFAULT_CONTEXT = new AtomicReference<>();
 
@@ -51,6 +53,64 @@ public class ClassLoaderContextSelector implements ContextSelector {
 
     protected static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> CONTEXT_MAP =
             new ConcurrentHashMap<>();
+
+    @Override
+    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext,
+                         final boolean allContexts) {
+        LoggerContext ctx = null;
+        if (currentContext) {
+            ctx = ContextAnchor.THREAD_CONTEXT.get();
+        } else if (loader != null) {
+            ctx = findContext(loader);
+        } else {
+            final Class<?> clazz = StackLocatorUtil.getCallerClass(fqcn);
+            if (clazz != null) {
+                ctx = findContext(clazz.getClassLoader());
+            }
+            if (ctx == null) {
+                ctx = ContextAnchor.THREAD_CONTEXT.get();
+            }
+        }
+        if (ctx != null) {
+            ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    @Override
+    public void contextShutdown(org.apache.logging.log4j.spi.LoggerContext loggerContext) {
+        if (loggerContext instanceof LoggerContext) {
+            removeContext((LoggerContext) loggerContext);
+        }
+    }
+
+    @Override
+    public boolean hasContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+        LoggerContext ctx;
+        if (currentContext) {
+            ctx = ContextAnchor.THREAD_CONTEXT.get();
+        } else if (loader != null) {
+            ctx = findContext(loader);
+        } else {
+            final Class<?> clazz = StackLocatorUtil.getCallerClass(fqcn);
+            if (clazz != null) {
+                ctx = findContext(clazz.getClassLoader());
+            } else {
+                ctx = ContextAnchor.THREAD_CONTEXT.get();
+            }
+        }
+        return ctx != null && ctx.isStarted();
+    }
+
+    private LoggerContext findContext(ClassLoader loaderOrNull) {
+        final ClassLoader loader = loaderOrNull != null ? loaderOrNull : ClassLoader.getSystemClassLoader();
+        final String name = toContextMapKey(loader);
+        AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        if (ref != null) {
+            final WeakReference<LoggerContext> weakRef = ref.get();
+            return weakRef.get();
+        }
+        return null;
+    }
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
@@ -143,11 +203,12 @@ public class ClassLoaderContextSelector implements ContextSelector {
                 }
             }
             LoggerContext ctx = createContext(name, configLocation);
-            final AtomicReference<WeakReference<LoggerContext>> r = new AtomicReference<>();
-            r.set(new WeakReference<>(ctx));
-            CONTEXT_MAP.putIfAbsent(name, r);
-            ctx = CONTEXT_MAP.get(name).get().get();
-            return ctx;
+            LoggerContext newContext = CONTEXT_MAP.computeIfAbsent(name,
+                    k -> new AtomicReference<>(new WeakReference<>(ctx))).get().get();
+            if (newContext != null && newContext == ctx) {
+                newContext.addShutdownListener(this);
+            }
+            return newContext;
         }
         final WeakReference<LoggerContext> weakRef = ref.get();
         LoggerContext ctx = weakRef.get();
@@ -163,7 +224,9 @@ public class ClassLoaderContextSelector implements ContextSelector {
             return ctx;
         }
         ctx = createContext(name, configLocation);
-        ref.compareAndSet(weakRef, new WeakReference<>(ctx));
+        if (ref.compareAndSet(weakRef, new WeakReference<>(ctx))) {
+            ctx.addShutdownListener(this);
+        }
         return ctx;
     }
 

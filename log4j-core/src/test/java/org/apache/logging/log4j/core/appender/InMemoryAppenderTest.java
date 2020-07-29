@@ -37,25 +37,25 @@ public class InMemoryAppenderTest {
     public void testAppender() {
         final Layout<String> layout = PatternLayout.createDefaultLayout();
         final boolean writeHeader = true;
-        final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader);
+        final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader, null);
         final String expectedHeader = null;
         assertMessage("Test", app, expectedHeader);
     }
 
     @Test
     public void testHeaderRequested() {
-        final PatternLayout layout = PatternLayout.newBuilder().withHeader("HEADERHEADER").build();
+        final PatternLayout layout = PatternLayout.newBuilder().setHeader("HEADERHEADER").build();
         final boolean writeHeader = true;
-        final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader);
+        final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader, null);
         final String expectedHeader = "HEADERHEADER";
         assertMessage("Test", app, expectedHeader);
     }
 
     @Test
     public void testHeaderSuppressed() {
-        final PatternLayout layout = PatternLayout.newBuilder().withHeader("HEADERHEADER").build();
+        final PatternLayout layout = PatternLayout.newBuilder().setHeader("HEADERHEADER").build();
         final boolean writeHeader = false;
-        final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader);
+        final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader, null);
         final String expectedHeader = null;
         assertMessage("Test", app, expectedHeader);
     }

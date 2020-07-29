@@ -21,10 +21,10 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -36,7 +36,6 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @PerformanceSensitive("allocation")
 public final class MarkerFilter extends AbstractFilter {
 
-    public static final String ATTR_MARKER = "marker";
     private final String name;
 
     private MarkerFilter(final String name, final Result onMatch, final Result onMismatch) {
@@ -148,22 +147,22 @@ public final class MarkerFilter extends AbstractFilter {
     /**
      * Creates the MarkerFilter.
      * @param marker The Marker name to match.
-     * @param match The action to take if a match occurs.
-     * @param mismatch The action to take if no match occurs.
+     * @param onMatch The action to take if a match occurs.
+     * @param onMismatch The action to take if no match occurs.
      * @return A MarkerFilter.
      */
     // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static MarkerFilter createFilter(
-            @PluginAttribute(ATTR_MARKER) final String marker,
-            @PluginAttribute(AbstractFilterBuilder.ATTR_ON_MATCH) final Result match,
-            @PluginAttribute(AbstractFilterBuilder.ATTR_ON_MISMATCH) final Result mismatch) {
+            @PluginAttribute final String marker,
+            @PluginAttribute final Result onMatch,
+            @PluginAttribute final Result onMismatch) {
 
         if (marker == null) {
             LOGGER.error("A marker must be provided for MarkerFilter");
             return null;
         }
-        return new MarkerFilter(marker, match, mismatch);
+        return new MarkerFilter(marker, onMatch, onMismatch);
     }
 
 }

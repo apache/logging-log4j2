@@ -27,12 +27,13 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
 /**
  * This Appender allows the logging event to be manipulated before it is processed by other Appenders.
@@ -47,8 +48,8 @@ public final class RewriteAppender extends AbstractAppender {
 
     private RewriteAppender(final String name, final Filter filter, final boolean ignoreExceptions,
                             final AppenderRef[] appenderRefs, final RewritePolicy rewritePolicy,
-                            final Configuration config) {
-        super(name, filter, null, ignoreExceptions);
+                            final Configuration config, Property[] properties) {
+        super(name, filter, null, ignoreExceptions, properties);
         this.config = config;
         this.rewritePolicy = rewritePolicy;
         this.appenderRefs = appenderRefs;
@@ -97,22 +98,12 @@ public final class RewriteAppender extends AbstractAppender {
      */
     @PluginFactory
     public static RewriteAppender createAppender(
-            @PluginAttribute("name") final String name,
-            @PluginAttribute("ignoreExceptions") final String ignore,
-            @PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
+            @PluginAttribute @Required(message = "No name provided for RewriteAppender") final String name,
+            @PluginAttribute(defaultBoolean = true) final boolean ignoreExceptions,
+            @PluginElement @Required(message = "No appender references defined for RewriteAppender") final AppenderRef[] appenderRefs,
             @PluginConfiguration final Configuration config,
-            @PluginElement("RewritePolicy") final RewritePolicy rewritePolicy,
-            @PluginElement("Filter") final Filter filter) {
-
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        if (name == null) {
-            LOGGER.error("No name provided for RewriteAppender");
-            return null;
-        }
-        if (appenderRefs == null) {
-            LOGGER.error("No appender references defined for RewriteAppender");
-            return null;
-        }
-        return new RewriteAppender(name, filter, ignoreExceptions, appenderRefs, rewritePolicy, config);
+            @PluginElement final RewritePolicy rewritePolicy,
+            @PluginElement final Filter filter) {
+        return new RewriteAppender(name, filter, ignoreExceptions, appenderRefs, rewritePolicy, config, Property.EMPTY_ARRAY);
     }
 }

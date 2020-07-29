@@ -22,6 +22,7 @@ import java.util.HashMap;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.Test;
 
@@ -55,7 +56,7 @@ public class MapLookupTest {
 
     @Test
     public void testMainMap() {
-        MapLookup.setMainArguments(new String[] {
+        MainMapLookup.setMainArguments(new String[] {
                 "--file",
                 "foo.txt" });
         final MapLookup lookup = MainMapLookup.MAIN_SINGLETON;
@@ -68,7 +69,7 @@ public class MapLookupTest {
     }
 
     @Test
-    public void testEventMapMessage() {
+    public void testEventStringMapMessage() {
       final HashMap<String, String> map = new HashMap<>();
       map.put("A", "B");
       final HashMap<String, String> eventMap = new HashMap<>();
@@ -80,6 +81,35 @@ public class MapLookupTest {
       final MapLookup lookup = new MapLookup(map);
       assertEquals("B", lookup.lookup(event, "A"));
       assertEquals("B1", lookup.lookup(event, "A1"));
+    }
+
+    @Test
+    public void testEventMapMessage() {
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("A", "B");
+        final HashMap<String, Object> eventMap = new HashMap<>();
+        eventMap.put("A1", 11);
+        final MapMessage message = new MapMessage<>(eventMap);
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(message)
+                .build();
+        final MapLookup lookup = new MapLookup(map);
+        assertEquals("B", lookup.lookup(event, "A"));
+        assertEquals("11", lookup.lookup(event, "A1"));
+    }
+
+    @Test
+    public void testLookupDefaultMapIsCheckedBeforeMapMessage() {
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("A", "ADefault");
+        final HashMap<String, Object> eventMap = new HashMap<>();
+        eventMap.put("A", "AEvent");
+        final MapMessage message = new MapMessage<>(eventMap);
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(message)
+                .build();
+        final MapLookup lookup = new MapLookup(map);
+        assertEquals("ADefault", lookup.lookup(event, "A"));
     }
 
     @Test

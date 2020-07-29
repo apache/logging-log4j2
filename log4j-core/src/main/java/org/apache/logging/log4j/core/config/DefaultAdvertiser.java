@@ -18,8 +18,9 @@ package org.apache.logging.log4j.core.config;
 
 import java.util.Map;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.net.Advertiser;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * The default advertiser does not do anything.

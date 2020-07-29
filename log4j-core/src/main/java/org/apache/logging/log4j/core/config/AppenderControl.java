@@ -46,7 +46,7 @@ public class AppenderControl extends AbstractFilterable {
      * @param filter the Filter(s) to apply.
      */
     public AppenderControl(final Appender appender, final Level level, final Filter filter) {
-        super(filter);
+        super(filter, null);
         this.appender = appender;
         this.appenderName = appender.getName();
         this.level = level;
@@ -155,14 +155,14 @@ public class AppenderControl extends AbstractFilterable {
         try {
             appender.append(event);
         } catch (final RuntimeException ex) {
-            handleAppenderError(ex);
+            handleAppenderError(event, ex);
         } catch (final Exception ex) {
-            handleAppenderError(new AppenderLoggingException(ex));
+            handleAppenderError(event, new AppenderLoggingException(ex));
         }
     }
 
-    private void handleAppenderError(final RuntimeException ex) {
-        appender.getHandler().error(createErrorMsg("An exception occurred processing Appender "), ex);
+    private void handleAppenderError(final LogEvent event, final RuntimeException ex) {
+        appender.getHandler().error(createErrorMsg("An exception occurred processing Appender "), event, ex);
         if (!appender.ignoreExceptions()) {
             throw ex;
         }

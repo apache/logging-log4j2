@@ -23,6 +23,7 @@ import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 
 import org.apache.logging.log4j.core.net.Facility;
+import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
@@ -31,6 +32,7 @@ import org.apache.logging.log4j.core.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.net.ssl.TlsSyslogMessageFormat;
 import org.apache.logging.log4j.core.net.ssl.TlsSyslogTestUtil;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
+import org.apache.logging.log4j.util.EnglishEnums;
 import org.junit.Test;
 
 public class TlsSyslogAppenderTest extends SyslogAppenderTest {
@@ -92,10 +94,43 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
         } else {
             format = "RFC5424";
         }
+        final SslConfiguration sslConfiguration1 = sslConfiguration;
+        final boolean newLine = includeNewLine;
+        final String format1 = format;
 
-        return SyslogAppender.createAppender("localhost", PORTNUM, "SSL", sslConfiguration, 0, -1, true, "Test", true,
-            false, Facility.LOCAL0, "Audit", 18060, true, "RequestContext", null, null, includeNewLine, null,
-            "TestApp", "Test", null, "ipAddress,loginId", null, format, null, null, null, null, null, false);
+        // @formatter:off
+        return SyslogAppender.newSyslogAppenderBuilder()
+                .setHost("localhost")
+                .setPort(PORTNUM)
+                .setProtocol(EnglishEnums.valueOf(Protocol.class, "SSL"))
+                .setSslConfiguration(sslConfiguration1)
+                .setConnectTimeoutMillis(0)
+                .setReconnectDelayMillis(-1)
+                .setImmediateFail(true)
+                .setName("TestApp")
+                .setImmediateFlush(true)
+                .setIgnoreExceptions(false).setFilter(null)
+                .setConfiguration(null)
+                .setAdvertise(false)
+                .setFacility(Facility.LOCAL0)
+                .setId("Audit")
+                .setEnterpriseNumber(18060)
+                .setIncludeMdc(true)
+                .setMdcId("RequestContext")
+                .setMdcPrefix(null)
+                .setEventPrefix(null)
+                .setNewLine(newLine)
+                .setAppName("TestApp")
+                .setMsgId("Test")
+                .setExcludes(null)
+                .setIncludeMdc(true)
+                .setRequired(null)
+                .setFormat(format1)
+                .setCharsetName(null)
+                .setExceptionPattern(null)
+                .setLoggerFields(null)
+                .build();
+        // @formatter:on
     }
 
     private void initTlsTestEnvironment(final int numberOfMessages, final TlsSyslogMessageFormat messageFormat) throws IOException {

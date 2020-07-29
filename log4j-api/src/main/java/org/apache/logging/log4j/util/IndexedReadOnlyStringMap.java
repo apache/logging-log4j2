@@ -44,6 +44,7 @@ public interface IndexedReadOnlyStringMap extends ReadOnlyStringMap {
      * or {@code null} if the specified index is less than zero or greater or equal to the size of this collection.
      *
      * @param index the index of the value to return
+     * @param <V> The type of the returned value.
      * @return the value at the specified index or {@code null}
      */
     <V> V getValueAt(final int index);

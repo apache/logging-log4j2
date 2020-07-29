@@ -46,6 +46,8 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
+    public static final Pattern PATTERN_COUNTER= Pattern.compile(".*%((?<ZEROPAD>0)?(?<PADDING>\\d+))?i.*");
+
     protected final StrSubstitutor strSubstitutor;
 
     protected AbstractRolloverStrategy(final StrSubstitutor strSubstitutor) {
@@ -89,14 +91,16 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         final StringBuilder buf = new StringBuilder();
         final String pattern = manager.getPatternProcessor().getPattern();
         manager.getPatternProcessor().formatFileName(strSubstitutor, buf, NotANumber.NAN);
-        return getEligibleFiles(buf.toString(), pattern, isAscending);
+        final String fileName = manager.isDirectWrite() ? "" : manager.getFileName();
+        return getEligibleFiles(fileName, buf.toString(), pattern, isAscending);
     }
 
     protected SortedMap<Integer, Path> getEligibleFiles(final String path, final String pattern) {
-        return getEligibleFiles(path, pattern, true);
+        return getEligibleFiles("", path, pattern, true);
     }
 
-    protected SortedMap<Integer, Path> getEligibleFiles(final String path, final String logfilePattern, final boolean isAscending) {
+    protected SortedMap<Integer, Path> getEligibleFiles(final String currentFile, final String path,
+            final String logfilePattern, final boolean isAscending) {
         final TreeMap<Integer, Path> eligibleFiles = new TreeMap<>();
         final File file = new File(path);
         File parent = file.getParentFile();
@@ -105,7 +109,7 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         } else {
             parent.mkdirs();
         }
-        if (!logfilePattern.contains("%i")) {
+        if (!PATTERN_COUNTER.matcher(logfilePattern).matches()) {
             return eligibleFiles;
         }
         final Path dir = parent.toPath();
@@ -114,15 +118,22 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         if (suffixLength > 0) {
             fileName = fileName.substring(0, fileName.length() - suffixLength) + ".*";
         }
-        final String filePattern = fileName.replace(NotANumber.VALUE, "(\\d+)");
+        final String filePattern = fileName.replaceFirst("0?\\u0000", "(0?\\\\d+)");
         final Pattern pattern = Pattern.compile(filePattern);
+        final Path current = currentFile.length() > 0 ? new File(currentFile).toPath() : null;
+        LOGGER.debug("Current file: {}", currentFile);
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
             for (final Path entry: stream) {
                 final Matcher matcher = pattern.matcher(entry.toFile().getName());
-                if (matcher.matches()) {
-                    final Integer index = Integer.parseInt(matcher.group(1));
-                    eligibleFiles.put(index, entry);
+                if (matcher.matches() && !entry.equals(current)) {
+                    try {
+                        final Integer index = Integer.parseInt(matcher.group(1));
+                        eligibleFiles.put(index, entry);
+                    } catch (NumberFormatException ex) {
+                        LOGGER.debug("Ignoring file {} which matches pattern but the index is invalid.",
+                                entry.toFile().getName());
+                    }
                 }
             }
         } catch (final IOException ioe) {

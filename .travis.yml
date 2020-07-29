@@ -11,20 +11,9 @@
 #   limitations under the License.
 
 language: java
-# sudo enabled because sudo vms have more memory: https://docs.travis-ci.com/user/reference/overview/
-sudo: true
-# trusty required for oraclejdk9
-dist: trusty
-
+dist: xenial
 jdk:
-  - oraclejdk8
-
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
-      - oracle-java9-installer
-      - maven
+  - openjdk8
 
 env:
   global:
@@ -36,11 +25,10 @@ cache:
 before_cache:
   - rm -rf $HOME/.m2/repository/org/apache/logging/log4j
 
-install:
-  - mvn -t .travis-toolchains.xml install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+install: skip
 
 script:
-  - mvn -t .travis-toolchains.xml test -B -V
+  - mvn -t .travis-toolchains.xml install -B -V
 
 after_success:
   - mvn -t .travis-toolchains.xml -pl !log4j-bom jacoco:prepare-agent test jacoco:report coveralls:report -B -V

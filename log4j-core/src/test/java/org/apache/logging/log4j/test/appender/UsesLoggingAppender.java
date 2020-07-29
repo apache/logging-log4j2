@@ -22,11 +22,12 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.test.SomethingThatUsesLogging;
 
 /**
@@ -38,16 +39,16 @@ public final class UsesLoggingAppender extends AbstractAppender {
     private final SomethingThatUsesLogging thing;
 
     private UsesLoggingAppender(final String name, final Filter filter, final Layout<?> layout, final boolean ignoreExceptions) {
-        super(name, filter, layout, ignoreExceptions);
+        super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
         thing = new SomethingThatUsesLogging();
     }
 
     @PluginFactory
     public static UsesLoggingAppender createAppender(
-        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name,
+        @PluginAttribute @Required(message = "A name for the Appender must be specified") final String name,
         @PluginAttribute("ignoreExceptions") final boolean ignore,
-        @PluginElement("Layout") final Layout<?> layout,
-        @PluginElement("Filter") final Filter filter) {
+        @PluginElement final Layout<?> layout,
+        @PluginElement final Filter filter) {
         return new UsesLoggingAppender(name, filter, layout, ignore);
     }
 

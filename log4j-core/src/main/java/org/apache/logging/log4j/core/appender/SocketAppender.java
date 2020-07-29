@@ -16,26 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.DatagramSocketManager;
@@ -44,7 +30,18 @@ import org.apache.logging.log4j.core.net.SocketOptions;
 import org.apache.logging.log4j.core.net.SslSocketManager;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
+import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
@@ -129,47 +126,47 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             return immediateFail;
         }
 
-        public B withAdvertise(final boolean advertise) {
+        public B setAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
-        public B withConnectTimeoutMillis(final int connectTimeoutMillis) {
+        public B setConnectTimeoutMillis(final int connectTimeoutMillis) {
             this.connectTimeoutMillis = connectTimeoutMillis;
             return asBuilder();
         }
 
-        public B withHost(final String host) {
+        public B setHost(final String host) {
             this.host = host;
             return asBuilder();
         }
 
-        public B withImmediateFail(final boolean immediateFail) {
+        public B setImmediateFail(final boolean immediateFail) {
             this.immediateFail = immediateFail;
             return asBuilder();
         }
 
-        public B withPort(final int port) {
+        public B setPort(final int port) {
             this.port = port;
             return asBuilder();
         }
 
-        public B withProtocol(final Protocol protocol) {
+        public B setProtocol(final Protocol protocol) {
             this.protocol = protocol;
             return asBuilder();
         }
 
-        public B withReconnectDelayMillis(final int reconnectDelayMillis) {
+        public B setReconnectDelayMillis(final int reconnectDelayMillis) {
             this.reconnectDelayMillis = reconnectDelayMillis;
             return asBuilder();
         }
 
-        public B withSocketOptions(final SocketOptions socketOptions) {
+        public B setSocketOptions(final SocketOptions socketOptions) {
             this.socketOptions = socketOptions;
             return asBuilder();
         }
 
-        public B withSslConfiguration(final SslConfiguration sslConfiguration) {
+        public B setSslConfiguration(final SslConfiguration sslConfiguration) {
             this.sslConfiguration = sslConfiguration;
             return asBuilder();
         }
@@ -192,7 +189,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      * </ul> 
      */
     public static class Builder extends AbstractBuilder<Builder>
-            implements org.apache.logging.log4j.core.util.Builder<SocketAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<SocketAppender> {
 
         @SuppressWarnings("resource")
         @Override
@@ -225,7 +222,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         }
     }
     
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
@@ -236,7 +233,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
     protected SocketAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final AbstractSocketManager manager, final boolean ignoreExceptions, final boolean immediateFlush,
             final Advertiser advertiser) {
-        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
+        super(name, layout, filter, ignoreExceptions, immediateFlush, null, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());
@@ -258,159 +255,6 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         }
         setStopped();
         return true;
-    }
-
-    /**
-     * Creates a socket appender.
-     *
-     * @param host
-     *            The name of the host to connect to.
-     * @param port
-     *            The port to connect to on the target host.
-     * @param protocol
-     *            The Protocol to use.
-     * @param sslConfig
-     *            The SSL configuration file for TCP/SSL, ignored for UPD.
-     * @param connectTimeoutMillis
-     *            the connect timeout in milliseconds.
-     * @param reconnectDelayMillis
-     *            The interval in which failed writes should be retried.
-     * @param immediateFail
-     *            True if the write should fail if no socket is immediately available.
-     * @param name
-     *            The name of the Appender.
-     * @param immediateFlush
-     *            "true" if data should be flushed on each write.
-     * @param ignoreExceptions
-     *            If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
-     *            are propagated to the caller.
-     * @param layout
-     *            The layout to use. Required, there is no default.
-     * @param filter
-     *            The Filter or null.
-     * @param advertise
-     *            "true" if the appender configuration should be advertised, "false" otherwise.
-     * @param configuration
-     *            The Configuration
-     * @return A SocketAppender.
-     * @deprecated Deprecated in 2.7; use {@link #newBuilder()}
-     */
-    @Deprecated
-    @PluginFactory
-    public static SocketAppender createAppender(
-            // @formatter:off
-            final String host,
-            final int port,
-            final Protocol protocol,
-            final SslConfiguration sslConfig,
-            final int connectTimeoutMillis,
-            final int reconnectDelayMillis,
-            final boolean immediateFail,
-            final String name,
-            final boolean immediateFlush,
-            final boolean ignoreExceptions,
-            final Layout<? extends Serializable> layout,
-            final Filter filter,
-            final boolean advertise,
-            final Configuration configuration) {
-            // @formatter:on
-
-        // @formatter:off
-        return newBuilder()
-            .withAdvertise(advertise)
-            .setConfiguration(configuration)
-            .withConnectTimeoutMillis(connectTimeoutMillis)
-            .withFilter(filter)
-            .withHost(host)
-            .withIgnoreExceptions(ignoreExceptions)
-            .withImmediateFail(immediateFail)
-            .withLayout(layout)
-            .withName(name)
-            .withPort(port)
-            .withProtocol(protocol)
-            .withReconnectDelayMillis(reconnectDelayMillis)
-            .withSslConfiguration(sslConfig)
-            .build();
-        // @formatter:on
-    }
-    
-    /**
-     * Creates a socket appender.
-     *
-     * @param host
-     *            The name of the host to connect to.
-     * @param portNum
-     *            The port to connect to on the target host.
-     * @param protocolIn
-     *            The Protocol to use.
-     * @param sslConfig
-     *            The SSL configuration file for TCP/SSL, ignored for UPD.
-     * @param connectTimeoutMillis
-     *            the connect timeout in milliseconds.
-     * @param delayMillis
-     *            The interval in which failed writes should be retried.
-     * @param immediateFail
-     *            True if the write should fail if no socket is immediately available.
-     * @param name
-     *            The name of the Appender.
-     * @param immediateFlush
-     *            "true" if data should be flushed on each write.
-     * @param ignore
-     *            If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
-     *            are propagated to the caller.
-     * @param layout
-     *            The layout to use. Required, there is no default.
-     * @param filter
-     *            The Filter or null.
-     * @param advertise
-     *            "true" if the appender configuration should be advertised, "false" otherwise.
-     * @param config
-     *            The Configuration
-     * @return A SocketAppender.
-     * @deprecated Deprecated in 2.5; use {@link #newBuilder()}
-     */
-    @Deprecated
-    public static SocketAppender createAppender(
-            // @formatter:off
-            final String host,
-            final String portNum,
-            final String protocolIn,
-            final SslConfiguration sslConfig,
-            final int connectTimeoutMillis,
-            // deprecated
-            final String delayMillis,
-            final String immediateFail,
-            final String name,
-            final String immediateFlush,
-            final String ignore,
-            final Layout<? extends Serializable> layout,
-            final Filter filter,
-            final String advertise,
-            final Configuration config) {
-            // @formatter:on
-        final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
-        final boolean isAdvertise = Boolean.parseBoolean(advertise);
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final boolean fail = Booleans.parseBoolean(immediateFail, true);
-        final int reconnectDelayMillis = AbstractAppender.parseInt(delayMillis, 0);
-        final int port = AbstractAppender.parseInt(portNum, 0);
-        final Protocol p = protocolIn == null ? Protocol.UDP : Protocol.valueOf(protocolIn);
-        return createAppender(host, port, p, sslConfig, connectTimeoutMillis, reconnectDelayMillis, fail, name, isFlush,
-                ignoreExceptions, layout, filter, isAdvertise, config);
-    }
-
-    /**
-     * Creates an AbstractSocketManager for TCP, UDP, and SSL.
-     *
-     * @throws IllegalArgumentException
-     *             if the protocol cannot be handled.
-     * @deprecated Use {@link #createSocketManager(String, Protocol, String, int, int, SslConfiguration, int, boolean, Layout, int, SocketOptions)}.
-     */
-    @Deprecated
-    protected static AbstractSocketManager createSocketManager(final String name, final Protocol protocol, final String host,
-            final int port, final int connectTimeoutMillis, final SslConfiguration sslConfig, final int reconnectDelayMillis,
-            final boolean immediateFail, final Layout<? extends Serializable> layout, final int bufferSize) {
-        return createSocketManager(name, protocol, host, port, connectTimeoutMillis, sslConfig, reconnectDelayMillis, immediateFail, layout, bufferSize, null);
     }
 
     /**

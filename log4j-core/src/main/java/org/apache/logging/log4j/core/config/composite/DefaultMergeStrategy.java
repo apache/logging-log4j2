@@ -24,10 +24,10 @@ import java.util.Objects;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
 
 /**
  * The default merge strategy for composite configurations.
@@ -41,7 +41,7 @@ import org.apache.logging.log4j.core.filter.CompositeFilter;
  * configurations.</li>
  * <li>Filters are aggregated under a CompositeFilter if more than one Filter is defined. Since Filters are not named
  * duplicates may be present.</li>
- * <li>Scripts and ScriptFile references are aggregated. Duplicate definiations replace those in previous
+ * <li>Scripts and ScriptFile references are aggregated. Duplicate definitions replace those in previous
  * configurations.</li>
  * <li>Appenders are aggregated. Appenders with the same name are replaced by those in later configurations, including
  * all of the Appender's subcomponents.</li>
@@ -113,7 +113,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
      * @param pluginManager The PluginManager.
      */
     @Override
-    public void mergConfigurations(final Node target, final Node source, final PluginManager pluginManager) {
+    public void mergeConfigurations(final Node target, final Node source, final PluginManager pluginManager) {
         for (final Node sourceChildNode : source.getChildren()) {
             final boolean isFilter = isFilterNode(sourceChildNode);
             boolean isMerged = false;

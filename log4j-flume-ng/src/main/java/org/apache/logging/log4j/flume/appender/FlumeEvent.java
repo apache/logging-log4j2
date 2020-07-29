@@ -332,15 +332,6 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
-     * Returns a copy of the context Map.
-     * @return a copy of the context Map.
-     */
-    @Override
-    public Map<String, String> getContextMap() {
-        return contextMap;
-    }
-
-    /**
      * Returns the context data of the {@code LogEvent} that this {@code FlumeEvent} was constructed with.
      * @return the context data of the {@code LogEvent} that this {@code FlumeEvent} was constructed with.
      */

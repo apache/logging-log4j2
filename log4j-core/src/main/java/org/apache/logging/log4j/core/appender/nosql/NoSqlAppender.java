@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
+import java.io.Serializable;
 
 /**
  * This Appender writes logging events to a NoSQL database using a configured NoSQL provider. It requires
@@ -52,7 +52,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
      *            The type to build
      */
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<NoSqlAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<NoSqlAppender> {
 
         @PluginBuilderAttribute("bufferSize")
         private int bufferSize;
@@ -78,7 +78,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
                 return null;
             }
 
-            return new NoSqlAppender(name, getFilter(), getLayout(), isIgnoreExceptions(), manager);
+            return new NoSqlAppender(name, getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(), manager);
         }
 
         /**
@@ -107,55 +107,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
         }
     }
 
-    /**
-     * Factory method for creating a NoSQL appender within the plugin manager.
-     *
-     * @param name
-     *            The name of the appender.
-     * @param ignore
-     *            If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
-     *            are propagated to the caller.
-     * @param filter
-     *            The filter, if any, to use.
-     * @param bufferSize
-     *            If an integer greater than 0, this causes the appender to buffer log events and flush whenever the
-     *            buffer reaches this size.
-     * @param provider
-     *            The NoSQL provider that provides connections to the chosen NoSQL database.
-     * @return a new NoSQL appender.
-     * @deprecated since 2.11.0; use {@link Builder}.
-     */
-    @SuppressWarnings("resource")
-    @Deprecated
-    public static NoSqlAppender createAppender(
-    // @formatter:off
-            final String name,
-            final String ignore, 
-            final Filter filter,
-            final String bufferSize,
-            final NoSqlProvider<?> provider) {
-    // @formatter:on
-        if (provider == null) {
-            LOGGER.error("NoSQL provider not specified for appender [{}].", name);
-            return null;
-        }
-
-        final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-
-        final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSizeInt + ", provider="
-                + provider + " }";
-
-        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName, bufferSizeInt,
-                provider);
-        if (manager == null) {
-            return null;
-        }
-
-        return new NoSqlAppender(name, filter, null, ignoreExceptions, manager);
-    }
-
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
@@ -163,8 +115,8 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
     private final String description;
 
     private NoSqlAppender(final String name, final Filter filter, Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions, final NoSqlDatabaseManager<?> manager) {
-        super(name, filter, layout, ignoreExceptions, manager);
+            final boolean ignoreExceptions, Property[] properties, final NoSqlDatabaseManager<?> manager) {
+        super(name, filter, layout, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
 

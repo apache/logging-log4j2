@@ -20,12 +20,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
-import org.apache.logging.log4j.core.config.plugins.validation.ValidatingPluginWithGenericBuilder;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.validation.ValidatingPluginWithGenericBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,15 +40,15 @@ public class ValidatingPluginWithGenericBuilderTest {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<ValidatingPluginWithGenericBuilder>) manager.getPluginType("ValidatingPluginWithGenericBuilder");
-        assertNotNull("Rebuild this module to make sure annotaion processing kicks in.", plugin);
+        assertNotNull("Rebuild this module to make sure annotation processing kicks in.", plugin);
         node = new Node(null, "Validator", plugin);
     }
 
     @Test
     public void testNullDefaultValue() throws Exception {
         final ValidatingPluginWithGenericBuilder validatingPlugin = (ValidatingPluginWithGenericBuilder) new PluginBuilder(plugin)
-            .withConfiguration(new NullConfiguration())
-            .withConfigurationNode(node)
+            .setConfiguration(new NullConfiguration())
+            .setConfigurationNode(node)
             .build();
         assertNull(validatingPlugin);
     }
@@ -57,8 +57,8 @@ public class ValidatingPluginWithGenericBuilderTest {
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("name", "foo");
         final ValidatingPluginWithGenericBuilder validatingPlugin = (ValidatingPluginWithGenericBuilder) new PluginBuilder(plugin)
-            .withConfiguration(new NullConfiguration())
-            .withConfigurationNode(node)
+            .setConfiguration(new NullConfiguration())
+            .setConfigurationNode(node)
             .build();
         assertNotNull(validatingPlugin);
         assertEquals("foo", validatingPlugin.getName());

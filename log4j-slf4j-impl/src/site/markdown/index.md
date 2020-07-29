@@ -21,6 +21,13 @@
 The Log4j 2 SLF4J Binding allows applications coded to the SLF4J API to use
 Log4j 2 as the implementation.
 
+Due to a break in compatibility in the SLF4J binding, as of release 2.11.1 two SLF4J to Log4j Adapters are provided.
+
+1. log4j-slf4j-impl should be used with SLF4J 1.7.x releases or older.
+1. log4j-slf4j18-impl should be used with SLF4J 1.8.x releases or newer.
+
+Applications that take advantage of the Java Module System should use SLF4J 1.8.x and log4j-slf4j18-impl.
+
 ## Requirements
 
 The Log4j 2 SLF4J Binding has a dependency on the Log4j 2 API as well as the SLF4J API.

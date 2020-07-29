@@ -60,7 +60,7 @@
         <configuration>
           <toolchains>
             <jdk>
-              <version>9</version>
+              <version>[11, )</version>
             </jdk>
           </toolchains>
         </configuration>
@@ -111,8 +111,6 @@
           <systemPropertyVariables>
             <java.awt.headless>true</java.awt.headless>
           </systemPropertyVariables>
-          <forkCount>2C</forkCount>
-          <reuseForks>true</reuseForks>
           <includes>
             <include>**/Test*.java</include>
             <include>**/*Test.java</include>

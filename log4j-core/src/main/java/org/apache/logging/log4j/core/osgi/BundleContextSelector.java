@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.osgi;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.core.LoggerContext;
@@ -37,6 +38,74 @@ import org.osgi.framework.FrameworkUtil;
  * @since 2.1
  */
 public class BundleContextSelector extends ClassLoaderContextSelector {
+
+    @Override
+    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext,
+                         final boolean allContexts) {
+        LoggerContext ctx = null;
+        Bundle bundle = null;
+        if (currentContext) {
+            ctx = ContextAnchor.THREAD_CONTEXT.get();
+            ContextAnchor.THREAD_CONTEXT.remove();
+        }
+        if (ctx == null && loader instanceof BundleReference) {
+            bundle = ((BundleReference) loader).getBundle();
+            ctx = getLoggerContext(bundle);
+            removeLoggerContext(ctx);
+        }
+        if (ctx == null) {
+            final Class<?> callerClass = StackLocatorUtil.getCallerClass(fqcn);
+            if (callerClass != null) {
+                bundle = FrameworkUtil.getBundle(callerClass);
+                ctx = getLoggerContext(FrameworkUtil.getBundle(callerClass));
+                removeLoggerContext(ctx);
+            }
+        }
+        if (ctx == null) {
+            ctx = ContextAnchor.THREAD_CONTEXT.get();
+            ContextAnchor.THREAD_CONTEXT.remove();
+        }
+        if (ctx != null) {
+            ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
+        }
+        if (bundle != null && allContexts) {
+            final Bundle[] bundles = bundle.getBundleContext().getBundles();
+            for (final Bundle bdl : bundles) {
+                ctx = getLoggerContext(bdl);
+                if (ctx != null) {
+                    ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
+                }
+            }
+        }
+    }
+
+    private LoggerContext getLoggerContext(final Bundle bundle) {
+        final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
+        final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        if (ref != null && ref.get() != null) {
+           return ref.get().get();
+        }
+        return null;
+    }
+
+    private void removeLoggerContext(LoggerContext context) {
+        CONTEXT_MAP.remove(context.getName());
+    }
+
+    @Override
+    public boolean hasContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+        if (currentContext && ContextAnchor.THREAD_CONTEXT.get() != null) {
+            return ContextAnchor.THREAD_CONTEXT.get().isStarted();
+        }
+        if (loader instanceof BundleReference) {
+            return hasContext(((BundleReference) loader).getBundle());
+        }
+        final Class<?> callerClass = StackLocatorUtil.getCallerClass(fqcn);
+        if (callerClass != null) {
+            return hasContext(FrameworkUtil.getBundle(callerClass));
+        }
+        return ContextAnchor.THREAD_CONTEXT.get() != null && ContextAnchor.THREAD_CONTEXT.get().isStarted();
+    }
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
@@ -58,6 +127,12 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
         }
         final LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
         return lc == null ? getDefault() : lc;
+    }
+
+    private static boolean hasContext(final Bundle bundle) {
+        final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
+        final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        return ref != null && ref.get() != null && ref.get().get() != null && ref.get().get().isStarted();
     }
 
     private static LoggerContext locateContext(final Bundle bundle, final URI configLocation) {

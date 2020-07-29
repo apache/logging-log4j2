@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Writer;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.StringLayout;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldWriter;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
+import java.io.Writer;
 
 /**
  * Appends log events to a {@link Writer}.
@@ -37,53 +37,29 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
     /**
      * Builds WriterAppender instances.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<WriterAppender> {
-
-        private Filter filter;
+    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+            implements org.apache.logging.log4j.plugins.util.Builder<WriterAppender> {
 
         private boolean follow = false;
-
-        private boolean ignoreExceptions = true;
-
-        private StringLayout layout = PatternLayout.createDefaultLayout();
-
-        private String name;
 
         private Writer target;
 
         @Override
         public WriterAppender build() {
-            return new WriterAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions);
+            final StringLayout layout = (StringLayout) getLayout();
+            final StringLayout actualLayout = layout != null ? layout : PatternLayout.createDefaultLayout();
+            return new WriterAppender(getName(), actualLayout, getFilter(), getManager(target, follow, actualLayout),
+                    isIgnoreExceptions(), getPropertyArray());
         }
 
-        public Builder setFilter(final Filter aFilter) {
-            this.filter = aFilter;
-            return this;
-        }
-
-        public Builder setFollow(final boolean shouldFollow) {
+        public B setFollow(final boolean shouldFollow) {
             this.follow = shouldFollow;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setIgnoreExceptions(final boolean shouldIgnoreExceptions) {
-            this.ignoreExceptions = shouldIgnoreExceptions;
-            return this;
-        }
-
-        public Builder setLayout(final StringLayout aLayout) {
-            this.layout = aLayout;
-            return this;
-        }
-
-        public Builder setName(final String aName) {
-            this.name = aName;
-            return this;
-        }
-
-        public Builder setTarget(final Writer aTarget) {
+        public B setTarget(final Writer aTarget) {
             this.target = aTarget;
-            return this;
+            return asBuilder();
         }
     }
     /**
@@ -128,7 +104,7 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
         }
     }
 
-    private static WriterManagerFactory factory = new WriterManagerFactory();
+    private static final WriterManagerFactory factory = new WriterManagerFactory();
 
     /**
      * Creates a WriterAppender.
@@ -160,7 +136,7 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
         if (layout == null) {
             layout = PatternLayout.createDefaultLayout();
         }
-        return new WriterAppender(name, layout, filter, getManager(target, follow, layout), ignore);
+        return new WriterAppender(name, layout, filter, getManager(target, follow, layout), ignore, Property.EMPTY_ARRAY);
     }
 
     private static WriterManager getManager(final Writer target, final boolean follow, final StringLayout layout) {
@@ -170,14 +146,14 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
         return WriterManager.getManager(managerName, new FactoryData(writer, managerName, layout), factory);
     }
 
-    @PluginBuilderFactory
-    public static Builder newBuilder() {
-        return new Builder();
+    @PluginFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
     }
 
     private WriterAppender(final String name, final StringLayout layout, final Filter filter,
-            final WriterManager manager, final boolean ignoreExceptions) {
-        super(name, layout, filter, ignoreExceptions, true, manager);
+            final WriterManager manager, final boolean ignoreExceptions, Property[] properties) {
+        super(name, layout, filter, ignoreExceptions, true, properties, manager);
     }
 
 }

@@ -16,7 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.util.zip.GZIPInputStream;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -53,7 +58,8 @@ public class RollingAppenderDirectWriteTest {
 
     @Test
     public void testAppender() throws Exception {
-        for (int i=0; i < 100; ++i) {
+        int count = 100;
+        for (int i=0; i < count; ++i) {
             logger.debug("This is test message number " + i);
         }
         Thread.sleep(50);
@@ -62,5 +68,26 @@ public class RollingAppenderDirectWriteTest {
         final File[] files = dir.listFiles();
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(".gz"))))));
+        int found = 0;
+        for (File file: files) {
+            String actual = file.getName();
+            BufferedReader reader;
+            if (file.getName().endsWith(".gz")) {
+                reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file))));
+            } else {
+                reader = new BufferedReader(new FileReader(file));
+            }
+            String line;
+            while ((line = reader.readLine()) != null) {
+                assertNotNull("No log event in file " + actual, line);
+                String[] parts = line.split((" "));
+                String expected = "test1-" + parts[0];
+                assertTrue("Incorrect file name. Expected file prefix: " + expected + " Actual: " + actual,
+                    actual.startsWith(expected));
+                ++found;
+            }
+            reader.close();
+        }
+        assertEquals("Incorrect number of events read. Expected " + count + ", Actual " + found, count, found);
     }
 }

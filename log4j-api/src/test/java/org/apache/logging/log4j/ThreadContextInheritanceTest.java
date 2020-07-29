@@ -21,15 +21,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * Tests {@link ThreadContext}.
  */
 public class ThreadContextInheritanceTest {
+
+    @Rule
+    public ThreadContextRule threadContextRule = new ThreadContextRule();
 
     @BeforeClass
     public static void setupClass() {

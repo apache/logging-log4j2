@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
@@ -27,11 +27,15 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @Plugin(name = "FileDatePatternConverter", category = "FileConverter")
 @ConverterKeys({ "d", "date" })
 @PerformanceSensitive("allocation")
-public final class FileDatePatternConverter {
+public final class FileDatePatternConverter implements ArrayPatternConverter {
+
+    private final DatePatternConverter delegate;
+
     /**
      * Private constructor.
      */
-    private FileDatePatternConverter() {
+    private FileDatePatternConverter(final String... options) {
+        delegate = DatePatternConverter.newInstance(options);
     }
 
     /**
@@ -40,14 +44,35 @@ public final class FileDatePatternConverter {
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static PatternConverter newInstance(final String[] options) {
+    public static FileDatePatternConverter newInstance(final String[] options) {
         if (options == null || options.length == 0) {
-            return DatePatternConverter.newInstance(
-                new String[]{
-                    "yyyy-MM-dd"
-                });
+            return new FileDatePatternConverter("yyyy-MM-dd");
         }
 
-        return DatePatternConverter.newInstance(options);
+        return new FileDatePatternConverter(options);
+    }
+
+    @Override
+    public void format(final Object obj, final StringBuilder toAppendTo) {
+        delegate.format(obj, toAppendTo);
+    }
+
+    @Override
+    public String getName() {
+        return delegate.getName();
+    }
+
+    @Override
+    public String getStyleClass(final Object e) {
+        return delegate.getStyleClass(e);
+    }
+
+    @Override
+    public void format(final StringBuilder toAppendTo, final Object... objects) {
+        delegate.format(toAppendTo, objects);
+    }
+
+    public String getPattern() {
+        return delegate.getPattern();
     }
 }

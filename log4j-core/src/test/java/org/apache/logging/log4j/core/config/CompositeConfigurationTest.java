@@ -115,6 +115,9 @@ public class CompositeConfigurationTest {
                         appendersMap.size());
                 assertTrue(appendersMap.get("File") instanceof FileAppender);
                 assertTrue(appendersMap.get("STDOUT") instanceof ConsoleAppender);
+
+                assertEquals("Expected COMPOSITE_SOURCE for composite configuration but got " + config.getConfigurationSource(),
+                        config.getConfigurationSource(), ConfigurationSource.COMPOSITE_SOURCE);
             }
         };
         runTest(lcr, test);
@@ -157,7 +160,7 @@ public class CompositeConfigurationTest {
                 //Regression
                 //Check level on cat3 (not present in root config)
                 assertEquals("Expected cat3 log level to be ERROR", Level.ERROR, config.getLogger("cat3").getLevel());
-                //Check level on cat1 (not present in overriden config)
+                //Check level on cat1 (not present in overridden config)
                 assertEquals("Expected cat1 log level to be DEBUG", Level.DEBUG, config.getLogger("cat1").getLevel());
             }
         };

@@ -88,19 +88,19 @@ public class FileAppenderPermissionsTest {
     public void testFilePermissionsAPI() throws Exception {
         final File file = new File(DIR, "AppenderTest-" + fileIndex + ".log");
         final Path path = file.toPath();
-        final Layout<String> layout = PatternLayout.newBuilder().withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+        final Layout<String> layout = PatternLayout.newBuilder().setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(file.getAbsolutePath())
-            .withName("test")
-            .withImmediateFlush(false)
-            .withIgnoreExceptions(false)
-            .withBufferedIo(false)
-            .withBufferSize(1)
-            .withLayout(layout)
-            .withCreateOnDemand(createOnDemand)
-            .withFilePermissions(filePermissions)
+            .setFileName(file.getAbsolutePath())
+            .setName("test")
+            .setImmediateFlush(false)
+            .setIgnoreExceptions(false)
+            .setBufferedIo(false)
+            .setBufferSize(1)
+            .setLayout(layout)
+            .setCreateOnDemand(createOnDemand)
+            .setFilePermissions(filePermissions)
             .build();
         // @formatter:on
         try {
@@ -129,6 +129,7 @@ public class FileAppenderPermissionsTest {
             assertEquals(filePermissions, PosixFilePermissions.toString(Files.getPosixFilePermissions(path)));
         } finally {
             appender.stop();
+            Files.deleteIfExists(path);
         }
         assertFalse("Appender did not stop", appender.isStarted());
     }
@@ -142,20 +143,20 @@ public class FileAppenderPermissionsTest {
         final String group = findAGroup(user);
         assertNotNull(group);
 
-        final Layout<String> layout = PatternLayout.newBuilder().withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+        final Layout<String> layout = PatternLayout.newBuilder().setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(file.getAbsolutePath())
-            .withName("test")
-            .withImmediateFlush(true)
-            .withIgnoreExceptions(false)
-            .withBufferedIo(false)
-            .withBufferSize(1)
-            .withLayout(layout)
-            .withFilePermissions(filePermissions)
-            .withFileOwner(user)
-            .withFileGroup(group)
+            .setFileName(file.getAbsolutePath())
+            .setName("test")
+            .setImmediateFlush(true)
+            .setIgnoreExceptions(false)
+            .setBufferedIo(false)
+            .setBufferSize(1)
+            .setLayout(layout)
+            .setFilePermissions(filePermissions)
+            .setFileOwner(user)
+            .setFileGroup(group)
             .build();
         // @formatter:on
         try {
@@ -185,6 +186,7 @@ public class FileAppenderPermissionsTest {
             assertEquals(group, Files.readAttributes(path, PosixFileAttributes.class).group().getName());
         } finally {
             appender.stop();
+            Files.deleteIfExists(path);
         }
         assertFalse("Appender did not stop", appender.isStarted());
     }

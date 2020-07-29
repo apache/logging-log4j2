@@ -188,8 +188,7 @@ The Stack and the Map are managed per thread and are based on
 http://docs.oracle.com/javase/6/docs/api/java/lang/ThreadLocal.html[`ThreadLocal`]
 by default. The Map can be configured to use an
 http://docs.oracle.com/javase/6/docs/api/java/lang/InheritableThreadLocal.html[`InheritableThreadLocal`]
-by setting system property `log4j2.isThreadContextMapInheritable` to
-`true`. When configured this way, the contents of the Map will be passed
+(see the Configuration section). When configured this way, the contents of the Map will be passed
 to child threads. However, as discussed in the
 http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()[`Executors`]
 class and in other cases where thread pooling is utilized, the
@@ -202,10 +201,17 @@ Note that all methods of the
 link:../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html[`ThreadContext`]
 class are static.
 
+==== Configuration
+Set the system property `disableThreadContextMap` to `true` to disable the Thread Context Map.
+Set the system property `disableThreadContextStack` to `true` to disable the Thread Context Stack.
+Set the system property `disableThreadContext` to `true` to disable both the Thread Context Map and Stack.
+Set the system property `log4j2.isThreadContextMapInheritable` to `true` to enable child threads to inherit the Thread
+Context Map.
+
 === Including the ThreadContext when writing logs
 
 The
-link:../log4j-api/apidocs/org/apache/logging/log4j/core/PatternLayout.html[`PatternLayout`]
+link:../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html[`PatternLayout`]
 provides mechanisms to print the contents of the
 link:../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html[`ThreadContext`]
 Map and Stack.

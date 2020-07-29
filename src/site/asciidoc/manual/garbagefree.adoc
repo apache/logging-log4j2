@@ -165,7 +165,7 @@ objects for thread safety)
 * StructuredDataFilter (garbage free since 2.8)
 * ThreadContextMapFilter (garbage free since 2.8)
 * ThresholdFilter (garbage free since 2.8)
-* TimeFilter (garbage free since 2.8)
+* TimeFilter (garbage free since 2.8 except when range must be recalculated once per day)
 
 Other filters like BurstFilter, RegexFilter and ScriptFilter are not
 trivial to make garbage free, and there is currently no plan to change
@@ -178,6 +178,11 @@ them.
 
 GelfLayout is garbage-free when used with compressionType="OFF", as long
 as no additional field contains '${' (variable substitution).
+
+==== JsonTemplateLayout
+
+`JsonTemplateLayout` is garbage-free with
+link:json-template-layout.html#faq-garbage-free[a few exceptions].
 
 ==== PatternLayout
 

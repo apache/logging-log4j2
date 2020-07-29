@@ -55,8 +55,12 @@ public class RewriteAppenderTest {
 
     @After
     public void tearDown() throws Exception {
-        app.clear();
-        app2.clear();
+        if (app != null) {
+            app.clear();
+        }
+        if (app2 != null) {
+            app2.clear();
+        }
     }
 
     @Test

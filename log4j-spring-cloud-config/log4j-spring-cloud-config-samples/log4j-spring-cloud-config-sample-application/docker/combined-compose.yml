@@ -1,0 +1,86 @@
+version: "3"
+services:
+  socat:
+    container_name: socat
+    image: bobrik/socat
+    command: TCP-LISTEN:1234,fork UNIX-CONNECT:/var/run/docker.sock
+    expose:
+      - "1234"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      sample_network:
+        aliases:
+          - socat
+
+  rabbitmq:
+    container_name: rabbit
+    image: rabbitmq:3-management-alpine
+    expose:
+      - "5672"
+      - "15672"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./init/rabbit/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ./init/rabbit/definitions.json:/etc/rabbitmq/definitions.json:ro
+    networks:
+      sample_network:
+        aliases:
+          - rabbitmq
+
+  fluent-bit:
+    container_name: fluent-bit
+    image: fluent/fluent-bit:latest
+    expose:
+      - "2020"
+      - "24221"
+      - "24224"
+    ports:
+      - "24224:24224"
+    volumes:
+      - ./init/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./target/logs:/var/logs
+    networks:
+      sample_network:
+        aliases:
+          - fluent-bit
+
+  flume:
+    container_name: flume
+    image: probablyfine/flume:latest
+    expose:
+      - "5050"
+    environment:
+      FLUME_AGENT_NAME: forwarder
+      FLUME_JAVA_OPTS: -Dlog4j.configuration=file:///opt/flume-config/log4j.properties
+    volumes:
+      - ./init/flume/start-flume.sh:/opt/flume/bin/start-flume
+      - ./init/flume/flume.conf:/opt/flume-config/flume.conf
+      - ./init/flume/flume-env.sh:/opt/flume-config/flume-env.sh
+      - ./init/flume/log4j.properties:/opt/flume-config/log4j.properties
+      - ~/flume-logs:/var/log/flume
+    networks:
+      sample_network:
+        aliases:
+          - flume
+
+  sampleapp:
+    container_name: sampleapp
+    image: sampleapp
+    environment:
+      DOCKER_URI: http://socat:1234
+      SERVICE_PARAMS: --spring.config.location=classpath:/,classpath:/application-local-docker.yml
+    ports:
+      - "5005:5005"
+      - "8080:8080"
+    networks:
+      sample_network:
+        aliases:
+          - sampleapp
+networks:
+  sample_network:
+
+volumes:
+  pgdata:

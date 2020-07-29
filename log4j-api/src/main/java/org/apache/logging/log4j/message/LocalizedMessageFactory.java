@@ -16,19 +16,20 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.Serializable;
 import java.util.ResourceBundle;
 
 /**
- * Creates {@link FormattedMessage} instances for {@link MessageFactory2} methods (and {@link MessageFactory} by
- * extension.)
- * 
+ * Creates {@link FormattedMessage} instances for {@link MessageFactory} methods.
+ *
+ * <h3></h3>
  * <h4>Note to implementors</h4>
  * <p>
- * This class does <em>not</em> implement any {@link MessageFactory2} methods and lets the superclass funnel those calls
+ * This class does <em>not</em> implement any {@link MessageFactory} methods and lets the superclass funnel those calls
  * through {@link #newMessage(String, Object...)}.
  * </p>
  */
-public class LocalizedMessageFactory extends AbstractMessageFactory {
+public class LocalizedMessageFactory implements MessageFactory, Serializable {
     private static final long serialVersionUID = -1996295808703146741L;
 
     // FIXME: cannot use ResourceBundle name for serialization until Java 8

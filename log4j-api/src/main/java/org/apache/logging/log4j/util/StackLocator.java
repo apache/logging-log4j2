@@ -46,8 +46,6 @@ import java.util.Stack;
  */
 public final class StackLocator {
 
-    private static PrivateSecurityManager SECURITY_MANAGER;
-
     // Checkstyle Suppress: the lower-case 'u' ticks off CheckStyle...
     // CHECKSTYLE:OFF
     static final int JDK_7u25_OFFSET;
@@ -104,6 +102,9 @@ public final class StackLocator {
         if (depth < 0) {
             throw new IndexOutOfBoundsException(Integer.toString(depth));
         }
+        if (GET_CALLER_CLASS == null) {
+            return null;
+        }
         // note that we need to add 1 to the depth value to compensate for this method, but not for the Method.invoke
         // since Reflection.getCallerClass ignores the call to Method.invoke()
         try {
@@ -154,14 +155,8 @@ public final class StackLocator {
     @PerformanceSensitive
     public Stack<Class<?>> getCurrentStackTrace() {
         // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
-        if (getSecurityManager() != null) {
-            final Class<?>[] array = getSecurityManager().getClassContext();
-            final Stack<Class<?>> classes = new Stack<>();
-            classes.ensureCapacity(array.length);
-            for (final Class<?> clazz : array) {
-                classes.push(clazz);
-            }
-            return classes;
+        if (PrivateSecurityManagerStackTraceUtil.isEnabled()) {
+            return PrivateSecurityManagerStackTraceUtil.getCurrentStackTrace();
         }
         // slower version using getCallerClass where we cannot use a SecurityManager
         final Stack<Class<?>> classes = new Stack<>();
@@ -178,13 +173,17 @@ public final class StackLocator {
         }
         // LOG4J2-1029 new Throwable().getStackTrace is faster than Thread.currentThread().getStackTrace().
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        StackTraceElement last = null;
-        for (int i = stackTrace.length - 1; i > 0; i--) {
+        boolean found = false;
+        for (int i = 0; i < stackTrace.length; i++) {
             final String className = stackTrace[i].getClassName();
             if (fqcnOfLogger.equals(className)) {
-                return last;
+
+                found = true;
+                continue;
             }
-            last = stackTrace[i];
+            if (found  && !fqcnOfLogger.equals(className)) {
+                return stackTrace[i];
+            }
         }
         return null;
     }
@@ -237,18 +236,5 @@ public final class StackLocator {
         }
         // any others?
         return true;
-    }
-
-    protected PrivateSecurityManager getSecurityManager() {
-        return SECURITY_MANAGER;
-    }
-
-    private static final class PrivateSecurityManager extends SecurityManager {
-
-        @Override
-        protected Class<?>[] getClassContext() {
-            return super.getClassContext();
-        }
-
     }
 }
