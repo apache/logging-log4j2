@@ -157,9 +157,11 @@ public final class LoaderUtil {
             if (!isForceTccl()) {
                 accumulateClassLoaders(LoaderUtil.class.getClassLoader(), classLoaders);
                 accumulateClassLoaders(tcl == null ? null : tcl.getParent(), classLoaders);
-                final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-                if (systemClassLoader != null) {
-                    classLoaders.add(systemClassLoader);
+                if (!GET_CLASS_LOADER_DISABLED) {
+                    final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+                    if (systemClassLoader != null) {
+                        classLoaders.add(systemClassLoader);
+                    }
                 }
             }
         } else {
