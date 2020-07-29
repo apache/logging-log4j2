@@ -23,8 +23,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.logging.log4j.core.config.plugins.validation.Constraint;
 import org.apache.logging.log4j.core.config.plugins.validation.validators.NoUnresolvedVariablesValidator;
+import org.apache.logging.log4j.plugins.validation.Constraint;
 
 /**
  * Marks a plugin builder field or plugin factory parameter as required.

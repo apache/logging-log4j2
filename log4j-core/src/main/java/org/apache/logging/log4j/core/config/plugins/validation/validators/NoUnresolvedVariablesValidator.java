@@ -17,9 +17,9 @@
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.NoUnresolvedVariables;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
