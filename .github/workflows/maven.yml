@@ -46,6 +46,13 @@ jobs:
         if: runner.os == 'Linux'
         run: ./mvnw -V -B -e -DtrimStackTrace=false -Dmaven.test.failure.ignore=true --global-toolchains .github/workflows/maven-toolchains.xml verify
 
+      - name: Publish Test Results (Linux)
+        if: runner.os == 'Linux'
+        uses: scacap/action-surefire-report@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          check_name: 'Linux Test Report'
+
       - name: Inspect environment (Windows)
         if: runner.os == 'Windows'
         run: set java
@@ -54,7 +61,9 @@ jobs:
         if: runner.os == 'Windows'
         run: ./mvnw -V -B -e -DtrimStackTrace=false "-Dmaven.test.failure.ignore=true" --global-toolchains ".github\workflows\maven-toolchains.xml" verify
 
-      - name: Publish Test Results
+      - name: Publish Test Results (Windows)
+        if: runner.os == 'Windows'
         uses: scacap/action-surefire-report@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          check_name: 'Windows Test Report'
