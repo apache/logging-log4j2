@@ -29,10 +29,6 @@
   <name>Apache Log4J Performance Tests</name>
   <description>The Apache Log4j development-time performance tests</description>
 
-  <prerequisites>
-    <maven>3.0</maven>
-  </prerequisites>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <log4jParentDir>${basedir}/..</log4jParentDir>
