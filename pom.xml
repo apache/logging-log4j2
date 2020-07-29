@@ -1557,6 +1557,7 @@
     <module>log4j-jeromq</module>
     <module>log4j-jms</module>
     <module>log4j-kafka</module>
+    <module>log4j-redis</module>
     <module>log4j-couchdb</module>
     <module>log4j-mongodb3</module>
     <module>log4j-mongodb4</module>
