@@ -181,6 +181,7 @@
         <item name="NoSQL for CouchDB" href="/manual/appenders.html#NoSQLAppenderCouchDB"/>
         <item name="Output Stream" href="/manual/appenders.html#OutputStreamAppender"/>
         <item name="Random Access File" href="/manual/appenders.html#RandomAccessFileAppender"/>
+        <item name="Redis" href="/manual/appenders.html#RedisAppender"/>
         <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>
         <item name="Rolling File" href="/manual/appenders.html#RollingFileAppender"/>
         <item name="Rolling Random Access File" href="/manual/appenders.html#RollingRandomAccessFileAppender"/>
