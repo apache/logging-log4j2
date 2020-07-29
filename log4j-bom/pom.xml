@@ -19,7 +19,8 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>1</version>
+    <version>2</version>
+    <relativePath/>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <name>Apache Log4j BOM</name>
