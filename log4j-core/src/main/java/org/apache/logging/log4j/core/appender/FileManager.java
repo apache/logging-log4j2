@@ -188,6 +188,7 @@ public class FileManager extends OutputStreamManager {
         final String filename = getFileName();
         LOGGER.debug("Now writing to {} at {}", filename, new Date());
         final File file = new File(filename);
+        createParentDir(file);
         final FileOutputStream fos = new FileOutputStream(file, isAppend);
         if (file.exists() && file.length() == 0) {
             try {
@@ -200,6 +201,9 @@ public class FileManager extends OutputStreamManager {
         }
         defineAttributeView(Paths.get(filename));
         return fos;
+    }
+
+    protected void createParentDir(File file) {
     }
 
     protected void defineAttributeView(final Path path) {

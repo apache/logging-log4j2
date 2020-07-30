@@ -218,6 +218,13 @@ public class RollingFileManager extends FileManager {
         }
         return fileName;
     }
+    
+    @Override
+    protected void createParentDir(File file) {
+        if (directWrite) {
+            file.getParentFile().mkdirs();
+        }
+    }
 
     public boolean isDirectWrite() {
         return directWrite;
