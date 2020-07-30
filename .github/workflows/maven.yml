@@ -44,7 +44,7 @@ jobs:
 
       - name: Build with Maven (Linux)
         if: runner.os == 'Linux'
-        run: ./mvnw -V -B -e -DtrimStackTrace=false -Dmaven.test.failure.ignore=true --global-toolchains .github/workflows/maven-toolchains.xml verify
+        run: ./mvnw -V -B -e -DtrimStackTrace=false -Dmaven.test.failure.ignore=true -Dsurefire.rerunFailingTestsCount=1 --global-toolchains .github/workflows/maven-toolchains.xml verify
 
       - name: Publish Test Results (Linux)
         if: runner.os == 'Linux'
@@ -59,7 +59,7 @@ jobs:
 
       - name: Build with Maven (Windows)
         if: runner.os == 'Windows'
-        run: ./mvnw -V -B -e -DtrimStackTrace=false "-Dmaven.test.failure.ignore=true" --global-toolchains ".github\workflows\maven-toolchains.xml" verify
+        run: ./mvnw -V -B -e -DtrimStackTrace=false "-Dmaven.test.failure.ignore=true" "-Dsurefire.rerunFailingTestsCount=1" --global-toolchains ".github\workflows\maven-toolchains.xml" verify
 
       - name: Publish Test Results (Windows)
         if: runner.os == 'Windows'
