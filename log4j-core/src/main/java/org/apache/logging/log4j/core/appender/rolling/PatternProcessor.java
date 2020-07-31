@@ -227,6 +227,7 @@ public class PatternProcessor {
     public void updateTime() {
     	if (nextFileTime != 0 || !isTimeBased) {
 			prevFileTime = nextFileTime;
+            currentFileTime = 0;
 		}
     }
 
