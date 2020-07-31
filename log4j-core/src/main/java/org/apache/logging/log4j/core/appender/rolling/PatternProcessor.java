@@ -232,6 +232,7 @@ public class PatternProcessor {
     public void updateTime() {
         if (nextFileTime != 0 || !isTimeBased) {
 			prevFileTime = nextFileTime;
+			currentFileTime = 0;
 		}
     }
 
@@ -285,8 +286,8 @@ public class PatternProcessor {
                                      final Object obj) {
         // LOG4J2-628: we deliberately use System time, not the log4j.Clock time
         // for creating the file name of rolled-over files.
-		LOGGER.debug("Formatting file name. useCurrentTime={}, currentFileTime={}, prevFileTime={}",
-			useCurrentTime, currentFileTime, prevFileTime);
+		LOGGER.debug("Formatting file name. useCurrentTime={}, currentFileTime={}, prevFileTime={}, nextFileTime={}",
+			useCurrentTime, currentFileTime, prevFileTime, nextFileTime);
 		final long time = useCurrentTime ? currentFileTime != 0 ? currentFileTime : System.currentTimeMillis() :
                 prevFileTime != 0 ? prevFileTime : System.currentTimeMillis();
         formatFileName(buf, new Date(time), obj);
