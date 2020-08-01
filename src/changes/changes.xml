@@ -181,6 +181,9 @@
       </action>
     </release>
     <release version="2.14.0" date="2020-MM-DD" description="GA Release 2.14.0">
+      <action issue="LOG4J2-2901" dev="rgoers" type="fix">
+        Missing configuration files should be ignored when creating a composite configuration.
+      </action>
       <action issue="LOG4J2-2883" dev="rgoers" type="fix">
         When using DirectFileRolloverStrategy the file pattern was not being recalculated on
         size based rollover after a time based rollover had occurred.

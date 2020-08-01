@@ -16,29 +16,8 @@
  limitations under the License.
 
 -->
-<Configuration status="INFO" name="LoggerConfigTest">
-    <Appenders>
-        <Console name="STDOUT">
-            <PatternLayout pattern="%m%n"/>
-        </Console>
-        <File name="File" fileName="target/test.log" bufferedIO="false">
-            <PatternLayout>
-                <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-            </PatternLayout>
-        </File>
-    </Appenders>
-
-    <Loggers>
-        <Logger name="cat1" level="debug" additivity="false">
-            <AppenderRef ref="File"/>
-        </Logger>
-
-        <Logger name="cat2" level="debug" additivity="false">
-            <AppenderRef ref="File"/>
-        </Logger>
-        <Root>
-            <AppenderRef ref="STDOUT" />
-        </Root>
-    </Loggers>
-
+<Configuration>
+  <Loggers>
+    <Logger name="org.foo" level="ERROR" />
+  </Loggers>
 </Configuration>

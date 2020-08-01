@@ -168,6 +168,25 @@ public class CompositeConfigurationTest {
     }
 
     @Test
+    public void testMissingConfig() {
+        final LoggerContextRule lcr = new LoggerContextRule("classpath:log4j-comp-logger-root.xml,log4j-does-not-exist.json");
+        final Statement test = new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                final AbstractConfiguration config =  (AbstractConfiguration) lcr.getConfiguration();
+                assertNotNull("No configuration returned", config);
+                //Test for Root log level override
+                assertEquals("Expected Root logger log level to be ERROR", Level.ERROR, config.getRootLogger().getLevel());
+
+                //Test for no cat2 level override
+                final LoggerConfig cat2 = config.getLogger("cat2");
+                assertEquals("Expected cat2 log level to be INFO", Level.DEBUG, cat2.getLevel());
+            }
+        };
+        runTest(lcr, test);
+    }
+
+    @Test
     public void testAppenderRefFilterMerge() {
         final LoggerContextRule lcr = new LoggerContextRule(
                 "classpath:log4j-comp-logger-ref.xml,log4j-comp-logger-ref.json");

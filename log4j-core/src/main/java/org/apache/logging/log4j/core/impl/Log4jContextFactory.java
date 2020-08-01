@@ -24,6 +24,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -265,18 +266,34 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 for (final URI configLocation : configLocations) {
                     final Configuration currentReadConfiguration = ConfigurationFactory.getInstance()
                             .getConfiguration(ctx, name, configLocation);
-                    if (currentReadConfiguration instanceof AbstractConfiguration) {
-                        configurations.add((AbstractConfiguration) currentReadConfiguration);
+                    if (currentReadConfiguration != null) {
+                        if (currentReadConfiguration instanceof DefaultConfiguration) {
+                            LOGGER.warn("Unable to locate configuration {}, ignoring", configLocation.toString());
+                        }
+                        else if (currentReadConfiguration instanceof AbstractConfiguration) {
+                            configurations.add((AbstractConfiguration) currentReadConfiguration);
+                        } else {
+                            LOGGER.error(
+                                    "Found configuration {}, which is not an AbstractConfiguration and can't be handled by CompositeConfiguration",
+                                    configLocation);
+                        }
                     } else {
-                        LOGGER.error(
-                                "Found configuration {}, which is not an AbstractConfiguration and can't be handled by CompositeConfiguration",
-                                configLocation);
+                        LOGGER.info("Unable to access configuration {}, ignoring", configLocation.toString());
                     }
                 }
-                final CompositeConfiguration compositeConfiguration = new CompositeConfiguration(configurations);
-                LOGGER.debug("Starting LoggerContext[name={}] from configurations at {}", ctx.getName(),
-                        configLocations);
-                ctx.start(compositeConfiguration);
+                if (configurations.size() == 0) {
+                    LOGGER.error("No configurations could be created for {}", configLocations.toString());
+                } else if (configurations.size() == 1) {
+                    AbstractConfiguration config = configurations.get(0);
+                    LOGGER.debug("Starting LoggerContext[name={}] from configuration at {}", ctx.getName(),
+                            config.getConfigurationSource().getLocation());
+                    ctx.start(config);
+                } else {
+                    final CompositeConfiguration compositeConfiguration = new CompositeConfiguration(configurations);
+                    LOGGER.debug("Starting LoggerContext[name={}] from configurations at {}", ctx.getName(),
+                            configLocations);
+                    ctx.start(compositeConfiguration);
+                }
                 ContextAnchor.THREAD_CONTEXT.remove();
             } else {
                 ctx.start();

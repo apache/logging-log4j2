@@ -403,14 +403,22 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                         final List<AbstractConfiguration> configs = new ArrayList<>();
                         for (final String sourceLocation : sources) {
                             final Configuration config = getConfiguration(loggerContext, sourceLocation.trim());
-                            if (config != null && config instanceof AbstractConfiguration) {
-                                configs.add((AbstractConfiguration) config);
+                            if (config != null) {
+                                if (config instanceof AbstractConfiguration) {
+                                    configs.add((AbstractConfiguration) config);
+                                } else {
+                                    LOGGER.error("Failed to created configuration at {}", sourceLocation);
+                                    return null;
+                                }
                             } else {
-                                LOGGER.error("Failed to created configuration at {}", sourceLocation);
-                                return null;
+                                LOGGER.warn("Unable to create configuration for {}, ignoring", sourceLocation);
                             }
                         }
-                        return new CompositeConfiguration(configs);
+                        if (configs.size() > 1) {
+                            return new CompositeConfiguration(configs);
+                        } else if (configs.size() == 1) {
+                            return configs.get(0);
+                        }
                     }
                     return getConfiguration(loggerContext, configLocationStr);
                 } else {
