@@ -393,7 +393,7 @@ public class Log4jWebInitializerImplTest {
     public void testCompositeLocationParameterSetsCompositeConfiguration() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn("mycontext");
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(
-                "/a.txt,,/WEB-INF/log4j2-mycontext.xml");
+                "log4j2-combined.xml,log4j2-override.xml");
 
         this.initializerImpl.start();
 

@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.config;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -33,10 +34,15 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
+import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
+import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Represents the source for the logging configuration.
@@ -55,6 +61,7 @@ public class ConfigurationSource {
      * ConfigurationSource to use with {@link org.apache.logging.log4j.core.config.composite.CompositeConfiguration}.
      */
     public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(EMPTY_BYTE_ARRAY, null, 0);
+    private static final String HTTPS = "https";
 
     private final File file;
     private final URL url;
@@ -319,6 +326,7 @@ public class ConfigurationSource {
             if (source != null) {
                 return source;
             }
+            return null;
         }
         if (!configLocation.isAbsolute()) { // LOG4J2-704 avoid confusing error message thrown by uri.toURL()
             ConfigurationFactory.LOGGER.error("File not found in file system or classpath: {}", configLocation.toString());
@@ -330,6 +338,8 @@ public class ConfigurationSource {
             InputStream is = urlConnection.getInputStream();
             long lastModified = urlConnection.getLastModified();
             return new ConfigurationSource(is, configLocation.toURL(), lastModified);
+        } catch (final FileNotFoundException ex) {
+            ConfigurationFactory.LOGGER.warn("Could not locate file {}", configLocation.toString());
         } catch (final MalformedURLException ex) {
             ConfigurationFactory.LOGGER.error("Invalid URL {}", configLocation.toString(), ex);
         } catch (final Exception ex) {
@@ -349,25 +359,38 @@ public class ConfigurationSource {
         if (url == null) {
             return null;
         }
-        InputStream is = null;
-        try {
-            is = url.openStream();
-        } catch (final IOException ioe) {
-            ConfigurationFactory.LOGGER.catching(Level.DEBUG, ioe);
-            return null;
-        }
-        if (is == null) {
-            return null;
-        }
+        return getConfigurationSource(url);
+    }
 
-        if (FileUtils.isFile(url)) {
-            try {
-                return new ConfigurationSource(is, FileUtils.fileFromUri(url.toURI()));
-            } catch (final URISyntaxException ex) {
-                // Just ignore the exception.
-                ConfigurationFactory.LOGGER.catching(Level.DEBUG, ex);
+    private static ConfigurationSource getConfigurationSource(URL url) {
+        try {
+            URLConnection urlConnection = url.openConnection();
+            AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
+            provider.addAuthorization(urlConnection);
+            if (url.getProtocol().equals(HTTPS)) {
+                SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
+                if (sslConfiguration != null) {
+                    ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
+                    if (!sslConfiguration.isVerifyHostName()) {
+                        ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
+                    }
+                }
             }
+            File file = FileUtils.fileFromUri(url.toURI());
+            try {
+                if (file != null) {
+                    return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
+                } else {
+                    return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
+                }
+            } catch (FileNotFoundException ex) {
+                ConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
+                return null;
+            }
+        } catch (IOException | URISyntaxException ex) {
+            ConfigurationFactory.LOGGER.warn("Error accessing {} due to {}, ignoring.", url.toString(),
+                    ex.getMessage());
+            return null;
         }
-        return new ConfigurationSource(is, url);
     }
 }
