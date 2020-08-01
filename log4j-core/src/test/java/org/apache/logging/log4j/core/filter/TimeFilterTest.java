@@ -192,7 +192,7 @@ public class TimeFilterTest {
         //assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null));
         assertSame("Time " + CLOCKTIME + " is not within range: " + filter.toString(), Filter.Result.NEUTRAL, filter.filter(event));
 
-        cal.roll(Calendar.DAY_OF_MONTH, true);
+        cal.add(Calendar.DATE, 1);
         cal.set(Calendar.HOUR_OF_DAY, 2);
         CLOCKTIME = cal.getTimeInMillis();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
