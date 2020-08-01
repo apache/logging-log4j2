@@ -1,5 +1,5 @@
 {
-  "configuration": { "status": "debug",
+  "configuration": { "status": "warn",
     "appenders": {
       "Console": {
         "name": "Console",
