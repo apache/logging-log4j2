@@ -195,7 +195,7 @@ public class FileManager extends OutputStreamManager {
                 FileTime now = FileTime.fromMillis(System.currentTimeMillis());
                 Files.setAttribute(file.toPath(), "creationTime", now);
             } catch (Exception ex) {
-                LOGGER.warn("Unable to set current file tiem for {}", filename);
+                LOGGER.warn("Unable to set current file time for {}", filename);
             }
             writeHeader(fos);
         }
