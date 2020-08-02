@@ -42,8 +42,9 @@ public class EncodingListAppender extends ListAppender {
         super(name, filter, layout, newline, raw);
     }
 
-    private class Destination implements ByteBufferDestination {
-        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4096]);
+    private static class Destination implements ByteBufferDestination {
+        // JUnit 5 stack traces can start to get looooong
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[8192]);
 
         @Override
         public ByteBuffer getByteBuffer() {

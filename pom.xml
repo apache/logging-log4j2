@@ -207,8 +207,8 @@
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
     <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
-    <surefire.plugin.version>2.21.0</surefire.plugin.version>
-    <failsafe.plugin.version>2.21.0</failsafe.plugin.version>
+    <surefire.plugin.version>2.22.2</surefire.plugin.version>
+    <failsafe.plugin.version>2.22.2</failsafe.plugin.version>
     <checkstyle.plugin.version>3.0.0</checkstyle.plugin.version>
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
     <rat.plugin.version>0.13</rat.plugin.version>
@@ -686,10 +686,32 @@
         <artifactId>jctools-core</artifactId>
         <version>${jctoolsVersion}</version>
       </dependency>
+      <!-- JUnit 5 API dependency -->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.6.2</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- JUnit 5 engine -->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.6.2</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- JUnit 4 API dependency -->
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.12</version>
+        <version>4.13</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- JUnit 4 engine -->
+      <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>5.6.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
