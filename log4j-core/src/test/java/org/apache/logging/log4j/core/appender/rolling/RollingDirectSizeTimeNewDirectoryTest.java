@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -69,17 +70,20 @@ public class RollingDirectSizeTimeNewDirectoryTest {
         assertNotNull(loggingFolders);
         // Check if two folders were created
         assertTrue("Not enough directories created", loggingFolders.length >= 2);
-        for (File dir : loggingFolders) {
+        Arrays.sort(loggingFolders);
+        for (int i = 0; i < loggingFolders.length; ++i) {
+            File dir = loggingFolders[i];
             File[] files = dir.listFiles();
             assertTrue("No files in directory " + dir.toString(), files != null && files.length > 0);
-            if (files.length < 3) {
-                System.out.println("Only " + files.length + " files created in " + dir.toString());
-                for (File logFile : files) {
-                    System.out.println("File name: " + logFile.getName() + " size: " + logFile.length());
+            if (i > 0 && i < loggingFolders.length - 1) {
+                if (files.length < 3) {
+                    System.out.println("Only " + files.length + " files created in " + dir.toString());
+                    for (File logFile : files) {
+                        System.out.println("File name: " + logFile.getName() + " size: " + logFile.length());
+                    }
+                    fail();
                 }
-                fail();
             }
-
         }
     }
 }
