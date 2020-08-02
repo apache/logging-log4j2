@@ -22,13 +22,11 @@
   <name>Apache Log4j 2</name>
   <version>2.14.0-SNAPSHOT</version>
   <parent>
-    <groupId>org.apache</groupId>
-    <artifactId>apache</artifactId>
-    <version>21</version>
+    <groupId>org.apache.logging</groupId>
+    <artifactId>logging-parent</artifactId>
+    <version>2</version>
+    <relativePath/>
   </parent>
-  <prerequisites>
-    <maven>3.0.5</maven>
-  </prerequisites>
   <description>Apache Log4j 2</description>
   <url>https://logging.apache.org/log4j/2.x/</url>
   <issueManagement>
@@ -37,7 +35,7 @@
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
-    <url>https://builds.apache.org/job/Log4j%202.x/</url>
+    <url>https://ci-builds.apache.org/job/Logging/job/log4j/</url>
   </ciManagement>
   <inceptionYear>1999</inceptionYear>
   <developers>
@@ -173,9 +171,9 @@
     </mailingList>
   </mailingLists>
   <scm>
-    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</connection>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</developerConnection>
-    <url>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</url>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</developerConnection>
+    <url>https://gitbox.apache.org/repos/asf?p=logging-log4j2.git</url>
     <tag>log4j-${Log4jReleaseVersion}</tag>
   </scm>
   <properties>
@@ -231,6 +229,7 @@
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
@@ -668,10 +667,32 @@
         <artifactId>jctools-core</artifactId>
         <version>${jctoolsVersion}</version>
       </dependency>
+      <!-- JUnit 5 API dependency -->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.6.2</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- JUnit 5 engine -->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.6.2</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- JUnit 4 API dependency -->
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.13</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- JUnit 4 engine -->
+      <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>5.6.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -695,7 +716,7 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
