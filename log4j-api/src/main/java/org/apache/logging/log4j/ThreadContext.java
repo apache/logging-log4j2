@@ -42,7 +42,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * The ThreadContext allows applications to store information either in a Map or a Stack.
  * <p>
  * <b><em>The MDC is managed on a per thread basis</em></b>. To enable automatic inheritance of <i>copies</i> of the MDC
- * to newly created threads, enable the {@value DefaultThreadContextMap#INHERITABLE_MAP} Log4j system property.
+ * to newly created threads, enable the {@value org.apache.logging.log4j.spi.DefaultThreadContextMap#INHERITABLE_MAP}
+ * Log4j system property.
  * </p>
  * @see <a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html">Thread Context Manual</a>
  */
