@@ -35,7 +35,7 @@
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
-    <url>https://builds.apache.org/job/Log4j%202.x/</url>
+    <url>https://ci-builds.apache.org/job/Logging/job/log4j/</url>
   </ciManagement>
   <inceptionYear>1999</inceptionYear>
   <developers>
