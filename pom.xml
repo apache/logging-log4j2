@@ -686,17 +686,17 @@
         <artifactId>jctools-core</artifactId>
         <version>${jctoolsVersion}</version>
       </dependency>
-      <!-- JUnit 5 API dependency -->
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>5.6.2</version>
-        <scope>test</scope>
-      </dependency>
       <!-- JUnit 5 engine -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.6.2</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- JUnit 4 to 5 migration support -->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-migrationsupport</artifactId>
         <version>5.6.2</version>
         <scope>test</scope>
       </dependency>
