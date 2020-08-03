@@ -77,7 +77,7 @@
         Update MongoDB tests to require Java 8 unconditionally now that Log4j requires Java 8.
       </action>
       <action dev="ggregory" type="update">
-		    Update mongodb3.version from 3.12.1 to 3.12.4.
+		Update mongodb3.version from 3.12.1 to 3.12.6.
       </action>
       <action dev="ggregory" type="update">
         Update com.fasterxml.jackson.* 2.10.2 -> 2.11.0.
