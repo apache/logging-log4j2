@@ -83,7 +83,7 @@
         Update com.fasterxml.jackson.* 2.10.2 -> 2.11.0.
       </action>
       <action dev="ggregory" type="update">
-        Update org.apache.activemq:activemq-broker 5.15.11 -> 5.15.12.
+        Update org.apache.activemq:activemq-broker 5.15.11 -> 5.16.0.
       </action>
       <action dev="ggregory" type="update">
         Update org.apache.commons:commons-compress 1.19 -> 1.20.
@@ -95,13 +95,19 @@
         Update org.apache.commons:commons-lang3 3.9 -> 3.10.
       </action>
       <action dev="ggregory" type="update">
-        Update org.codehaus.groovy:* 2.5.6 -> 3.0.3.
+        Update org.codehaus.groovy:* 2.5.6 -> 3.0.5.
       </action>
       <action dev="ggregory" type="update">
         Update tests junit:junit 4.12 -> 4.13.
       </action>
       <action dev="ggregory" type="update">
         Update tests commons-io:commons-io 2.6 -> 2.7.
+      </action>
+      <action dev="ggregory" type="update">
+        Update jackson 2.11.0 -> 2.11.2.
+      </action>
+      <action dev="ggregory" type="update">
+        Update tests hsqldb 2.5.0 -> 2.5.1.
       </action>
       <action issue="LOG4J2-2895" dev="ckozak" type="fix">
         Fix potential deadlock in asynchronous logging by avoiding blocking for queue space on Log4jThreads
