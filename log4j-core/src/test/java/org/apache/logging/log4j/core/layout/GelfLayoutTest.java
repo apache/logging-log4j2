@@ -220,6 +220,14 @@ public class GelfLayoutTest {
         //@formatter:on
         assertJsonEquals(expected, uncompressedString);
         assertJsonEquals(expected, uncompressedString2);
+        if (includeNullDelimiter) {
+            assertEquals(uncompressedString.indexOf('\0'), uncompressedString.length() - 1);
+            assertEquals(uncompressedString2.indexOf('\0'), uncompressedString2.length() - 1);
+        }
+        if (includeNewLineDelimiter) {
+            assertEquals(uncompressedString.indexOf('\n'), uncompressedString.length() - 1);
+            assertEquals(uncompressedString2.indexOf('\n'), uncompressedString2.length() - 1);
+        }
     }
 
     @Test
@@ -259,7 +267,7 @@ public class GelfLayoutTest {
 
     @Test
     public void testLayoutNewLineDelimiter() throws Exception {
-        testCompressedLayout(CompressionType.OFF, false, true, HOSTNAME, false, true);
+        testCompressedLayout(CompressionType.OFF, true, true, HOSTNAME, false, true);
     }
 
     @Test
