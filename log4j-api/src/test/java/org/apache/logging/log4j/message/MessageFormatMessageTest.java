@@ -19,11 +19,11 @@ package org.apache.logging.log4j.message;
 
 import org.apache.logging.log4j.junit.Mutable;
 import org.apache.logging.log4j.util.Constants;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -84,7 +84,7 @@ public class MessageFormatMessageTest {
         final String expected = "Test message Apache";
         assertEquals(expected, result);
         final Throwable t = msg.getThrowable();
-        assertNotNull("No Throwable", t);
+        assertNotNull(t, "No Throwable");
     }
 
     @Test
@@ -96,7 +96,7 @@ public class MessageFormatMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Expected most recent param value", "Test message XYZ", actual);
+        assertEquals("Test message XYZ", actual, "Expected most recent param value");
     }
 
     @Test
@@ -109,6 +109,6 @@ public class MessageFormatMessageTest {
         msg.getFormattedMessage();
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Should use initial param value", "Test message abc", actual);
+        assertEquals("Test message abc", actual, "Should use initial param value");
     }
 }

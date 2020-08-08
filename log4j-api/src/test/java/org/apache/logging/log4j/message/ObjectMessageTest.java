@@ -21,9 +21,9 @@ import java.math.BigDecimal;
 
 import org.apache.logging.log4j.junit.Mutable;
 import org.apache.logging.log4j.junit.SerialUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link ObjectMessage}.
@@ -53,7 +53,7 @@ public class ObjectMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Expected most recent param value", "XYZ", actual);
+        assertEquals("XYZ", actual, "Expected most recent param value");
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ObjectMessageTest {
         msg.getFormattedMessage();
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Should use initial param value", "abc", actual);
+        assertEquals("abc", actual, "Should use initial param value");
     }
 
     @Test

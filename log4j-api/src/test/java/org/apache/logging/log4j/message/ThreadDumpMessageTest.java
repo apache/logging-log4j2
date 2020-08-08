@@ -21,7 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -34,9 +34,9 @@ public class ThreadDumpMessageTest {
 
         final String message = msg.getFormattedMessage();
         //System.out.print(message);
-        assertTrue("No header", message.contains("Testing"));
-        assertTrue("No RUNNABLE", message.contains("RUNNABLE"));
-        assertTrue("No ThreadDumpMessage", message.contains("ThreadDumpMessage"));
+        assertTrue(message.contains("Testing"), "No header");
+        assertTrue(message.contains("RUNNABLE"), "No RUNNABLE");
+        assertTrue(message.contains("ThreadDumpMessage"), "No ThreadDumpMessage");
     }
 
 
@@ -60,9 +60,9 @@ public class ThreadDumpMessageTest {
 
         final String message = msg.getFormattedMessage();
         //System.out.print(message);
-        assertTrue("No header", message.contains("Testing"));
-        assertTrue("No RUNNABLE", message.contains("RUNNABLE"));
-        assertTrue("No ThreadDumpMessage", message.contains("ThreadDumpMessage"));
+        assertTrue(message.contains("Testing"), "No header");
+        assertTrue(message.contains("RUNNABLE"), "No RUNNABLE");
+        assertTrue(message.contains("ThreadDumpMessage"), "No ThreadDumpMessage");
         //assertTrue("No Locks", message.contains("waiting on"));
         //assertTrue("No syncronizers", message.contains("locked syncrhonizers"));
     }
@@ -90,7 +90,7 @@ public class ThreadDumpMessageTest {
         other.start();
         other.join();
 
-        assertTrue("No mention of other thread in msg", !actual[0].contains("OtherThread"));
+        assertTrue(!actual[0].contains("OtherThread"), "No mention of other thread in msg");
     }
 
     @Test
@@ -98,7 +98,7 @@ public class ThreadDumpMessageTest {
 
         final ThreadDumpMessage message = new ThreadDumpMessage("");
         final String initial = message.getFormattedMessage();
-        assertFalse("no ThreadWithCountDownLatch thread yet", initial.contains("ThreadWithCountDownLatch"));
+        assertFalse(initial.contains("ThreadWithCountDownLatch"), "no ThreadWithCountDownLatch thread yet");
 
         final CountDownLatch started = new CountDownLatch(1);
         final CountDownLatch keepAlive = new CountDownLatch(1);
@@ -108,8 +108,8 @@ public class ThreadDumpMessageTest {
 
         final StringBuilder result = new StringBuilder();
         message.formatTo(result);
-        assertFalse("no ThreadWithCountDownLatch captured",
-                result.toString().contains("ThreadWithCountDownLatch"));
+        assertFalse(
+                result.toString().contains("ThreadWithCountDownLatch"), "no ThreadWithCountDownLatch captured");
         assertEquals(initial, result.toString());
         keepAlive.countDown(); // allow thread to die
     }
