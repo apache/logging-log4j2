@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the ReusableMessageFactory class.
@@ -53,10 +53,10 @@ public class ReusableMessageFactoryTest {
     private void assertReusableParameterizeMessage(final Message message, final String txt, final Object[] params) {
         assertTrue(message instanceof ReusableParameterizedMessage);
         final ReusableParameterizedMessage msg = (ReusableParameterizedMessage) message;
-        assertTrue("reserved", msg.reserved);
+        assertTrue(msg.reserved, "reserved");
 
         assertEquals(txt, msg.getFormat());
-        assertEquals("count", msg.getParameterCount(), params.length);
+        assertEquals(msg.getParameterCount(), params.length, "count");
         final Object[] messageParams = msg.getParameters();
         for (int i = 0; i < params.length; i++) {
             assertEquals(messageParams[i], params[i]);

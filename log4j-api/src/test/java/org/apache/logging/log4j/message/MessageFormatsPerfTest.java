@@ -17,12 +17,14 @@
 package org.apache.logging.log4j.message;
 
 import org.apache.logging.log4j.util.Timer;
-import org.junit.AfterClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
+@Tag("performance")
 public class MessageFormatsPerfTest {
 
     private static final int LOOP_CNT = 500;
@@ -32,7 +34,7 @@ public class MessageFormatsPerfTest {
     private static long msgFormatTime = 0;
     private static long formattedTime = 0;
 
-    @AfterClass
+    @AfterAll
     public static void after() {
         if (stringTime > paramTime) {
             System.out.println(String.format("Parameterized is %1$.2f times faster than StringFormat.",

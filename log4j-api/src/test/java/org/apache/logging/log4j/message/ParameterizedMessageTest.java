@@ -17,9 +17,9 @@
 package org.apache.logging.log4j.message;
 
 import org.apache.logging.log4j.junit.Mutable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -135,11 +135,11 @@ public class ParameterizedMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Should use current param value", "Test message XYZ", actual);
+        assertEquals("Test message XYZ", actual, "Should use current param value");
 
         // modify parameter after calling msg.getFormattedMessage
         param.set("000");
         final String after = msg.getFormattedMessage();
-        assertEquals("Should not change after rendered once", "Test message XYZ", after);
+        assertEquals("Test message XYZ", after, "Should not change after rendered once");
     }
 }
