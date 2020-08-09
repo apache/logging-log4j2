@@ -1,13 +1,3 @@
-package org.apache.logging.log4j.util;
-
-import java.util.Properties;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import org.junit.Test;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -25,9 +15,21 @@ import org.junit.Test;
  * limitations under the license.
  */
 
+package org.apache.logging.log4j.util;
+
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 /**
  * Tests https://issues.apache.org/jira/browse/LOG4J2-2276.
  */
+@Tag("concurrency")
 public class SystemPropertiesPropertySourceTest {
 
     private static final int ITERATIONS = 10000;
@@ -48,22 +50,15 @@ public class SystemPropertiesPropertySourceTest {
     public void testMultiThreadedAccess() throws InterruptedException, ExecutionException {
         ExecutorService threadPool = Executors.newSingleThreadExecutor();
         try {
-            Future<?> future = threadPool.submit(new Runnable() {
-
-                @Override
-                public void run() {
-                    final Properties properties = System.getProperties();
-                    for (int i = 0; i < ITERATIONS; i++) {
-                        properties.setProperty("FOO_" + i, "BAR");
-                    }
+            Future<?> future = threadPool.submit(() -> {
+                final Properties properties = System.getProperties();
+                for (int i = 0; i < ITERATIONS; i++) {
+                    properties.setProperty("FOO_" + i, "BAR");
                 }
             });
             for (int i = 0; i < ITERATIONS; i++)
-                new SystemPropertiesPropertySource().forEach(new BiConsumer<String, String>() {
-                    @Override
-                    public void accept(final String key, final String value) {
-                        // nothing
-                    }
+                new SystemPropertiesPropertySource().forEach((key, value) -> {
+                    // nothing
                 });
             future.get();
         } finally {

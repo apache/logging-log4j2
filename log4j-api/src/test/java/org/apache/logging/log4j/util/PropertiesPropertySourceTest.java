@@ -16,30 +16,20 @@
  */
 package org.apache.logging.log4j.util;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import static org.junit.Assert.assertEquals;
 
-@RunWith(Parameterized.class)
 public class PropertiesPropertySourceTest {
 
     private final PropertySource source = new PropertiesPropertySource(new Properties());
-    private final CharSequence expected;
-    private final List<? extends CharSequence> tokens;
 
-    public PropertiesPropertySourceTest(final String expected, final List<CharSequence> tokens) {
-        this.expected = expected;
-        this.tokens = tokens;
-    }
-
-    @Parameterized.Parameters(name = "{0}")
     public static Object[][] data() {
         return new Object[][]{
             {"log4j2.configurationFile", Arrays.asList("configuration", "file")},
@@ -49,8 +39,9 @@ public class PropertiesPropertySourceTest {
         };
     }
 
-    @Test
-    public void testNormalFormFollowsCamelCaseConventions() throws Exception {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testNormalFormFollowsCamelCaseConventions(final String expected, final List<CharSequence> tokens) {
         assertEquals(expected, source.getNormalForm(tokens));
     }
 }

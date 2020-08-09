@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.TestLoggerContext;
+import org.apache.logging.log4j.spi.LoggerContext;
+import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.TestLoggerContext;
-import org.apache.logging.log4j.spi.LoggerContext;
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProviderUtilTest {
 
@@ -37,10 +37,10 @@ public class ProviderUtilTest {
         worker.setContextClassLoader(classLoader);
         worker.start();
         worker.join();
-        assertTrue("Incorrect LoggerContext", worker.context instanceof TestLoggerContext);
+        assertTrue(worker.context instanceof TestLoggerContext, "Incorrect LoggerContext");
     }
 
-    private class Worker extends Thread {
+    private static class Worker extends Thread {
         LoggerContext context = null;
 
         @Override

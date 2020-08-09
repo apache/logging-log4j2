@@ -14,38 +14,41 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.junit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.junit.rules.ExternalResource;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
- * Sets the {@link LogManager}'s {@link LoggerContextFactory} to the given instance before the test and restores it to
- * the original value after the test.
+ * JUnit 5 extension that sets a particular {@link LoggerContextFactory} for the entire run of tests in a class.
  *
- * @deprecated Use {@link LoggerContextFactoryExtension}
+ * @since 3.0.0
  */
-public class LogManagerLoggerContextFactoryRule extends ExternalResource {
+public class LoggerContextFactoryExtension implements BeforeAllCallback, AfterAllCallback {
 
+    private static final String KEY = "previousFactory";
     private final LoggerContextFactory loggerContextFactory;
 
-    private LoggerContextFactory restoreLoggerContextFactory;
-
-    public LogManagerLoggerContextFactoryRule(final LoggerContextFactory loggerContextFactory) {
-        super();
+    public LoggerContextFactoryExtension(LoggerContextFactory loggerContextFactory) {
         this.loggerContextFactory = loggerContextFactory;
     }
 
     @Override
-    protected void after() {
-        LogManager.setFactory(this.restoreLoggerContextFactory);
+    public void beforeAll(ExtensionContext context) throws Exception {
+        getStore(context).put(KEY, LogManager.getFactory());
+        LogManager.setFactory(loggerContextFactory);
     }
 
     @Override
-    protected void before() throws Throwable {
-        this.restoreLoggerContextFactory = LogManager.getFactory();
-        LogManager.setFactory(this.loggerContextFactory);
+    public void afterAll(ExtensionContext context) throws Exception {
+        LogManager.setFactory(getStore(context).get(KEY, LoggerContextFactory.class));
     }
 
+    private ExtensionContext.Store getStore(ExtensionContext context) {
+        return context.getStore(ExtensionContext.Namespace.create(getClass(), context.getRequiredTestClass()));
+    }
 }

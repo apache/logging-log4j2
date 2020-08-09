@@ -16,17 +16,15 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.util.Timer;
+
 import java.util.Map;
 
-import org.apache.logging.log4j.util.Timer;
-import org.apache.logging.log4j.ThreadContext;
-import static org.junit.Assert.*;
-
-
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreadContextUtilityClass {
 
-    public static void perfTest() throws Exception {
+    public static void perfTest() {
         ThreadContext.clearMap();
         final Timer complete = new Timer("ThreadContextTest");
         complete.start();
@@ -92,13 +90,13 @@ public class ThreadContextUtilityClass {
         ThreadContext.clearMap();
         ThreadContext.put("key", "val");
         final Map<String, String> immutable = ThreadContext.getImmutableContext();
-        immutable.put("otherkey", "otherval");
+        assertThrows(UnsupportedOperationException.class, () -> immutable.put("otherkey", "otherval"));
     }
 
     public static void testGetImmutableContextReturnsImmutableMapIfEmpty() {
         ThreadContext.clearMap();
         final Map<String, String> immutable = ThreadContext.getImmutableContext();
-        immutable.put("otherkey", "otherval");
+        assertThrows(UnsupportedOperationException.class, () -> immutable.put("otherkey", "otherval"));
     }
 
     public static void testGetImmutableStackReturnsEmptyStackIfEmpty() {

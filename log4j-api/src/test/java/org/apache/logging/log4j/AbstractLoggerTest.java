@@ -17,14 +17,10 @@
 package org.apache.logging.log4j;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.apache.logging.log4j.junit.StatusLoggerRule;
+import org.apache.logging.log4j.junit.StatusLoggerLevelExtension;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -35,14 +31,11 @@ import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.util.List;
 
-/**
- *
- */
 public class AbstractLoggerTest {
 
     private static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");
@@ -50,24 +43,24 @@ public class AbstractLoggerTest {
     // TODO add proper tests for ReusableMessage
 
     @SuppressWarnings("ThrowableInstanceNeverThrown")
-    private static Throwable t = new UnsupportedOperationException("Test");
+    private static final Throwable t = new UnsupportedOperationException("Test");
 
-    private static Class<AbstractLogger> obj = AbstractLogger.class;
-    private static String pattern = "{}, {}";
-    private static String p1 = "Long Beach";
+    private static final Class<AbstractLogger> obj = AbstractLogger.class;
+    private static final String pattern = "{}, {}";
+    private static final String p1 = "Long Beach";
 
-    private static String p2 = "California";
-    private static Message charSeq = new SimpleMessage(CHAR_SEQ);
-    private static Message simple = new SimpleMessage("Hello");
-    private static Message object = new ObjectMessage(obj);
+    private static final String p2 = "California";
+    private static final Message charSeq = new SimpleMessage(CHAR_SEQ);
+    private static final Message simple = new SimpleMessage("Hello");
+    private static final Message object = new ObjectMessage(obj);
 
-    private static Message param = new ParameterizedMessage(pattern, p1, p2);
+    private static final Message param = new ParameterizedMessage(pattern, p1, p2);
 
     private static final Marker MARKER = MarkerManager.getMarker("TEST");
     private static final String MARKER_NAME = "TEST";
 
-    @Rule
-    public StatusLoggerRule status = new StatusLoggerRule(Level.WARN);
+    @RegisterExtension
+    public StatusLoggerLevelExtension status = new StatusLoggerLevelExtension(Level.WARN);
 
     private static final LogEvent[] EVENTS = new LogEvent[] {
         new LogEvent(null, simple, null),
@@ -147,8 +140,8 @@ public class AbstractLoggerTest {
         logger.setCurrentEvent(EVENTS[18]);
         logger.debug(MARKER, CHAR_SEQ, t);
 
-        assertEquals("log(CharSeq) invocations", 4, logger.getCharSeqCount());
-        assertEquals("log(Object) invocations", 5, logger.getObjectCount());
+        assertEquals(4, logger.getCharSeqCount(), "log(CharSeq) invocations");
+        assertEquals(5, logger.getObjectCount(), "log(Object) invocations");
     }
 
     @Test
@@ -202,8 +195,8 @@ public class AbstractLoggerTest {
         logger.setCurrentEvent(EVENTS[18]);
         logger.error(MARKER, CHAR_SEQ, t);
 
-        assertEquals("log(CharSeq) invocations", 4, logger.getCharSeqCount());
-        assertEquals("log(Object) invocations", 5, logger.getObjectCount());
+        assertEquals(4, logger.getCharSeqCount(), "log(CharSeq) invocations");
+        assertEquals(5, logger.getObjectCount(), "log(Object) invocations");
     }
 
     @Test
@@ -257,8 +250,8 @@ public class AbstractLoggerTest {
         logger.setCurrentEvent(EVENTS[18]);
         logger.fatal(MARKER, CHAR_SEQ, t);
 
-        assertEquals("log(CharSeq) invocations", 4, logger.getCharSeqCount());
-        assertEquals("log(Object) invocations", 5, logger.getObjectCount());
+        assertEquals(4, logger.getCharSeqCount(), "log(CharSeq) invocations");
+        assertEquals(5, logger.getObjectCount(), "log(Object) invocations");
     }
 
     @Test
@@ -312,8 +305,8 @@ public class AbstractLoggerTest {
         logger.setCurrentEvent(EVENTS[18]);
         logger.info(MARKER, CHAR_SEQ, t);
 
-        assertEquals("log(CharSeq) invocations", 4, logger.getCharSeqCount());
-        assertEquals("log(Object) invocations", 5, logger.getObjectCount());
+        assertEquals(4, logger.getCharSeqCount(), "log(CharSeq) invocations");
+        assertEquals(5, logger.getObjectCount(), "log(Object) invocations");
     }
 
     @Test
@@ -367,8 +360,8 @@ public class AbstractLoggerTest {
         logger.setCurrentEvent(EVENTS[18]);
         logger.log(Level.DEBUG, MARKER, CHAR_SEQ, t);
 
-        assertEquals("log(CharSeq) invocations", 4, logger.getCharSeqCount());
-        assertEquals("log(Object) invocations", 5, logger.getObjectCount());
+        assertEquals(4, logger.getCharSeqCount(), "log(CharSeq) invocations");
+        assertEquals(5, logger.getObjectCount(), "log(Object) invocations");
     }
 
     @Test
@@ -422,8 +415,8 @@ public class AbstractLoggerTest {
         logger.setCurrentEvent(EVENTS[18]);
         logger.log(Level.ERROR, MARKER, CHAR_SEQ, t);
 
-        assertEquals("log(CharSeq) invocations", 4, logger.getCharSeqCount());
-        assertEquals("log(Object) invocations", 5, logger.getObjectCount());
+        assertEquals(4, logger.getCharSeqCount(), "log(CharSeq) invocations");
+        assertEquals(5, logger.getObjectCount(), "log(Object) invocations");
     }
 
     @Test
@@ -477,8 +470,8 @@ public class AbstractLoggerTest {
         logger.setCurrentEvent(EVENTS[18]);
         logger.log(Level.FATAL, MARKER, CHAR_SEQ, t);
 
-        assertEquals("log(CharSeq) invocations", 4, logger.getCharSeqCount());
-        assertEquals("log(Object) invocations", 5, logger.getObjectCount());
+        assertEquals(4, logger.getCharSeqCount(), "log(CharSeq) invocations");
+        assertEquals(5, logger.getObjectCount(), "log(Object) invocations");
     }
 
     @Test
@@ -532,8 +525,8 @@ public class AbstractLoggerTest {
         logger.setCurrentEvent(EVENTS[18]);
         logger.log(Level.INFO, MARKER, CHAR_SEQ, t);
 
-        assertEquals("log(CharSeq) invocations", 4, logger.getCharSeqCount());
-        assertEquals("log(Object) invocations", 5, logger.getObjectCount());
+        assertEquals(4, logger.getCharSeqCount(), "log(CharSeq) invocations");
+        assertEquals(5, logger.getObjectCount(), "log(Object) invocations");
     }
 
     @Test
@@ -587,8 +580,8 @@ public class AbstractLoggerTest {
         logger.setCurrentEvent(EVENTS[18]);
         logger.log(Level.TRACE, MARKER, CHAR_SEQ, t);
 
-        assertEquals("log(CharSeq) invocations", 4, logger.getCharSeqCount());
-        assertEquals("log(Object) invocations", 5, logger.getObjectCount());
+        assertEquals(4, logger.getCharSeqCount(), "log(CharSeq) invocations");
+        assertEquals(5, logger.getObjectCount(), "log(Object) invocations");
     }
 
     @Test
@@ -642,8 +635,8 @@ public class AbstractLoggerTest {
         logger.setCurrentEvent(EVENTS[18]);
         logger.log(Level.WARN, MARKER, CHAR_SEQ, t);
 
-        assertEquals("log(CharSeq) invocations", 4, logger.getCharSeqCount());
-        assertEquals("log(Object) invocations", 5, logger.getObjectCount());
+        assertEquals(4, logger.getCharSeqCount(), "log(CharSeq) invocations");
+        assertEquals(5, logger.getObjectCount(), "log(Object) invocations");
     }
 
     @Test
@@ -697,8 +690,8 @@ public class AbstractLoggerTest {
         logger.setCurrentEvent(EVENTS[18]);
         logger.trace(MARKER, CHAR_SEQ, t);
 
-        assertEquals("log(CharSeq) invocations", 4, logger.getCharSeqCount());
-        assertEquals("log(Object) invocations", 5, logger.getObjectCount());
+        assertEquals(4, logger.getCharSeqCount(), "log(CharSeq) invocations");
+        assertEquals(5, logger.getObjectCount(), "log(Object) invocations");
     }
 
     @Test
@@ -752,8 +745,8 @@ public class AbstractLoggerTest {
         logger.setCurrentEvent(EVENTS[18]);
         logger.warn(MARKER, CHAR_SEQ, t);
 
-        assertEquals("log(CharSeq) invocations", 4, logger.getCharSeqCount());
-        assertEquals("log(Object) invocations", 5, logger.getObjectCount());
+        assertEquals(4, logger.getCharSeqCount(), "log(CharSeq) invocations");
+        assertEquals(5, logger.getObjectCount(), "log(Object) invocations");
     }
 
     @Test
@@ -804,12 +797,7 @@ public class AbstractLoggerTest {
     public void testMessageSupplierWithThrowable() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(true);
         final ThrowableMessage message = new ThrowableMessage(t);
-        final MessageSupplier supplier = new MessageSupplier() {
-            @Override
-            public Message get() {
-                return message;
-            }
-        };
+        final MessageSupplier supplier = () -> message;
 
         logger.debug(supplier);
         logger.error(supplier);
@@ -832,12 +820,7 @@ public class AbstractLoggerTest {
     public void testMessageSupplierWithoutThrowable() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
         final ThrowableMessage message = new ThrowableMessage(null);
-        final MessageSupplier supplier = new MessageSupplier() {
-            @Override
-            public Message get() {
-                return message;
-            }
-        };
+        final MessageSupplier supplier = () -> message;
 
         logger.debug(supplier);
         logger.error(supplier);
@@ -860,12 +843,7 @@ public class AbstractLoggerTest {
     public void testSupplierWithThrowable() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(true);
         final ThrowableMessage message = new ThrowableMessage(t);
-        final Supplier<Message> supplier = new Supplier<Message>() {
-            @Override
-            public Message get() {
-                return message;
-            }
-        };
+        final Supplier<Message> supplier = () -> message;
 
         logger.debug(supplier);
         logger.error(supplier);
@@ -915,11 +893,8 @@ public class AbstractLoggerTest {
     @Test
     public void testMessageThrows() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
-        logger.error(new TestMessage(new TestMessage.FormattedMessageSupplier() {
-            @Override
-            public String getFormattedMessage() {
-                throw new IllegalStateException("Oops!");
-            }
+        logger.error(new TestMessage(() -> {
+            throw new IllegalStateException("Oops!");
         }, "Message Format"));
         List<StatusData> statusDatalist = StatusLogger.getLogger().getStatusData();
         StatusData mostRecent = statusDatalist.get(statusDatalist.size() - 1);
@@ -932,11 +907,8 @@ public class AbstractLoggerTest {
     @Test
     public void testMessageThrowsAndNullFormat() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
-        logger.error(new TestMessage(new TestMessage.FormattedMessageSupplier() {
-            @Override
-            public String getFormattedMessage() {
-                throw new IllegalStateException("Oops!");
-            }
+        logger.error(new TestMessage(() -> {
+            throw new IllegalStateException("Oops!");
         }, null /* format */));
         List<StatusData> statusDatalist = StatusLogger.getLogger().getStatusData();
         StatusData mostRecent = statusDatalist.get(statusDatalist.size() - 1);
@@ -1014,7 +986,7 @@ public class AbstractLoggerTest {
 
         @Override
         public boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
-            assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level, level.equals(currentLevel));
+            assertEquals(level, currentLevel, "Incorrect Level. Expected " + currentLevel + ", actual " + level);
             if (marker == null) {
                 if (currentEvent.markerName != null) {
                     fail("Incorrect marker. Expected " + currentEvent.markerName + ", actual is null");
@@ -1023,8 +995,8 @@ public class AbstractLoggerTest {
                 if (currentEvent.markerName == null) {
                     fail("Incorrect marker. Expected null. Actual is " + marker.getName());
                 } else {
-                    assertTrue("Incorrect marker. Expected " + currentEvent.markerName + ", actual " +
-                            marker.getName(), currentEvent.markerName.equals(marker.getName()));
+                    assertEquals(currentEvent.markerName, marker.getName(),
+                            "Incorrect marker. Expected " + currentEvent.markerName + ", actual " + marker.getName());
                 }
             }
             if (data == null) {
@@ -1035,11 +1007,12 @@ public class AbstractLoggerTest {
                 if (currentEvent.data == null) {
                     fail("Incorrect message. Expected null. Actual is " + data.getFormattedMessage());
                 } else {
-                    assertTrue("Incorrect message type. Expected " + currentEvent.data + ", actual " + data,
-                            data.getClass().isAssignableFrom(currentEvent.data.getClass()));
-                    assertTrue("Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
-                                    data.getFormattedMessage(),
-                            currentEvent.data.getFormattedMessage().equals(data.getFormattedMessage()));
+                    assertTrue(
+                            data.getClass().isAssignableFrom(currentEvent.data.getClass()),
+                            "Incorrect message type. Expected " + currentEvent.data + ", actual " + data);
+                    assertEquals(currentEvent.data.getFormattedMessage(), data.getFormattedMessage(),
+                            "Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
+                                    data.getFormattedMessage());
                 }
             }
             if (t == null) {
@@ -1050,8 +1023,7 @@ public class AbstractLoggerTest {
                 if (currentEvent.t == null) {
                     fail("Incorrect Throwable. Expected null. Actual is " + t);
                 } else {
-                    assertTrue("Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t,
-                            currentEvent.t.equals(t));
+                    assertEquals(currentEvent.t, t, "Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t);
                 }
             }
             return true;
@@ -1155,7 +1127,7 @@ public class AbstractLoggerTest {
 
         @Override
         public void logMessage(final String fqcn, final Level level, final Marker marker, final Message data, final Throwable t) {
-            assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level, level.equals(currentLevel));
+            assertEquals(level, currentLevel, "Incorrect Level. Expected " + currentLevel + ", actual " + level);
             if (marker == null) {
                 if (currentEvent.markerName != null) {
                     fail("Incorrect marker. Expected " + currentEvent.markerName + ", actual is null");
@@ -1164,8 +1136,8 @@ public class AbstractLoggerTest {
                 if (currentEvent.markerName == null) {
                     fail("Incorrect marker. Expected null. Actual is " + marker.getName());
                 } else {
-                    assertTrue("Incorrect marker. Expected " + currentEvent.markerName + ", actual " +
-                            marker.getName(), currentEvent.markerName.equals(marker.getName()));
+                    assertEquals(currentEvent.markerName, marker.getName(),
+                            "Incorrect marker. Expected " + currentEvent.markerName + ", actual " + marker.getName());
                 }
             }
             if (data == null) {
@@ -1176,11 +1148,12 @@ public class AbstractLoggerTest {
                 if (currentEvent.data == null) {
                     fail("Incorrect message. Expected null. Actual is " + data.getFormattedMessage());
                 } else {
-                    assertTrue("Incorrect message type. Expected " + currentEvent.data + ", actual " + data,
-                            data.getClass().isAssignableFrom(currentEvent.data.getClass()));
-                    assertTrue("Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
-                                    data.getFormattedMessage(),
-                            currentEvent.data.getFormattedMessage().equals(data.getFormattedMessage()));
+                    assertTrue(
+                            data.getClass().isAssignableFrom(currentEvent.data.getClass()),
+                            "Incorrect message type. Expected " + currentEvent.data + ", actual " + data);
+                    assertEquals(currentEvent.data.getFormattedMessage(), data.getFormattedMessage(),
+                            "Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
+                                    data.getFormattedMessage());
                 }
             }
             if (t == null) {
@@ -1191,8 +1164,7 @@ public class AbstractLoggerTest {
                 if (currentEvent.t == null) {
                     fail("Incorrect Throwable. Expected null. Actual is " + t);
                 } else {
-                    assertTrue("Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t,
-                            currentEvent.t.equals(t));
+                    assertEquals(currentEvent.t, t, "Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t);
                 }
             }
         }
@@ -1302,9 +1274,9 @@ public class AbstractLoggerTest {
         @Override
         public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
             if(expectingThrowables) {
-                assertNotNull("Expected a Throwable but received null!", t);
+                assertNotNull(t, "Expected a Throwable but received null!");
             } else {
-                assertNull("Expected null but received a Throwable! "+t, t);
+                assertNull(t, "Expected null but received a Throwable! "+t);
             }
             if (message != null) {
                 message.getFormattedMessage();
@@ -1318,9 +1290,6 @@ public class AbstractLoggerTest {
     }
 
     private static class ThrowableMessage implements Message {
-        /**
-         * 
-         */
         private static final long serialVersionUID = 1L;
         private final Throwable throwable;
 

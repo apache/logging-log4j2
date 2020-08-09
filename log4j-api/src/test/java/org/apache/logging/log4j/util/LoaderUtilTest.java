@@ -16,19 +16,19 @@
  */
 package org.apache.logging.log4j.util;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LoaderUtilTest {
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     public void reset() {
         LoaderUtil.forceTcclOnly = null;
     }
