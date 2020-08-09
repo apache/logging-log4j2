@@ -24,6 +24,7 @@ import java.io.Serializable;
  *
  * @deprecated MessageFactory has default methods that implement all the methods that were here.
  */
+@Deprecated
 public abstract class AbstractMessageFactory implements MessageFactory, Serializable {
     private static final long serialVersionUID = -1307891137684031187L;
 

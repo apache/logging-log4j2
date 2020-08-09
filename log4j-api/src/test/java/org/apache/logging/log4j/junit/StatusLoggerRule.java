@@ -27,6 +27,7 @@ import org.junit.rules.ExternalResource;
  * @since 2.8
  * @deprecated Use {@link StatusLoggerLevelExtension}
  */
+@Deprecated
 public class StatusLoggerRule extends ExternalResource {
 
     private final StatusLogger statusLogger = StatusLogger.getLogger();

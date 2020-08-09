@@ -866,12 +866,7 @@ public class AbstractLoggerTest {
     public void testSupplierWithoutThrowable() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
         final ThrowableMessage message = new ThrowableMessage(null);
-        final Supplier<Message> supplier = new Supplier<Message>() {
-            @Override
-            public Message get() {
-                return message;
-            }
-        };
+        final Supplier<Message> supplier = () -> message;
 
         logger.debug(supplier);
         logger.error(supplier);
@@ -919,6 +914,7 @@ public class AbstractLoggerTest {
     }
 
     private static final class TestMessage implements Message {
+        private static final long serialVersionUID = 1L;
         private final FormattedMessageSupplier formattedMessageSupplier;
         private final String format;
         TestMessage(FormattedMessageSupplier formattedMessageSupplier, String format) {

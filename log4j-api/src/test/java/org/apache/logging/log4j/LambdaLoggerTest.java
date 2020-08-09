@@ -209,8 +209,8 @@ public class LambdaLoggerTest {
 
     final MySupplier supplier = new MySupplier();
     final MySupplier supplier2 = new MySupplier();
-    final Supplier[] supplierArray1 = new Supplier[] {supplier};
-    final Supplier[] supplierArray2 = new Supplier[] {supplier, supplier2};
+    final Supplier<?>[] supplierArray1 = new Supplier<?>[] {supplier};
+    final Supplier<?>[] supplierArray2 = new Supplier<?>[] {supplier, supplier2};
 
     @BeforeEach
     public void beforeEachTest() {

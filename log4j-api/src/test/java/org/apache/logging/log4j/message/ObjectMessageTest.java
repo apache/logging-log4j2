@@ -83,6 +83,11 @@ public class ObjectMessageTest {
             public boolean equals(final Object other) {
                 return other instanceof NonSerializable; // a very lenient equals()
             }
+
+            @Override
+            public int hashCode() {
+                return NonSerializable.class.hashCode();
+            }
         }
         final NonSerializable nonSerializable = new NonSerializable();
         assertFalse(nonSerializable instanceof Serializable);

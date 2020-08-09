@@ -26,6 +26,7 @@ import org.junit.rules.ExternalResource;
  *
  * @deprecated Use {@link LoggerContextFactoryExtension}
  */
+@Deprecated
 public class LogManagerLoggerContextFactoryRule extends ExternalResource {
 
     private final LoggerContextFactory loggerContextFactory;
