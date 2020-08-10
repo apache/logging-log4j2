@@ -106,6 +106,10 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         strLookupMap.put("base64", new Base64StrLookup());
         strLookupMap.put("lower", new LowerLookup());
         strLookupMap.put("upper", new UpperLookup());
+
+        // Custom lookup implements defined by SPI.
+        strLookupMap.put("custom", new CustomLookup());
+
         // JNDI
         try {
             // [LOG4J2-703] We might be on Android
