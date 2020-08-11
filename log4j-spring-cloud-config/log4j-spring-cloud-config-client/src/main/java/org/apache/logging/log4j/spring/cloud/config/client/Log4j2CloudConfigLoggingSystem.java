@@ -86,7 +86,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
         PropertiesUtil props = new PropertiesUtil(new Properties());
         String location = props.getStringProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         if (location != null) {
-            List<String> list = Arrays.asList(super.getStandardConfigLocations());
+            List<String> list = new ArrayList<>(Arrays.asList(super.getStandardConfigLocations()));
             list.add(location);
             locations = list.toArray(new String[0]);
         }
