@@ -108,10 +108,10 @@
         <artifactId>log4j-couchdb</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- MongoDB 2 Appender Plugin -->
+      <!-- MongoDB 4 Appender Plugin -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-mongodb2</artifactId>
+        <artifactId>log4j-mongodb4</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- MongoDB 3 Appender Plugin -->
@@ -166,6 +166,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-kubernetes</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Spring Boot support  -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-spring-boot</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Spring Cloud Config Client -->

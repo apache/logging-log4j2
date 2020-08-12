@@ -31,9 +31,9 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <revapi.skip>true</revapi.skip>
-    <spring-cloud-version>Greenwich.SR1</spring-cloud-version>
-    <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
-    <springVersion>5.1.8.RELEASE</springVersion>
+    <spring-cloud-version>Hoxton.SR7</spring-cloud-version>
+    <spring-boot.version>2.3.2.RELEASE</spring-boot.version>
+    <springVersion>5.2.8.RELEASE</springVersion>
     <log4jParentDir>${basedir}/..</log4jParentDir>
   </properties>
   <dependencyManagement>
@@ -47,7 +47,7 @@
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot</artifactId>
+        <artifactId>spring-boot-starter-parent</artifactId>
         <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>

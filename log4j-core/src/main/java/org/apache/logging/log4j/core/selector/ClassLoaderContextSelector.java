@@ -121,6 +121,12 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
             final URI configLocation) {
+        return getContext(fqcn, loader, null, currentContext, configLocation);
+    }
+
+    @Override
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
+            final boolean currentContext, final URI configLocation) {
         if (currentContext) {
             final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             if (ctx != null) {
@@ -128,11 +134,11 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             }
             return getDefault();
         } else if (loader != null) {
-            return locateContext(loader, configLocation);
+            return locateContext(loader, entry, configLocation);
         } else {
             final Class<?> clazz = StackLocatorUtil.getCallerClass(fqcn);
             if (clazz != null) {
-                return locateContext(clazz.getClassLoader(), configLocation);
+                return locateContext(clazz.getClassLoader(), entry, configLocation);
             }
             final LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
             if (lc != null) {
@@ -165,7 +171,8 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
         return Collections.unmodifiableList(list);
     }
 
-    private LoggerContext locateContext(final ClassLoader loaderOrNull, final URI configLocation) {
+    private LoggerContext locateContext(final ClassLoader loaderOrNull, final Map.Entry<String, Object> entry,
+            final URI configLocation) {
         // LOG4J2-477: class loader may be null
         final ClassLoader loader = loaderOrNull != null ? loaderOrNull : ClassLoader.getSystemClassLoader();
         final String name = toContextMapKey(loader);
@@ -204,6 +211,9 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
                 }
             }
             LoggerContext ctx = createContext(name, configLocation);
+            if (entry != null) {
+                ctx.putObject(entry.getKey(), entry.getValue());
+            }
             LoggerContext newContext = CONTEXT_MAP.computeIfAbsent(name,
                     k -> new AtomicReference<>(new WeakReference<>(ctx))).get().get();
             if (newContext == ctx) {
@@ -214,6 +224,9 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
         final WeakReference<LoggerContext> weakRef = ref.get();
         LoggerContext ctx = weakRef.get();
         if (ctx != null) {
+            if (entry != null && ctx.getObject(entry.getKey()) == null) {
+                ctx.putObject(entry.getKey(), entry.getValue());
+            }
             if (ctx.getConfigLocation() == null && configLocation != null) {
                 LOGGER.debug("Setting configuration to {}", configLocation);
                 ctx.setConfigLocation(configLocation);
@@ -225,6 +238,9 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             return ctx;
         }
         ctx = createContext(name, configLocation);
+        if (entry != null) {
+            ctx.putObject(entry.getKey(), entry.getValue());
+        }
         ref.compareAndSet(weakRef, new WeakReference<>(ctx));
         return ctx;
     }

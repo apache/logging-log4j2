@@ -164,6 +164,28 @@ public final class Configurator {
         return null;
     }
 
+    /**
+     * Initializes the Logging Context.
+     * @param name The Context name.
+     * @param loader The ClassLoader for the Context (or null).
+     * @param configLocation The configuration for the logging context (or null).
+     * @param entry The external context entry to be attached to the LoggerContext
+     * @return The LoggerContext.
+     */
+    public static LoggerContext initialize(final String name, final ClassLoader loader, final URI configLocation,
+            final Map.Entry<String, Object> entry) {
+
+        try {
+            final Log4jContextFactory factory = getFactory();
+            return factory == null ? null :
+                    factory.getContext(FQCN, loader, entry, false, configLocation, name);
+        } catch (final Exception ex) {
+            LOGGER.error("There was a problem initializing the LoggerContext [{}] using configuration at [{}].",
+                    name, configLocation, ex);
+        }
+        return null;
+    }
+
     public static LoggerContext initialize(final String name, final ClassLoader loader, final List<URI> configLocations,
             final Object externalContext) {
         try {

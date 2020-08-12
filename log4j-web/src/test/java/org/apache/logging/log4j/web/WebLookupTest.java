@@ -48,7 +48,7 @@ public class WebLookupTest {
             initializer.setLoggerContext();
             final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             assertNotNull("No LoggerContext", ctx);
-            assertNotNull("No ServletContext", ctx.getExternalContext());
+            assertNotNull("No ServletContext", WebLoggerContextUtils.getServletContext());
             final Configuration config = ctx.getConfiguration();
             assertNotNull("No Configuration", config);
             final StrSubstitutor substitutor = config.getStrSubstitutor();
@@ -90,7 +90,7 @@ public class WebLookupTest {
         initializer.setLoggerContext();
         final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         assertNotNull("No LoggerContext", ctx);
-        assertNotNull("No ServletContext", ctx.getExternalContext());
+        assertNotNull("No ServletContext", WebLoggerContextUtils.getServletContext());
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No Configuration", config);
         final Map<String, Appender> appenders = config.getAppenders();
