@@ -181,6 +181,12 @@
       </action>
     </release>
     <release version="2.14.0" date="2020-MM-DD" description="GA Release 2.14.0">
+      <action issue="LOG4J2-2908" dev="rgoers" type="fix">
+        Move Spring Lookup and Spring PropertySource to its own module.
+      </action>
+      <action issue="LOG4J2-2910" dev="rgoers" type="fix">
+        Log4j-web should now stores the servlet context as a map entry instead of in the single external context field.
+      </action>
       <action issue="LOG4J2-2822" dev="rgoers" type="fix">
         Javadoc link in ThreadContext description was incorrect.
       </action>

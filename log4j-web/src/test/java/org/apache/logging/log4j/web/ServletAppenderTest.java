@@ -51,7 +51,7 @@ public class ServletAppenderTest {
             initializer.setLoggerContext();
             final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             assertNotNull("No LoggerContext", ctx);
-            assertNotNull("No ServletContext", ctx.getExternalContext());
+            assertNotNull("No ServletContext", WebLoggerContextUtils.getServletContext());
             final Configuration configuration = ctx.getConfiguration();
             assertNotNull("No configuration", configuration);
             final Appender appender = configuration.getAppender("Servlet");

@@ -14,12 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.spring.cloud.config.client;
+package org.apache.logging.log4j.spring.boot;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.springframework.core.env.Environment;
 

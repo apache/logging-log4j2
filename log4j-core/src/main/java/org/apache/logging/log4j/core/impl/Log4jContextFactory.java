@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.logging.log4j.core.LifeCycle;
@@ -234,6 +235,26 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         }
         if (name != null) {
         	ctx.setName(name);
+        }
+        if (ctx.getState() == LifeCycle.State.INITIALIZED) {
+            if (configLocation != null || name != null) {
+                ContextAnchor.THREAD_CONTEXT.set(ctx);
+                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, name, configLocation);
+                LOGGER.debug("Starting LoggerContext[name={}] from configuration at {}", ctx.getName(), configLocation);
+                ctx.start(config);
+                ContextAnchor.THREAD_CONTEXT.remove();
+            } else {
+                ctx.start();
+            }
+        }
+        return ctx;
+    }
+
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
+            final boolean currentContext, final URI configLocation, final String name) {
+        final LoggerContext ctx = selector.getContext(fqcn, loader, entry, currentContext, configLocation);
+        if (name != null) {
+            ctx.setName(name);
         }
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (configLocation != null || name != null) {

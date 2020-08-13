@@ -14,13 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.spring.cloud.config.client;
-
-import org.apache.logging.log4j.LogManager;
-import org.springframework.core.env.Environment;
+package org.apache.logging.log4j.spring.boot;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.apache.logging.log4j.LogManager;
+import org.springframework.core.env.Environment;
 
 /**
  * Provides access to the Spring Environment.
@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SpringEnvironmentHolder {
 
     private volatile Environment environment;
-    private final Lock lock = new ReentrantLock();
+    private Lock lock = new ReentrantLock();
 
 
     protected Environment getEnvironment() {

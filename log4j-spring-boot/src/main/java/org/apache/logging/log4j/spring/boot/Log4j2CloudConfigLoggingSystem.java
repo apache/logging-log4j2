@@ -14,14 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.spring.cloud.config.client;
+package org.apache.logging.log4j.spring.boot;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,6 +44,7 @@ import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -145,7 +147,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
         }
         catch (Exception ex) {
             throw new IllegalStateException(
-                    "Could not initialize Log4J2 logging from " + location, ex);
+                "Could not initialize Log4J2 logging from " + location, ex);
         }
     }
 
@@ -207,6 +209,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
             return null;
         }
     }
+
     private LoggerContext getLoggerContext() {
         return (LoggerContext) LogManager.getContext(false);
     }
