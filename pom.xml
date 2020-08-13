@@ -190,7 +190,7 @@
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.11.1</jackson2Version>
     <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
-    <springVersion>5.1.8.RELEASE</springVersion>
+    <springVersion>5.2.8.RELEASE</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.2</disruptorVersion>
