@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
 
@@ -51,7 +51,7 @@ jobs:
         uses: scacap/action-surefire-report@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          check_name: 'Linux Test Report'
+          check_name: 'Test Report (Linux)'
           report_paths: '**/*-reports/TEST-*.xml'
 
       - name: Inspect environment (Windows)
@@ -67,5 +67,21 @@ jobs:
         uses: scacap/action-surefire-report@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          check_name: 'Windows Test Report'
+          check_name: 'Test Report (Windows)'
+          report_paths: '**/*-reports/TEST-*.xml'
+
+      - name: Inspect environment (MacOS)
+        if: runner.os == 'macOS'
+        run: env | grep '^JAVA'
+
+      - name: Build with Maven (MacOS)
+        if: runner.os == 'macOS'
+        run: ./mvnw -V -B -e -DtrimStackTrace=false -Dmaven.test.failure.ignore=true -Dsurefire.rerunFailingTestsCount=1 --global-toolchains .github/workflows/maven-toolchains.xml verify
+
+      - name: Publish Test Results (MacOS)
+        if: runner.os == 'macOS'
+        uses: scacap/action-surefire-report@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          check_name: 'Test Report (MacOS)'
           report_paths: '**/*-reports/TEST-*.xml'
