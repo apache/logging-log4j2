@@ -32,7 +32,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <revapi.skip>true</revapi.skip>
     <spring-cloud-version>Hoxton.SR7</spring-cloud-version>
-    <spring-boot.version>2.3.2.RELEASE</spring-boot.version>
+    <spring-boot.version>2.3.3.RELEASE</spring-boot.version>
     <springVersion>5.2.8.RELEASE</springVersion>
     <log4jParentDir>${basedir}/..</log4jParentDir>
   </properties>
