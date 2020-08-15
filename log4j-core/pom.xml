@@ -495,8 +495,9 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
           <useJql>true</useJql>
+          <component>Appenders, Configuration, Configurators, Core, Filters, Layouts, Lookups, Pattern Converters, Reconfiguration</component>
         </configuration>
       </plugin>
       <plugin>

@@ -120,8 +120,9 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
           <useJql>true</useJql>
+          <component>MongoDB</component>
         </configuration>
       </plugin>
       <plugin>

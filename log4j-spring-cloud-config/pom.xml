@@ -23,7 +23,6 @@
     <version>3.0.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
-  <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-spring-cloud-config</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j Spring Cloud Config Support</name>

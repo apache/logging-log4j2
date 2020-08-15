@@ -109,8 +109,9 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
           <useJql>true</useJql>
+          <component>JCL Bridge</component>
         </configuration>
       </plugin>
       <plugin>
