@@ -84,7 +84,8 @@ public class GelfLayoutTest {
     Logger root = ctx.getRootLogger();
 
     private void testCompressedLayout(final CompressionType compressionType, final boolean includeStacktrace,
-                                      final boolean includeThreadContext, String host, final boolean includeNullDelimiter) throws IOException {
+            final boolean includeThreadContext, String host, final boolean includeNullDelimiter,
+            final boolean includeNewLineDelimiter) throws IOException {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
@@ -100,6 +101,7 @@ public class GelfLayoutTest {
                 .setIncludeStacktrace(includeStacktrace)
                 .setIncludeThreadContext(includeThreadContext)
                 .setIncludeNullDelimiter(includeNullDelimiter)
+                .setIncludeNewLineDelimiter(includeNewLineDelimiter)
                 .build();
         final ListAppender eventAppender = new ListAppender("Events", null, null, true, false);
         final ListAppender rawAppender = new ListAppender("Raw", null, layout, true, true);
@@ -222,41 +224,54 @@ public class GelfLayoutTest {
         //@formatter:on
         assertJsonEquals(expected, uncompressedString);
         assertJsonEquals(expected, uncompressedString2);
+        if (includeNullDelimiter) {
+            assertEquals(uncompressedString.indexOf('\0'), uncompressedString.length() - 1);
+            assertEquals(uncompressedString2.indexOf('\0'), uncompressedString2.length() - 1);
+        }
+        if (includeNewLineDelimiter) {
+            assertEquals(uncompressedString.indexOf('\n'), uncompressedString.length() - 1);
+            assertEquals(uncompressedString2.indexOf('\n'), uncompressedString2.length() - 1);
+        }
     }
 
     @Test
     public void testLayoutGzipCompression() throws Exception {
-        testCompressedLayout(CompressionType.GZIP, true, true, HOSTNAME, false);
+        testCompressedLayout(CompressionType.GZIP, true, true, HOSTNAME, false, false);
     }
 
     @Test
     public void testLayoutNoCompression() throws Exception {
-        testCompressedLayout(CompressionType.OFF, true, true, HOSTNAME, false);
+        testCompressedLayout(CompressionType.OFF, true, true, HOSTNAME, false, false);
     }
 
     @Test
     public void testLayoutZlibCompression() throws Exception {
-        testCompressedLayout(CompressionType.ZLIB, true, true, HOSTNAME, false);
+        testCompressedLayout(CompressionType.ZLIB, true, true, HOSTNAME, false, false);
     }
 
     @Test
     public void testLayoutNoStacktrace() throws Exception {
-        testCompressedLayout(CompressionType.OFF, false, true, HOSTNAME, false);
+        testCompressedLayout(CompressionType.OFF, false, true, HOSTNAME, false, false);
     }
 
     @Test
     public void testLayoutNoThreadContext() throws Exception {
-        testCompressedLayout(CompressionType.OFF, true, false, HOSTNAME, false);
+        testCompressedLayout(CompressionType.OFF, true, false, HOSTNAME, false, false);
     }
 
     @Test
     public void testLayoutNoHost() throws Exception {
-        testCompressedLayout(CompressionType.OFF, true, true, null, false);
+        testCompressedLayout(CompressionType.OFF, true, true, null, false, false);
     }
 
     @Test
     public void testLayoutNullDelimiter() throws Exception {
-        testCompressedLayout(CompressionType.OFF, false, true, HOSTNAME, true);
+        testCompressedLayout(CompressionType.OFF, false, true, HOSTNAME, true, false);
+    }
+
+    @Test
+    public void testLayoutNewLineDelimiter() throws Exception {
+        testCompressedLayout(CompressionType.OFF, true, true, HOSTNAME, false, true);
     }
 
     @Test

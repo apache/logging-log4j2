@@ -105,6 +105,7 @@ public final class GelfLayout extends AbstractStringLayout {
     private final boolean includeStacktrace;
     private final boolean includeThreadContext;
     private final boolean includeNullDelimiter;
+    private final boolean includeNewLineDelimiter;
     private final PatternLayout layout;
     private final FieldWriter fieldWriter;
 
@@ -131,6 +132,9 @@ public final class GelfLayout extends AbstractStringLayout {
 
         @PluginBuilderAttribute
         private boolean includeNullDelimiter = false;
+
+        @PluginBuilderAttribute
+        private boolean includeNewLineDelimiter = false;
 
         @PluginBuilderAttribute
         private String threadContextIncludes = null;
@@ -181,7 +185,8 @@ public final class GelfLayout extends AbstractStringLayout {
                         .build();
             }
             return new GelfLayout(getConfiguration(), host, additionalFields, compressionType, compressionThreshold,
-                    includeStacktrace, includeThreadContext, includeNullDelimiter, checker, patternLayout);
+                    includeStacktrace, includeThreadContext, includeNullDelimiter, includeNewLineDelimiter, checker,
+                    patternLayout);
         }
 
         public String getHost() {
@@ -205,6 +210,10 @@ public final class GelfLayout extends AbstractStringLayout {
         }
 
         public boolean isIncludeNullDelimiter() { return includeNullDelimiter; }
+
+        public boolean isIncludeNewLineDelimiter() {
+            return includeNewLineDelimiter;
+        }
 
         public KeyValuePair[] getAdditionalFields() {
             return additionalFields;
@@ -273,6 +282,16 @@ public final class GelfLayout extends AbstractStringLayout {
         }
 
         /**
+         * Whether to include newline (LF) as delimiter after each event (optional, default to false).
+         *
+         * @return this builder
+         */
+        public B setIncludeNewLineDelimiter(final boolean includeNewLineDelimiter) {
+            this.includeNewLineDelimiter = includeNewLineDelimiter;
+            return asBuilder();
+        }
+
+        /**
          * Additional fields to set on each log event.
          *
          * @return this builder
@@ -319,14 +338,14 @@ public final class GelfLayout extends AbstractStringLayout {
     @Deprecated
     public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
                       final int compressionThreshold, final boolean includeStacktrace) {
-        this(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true, false, null,
-            null);
+        this(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true, false, false,
+                null, null);
     }
 
     private GelfLayout(final Configuration config, final String host, final KeyValuePair[] additionalFields,
             final CompressionType compressionType, final int compressionThreshold, final boolean includeStacktrace,
-            final boolean includeThreadContext, final boolean includeNullDelimiter, final ListChecker listChecker,
-            final PatternLayout patternLayout) {
+            final boolean includeThreadContext, final boolean includeNullDelimiter, final boolean includeNewLineDelimiter,
+            final ListChecker listChecker, final PatternLayout patternLayout) {
         super(config, StandardCharsets.UTF_8, null, null);
         this.host = host != null ? host : NetUtils.getLocalHostname();
         this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
@@ -342,6 +361,7 @@ public final class GelfLayout extends AbstractStringLayout {
         this.includeStacktrace = includeStacktrace;
         this.includeThreadContext = includeThreadContext;
         this.includeNullDelimiter = includeNullDelimiter;
+        this.includeNewLineDelimiter = includeNewLineDelimiter;
         if (includeNullDelimiter && compressionType != CompressionType.OFF) {
             throw new IllegalArgumentException("null delimiter cannot be used with compression");
         }
@@ -358,6 +378,7 @@ public final class GelfLayout extends AbstractStringLayout {
         sb.append(", includeStackTrace=").append(includeStacktrace);
         sb.append(", includeThreadContext=").append(includeThreadContext);
         sb.append(", includeNullDelimiter=").append(includeNullDelimiter);
+        sb.append(", includeNewLineDelimiter=").append(includeNewLineDelimiter);
         String threadVars = fieldWriter.getChecker().toString();
         if (threadVars.length() > 0) {
             sb.append(", ").append(threadVars);
@@ -384,7 +405,7 @@ public final class GelfLayout extends AbstractStringLayout {
                 defaultBoolean = true) final boolean includeStacktrace) {
             // @formatter:on
         return new GelfLayout(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace,
-                true, false, null, null);
+                true, false, false, null, null);
     }
 
     @PluginBuilderFactory
@@ -518,6 +539,9 @@ public final class GelfLayout extends AbstractStringLayout {
         builder.append('}');
         if (includeNullDelimiter) {
             builder.append('\0');
+        }
+        if (includeNewLineDelimiter) {
+            builder.append('\n');
         }
         return builder;
     }
