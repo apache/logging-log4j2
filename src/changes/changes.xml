@@ -181,6 +181,9 @@
       </action>
     </release>
     <release version="2.14.0" date="2020-MM-DD" description="GA Release 2.14.0">
+      <action issue="LOG4J2-2892" dev="rgoers" type="update" due-to="Jakub Lukes">
+        Allow GelfLayout to produce newline delimited events.
+      </action>
       <action issue="LOG4J2-2906" dev="rgoers" type="fix" due-to="Stephen Joyner">
         Fix UnsupportedOperationException when initializing the Log4j2CloudConfigLoggingSystem.
       </action>
