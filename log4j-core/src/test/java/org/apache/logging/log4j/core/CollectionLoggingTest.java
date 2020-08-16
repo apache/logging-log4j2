@@ -28,11 +28,13 @@ import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * TODO: Work in progress.
  */
+@Ignore
 public class CollectionLoggingTest {
 
     private static final String CONFIG = "log4j-collectionLogging.xml";
