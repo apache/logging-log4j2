@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.TreeSet;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
+import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.ReflectionUtil;
@@ -55,9 +57,26 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
 
     private static final String LOOKUP_KEY_JVMRUNARGS = "jvmrunargs";
 
+    private static final String PURE_LOOKUP_KEY = "";
+
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final Map<String, StrLookup> strLookupMap = new HashMap<>();
+    /**
+     * Lookups in this map are used to resolve variables prefixed with specified strings
+     * like "sys", "ctx", "web" etc..
+     */
+    private final Map<String, StrLookup> sourceSpecifiedLookupMap = new HashMap<>();
+
+    /**
+     * <p>Lookups in this list are used to resolve variables without prefix. </p>
+     * <p><b>NOTE: </b>There might be multiple pure lookups, hence it is a sorted lookup list.
+     * The lookup with a larger order would be called later.
+     * </p>
+     *
+     */
+    private final Set<StrLookup> pureLookupSet = new TreeSet<StrLookup>(
+            Comparator.comparing(o -> o.getClass().isAnnotationPresent(Order.class) ? o.getClass().getDeclaredAnnotation(Order.class).value() : Integer.MAX_VALUE )
+    );
 
     private final StrLookup defaultLookup;
 
@@ -74,6 +93,8 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
      */
     public Interpolator(final StrLookup defaultLookup, final List<String> pluginPackages) {
         this.defaultLookup = defaultLookup == null ? new MapLookup(new HashMap<String, String>()) : defaultLookup;
+
+        // load lookup plugins
         final PluginManager manager = new PluginManager(CATEGORY);
         manager.collectPlugins(pluginPackages);
         final Map<String, PluginType<?>> plugins = manager.getPlugins();
@@ -81,11 +102,20 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
+                String lookupName = entry.getKey().toLowerCase();
+                StrLookup lookupInstance = ReflectionUtil.instantiate(clazz);
+                if(PURE_LOOKUP_KEY.equals(lookupName)){
+                    pureLookupSet.add(lookupInstance);
+                }
+                else{
+                    sourceSpecifiedLookupMap.put(lookupName, lookupInstance);
+                }
+
             } catch (final Throwable t) {
                 handleError(entry.getKey(), t);
             }
         }
+
     }
 
     /**
@@ -100,21 +130,19 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
      * Creates the Interpolator using only Lookups that work without an event and initial properties.
      */
     public Interpolator(final Map<String, String> properties) {
-        this.defaultLookup = new MapLookup(properties == null ? new HashMap<String, String>() : properties);
 
-        Set<StrLookup> strLookupSetViaServiceLoader =  new TreeSet<>(new Comparator<StrLookup>(){
-            @Override
-            public int compare(StrLookup o1, StrLookup o2) {
-                return o1.getClass().getName().compareTo(o2.getClass().getName());
-            }
-        });
+        this.defaultLookup =  new MapLookup(properties == null ? new HashMap<String, String>() : properties);
+
+        // load pre-loaded lookups via SPI
+        Set<StrLookup> strLookupSetViaServiceLoader =  new TreeSet<StrLookup>(Comparator.comparing(o -> o.getClass().getName()));
+
         for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
             try {
                 for (final StrLookup lookupSource : ServiceLoader.load(StrLookup.class, classLoader)) {
                     strLookupSetViaServiceLoader.add(lookupSource);
                 }
             } catch (final Throwable ex) {
-                LOGGER.warn("There is something wrong occurred in custom lookup initialization. Details: {}", ex.getMessage());
+                LOGGER.warn("There is something wrong occurred in interpolator initialization. Details: {}", ex.getMessage());
             }
         }
 
@@ -122,15 +150,21 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             Plugin plugin = lookup.getClass().getDeclaredAnnotation(Plugin.class);
             String pluginName = "";
             if(plugin != null){
-               pluginName = plugin.name();
+                pluginName = plugin.name();
             }
-            strLookupMap.put(pluginName.toLowerCase(), lookup);
+            if(PURE_LOOKUP_KEY.equals(pluginName)){
+                // pure lookup
+                pureLookupSet.add(lookup);
+            }
+            else{
+                // lookup for special use.
+                sourceSpecifiedLookupMap.put(pluginName, lookup);
+            }
         });
-
     }
 
-    public Map<String, StrLookup> getStrLookupMap() {
-        return strLookupMap;
+    public Map<String, StrLookup> getSourceSpecifiedLookupMap() {
+        return sourceSpecifiedLookupMap;
     }
 
     private void handleError(final String lookupKey, final Throwable t) {
@@ -187,7 +221,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         if (prefixPos >= 0) {
             final String prefix = var.substring(0, prefixPos).toLowerCase(Locale.US);
             final String name = var.substring(prefixPos + 1);
-            final StrLookup lookup = strLookupMap.get(prefix);
+            final StrLookup lookup = sourceSpecifiedLookupMap.get(prefix);
             if (lookup instanceof ConfigurationAware) {
                 ((ConfigurationAware) lookup).setConfiguration(configuration);
             }
@@ -201,6 +235,14 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             }
             var = var.substring(prefixPos + 1);
         }
+        else{
+            for(StrLookup pureLookup : pureLookupSet){
+                String value =  event == null ? pureLookup.lookup(var) : pureLookup.lookup(event, var);
+                if (value != null) {
+                    return value;
+                }
+            }
+        }
         if (defaultLookup != null) {
             return event == null ? defaultLookup.lookup(var) : defaultLookup.lookup(event, var);
         }
@@ -210,7 +252,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        for (final String name : strLookupMap.keySet()) {
+        for (final String name : sourceSpecifiedLookupMap.keySet()) {
             if (sb.length() == 0) {
                 sb.append('{');
             } else {

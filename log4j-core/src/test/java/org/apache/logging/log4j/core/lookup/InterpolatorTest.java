@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.junit.JndiRule;
+import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
@@ -48,6 +49,7 @@ public class InterpolatorTest {
         protected void before() throws Throwable {
             System.setProperty(TESTKEY, TESTVAL);
             System.setProperty(TESTKEY2, TESTVAL);
+            PluginManager.addPackage("org.apache.logging.log4j");
         }
 
         @Override
@@ -79,6 +81,9 @@ public class InterpolatorTest {
         assertEquals(TESTVAL, value);
         value = lookup.lookup("jndi:" + TEST_CONTEXT_RESOURCE_NAME);
         assertEquals(TEST_CONTEXT_NAME, value);
+        value = lookup.lookup("anoleKey");
+        assertEquals("hello anole", value);
+
     }
 
     private void assertLookupNotEmpty(final StrLookup lookup, final String key) {
