@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
@@ -91,74 +90,38 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         this((Map<String, String>) null);
     }
 
+
     /**
      * Creates the Interpolator using only Lookups that work without an event and initial properties.
      */
     public Interpolator(final Map<String, String> properties) {
         this.defaultLookup = new MapLookup(properties == null ? new HashMap<String, String>() : properties);
-        // TODO: this ought to use the PluginManager
-        strLookupMap.put("log4j", new Log4jLookup());
-        strLookupMap.put("sys", new SystemPropertiesLookup());
-        strLookupMap.put("env", new EnvironmentLookup());
-        strLookupMap.put("main", MainMapLookup.MAIN_SINGLETON);
-        strLookupMap.put("marker", new MarkerLookup());
-        strLookupMap.put("java", new JavaLookup());
-        strLookupMap.put("base64", new Base64StrLookup());
-        strLookupMap.put("lower", new LowerLookup());
-        strLookupMap.put("upper", new UpperLookup());
 
-        // Custom lookup implements defined by SPI.
-        strLookupMap.put("custom", new CustomLookup());
-
-        // JNDI
-        try {
-            // [LOG4J2-703] We might be on Android
-            strLookupMap.put(LOOKUP_KEY_JNDI,
-                Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
-        } catch (final LinkageError | Exception e) {
-            handleError(LOOKUP_KEY_JNDI, e);
-        }
-        // JMX input args
-        try {
-            // We might be on Android
-            strLookupMap.put(LOOKUP_KEY_JVMRUNARGS,
-                Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup",
-                        StrLookup.class));
-        } catch (final LinkageError | Exception e) {
-            handleError(LOOKUP_KEY_JVMRUNARGS, e);
-        }
-        strLookupMap.put("date", new DateLookup());
-        strLookupMap.put("ctx", new ContextMapLookup());
-        if (Constants.IS_WEB_APP) {
-            try {
-                strLookupMap.put(LOOKUP_KEY_WEB,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.web.WebLookup", StrLookup.class));
-            } catch (final Exception ignored) {
-                handleError(LOOKUP_KEY_WEB, ignored);
+        Set<StrLookup> strLookupSetViaServiceLoader =  new TreeSet<>(new Comparator<StrLookup>(){
+            @Override
+            public int compare(StrLookup o1, StrLookup o2) {
+                return o1.getClass().getName().compareTo(o2.getClass().getName());
             }
-        } else {
-            LOGGER.debug("Not in a ServletContext environment, thus not loading WebLookup plugin.");
+        });
+        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+            try {
+                for (final StrLookup lookupSource : ServiceLoader.load(StrLookup.class, classLoader)) {
+                    strLookupSetViaServiceLoader.add(lookupSource);
+                }
+            } catch (final Throwable ex) {
+                LOGGER.warn("There is something wrong occurred in custom lookup initialization. Details: {}", ex.getMessage());
+            }
         }
-        try {
-            strLookupMap.put(LOOKUP_KEY_DOCKER,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.docker.DockerLookup", StrLookup.class));
-        } catch (final Exception ignored) {
-            handleError(LOOKUP_KEY_DOCKER, ignored);
-        }
-        try {
-            strLookupMap.put(LOOKUP_KEY_SPRING,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.spring.cloud.config.client.SpringLookup", StrLookup.class));
-        } catch (final Exception ignored) {
-            handleError(LOOKUP_KEY_SPRING, ignored);
-        }
-        try {
-            strLookupMap.put(LOOKUP_KEY_KUBERNETES,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.kubernetes.KubernetesLookup", StrLookup.class));
-        } catch (final Exception ignored) {
-            handleError(LOOKUP_KEY_KUBERNETES, ignored);
-        } catch (final NoClassDefFoundError error) {
-            handleError(LOOKUP_KEY_KUBERNETES, error);
-        }
+
+        strLookupSetViaServiceLoader.stream().forEach(lookup->{
+            Plugin plugin = lookup.getClass().getDeclaredAnnotation(Plugin.class);
+            String pluginName = "";
+            if(plugin != null){
+               pluginName = plugin.name();
+            }
+            strLookupMap.put(pluginName.toLowerCase(), lookup);
+        });
+
     }
 
     public Map<String, StrLookup> getStrLookupMap() {

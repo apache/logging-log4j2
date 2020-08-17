@@ -1,0 +1,12 @@
+org.apache.logging.log4j.core.lookup.Log4jLookup
+org.apache.logging.log4j.core.lookup.SystemPropertiesLookup
+org.apache.logging.log4j.core.lookup.EnvironmentLookup
+org.apache.logging.log4j.core.lookup.MainMapLookup
+org.apache.logging.log4j.core.lookup.MarkerLookup
+org.apache.logging.log4j.core.lookup.JavaLookup
+org.apache.logging.log4j.core.lookup.Base64StrLookup
+org.apache.logging.log4j.core.lookup.LowerLookup
+org.apache.logging.log4j.core.lookup.UpperLookup
+org.apache.logging.log4j.core.lookup.DateLookup
+org.apache.logging.log4j.core.lookup.ContextMapLookup
+org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup
