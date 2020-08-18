@@ -44,6 +44,10 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 ## English
 
+* [How to configure Log4j2 in your WildFly applications](http://www.mastertheboss.com/jboss-server/jboss-log/how-to-use-log4j2-in-your-wildfly-applications)
+(August 16, 2020)
+* [Configuring Log4j2 in a Spring Boot 2 application](http://www.masterspringboot.com/configuration/logging/configuring-log4j2-in-spring-boot-applications)
+(August 16, 2020)
 * [Getting the most out of the Log4j 2 API](https://www.ralphgoers.com/post/getting-the-most-out-of-the-log4j-2-api)
 (January 1, 2020)
 * [Programmatic Configuration with Log4j 2](https://www.baeldung.com/log4j2-programmatic-config)
