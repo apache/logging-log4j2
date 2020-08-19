@@ -186,6 +186,107 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             Additional <a href="../runtime-dependencies.html">runtime dependencies</a> are required for using CSV layouts.
           </p>
         </subsection>
+        <a name="JsonTemplateLayout"/>
+        <subsection name="JSON Template Layout">
+          <p>
+            <code>JsonTemplateLayout</code> is a customizable, efficient, and
+            garbage-free JSON emitting layout. It encodes <code>LogEvent</code>s
+            according to the structure described by the JSON template provided.
+            For instance, given the following JSON template modelling the
+            <a href="https://github.com/logstash/log4j-jsonevent-layout">the
+            official Logstash <code>JSONEventLayoutV1</code></a>
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+{
+  "mdc": {
+    "${dollar}resolver": "mdc"
+  },
+  "exception": {
+    "exception_class": {
+      "${dollar}resolver": "exception",
+      "field": "className"
+    },
+    "exception_message": {
+      "${dollar}resolver": "exception",
+      "field": "message",
+      "stringified": true
+    },
+    "stacktrace": {
+      "${dollar}resolver": "exception",
+      "field": "stackTrace",
+      "stringified": true
+    }
+  },
+  "line_number": {
+    "${dollar}resolver": "source",
+    "field": "lineNumber"
+  },
+  "class": {
+    "${dollar}resolver": "source",
+    "field": "className"
+  },
+  "@version": 1,
+  "source_host": "${dollar}{hostName}",
+  "message": {
+    "${dollar}resolver": "message",
+    "stringified": true
+  },
+  "thread_name": {
+    "${dollar}resolver": "thread",
+    "field": "name"
+  },
+  "@timestamp": {
+    "${dollar}resolver": "timestamp"
+  },
+  "level": {
+    "${dollar}resolver": "level",
+    "field": "name"
+  },
+  "file": {
+    "${dollar}resolver": "source",
+    "field": "fileName"
+  },
+  "method": {
+    "${dollar}resolver": "source",
+    "field": "methodName"
+  },
+  "logger_name": {
+    "${dollar}resolver": "logger",
+    "field": "name"
+  }
+}]]></pre>
+          <p>
+            in combination with the below Log4j configuration:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"/>]]></pre>
+          <p>
+            JSON Template Layout will render JSON documents as follows:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+{
+  "exception": {
+    "exception_class": "java.lang.RuntimeException",
+    "exception_message": "test",
+    "stacktrace": "java.lang.RuntimeException: test\n\tat org.apache.logging.log4j.JsonTemplateLayoutDemo.main(JsonTemplateLayoutDemo.java:11)\n"
+  },
+  "line_number": 12,
+  "class": "org.apache.logging.log4j.JsonTemplateLayoutDemo",
+  "@version": 1,
+  "source_host": "varlik",
+  "message": "Hello, error!",
+  "thread_name": "main",
+  "@timestamp": "2017-05-25T19:56:23.370+02:00",
+  "level": "ERROR",
+  "file": "JsonTemplateLayoutDemo.java",
+  "method": "main",
+  "logger_name": "org.apache.logging.log4j.JsonTemplateLayoutDemo"
+}]]></pre>
+          <p>
+            See <a href="json-template-layout.html">JSON Template Layout</a>
+            page for the complete documentation.
+          </p>
+        </subsection>
         <a name="GELFLayout"/>
         <subsection name="GELF Layout">
           <!-- From Javadoc of org.apache.logging.log4j.core.layout.GelfLayout -->

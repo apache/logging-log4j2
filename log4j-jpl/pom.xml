@@ -261,18 +261,6 @@
       <reporting>
         <plugins>
           <plugin>
-            <!-- spotbugs is not compatible with toolchain and needs same JDK than one use to compile -->
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs-maven-plugin</artifactId>
-            <configuration>
-              <fork>true</fork>
-              <jvmArgs>-Duser.language=en</jvmArgs>
-              <threshold>Normal</threshold>
-              <effort>Default</effort>
-              <excludeFilterFile>${log4jParentDir}/spotbugs-exclude-filter.xml</excludeFilterFile>
-            </configuration>
-          </plugin>
-          <plugin>
             <!-- pmd is not compatible with toolchain and needs same JDK than one use to compile -->
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>

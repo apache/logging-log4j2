@@ -187,6 +187,12 @@
           <p>GelfLayout is garbage-free when used with compressionType="OFF",
             as long as no additional field contains '${' (variable substitution).</p>
 
+          <h5>JsonTemplateLayout</h5>
+          <p>
+            JsonTemplateLayout is garbage-free with
+            <a href="json-template-layout.html#faq-garbage-free">a few exceptions</a>.
+          </p>
+
           <h5>PatternLayout</h5>
           <p>
             PatternLayout with the following limited set of conversion patterns is garbage-free.

@@ -1,0 +1,1526 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>JSON Template Layout</title>
+    <author email="vy@apache.org">Volkan Yazıcı</author>
+  </properties>
+
+  <body>
+
+    <section name="JSON Template Layout">
+
+      <p>
+        <code>JsonTemplateLayout</code> is a customizable, efficient, and
+        garbage-free JSON emitting layout. It encodes <code>LogEvent</code>s
+        according to the structure described by the JSON template provided. In a
+        nutshell, it shines with its
+      </p>
+
+      <ul>
+        <li>
+          Customizable JSON structure (see <code>eventTemplate[Uri]</code> and
+          <code>stackTraceElementTemplate[Uri]</code> parameters)
+        </li>
+        <li>
+          Customizable timestamp formatting (see <code>timestamp</code> parameter)
+        </li>
+      </ul>
+
+      <subsection name="Usage">
+
+        <a name="usage"/>
+
+        <p>
+          Adding <code>log4j-layout-json-template</code> artifact to your list
+          of dependencies is enough to enable access to
+          <code>JsonTemplateLayout</code> in your Log4j configuration:
+        </p>
+
+        <pre class="prettyprint linenums"><![CDATA[
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-layout-json-template</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+</dependency>]]></pre>
+
+        <p>
+          For instance, given the following JSON template modelling the
+          <a href="https://github.com/logstash/log4j-jsonevent-layout">the
+            official Logstash <code>JSONEventLayoutV1</code></a> (accessible via
+          <code>classpath:LogstashJsonEventLayoutV1.json</code>)
+        </p>
+
+        <pre class="prettyprint linenums"><![CDATA[
+{
+  "mdc": {
+    "$resolver": "mdc"
+  },
+  "exception": {
+    "exception_class": {
+      "$resolver": "exception",
+      "field": "className"
+    },
+    "exception_message": {
+      "$resolver": "exception",
+      "field": "message",
+      "stringified": true
+    },
+    "stacktrace": {
+      "$resolver": "exception",
+      "field": "stackTrace",
+      "stringified": true
+    }
+  },
+  "line_number": {
+    "$resolver": "source",
+    "field": "lineNumber"
+  },
+  "class": {
+    "$resolver": "source",
+    "field": "className"
+  },
+  "@version": 1,
+  "source_host": "${hostName}",
+  "message": {
+    "$resolver": "message",
+    "stringified": true
+  },
+  "thread_name": {
+    "$resolver": "thread",
+    "field": "name"
+  },
+  "@timestamp": {
+    "$resolver": "timestamp"
+  },
+  "level": {
+    "$resolver": "level",
+    "field": "name"
+  },
+  "file": {
+    "$resolver": "source",
+    "field": "fileName"
+  },
+  "method": {
+    "$resolver": "source",
+    "field": "methodName"
+  },
+  "logger_name": {
+    "$resolver": "logger",
+    "field": "name"
+  }
+}]]></pre>
+
+        <p>
+          in combination with the below <code>log4j2.xml</code> configuration:
+        </p>
+
+        <pre class="prettyprint linenums"><![CDATA[
+<JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"/>]]></pre>
+
+        <p>
+          or with the below <code>log4j2.properties</code> configuration:
+        </p>
+
+        <pre class="prettyprint linenums"><![CDATA[
+appender.console.json.type = JsonTemplateLayout
+appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.json]]></pre>
+
+        <p>
+          <code>JsonTemplateLayout</code> emits JSON strings as follows:
+        </p>
+
+        <pre class="prettyprint linenums"><![CDATA[
+{
+  "exception": {
+    "exception_class": "java.lang.RuntimeException",
+    "exception_message": "test",
+    "stacktrace": "java.lang.RuntimeException: test\n\tat org.apache.logging.log4j.JsonTemplateLayoutDemo.main(JsonTemplateLayoutDemo.java:11)\n"
+  },
+  "line_number": 12,
+  "class": "org.apache.logging.log4j.JsonTemplateLayoutDemo",
+  "@version": 1,
+  "source_host": "varlik",
+  "message": "Hello, error!",
+  "thread_name": "main",
+  "@timestamp": "2017-05-25T19:56:23.370+02:00",
+  "level": "ERROR",
+  "file": "JsonTemplateLayoutDemo.java",
+  "method": "main",
+  "logger_name": "org.apache.logging.log4j.JsonTemplateLayoutDemo"
+}]]></pre>
+
+      </subsection>
+
+      <subsection name="Layout Configuration">
+
+        <a name="layout-config"/>
+
+        <p>
+          <code>JsonTemplateLayout</code> is configured with the following
+          parameters:
+        </p>
+
+        <table>
+
+          <caption align="top"><code>JsonTemplateLayout</code> parameters</caption>
+
+          <thead>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr>
+              <td>charset</td>
+              <td>Charset</td>
+              <td><code>Charset</code> used for <code>String</code> encoding</td>
+            </tr>
+
+            <tr>
+              <td>locationInfoEnabled</td>
+              <td>boolean</td>
+              <td>
+                toggles access to the <code>LogEvent</code> source; file name,
+                line number, etc. (defaults to <code>false</code> set by
+                <code>log4j.layout.jsonTemplate.locationInfoEnabled</code>
+                property)
+              </td>
+            </tr>
+
+            <tr>
+              <td>stackTraceEnabled</td>
+              <td>boolean</td>
+              <td>
+                toggles access to the stack traces (defaults to
+                <code>true</code> set by
+                <code>log4j.layout.jsonTemplate.stackTraceEnabled</code>
+                property)
+              </td>
+            </tr>
+
+            <tr>
+              <td>eventTemplate</td>
+              <td>String</td>
+              <td>
+                inline JSON template for rendering <code>LogEvent</code>s (has
+                priority over <code>eventTemplateUri</code>, defaults to
+                <code>null</code> set by
+                <code>log4j.layout.jsonTemplate.eventTemplate</code> property)
+              </td>
+            </tr>
+
+            <tr>
+              <td>eventTemplateUri</td>
+              <td>String</td>
+              <td>
+                URI pointing to the JSON template for rendering
+                <code>LogEvent</code>s (defaults to
+                <code>classpath:EcsLayout.json</code> set by
+                <code>log4j.layout.jsonTemplate.eventTemplateUri</code>
+                property)
+              </td>
+            </tr>
+
+            <tr>
+              <td>eventTemplateAdditionalFields</td>
+              <td>EventTemplateAdditionalField[]</td>
+              <td>
+                additional key-value pairs appended to the root of the event
+                template
+              </td>
+            </tr>
+
+            <tr>
+              <td>stackTraceElementTemplate</td>
+              <td>String</td>
+              <td>
+                inline JSON template for rendering <code>StackTraceElement</code>s
+                (has priority over <code>stackTraceElementTemplateUri</code>,
+                defaults to <code>null</code> set by
+                <code>log4j.layout.jsonTemplate.stackTraceElementTemplate</code>
+                property)
+              </td>
+            </tr>
+
+            <tr>
+              <td>stackTraceElementTemplateUri</td>
+              <td>String</td>
+              <td>
+                JSON template for rendering <code>StackTraceElement</code>s
+                (defaults to <code>classpath:StackTraceElementLayout.json</code>
+                set by
+                <code>log4j.layout.jsonTemplate.stackTraceElementTemplateUri</code>
+                property)
+              </td>
+            </tr>
+
+            <tr>
+              <td>eventDelimiter</td>
+              <td>String</td>
+              <td>
+                delimiter used for separating emitted <code>LogEvent</code>s
+                (defaults to <code>System.lineSeparator()</code> set by
+                <code>log4j.layout.jsonTemplate.eventDelimiter</code>
+                property)
+              </td>
+            </tr>
+
+            <tr>
+              <td>nullEventDelimiterEnabled</td>
+              <td>boolean</td>
+              <td>
+                append <code>\0</code> (<code>null</code>) character to the end
+                of every emitted <code>eventDelimiter</code> (defaults to
+                <code>false</code> set by
+                <code>log4j.layout.jsonTemplate.nullEventDelimiterEnabled</code>
+                property)
+              </td>
+            </tr>
+
+            <tr>
+              <td>maxStringLength</td>
+              <td>int</td>
+              <td>
+                truncate string values longer than the specified limit (defaults
+                to 16384 set by <code>log4j.layout.jsonTemplate.maxStringLength</code>
+                property)
+              </td>
+            </tr>
+
+            <tr>
+              <td>truncatedStringSuffix</td>
+              <td>String</td>
+              <td>
+                suffix to append to strings truncated due to exceeding
+                <code>maxStringLength</code> (defaults to <code>…</code> set by
+                <code>log4j.layout.jsonTemplate.truncatedStringSuffix</code>
+                property)
+              </td>
+            </tr>
+
+            <tr>
+              <td>recyclerFactory</td>
+              <td>RecyclerFactory</td>
+              <td>
+                recycling strategy that can either be <code>dummy</code>,
+                <code>threadLocal</code>, or <code>queue</code> (set by
+                <code>log4j.layout.jsonTemplate.recyclerFactory</code> property)
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+        <h4>Additonal event template fields</h4>
+
+        <a name="additional-event-template-fields"/>
+
+        <p>
+          Additional event template field is a convenient short-cut to add
+          custom fields to a template or override the fields of a template.
+          Following configuration overrides the <code>host</code> field of the
+          <code>GelfLayout.json</code> template and adds two new custom fields:
+        </p>
+
+        <pre class="prettyprint linenums"><![CDATA[
+<JsonTemplateLayout eventTemplateUri="classpath:GelfLayout.json">
+    <EventTemplateAdditionalFields>
+        <EventTemplateAdditionalField key="host" value="www.apache.org"/>
+        <EventTemplateAdditionalField key="_serviceName" value="auth-service"/>
+        <EventTemplateAdditionalField key="_containerId" value="6ede3f0ca7d9"/>
+    </EventTemplateAdditionalFields>
+</JsonTemplateLayout>]]></pre>
+
+        <p>
+          One can also pass JSON literals into additional fields:
+        </p>
+
+        <pre class="prettyprint linenums"><![CDATA[<EventTemplateAdditionalField
+     key="marker"
+     type="JSON"
+     value='{"$resolver": "marker", "field": "name"}'/>
+<EventTemplateAdditionalField
+     key="aNumber"
+     type="JSON"
+     value="1"/>
+<EventTemplateAdditionalField
+     key="aList"
+     type="JSON"
+     value='[1,2,"string"]'/>]]></pre>
+
+        <h4>Recycling strategy</h4>
+
+        <a name="recycling-strategy"/>
+
+        <p>
+          <code>RecyclerFactory</code> plays a crucial role for determining the
+          memory footprint of the layout. Template resolvers employ it to create
+          recyclers for objects that they can reuse. The function of each
+          <code>RecyclerFactory</code> and when one should prefer one over
+          another is explained below:
+        </p>
+
+        <ul>
+
+          <li>
+            <code>dummy</code> performs no recycling, hence each recycling
+            attempt will result in a new instance. This will obviously create a
+            load on the garbage-collector. It is a good choice for applications
+            with low and medium log rate.
+          </li>
+
+          <li>
+            <code>threadLocal</code> performs the best, since every instance is
+            stored in <code>ThreadLocal</code>s and accessed without any
+            synchronization cost. Though this might not be a desirable option
+            for applications running with hundreds of threads or more, e.g., a
+            web servlet.
+          </li>
+
+          <li>
+
+            <p>
+              <code>queue</code> is the best of both worlds. It allows recycling
+              of objects up to a certain number (<code>capacity</code>). When
+              this limit is exceeded due to excessive concurrent load (e.g.,
+              <code>capacity</code> is 50 but there are 51 threads concurrently
+              trying to log), it starts allocating. <code>queue</code> is a good
+              strategy where <code>threadLocal</code> is not desirable.
+            </p>
+
+            <p>
+              <code>queue</code> also accepts optional <code>supplier</code> (of
+              type <code>java.util.Queue</code>, defaults to
+              <code>org.jctools.queues.MpmcArrayQueue.new</code> if JCTools is
+              in the classpath; otherwise
+              <code>java.util.concurrent.ArrayBlockingQueue.new</code>) and
+              <code>capacity</code> (of type <code>int</code>, defaults to
+              <code>max(8,2*cpuCount+1)</code>) parameters:
+            </p>
+
+            <pre class="prettyprint linenums"><![CDATA[
+queue:supplier=org.jctools.queues.MpmcArrayQueue.new
+queue:capacity=10
+queue:supplier=java.util.concurrent.ArrayBlockingQueue.new,capacity=50]]></pre>
+
+            <p>
+              The default <code>RecyclerFactory</code> is
+              <code>threadLocal</code>, if
+              <code>log4j2.enable.threadlocals=true</code>; otherwise,
+              <code>queue</code>.
+            </p>
+
+          </li>
+
+        </ul>
+
+      </subsection>
+
+      <subsection name="Template Configuration">
+
+        <a name="template-config"/>
+
+        <p>
+          Templates are configured by means of the following
+          <code>JsonTemplateLayout</code> parameters:
+        </p>
+
+        <ul>
+          <li>
+            <code>eventTemplate[Uri]</code> (for serializing
+            <code>LogEvent</code>s)
+          </li>
+          <li>
+            <code>stackTraceElementTemplate[Uri]</code> (for serializing
+            <code>StackStraceElement</code>s)
+          </li>
+          <li>
+            <code>eventTemplateAdditionalFields</code> (for extending the used
+            event template)
+          </li>
+        </ul>
+
+        <h4>Event Templates</h4>
+
+        <a name="event-templates"/>
+
+        <p>
+          <code>eventTemplate[Uri]</code> describes the JSON structure
+          <code>JsonTemplateLayout</code> uses to serialize
+          <code>LogEvent</code>s. The default configuration (accessible by
+          <code>log4j.layout.jsonTemplate.eventTemplate[Uri]</code> property) is
+          set to <code>classpath:EcsLayout.json</code> provided by the
+          <code>log4j-layout-json-template</code> artifact:
+        </p>
+
+        <pre class="prettyprint linenums"><![CDATA[
+{
+  "@timestamp": {
+    "$resolver": "timestamp",
+    "pattern": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      "timeZone": "UTC"
+    }
+  },
+  "log.level": {
+    "$resolver": "level",
+    "field": "name"
+  },
+  "message": {
+    "$resolver": "message",
+    "stringified": true
+  },
+  "process.thread.name": {
+    "$resolver": "thread",
+    "field": "name"
+  },
+  "log.logger": {
+    "$resolver": "logger",
+    "field": "name"
+  },
+  "labels": {
+    "$resolver": "mdc",
+    "flatten": true,
+    "stringified": true
+  },
+  "tags": {
+    "$resolver": "ndc"
+  },
+  "error.type": {
+    "$resolver": "exception",
+    "field": "className"
+  },
+  "error.message": {
+    "$resolver": "exception",
+    "field": "message"
+  },
+  "error.stack_trace": {
+    "$resolver": "exception",
+    "field": "stackTrace",
+    "stringified": true
+  }
+}]]></pre>
+
+        <p>
+          <code>log4j-layout-json-template</code> artifact contains the
+          following predefined event templates:
+        </p>
+
+        <ul>
+          <li>
+            <a href="https://github.com/apache/logging-log4j2/tree/master/log4j-layout-json-template/src/main/resources/EcsLayout.json"><code>EcsLayout.json</code></a>
+            described by <a href="https://www.elastic.co/guide/en/ecs/current/ecs-reference.html">the
+            Elastic Common Schema (ECS) specification</a>
+          </li>
+          <li>
+            <a href="https://github.com/apache/logging-log4j2/tree/master/log4j-layout-json-template/src/main/resources/LogstashJsonEventLayoutV1.json"><code>LogstashJsonEventLayoutV1.json</code></a>
+            described in <a href="https://github.com/logstash/log4j-jsonevent-layout">Logstash
+            <code>json_event</code> pattern for log4j</a>
+          </li>
+          <li>
+            <a href="https://github.com/apache/logging-log4j2/tree/master/log4j-layout-json-template/src/main/resources/GelfLayout.json"><code>GelfLayout.json</code></a>
+            described by <a href="https://docs.graylog.org/en/3.1/pages/gelf.html#gelf-payload-specification">the
+            Graylog Extended Log Format (GELF) payload specification</a> with
+            additional <code>_thread</code> and <code>_logger</code> fields.
+            (Here it is advised to override the obligatory <code>host</code>
+            field with a user provided constant via <code>eventTemplateAdditionalFields</code>
+            to avoid <code>hostName</code> property lookup at runtime, which
+            incurs an extra cost.)
+          </li>
+          <li>
+            <a href="https://github.com/apache/logging-log4j2/tree/master/log4j-layout-json-template/src/main/resources/JsonLayout.json"><code>JsonLayout.json</code></a>
+            providing the exact JSON structure generated by
+            <a href="layouts.html#JSONLayout"><code>JsonLayout</code></a> with
+            the exception of <code>thrown</code> field. (<code>JsonLayout</code>
+            serializes the <code>Throwable</code> as is via Jackson
+            <code>ObjectMapper</code>, whereas <code>JsonLayout.json</code>
+            template of <code>JsonTemplateLayout</code> employs the
+            <code>StackTraceElementLayout.json</code> template for stack traces
+            to generate a document-store-friendly flat structure.)
+          </li>
+        </ul>
+
+        <p>
+          Below is the list of supported event template resolvers:
+        </p>
+
+        <a name="event-template-resolvers"/>
+
+        <table>
+
+          <caption align="top"><code>LogEvent</code> template resolvers</caption>
+
+          <thead>
+            <tr>
+              <th width="10%">Resolver Name</th>
+              <th width="30%">Syntax</th>
+              <th width="15%">Description</th>
+              <th width="15%">Garbage Footprint</th>
+              <th width="30%">Examples</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr>
+              <td>endOfBatch</td>
+              <td/>
+              <td><code>`logEvent.isEndOfBatch()`</code></td>
+              <td>none</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "endOfBatch"
+}]]></pre>
+              </td>
+            </tr>
+
+            <tr>
+              <td>exception</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+config      = field , [ stringified ]
+field       = "field" -> (
+                "className"  |
+                "message"    |
+                "stackTrace" )
+stringified = "stringified" -> boolean]]></pre>
+              </td>
+              <td>
+                <p>
+                  Resolves fields of the <code>Throwable</code> returned by
+                  <code>logEvent.getThrown()</code>.
+                </p>
+                <p>
+                  Note that this resolver is toggled by
+                  <code>log4j.layout.jsonTemplate.stackTraceEnabled</code>
+                  property.
+                </p>
+              </td>
+              <td>
+                Since <code>Throwable#getStackTrace()</code> clones the original
+                <code>StackTraceElement[]</code>, access to (and hence rendering
+                of) stack traces are not garbage-free.
+              </td>
+              <td>
+                <p>
+                  Resolve <code>logEvent.getThrown().getClass().getCanonicalName()</code>:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "exception",
+  "field": "className"
+}]]></pre>
+                <p>
+                  Resolve the stack trace into a list of
+                  <code>StackTraceElement</code> objects:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "exception",
+  "field": "stackTrace"
+}]]></pre>
+                <p>Resolve the stack trace into a string field:</p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "exception",
+  "field": "stackTrace",
+  "stringified": true
+}]]></pre>
+              </td>
+            </tr>
+
+            <tr>
+              <td>exceptionRootCause</td>
+              <td>identical to <code>exception</code> resolver</td>
+              <td>
+                <p>
+                  Resolves the fields of the innermost <code>Throwable</code>
+                  returned by <code>logEvent.getThrown()</code>.
+                </p>
+                <p>
+                  Note that this resolver is toggled by
+                  <code>log4j.layout.jsonTemplate.stackTraceEnabled</code> property.
+                </p>
+              </td>
+              <td>identical to <code>exception</code> resolver</td>
+              <td>identical to <code>exception</code> resolver</td>
+            </tr>
+
+            <tr>
+              <td>endOfBatch</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+config         = field , [ severity ]
+field          = "field" -> ( "name" | "severity" )
+severity       = severity-field
+severity-field = "field" -> ( "keyword" | "code" )]]></pre>
+              </td>
+              <td>resolves the fields of the <code>logEvent.getLevel()</code></td>
+              <td>none</td>
+              <td>
+                <p>Resolve the level name:</p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "level",
+  "field": "name"
+}]]></pre>
+                <p>
+                  Resolve the
+                  <a href="https://en.wikipedia.org/wiki/Syslog#Severity_levels">Syslog
+                    severity</a> keyword:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "level",
+  "field": "severity",
+  "severity": {
+    "field": "keyword"
+  }
+}]]></pre>
+                <p>
+                  Resolve the
+                  <a href="https://en.wikipedia.org/wiki/Syslog#Severity_levels">Syslog
+                    severity</a> code:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "level",
+  "field": "severity",
+  "severity": {
+    "field": "code"
+  }
+}]]></pre>
+              </td>
+            </tr>
+
+            <tr>
+              <td>logger</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+config = "field" -> ( "name" | "fqcn" )]]></pre>
+              </td>
+              <td>
+                resolves <code>logEvent.getLoggerFqcn()</code> and
+                <code>logEvent.getLoggerName()</code>
+              </td>
+              <td>none</td>
+              <td>
+                <p>Resolve the logger name:</p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "logger",
+  "field": "name"
+}]]></pre>
+                <p>Resolve the logger's fully qualified class name:</p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "logger",
+  "field": "fqcn"
+}]]></pre>
+              </td>
+            </tr>
+
+            <tr>
+              <td>main</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+config = ( index | key )
+index  = "index" -> number
+key    = "key" -> string]]></pre>
+              </td>
+              <td>
+                performs <a href="lookups.html#AppMainArgsLookup">Main Argument
+                Lookup</a> for the given <code>index</code> or <code>key</code>
+              </td>
+              <td>none</td>
+              <td>
+                <p>
+                  Resolve the 1<sup>st</sup> <code>main()</code> method
+                  argument:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "main",
+  "index": 0
+}]]></pre>
+                <p>
+                  Resolve the argument coming right after <code>--userId</code>:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "main",
+  "key": "--userId"
+}]]></pre>
+              </td>
+            </tr>
+
+            <tr>
+              <td>map</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+config      = key , [ stringified ]
+key         = "key" -> string
+stringified = "stringified" -> boolean]]></pre>
+              </td>
+              <td>
+                resolves the given <code>key</code> of <code>MapMessage</code>s
+              </td>
+              <td>
+                <code>stringified</code> flag translates to
+                <code>String.valueOf(value)</code>, hence mind
+                not-<code>String</code>-typed values.
+              </td>
+              <td>
+                <p>Resolve the <code>userRole</code> field of the message:</p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "map",
+  "key": "userRole"
+}]]></pre>
+              </td>
+            </tr>
+
+            <tr>
+              <td>marker</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+config = "field" -> "name"]]></pre>
+              </td>
+              <td><code>logEvent.getMarker().getName()</code></td>
+              <td>none</td>
+              <td>
+                <p>Resolve the marker name:</p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "marker",
+  "field": "name"
+}]]></pre>
+              </td>
+            </tr>
+
+            <tr>
+              <td>mdc</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+config        = singleAccess | multiAccess
+
+singleAccess  = key , [ stringified ]
+key           = "key" -> string
+stringified   = "stringified" -> boolean
+
+multi-access  = [ pattern ] , [ flatten ] , [ stringified ]
+pattern       = "pattern" -> string
+flatten       = "flatten" -> ( boolean | flattenConfig )
+flattenConfig = [ flattenPrefix ]
+flattenPrefix = "prefix" -> string]]></pre>
+              </td>
+              <td>
+                <p>
+                  Mapped Diagnostic Context (MDC), aka. Thread Context Data,
+                  resolver.
+                </p>
+                <p>
+                  <code>singleAccess</code> resolves the MDC value as is, whilst
+                  <code>multiAccess</code> resolves a multitude of MDC values.
+                  If <code>flatten</code> is provided, <code>multiAccess</code>
+                  merges the values with the parent, otherwise creates a new
+                  JSON object containing the values.
+                </p>
+                <p>
+                  Enabling <code>stringified</code> flag converts each value to
+                  its string representation.
+                </p>
+                <p>
+                  Regex provided in the <code>pattern</code> is used to match
+                  against the keys.
+                </p>
+              </td>
+              <td>
+                <p>
+                  <code>log4j2.garbagefreeThreadContextMap</code> flag needs to
+                  be turned on to iterate the map without allocations.
+                </p>
+                <p>
+                  <code>stringified</code> allocates a new <code>String</code>
+                  for values that are not of type <code>String</code>.
+                </p>
+                <p>
+                  Writing certain non-primitive values (e.g.,
+                  <code>BigDecimal</code>, <code>Set</code>, etc.) to JSON
+                  generates garbage, though most (e.g., <code>int</code>,
+                  <code>long</code>, <code>String</code>, <code>List</code>,
+                  <code>boolean[]</code>, etc.) don't.
+                </p>
+              </td>
+              <td>
+                <p>Resolve the <code>userRole</code> MDC value:</p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "mdc",
+  "key": "userRole"
+}]]></pre>
+                <p>
+                  Resolve the string representation of the <code>userRank</code>
+                  MDC value:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "mdc",
+  "key": "userRank",
+  "stringified": true
+}]]></pre>
+                <p>Resolve all MDC entries into an object:</p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "mdc"
+}]]></pre>
+                <p>
+                  Resolve all MDC entries into an object such that values are
+                  converted to string:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "mdc",
+  "stringified": true
+}]]></pre>
+                <p>
+                  Merge all MDC entries whose keys are matching with the
+                  <code>user(Role|Rank)</code> regex into the parent:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "mdc",
+  "flatten": true,
+  "pattern": "user(Role|Rank)"
+}]]></pre>
+                <p>
+                  After converting the corresponding entries to string, merge
+                  all MDC entries to parent such that keys are prefixed with
+                  <code>_</code>:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "mdc",
+  "stringified": true,
+  "flatten": {
+    "prefix": "_"
+  }
+}]]></pre>
+              </td>
+            </tr>
+
+            <tr>
+              <td>message</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+config      = [ stringified ] , [ fallbackKey ]
+pattern = "pattern" -> string
+includeStackTrace = "includeStacktrae" -> boolean
+stringified = "stringified" -> boolean
+fallbackKey = "fallbackKey" -> string]]></pre>
+              </td>
+              <td><code>logEvent.getMessage()</code></td>
+              <td>
+                For simple string messages, the resolution is performed without
+                allocations. For <code>ObjectMessage</code>s and
+                <code>MultiformatMessage</code>s, it depends.
+              </td>
+              <td>
+                <p>Resolve the message into a string:</p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "message",
+  "stringified": true
+}]]></pre>
+                <p>Resolve the message into a string using a pattern:</p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "message",
+  "stringified": true
+}]]></pre>
+                <p>
+                  Resolve the message such that if it is an
+                  <code>ObjectMessage</code> or a
+                  <code>MultiformatMessage</code> with JSON support, its type
+                  (string, list, object, etc.) will be retained:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "message"
+}]]></pre>
+                <p>
+                  Given the above configuration, a <code>SimpleMessage</code>
+                  will generate a <code>"sample log message"</code>, whereas a
+                  <code>MapMessage</code> will generate a <code>{"action": "login",
+                  "sessionId": "87asd97a"}</code>. Certain indexed log storage
+                  systems (e.g.,
+                  <a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a>)
+                  will not allow both values to coexist due to type mismatch:
+                  one is a <code>string</code> while the other is an
+                  <code>object</code>. Here one can use a
+                  <code>fallbackKey</code> to work around the problem:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "message",
+  "fallbackKey": "formattedMessage"
+}]]></pre>
+                <p>
+                  Using this configuration, a <code>SimpleMessage</code> will
+                  generate a <code>{"formattedMessage": "sample log message"}</code>
+                  and a <code>MapMessage</code> will generate a
+                  <code>{"action": "login", "sessionId": "87asd97a"}</code>.
+                  Note that both emitted JSONs are of type <code>object</code>
+                  and have no type-conflicting fields.
+                </p>
+              </td>
+            </tr>
+
+            <tr>
+              <td>ndc</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+config  = [ pattern ]
+pattern = "pattern" -> string]]></pre>
+              </td>
+              <td>
+                Resolves the Nested Diagnostic Context (NDC), aka. Thread
+                Context Stack, <code>String[]</code> returned by
+                <code>logEvent.getContextStack()</code>
+              </td>
+              <td>none</td>
+              <td>
+                <p>Resolve all NDC values into a list:</p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "ndc"
+}]]></pre>
+                <p>
+                  Resolve all NDC values matching with the <code>pattern</code>
+                  regex:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "ndc",
+  "pattern": "user(Role|Rank):\w+"
+}]]></pre>
+              </td>
+            </tr>
+
+            <tr>
+              <td>pattern</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+config            = pattern , [ stackTraceEnabled ]
+pattern           = "pattern" -> string
+stackTraceEnabled = "stackTraceEnabled" -> boolean]]></pre>
+              </td>
+              <td>
+                <p>
+                  Resolver delegating to
+                  <a href="layouts.html#PatternLayout"><code>PatternLayout</code></a>.
+                </p>
+                <p>
+                  The default value of <code>stackTraceEnabled</code> is
+                  inherited from the parent <code>JsonTemplateLayout</code>.
+                </p>
+              </td>
+              <td>none</td>
+              <td>
+                <p>
+                  Resolve the string produced by <code>%p %c{1.} [%t] %X{userId}
+                  %X %m%ex</code> pattern:
+                </p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "pattern",
+  "pattern": "%p %c{1.} [%t] %X{userId} %X %m%ex"
+}]]></pre>
+              </td>
+            </tr>
+
+            <tr>
+              <td>source</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+config = "field" -> (
+           "className"  |
+           "fileName"   |
+           "methodName" |
+           "lineNumber" )]]></pre>
+              </td>
+              <td>
+                <p>
+                  Resolves the fields of the <code>StackTraceElement</code>
+                  returned by <code>logEvent.getSource()</code>.
+                </p>
+                <p>
+                  Note that this resolver is toggled by
+                  <code>log4j.layout.jsonTemplate.locationInfoEnabled</code>
+                  property.
+                </p>
+              </td>
+              <td>none</td>
+              <td>
+                <p>Resolve the line number:</p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "source",
+  "field": "lineNumber"
+}]]></pre>
+              </td>
+            </tr>
+
+            <tr>
+              <td>thread</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+config = "field" -> ( "name" | "id" | "priority" )]]></pre>
+              </td>
+              <td>
+                resolves <code>logEvent.getThreadId()</code>,
+                <code>logEvent.getThreadName()</code>,
+                <code>logEvent.getThreadPriority()</code>
+              </td>
+              <td>none</td>
+              <td>
+                <p>Resolve the thread name:</p>
+                <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "thread",
+  "field": "name"
+}]]></pre>
+              </td>
+            </tr>
+
+            <tr>
+              <td>timestamp</td>
+              <td>
+                <pre class="prettyprint linenums"><![CDATA[
+config        = [ patternConfig | epochConfig ]
+
+patternConfig = "pattern" -> (
+                  [ format ]   ,
+                  [ timeZone ] ,
+                  [ locale ]   )
+format        = "format" -> string
+timeZone      = "timeZone" -> string
+locale        = "locale" -> (
+                   language                                   |
+                 ( language , "_" , country )                 |
+                 ( language , "_" , country , "_" , variant )
+               )
+
+epochConfig   = "epoch" -> ( unit , [ rounded ] )
+unit          = "unit" -> (
+                   "nanos"         |
+                   "millis"        |
+                   "secs"          |
+                   "millis.nanos"  |
+                   "secs.nanos"    |
+                )
+rounded       = "rounded" -> boolean]]></pre>
+              </td>
+              <td>
+                resolves <code>logEvent.getInstant()</code> in various forms
+              </td>
+              <td>none</td>
+              <td>
+                <table>
+
+                  <caption align="top">
+                    <code>timestamp</code> template resolver examples
+                  </caption>
+
+                  <thead>
+                    <tr>
+                      <th>Configuration</th>
+                      <th>Output</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+
+                    <tr>
+                      <td>
+                        <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "timestamp"
+}]]></pre>
+                      </td>
+                      <td>2020-02-07T13:38:47.098+02:00</td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "timestamp",
+  "pattern": {
+    "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+    "timeZone": "UTC",
+    "locale": "en_US"
+  }
+}]]></pre>
+                      </td>
+                      <td>2020-02-07T13:38:47.098Z</td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "secs"
+  }
+}]]></pre>
+                      </td>
+                      <td>1581082727.982123456</td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "secs",
+    "rounded": true
+  }
+}]]></pre>
+                      </td>
+                      <td>1581082727</td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "secs.nanos"
+  }
+}]]></pre>
+                      </td>
+                      <td>982123456</td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "millis"
+  }
+}]]></pre>
+                      </td>
+                      <td>1581082727982.123456</td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "millis",
+    "rounded": true
+  }
+}]]></pre>
+                      </td>
+                      <td>1581082727982</td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "millis.nanos"
+  }
+}]]></pre>
+                      </td>
+                      <td>123456</td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <pre class="prettyprint linenums"><![CDATA[
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "nanos"
+  }
+}]]></pre>
+                      </td>
+                      <td>1581082727982123456</td>
+                    </tr>
+
+                  </tbody>
+
+                </table>
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+        <h4>Stack Trace Element Templates</h4>
+
+        <a name="stack-trace-element-templates"/>
+
+        <p>
+          <code>stackTraceElement[Uri]</code> describes the JSON structure
+          <code>JsonTemplateLayout</code> uses to format
+          <code>StackTraceElement</code>s. The default configuration (accessible
+          by <code>log4j.layout.jsonTemplate.stackTraceElementTemplate[Uri]</code>
+          property) is set to <code>classpath:StackTraceElementLayout.json</code>
+          provided by the <code>log4j-layout-json-template</code> artifact:
+        </p>
+
+        <pre class="prettyprint linenums"><![CDATA[
+{
+  "class": {
+    "$resolver": "stackTraceElement",
+    "field": "className"
+  },
+  "method": {
+    "$resolver": "stackTraceElement",
+    "field": "methodName"
+  },
+  "file": {
+    "$resolver": "stackTraceElement",
+    "field": "fileName"
+  },
+  "line": {
+    "$resolver": "stackTraceElement",
+    "field": "lineNumber"
+  }
+}]]></pre>
+
+        <p>The allowed template configuration syntax is as follows:</p>
+
+        <pre class="prettyprint linenums"><![CDATA[
+config = "field" -> (
+           "className"  |
+           "fileName"   |
+           "methodName" |
+           "lineNumber" )]]></pre>
+
+      </subsection>
+
+      <p>
+        All above accesses to <code>StackTraceElement</code> is garbage-free.
+      </p>
+
+    </section>
+
+    <section name="Features">
+
+      <a name="features"/>
+
+      <p>
+        Below is a feature comparison matrix between
+        <code>JsonTemplateLayout</code> and alternatives.
+      </p>
+
+      <table>
+
+        <caption align="top">Feature comparison matrix</caption>
+
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th><code>JsonTemplateLayout</code></th>
+            <th><a href="layouts.html#JSONLayout"><code>JsonLayout</code></a></th>
+            <th><a href="layouts.html#GELFLayout"><code>GelfLayout</code></a></th>
+            <th><a href="https://github.com/elastic/java-ecs-logging/tree/master/log4j2-ecs-layout"><code>EcsLayout</code></a></th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>Java version</td>
+            <td>8</td>
+            <td>8</td>
+            <td>8</td>
+            <td>6</td>
+          </tr>
+
+          <tr>
+            <td>Dependencies</td>
+            <td>None</td>
+            <td>Jackson</td>
+            <td>None</td>
+            <td>None</td>
+          </tr>
+
+          <tr>
+            <td>Schema customization?</td>
+            <td>✓</td>
+            <td>✕</td>
+            <td>✕</td>
+            <td>✕</td>
+          </tr>
+
+          <tr>
+            <td>Timestamp customization?</td>
+            <td>✓</td>
+            <td>✕</td>
+            <td>✕</td>
+            <td>✕</td>
+          </tr>
+
+          <tr>
+            <td>(Almost) garbage-free?</td>
+            <td>✓</td>
+            <td>✕</td>
+            <td>✓</td>
+            <td>✓</td>
+          </tr>
+
+          <tr>
+            <td>Custom typed <code>Message</code> serialization?</td>
+            <td>✓</td>
+            <td>✕</td>
+            <td>✕</td>
+            <td>?<sup>1</sup></td>
+          </tr>
+
+          <tr>
+            <td>Custom typed <code>MDC</code> value serialization?</td>
+            <td>✓</td>
+            <td>✕</td>
+            <td>✕</td>
+            <td>✕</td>
+          </tr>
+
+          <tr>
+            <td>Rendering stack traces as array?</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✕</td>
+            <td>✓</td>
+          </tr>
+
+          <tr>
+            <td>JSON pretty print?</td>
+            <td>✕</td>
+            <td>✓</td>
+            <td>✕</td>
+            <td>✕</td>
+          </tr>
+
+          <tr>
+            <td>Additional field support?</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+      <p>
+        <sup>1</sup> Only for <code>ObjectMessage</code>s and if Jackson is in
+        the classpath.
+      </p>
+
+    </section>
+
+    <section name="F.A.Q">
+
+      <a name="faq"/>
+
+      <h4>Are lookups supported in templates?</h4>
+
+      <a name="faq-lookups"/>
+
+      <p>
+        Yes, <a href="lookups.html">lookups</a> (e.g.,
+        <code>&#36;{java:version}</code>, <code>&#36;{env:USER}</code>,
+        <code>&#36;{date:MM-dd-yyyy}</code>) are supported in string
+        literals of templates. Though note that they are not garbage-free.
+      </p>
+
+      <h4>Is <code>JsonTemplateLayout</code> garbage-free?</h4>
+
+      <a name="faq-garbage-free"/>
+
+      <p>
+        Yes, if the garbage-free layout behaviour toggling properties
+        <code>log4j2.enableDirectEncoders</code> and
+        <code>log4j2.garbagefreeThreadContextMap</code> are enabled. Take into
+        account the following caveats:
+      </p>
+
+      <ul>
+
+        <li>
+          The configured <a href="#recycling-strategy">recycling strategy</a>
+          might not be garbage-free.
+        </li>
+
+        <li>
+          Since <code>Throwable#getStackTrace()</code> clones the original
+          <code>StackTraceElement[]</code>, access to (and hence rendering of)
+          stack traces are not garbage-free.
+        </li>
+
+        <li>
+          Serialization of <code>MapMessage</code>s and
+          <code>ObjectMessage</code>s are mostly garbage-free except for certain
+          types (e.g., <code>BigDecimal</code>, <code>BigInteger</code>,
+          <code>Collection</code>s with the exception of <code>List</code>).
+        </li>
+
+        <li>
+          <a href="lookups.html">Lookups</a> (that is, <code>${...}</code>
+          variables) are not garbage-free.
+        </li>
+
+      </ul>
+
+      <p>
+        Don't forget to checkout <a href="#event-template-resolvers">the notes
+        on garbage footprint of resolvers</a> you employ in templates.
+      </p>
+
+    </section>
+
+  </body>
+
+</document>

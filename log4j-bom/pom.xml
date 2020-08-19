@@ -42,6 +42,12 @@
         <artifactId>log4j-core</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- JSON template layout -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-layout-json-template</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Legacy Log4j 1.2 API -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>

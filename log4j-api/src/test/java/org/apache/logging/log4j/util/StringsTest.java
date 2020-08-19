@@ -25,6 +25,25 @@ import org.junit.Test;
 
 public class StringsTest {
 
+    @Test
+    public void testIsEmpty() {
+        Assert.assertTrue(Strings.isEmpty(null));
+        Assert.assertTrue(Strings.isEmpty(""));
+        Assert.assertFalse(Strings.isEmpty(" "));
+        Assert.assertFalse(Strings.isEmpty("a"));
+    }
+
+    @Test
+    public void testIsBlank() {
+        Assert.assertTrue(Strings.isBlank(null));
+        Assert.assertTrue(Strings.isBlank(""));
+        Assert.assertTrue(Strings.isBlank(" "));
+        Assert.assertTrue(Strings.isBlank("\n"));
+        Assert.assertTrue(Strings.isBlank("\r"));
+        Assert.assertTrue(Strings.isBlank("\t"));
+        Assert.assertFalse(Strings.isEmpty("a"));
+    }
+
     /**
      * A sanity test to make sure a typo does not mess up {@link Strings#EMPTY}.
      */

@@ -16,35 +16,33 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
+import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
+import com.google.monitoring.runtime.instrumentation.Sampler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.StringMapMessage;
-import org.apache.logging.log4j.util.Strings;
 
-import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
-import com.google.monitoring.runtime.instrumentation.Sampler;
+import java.io.File;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
- * Utily methods for the GC-free logging tests.s.
+ * Utility methods for the GC-free logging tests.
  */
-public class GcFreeLoggingTestUtil {
+public enum GcFreeLoggingTestUtil {;
 
     public static void executeLogging(final String configurationFile,
-            final Class<?> testClass) throws Exception {
+                                      final Class<?> testClass) throws Exception {
 
         System.setProperty("log4j2.enable.threadlocals", "true");
         System.setProperty("log4j2.enable.direct.encoders", "true");
@@ -148,16 +146,36 @@ public class GcFreeLoggingTestUtil {
         process.waitFor();
         process.exitValue();
 
-        final String text = new String(Files.readAllBytes(tempFile.toPath()));
-        final List<String> lines = Files.readAllLines(tempFile.toPath(), Charset.defaultCharset());
-        final String className = cls.getSimpleName();
-        assertEquals(text, "FATAL o.a.l.l.c." + className + " [main] value1 {aKey=value1, key2=value2, prop1=value1, prop2=value2} This message is logged to the console",
-                lines.get(0));
+        final AtomicInteger lineCounter = new AtomicInteger(0);
+        Files.lines(tempFile.toPath(), Charset.defaultCharset()).forEach(line -> {
 
-        for (int i = 1; i < lines.size(); i++) {
-            final String line = lines.get(i);
-            assertFalse(i + ": " + line + Strings.LINE_SEPARATOR + text, line.contains("allocated") || line.contains("array"));
-        }
+            // Trim the line.
+            line = line.trim();
+
+            // Check the first line.
+            final int lineNumber = lineCounter.incrementAndGet();
+            if (lineNumber == 1) {
+                final String className = cls.getSimpleName();
+                final String firstLinePattern = String.format(
+                        "^FATAL .*\\.%s %s",
+                        className,
+                        Pattern.quote("[main] value1 {aKey=value1, " +
+                                "key2=value2, prop1=value1, prop2=value2} " +
+                                "This message is logged to the console"));
+                assertTrue(
+                        "pattern mismatch at line 1: " + line,
+                        line.matches(firstLinePattern));
+            }
+
+            // Check the rest of the lines.
+            else {
+                assertFalse(
+                        "(allocated|array) pattern matches at line " + lineNumber + ": " + line,
+                        line.contains("allocated") || line.contains("array"));
+            }
+
+        });
+
     }
 
     private static File agentJar() {

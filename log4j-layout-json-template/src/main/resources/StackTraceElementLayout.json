@@ -1,0 +1,18 @@
+{
+  "class": {
+    "$resolver": "stackTraceElement",
+    "field": "className"
+  },
+  "method": {
+    "$resolver": "stackTraceElement",
+    "field": "methodName"
+  },
+  "file": {
+    "$resolver": "stackTraceElement",
+    "field": "fileName"
+  },
+  "line": {
+    "$resolver": "stackTraceElement",
+    "field": "lineNumber"
+  }
+}
