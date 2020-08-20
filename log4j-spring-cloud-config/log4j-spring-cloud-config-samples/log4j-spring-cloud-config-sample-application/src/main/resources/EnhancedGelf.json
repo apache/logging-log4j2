@@ -6,9 +6,8 @@
     "stringified": true
   },
   "full_message": {
-    "$resolver": "message",
-    "pattern": "[%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress, corpAcctNumber} %C{1.}.%M:%L - %m",
-    "stringified": true
+    "$resolver": "pattern",
+    "pattern": "[%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress, corpAcctNumber} %C{1.}.%M:%L - %m"
   },
   "timestamp": {
     "$resolver": "timestamp",
