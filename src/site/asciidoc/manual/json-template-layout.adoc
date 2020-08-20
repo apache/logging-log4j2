@@ -563,7 +563,7 @@ Resolve the logger's fully qualified class name:
 }
 ----
 
-| main:<key>
+| main
 a|
 [source]
 ----
@@ -1126,7 +1126,7 @@ alternatives.
 | None
 | None
 
-| Full schema customization?
+| Schema customization?
 | ✓
 | ✕
 | ✕
@@ -1168,7 +1168,7 @@ alternatives.
 | ✕
 | ✕
 
-| Additional fields?
+| Additional field support?
 | ✓
 | ✓
 | ✓
@@ -1202,8 +1202,7 @@ enabled. Take into account the following caveats:
   garbage-free except for certain types (e.g., `BigDecimal`, `BigInteger`,
   ``Collection``s with the exception of `List`).
 
-* link:lookups.html[Lookups] (that is, `${...}` variables, excluding
-  `${json:...}` ones) are not garbage-free.
+* link:lookups.html[Lookups] (that is, `${...}` variables) are not garbage-free.
 
 Don't forget to checkout link:#event-template-resolvers[the notes on garbage footprint of resolvers]
 you employ in templates.
