@@ -20,10 +20,10 @@ import java.lang.reflect.Field;
 
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ClassLoaderContextSelectorTest {
 
@@ -31,7 +31,7 @@ public class ClassLoaderContextSelectorTest {
 
     private ClassLoader loader1, loader2, loader3;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         loader1 = new TestClassLoader();
         loader2 = new TestClassLoader();

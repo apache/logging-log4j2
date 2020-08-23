@@ -16,26 +16,26 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.ClockFactoryTest;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Confirms that if you log a {@link TimestampMessage} then there are no unnecessary calls to {@link Clock}.
@@ -43,30 +43,27 @@ import static org.junit.Assert.*;
  * See LOG4J2-744.
  * </p>
  */
+@LoggerContextSource("log4j2-744.xml")
 public class TimestampMessageTest {
     private ListAppender app;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-744.xml");
+    public TimestampMessageTest(@Named("List") final ListAppender app) {
+        this.app = app.clear();
+    }
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty(ClockFactory.PROPERTY_NAME, PoisonClock.class.getName());
     }
 
-    @Before
-    public void setUp() throws Exception {
-        this.app = context.getListAppender("List").clear();
-    }
-
-    @AfterClass
+    @AfterAll
     public static void afterClass() throws IllegalAccessException {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
         ClockFactoryTest.resetClocks();
     }
 
     @Test
-    public void testTimestampMessage() {
+    public void testTimestampMessage(final LoggerContext context) {
         final Logger log = context.getLogger("TimestampMessageTest");
         log.info((Message) new TimeMsg("Message with embedded timestamp", 123456789000L));
         final List<String> msgs = app.getMessages();

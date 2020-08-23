@@ -16,13 +16,16 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Verifies steady state mixed synchronous and asynchronous logging is GC-free.
  *
  * @see <a href="https://github.com/google/allocation-instrumenter">https://github.com/google/allocation-instrumenter</a>
  */
+@Tag("allocation")
+@Tag("functional")
 public class GcFreeMixedSyncAyncLoggingTest {
 
     @Test

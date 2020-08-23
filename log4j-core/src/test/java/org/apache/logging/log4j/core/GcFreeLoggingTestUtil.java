@@ -33,8 +33,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Utility methods for the GC-free logging tests.
@@ -49,9 +49,9 @@ public enum GcFreeLoggingTestUtil {;
         System.setProperty("log4j2.is.webapp", "false");
         System.setProperty("log4j.configurationFile", configurationFile);
 
-        assertTrue("Constants.ENABLE_THREADLOCALS", Constants.ENABLE_THREADLOCALS);
-        assertTrue("Constants.ENABLE_DIRECT_ENCODERS", Constants.ENABLE_DIRECT_ENCODERS);
-        assertFalse("Constants.IS_WEB_APP", Constants.IS_WEB_APP);
+        assertTrue(Constants.ENABLE_THREADLOCALS, "Constants.ENABLE_THREADLOCALS");
+        assertTrue(Constants.ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
+        assertFalse(Constants.IS_WEB_APP, "Constants.IS_WEB_APP");
 
         final MyCharSeq myCharSeq = new MyCharSeq();
         final Marker testGrandParent = MarkerManager.getMarker("testGrandParent");
@@ -163,15 +163,15 @@ public enum GcFreeLoggingTestUtil {;
                                 "key2=value2, prop1=value1, prop2=value2} " +
                                 "This message is logged to the console"));
                 assertTrue(
-                        "pattern mismatch at line 1: " + line,
-                        line.matches(firstLinePattern));
+                        line.matches(firstLinePattern),
+                        "pattern mismatch at line 1: " + line);
             }
 
             // Check the rest of the lines.
             else {
                 assertFalse(
-                        "(allocated|array) pattern matches at line " + lineNumber + ": " + line,
-                        line.contains("allocated") || line.contains("array"));
+                        line.contains("allocated") || line.contains("array"),
+                        "(allocated|array) pattern matches at line " + lineNumber + ": " + line);
             }
 
         });

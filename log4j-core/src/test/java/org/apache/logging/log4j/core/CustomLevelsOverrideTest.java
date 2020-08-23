@@ -16,37 +16,31 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+@LoggerContextSource("log4j-customLevels.xml")
 public class CustomLevelsOverrideTest {
 
-    private static final String CONFIG = "log4j-customLevels.xml";
+    private final ListAppender listAppender;
+    private final Level warnLevel;
+    private final Level infoLevel;
+    private final Level debugLevel;
+    private final Logger logger;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    private ListAppender listAppender;
-    private Level warnLevel;
-    private Level infoLevel;
-    private Level debugLevel;
-
-    @Before
-    public void before() {
+    public CustomLevelsOverrideTest(final LoggerContext context, @Named("List1") final ListAppender appender) {
         warnLevel = Level.getLevel("WARN");
         infoLevel = Level.getLevel("INFO");
         debugLevel = Level.getLevel("DEBUG");
-        listAppender = context.getListAppender("List1").clear();
+        listAppender = appender.clear();
+        logger = context.getLogger(getClass().getName());
     }
 
     @Test
@@ -75,7 +69,6 @@ public class CustomLevelsOverrideTest {
 
     @Test
     public void testLog() {
-        final Logger logger = context.getLogger();
         assertThat(listAppender.getEvents(), hasSize(0));
         logger.debug("Hello, {}", "World");
         assertThat(listAppender.getEvents(), hasSize(1));

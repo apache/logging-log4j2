@@ -19,33 +19,25 @@ package org.apache.logging.log4j.core;
 import java.util.Calendar;
 
 import org.apache.logging.log4j.core.appender.FileAppender;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
+@LoggerContextSource("log4j-date.xml")
 public class LoggerDateTest {
 
-    private static final String CONFIG = "log4j-date.xml";
-    private FileAppender fileApp;
+    private final FileAppender fileApp;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    @Before
-    public void before() {
-        fileApp = context.getRequiredAppender("File", FileAppender.class);
+    public LoggerDateTest(@Named("File") final FileAppender fileApp) {
+        this.fileApp = fileApp;
     }
 
     @Test
     public void testFileName() {
         final String name = fileApp.getFileName();
         final int year = Calendar.getInstance().get(Calendar.YEAR);
-        assertTrue("Date was not substituted: " + name, name.contains(Integer.toString(year)));
+        assertTrue(name.contains(Integer.toString(year)), "Date was not substituted: " + name);
     }
 }

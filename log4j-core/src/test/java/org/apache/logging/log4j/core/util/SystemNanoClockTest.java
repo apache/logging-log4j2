@@ -17,11 +17,11 @@
 
 package org.apache.logging.log4j.core.util;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the SystemNanoClock.
@@ -33,7 +33,7 @@ public class SystemNanoClockTest {
         final NanoClock clock = new SystemNanoClock();
         final long expected = System.nanoTime();
         final long actual = clock.nanoTime();
-        assertTrue("smal difference", actual - expected < TimeUnit.SECONDS.toNanos(1));
+        assertTrue(actual - expected < TimeUnit.SECONDS.toNanos(1), "smal difference");
     }
 
 }

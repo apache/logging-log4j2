@@ -982,6 +982,7 @@
           <configuration>
             <source>${maven.compiler.source}</source>
             <target>${maven.compiler.target}</target>
+            <parameters>true</parameters>
             <showDeprecation>true</showDeprecation>
             <showWarnings>true</showWarnings>
             <encoding>UTF-8</encoding>

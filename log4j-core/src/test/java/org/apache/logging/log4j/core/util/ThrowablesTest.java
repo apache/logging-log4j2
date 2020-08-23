@@ -16,22 +16,24 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ThrowablesTest {
 
     @Test
     public void testGetRootCauseNone() {
         final NullPointerException throwable = new NullPointerException();
-        Assert.assertEquals(throwable, Throwables.getRootCause(throwable));
+        assertEquals(throwable, Throwables.getRootCause(throwable));
     }
 
     @Test
     public void testGetRootCauseDepth1() {
         final Throwable cause = new NullPointerException();
         final Throwable error = new UnsupportedOperationException(cause);
-        Assert.assertEquals(cause, Throwables.getRootCause(error));
+        assertEquals(cause, Throwables.getRootCause(error));
     }
 
     @Test
@@ -39,31 +41,31 @@ public class ThrowablesTest {
         final Throwable rootCause = new NullPointerException();
         final Throwable cause = new UnsupportedOperationException(rootCause);
         final Throwable error = new IllegalArgumentException(cause);
-        Assert.assertEquals(rootCause, Throwables.getRootCause(error));
+        assertEquals(rootCause, Throwables.getRootCause(error));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @SuppressWarnings("ThrowableNotThrown")
+    @Test
     public void testGetRootCauseLoop() {
         final Throwable cause1 = new RuntimeException();
         final Throwable cause2 = new RuntimeException(cause1);
         final Throwable cause3 = new RuntimeException(cause2);
         cause1.initCause(cause3);
-        // noinspection ThrowableNotThrown
-        Throwables.getRootCause(cause3);
+        assertThrows(IllegalArgumentException.class, () -> Throwables.getRootCause(cause3));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testRethrowRuntimeException() {
-        Throwables.rethrow(new NullPointerException());
+        assertThrows(NullPointerException.class, () -> Throwables.rethrow(new NullPointerException()));
     }
 
-    @Test(expected = UnknownError.class)
+    @Test
     public void testRethrowError() {
-        Throwables.rethrow(new UnknownError());
+        assertThrows(UnknownError.class, () -> Throwables.rethrow(new UnknownError()));
     }
 
-    @Test(expected = NoSuchMethodException.class)
+    @Test
     public void testRethrowCheckedException() {
-        Throwables.rethrow(new NoSuchMethodException());
+        assertThrows(NoSuchMethodException.class, () -> Throwables.rethrow(new NoSuchMethodException()));
     }
 }

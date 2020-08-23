@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ProcessIdUtilTest {
 
     @Test
-    public void processIdTest() throws Exception {
-        final String processId = ProcessIdUtil.getProcessId();
-        assertFalse("ProcessId is default", processId.equals(ProcessIdUtil.DEFAULT_PROCESSID));
+    public void processIdTest() {
+        String processId = ProcessIdUtil.getProcessId();
+        assertNotEquals(processId, ProcessIdUtil.DEFAULT_PROCESSID, "ProcessId is default");
     }
 }

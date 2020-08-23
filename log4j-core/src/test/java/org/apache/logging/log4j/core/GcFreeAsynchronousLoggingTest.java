@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Verifies steady state logging is GC-free.
  *
  * @see <a href="https://github.com/google/allocation-instrumenter">https://github.com/google/allocation-instrumenter</a>
  */
-@Category(AsyncLoggers.class)
+@Tag("allocation")
+@Tag("functional")
 public class GcFreeAsynchronousLoggingTest {
 
     @Test

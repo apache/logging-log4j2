@@ -17,165 +17,164 @@
 package org.apache.logging.log4j.core.time;
 
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MutableInstantTest {
 
     @Test
     public void testGetEpochSecond() {
-        final MutableInstant instant = new MutableInstant();
-        assertEquals("initial", 0, instant.getEpochSecond());
+        MutableInstant instant = new MutableInstant();
+        assertEquals(0, instant.getEpochSecond(), "initial");
 
         instant.initFromEpochSecond(123, 456);
-        assertEquals("returns directly set value", 123, instant.getEpochSecond());
+        assertEquals(123, instant.getEpochSecond(), "returns directly set value");
 
         instant.initFromEpochMilli(123456, 789012);
-        assertEquals("returns converted value when initialized from milllis", 123, instant.getEpochSecond());
+        assertEquals(123, instant.getEpochSecond(), "returns converted value when initialized from milllis");
 
-        final MutableInstant other = new MutableInstant();
+        MutableInstant other = new MutableInstant();
         other.initFromEpochSecond(788, 456);
         instant.initFrom(other);
 
-        assertEquals("returns ref value when initialized from instant", 788, instant.getEpochSecond());
+        assertEquals(788, instant.getEpochSecond(), "returns ref value when initialized from instant");
     }
 
     @Test
     public void testGetNanoOfSecond() {
-        final MutableInstant instant = new MutableInstant();
-        assertEquals("initial", 0, instant.getNanoOfSecond());
+        MutableInstant instant = new MutableInstant();
+        assertEquals(0, instant.getNanoOfSecond(), "initial");
 
         instant.initFromEpochSecond(123, 456);
-        assertEquals("returns directly set value", 456, instant.getNanoOfSecond());
+        assertEquals(456, instant.getNanoOfSecond(), "returns directly set value");
 
         instant.initFromEpochMilli(123456, 789012);
-        assertEquals("returns converted value when initialized from milllis", 456789012, instant.getNanoOfSecond());
+        assertEquals(456789012, instant.getNanoOfSecond(), "returns converted value when initialized from milllis");
 
-        final MutableInstant other = new MutableInstant();
+        MutableInstant other = new MutableInstant();
         other.initFromEpochSecond(788, 456);
         instant.initFrom(other);
 
-        assertEquals("returns ref value when initialized from instant", 456, instant.getNanoOfSecond());
+        assertEquals(456, instant.getNanoOfSecond(), "returns ref value when initialized from instant");
     }
 
     @Test
     public void testGetEpochMillisecond() {
-        final MutableInstant instant = new MutableInstant();
-        assertEquals("initial", 0, instant.getEpochMillisecond());
+        MutableInstant instant = new MutableInstant();
+        assertEquals(0, instant.getEpochMillisecond(), "initial");
 
         instant.initFromEpochMilli(123, 456);
-        assertEquals("returns directly set value", 123, instant.getEpochMillisecond());
+        assertEquals(123, instant.getEpochMillisecond(), "returns directly set value");
 
         instant.initFromEpochSecond(123, 456789012);
-        assertEquals("returns converted value when initialized from seconds", 123456, instant.getEpochMillisecond());
+        assertEquals(123456, instant.getEpochMillisecond(), "returns converted value when initialized from seconds");
 
-        final MutableInstant other = new MutableInstant();
+        MutableInstant other = new MutableInstant();
         other.initFromEpochMilli(788, 456);
         instant.initFrom(other);
 
-        assertEquals("returns ref value when initialized from instant", 788, instant.getEpochMillisecond());
+        assertEquals(788, instant.getEpochMillisecond(), "returns ref value when initialized from instant");
     }
 
     @Test
     public void getGetNanoOfMillisecond() {
-        final MutableInstant instant = new MutableInstant();
-        assertEquals("initial", 0, instant.getNanoOfMillisecond());
+        MutableInstant instant = new MutableInstant();
+        assertEquals(0, instant.getNanoOfMillisecond(), "initial");
 
         instant.initFromEpochMilli(123, 456);
-        assertEquals("returns directly set value", 456, instant.getNanoOfMillisecond());
+        assertEquals(456, instant.getNanoOfMillisecond(), "returns directly set value");
 
         instant.initFromEpochSecond(123, 456789012);
-        assertEquals("returns converted value when initialized from milllis", 789012, instant.getNanoOfMillisecond());
+        assertEquals(789012, instant.getNanoOfMillisecond(), "returns converted value when initialized from milllis");
 
-        final MutableInstant other = new MutableInstant();
+        MutableInstant other = new MutableInstant();
         other.initFromEpochMilli(788, 456);
         instant.initFrom(other);
 
-        assertEquals("returns ref value when initialized from instant", 456, instant.getNanoOfMillisecond());
+        assertEquals(456, instant.getNanoOfMillisecond(), "returns ref value when initialized from instant");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testInitFromInstantRejectsNull() {
-        new MutableInstant().initFrom((Instant) null);
+        assertThrows(NullPointerException.class, () -> new MutableInstant().initFrom((Instant) null));
     }
 
     @Test
     public void testInitFromInstantCopiesValues() {
-        final MutableInstant other = new MutableInstant();
+        MutableInstant other = new MutableInstant();
         other.initFromEpochSecond(788, 456);
-        assertEquals("epochSec", 788, other.getEpochSecond());
-        assertEquals("NanosOfSec", 456, other.getNanoOfSecond());
+        assertEquals(788, other.getEpochSecond(), "epochSec");
+        assertEquals(456, other.getNanoOfSecond(), "NanosOfSec");
 
-        final MutableInstant instant = new MutableInstant();
+        MutableInstant instant = new MutableInstant();
         instant.initFrom(other);
 
-        assertEquals("epochSec", 788, instant.getEpochSecond());
-        assertEquals("NanoOfSec", 456, instant.getNanoOfSecond());
+        assertEquals(788, instant.getEpochSecond(), "epochSec");
+        assertEquals(456, instant.getNanoOfSecond(), "NanoOfSec");
     }
 
     @Test
     public void testInitFromEpochMillis() {
-        final MutableInstant instant = new MutableInstant();
+        MutableInstant instant = new MutableInstant();
         instant.initFromEpochMilli(123456, 789012);
-        assertEquals("epochSec", 123, instant.getEpochSecond());
-        assertEquals("NanoOfSec", 456789012, instant.getNanoOfSecond());
-        assertEquals("epochMilli", 123456, instant.getEpochMillisecond());
-        assertEquals("NanoOfMilli", 789012, instant.getNanoOfMillisecond());
+        assertEquals(123, instant.getEpochSecond(), "epochSec");
+        assertEquals(456789012, instant.getNanoOfSecond(), "NanoOfSec");
+        assertEquals(123456, instant.getEpochMillisecond(), "epochMilli");
+        assertEquals(789012, instant.getNanoOfMillisecond(), "NanoOfMilli");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInitFromEpochMillisRejectsNegativeNanoOfMilli() {
-        final MutableInstant instant = new MutableInstant();
-        instant.initFromEpochMilli(123456, -1);
+        MutableInstant instant = new MutableInstant();
+        assertThrows(IllegalArgumentException.class, () -> instant.initFromEpochMilli(123456, -1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInitFromEpochMillisRejectsTooLargeNanoOfMilli() {
-        final MutableInstant instant = new MutableInstant();
-        instant.initFromEpochMilli(123456, 1000_000);
+        MutableInstant instant = new MutableInstant();
+        assertThrows(IllegalArgumentException.class, () -> instant.initFromEpochMilli(123456, 1000_000));
     }
 
     @Test
     public void testInitFromEpochMillisAcceptsTooMaxNanoOfMilli() {
-        final MutableInstant instant = new MutableInstant();
+        MutableInstant instant = new MutableInstant();
         instant.initFromEpochMilli(123456, 999_999);
-        assertEquals("NanoOfMilli", 999_999, instant.getNanoOfMillisecond());
+        assertEquals(999_999, instant.getNanoOfMillisecond(), "NanoOfMilli");
     }
 
     @Test
     public void testInitFromEpochSecond() {
-        final MutableInstant instant = new MutableInstant();
+        MutableInstant instant = new MutableInstant();
         instant.initFromEpochSecond(123, 456789012);
-        assertEquals("epochSec", 123, instant.getEpochSecond());
-        assertEquals("NanoOfSec", 456789012, instant.getNanoOfSecond());
-        assertEquals("epochMilli", 123456, instant.getEpochMillisecond());
-        assertEquals("NanoOfMilli", 789012, instant.getNanoOfMillisecond());
+        assertEquals(123, instant.getEpochSecond(), "epochSec");
+        assertEquals(456789012, instant.getNanoOfSecond(), "NanoOfSec");
+        assertEquals(123456, instant.getEpochMillisecond(), "epochMilli");
+        assertEquals(789012, instant.getNanoOfMillisecond(), "NanoOfMilli");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInitFromEpochSecondRejectsNegativeNanoOfMilli() {
-        final MutableInstant instant = new MutableInstant();
-        instant.initFromEpochSecond(123456, -1);
+        MutableInstant instant = new MutableInstant();
+        assertThrows(IllegalArgumentException.class, () -> instant.initFromEpochSecond(123456, -1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInitFromEpochSecondRejectsTooLargeNanoOfMilli() {
-        final MutableInstant instant = new MutableInstant();
-        instant.initFromEpochSecond(123456, 1000_000_000);
+        MutableInstant instant = new MutableInstant();
+        assertThrows(IllegalArgumentException.class, () -> instant.initFromEpochSecond(123456, 1000_000_000));
     }
 
     @Test
     public void testInitFromEpochSecondAcceptsTooMaxNanoOfMilli() {
-        final MutableInstant instant = new MutableInstant();
+        MutableInstant instant = new MutableInstant();
         instant.initFromEpochSecond(123456, 999_999_999);
-        assertEquals("NanoOfSec", 999_999_999, instant.getNanoOfSecond());
+        assertEquals(999_999_999, instant.getNanoOfSecond(), "NanoOfSec");
     }
 
     @Test
     public void testInstantToMillisAndNanos() {
-        final long[] values = new long[2];
+        long[] values = new long[2];
         MutableInstant.instantToMillisAndNanos(123456, 999_999_999, values);
         assertEquals(123456_999, values[0]);
         assertEquals(999_999, values[1]);
@@ -183,9 +182,9 @@ public class MutableInstantTest {
 
     @Test
     public void testInitFromClock() {
-        final MutableInstant instant = new MutableInstant();
+        MutableInstant instant = new MutableInstant();
 
-        final PreciseClock clock = new FixedPreciseClock(123456, 789012);
+        PreciseClock clock = new FixedPreciseClock(123456, 789012);
         instant.initFrom(clock);
 
         assertEquals(123456, instant.getEpochMillisecond());
@@ -196,10 +195,10 @@ public class MutableInstantTest {
 
     @Test
     public void testEquals() {
-        final MutableInstant instant = new MutableInstant();
+        MutableInstant instant = new MutableInstant();
         instant.initFromEpochSecond(123, 456789012);
 
-        final MutableInstant instant2 = new MutableInstant();
+        MutableInstant instant2 = new MutableInstant();
         instant2.initFromEpochMilli(123456, 789012);
 
         assertEquals(instant, instant2);
@@ -207,10 +206,10 @@ public class MutableInstantTest {
 
     @Test
     public void testHashCode() {
-        final MutableInstant instant = new MutableInstant();
+        MutableInstant instant = new MutableInstant();
         instant.initFromEpochSecond(123, 456789012);
 
-        final MutableInstant instant2 = new MutableInstant();
+        MutableInstant instant2 = new MutableInstant();
         instant2.initFromEpochMilli(123456, 789012);
 
         assertEquals(instant.hashCode(), instant2.hashCode());
@@ -222,7 +221,7 @@ public class MutableInstantTest {
 
     @Test
     public void testToString() {
-        final MutableInstant instant = new MutableInstant();
+        MutableInstant instant = new MutableInstant();
         instant.initFromEpochSecond(123, 456789012);
         assertEquals("MutableInstant[epochSecond=123, nano=456789012]", instant.toString());
 

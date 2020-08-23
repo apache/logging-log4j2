@@ -16,36 +16,31 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+@LoggerContextSource("log4j-customLevels.xml")
 public class CustomLevelsTest {
 
-    private static final String CONFIG = "log4j-customLevels.xml";
+    private final ListAppender listAppender;
+    private final Level diagLevel;
+    private final Level noticeLevel;
+    private final Level verboseLevel;
+    private final Logger logger;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    private ListAppender listAppender;
-    private Level diagLevel;
-    private Level noticeLevel;
-    private Level verboseLevel;
-
-    @Before
-    public void before() {
+    public CustomLevelsTest(final LoggerContext context, @Named("List1") final ListAppender appender) {
         diagLevel = Level.getLevel("DIAG");
         noticeLevel = Level.getLevel("NOTICE");
         verboseLevel = Level.getLevel("VERBOSE");
-        listAppender = context.getListAppender("List1").clear();
+        listAppender = appender.clear();
+        logger = context.getLogger(getClass().getName());
     }
 
     @Test
@@ -64,7 +59,6 @@ public class CustomLevelsTest {
 
     @Test
     public void testLog() {
-        final Logger logger = context.getLogger();
         assertThat(listAppender.getEvents(), hasSize(0));
         logger.debug("Hello, {}", "World");
         assertThat(listAppender.getEvents(), hasSize(1));

@@ -18,39 +18,33 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.categories.Configurations;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
 
-/**
- *
- */
-@Category(Configurations.Json.class)
+@Tag("json")
+@LoggerContextSource("log4j-reference-level.json")
 public class AppenderRefLevelJsonTest {
 
-    private static final String CONFIG = "log4j-reference-level.json";
-    private ListAppender app1;
-    private ListAppender app2;
+    private final ListAppender app1;
+    private final ListAppender app2;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    org.apache.logging.log4j.Logger logger1 = context.getLogger("org.apache.logging.log4j.test1");
-    org.apache.logging.log4j.Logger logger2 = context.getLogger("org.apache.logging.log4j.test2");
-    org.apache.logging.log4j.Logger logger3 = context.getLogger("org.apache.logging.log4j.test3");
+    org.apache.logging.log4j.Logger logger1;
+    org.apache.logging.log4j.Logger logger2;
+    org.apache.logging.log4j.Logger logger3;
     Marker testMarker = MarkerManager.getMarker("TEST");
 
-    @Before
-    public void before() {
-        app1 = context.getListAppender("LIST1").clear();
-        app2 = context.getListAppender("LIST2").clear();
+    public AppenderRefLevelJsonTest(final LoggerContext context, @Named("LIST1") final ListAppender first, @Named("LIST2") final ListAppender second) {
+        logger1 = context.getLogger("org.apache.logging.log4j.test1");
+        logger2 = context.getLogger("org.apache.logging.log4j.test2");
+        logger3 = context.getLogger("org.apache.logging.log4j.test3");
+        app1 = first.clear();
+        app2 = second.clear();
     }
 
     @Test

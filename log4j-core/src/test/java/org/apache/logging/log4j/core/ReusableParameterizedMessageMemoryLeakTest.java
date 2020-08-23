@@ -18,17 +18,16 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReusableParameterizedMessageMemoryLeakTest {
 
     @Test
-    @SuppressWarnings("UnusedAssignment") // parameter set to null to allow garbage collection
     public void testParametersAreNotLeaked() throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
         final ReusableMessage message = (ReusableMessage) ReusableMessageFactory.INSTANCE.newMessage(
@@ -38,7 +37,7 @@ public class ReusableParameterizedMessageMemoryLeakTest {
         final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
         gcHelper.run();
         try {
-            assertTrue("Parameter should have been garbage collected", latch.await(30, TimeUnit.SECONDS));
+            assertTrue(latch.await(30, TimeUnit.SECONDS), "Parameter should have been garbage collected");
         } finally {
             gcHelper.close();
         }
