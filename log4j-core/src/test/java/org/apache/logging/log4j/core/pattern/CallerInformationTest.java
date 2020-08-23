@@ -19,35 +19,34 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+@LoggerContextSource("log4j2-calling-class.xml")
 public class CallerInformationTest {
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-calling-class.xml");
-
     @Test
-    public void testClassLogger() throws Exception {
-        final ListAppender app = context.getListAppender("Class").clear();
+    public void testClassLogger(final LoggerContext context, @Named("Class") final ListAppender app) {
+        app.clear();
         final Logger logger = context.getLogger("ClassLogger");
         logger.info("Ignored message contents.");
         logger.warn("Verifying the caller class is still correct.");
         logger.error("Hopefully nobody breaks me!");
         final List<String> messages = app.getMessages();
-        assertEquals("Incorrect number of messages.", 3, messages.size());
+        assertEquals(3, messages.size(), "Incorrect number of messages.");
         for (final String message : messages) {
-            assertEquals("Incorrect caller class name.", this.getClass().getName(), message);
+            assertEquals(this.getClass().getName(), message, "Incorrect caller class name.");
         }
     }
 
     @Test
-    public void testMethodLogger() throws Exception {
-        final ListAppender app = context.getListAppender("Method").clear();
+    public void testMethodLogger(final LoggerContext context, @Named("Method") final ListAppender app) {
+        app.clear();
         final Logger logger = context.getLogger("MethodLogger");
         logger.info("More messages.");
         logger.warn("CATASTROPHE INCOMING!");
@@ -55,9 +54,9 @@ public class CallerInformationTest {
         logger.fatal("brains~~~");
         logger.info("Itchy. Tasty.");
         final List<String> messages = app.getMessages();
-        assertEquals("Incorrect number of messages.", 5, messages.size());
+        assertEquals(5, messages.size(), "Incorrect number of messages.");
         for (final String message : messages) {
-            assertEquals("Incorrect caller method name.", "testMethodLogger", message);
+            assertEquals("testMethodLogger", message, "Incorrect caller method name.");
         }
     }
 }

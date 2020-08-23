@@ -21,13 +21,10 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
 public class EncodingPatternConverterTest {
 
     @Test
@@ -42,7 +39,7 @@ public class EncodingPatternConverterTest {
         final String[] options = new String[]{"%msg"};
         final EncodingPatternConverter converter = EncodingPatternConverter
             .newInstance(ctx.getConfiguration(), options);
-        assertNotNull("Error creating converter", converter);
+        assertNotNull(converter, "Error creating converter");
         converter.format(event, sb);
         assertEquals(
             "Test \\r\\n&lt;div class=&quot;test&quot;&gt;this&lt;&#x2F;div&gt; &amp; &lt;div class=&apos;test&apos;&gt;that&lt;&#x2F;div&gt;",
@@ -50,7 +47,7 @@ public class EncodingPatternConverterTest {
     }
 
     @Test
-    public void testJsonEscaping() throws Exception {
+    public void testJsonEscaping() {
         final LogEvent event = Log4jLogEvent.newBuilder()
             .setLoggerName(getClass().getName())
             .setLevel(Level.DEBUG)
@@ -62,7 +59,7 @@ public class EncodingPatternConverterTest {
         final String[] options = new String[]{"%msg", "JSON"};
         final EncodingPatternConverter converter = EncodingPatternConverter.newInstance(ctx.getConfiguration(), options);
 
-        assertNotNull("Error creating converter", converter);
+        assertNotNull(converter, "Error creating converter");
         converter.format(event, sb);
 
         assertEquals(expected, sb.toString());
@@ -80,7 +77,7 @@ public class EncodingPatternConverterTest {
         final String[] options = new String[]{"%msg", "CRLF"};
         final EncodingPatternConverter converter = EncodingPatternConverter
             .newInstance(ctx.getConfiguration(), options);
-        assertNotNull("Error creating converter", converter);
+        assertNotNull(converter, "Error creating converter");
         converter.format(event, sb);
         assertEquals(
             "Test \\r\\n<div class=\"test\">this\\r</div> & \\n<div class='test'>that</div>",
@@ -99,7 +96,7 @@ public class EncodingPatternConverterTest {
         final String[] options = new String[]{"%msg", "XML"};
         final EncodingPatternConverter converter = EncodingPatternConverter
             .newInstance(ctx.getConfiguration(), options);
-        assertNotNull("Error creating converter", converter);
+        assertNotNull(converter, "Error creating converter");
         converter.format(event, sb);
         assertEquals(
             "Test \r\n&lt;div class=&quot;test&quot;&gt;this&lt;/div&gt; &amp; &lt;div class=&apos;test&apos;&gt;that&lt;/div&gt;",

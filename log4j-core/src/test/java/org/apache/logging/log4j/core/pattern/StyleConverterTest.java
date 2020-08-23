@@ -19,55 +19,42 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
 public class StyleConverterTest {
 
     private static final String EXPECTED =
         "\u001B[1;31mERROR\u001B[m \u001B[1;36mLoggerTest\u001B[m o.a.l.l.c.p.StyleConverterTest org.apache.logging.log4j.core.pattern.StyleConverterTest"
         + Strings.LINE_SEPARATOR;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
     }
 
-    @Rule
-    public LoggerContextRule init = new LoggerContextRule("log4j-style.xml");
-
-    private Logger logger;
-    private ListAppender app;
-
-    @Before
-    public void setUp() throws Exception {
-        this.logger = this.init.getLogger("LoggerTest");
-        this.app = this.init.getListAppender("List").clear();
-    }
-
     @Test
-    public void testReplacement() {
+    @LoggerContextSource("log4j-style.xml")
+    public void testReplacement(final LoggerContext context, @Named("List") final ListAppender app) {
+        final Logger logger = context.getLogger("LoggerTest");
         logger.error(this.getClass().getName());
 
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
-        assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
-        assertTrue("Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0), msgs.get(0).endsWith(EXPECTED));
+        assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
+        assertTrue(msgs.get(0).endsWith(EXPECTED),
+                "Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0));
     }
 
     @Test
     public void testNull() {
-        Assert.assertNull(StyleConverter.newInstance(null, null));
+        assertNull(StyleConverter.newInstance(null, null));
     }
 }

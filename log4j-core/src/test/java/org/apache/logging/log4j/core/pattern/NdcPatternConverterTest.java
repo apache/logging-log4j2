@@ -16,22 +16,32 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.ThreadContextHolder;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.junit.ThreadContextStackRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class NdcPatternConverterTest {
 
-    @Rule
-    public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule(); 
+    private final ThreadContextHolder holder = new ThreadContextHolder(false, true);
+
+    @BeforeEach
+    void setUp() {
+        ThreadContext.clearStack();
+    }
+
+    @AfterEach
+    void tearDown() {
+        holder.restore();
+    }
 
     @Test
     public void testEmpty() {

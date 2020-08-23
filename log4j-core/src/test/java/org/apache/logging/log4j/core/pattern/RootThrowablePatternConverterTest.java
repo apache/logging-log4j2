@@ -16,19 +16,15 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
+import static org.junit.jupiter.api.Assertions.*;
+
 public class RootThrowablePatternConverterTest {
 
     @Test
@@ -47,7 +43,7 @@ public class RootThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertTrue("No suffix", result.contains("test suffix"));
+        assertTrue(result.contains("test suffix"), "No suffix");
     }
 
     @Test
@@ -67,7 +63,7 @@ public class RootThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertTrue("No suffix", result.contains("test suffix"));
+        assertTrue(result.contains("test suffix"), "No suffix");
     }
 
     @Test
@@ -86,7 +82,7 @@ public class RootThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertFalse("Has unexpected suffix", result.contains("inner suffix"));
+        assertFalse(result.contains("inner suffix"), "Has unexpected suffix");
     }
 
     @Test
@@ -104,9 +100,9 @@ public class RootThrowablePatternConverterTest {
         converter.format(event, sb);
         final String result = sb.toString();
         // System.out.print(result);
-        assertTrue("Missing Exception",
-                result.contains("Wrapped by: java.lang.IllegalArgumentException: IllegalArgument"));
-        assertTrue("Incorrect start of msg", result.startsWith("java.lang.NullPointerException: null pointer"));
+        assertTrue(
+                result.contains("Wrapped by: java.lang.IllegalArgumentException: IllegalArgument"), "Missing Exception");
+        assertTrue(result.startsWith("java.lang.NullPointerException: null pointer"), "Incorrect start of msg");
     }
 
     /**
@@ -136,8 +132,8 @@ public class RootThrowablePatternConverterTest {
         converter.format(event, sb);
         final String result = sb.toString();
         // System.out.print(result);
-        assertTrue("Missing Exception",
-                result.contains("Wrapped by: java.lang.IllegalArgumentException: IllegalArgument"));
-        assertTrue("Incorrect start of msg", result.startsWith("java.lang.NullPointerException: null pointer"));
+        assertTrue(
+                result.contains("Wrapped by: java.lang.IllegalArgumentException: IllegalArgument"), "Missing Exception");
+        assertTrue(result.startsWith("java.lang.NullPointerException: null pointer"), "Incorrect start of msg");
     }
 }
