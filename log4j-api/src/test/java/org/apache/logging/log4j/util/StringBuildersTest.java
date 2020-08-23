@@ -16,35 +16,35 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the StringBuilders class.
  */
 public class StringBuildersTest {
     @Test
-    public void trimToMaxSize() throws Exception {
+    public void trimToMaxSize() {
         final StringBuilder sb = new StringBuilder();
         final char[] value = new char[4 * 1024];
         sb.append(value);
 
-        assertTrue("needs trimming", sb.length() > Constants.MAX_REUSABLE_MESSAGE_SIZE);
+        assertTrue(sb.length() > Constants.MAX_REUSABLE_MESSAGE_SIZE, "needs trimming");
         StringBuilders.trimToMaxSize(sb, Constants.MAX_REUSABLE_MESSAGE_SIZE);
-        assertTrue("trimmed OK", sb.length() <= Constants.MAX_REUSABLE_MESSAGE_SIZE);
+        assertTrue(sb.length() <= Constants.MAX_REUSABLE_MESSAGE_SIZE, "trimmed OK");
     }
 
     @Test
-    public void trimToMaxSizeWithLargeCapacity() throws Exception {
+    public void trimToMaxSizeWithLargeCapacity() {
         final StringBuilder sb = new StringBuilder();
         final char[] value = new char[4 * 1024];
         sb.append(value);
         sb.setLength(0);
 
-        assertTrue("needs trimming", sb.capacity() > Constants.MAX_REUSABLE_MESSAGE_SIZE);
+        assertTrue(sb.capacity() > Constants.MAX_REUSABLE_MESSAGE_SIZE, "needs trimming");
         StringBuilders.trimToMaxSize(sb, Constants.MAX_REUSABLE_MESSAGE_SIZE);
-        assertTrue("trimmed OK", sb.capacity() <= Constants.MAX_REUSABLE_MESSAGE_SIZE);
+        assertTrue(sb.capacity() <= Constants.MAX_REUSABLE_MESSAGE_SIZE, "trimmed OK");
     }
 
     @Test

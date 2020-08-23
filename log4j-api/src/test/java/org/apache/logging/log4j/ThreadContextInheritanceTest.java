@@ -16,33 +16,41 @@
  */
 package org.apache.logging.log4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import org.apache.logging.log4j.junit.ThreadContextRule;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link ThreadContext}.
  */
 public class ThreadContextInheritanceTest {
 
-    @Rule
-    public ThreadContextRule threadContextRule = new ThreadContextRule();
+    private ThreadContextHolder threadContextHolder;
 
-    @BeforeClass
+    @BeforeEach
+    void clearThreadContext() {
+        threadContextHolder = new ThreadContextHolder(true, true);
+        ThreadContext.clearAll();
+    }
+
+    @AfterEach
+    void restoreThreadContext() {
+        threadContextHolder.restore();
+    }
+
+    @BeforeAll
     public static void setupClass() {
         System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
         ThreadContext.init();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
         System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
         ThreadContext.init();
@@ -51,12 +59,10 @@ public class ThreadContextInheritanceTest {
     @Test
     public void testPush() {
         ThreadContext.push("Hello");
-        ThreadContext.push("{} is {}", ThreadContextInheritanceTest.class.getSimpleName(),
-                "running");
-        assertEquals("Incorrect parameterized stack value",
-                ThreadContext.pop(), "ThreadContextInheritanceTest is running");
-        assertEquals("Incorrect simple stack value", ThreadContext.pop(),
-                "Hello");
+        ThreadContext.push("{} is {}", ThreadContextInheritanceTest.class.getSimpleName(), "running");
+        assertEquals(
+                ThreadContext.pop(), "ThreadContextInheritanceTest is running", "Incorrect parameterized stack value");
+        assertEquals(ThreadContext.pop(), "Hello", "Incorrect simple stack value");
     }
 
     @Test
@@ -71,22 +77,21 @@ public class ThreadContextInheritanceTest {
             thread.start();
             thread.join();
             String str = sb.toString();
-            assertTrue("Unexpected ThreadContext value. Expected Hello. Actual "
-                    + str, "Hello".equals(str));
+            assertEquals("Hello", str, "Unexpected ThreadContext value. Expected Hello. Actual " + str);
             sb = new StringBuilder();
             thread = new TestThread(sb);
             thread.start();
             thread.join();
             str = sb.toString();
-            assertTrue("Unexpected ThreadContext value. Expected Hello. Actual "
-                    + str, "Hello".equals(str));
+            assertEquals("Hello", str, "Unexpected ThreadContext value. Expected Hello. Actual " + str);
         } finally {
             System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
         }
     }
 
     @Test
-    public void perfTest() throws Exception {
+    @Tag("performance")
+    public void perfTest() {
         ThreadContextUtilityClass.perfTest();
     }
 
@@ -105,12 +110,12 @@ public class ThreadContextInheritanceTest {
         ThreadContextUtilityClass.testGetImmutableContextReturnsEmptyMapIfEmpty();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetImmutableContextReturnsImmutableMapIfNonEmpty() {
         ThreadContextUtilityClass.testGetImmutableContextReturnsImmutableMapIfNonEmpty();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetImmutableContextReturnsImmutableMapIfEmpty() {
         ThreadContextUtilityClass.testGetImmutableContextReturnsImmutableMapIfEmpty();
     }
@@ -148,7 +153,7 @@ public class ThreadContextInheritanceTest {
         assertFalse(ThreadContext.containsKey("testKey"));
     }
 
-    private class TestThread extends Thread {
+    private static class TestThread extends Thread {
 
         private final StringBuilder sb;
 

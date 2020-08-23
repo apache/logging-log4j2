@@ -14,16 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.util.java9;
 
-import org.junit.Test;
-import static org.junit.Assert.assertFalse;
+import org.apache.logging.log4j.util.ProcessIdUtil;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class ProcessIdUtilTest {
 
     @Test
-    public void processIdTest() throws Exception {
+    public void processIdTest() {
         String processId = ProcessIdUtil.getProcessId();
-        assertFalse("ProcessId is default", processId.equals(ProcessIdUtil.DEFAULT_PROCESSID));
+        assertNotEquals(processId, ProcessIdUtil.DEFAULT_PROCESSID, "ProcessId is default");
     }
 }

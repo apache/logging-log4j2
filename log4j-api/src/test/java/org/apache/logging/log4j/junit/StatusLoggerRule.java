@@ -25,6 +25,7 @@ import org.junit.rules.ExternalResource;
  * Log4j configuration file.
  *
  * @since 2.8
+ * @deprecated Use {@link StatusLoggerLevelExtension}
  */
 public class StatusLoggerRule extends ExternalResource {
 

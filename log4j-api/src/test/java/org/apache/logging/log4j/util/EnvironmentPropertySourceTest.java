@@ -20,28 +20,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- *
- */
-@RunWith(Parameterized.class)
 public class EnvironmentPropertySourceTest {
 
     private final PropertySource source = new EnvironmentPropertySource();
-    private final CharSequence expected;
-    private final List<? extends CharSequence> tokens;
 
-    public EnvironmentPropertySourceTest(final CharSequence expected, final List<? extends CharSequence> tokens) {
-        this.expected = expected;
-        this.tokens = tokens;
-    }
-
-    @Parameterized.Parameters(name = "{0}")
     public static Object[][] data() {
         return new Object[][]{
             {"LOG4J_CONFIGURATION_FILE", Arrays.asList("configuration", "file")},
@@ -51,8 +38,9 @@ public class EnvironmentPropertySourceTest {
         };
     }
 
-    @Test
-    public void testNormalFormFollowsEnvironmentVariableConventions() throws Exception {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testNormalFormFollowsEnvironmentVariableConventions(CharSequence expected, List<? extends CharSequence> tokens) {
         assertEquals(expected, source.getNormalForm(tokens));
     }
 }

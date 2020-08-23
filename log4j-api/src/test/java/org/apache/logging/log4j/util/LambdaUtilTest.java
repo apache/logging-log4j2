@@ -19,9 +19,9 @@ package org.apache.logging.log4j.util;
 
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the LambdaUtil class.
@@ -31,24 +31,14 @@ public class LambdaUtilTest {
     @Test
     public void testGetSupplierResultOfSupplier() {
         final String expected = "result";
-        final Object actual = LambdaUtil.get(new Supplier<String>() {
-            @Override
-            public String get() {
-                return expected;
-            }
-        });
+        final Object actual = LambdaUtil.get((Supplier<String>) () -> expected);
         assertSame(expected, actual);
     }
 
     @Test
     public void testGetMessageSupplierResultOfSupplier() {
         final Message expected = new SimpleMessage("hi");
-        final Message actual = LambdaUtil.get(new MessageSupplier() {
-            @Override
-            public Message get() {
-                return expected;
-            }
-        });
+        final Message actual = LambdaUtil.get(() -> expected);
         assertSame(expected, actual);
     }
 
@@ -64,42 +54,26 @@ public class LambdaUtilTest {
         assertNull(actual);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testGetSupplierExceptionIfSupplierThrowsException() {
-        LambdaUtil.get(new Supplier<String>() {
-            @Override
-            public String get() {
-                throw new RuntimeException();
-            }
-        });
+        assertThrows(RuntimeException.class, () -> LambdaUtil.get((Supplier<String>) () -> {
+            throw new RuntimeException();
+        }));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testGetMessageSupplierExceptionIfSupplierThrowsException() {
-        LambdaUtil.get(new MessageSupplier() {
-            @Override
-            public Message get() {
-                throw new RuntimeException();
-            }
-        });
+        assertThrows(RuntimeException.class, () -> LambdaUtil.get(() -> {
+            throw new RuntimeException();
+        }));
     }
 
     @Test
     public void testGetAllReturnsResultOfSuppliers() {
         final String expected1 = "result1";
-        final Supplier<String> function1 = new Supplier<String>() {
-            @Override
-            public String get() {
-                return expected1;
-            }
-        };
+        final Supplier<String> function1 = () -> expected1;
         final String expected2 = "result2";
-        final Supplier<String> function2 = new Supplier<String>() {
-            @Override
-            public String get() {
-                return expected2;
-            }
-        };
+        final Supplier<String> function2 = () -> expected2;
 
         final Supplier<?>[] functions = { function1, function2 };
         final Object[] actual = LambdaUtil.getAll(functions);
@@ -124,22 +98,14 @@ public class LambdaUtilTest {
         }
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testGetAllThrowsExceptionIfAnyOfTheSuppliersThrowsException() {
-        final Supplier<String> function1 = new Supplier<String>() {
-            @Override
-            public String get() {
-                return "abc";
-            }
-        };
-        final Supplier<String> function2 = new Supplier<String>() {
-            @Override
-            public String get() {
-                throw new RuntimeException();
-            }
+        final Supplier<String> function1 = () -> "abc";
+        final Supplier<String> function2 = () -> {
+            throw new RuntimeException();
         };
 
         final Supplier<?>[] functions = { function1, function2 };
-        LambdaUtil.getAll(functions);
+        assertThrows(RuntimeException.class, () -> LambdaUtil.getAll(functions));
     }
 }

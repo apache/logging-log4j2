@@ -14,35 +14,21 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.util.java9;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.ParentRunner;
+import org.apache.logging.log4j.util.StackLocator;
+import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(BlockJUnit4ClassRunner.class)
 public class StackLocatorTest {
 
-    private static StackLocator stackLocator;
-
-    @BeforeClass
-    public static void setupClass() {
-
-        stackLocator = StackLocator.getInstance();
-    }
-
     @Test
-    public void testGetCallerClass() throws Exception {
+    public void testGetCallerClass() {
         final Class<?> expected = StackLocatorTest.class;
+        final StackLocator stackLocator = StackLocator.getInstance();
         final Class<?> actual = stackLocator.getCallerClass(1);
         assertSame(expected, actual);
     }
@@ -55,7 +41,8 @@ public class StackLocatorTest {
     }
 
     @Test
-    public void testGetCurrentStackTrace() throws Exception {
+    public void testGetCurrentStackTrace() {
+        final StackLocator stackLocator = StackLocator.getInstance();
         final Stack<Class<?>> classes = stackLocator.getCurrentStackTrace();
         final Stack<Class<?>> reversed = new Stack<>();
         reversed.ensureCapacity(classes.size());
@@ -70,35 +57,43 @@ public class StackLocatorTest {
     }
 
     @Test
-    public void testGetCallerClassViaName() throws Exception {
-        final Class<?> expected = BlockJUnit4ClassRunner.class;
-        final Class<?> actual = stackLocator.getCallerClass("org.junit.runners.ParentRunner");
-        // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
-        // update this test accordingly
-        assertSame(expected, actual);
+    public void testGetCallerClassViaName() {
+        Inner.assertCallerClassViaName();
     }
 
     @Test
-    public void testGetCallerClassViaAnchorClass() throws Exception {
-        final Class<?> expected = BlockJUnit4ClassRunner.class;
-        final Class<?> actual = stackLocator.getCallerClass(ParentRunner.class);
-        // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
-        // update this test accordingly
-        assertSame(expected, actual);
+    public void testGetCallerClassViaAnchorClass() {
+        Inner.assertCallerClassViaAnchorClass();
+    }
+
+    private static class Inner {
+        private static void assertCallerClassViaName() {
+            final Class<?> expected = StackLocatorTest.class;
+            final StackLocator stackLocator = StackLocator.getInstance();
+            final Class<?> actual = stackLocator.getCallerClass(Inner.class.getName());
+            assertSame(expected, actual);
+        }
+
+        private static void assertCallerClassViaAnchorClass() {
+            final Class<?> expected = StackLocatorTest.class;
+            final StackLocator stackLocator = StackLocator.getInstance();
+            final Class<?> actual = stackLocator.getCallerClass(Inner.class);
+            assertSame(expected, actual);
+        }
     }
 
     @Test
     public void testLocateClass() {
         ClassLocator locator = new ClassLocator();
         Class<?> clazz = locator.locateClass();
-        assertNotNull("Could not locate class", clazz);
-        assertEquals("Incorrect class", this.getClass(), clazz);
+        assertNotNull(clazz, "Could not locate class");
+        assertEquals(this.getClass(), clazz, "Incorrect class");
     }
 
     private final class Foo {
 
         private StackTraceElement foo() {
-            return new Bar().bar();
+            return new Bar().bar(); // <--- testCalcLocation() line
         }
 
     }
@@ -116,35 +111,38 @@ public class StackLocatorTest {
     }
 
     private StackTraceElement quux() {
-        return stackLocator.calcLocation("org.apache.logging.log4j.util.StackLocatorTest$Bar");
+        final StackLocator stackLocator = StackLocator.getInstance();
+        return stackLocator.calcLocation("org.apache.logging.log4j.util.java9.StackLocatorTest$Bar");
     }
 
     @Test
     public void testCalcLocation() {
         /*
          * We are setting up a stack trace that looks like:
-         *  - org.apache.logging.log4j.util.StackLocatorTest#quux(line:118)
-         *  - org.apache.logging.log4j.util.StackLocatorTest$Bar#baz(line:112)
-         *  - org.apache.logging.log4j.util.StackLocatorTest$Bar#bar(line:108)
-         *  - org.apache.logging.log4j.util.StackLocatorTest$Foo(line:100)
+         *  - org.apache.logging.log4j.util.test.StackLocatorTest#quux(line:118)
+         *  - org.apache.logging.log4j.util.test.StackLocatorTest$Bar#baz(line:112)
+         *  - org.apache.logging.log4j.util.test.StackLocatorTest$Bar#bar(line:108)
+         *  - org.apache.logging.log4j.util.test.StackLocatorTest$Foo(line:100)
          *
-         * We are pretending that org.apache.logging.log4j.util.StackLocatorTest$Bar is the logging class, and
-         * org.apache.logging.log4j.util.StackLocatorTest$Foo is where the log line emanated.
+         * We are pretending that org.apache.logging.log4j.util.test.StackLocatorTest$Bar is the logging class, and
+         * org.apache.logging.log4j.util.test.StackLocatorTest$Foo is where the log line emanated.
          */
         final StackTraceElement element = new Foo().foo();
-        assertEquals("org.apache.logging.log4j.util.StackLocatorTest$Foo", element.getClassName());
-        assertEquals(101, element.getLineNumber());
+        assertEquals("org.apache.logging.log4j.util.java9.StackLocatorTest$Foo", element.getClassName());
+        assertEquals(96, element.getLineNumber());
     }
 
     @Test
     public void testCalcLocationWhenNotInTheStack() {
+        final StackLocator stackLocator = StackLocator.getInstance();
         final StackTraceElement stackTraceElement = stackLocator.calcLocation("java.util.Logger");
         assertNull(stackTraceElement);
     }
 
-    class ClassLocator {
+    static class ClassLocator {
 
         public Class<?> locateClass() {
+            final StackLocator stackLocator = StackLocator.getInstance();
             return stackLocator.getCallerClass(ClassLocator.class);
         }
     }

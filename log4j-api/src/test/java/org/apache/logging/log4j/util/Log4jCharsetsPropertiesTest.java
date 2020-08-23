@@ -17,12 +17,14 @@
 
 package org.apache.logging.log4j.util;
 
+import org.junit.jupiter.api.Test;
+
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Log4jCharsetsPropertiesTest {
 
@@ -31,15 +33,16 @@ public class Log4jCharsetsPropertiesTest {
      */
     @Test
     public void testLoadAll() {
-        final ResourceBundle resourceBundle = PropertiesUtil.getCharsetsResourceBundle();
-        final Enumeration<String> keys = resourceBundle.getKeys();
+        ResourceBundle resourceBundle = PropertiesUtil.getCharsetsResourceBundle();
+        Enumeration<String> keys = resourceBundle.getKeys();
         while (keys.hasMoreElements()) {
-            final String key = keys.nextElement();
-            Assert.assertFalse(String.format("The Charset %s is available and should not be mapped", key),
-                    Charset.isSupported(key));
-            final String value = resourceBundle.getString(key);
-            Assert.assertTrue(String.format("The Charset %s is is not available and is mapped from %s", value, key),
-                    Charset.isSupported(value));
+            String key = keys.nextElement();
+            assertFalse(
+                    Charset.isSupported(key), String.format("The Charset %s is available and should not be mapped", key));
+            String value = resourceBundle.getString(key);
+            assertTrue(
+                    Charset.isSupported(value),
+                    String.format("The Charset %s is is not available and is mapped from %s", value, key));
         }
     }
 }

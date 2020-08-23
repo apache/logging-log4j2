@@ -16,26 +16,15 @@
  */
 package org.apache.logging.log4j.util;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.Assert.*;
-
-@RunWith(Parameterized.class)
 public class LegacyPropertiesCompatibilityTest {
 
-    private final CharSequence newName;
-    private final CharSequence oldName;
-
-    public LegacyPropertiesCompatibilityTest(final CharSequence newName, final CharSequence oldName) {
-        this.newName = newName;
-        this.oldName = oldName;
-    }
-
-    @Parameterized.Parameters(name = "New: {0}; Old: {1}")
     public static Object[][] data() {
         return new Object[][]{
             {"log4j2.configurationFile", "log4j.configurationFile"},
@@ -94,8 +83,9 @@ public class LegacyPropertiesCompatibilityTest {
         };
     }
 
-    @Test
-    public void compareNewWithOldName() throws Exception {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void compareNewWithOldName(final String newName, final String oldName) {
         final List<CharSequence> newTokens = PropertySource.Util.tokenize(newName);
         final List<CharSequence> oldTokens = PropertySource.Util.tokenize(oldName);
         assertEquals(oldTokens, newTokens);
