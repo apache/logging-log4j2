@@ -16,54 +16,47 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
-
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.ExtendedLevels;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
+@LoggerContextSource("log4j-customLevel.xml")
 public class ExtendedLevelTest {
 
-    private static final String CONFIG = "log4j-customLevel.xml";
-    private ListAppender list1;
-    private ListAppender list2;
+    private final ListAppender list1;
+    private final ListAppender list2;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    @Before
-    public void before() {
-        list1 = context.getListAppender("List1").clear();
-        list2 = context.getListAppender("List2").clear();
+    public ExtendedLevelTest(@Named("List1") final ListAppender list1, @Named("List2") final ListAppender list2) {
+        this.list1 = list1.clear();
+        this.list2 = list2.clear();
     }
 
     @Test
-    public void testLevelLogging() {
+    public void testLevelLogging(final LoggerContext context) {
         org.apache.logging.log4j.Logger logger = context.getLogger("org.apache.logging.log4j.test1");
         logger.log(ExtendedLevels.DETAIL, "Detail message");
         logger.log(Level.DEBUG, "Debug message");
         List<LogEvent> events = list1.getEvents();
-        assertNotNull("No events", events);
+        assertNotNull(events, "No events");
         assertThat(events, hasSize(1));
         LogEvent event = events.get(0);
-        assertEquals("Expected level DETAIL, got" + event.getLevel(), "DETAIL", event.getLevel().name());
+        assertEquals("DETAIL", event.getLevel().name(), "Expected level DETAIL, got" + event.getLevel());
         logger = context.getLogger("org.apache.logging.log4j.test2");
         logger.log(ExtendedLevels.NOTE, "Note message");
         logger.log(Level.INFO, "Info message");
         events = list2.getEvents();
-        assertNotNull("No events", events);
+        assertNotNull(events, "No events");
         assertThat(events, hasSize(1));
         event = events.get(0);
-        assertEquals("Expected level NOTE, got" + event.getLevel(), "NOTE", event.getLevel().name());
+        assertEquals("NOTE", event.getLevel().name(), "Expected level NOTE, got" + event.getLevel());
     }
 }

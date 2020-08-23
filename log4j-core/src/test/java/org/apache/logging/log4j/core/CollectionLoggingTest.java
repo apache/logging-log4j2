@@ -16,40 +16,32 @@
  */
 package org.apache.logging.log4j.core;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.message.StringMapMessage;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.StringMapMessage;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
-
-/**
- * TODO: Work in progress.
- */
-@Ignore
+@LoggerContextSource("log4j-collectionLogging.xml")
+@Disabled("Work in progress")
 public class CollectionLoggingTest {
 
-    private static final String CONFIG = "log4j-collectionLogging.xml";
-    private ListAppender app;
+    private final ListAppender app;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    @Before
-    public void before() {
-        app = context.getListAppender("List").clear();
+    public CollectionLoggingTest(@Named("List") final ListAppender app) {
+        this.app = app.clear();
     }
 
     @Test
-    public void testSystemProperties() {
+    public void testSystemProperties(final LoggerContext context) {
         final Logger logger = context.getLogger(CollectionLoggingTest.class.getName());
         logger.error(System.getProperties());
         // logger.error(new MapMessage(System.getProperties()));
@@ -57,7 +49,7 @@ public class CollectionLoggingTest {
     }
 
     @Test
-    public void testSimpleMap() {
+    public void testSimpleMap(final LoggerContext context) {
         final Logger logger = context.getLogger(CollectionLoggingTest.class.getName());
         logger.error(System.getProperties());
         final Map<String, String> map = new HashMap<>();
@@ -69,14 +61,14 @@ public class CollectionLoggingTest {
     }
 
     @Test
-    public void testNetworkInterfaces() throws SocketException {
+    public void testNetworkInterfaces(final LoggerContext context) throws SocketException {
         final Logger logger = context.getLogger(CollectionLoggingTest.class.getName());
         logger.error(NetworkInterface.getNetworkInterfaces());
         // TODO: some assertions
     }
 
     @Test
-    public void testAvailableCharsets() throws SocketException {
+    public void testAvailableCharsets(final LoggerContext context) {
         final Logger logger = context.getLogger(CollectionLoggingTest.class.getName());
         logger.error(Charset.availableCharsets());
         // TODO: some assertions

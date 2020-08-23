@@ -22,43 +22,39 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
+@LoggerContextSource("log4j-Level.xml")
 public class LevelTest {
 
-    private static final String CONFIG = "log4j-Level.xml";
-    private ListAppender listAll;
-    private ListAppender listTrace;
-    private ListAppender listDebug;
-    private ListAppender listInfo;
-    private ListAppender listWarn;
-    private ListAppender listError;
-    private ListAppender listFatal;
+    private final ListAppender listAll;
+    private final ListAppender listTrace;
+    private final ListAppender listDebug;
+    private final ListAppender listInfo;
+    private final ListAppender listWarn;
+    private final ListAppender listError;
+    private final ListAppender listFatal;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    @Before
-    public void before() {
-        listAll = context.getListAppender("ListAll").clear();
-        listTrace = context.getListAppender("ListTrace").clear();
-        listDebug = context.getListAppender("ListDebug").clear();
-        listInfo = context.getListAppender("ListInfo").clear();
-        listWarn = context.getListAppender("ListWarn").clear();
-        listError = context.getListAppender("ListError").clear();
-        listFatal = context.getListAppender("ListFatal").clear();
+    public LevelTest(@Named("ListAll") final ListAppender listAll, @Named("ListTrace") final ListAppender listTrace,
+            @Named("ListDebug") final ListAppender listDebug, @Named("ListInfo") final ListAppender listInfo,
+            @Named("ListWarn") final ListAppender listWarn, @Named("ListError") final ListAppender listError,
+            @Named("ListFatal") final ListAppender listFatal) {
+        this.listAll = listAll.clear();
+        this.listTrace = listTrace.clear();
+        this.listDebug = listDebug.clear();
+        this.listInfo = listInfo.clear();
+        this.listWarn = listWarn.clear();
+        this.listError = listError.clear();
+        this.listFatal = listFatal.clear();
     }
 
     // Helper class
@@ -77,7 +73,7 @@ public class LevelTest {
     }
 
     @Test
-    public void testLevelLogging() {
+    public void testLevelLogging(final LoggerContext context) {
         final Marker marker = MarkerManager.getMarker("marker");
         final Message msg = new ObjectMessage("msg");
         final Throwable t = new Throwable("test");
@@ -119,12 +115,12 @@ public class LevelTest {
         for (final Expected expected : expectedResults) {
             final String description = expected.description;
             final List<LogEvent> events = expected.appender.getEvents();
-            assertNotNull(description + ": No events", events);
+            assertNotNull(events, description + ": No events");
             assertThat(events, hasSize(expected.expectedEventCount));
             final LogEvent event = events.get(0);
             assertEquals(
-                description + ": Expected level " + expected.expectedInitialEventLevel + ", got" + event.getLevel(),
-                event.getLevel().name(), expected.expectedInitialEventLevel);
+                    event.getLevel().name(), expected.expectedInitialEventLevel,
+                    description + ": Expected level " + expected.expectedInitialEventLevel + ", got" + event.getLevel());
         }
     }
 }

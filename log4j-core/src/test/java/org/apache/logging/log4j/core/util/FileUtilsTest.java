@@ -17,16 +17,12 @@
 
 package org.apache.logging.log4j.core.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.URI;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the FileUtils class.
@@ -41,7 +37,7 @@ public class FileUtilsTest {
         final URI uri = new URI(config);
         final File file = FileUtils.fileFromUri(uri);
         assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
-        assertTrue("file exists", file.exists());
+        assertTrue(file.exists(), "file exists");
     }
 
     @Test
@@ -50,7 +46,7 @@ public class FileUtilsTest {
         final URI uri = new File(config).toURI();
         final File file = FileUtils.fileFromUri(uri);
         assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
-        assertTrue("file exists", file.exists());
+        assertTrue(file.exists(), "file exists");
     }
 
     @Test
@@ -59,7 +55,7 @@ public class FileUtilsTest {
         final URI uri = new File(config).toURI();
         final File file = FileUtils.fileFromUri(uri);
         assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
-        assertTrue("file exists", file.exists());
+        assertTrue(file.exists(), "file exists");
     }
 
     @Test
@@ -70,7 +66,7 @@ public class FileUtilsTest {
         final URI uri = URI.create(uriStr);
         final File file = FileUtils.fileFromUri(uri);
         assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
-        assertTrue("file exists", file.exists());
+        assertTrue(file.exists(), "file exists");
     }
 
     @Test
@@ -79,7 +75,7 @@ public class FileUtilsTest {
         final URI uri = new URI(config);
         final File file = FileUtils.fileFromUri(uri);
         assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
-        assertTrue("file exists", file.exists());
+        assertTrue(file.exists(), "file exists");
     }
 
 }

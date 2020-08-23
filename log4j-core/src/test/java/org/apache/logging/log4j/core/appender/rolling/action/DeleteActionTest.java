@@ -46,7 +46,7 @@ public class DeleteActionTest {
 
     private static DeleteAction create(final String path, final boolean followLinks, final int maxDepth, final boolean testMode,
             final PathCondition[] conditions) {
-        final Configuration config = new BasicConfigurationFactory().new BasicConfiguration();
+        final Configuration config = new BasicConfigurationFactory.BasicConfiguration();
         final DeleteAction delete = DeleteAction.createDeleteAction(path, followLinks, maxDepth, testMode, null, conditions,
                 null, config);
         return delete;

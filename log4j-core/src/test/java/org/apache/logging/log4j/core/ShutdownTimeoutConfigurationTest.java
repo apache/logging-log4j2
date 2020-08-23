@@ -17,26 +17,16 @@
 package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
+@LoggerContextSource("log4j-test-shutdownTimeout.xml")
 public class ShutdownTimeoutConfigurationTest {
 
-    private static final String CONFIG = "log4j-test-shutdownTimeout.xml";
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
     @Test
-    public void testShutdownFlag() {
-        final Configuration config = context.getConfiguration();
-        assertNotNull("No configuration", config);
+    public void testShutdownFlag(final Configuration config) {
         assertEquals(5000, config.getShutdownTimeoutMillis());
     }
 

@@ -155,7 +155,7 @@ public class WatchHttpTest {
         }
     }
 
-    private class TestConfigurationListener implements ConfigurationListener {
+    private static class TestConfigurationListener implements ConfigurationListener {
         private final Queue<String> queue;
         private final String name;
 

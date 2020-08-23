@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Timer;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test initialization.
  */
-@Ignore
+@Disabled
 public class InitTest {
 
     @Test
@@ -38,6 +38,6 @@ public class InitTest {
         timer.stop();
         long elapsed = timer.getElapsedNanoTime();
         System.out.println(timer.toString());
-        assertTrue("Initialization time exceeded threshold; elapsed " + elapsed, elapsed < 1000000000);
+        assertTrue(elapsed < 1000000000, "Initialization time exceeded threshold; elapsed " + elapsed);
     }
 }

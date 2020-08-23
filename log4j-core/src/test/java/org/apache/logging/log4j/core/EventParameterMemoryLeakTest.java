@@ -19,8 +19,9 @@ package org.apache.logging.log4j.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,12 +31,12 @@ import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("functional")
 public class EventParameterMemoryLeakTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty("log4j2.enable.threadlocals", "true");
         System.setProperty("log4j2.enable.direct.encoders", "true");
@@ -47,7 +48,7 @@ public class EventParameterMemoryLeakTest {
     @SuppressWarnings("UnusedAssignment") // parameter set to null to allow garbage collection
     public void testParametersAreNotLeaked() throws Exception {
         final File file = new File("target", "EventParameterMemoryLeakTest.log");
-        assertTrue("Deleted old file before test", !file.exists() || file.delete());
+        assertTrue(!file.exists() || file.delete(), "Deleted old file before test");
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         CountDownLatch latch = new CountDownLatch(1);
@@ -70,11 +71,11 @@ public class EventParameterMemoryLeakTest {
         assertThat(line2, containsString("paramValue"));
         assertThat(line3, containsString("paramValue"));
         assertThat(line4, containsString("paramValue"));
-        assertNull("Expected only three lines", line5);
+        assertNull(line5, "Expected only three lines");
         GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
         gcHelper.run();
         try {
-            assertTrue("Parameter should have been garbage collected", latch.await(30, TimeUnit.SECONDS));
+            assertTrue(latch.await(30, TimeUnit.SECONDS), "Parameter should have been garbage collected");
         } finally {
             gcHelper.close();
         }

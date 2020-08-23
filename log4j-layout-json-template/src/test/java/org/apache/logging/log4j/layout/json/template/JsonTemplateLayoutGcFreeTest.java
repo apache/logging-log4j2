@@ -18,7 +18,10 @@ package org.apache.logging.log4j.layout.json.template;
 
 import org.apache.logging.log4j.core.GcFreeLoggingTestUtil;
 import org.junit.Test;
+import org.junit.jupiter.api.Tag;
 
+@Tag("allocation")
+@Tag("functional")
 public class JsonTemplateLayoutGcFreeTest {
 
     @Test
