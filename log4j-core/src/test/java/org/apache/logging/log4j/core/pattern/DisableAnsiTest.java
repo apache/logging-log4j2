@@ -17,33 +17,32 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+@LoggerContextSource("log4j2-console-disableAnsi.xml")
 public class DisableAnsiTest {
 
     private static final String EXPECTED =
             "ERROR LoggerTest o.a.l.l.c.p.DisableAnsiTest org.apache.logging.log4j.core.pattern.DisableAnsiTest"
             + Strings.LINE_SEPARATOR;
 
-    @Rule
-    public LoggerContextRule init = new LoggerContextRule("log4j2-console-disableAnsi.xml");
-
     private Logger logger;
     private ListAppender app;
 
-    @Before
-    public void setUp() throws Exception {
-        this.logger = this.init.getLogger("LoggerTest");
-        this.app = this.init.getListAppender("List").clear();
+    @BeforeEach
+    public void setUp(final LoggerContext context, @Named("List") final ListAppender app) {
+        this.logger = context.getLogger("LoggerTest");
+        this.app = app.clear();
     }
 
     @Test
@@ -52,8 +51,9 @@ public class DisableAnsiTest {
 
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
-        assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
-        assertTrue("Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0), msgs.get(0).endsWith(EXPECTED));
+        assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
+        assertTrue(msgs.get(0).endsWith(EXPECTED),
+                "Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0));
     }
 
 }

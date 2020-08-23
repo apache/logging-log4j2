@@ -68,7 +68,7 @@ public class LogEventFactoryTest {
 
         private void resetLogEventFactory(final LogEventFactory logEventFactory) throws IllegalAccessException {
             final Field field = FieldUtils.getField(LoggerConfig.class, "LOG_EVENT_FACTORY", true);
-            FieldUtils.removeFinalModifier(field, true);
+            FieldUtils.removeFinalModifier(field);
             FieldUtils.writeStaticField(field, logEventFactory, false);
         }
     }).around(context);

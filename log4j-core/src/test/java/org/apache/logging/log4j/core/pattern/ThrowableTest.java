@@ -19,30 +19,28 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@code throwable} pattern.
  */
+@LoggerContextSource("log4j-throwable.xml")
 public class ThrowableTest {
-    private static final String CONFIG = "log4j-throwable.xml";
-    private static ListAppender app;
+    private ListAppender app;
+    private Logger logger;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    @Before
-    public void setUp() throws Exception {
-        app = context.getListAppender("List").clear();
+    @BeforeEach
+    public void setUp(final LoggerContext context, @Named("List") final ListAppender app) {
+        this.logger = context.getLogger("LoggerTest");
+        this.app = app.clear();
     }
-
-    Logger logger = context.getLogger("LoggerTest");
 
     @Test
     public void testException() {
@@ -51,7 +49,7 @@ public class ThrowableTest {
         logger.error("Exception", parent);
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
-        assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
-        assertFalse("No suppressed lines", msgs.get(0).contains("suppressed"));
+        assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
+        assertFalse(msgs.get(0).contains("suppressed"), "No suppressed lines");
     }
 }

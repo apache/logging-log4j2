@@ -22,19 +22,16 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
 public class MaxLengthConverterTest {
 
-    private static MaxLengthConverter converter = MaxLengthConverter.newInstance(null, new String[]{"%m", "10"});
+    private static final MaxLengthConverter converter = MaxLengthConverter.newInstance(null, new String[]{"%m", "10"});
 
     @Test
-    public void testUnderMaxLength() throws Exception {
+    public void testUnderMaxLength() {
         final Message message = new SimpleMessage("0123456789");
         final LogEvent event = Log4jLogEvent.newBuilder()
             .setLoggerName("MyLogger")
@@ -47,7 +44,7 @@ public class MaxLengthConverterTest {
     }
 
     @Test
-    public void testOverMaxLength() throws Exception {
+    public void testOverMaxLength() {
         final Message message = new SimpleMessage("01234567890123456789");
         final LogEvent event = Log4jLogEvent.newBuilder()
             .setLoggerName("MyLogger")
@@ -58,8 +55,9 @@ public class MaxLengthConverterTest {
         converter.format(event, sb);
         assertEquals("0123456789", sb.toString());
     }
+
     @Test
-    public void testOverMaxLength21WithEllipsis() throws Exception {
+    public void testOverMaxLength21WithEllipsis() {
         final Message message = new SimpleMessage("012345678901234567890123456789");
         final LogEvent event = Log4jLogEvent.newBuilder()
             .setLoggerName("MyLogger")

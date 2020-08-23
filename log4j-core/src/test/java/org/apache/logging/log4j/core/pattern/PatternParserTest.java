@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Calendar;
 import java.util.List;
 
@@ -38,12 +34,11 @@ import org.apache.logging.log4j.core.util.SystemNanoClock;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
+import static org.junit.jupiter.api.Assertions.*;
+
 public class PatternParserTest {
 
     static String OUTPUT_FILE   = "output/PatternParser";
@@ -69,15 +64,15 @@ public class PatternParserTest {
     private static final String KEY = "Converter";
     private PatternParser parser;
 
-    @Before
+    @BeforeEach
     public void setup() {
         parser = new PatternParser(KEY);
     }
 
     private void validateConverter(final List<PatternFormatter> formatter, final int index, final String name) {
         final PatternConverter pc = formatter.get(index).getConverter();
-        assertEquals("Incorrect converter " + pc.getName() + " at index " + index + " expected " + name,
-            pc.getName(), name);
+        assertEquals(
+                pc.getName(), name, "Incorrect converter " + pc.getName() + " at index " + index + " expected " + name);
     }
 
     /**
@@ -87,7 +82,7 @@ public class PatternParserTest {
     public void defaultPattern() {
         final List<PatternFormatter> formatters = parser.parse(msgPattern);
         assertNotNull(formatters);
-        assertTrue(formatters.size() == 2);
+        assertEquals(formatters.size(), 2);
         validateConverter(formatters, 0, "Message");
         validateConverter(formatters, 1, "Line Sep");
     }
@@ -118,8 +113,8 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = "INFO  [PatternParserTest        :104 ] - Hello, world" + Strings.LINE_SEPARATOR;
-        assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
+        final String expected = "INFO  [PatternParserTest        :99  ] - Hello, world" + Strings.LINE_SEPARATOR;
+        assertTrue(str.endsWith(expected), "Expected to end with: " + expected + ". Actual: " + str);
     }
 
     @Test
@@ -140,7 +135,7 @@ public class PatternParserTest {
         }
         final String str = buf.toString();
         final String expected = "INFO  rTest Hello, world" + Strings.LINE_SEPARATOR;
-        assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
+        assertTrue(str.endsWith(expected), "Expected to end with: " + expected + ". Actual: " + str);
     }
 
     @Test
@@ -161,7 +156,7 @@ public class PatternParserTest {
         }
         final String str = buf.toString();
         final String expected = "INFO  org.a Hello, world" + Strings.LINE_SEPARATOR;
-        assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
+        assertTrue(str.endsWith(expected), "Expected to end with: " + expected + ". Actual: " + str);
     }
 
     @Test
@@ -192,7 +187,7 @@ public class PatternParserTest {
 
         // eats all characters until the closing '}' character
         final String expected = "[2001-02-03 04:05:06,789] - Hello, world";
-        assertTrue("Expected to start with: " + expected + ". Actual: " + str, str.startsWith(expected));
+        assertTrue(str.startsWith(expected), "Expected to start with: " + expected + ". Actual: " + str);
     }
 
     @Test
@@ -226,8 +221,8 @@ public class PatternParserTest {
         }
         final String str = buf.toString();
         final String expectedEnd = String.format("] %-5s: Hello, world%s\u001B[m", level, Strings.LINE_SEPARATOR);
-        assertTrue("Expected to start with: " + expectedStart + ". Actual: " + str, str.startsWith(expectedStart));
-        assertTrue("Expected to end with: \"" + expectedEnd + "\". Actual: \"" + str, str.endsWith(expectedEnd));
+        assertTrue(str.startsWith(expectedStart), "Expected to start with: " + expectedStart + ". Actual: " + str);
+        assertTrue(str.endsWith(expectedEnd), "Expected to end with: \"" + expectedEnd + "\". Actual: \"" + str);
     }
 
     @Test
@@ -301,8 +296,8 @@ public class PatternParserTest {
         final List<PatternFormatter> formatters = parser.parse(pattern);
         assertNotNull(formatters);
         final String msg = formatters.toString();
-        assertEquals(msg, 1, formatters.size());
-        assertTrue(msg, checkClass.isInstance(formatters.get(0).getConverter()));
+        assertEquals(1, formatters.size(), msg);
+        assertTrue(checkClass.isInstance(formatters.get(0).getConverter()), msg);
     }
 
     @Test
@@ -401,8 +396,8 @@ public class PatternParserTest {
         final List<String> ignorePackages = options.getIgnorePackages();
         assertNotNull(ignorePackages);
         final String ignorePackagesString = ignorePackages.toString();
-        assertTrue(ignorePackagesString, ignorePackages.contains("org.junit"));
-        assertTrue(ignorePackagesString, ignorePackages.contains("org.eclipse"));
+        assertTrue(ignorePackages.contains("org.junit"), ignorePackagesString);
+        assertTrue(ignorePackages.contains("org.eclipse"), ignorePackagesString);
         assertEquals("|", options.getSeparator());
     }
 
@@ -411,8 +406,8 @@ public class PatternParserTest {
     public void testMapPatternConverter() {
         final List<PatternFormatter> formatters = parser.parse("%K");
         assertNotNull(formatters);
-        assertTrue(formatters.size() == 1);
+        assertEquals(formatters.size(), 1);
         PatternFormatter formatter = formatters.get(0);
-        assertTrue("Expected a MapPatternConverter", formatter.getConverter() instanceof MapPatternConverter);
+        assertTrue(formatter.getConverter() instanceof MapPatternConverter, "Expected a MapPatternConverter");
     }
 }
