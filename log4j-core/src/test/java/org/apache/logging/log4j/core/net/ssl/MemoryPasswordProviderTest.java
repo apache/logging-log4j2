@@ -17,14 +17,14 @@ package org.apache.logging.log4j.core.net.ssl;/*
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MemoryPasswordProviderTest {
     @Test
     public void testConstructorAllowsNull() {
-        assertEquals(null, new MemoryPasswordProvider(null).getPassword());
+        assertNull(new MemoryPasswordProvider(null).getPassword());
     }
 
     @Test

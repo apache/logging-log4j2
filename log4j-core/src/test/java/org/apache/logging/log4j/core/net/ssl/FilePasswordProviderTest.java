@@ -19,9 +19,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FilePasswordProviderTest {
 
@@ -36,13 +37,13 @@ public class FilePasswordProviderTest {
         assertArrayEquals(PASSWORD.toCharArray(), actual);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorDisallowsNull() throws Exception {
-        new FilePasswordProvider(null);
+        assertThrows(NullPointerException.class, () -> new FilePasswordProvider(null));
     }
 
-    @Test(expected = NoSuchFileException.class)
+    @Test
     public void testConstructorFailsIfFileDoesNotExist() throws Exception {
-        new FilePasswordProvider("nosuchfile");
+        assertThrows(NoSuchFileException.class, () -> new FilePasswordProvider("nosuchfile"));
     }
 }

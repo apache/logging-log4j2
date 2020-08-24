@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.HashMap;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link MapLookup}.
@@ -34,8 +34,8 @@ public class MapLookupTest {
     @Test
     public void testEmptyMap() {
         final MapLookup lookup = new MapLookup(new HashMap<String, String>());
-        assertEquals(null, lookup.lookup(null));
-        assertEquals(null, lookup.lookup("X"));
+        assertNull(lookup.lookup(null));
+        assertNull(lookup.lookup("X"));
     }
 
     @Test
@@ -43,29 +43,27 @@ public class MapLookupTest {
         final HashMap<String, String> map = new HashMap<>();
         map.put("A", "B");
         final MapLookup lookup = new MapLookup(map);
-        assertEquals(null, lookup.lookup(null));
+        assertNull(lookup.lookup(null));
         assertEquals("B", lookup.lookup("A"));
     }
 
     @Test
     public void testNullMap() {
         final MapLookup lookup = new MapLookup();
-        assertEquals(null, lookup.lookup(null));
-        assertEquals(null, lookup.lookup("X"));
+        assertNull(lookup.lookup(null));
+        assertNull(lookup.lookup("X"));
     }
 
     @Test
     public void testMainMap() {
-        MapLookup.setMainArguments(new String[] {
-                "--file",
-                "foo.txt" });
+        MainMapLookup.setMainArguments("--file", "foo.txt");
         final MapLookup lookup = MainMapLookup.MAIN_SINGLETON;
-        assertEquals(null, lookup.lookup(null));
-        assertEquals(null, lookup.lookup("X"));
+        assertNull(lookup.lookup(null));
+        assertNull(lookup.lookup("X"));
         assertEquals("--file", lookup.lookup("0"));
         assertEquals("foo.txt", lookup.lookup("1"));
         assertEquals("foo.txt", lookup.lookup("--file"));
-        assertEquals(null, lookup.lookup("foo.txt"));
+        assertNull(lookup.lookup("foo.txt"));
     }
 
     @Test

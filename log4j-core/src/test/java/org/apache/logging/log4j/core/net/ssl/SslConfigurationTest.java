@@ -23,14 +23,16 @@ import java.net.UnknownHostException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SslConfigurationTest {
 
     private static final String TLS_TEST_HOST = "login.yahoo.com";
     private static final int TLS_TEST_PORT = 443;
 
+    @SuppressWarnings("deprecation")
     public static SslConfiguration createTestSslConfigurationResourcesDeprecated() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE_RESOURCE,
                 TestConstants.KEYSTORE_PWD(), TestConstants.KEYSTORE_TYPE, null);
@@ -47,6 +49,7 @@ public class SslConfigurationTest {
         return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
     }
 
+    @SuppressWarnings("deprecation")
     public static SslConfiguration createTestSslConfigurationFilesDeprecated() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
                 TestConstants.KEYSTORE_PWD(), TestConstants.KEYSTORE_TYPE, null);
@@ -65,32 +68,32 @@ public class SslConfigurationTest {
 
     @Test
     public void testGettersFromScratchFiles() throws StoreConfigurationException {
-        Assert.assertNotNull(createTestSslConfigurationFiles().getProtocol());
-        Assert.assertNotNull(createTestSslConfigurationFiles().getKeyStoreConfig());
-        Assert.assertNotNull(createTestSslConfigurationFiles().getSslContext());
-        Assert.assertNotNull(createTestSslConfigurationFiles().getSslSocketFactory());
-        Assert.assertNotNull(createTestSslConfigurationFiles().getTrustStoreConfig());
+        assertNotNull(createTestSslConfigurationFiles().getProtocol());
+        assertNotNull(createTestSslConfigurationFiles().getKeyStoreConfig());
+        assertNotNull(createTestSslConfigurationFiles().getSslContext());
+        assertNotNull(createTestSslConfigurationFiles().getSslSocketFactory());
+        assertNotNull(createTestSslConfigurationFiles().getTrustStoreConfig());
     }
 
     @Test
     public void testGettersFromScratchResources() throws StoreConfigurationException {
-        Assert.assertNotNull(createTestSslConfigurationResources().getProtocol());
-        Assert.assertNotNull(createTestSslConfigurationResources().getKeyStoreConfig());
-        Assert.assertNotNull(createTestSslConfigurationResources().getSslContext());
-        Assert.assertNotNull(createTestSslConfigurationResources().getSslSocketFactory());
-        Assert.assertNotNull(createTestSslConfigurationResources().getTrustStoreConfig());
+        assertNotNull(createTestSslConfigurationResources().getProtocol());
+        assertNotNull(createTestSslConfigurationResources().getKeyStoreConfig());
+        assertNotNull(createTestSslConfigurationResources().getSslContext());
+        assertNotNull(createTestSslConfigurationResources().getSslSocketFactory());
+        assertNotNull(createTestSslConfigurationResources().getTrustStoreConfig());
     }
 
     @Test
     public void equals() {
-        Assert.assertEquals(SslConfiguration.createSSLConfiguration(null, null, null), SslConfiguration.createSSLConfiguration(null, null, null));
+        assertEquals(SslConfiguration.createSSLConfiguration(null, null, null), SslConfiguration.createSSLConfiguration(null, null, null));
     }
 
     @Test
         public void emptyConfigurationDoesntCauseNullSSLSocketFactory() {
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
         final SSLSocketFactory factory = sc.getSslSocketFactory();
-        Assert.assertNotNull(factory);
+        assertNotNull(factory);
     }
 
     @Test
@@ -99,8 +102,7 @@ public class SslConfigurationTest {
         final SSLSocketFactory factory = sc.getSslSocketFactory();
         try {
             try (final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT)) {
-                Assert.assertNotNull(clientSocket);
-                clientSocket.close();
+                assertNotNull(clientSocket);
             }
         } catch (final UnknownHostException offline) {
             // this exception is thrown on Windows when offline
@@ -116,10 +118,7 @@ public class SslConfigurationTest {
         try {
             try (final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT)) {
                 try (final OutputStream os = clientSocket.getOutputStream()) {
-                    os.write("GET config/login_verify2?".getBytes());
-                    Assert.fail("Expected IOException");
-                } catch (final IOException e) {
-                    // Expected, do nothing.
+                    assertThrows(IOException.class, () -> os.write("GET config/login_verify2?".getBytes()));
                 }
             }
         } catch (final UnknownHostException offline) {
@@ -133,6 +132,6 @@ public class SslConfigurationTest {
                 new MemoryPasswordProvider(TestConstants.NULL_PWD), null, null);
         final SslConfiguration sslConf = SslConfiguration.createSSLConfiguration(null, ksc, null);
         final SSLSocketFactory factory = sslConf.getSslSocketFactory();
-        Assert.assertNotNull(factory);
+        assertNotNull(factory);
     }
 }
