@@ -16,18 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.Calendar;
+import org.junit.jupiter.api.Test;
 
-import org.apache.logging.log4j.core.AbstractLogEvent;
-import org.apache.logging.log4j.core.LogEvent;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-/**
- *
- */
 public class CaseLookupTest {
 
 

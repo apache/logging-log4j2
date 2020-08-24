@@ -15,15 +15,15 @@ package org.apache.logging.log4j.core.net.ssl;/*
  * limitations under the license.
  */
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EnvironmentPasswordProviderTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorDisallowsNull() {
-        new EnvironmentPasswordProvider(null);
+        assertThrows(NullPointerException.class, () -> new EnvironmentPasswordProvider(null));
     }
 
     @Test

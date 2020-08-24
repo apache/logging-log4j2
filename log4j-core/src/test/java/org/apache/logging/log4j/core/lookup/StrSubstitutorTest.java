@@ -20,27 +20,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
 public class StrSubstitutorTest {
 
     private static final String TESTKEY = "TestKey";
     private static final String TESTVAL = "TestValue";
 
 
-    @BeforeClass
+    @BeforeAll
     public static void before() {
         System.setProperty(TESTKEY, TESTVAL);
     }
 
-    @AfterClass
+    @AfterAll
     public static void after() {
         System.clearProperty(TESTKEY);
     }

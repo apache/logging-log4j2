@@ -23,42 +23,25 @@ import java.net.Socket;
 import java.util.concurrent.Callable;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.AvailablePortFinder;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Ignore("Currently needs better port choosing support")
+@Disabled("Currently needs better port choosing support")
+@LoggerContextSource("log4j-socket.xml")
 public class SocketTest {
     private static final int SOCKET_PORT = AvailablePortFinder.getNextAvailable();
 
-    private static final String CONFIG = "log4j-socket.xml";
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
     @Test
-    public void testConnect() throws Exception {
-        // TODO: there's a JUnit rule that simplifies this (matt)
+    public void testConnect(final LoggerContext context) {
         System.err.println("Initializing logger");
-        Logger logger = null;
-        try {
-            logger = context.getLogger();
-        } catch (final NullPointerException e) {
-            fail("Unexpected exception; should not occur until first logging statement " + e.getMessage());
-        }
-
-        final String message = "Log #1";
-        try {
-            logger.error(message);
-            fail("Expected exception not thrown");
-        } catch (final AppenderLoggingException e) {
-            //System.err.println("Expected exception here, but already errored out when initializing logger");
-        }
+        Logger logger = assertDoesNotThrow(() -> context.getLogger(getClass().getName()));
+        assertThrows(AppenderLoggingException.class, () -> logger.error("Log #1"));
     }
 
     private static class TestSocketServer implements Callable<InputStream> {

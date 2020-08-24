@@ -24,14 +24,14 @@ import java.util.Arrays;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * Subclassed by JSON, XML, and YAML modules.
  */
 public abstract class AbstractLogEventParserTest {
-    
+
     protected void assertLogEvent(final LogEvent logEvent) {
         assertThat(logEvent, is(notNullValue()));
         assertThat(logEvent.getInstant().getEpochMillisecond(), equalTo(1493121664118L));
@@ -52,8 +52,8 @@ public abstract class AbstractLogEventParserTest {
                 equalTo("logtest.Main"));
         assertThat(logEvent.getLoggerFqcn(), equalTo("org.apache.logging.log4j.spi.AbstractLogger"));
         assertThat(logEvent.getContextStack().asList(), equalTo(Arrays.asList("one", "two")));
-        assertThat((String) logEvent.getContextData().getValue("foo"), equalTo("FOO"));
-        assertThat((String) logEvent.getContextData().getValue("bar"), equalTo("BAR"));
+        assertThat(logEvent.getContextData().getValue("foo"), equalTo("FOO"));
+        assertThat(logEvent.getContextData().getValue("bar"), equalTo("BAR"));
         assertThat(logEvent.getSource().getClassName(), equalTo("logtest.Main"));
     }
 }

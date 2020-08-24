@@ -17,9 +17,9 @@
 package org.apache.logging.log4j.core.message;
 
 import org.apache.logging.log4j.message.ThreadDumpMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests that ThreadDumpMessage uses ExtendedThreadInformation when available.
@@ -31,6 +31,6 @@ public class ExtendedThreadInformationTest {
 
         final String message = msg.getFormattedMessage();
         //System.out.print(message);
-        assertTrue("No header", message.contains(" Id="));
+        assertTrue(message.contains(" Id="), "No header");
     }
 }
