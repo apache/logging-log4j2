@@ -363,7 +363,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-layout-json-template</artifactId>
+        <artifactId>log4j-layout-template-json</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
       </dependency>
@@ -1448,7 +1448,7 @@
     <module>log4j-api</module>
     <module>log4j-core-java9</module>
     <module>log4j-core</module>
-    <module>log4j-layout-json-template</module>
+    <module>log4j-layout-template-json</module>
     <module>log4j-core-its</module>
     <module>log4j-1.2-api</module>
     <module>log4j-slf4j-impl</module>
