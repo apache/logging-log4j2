@@ -387,7 +387,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-layout-json-template</artifactId>
+        <artifactId>log4j-layout-template-json</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
       </dependency>
@@ -1572,7 +1572,7 @@
     <module>log4j-layout-jackson-json</module>
     <module>log4j-layout-jackson-xml</module>
     <module>log4j-layout-jackson-yaml</module>
-    <module>log4j-layout-json-template</module>
+    <module>log4j-layout-template-json</module>
     <module>log4j-core-its</module>
     <module>log4j-1.2-api</module>
     <module>log4j-slf4j-impl</module>
