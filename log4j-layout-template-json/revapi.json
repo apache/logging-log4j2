@@ -5,9 +5,9 @@
       "filter": {
         "classes": {
           "exclude": [
-            "org\\.apache\\.logging\\.log4j\\.layout\\.json\\.template\\.resolver\\.TemplateResolverConfig",
-            "org\\.apache\\.logging\\.log4j\\.layout\\.json\\.template\\.resolver\\.TemplateResolverContext",
-            "org\\.apache\\.logging\\.log4j\\.layout\\.json\\.template\\.resolver\\.TemplateResolverFactory"
+            "org\\.apache\\.logging\\.log4j\\.layout\\.template\\.json\\.resolver\\.TemplateResolverConfig",
+            "org\\.apache\\.logging\\.log4j\\.layout\\.template\\.json\\.resolver\\.TemplateResolverContext",
+            "org\\.apache\\.logging\\.log4j\\.layout\\.template\\.json\\.resolver\\.TemplateResolverFactory"
           ]
         }
       }
