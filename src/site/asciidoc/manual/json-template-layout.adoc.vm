@@ -37,7 +37,7 @@ enough to enable access to `JsonTemplateLayout` in your Log4j configuration:
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-layout-json-template</artifactId>
-    <version>${log4j.version}</version>
+    <version>${Log4jReleaseVersion}</version>
 </dependency>
 ----
 
@@ -1181,9 +1181,9 @@ alternatives.
 [#faq-lookups]
 === Are lookups supported in templates?
 
-Yes, link:lookups.html[lookups] (e.g., `${java:version}`, `${env:USER}`,
-`${date:MM-dd-yyyy}`) are supported in string literals of templates. Though note
-that they are not garbage-free.
+Yes, link:lookups.html[lookups] (e.g., `${dollar}{java:version}`,
+`${dollar}{env:USER}`, `${dollar}{date:MM-dd-yyyy}`) are supported in string
+literals of templates. Though note that they are not garbage-free.
 
 [#faq-garbage-free]
 === Is `JsonTemplateLayout` garbage-free?
