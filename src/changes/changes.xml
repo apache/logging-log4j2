@@ -31,6 +31,18 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2019-xx-xx" description="GA Release 3.0.0">
+      <action dev="vy" type="update">
+        Update jetty-util from 8.2.0.v20160908 to 9.4.31.v20200723.
+      </action>
+      <action dev="vy" type="update">
+        Update org.apache.felix.framework from 5.6.10 to 6.0.3.
+      </action>
+      <action dev="vy" type="update">
+        Update commons-compress from 1.18 to 1.20.
+      </action>
+      <action dev="vy" type="update">
+        Update Jackson from 2.11.1 to 2.11.2.
+      </action>
       <action issue="LOG4J2-2400" dev="rgoers" type="add" due-to="Natalie Meurer">
         Add Redis Appender.
       </action>
