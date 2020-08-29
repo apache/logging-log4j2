@@ -25,7 +25,9 @@ package org.apache.logging.log4j.junit;
  * &#64;Rule
  * public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule();
  * </pre>
+ * @deprecated use {@link UsingThreadContextStack} with JUnit 5
  */
+@Deprecated
 public class ThreadContextStackRule extends ThreadContextRule {
 
     /**

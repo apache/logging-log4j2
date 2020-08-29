@@ -26,13 +26,12 @@ import org.apache.logging.log4j.core.layout.GelfLayout.CompressionType;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.junit.ThreadContextRule;
+import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.test.appender.EncodingListAppender;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -42,8 +41,9 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
+@UsingAnyThreadContext
 public class GelfLayoutTest {
 
     static ConfigurationFactory configFactory = new BasicConfigurationFactory();
@@ -60,15 +60,12 @@ public class GelfLayoutTest {
     private static final String MDCVALUE2 = "MdcValue2";
     private static final String VALUE1 = "Value1";
 
-    @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule();
-
-    @AfterClass
+    @AfterAll
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(configFactory);
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(configFactory);
         final LoggerContext ctx = LoggerContext.getContext();

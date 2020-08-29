@@ -21,23 +21,24 @@ import java.io.IOException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
+@LoggerContextSource("GelfLayoutTest2.xml")
 public class GelfLayoutTest2 {
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("GelfLayoutTest2.xml");
-
     @Test
-    public void gelfLayout() throws IOException {
-        final Logger logger = context.getLogger();
+    public void gelfLayout(final LoggerContext context, @Named final ListAppender list) throws IOException {
+        list.clear();
+        final Logger logger = context.getLogger(getClass());
         logger.info("Message");
-        final String gelf = context.getListAppender("list").getMessages().get(0);
+        final String gelf = list.getMessages().get(0);
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(gelf);
         assertEquals("Message", json.get("short_message").asText());

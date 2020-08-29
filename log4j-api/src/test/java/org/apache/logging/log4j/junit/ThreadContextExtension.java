@@ -17,40 +17,41 @@
 
 package org.apache.logging.log4j.junit;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.ThreadContextHolder;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-/**
- * JUnit 5 test extension that sets a specific StatusLogger logging level for each test.
- *
- * @since 2.14.0
- */
-public class StatusLoggerLevelExtension implements BeforeEachCallback, AfterEachCallback {
-
-    private static final String KEY = "previousLevel";
-    private final Level level;
-
-    public StatusLoggerLevelExtension(Level level) {
-        this.level = level;
-    }
-
+class ThreadContextExtension implements BeforeEachCallback, AfterEachCallback {
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        final StatusLogger logger = StatusLogger.getLogger();
-        getStore(context).put(KEY, logger.getLevel());
-        logger.setLevel(level);
+        final Class<?> testClass = context.getRequiredTestClass();
+        final ThreadContextHolder holder;
+        if (testClass.isAnnotationPresent(UsingAnyThreadContext.class)) {
+            holder = new ThreadContextHolder(true, true);
+            ThreadContext.clearAll();
+        } else if (testClass.isAnnotationPresent(UsingThreadContextMap.class)) {
+            holder = new ThreadContextHolder(true, false);
+            ThreadContext.clearMap();
+        } else if (testClass.isAnnotationPresent(UsingThreadContextStack.class)) {
+            holder = new ThreadContextHolder(false, true);
+            ThreadContext.clearStack();
+        } else {
+            return;
+        }
+        getStore(context).put(ThreadContextHolder.class, holder);
     }
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
-        StatusLogger.getLogger().setLevel(getStore(context).get(KEY, Level.class));
+        final ThreadContextHolder holder = getStore(context).get(ThreadContextHolder.class, ThreadContextHolder.class);
+        if (holder != null) {
+            holder.restore();
+        }
     }
 
     private ExtensionContext.Store getStore(ExtensionContext context) {
-        return context.getStore(ExtensionContext.Namespace
-                .create(getClass(), context.getRequiredTestInstance(), context.getRequiredTestMethod()));
+        return context.getStore(ExtensionContext.Namespace.create(getClass(), context.getRequiredTestInstance()));
     }
 }

@@ -26,7 +26,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 /**
  * JUnit 5 extension that sets a particular {@link LoggerContextFactory} for the entire run of tests in a class.
  *
- * @since 3.0.0
+ * @since 2.14.0
  */
 public class LoggerContextFactoryExtension implements BeforeAllCallback, AfterAllCallback {
 

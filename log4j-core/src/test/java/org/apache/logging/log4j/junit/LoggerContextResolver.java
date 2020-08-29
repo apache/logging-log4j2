@@ -35,10 +35,10 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
-        final LoggerContextSource source = testClass.getAnnotation(LoggerContextSource.class);
-        if (source != null) {
+        final LoggerContextSource testSource = testClass.getAnnotation(LoggerContextSource.class);
+        if (testSource != null) {
             final LoggerContext loggerContext =
-                    Configurator.initialize(context.getDisplayName(), testClass.getClassLoader(), source.value());
+                    Configurator.initialize(context.getDisplayName(), testClass.getClassLoader(), testSource.value());
             getTestClassStore(context).put(LoggerContext.class, loggerContext);
         }
     }
@@ -53,10 +53,21 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
+        final Class<?> testClass = context.getRequiredTestClass();
+        final LoggerContextSource testSource = testClass.getAnnotation(LoggerContextSource.class);
+        if (testSource != null && testSource.reconfigure() == ReconfigurationPolicy.BEFORE_EACH) {
+            final LoggerContext loggerContext = getTestClassStore(context).get(LoggerContext.class, LoggerContext.class);
+            if (loggerContext == null) {
+                throw new IllegalStateException(
+                        "Specified test class reconfiguration policy of BEFORE_EACH, but no LoggerContext found for test class " +
+                                testClass.getCanonicalName());
+            }
+            loggerContext.reconfigure();
+        }
         final LoggerContextSource source = context.getRequiredTestMethod().getAnnotation(LoggerContextSource.class);
         if (source != null) {
             final LoggerContext loggerContext = Configurator
-                    .initialize(context.getDisplayName(), context.getRequiredTestClass().getClassLoader(), source.value());
+                    .initialize(context.getDisplayName(), testClass.getClassLoader(), source.value());
             getTestInstanceStore(context).put(LoggerContext.class, loggerContext);
         }
     }
@@ -71,11 +82,14 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         // reloadable variant
         final Class<?> testClass = context.getRequiredTestClass();
         final LoggerContextSource source = testClass.getAnnotation(LoggerContextSource.class);
-        if (source != null && source.reconfigure()) {
+        if (source != null && source.reconfigure() == ReconfigurationPolicy.AFTER_EACH) {
             final LoggerContext loggerContext = getTestClassStore(context).get(LoggerContext.class, LoggerContext.class);
-            if (loggerContext != null) {
-                loggerContext.reconfigure();
+            if (loggerContext == null) {
+                throw new IllegalStateException(
+                        "Specified test class reconfiguration policy of AFTER_EACH, but no LoggerContext found for test class " +
+                                testClass.getCanonicalName());
             }
+            loggerContext.reconfigure();
         }
     }
 

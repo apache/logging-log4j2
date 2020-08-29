@@ -17,7 +17,9 @@
 
 package org.apache.logging.log4j.junit;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -30,10 +32,20 @@ import java.lang.annotation.Target;
 
 /**
  * Specifies a configuration file to use for unit tests. This configuration file will be loaded once and used for all tests
- * executed in the annotated test class unless otherwise specified by {@link #reconfigure()}. When annotated on a test method, this
- * will override the class-level configuration if provided for that method.
+ * executed in the annotated test class unless otherwise specified by {@link #reconfigure()}. When annotated on a test method,
+ * this will override the class-level configuration if provided for that method. By using this JUnit 5 extension, the following
+ * types can be injected into tests via constructor or method parameters:
  *
- * @since 3.0.0
+ * <ul>
+ *     <li>{@link LoggerContext};</li>
+ *     <li>{@link Configuration};</li>
+ *     <li>any subclass of {@link Appender} paired with a {@link Named} annotation to select the appender by name.</li>
+ * </ul>
+ *
+ * Tests using this extension will automatically be tagged as {@code functional} to indicate they perform functional tests that
+ * rely on configuration files and production code.
+ *
+ * @since 2.14.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
@@ -50,7 +62,7 @@ public @interface LoggerContextSource {
     String value();
 
     /**
-     * Specifies whether or not to {@linkplain LoggerContext#reconfigure() reconfigure} after each test.
+     * Specifies when to {@linkplain LoggerContext#reconfigure() reconfigure} the logging system.
      */
-    boolean reconfigure() default false;
+    ReconfigurationPolicy reconfigure() default ReconfigurationPolicy.NEVER;
 }

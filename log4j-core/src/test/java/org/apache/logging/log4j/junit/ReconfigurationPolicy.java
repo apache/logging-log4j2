@@ -14,27 +14,22 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.junit;
 
-/**
- * Restores the ThreadContext to it's initial map values after a JUnit test.
- * 
- * Usage:
- * 
- * <pre>
- * &#64;Rule
- * public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule();
- * </pre>
- *
- * @deprecated use {@link UsingThreadContextMap} with JUnit 5
- */
-@Deprecated
-public class ThreadContextMapRule extends ThreadContextRule {
+import org.apache.logging.log4j.core.LoggerContext;
 
-    /**
-     * Constructs an initialized instance.
-     */
-    public ThreadContextMapRule() {
-        super(true, false);
-    }
+/**
+ * Indicates when to {@linkplain LoggerContext#reconfigure() reconfigure} the logging system during unit tests.
+ *
+ * @see LoggerContextSource
+ * @since 2.14.0
+ */
+public enum ReconfigurationPolicy {
+    /** Performs no reconfiguration of the logging system for the entire run of tests in a test class. This is the default. */
+    NEVER,
+    /** Performs a reconfiguration before executing each test. */
+    BEFORE_EACH,
+    /** Performs a reconfiguration after executing each test. */
+    AFTER_EACH
 }

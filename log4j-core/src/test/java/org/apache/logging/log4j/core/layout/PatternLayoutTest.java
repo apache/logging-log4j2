@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -36,18 +31,17 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
-import org.apache.logging.log4j.junit.ThreadContextRule;
+import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
+import static org.junit.jupiter.api.Assertions.*;
+
+@UsingAnyThreadContext
 public class PatternLayoutTest {
-    public class FauxLogger {
+    public static class FauxLogger {
         public String formatEvent(final LogEvent event, final Layout<?> layout) {
             return new String(layout.toByteArray(event));
         }
@@ -63,7 +57,7 @@ public class PatternLayoutTest {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
@@ -73,9 +67,6 @@ public class PatternLayoutTest {
     LoggerContext ctx = LoggerContext.getContext();
 
     Logger root = ctx.getRootLogger();
-
-    @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     private static class Destination implements ByteBufferDestination {
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[2048]);
@@ -145,24 +136,24 @@ public class PatternLayoutTest {
         final PatternLayout layout = PatternLayout.newBuilder().setConfiguration(ctx.getConfiguration())
                 .setHeader("Header: " + pattern).setFooter("Footer: " + pattern).build();
         final byte[] header = layout.getHeader();
-        assertNotNull("No header", header);
+        assertNotNull(header, "No header");
         final String headerStr = new String(header);
-        assertTrue(headerStr, headerStr.contains("Header: "));
-        assertTrue(headerStr, headerStr.contains("Java version "));
-        assertTrue(headerStr, headerStr.contains("(build "));
-        assertTrue(headerStr, headerStr.contains(" from "));
-        assertTrue(headerStr, headerStr.contains(" architecture: "));
-        assertFalse(headerStr, headerStr.contains("%d{UNIX}"));
+        assertTrue(headerStr.contains("Header: "), headerStr);
+        assertTrue(headerStr.contains("Java version "), headerStr);
+        assertTrue(headerStr.contains("(build "), headerStr);
+        assertTrue(headerStr.contains(" from "), headerStr);
+        assertTrue(headerStr.contains(" architecture: "), headerStr);
+        assertFalse(headerStr.contains("%d{UNIX}"), headerStr);
         //
         final byte[] footer = layout.getFooter();
-        assertNotNull("No footer", footer);
+        assertNotNull(footer, "No footer");
         final String footerStr = new String(footer);
-        assertTrue(footerStr, footerStr.contains("Footer: "));
-        assertTrue(footerStr, footerStr.contains("Java version "));
-        assertTrue(footerStr, footerStr.contains("(build "));
-        assertTrue(footerStr, footerStr.contains(" from "));
-        assertTrue(footerStr, footerStr.contains(" architecture: "));
-        assertFalse(footerStr, footerStr.contains("%d{UNIX}"));
+        assertTrue(footerStr.contains("Footer: "), footerStr);
+        assertTrue(footerStr.contains("Java version "), footerStr);
+        assertTrue(footerStr.contains("(build "), footerStr);
+        assertTrue(footerStr.contains(" from "), footerStr);
+        assertTrue(footerStr.contains(" architecture: "), footerStr);
+        assertFalse(footerStr.contains("%d{UNIX}"), footerStr);
     }
 
     /**
@@ -174,14 +165,14 @@ public class PatternLayoutTest {
         final PatternLayout layout = PatternLayout.newBuilder().setConfiguration(ctx.getConfiguration())
                 .setHeader("${main:0}").setFooter("${main:2}").build();
         final byte[] header = layout.getHeader();
-        assertNotNull("No header", header);
+        assertNotNull(header, "No header");
         final String headerStr = new String(header);
-        assertTrue(headerStr, headerStr.contains("value0"));
+        assertTrue(headerStr.contains("value0"), headerStr);
         //
         final byte[] footer = layout.getFooter();
-        assertNotNull("No footer", footer);
+        assertNotNull(footer, "No footer");
         final String footerStr = new String(footer);
-        assertTrue(footerStr, footerStr.contains("value2"));
+        assertTrue(footerStr.contains("value2"), footerStr);
     }
 
     @Test
@@ -192,9 +183,9 @@ public class PatternLayoutTest {
         ThreadContext.put("header", "Hello world Header");
         ThreadContext.put("footer", "Hello world Footer");
         final byte[] header = layout.getHeader();
-        assertNotNull("No header", header);
-        assertTrue("expected \"Hello world Header\", actual " + Strings.dquote(new String(header)),
-                new String(header).equals(new String("Hello world Header")));
+        assertNotNull(header, "No header");
+        assertEquals("Hello world Header", new String(header),
+                "expected \"Hello world Header\", actual " + Strings.dquote(new String(header)));
     }
 
     private void testMdcPattern(final String patternStr, final String expectedStr, final boolean useThreadContext)
@@ -266,14 +257,14 @@ public class PatternLayoutTest {
                 .setMessage(new SimpleMessage("entry")).build();
         final String result1 = new FauxLogger().formatEvent(event1, layout);
         final String expectPattern1 = String.format(".*====== PatternLayoutTest.testPatternSelector:\\d+ entry ======%n");
-        assertTrue("Unexpected result: " + result1, result1.matches(expectPattern1));
+        assertTrue(result1.matches(expectPattern1), "Unexpected result: " + result1);
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world 1!")).build();
         final String result2 = new String(layout.toByteArray(event2));
         final String expectSuffix2 = String.format("Hello, world 1!%n");
-        assertTrue("Unexpected result: " + result2, result2.endsWith(expectSuffix2));
+        assertTrue(result2.endsWith(expectSuffix2), "Unexpected result: " + result2);
     }
 
     @Test

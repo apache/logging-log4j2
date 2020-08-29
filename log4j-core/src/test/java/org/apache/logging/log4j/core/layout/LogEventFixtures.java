@@ -16,13 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -83,7 +79,6 @@ public class LogEventFixtures {
         return expected;
     }
 
-    @SuppressWarnings("deprecation")
     public static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource,
             final boolean includeContext, final boolean includeStacktrace) {
         assertEquals(expected.getClass(), actual.getClass());
