@@ -19,9 +19,9 @@ package org.apache.logging.log4j.core.impl;
 import java.lang.reflect.Field;
 
 import org.apache.logging.log4j.util.SortedArrayStringMap;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the ContextDataFactory class.
