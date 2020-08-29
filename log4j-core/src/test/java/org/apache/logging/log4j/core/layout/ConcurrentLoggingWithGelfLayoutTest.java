@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,35 +28,36 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.AfterClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
 
 /**
  * Test for LOG4J2-1769, kind of.
  *
  * @since 2.8
  */
+@Tag("concurrency")
+@LoggerContextSource("log4j2-gelf-layout.xml")
 public class ConcurrentLoggingWithGelfLayoutTest {
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-gelf-layout.xml");
-    private static final String PATH = "target/test-gelf-layout.log";
+    private static final Path PATH = Paths.get("target", "test-gelf-layout.log");
 
-    @AfterClass
-    public static void after() {
-        new File(PATH).delete();
+    @AfterAll
+    static void after() throws IOException {
+        Files.deleteIfExists(PATH);
     }
 
     @Test
-    public void testConcurrentLogging() throws Throwable {
-        final Logger log = context.getLogger(ConcurrentLoggingWithGelfLayoutTest.class);
-        final Set<Thread> threads = Collections.synchronizedSet(new HashSet<Thread>());
-        final List<Throwable> thrown = Collections.synchronizedList(new ArrayList<Throwable>());
+    public void testConcurrentLogging(final LoggerContext context) throws Throwable {
+        final Logger log = context.getLogger(ConcurrentLoggingWithGelfLayoutTest.class.getName());
+        final Set<Thread> threads = Collections.synchronizedSet(new HashSet<>());
+        final List<Throwable> thrown = Collections.synchronizedList(new ArrayList<>());
 
         for (int x = 0; x < Runtime.getRuntime().availableProcessors() * 2; x++) {
             final Thread t = new LoggingThread(threads, log);
@@ -62,12 +65,7 @@ public class ConcurrentLoggingWithGelfLayoutTest {
 
             // Appender is configured with ignoreExceptions="false";
             // any exceptions are propagated to the caller, so we can catch them here.
-            t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                @Override
-                public void uncaughtException(final Thread t, final Throwable e) {
-                    thrown.add(e);
-                }
-            });
+            t.setUncaughtExceptionHandler((t1, e) -> thrown.add(e));
             t.start();
         }
 
@@ -82,8 +80,8 @@ public class ConcurrentLoggingWithGelfLayoutTest {
         }
 
         // simple test to ensure content is not corrupted
-        if (new File(PATH).exists()) {
-            final List<String> lines = Files.readAllLines(new File(PATH).toPath(), Charset.defaultCharset());
+        if (Files.exists(PATH)) {
+            final List<String> lines = Files.readAllLines(PATH, Charset.defaultCharset());
             for (final String line : lines) {
                 assertThat(line, startsWith("{\"version\":\"1.1\",\"host\":\"myself\",\"timestamp\":"));
                 assertThat(line, endsWith("\"}"));
@@ -91,7 +89,7 @@ public class ConcurrentLoggingWithGelfLayoutTest {
         }
     }
 
-    private class LoggingThread extends Thread {
+    private static class LoggingThread extends Thread {
         private final Set<Thread> threads;
         private final Logger log;
 

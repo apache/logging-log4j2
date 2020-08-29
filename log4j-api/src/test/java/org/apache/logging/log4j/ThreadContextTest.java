@@ -20,29 +20,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@UsingAnyThreadContext
 public class ThreadContextTest {
     public static void reinitThreadContext() {
         ThreadContext.init();
-    }
-
-    private ThreadContextHolder threadContextHolder;
-
-    @BeforeEach
-    void clearThreadContext() {
-        threadContextHolder = new ThreadContextHolder(true, true);
-        ThreadContext.clearAll();
-    }
-
-    @AfterEach
-    void restoreThreadContext() {
-        threadContextHolder.restore();
     }
 
     @Test

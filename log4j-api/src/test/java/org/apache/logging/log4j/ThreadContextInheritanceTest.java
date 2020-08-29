@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -29,20 +28,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests {@link ThreadContext}.
  */
+@UsingAnyThreadContext
 public class ThreadContextInheritanceTest {
-
-    private ThreadContextHolder threadContextHolder;
-
-    @BeforeEach
-    void clearThreadContext() {
-        threadContextHolder = new ThreadContextHolder(true, true);
-        ThreadContext.clearAll();
-    }
-
-    @AfterEach
-    void restoreThreadContext() {
-        threadContextHolder.restore();
-    }
 
     @BeforeAll
     public static void setupClass() {

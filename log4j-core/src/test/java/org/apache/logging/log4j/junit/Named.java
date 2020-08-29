@@ -23,6 +23,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Specifies the name of an {@link org.apache.logging.log4j.core.Appender} to inject into JUnit 5 tests from the specified
+ * configuration.
+ *
+ * @see LoggerContextSource
+ * @since 2.14.0
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 @Documented

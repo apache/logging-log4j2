@@ -14,27 +14,28 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.junit;
 
-/**
- * Restores the ThreadContext to it's initial map values after a JUnit test.
- * 
- * Usage:
- * 
- * <pre>
- * &#64;Rule
- * public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule();
- * </pre>
- *
- * @deprecated use {@link UsingThreadContextMap} with JUnit 5
- */
-@Deprecated
-public class ThreadContextMapRule extends ThreadContextRule {
+import org.junit.jupiter.api.extension.ExtendWith;
 
-    /**
-     * Constructs an initialized instance.
-     */
-    public ThreadContextMapRule() {
-        super(true, false);
-    }
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * Marks a test class as using {@link org.apache.logging.log4j.spi.ThreadContextMap} APIs. This will automatically clear and
+ * restore the thread context map (MDC) for each test invocation.
+ *
+ * @since 2.14.0
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+@Inherited
+@ExtendWith(ThreadContextExtension.class)
+public @interface UsingThreadContextMap {
 }

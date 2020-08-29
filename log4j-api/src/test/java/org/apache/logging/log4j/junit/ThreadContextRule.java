@@ -29,7 +29,10 @@ import org.junit.rules.ExternalResource;
  * &#64;Rule
  * public final ThreadContextRule threadContextRule = new ThreadContextRule();
  * </pre>
+ *
+ * @deprecated use {@link UsingAnyThreadContext} with JUnit 5
  */
+@Deprecated
 public class ThreadContextRule extends ExternalResource {
 
     private final boolean restoreMap;

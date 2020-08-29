@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -31,23 +30,11 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @since 2.6
  */
+@UsingAnyThreadContext
 public class CloseableThreadContextTest {
 
     private final String key = "key";
     private final String value = "value";
-
-    private ThreadContextHolder threadContextHolder;
-
-    @BeforeEach
-    void clearThreadContext() {
-        threadContextHolder = new ThreadContextHolder(true, true);
-        ThreadContext.clearAll();
-    }
-
-    @AfterEach
-    void restoreThreadContext() {
-        threadContextHolder.restore();
-    }
 
     @Test
     public void shouldAddAnEntryToTheMap() {

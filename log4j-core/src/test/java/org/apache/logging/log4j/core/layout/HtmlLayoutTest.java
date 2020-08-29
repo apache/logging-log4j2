@@ -27,35 +27,29 @@ import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.junit.ThreadContextRule;
+import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
+@UsingAnyThreadContext
 public class HtmlLayoutTest {
-    LoggerContext ctx = LoggerContext.getContext();
-    Logger root = ctx.getRootLogger();
+    private final LoggerContext ctx = LoggerContext.getContext();
+    private final Logger root = ctx.getRootLogger();
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
-    @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule();
-
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
     }
 
-    @AfterClass
+    @AfterAll
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
@@ -140,17 +134,17 @@ public class HtmlLayoutTest {
             sb.append(string);
         }
         final String html = sb.toString();
-        assertTrue("Incorrect number of lines. Require at least 85 " + list.size(), list.size() > 85);
+        assertTrue(list.size() > 85, "Incorrect number of lines. Require at least 85 " + list.size());
         final String string = list.get(3);
-        assertTrue("Incorrect header: " + string, string.equals("<meta charset=\"UTF-8\"/>"));
-        assertTrue("Incorrect title", list.get(4).equals("<title>Log4j Log Messages</title>"));
-        assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</body></html>"));
+        assertEquals("<meta charset=\"UTF-8\"/>", string, "Incorrect header: " + string);
+        assertEquals("<title>Log4j Log Messages</title>", list.get(4), "Incorrect title");
+        assertEquals("</body></html>", list.get(list.size() - 1), "Incorrect footer");
         if (includeLocation) {
-            assertTrue("Incorrect multiline", list.get(50).equals(multiLine));
-            assertTrue("Missing location", html.contains("HtmlLayoutTest.java:"));
-            assertTrue("Incorrect body", list.get(71).equals(body));
+            assertEquals(list.get(50), multiLine, "Incorrect multiline");
+            assertTrue(html.contains("HtmlLayoutTest.java:"), "Missing location");
+            assertEquals(list.get(71), body, "Incorrect body");
         } else {
-            assertFalse("Location should not be in the output table", html.contains("<td>HtmlLayoutTest.java:"));
+            assertFalse(html.contains("<td>HtmlLayoutTest.java:"), "Location should not be in the output table");
         }
         for (final Appender app : appenders.values()) {
             root.addAppender(app);

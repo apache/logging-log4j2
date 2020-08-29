@@ -17,13 +17,12 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.ThreadContextHolder;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -31,8 +30,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("log4j-replace.xml")
+@UsingThreadContextMap
 public class RegexReplacementTest {
-    private final ThreadContextHolder holder = new ThreadContextHolder(true, false);
     private final ListAppender app;
     private final ListAppender app2;
     private final org.apache.logging.log4j.Logger logger;
@@ -46,12 +45,6 @@ public class RegexReplacementTest {
         logger2 = context.getLogger("ReplacementTest");
         this.app = app.clear();
         this.app2 = app2.clear();
-        ThreadContext.clearMap();
-    }
-
-    @AfterEach
-    void tearDown() {
-        holder.restore();
     }
 
     @Test

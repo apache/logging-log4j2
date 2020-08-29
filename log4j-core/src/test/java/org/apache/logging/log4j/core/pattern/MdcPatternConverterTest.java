@@ -18,32 +18,24 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.ThreadContextHolder;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@UsingThreadContextMap
 public class MdcPatternConverterTest {
-
-    private final ThreadContextHolder threadContextHolder = new ThreadContextHolder(true, false);
 
     @BeforeEach
     public void setup() {
-        ThreadContext.clearMap();
         ThreadContext.put("subject", "I");
         ThreadContext.put("verb", "love");
         ThreadContext.put("object", "Log4j");
-    }
-
-    @AfterEach
-    public void tearDown() {
-        threadContextHolder.restore();
     }
 
     @Test
