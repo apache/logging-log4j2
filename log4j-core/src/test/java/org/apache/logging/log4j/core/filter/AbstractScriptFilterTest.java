@@ -16,56 +16,52 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
+import static org.junit.jupiter.api.Assertions.*;
+
+@UsingThreadContextMap
+@Tag("groovy")
 public abstract class AbstractScriptFilterTest {
 
-    public abstract LoggerContextRule getContext();
-
     @Test
-    public void testGroovyFilter() throws Exception {
-        final Logger logger = LogManager.getLogger("TestGroovyFilter");
+    public void testGroovyFilter(final LoggerContext context, @Named("List") final ListAppender app) throws Exception {
+        final Logger logger = context.getLogger("TestGroovyFilter");
         logger.traceEntry();
         logger.info("This should not be logged");
         ThreadContext.put("UserId", "JohnDoe");
         logger.info("This should be logged");
         ThreadContext.clearMap();
-        final ListAppender app = getContext().getListAppender("List");
         try {
             final List<String> messages = app.getMessages();
-            assertNotNull("No Messages", messages);
-            assertTrue("Incorrect number of messages. Expected 2, Actual " + messages.size(), messages.size() == 2);
+            assertNotNull(messages, "No Messages");
+            assertEquals(messages.size(), 2, "Incorrect number of messages. Expected 2, Actual " + messages.size());
         } finally {
             app.clear();
         }
     }
 
     @Test
-    public void testJavascriptFilter() throws Exception {
-        final Logger logger = LogManager.getLogger("TestJavaScriptFilter");
+    public void testJavascriptFilter(final LoggerContext context, @Named("List") final ListAppender app) throws Exception {
+        final Logger logger = context.getLogger("TestJavaScriptFilter");
         logger.traceEntry();
         logger.info("This should not be logged");
         ThreadContext.put("UserId", "JohnDoe");
         logger.info("This should be logged");
         ThreadContext.clearMap();
-        final ListAppender app = getContext().getListAppender("List");
         final List<String> messages = app.getMessages();
         try {
-            assertNotNull("No Messages", messages);
-            assertTrue("Incorrect number of messages. Expected 2, Actual " + messages.size(), messages.size() == 2);
+            assertNotNull(messages, "No Messages");
+            assertEquals(messages.size(), 2, "Incorrect number of messages. Expected 2, Actual " + messages.size());
         } finally {
             app.clear();
         }

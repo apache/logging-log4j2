@@ -26,18 +26,18 @@ import java.util.Map;
 
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.TriConsumer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the JdkMapAdapterStringMap class.
  */
 public class JdkMapAdapterStringMapTest {
 
-    @Test(expected = NullPointerException.class)
-    public void testConstructorDisallowsNull() throws Exception {
-        new JdkMapAdapterStringMap(null);
+    @Test
+    public void testConstructorDisallowsNull() {
+        assertThrows(NullPointerException.class, () -> new JdkMapAdapterStringMap(null));
     }
 
     @Test
@@ -114,7 +114,7 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("c", "cc");
         original.putAll(other);
 
-        assertEquals("size after put other", 7, original.size());
+        assertEquals(7, original.size(), "size after put other");
         assertEquals("aa", original.getValue("a"));
         assertEquals("bORIG", original.getValue("b"));
         assertEquals("cc", original.getValue("c"));
@@ -139,7 +139,7 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals("size after put other", 7, original.size());
+        assertEquals(7, original.size(), "size after put other");
         assertEquals("aa", original.getValue("a"));
         assertEquals("bORIG", original.getValue("b"));
         assertEquals("cORIG", original.getValue("c"));
@@ -163,7 +163,7 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals("size after put other", 6, original.size());
+        assertEquals(6, original.size(), "size after put other");
         assertEquals("aa", original.getValue("a"));
         assertEquals("bORIG", original.getValue("b"));
         assertEquals("11", original.getValue("1"));
@@ -187,7 +187,7 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals("size after put other", 7, original.size());
+        assertEquals(7, original.size(), "size after put other");
         assertEquals("aa", original.getValue("a"));
         assertEquals("bORIG", original.getValue("b"));
         assertEquals("cORIG", original.getValue("c"));
@@ -211,7 +211,7 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals("size after put other", 6, original.size());
+        assertEquals(6, original.size(), "size after put other");
         assertEquals("aa", original.getValue("a"));
         assertEquals("bORIG", original.getValue("b"));
         assertEquals("11", original.getValue("1"));
@@ -236,7 +236,7 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals("size after put other", 7, original.size());
+        assertEquals(7, original.size(), "size after put other");
         assertEquals("aa", original.getValue("a"));
         assertEquals("bORIG", original.getValue("b"));
         assertEquals("cORIG", original.getValue("c"));
@@ -261,7 +261,7 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals("size after put other", 6, original.size());
+        assertEquals(6, original.size(), "size after put other");
         assertEquals("aa", original.getValue("a"));
         assertEquals("bORIG", original.getValue("b"));
         assertEquals("11", original.getValue("1"));
@@ -284,7 +284,7 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("c", "cc");
         original.putAll(other);
 
-        assertEquals("size after put other", 5, original.size());
+        assertEquals(5, original.size(), "size after put other");
         assertEquals("aa", original.getValue("a"));
         assertEquals("bORIG", original.getValue("b"));
         assertEquals("cc", original.getValue("c"));
@@ -347,11 +347,11 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
-        assertEquals("size", 3, original.size());
+        assertEquals(3, original.size(), "size");
 
         // add empty context data
         original.putAll(new JdkMapAdapterStringMap());
-        assertEquals("size after put empty", 3, original.size());
+        assertEquals(3, original.size(), "size after put empty");
         assertEquals("aaa", original.getValue("a"));
         assertEquals("bbb", original.getValue("b"));
         assertEquals("ccc", original.getValue("c"));
@@ -362,7 +362,7 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("3", "333");
         original.putAll(other);
 
-        assertEquals("size after put other", 6, original.size());
+        assertEquals(6, original.size(), "size after put other");
         assertEquals("aaa", original.getValue("a"));
         assertEquals("bbb", original.getValue("b"));
         assertEquals("ccc", original.getValue("c"));
@@ -378,11 +378,11 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
         original.putValue("d", "ddd");
-        assertEquals("size", 4, original.size());
+        assertEquals(4, original.size(), "size");
 
         // add empty context data
         original.putAll(new JdkMapAdapterStringMap());
-        assertEquals("size after put empty", 4, original.size());
+        assertEquals(4, original.size(), "size after put empty");
         assertEquals("aaa", original.getValue("a"));
         assertEquals("bbb", original.getValue("b"));
         assertEquals("ccc", original.getValue("c"));
@@ -395,7 +395,7 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("4", "444");
         original.putAll(other);
 
-        assertEquals("size after put other", 8, original.size());
+        assertEquals(8, original.size(), "size after put other");
         assertEquals("aaa", original.getValue("a"));
         assertEquals("bbb", original.getValue("b"));
         assertEquals("ccc", original.getValue("c"));
@@ -414,7 +414,7 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
         original.putValue("d", "ddd");
-        assertEquals("size", 5, original.size());
+        assertEquals(5, original.size(), "size");
 
         final JdkMapAdapterStringMap other = new JdkMapAdapterStringMap();
         for (int i = 0 ; i < 500; i++) {
@@ -423,7 +423,7 @@ public class JdkMapAdapterStringMapTest {
         other.putValue(null, "otherVal");
         original.putAll(other);
 
-        assertEquals("size after put other", 505, original.size());
+        assertEquals(505, original.size(), "size after put other");
         assertEquals("otherVal", original.getValue(null));
         assertEquals("aaa", original.getValue("a"));
         assertEquals("bbb", original.getValue("b"));
@@ -440,11 +440,11 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
-        assertEquals("size", 3, original.size());
+        assertEquals(3, original.size(), "size");
 
         // putAll with self
         original.putAll(original);
-        assertEquals("size after put empty", 3, original.size());
+        assertEquals(3, original.size(), "size after put empty");
         assertEquals("aaa", original.getValue("a"));
         assertEquals("bbb", original.getValue("b"));
         assertEquals("ccc", original.getValue("c"));
@@ -458,12 +458,7 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("c", "aaa");
         original.putValue("d", "aaa");
         original.putValue("e", "aaa");
-        original.forEach(new BiConsumer<String, Object>() {
-            @Override
-            public void accept(final String s, final Object o) {
-                original.putValue("c" + s, "other");
-            }
-        });
+        original.forEach((s, o) -> original.putValue("c" + s, "other"));
     }
 
     @Test
@@ -474,12 +469,7 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("c", "aaa");
         original.putValue("d", "aaa");
         original.putValue("e", "aaa");
-        original.forEach(new BiConsumer<String, Object>() {
-            @Override
-            public void accept(final String s, final Object o) {
-                original.putValue("c" + s, "other");
-            }
-        });
+        original.forEach((s, o) -> original.putValue("c" + s, "other"));
     }
 
     @Test
@@ -488,12 +478,7 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
         original.putValue("c", "aaa");
-        original.forEach(new BiConsumer<String, Object>() {
-            @Override
-            public void accept(final String s, final Object o) {
-                original.remove("a");
-            }
-        });
+        original.forEach((s, o) -> original.remove("a"));
     }
 
     @Test
@@ -504,12 +489,7 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("c", "aaa");
         original.putValue("d", "aaa");
         original.putValue("e", "aaa");
-        original.forEach(new BiConsumer<String, Object>() {
-            @Override
-            public void accept(final String s, final Object o) {
-                original.clear();
-            }
-        });
+        original.forEach((s, o) -> original.clear());
     }
 
     @Test
@@ -519,12 +499,7 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("b", "aaa");
         original.putValue("d", "aaa");
         original.putValue("e", "aaa");
-        original.forEach(new TriConsumer<String, Object, Object>() {
-            @Override
-            public void accept(final String s, final Object o, final Object o2) {
-                original.putValue("c", "other");
-            }
-        }, null);
+        original.forEach((s, o, o2) -> original.putValue("c", "other"), null);
     }
 
     @Test
@@ -535,12 +510,7 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("c", "aaa");
         original.putValue("d", "aaa");
         original.putValue("e", "aaa");
-        original.forEach(new TriConsumer<String, Object, Object>() {
-            @Override
-            public void accept(final String s, final Object o, final Object o2) {
-                original.putValue("c" + s, "other");
-            }
-        }, null);
+        original.forEach((s, o, o2) -> original.putValue("c" + s, "other"), null);
     }
 
     @Test
@@ -549,12 +519,7 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
         original.putValue("c", "aaa");
-        original.forEach(new TriConsumer<String, Object, Object>() {
-            @Override
-            public void accept(final String s, final Object o, final Object o2) {
-                original.remove("a");
-            }
-        }, null);
+        original.forEach((s, o, o2) -> original.remove("a"), null);
     }
 
     @Test
@@ -564,12 +529,7 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("b", "aaa");
         original.putValue("c", "aaa");
         original.putValue("d", "aaa");
-        original.forEach(new TriConsumer<String, Object, Object>() {
-            @Override
-            public void accept(final String s, final Object o, final Object o2) {
-                original.clear();
-            }
-        }, null);
+        original.forEach((s, o, o2) -> original.clear(), null);
     }
 
     @Test
@@ -580,24 +540,24 @@ public class JdkMapAdapterStringMapTest {
     @Test
     public void testIsFrozenAfterCallingFreeze() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
-        assertFalse("before freeze", original.isFrozen());
+        assertFalse(original.isFrozen(), "before freeze");
         original.freeze();
-        assertTrue("after freeze", original.isFrozen());
+        assertTrue(original.isFrozen(), "after freeze");
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testFreezeProhibitsPutValue() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.freeze();
-        original.putValue("a", "aaa");
+        assertThrows(UnsupportedOperationException.class, () -> original.putValue("a", "aaa"));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testFreezeProhibitsRemove() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("b", "bbb");
         original.freeze();
-        original.remove("b"); // existing key: modifies the collection
+        assertThrows(UnsupportedOperationException.class, () -> original.remove("b")); // existing key: modifies the collection
     }
 
     @Test
@@ -615,12 +575,12 @@ public class JdkMapAdapterStringMapTest {
         original.remove("a"); // no exception
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testFreezeProhibitsClear() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.freeze();
-        original.clear();
+        assertThrows(UnsupportedOperationException.class, original::clear);
     }
 
     @Test
@@ -674,27 +634,27 @@ public class JdkMapAdapterStringMapTest {
         expected.put("3", "3value");
         expected.put("c", "cvalue");
         expected.put("d", "dvalue");
-        assertEquals("initial", expected, original.toMap());
+        assertEquals(expected, original.toMap(), "initial");
 
         original.putValue(null, "nullvalue");
         expected.put(null, "nullvalue");
         assertEquals(6, original.size());
-        assertEquals("with null key", expected, original.toMap());
+        assertEquals(expected, original.toMap(), "with null key");
 
         original.putValue(null, "otherNullvalue");
         expected.put(null, "otherNullvalue");
         assertEquals(6, original.size());
-        assertEquals("with null key value2", expected, original.toMap());
+        assertEquals(expected, original.toMap(), "with null key value2");
 
         original.putValue(null, "nullvalue");
         expected.put(null, "nullvalue");
         assertEquals(6, original.size());
-        assertEquals("with null key value1 again", expected, original.toMap());
+        assertEquals(expected, original.toMap(), "with null key value1 again");
 
         original.putValue(null, "abc");
         expected.put(null, "abc");
         assertEquals(6, original.size());
-        assertEquals("with null key value3", expected, original.toMap());
+        assertEquals(expected, original.toMap(), "with null key value3");
     }
 
     @Test
@@ -706,11 +666,11 @@ public class JdkMapAdapterStringMapTest {
 
         original.remove("a");
         assertEquals(0, original.size());
-        assertNull("no a val", original.getValue("a"));
+        assertNull(original.getValue("a"), "no a val");
 
         original.remove("B");
         assertEquals(0, original.size());
-        assertNull("no B val", original.getValue("B"));
+        assertNull(original.getValue("B"), "no B val");
     }
 
     @Test
@@ -732,11 +692,11 @@ public class JdkMapAdapterStringMapTest {
 
         original.putValue("a", null);
         assertEquals(1, original.size());
-        assertNull("no a val", original.getValue("a"));
+        assertNull(original.getValue("a"), "no a val");
 
         original.putValue("B", null);
         assertEquals(2, original.size());
-        assertNull("no B val", original.getValue("B"));
+        assertNull(original.getValue("B"), "no B val");
     }
 
     @Test
@@ -772,65 +732,65 @@ public class JdkMapAdapterStringMapTest {
     @Test
     public void testContainsKey() throws Exception {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
-        assertFalse("a", original.containsKey("a"));
-        assertFalse("B", original.containsKey("B"));
-        assertFalse("3", original.containsKey("3"));
-        assertFalse("A", original.containsKey("A"));
+        assertFalse(original.containsKey("a"), "a");
+        assertFalse(original.containsKey("B"), "B");
+        assertFalse(original.containsKey("3"), "3");
+        assertFalse(original.containsKey("A"), "A");
 
         original.putValue("a", "avalue");
-        assertTrue("a", original.containsKey("a"));
-        assertFalse("B", original.containsKey("B"));
-        assertFalse("3", original.containsKey("3"));
-        assertFalse("A", original.containsKey("A"));
+        assertTrue(original.containsKey("a"), "a");
+        assertFalse(original.containsKey("B"), "B");
+        assertFalse(original.containsKey("3"), "3");
+        assertFalse(original.containsKey("A"), "A");
 
         original.putValue("B", "Bvalue");
-        assertTrue("a", original.containsKey("a"));
-        assertTrue("B", original.containsKey("B"));
-        assertFalse("3", original.containsKey("3"));
-        assertFalse("A", original.containsKey("A"));
+        assertTrue(original.containsKey("a"), "a");
+        assertTrue(original.containsKey("B"), "B");
+        assertFalse(original.containsKey("3"), "3");
+        assertFalse(original.containsKey("A"), "A");
 
         original.putValue("3", "3value");
-        assertTrue("a", original.containsKey("a"));
-        assertTrue("B", original.containsKey("B"));
-        assertTrue("3", original.containsKey("3"));
-        assertFalse("A", original.containsKey("A"));
+        assertTrue(original.containsKey("a"), "a");
+        assertTrue(original.containsKey("B"), "B");
+        assertTrue(original.containsKey("3"), "3");
+        assertFalse(original.containsKey("A"), "A");
 
         original.putValue("A", "AAA");
-        assertTrue("a", original.containsKey("a"));
-        assertTrue("B", original.containsKey("B"));
-        assertTrue("3", original.containsKey("3"));
-        assertTrue("A", original.containsKey("A"));
+        assertTrue(original.containsKey("a"), "a");
+        assertTrue(original.containsKey("B"), "B");
+        assertTrue(original.containsKey("3"), "3");
+        assertTrue(original.containsKey("A"), "A");
     }
 
     @Test
     public void testSizeAndIsEmpty() throws Exception {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         assertEquals(0, original.size());
-        assertTrue("initial", original.isEmpty());
+        assertTrue(original.isEmpty(), "initial");
 
         original.putValue("a", "avalue");
         assertEquals(1, original.size());
-        assertFalse("size=" + original.size(), original.isEmpty());
+        assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.putValue("B", "Bvalue");
         assertEquals(2, original.size());
-        assertFalse("size=" + original.size(), original.isEmpty());
+        assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.putValue("3", "3value");
         assertEquals(3, original.size());
-        assertFalse("size=" + original.size(), original.isEmpty());
+        assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.remove("B");
         assertEquals(2, original.size());
-        assertFalse("size=" + original.size(), original.isEmpty());
+        assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.remove("3");
         assertEquals(1, original.size());
-        assertFalse("size=" + original.size(), original.isEmpty());
+        assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.remove("a");
         assertEquals(0, original.size());
-        assertTrue("size=" + original.size(), original.isEmpty());
+        assertTrue(original.isEmpty(), "size=" + original.size());
     }
 
     @Test
@@ -847,7 +807,7 @@ public class JdkMapAdapterStringMapTest {
 //                assertEquals("key", key, original.getKeyAt(count));
 //                assertEquals("val", value, original.getValueAt(count));
                 count++;
-                assertTrue("count should not exceed size but was " + count, count <= original.size());
+                assertTrue(count <= original.size(), "count should not exceed size but was " + count);
             }
         });
     }
@@ -856,15 +816,12 @@ public class JdkMapAdapterStringMapTest {
         JdkMapAdapterStringMap data;
         int count;
     }
-    static TriConsumer<String, String, JdkMapAdapterStringMapTest.State> COUNTER = new TriConsumer<String, String, JdkMapAdapterStringMapTest.State>() {
-        @Override
-        public void accept(final String key, final String value, final JdkMapAdapterStringMapTest.State state) {
+    static TriConsumer<String, String, JdkMapAdapterStringMapTest.State> COUNTER = (key, value, state) -> {
 //            assertEquals("key", key, state.data.getKeyAt(state.count));
 //            assertEquals("val", value, state.data.getValueAt(state.count));
-            state.count++;
-            assertTrue("count should not exceed size but was " + state.count,
-                    state.count <= state.data.size());
-        }
+        state.count++;
+        assertTrue(
+                state.count <= state.data.size(), "count should not exceed size but was " + state.count);
     };
 
     @Test

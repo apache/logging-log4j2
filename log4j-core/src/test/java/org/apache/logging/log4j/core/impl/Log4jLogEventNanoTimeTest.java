@@ -29,21 +29,23 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.SystemNanoClock;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("functional")
 public class Log4jLogEventNanoTimeTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "NanoTimeToFileTest.xml");
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
     }
@@ -56,12 +58,12 @@ public class Log4jLogEventNanoTimeTest {
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final long before = System.nanoTime();
         log.info("Use actual System.nanoTime()");
-        assertTrue("using SystemNanoClock", Log4jLogEvent.getNanoClock() instanceof SystemNanoClock);
+        assertTrue(Log4jLogEvent.getNanoClock() instanceof SystemNanoClock, "using SystemNanoClock");
 
         final long DUMMYNANOTIME = 123;
         Log4jLogEvent.setNanoClock(new DummyNanoClock(DUMMYNANOTIME));
         log.info("Use dummy nano clock");
-        assertTrue("using SystemNanoClock", Log4jLogEvent.getNanoClock() instanceof DummyNanoClock);
+        assertTrue(Log4jLogEvent.getNanoClock() instanceof DummyNanoClock, "using SystemNanoClock");
         
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
@@ -75,13 +77,13 @@ public class Log4jLogEventNanoTimeTest {
         }
         file.delete();
 
-        assertNotNull("line1", line1);
-        assertNotNull("line2", line2);
+        assertNotNull(line1, "line1");
+        assertNotNull(line2, "line2");
         final String[] line1Parts = line1.split(" AND ");
         assertEquals("Use actual System.nanoTime()", line1Parts[2]);
         assertEquals(line1Parts[0], line1Parts[1]);
         final long loggedNanoTime = Long.parseLong(line1Parts[0]);
-        assertTrue("used system nano time", loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1));
+        assertTrue(loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1), "used system nano time");
         
         final String[] line2Parts = line2.split(" AND ");
         assertEquals("Use dummy nano clock", line2Parts[2]);
