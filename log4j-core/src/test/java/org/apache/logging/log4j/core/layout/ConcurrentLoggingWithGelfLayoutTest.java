@@ -16,17 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
@@ -34,9 +23,19 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.hamcrest.MatcherAssert.*;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.stream.Stream;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test for LOG4J2-1769, kind of.
@@ -44,24 +43,35 @@ import static org.hamcrest.MatcherAssert.*;
  * @since 2.8
  */
 @Tag("concurrency")
-@LoggerContextSource("log4j2-gelf-layout.xml")
 public class ConcurrentLoggingWithGelfLayoutTest {
     private static final Path PATH = Paths.get("target", "test-gelf-layout.log");
 
     @AfterAll
     static void after() throws IOException {
+        // on Windows, this will need to happen after the LoggerContext is stopped
         Files.deleteIfExists(PATH);
     }
 
     @Test
+    @LoggerContextSource("log4j2-gelf-layout.xml")
     public void testConcurrentLogging(final LoggerContext context) throws Throwable {
-        final Logger log = context.getLogger(ConcurrentLoggingWithGelfLayoutTest.class.getName());
-        final Set<Thread> threads = Collections.synchronizedSet(new HashSet<>());
+        final Logger log = context.getLogger(ConcurrentLoggingWithGelfLayoutTest.class);
+        final int threadCount = Runtime.getRuntime().availableProcessors() * 2;
+        final CountDownLatch latch = new CountDownLatch(threadCount);
         final List<Throwable> thrown = Collections.synchronizedList(new ArrayList<>());
 
-        for (int x = 0; x < Runtime.getRuntime().availableProcessors() * 2; x++) {
-            final Thread t = new LoggingThread(threads, log);
-            threads.add(t);
+        for (int x = 0; x < threadCount; x++) {
+            final Thread t = new Thread(() -> {
+                log.info(latch.getCount());
+                try {
+                    for (int i = 0; i < 64; i++) {
+                        log.info("First message.");
+                        log.info("Second message.");
+                    }
+                } finally {
+                    latch.countDown();
+                }
+            });
 
             // Appender is configured with ignoreExceptions="false";
             // any exceptions are propagated to the caller, so we can catch them here.
@@ -69,10 +79,7 @@ public class ConcurrentLoggingWithGelfLayoutTest {
             t.start();
         }
 
-        while (!threads.isEmpty()) {
-            log.info("not done going to sleep...");
-            Thread.sleep(10);
-        }
+        latch.await();
 
         // if any error occurred, fail this test
         if (!thrown.isEmpty()) {
@@ -81,34 +88,11 @@ public class ConcurrentLoggingWithGelfLayoutTest {
 
         // simple test to ensure content is not corrupted
         if (Files.exists(PATH)) {
-            final List<String> lines = Files.readAllLines(PATH, Charset.defaultCharset());
-            for (final String line : lines) {
-                assertThat(line, startsWith("{\"version\":\"1.1\",\"host\":\"myself\",\"timestamp\":"));
-                assertThat(line, endsWith("\"}"));
+            try (Stream<String> lines = Files.lines(PATH, Charset.defaultCharset())) {
+                lines.forEach(line -> assertThat(line,
+                        both(startsWith("{\"version\":\"1.1\",\"host\":\"myself\",\"timestamp\":")).and(endsWith("\"}"))));
             }
         }
     }
 
-    private static class LoggingThread extends Thread {
-        private final Set<Thread> threads;
-        private final Logger log;
-
-        LoggingThread(final Set<Thread> threads, final Logger log) {
-            this.threads = threads;
-            this.log = log;
-        }
-
-        @Override
-        public void run() {
-            log.info(threads.size());
-            try {
-                for (int i = 0; i < 64; i++) {
-                    log.info("First message.");
-                    log.info("Second message.");
-                }
-            } finally {
-                threads.remove(this);
-            }
-        }
-    }
 }
