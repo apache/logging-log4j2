@@ -14,28 +14,30 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.junit.CleanUpFiles;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.junit.jupiter.api.Test;
+package org.apache.logging.log4j.junit;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-@CleanUpFiles("target/status.log")
-public class FileOutputTest {
-
-    @Test
-    @LoggerContextSource("classpath:log4j-filetest.xml")
-    public void testConfig() throws IOException {
-        final Path logFile = Paths.get("target", "status.log");
-        assertTrue(Files.exists(logFile), "Status output file does not exist");
-        assertTrue(Files.size(logFile) > 0, "File is empty");
+class FileCleaner extends AbstractFileCleaner {
+    @Override
+    Collection<Path> getPathsForTest(final ExtensionContext context) {
+        final CleanUpFiles cleanUpFiles = context.getRequiredTestClass().getAnnotation(CleanUpFiles.class);
+        return cleanUpFiles == null ? Collections.emptySet() :
+                Arrays.stream(cleanUpFiles.value()).map(Paths::get).collect(Collectors.toSet());
     }
 
+    @Override
+    boolean delete(final Path path) throws IOException {
+        return Files.deleteIfExists(path);
+    }
 }

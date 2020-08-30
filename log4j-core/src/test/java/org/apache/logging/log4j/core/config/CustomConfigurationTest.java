@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.File;
-import java.io.Serializable;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
@@ -26,47 +23,41 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.junit.CleanUpFiles;
+import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import static org.apache.logging.log4j.hamcrest.FileMatchers.exists;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasLength;
+import java.io.IOException;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- *
- */
+@CleanUpFiles("target/test.log")
 public class CustomConfigurationTest {
 
-    public static final String LOG_FILE = "target/test.log";
+    public static final Path LOG_FILE = Paths.get("target", "test.log");
 
-    @BeforeClass
+    @BeforeAll
     public static void before() {
         System.setProperty("log4j.level", "info");
         System.setProperty("log.level", "info");
     }
 
-    @Rule
-    public LoggerContextRule init = new LoggerContextRule("log4j-props.xml");
-
-    @Before
-    public void setUp() throws Exception {
-        new File(LOG_FILE).delete();
-    }
-
     @Test
-    public void testConfig() {
+    @LoggerContextSource("log4j-props.xml")
+    public void testConfig(final LoggerContext ctx) throws IOException {
         // don't bother using "error" since that's the default; try another level
-        final LoggerContext ctx = this.init.getLoggerContext();
-        ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
         assertThat(config, instanceOf(XmlConfiguration.class));
         for (final StatusListener listener : StatusLogger.getLogger().getListeners()) {
@@ -81,7 +72,7 @@ public class CustomConfigurationTest {
             .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .setFileName(LOG_FILE)
+            .setFileName(LOG_FILE.toString())
             .setAppend(false)
             .setName("File")
             .setIgnoreExceptions(false)
@@ -100,10 +91,9 @@ public class CustomConfigurationTest {
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("org.apache.logging.log4j", loggerConfig);
         ctx.updateLoggers();
-        final Logger logger = ctx.getLogger(CustomConfigurationTest.class.getName());
+        final Logger logger = ctx.getLogger(CustomConfigurationTest.class);
         logger.info("This is a test");
-        final File file = new File(LOG_FILE);
-        assertThat(file, exists());
-        assertThat(file, hasLength(greaterThan(0L)));
+        assertTrue(Files.exists(LOG_FILE));
+        assertThat(Files.size(LOG_FILE), greaterThan(0L));
     }
 }

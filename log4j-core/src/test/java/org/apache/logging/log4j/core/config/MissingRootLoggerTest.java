@@ -22,43 +22,37 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.logging.log4j.hamcrest.MapMatchers.hasSize;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(JUnit4.class)
+@LoggerContextSource("missingRootLogger.xml")
 public class MissingRootLoggerTest {
 
-    @Rule
-    public LoggerContextRule context = new LoggerContextRule("missingRootLogger.xml");
-
     @Test
-    public void testMissingRootLogger() throws Exception {
-        final LoggerContext ctx = context.getLoggerContext();
+    public void testMissingRootLogger(final LoggerContext ctx) throws Exception {
         final Logger logger = ctx.getLogger("sample.Logger1");
-        assertTrue("Logger should have the INFO level enabled", logger.isInfoEnabled());
-        assertFalse("Logger should have the DEBUG level disabled", logger.isDebugEnabled());
+        assertTrue(logger.isInfoEnabled(), "Logger should have the INFO level enabled");
+        assertFalse(logger.isDebugEnabled(), "Logger should have the DEBUG level disabled");
         final Configuration config = ctx.getConfiguration();
-        assertNotNull("Config not null", config);
+        assertNotNull(config, "Config not null");
 //        final String MISSINGROOT = "MissingRootTest";
 //        assertTrue("Incorrect Configuration. Expected " + MISSINGROOT + " but found " + config.getName(),
 //                MISSINGROOT.equals(config.getName()));
         final Map<String, Appender> map = config.getAppenders();
-        assertNotNull("Appenders not null", map);
+        assertNotNull(map, "Appenders not null");
         assertThat("There should only be two appenders", map, hasSize(2));
         assertThat(map, hasKey("List"));
         assertThat(map, hasKey("DefaultConsole-2"));
 
         final Map<String, LoggerConfig> loggerMap = config.getLoggers();
-        assertNotNull("loggerMap not null", loggerMap);
+        assertNotNull(loggerMap, "loggerMap not null");
         assertThat("There should only be one configured logger", loggerMap, hasSize(1));
         // only the sample logger, no root logger in loggerMap!
         assertThat("contains key=sample", loggerMap, hasKey("sample"));

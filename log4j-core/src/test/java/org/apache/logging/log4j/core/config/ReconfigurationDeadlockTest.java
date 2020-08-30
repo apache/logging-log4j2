@@ -20,20 +20,15 @@ import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.ThreadDumpMessage;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
+@LoggerContextSource("reconfiguration-deadlock.xml")
 public class ReconfigurationDeadlockTest {
 
-    @Rule
-    public LoggerContextRule init = new LoggerContextRule("reconfiguration-deadlock.xml");
     private static final int THREAD_COUNT = 5;
     private static final boolean[] finished = new boolean[THREAD_COUNT];
     private static LoggerThread[] threads = new LoggerThread[THREAD_COUNT];
@@ -77,11 +72,11 @@ public class ReconfigurationDeadlockTest {
                 threads[i].interrupt();
             }
         }
-        assertFalse("loggerThread didn't finish", stillWaiting);
+        assertFalse(stillWaiting, "loggerThread didn't finish");
 
     }
 
-    private class LoggerThread extends Thread {
+    private static class LoggerThread extends Thread {
 
         private final Logger logger = LogManager.getRootLogger();
         private final int index;
@@ -103,7 +98,7 @@ public class ReconfigurationDeadlockTest {
         }
     }
 
-    private class Updater extends Thread {
+    private static class Updater extends Thread {
 
         public volatile boolean shutdown = false;
 

@@ -24,14 +24,15 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+@Tag("yaml")
+@LoggerContextSource("log4j2-2134.yml")
 public class JiraLog4j2_2134Test {
-
-	@Rule
-	public final LoggerContextRule loggerContextRule = new LoggerContextRule("src/test/resources/log4j2-2134.yml");
 
 	@Test
 	public void testRefresh() {
@@ -57,7 +58,7 @@ public class JiraLog4j2_2134Test {
 		ctx.stop();
 		ctx.start(config);
 
-		log.error("Info message");
+		assertDoesNotThrow(() -> log.error("Info message"));
 	}
 
 	@Test
@@ -67,7 +68,7 @@ public class JiraLog4j2_2134Test {
 		final Configuration config = ctx.getConfiguration();
 		ctx.start(config);
 
-		log.error("Info message");
+		assertDoesNotThrow(() -> log.error("Info message"));
 	}
 
 	@Test
@@ -77,7 +78,7 @@ public class JiraLog4j2_2134Test {
 		ctx.stop();
 		ctx.start();
 
-		log.error("Info message");
+		assertDoesNotThrow(() -> log.error("Info message"));
 	}
 
 	@Test
@@ -88,7 +89,7 @@ public class JiraLog4j2_2134Test {
 		ctx.stop();
 		ctx.start(config);
 
-		log.error("Info message");
+		assertDoesNotThrow(() -> log.error("Info message"));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -134,6 +135,6 @@ public class JiraLog4j2_2134Test {
 		ctx.stop();
 		ctx.start(config);
 
-		log.error("Info message");
+		assertDoesNotThrow(() -> log.error("Info message"));
 	}
 }
