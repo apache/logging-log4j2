@@ -17,28 +17,22 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextFactoryExtension;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-/**
- *
- */
 public class TestConfiguratorError {
 
-    private static final String FACTORY_PROPERTY_NAME = "log4j2.loggerContextFactory";
-
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(FACTORY_PROPERTY_NAME, SimpleLoggerContextFactory.class.getName());
-    }
+    @RegisterExtension
+    static final LoggerContextFactoryExtension extension = new LoggerContextFactoryExtension(new SimpleLoggerContextFactory());
 
     @Test
     public void testErrorNoClassLoader() throws Exception {
         try (final LoggerContext ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-config.xml")) {
-            assertNull("No LoggerContext should have been returned", ctx);
+            assertNull(ctx, "No LoggerContext should have been returned");
         }
     }
 
@@ -46,7 +40,7 @@ public class TestConfiguratorError {
     public void testErrorNullClassLoader() throws Exception {
         try (final LoggerContext ctx = Configurator.initialize("Test1", null,
                 "target/test-classes/log4j2-config.xml")) {
-            assertNull("No LoggerContext should have been returned", ctx);
+            assertNull(ctx, "No LoggerContext should have been returned");
         }
     }
 }

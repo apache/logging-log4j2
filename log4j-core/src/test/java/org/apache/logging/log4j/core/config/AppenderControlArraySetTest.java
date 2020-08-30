@@ -19,12 +19,12 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.test.appender.FailOnceAppender;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the AppenderControlArraySet class..
@@ -34,7 +34,7 @@ public class AppenderControlArraySetTest {
     @Test
     public void testInitiallyEmpty() throws Exception {
         assertTrue(new AppenderControlArraySet().isEmpty());
-        assertTrue(new AppenderControlArraySet().get().length == 0);
+        assertEquals(0, new AppenderControlArraySet().get().length);
     }
 
     private AppenderControl createControl(final String name) {
@@ -174,7 +174,7 @@ public class AppenderControlArraySetTest {
     public void testIsEmptyMeansZeroLengthArray() throws Exception {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         assertTrue(set.isEmpty());
-        assertTrue(set.get().length == 0);
+        assertEquals(0, set.get().length);
     }
 
     @Test

@@ -20,11 +20,12 @@ import java.io.File;
 import java.net.URI;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("functional")
 public class ConfiguratorTest {
 
     @Test
@@ -45,9 +46,9 @@ public class ConfiguratorTest {
         try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path)) {
             assertNotNull(loggerContext.getConfiguration().getAppender("List"));
             URI uri = loggerContext.getConfigLocation();
-            assertNotNull("No configuration location returned", uri);
+            assertNotNull(uri, "No configuration location returned");
             Configurator.reconfigure();
-            assertEquals("Unexpected configuration location returned", uri, loggerContext.getConfigLocation());
+            assertEquals(uri, loggerContext.getConfigLocation(), "Unexpected configuration location returned");
         }
     }
 
@@ -57,10 +58,10 @@ public class ConfiguratorTest {
         try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path)) {
             assertNotNull(loggerContext.getConfiguration().getAppender("List"));
             URI uri = loggerContext.getConfigLocation();
-            assertNotNull("No configuration location returned", uri);
+            assertNotNull(uri, "No configuration location returned");
             final URI location = new File("src/test/resources/log4j2-config.xml").toURI();
             Configurator.reconfigure(location);
-            assertEquals("Unexpected configuration location returned", location, loggerContext.getConfigLocation());
+            assertEquals(location, loggerContext.getConfigLocation(), "Unexpected configuration location returned");
         }
     }
 
