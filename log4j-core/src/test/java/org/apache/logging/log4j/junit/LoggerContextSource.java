@@ -29,6 +29,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Specifies a configuration file to use for unit tests. This configuration file will be loaded once and used for all tests
@@ -65,4 +66,14 @@ public @interface LoggerContextSource {
      * Specifies when to {@linkplain LoggerContext#reconfigure() reconfigure} the logging system.
      */
     ReconfigurationPolicy reconfigure() default ReconfigurationPolicy.NEVER;
+
+    /**
+     * Specifies the shutdown timeout limit. Defaults to 0 to mean no limit.
+     */
+    long timeout() default 0L;
+
+    /**
+     * Specifies the time unit {@link #timeout()} is measured in.
+     */
+    TimeUnit unit() default TimeUnit.SECONDS;
 }

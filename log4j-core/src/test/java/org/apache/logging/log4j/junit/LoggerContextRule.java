@@ -42,6 +42,9 @@ import static org.junit.Assert.*;
  * property {@code EBUG} is set (e.g., through the command line option {@code -DEBUG}), then the StatusLogger will be
  * set to the debug level. This allows for more debug messages as the StatusLogger will be in the error level until a
  * configuration file has been read and parsed into a tree of Nodes.
+ *
+ * @see LoggerContextSource
+ * @see Named
  */
 public class LoggerContextRule implements TestRule, LoggerContextAccessor {
 
