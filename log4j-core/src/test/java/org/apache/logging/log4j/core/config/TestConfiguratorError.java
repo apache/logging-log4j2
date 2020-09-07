@@ -17,17 +17,17 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.junit.LoggerContextFactoryExtension;
+import org.apache.logging.log4j.junit.RegisterLoggerContextFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
+import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TestConfiguratorError {
 
-    @RegisterExtension
-    static final LoggerContextFactoryExtension extension = new LoggerContextFactoryExtension(new SimpleLoggerContextFactory());
+    @RegisterLoggerContextFactory
+    static final LoggerContextFactory FACTORY = new SimpleLoggerContextFactory();
 
     @Test
     public void testErrorNoClassLoader() throws Exception {

@@ -22,25 +22,32 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.support.HierarchyTraversalMode;
+import org.junit.platform.commons.support.ModifierSupport;
+import org.junit.platform.commons.support.ReflectionSupport;
 
-/**
- * JUnit 5 extension that sets a particular {@link LoggerContextFactory} for the entire run of tests in a class.
- *
- * @since 2.14.0
- */
-public class LoggerContextFactoryExtension implements BeforeAllCallback, AfterAllCallback {
+import java.lang.reflect.Field;
+import java.util.List;
+
+class LoggerContextFactoryExtension implements BeforeAllCallback, AfterAllCallback {
 
     private static final String KEY = "previousFactory";
-    private final LoggerContextFactory loggerContextFactory;
-
-    public LoggerContextFactoryExtension(LoggerContextFactory loggerContextFactory) {
-        this.loggerContextFactory = loggerContextFactory;
-    }
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
+        final Class<?> testClass = context.getRequiredTestClass();
+        final List<Field> loggerContextFactories = ReflectionSupport.findFields(testClass,
+                f -> ModifierSupport.isStatic(f) && f.isAnnotationPresent(RegisterLoggerContextFactory.class),
+                HierarchyTraversalMode.BOTTOM_UP);
+        if (loggerContextFactories.isEmpty()) {
+            return;
+        }
+        if (loggerContextFactories.size() > 1) {
+            throw new IllegalArgumentException("More than one static LoggerContextFactory specified in " + testClass.getName());
+        }
         getStore(context).put(KEY, LogManager.getFactory());
-        LogManager.setFactory(loggerContextFactory);
+        final LoggerContextFactory factory = (LoggerContextFactory) loggerContextFactories.get(0).get(null);
+        LogManager.setFactory(factory);
     }
 
     @Override
