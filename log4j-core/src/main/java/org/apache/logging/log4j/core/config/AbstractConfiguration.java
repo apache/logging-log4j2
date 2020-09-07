@@ -369,6 +369,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             asyncLoggerConfigDisruptor.stop(timeout, timeUnit);
         }
 
+        LOGGER.trace("{} notifying ReliabilityStrategies that appenders will be stopped.", cls);
+        for (final LoggerConfig loggerConfig : loggerConfigs.values()) {
+            loggerConfig.getReliabilityStrategy().beforeStopAppenders();
+        }
+        root.getReliabilityStrategy().beforeStopAppenders();
+
         // Stop the appenders in reverse order in case they still have activity.
         final Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
         final List<Appender> async = getAsyncAppenders(array);
@@ -383,12 +389,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 }
             }
         }
-
-        LOGGER.trace("{} notifying ReliabilityStrategies that appenders will be stopped.", cls);
-        for (final LoggerConfig loggerConfig : loggerConfigs.values()) {
-            loggerConfig.getReliabilityStrategy().beforeStopAppenders();
-        }
-        root.getReliabilityStrategy().beforeStopAppenders();
 
         LOGGER.trace("{} stopping remaining Appenders.", cls);
         int appenderCount = 0;
