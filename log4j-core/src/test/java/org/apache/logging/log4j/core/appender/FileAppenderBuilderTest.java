@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileAppenderBuilderTest {
 
@@ -26,6 +27,6 @@ public class FileAppenderBuilderTest {
      */
     @Test
     public void testDefaultImmediateFlush() {
-        Assert.assertTrue(FileAppender.newBuilder().isImmediateFlush());
+        assertTrue(FileAppender.newBuilder().isImmediateFlush());
     }
 }
