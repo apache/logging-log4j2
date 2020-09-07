@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.junit;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.LoggerContextAccessor;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> implements BeforeAllCallback,
         AfterAllCallback, BeforeEachCallback, AfterEachCallback {
@@ -37,59 +39,64 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         final Class<?> testClass = context.getRequiredTestClass();
         final LoggerContextSource testSource = testClass.getAnnotation(LoggerContextSource.class);
         if (testSource != null) {
-            final LoggerContext loggerContext =
-                    Configurator.initialize(context.getDisplayName(), testClass.getClassLoader(), testSource.value());
-            getTestClassStore(context).put(LoggerContext.class, loggerContext);
+            final LoggerContextConfig config = new LoggerContextConfig(testSource, context);
+            getTestClassStore(context).put(LoggerContext.class, config);
         }
     }
 
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
-        final LoggerContext loggerContext = getTestClassStore(context).get(LoggerContext.class, LoggerContext.class);
-        if (loggerContext != null) {
-            loggerContext.close();
+        final LoggerContextConfig config =
+                getTestClassStore(context).get(LoggerContext.class, LoggerContextConfig.class);
+        if (config != null) {
+            config.close();
         }
     }
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
-        final LoggerContextSource testSource = testClass.getAnnotation(LoggerContextSource.class);
-        if (testSource != null && testSource.reconfigure() == ReconfigurationPolicy.BEFORE_EACH) {
-            final LoggerContext loggerContext = getTestClassStore(context).get(LoggerContext.class, LoggerContext.class);
-            if (loggerContext == null) {
+        if (testClass.isAnnotationPresent(LoggerContextSource.class)) {
+            final LoggerContextConfig config = getTestClassStore(context).get(LoggerContext.class, LoggerContextConfig.class);
+            if (config == null) {
                 throw new IllegalStateException(
-                        "Specified test class reconfiguration policy of BEFORE_EACH, but no LoggerContext found for test class " +
+                        "Specified @LoggerContextSource but no LoggerContext found for test class " +
                                 testClass.getCanonicalName());
             }
-            loggerContext.reconfigure();
+            if (config.reconfigurationPolicy == ReconfigurationPolicy.BEFORE_EACH) {
+                config.reconfigure();
+            }
         }
         final LoggerContextSource source = context.getRequiredTestMethod().getAnnotation(LoggerContextSource.class);
         if (source != null) {
-            final LoggerContext loggerContext = Configurator
-                    .initialize(context.getDisplayName(), testClass.getClassLoader(), source.value());
-            getTestInstanceStore(context).put(LoggerContext.class, loggerContext);
+            final LoggerContextConfig config = new LoggerContextConfig(source, context);
+            if (config.reconfigurationPolicy == ReconfigurationPolicy.BEFORE_EACH) {
+                config.reconfigure();
+            }
+            getTestInstanceStore(context).put(LoggerContext.class, config);
         }
     }
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
         // method-annotated variant
-        final LoggerContext testInstanceContext = getTestInstanceStore(context).get(LoggerContext.class, LoggerContext.class);
-        if (testInstanceContext != null) {
-            testInstanceContext.close();
+        final LoggerContextConfig testInstanceConfig =
+                getTestInstanceStore(context).get(LoggerContext.class, LoggerContextConfig.class);
+        if (testInstanceConfig != null) {
+            testInstanceConfig.close();
         }
         // reloadable variant
         final Class<?> testClass = context.getRequiredTestClass();
-        final LoggerContextSource source = testClass.getAnnotation(LoggerContextSource.class);
-        if (source != null && source.reconfigure() == ReconfigurationPolicy.AFTER_EACH) {
-            final LoggerContext loggerContext = getTestClassStore(context).get(LoggerContext.class, LoggerContext.class);
-            if (loggerContext == null) {
+        if (testClass.isAnnotationPresent(LoggerContextSource.class)) {
+            final LoggerContextConfig config = getTestClassStore(context).get(LoggerContext.class, LoggerContextConfig.class);
+            if (config == null) {
                 throw new IllegalStateException(
-                        "Specified test class reconfiguration policy of AFTER_EACH, but no LoggerContext found for test class " +
+                        "Specified @LoggerContextSource but no LoggerContext found for test class " +
                                 testClass.getCanonicalName());
             }
-            loggerContext.reconfigure();
+            if (config.reconfigurationPolicy == ReconfigurationPolicy.AFTER_EACH) {
+                config.reconfigure();
+            }
         }
     }
 
@@ -109,12 +116,42 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
 
     static LoggerContext getParameterLoggerContext(ParameterContext parameterContext, ExtensionContext extensionContext) {
         if (parameterContext.getDeclaringExecutable() instanceof Method) {
-            final LoggerContext loggerContext =
-                    getTestInstanceStore(extensionContext).get(LoggerContext.class, LoggerContext.class);
-            return loggerContext != null ? loggerContext :
-                    getTestClassStore(extensionContext).get(LoggerContext.class, LoggerContext.class);
+            final LoggerContextAccessor accessor =
+                    getTestInstanceStore(extensionContext).get(LoggerContext.class, LoggerContextAccessor.class);
+            return accessor != null ? accessor.getLoggerContext() :
+                    getTestClassStore(extensionContext).get(LoggerContext.class, LoggerContextAccessor.class).getLoggerContext();
         }
-        return getTestClassStore(extensionContext).get(LoggerContext.class, LoggerContext.class);
+        return getTestClassStore(extensionContext).get(LoggerContext.class, LoggerContextAccessor.class).getLoggerContext();
+    }
+
+    private static class LoggerContextConfig implements AutoCloseable, LoggerContextAccessor {
+        private final LoggerContext context;
+        private final ReconfigurationPolicy reconfigurationPolicy;
+        private final long shutdownTimeout;
+        private final TimeUnit unit;
+
+        private LoggerContextConfig(final LoggerContextSource source, final ExtensionContext extensionContext) {
+            final String displayName = extensionContext.getDisplayName();
+            final ClassLoader classLoader = extensionContext.getRequiredTestClass().getClassLoader();
+            context = Configurator.initialize(displayName, classLoader, source.value());
+            reconfigurationPolicy = source.reconfigure();
+            shutdownTimeout = source.timeout();
+            unit = source.unit();
+        }
+
+        @Override
+        public LoggerContext getLoggerContext() {
+            return context;
+        }
+
+        public void reconfigure() {
+            context.reconfigure();
+        }
+
+        @Override
+        public void close() {
+            context.stop(shutdownTimeout, unit);
+        }
     }
 
 }
