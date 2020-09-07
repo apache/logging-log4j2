@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
+import org.apache.logging.log4j.junit.CleanUpFiles;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Tag;
@@ -40,6 +41,13 @@ import java.util.Map;
 import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.jupiter.api.Assertions.*;
 
+@CleanUpFiles({
+        "target/test-xml.log",
+        "target/test-xinclude.log",
+        "target/test-json.log",
+        "target/test-yaml.log",
+        "target/test-properties.log"
+})
 class ConfigurationFactoryTest {
 
     static final String LOGGER_NAME = "org.apache.logging.log4j.test1.Test";
@@ -77,13 +85,9 @@ class ConfigurationFactoryTest {
         final long currentThreadId = Thread.currentThread().getId();
         final Logger logger = context.getLogger(FILE_LOGGER_NAME);
         logger.debug("Greetings from ConfigurationFactoryTest in thread#{}", box(currentThreadId));
-        try {
-            final List<String> lines = Files.readAllLines(logFile);
-            assertEquals(1, lines.size());
-            assertTrue(lines.get(0).endsWith(Long.toString(currentThreadId)));
-        } finally {
-            Files.delete(logFile);
-        }
+        final List<String> lines = Files.readAllLines(logFile);
+        assertEquals(1, lines.size());
+        assertTrue(lines.get(0).endsWith(Long.toString(currentThreadId)));
     }
 
     @Test
