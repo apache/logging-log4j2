@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,10 +35,9 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.junit.CleanUpFiles;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -49,21 +47,16 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests {@link FileAppender}.
  */
+@CleanUpFiles(FileAppenderTest.FILE_NAME)
 public class FileAppenderTest {
 
-    private static final String FILE_NAME = "target/fileAppenderTest.log";
+    static final String FILE_NAME = "target/fileAppenderTest.log";
     private static final Path PATH = Paths.get(FILE_NAME);
     private static final int THREADS = 2;
 
     @AfterAll
     public static void cleanupClass() {
         assertFalse(AbstractManager.hasManager(FILE_NAME), "Manager for " + FILE_NAME + " not removed");
-    }
-
-    @BeforeEach
-    @AfterEach
-    void cleanFiles() throws IOException {
-        Files.deleteIfExists(PATH);
     }
 
     @ParameterizedTest

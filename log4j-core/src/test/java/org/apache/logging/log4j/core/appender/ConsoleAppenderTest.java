@@ -27,35 +27,31 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atLeastOnce;
 
-/**
- *
- */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ConsoleAppenderTest {
 
     private static final String LOG4J_SKIP_JANSI = "log4j.skipJansi";
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         System.clearProperty(LOG4J_SKIP_JANSI);
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty(LOG4J_SKIP_JANSI, "true");
     }
@@ -65,7 +61,7 @@ public class ConsoleAppenderTest {
     @Mock
     PrintStream psMock;
 
-    @Before
+    @BeforeEach
     public void before() {
         System.setProperty(LOG4J_SKIP_JANSI, "true");
         baos = new ByteArrayOutputStream();
@@ -94,7 +90,7 @@ public class ConsoleAppenderTest {
             final Layout<String> layout = PatternLayout.newBuilder().withAlwaysWriteExceptions(true).build();
             final ConsoleAppender app = ConsoleAppender.newBuilder().setLayout(layout).setTarget(targetName).setName("Console").setIgnoreExceptions(false).build();
             app.start();
-            assertTrue("Appender did not start", app.isStarted());
+            assertTrue(app.isStarted(), "Appender did not start");
 
             final LogEvent event = Log4jLogEvent.newBuilder() //
                     .setLoggerName("TestLogger") //
@@ -105,7 +101,7 @@ public class ConsoleAppenderTest {
             app.append(event);
 
             app.stop();
-            assertFalse("Appender did not stop", app.isStarted());
+            assertFalse(app.isStarted(), "Appender did not stop");
         } finally {
             systemSetter.systemSet(ps);
         }
@@ -125,7 +121,7 @@ public class ConsoleAppenderTest {
 
     private void testFollowSystemPrintStream(final PrintStream ps, final Target target, final SystemSetter systemSetter) {
         final ConsoleAppender app = ConsoleAppender.newBuilder().setTarget(target).setFollow(true).setIgnoreExceptions(false).setName("test").build();
-        Assert.assertEquals(target, app.getTarget());
+        assertEquals(target, app.getTarget());
         app.start();
         try {
             final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -135,7 +131,7 @@ public class ConsoleAppenderTest {
                     .setMessage(new SimpleMessage("Test")) //
                     .build();
 
-            assertTrue("Appender did not start", app.isStarted());
+            assertTrue(app.isStarted(), "Appender did not start");
             systemSetter.systemSet(new PrintStream(baos));
             try {
                 app.append(event);
@@ -143,12 +139,12 @@ public class ConsoleAppenderTest {
                 systemSetter.systemSet(ps);
             }
             final String msg = baos.toString();
-            assertNotNull("No message", msg);
-            assertTrue("Incorrect message: \"" + msg + "\"", msg.endsWith("Test" + Strings.LINE_SEPARATOR));
+            assertNotNull(msg, "No message");
+            assertTrue(msg.endsWith("Test" + Strings.LINE_SEPARATOR), "Incorrect message: \"" + msg + "\"");
         } finally {
             app.stop();
         }
-        assertFalse("Appender did not stop", app.isStarted());
+        assertFalse(app.isStarted(), "Appender did not stop");
     }
 
     @Test
