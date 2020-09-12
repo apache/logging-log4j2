@@ -27,7 +27,7 @@ import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@CleanUpFiles("target/status.log")
+@CleanUpFiles({"target/status.log", "target/test.log"})
 public class FileOutputTest {
 
     @Test
