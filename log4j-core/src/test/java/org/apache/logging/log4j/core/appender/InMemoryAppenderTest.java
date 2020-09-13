@@ -24,13 +24,10 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.appender.InMemoryAppender;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
 public class InMemoryAppenderTest {
 
     @Test
@@ -68,15 +65,15 @@ public class InMemoryAppenderTest {
                 .setMessage(new SimpleMessage("Test")) //
                 .build();
         app.start();
-        assertTrue("Appender did not start", app.isStarted());
+        assertTrue(app.isStarted(), "Appender did not start");
         app.append(event);
         app.append(event);
         final String msg = app.toString();
-        assertNotNull("No message", msg);
+        assertNotNull(msg, "No message");
         final String expectedHeader = header == null ? "" : header;
         final String expected = expectedHeader + "Test" + Strings.LINE_SEPARATOR + "Test" + Strings.LINE_SEPARATOR;
-        assertTrue("Incorrect message: " + msg, msg.equals(expected));
+        assertEquals(expected, msg, "Incorrect message: " + msg);
         app.stop();
-        assertFalse("Appender did not stop", app.isStarted());
+        assertFalse(app.isStarted(), "Appender did not stop");
     }
 }

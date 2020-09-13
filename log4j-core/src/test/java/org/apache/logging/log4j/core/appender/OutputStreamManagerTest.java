@@ -20,28 +20,24 @@ package org.apache.logging.log4j.core.appender;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * OutputStreamManager Tests.
  */
 public class OutputStreamManagerTest {
-    private static final String CONFIG = "multipleIncompatibleAppendersTest.xml";
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     @Test
-    public void narrow() throws Exception {
-        final Logger logger = LogManager.getLogger(OutputStreamManagerTest.class);
+    @LoggerContextSource("multipleIncompatibleAppendersTest.xml")
+    public void narrow(final LoggerContext context) {
+        final Logger logger = context.getLogger(OutputStreamManagerTest.class);
         logger.info("test");
         final List<StatusData> statusData = StatusLogger.getLogger().getStatusData();
         StatusData data = statusData.get(0);

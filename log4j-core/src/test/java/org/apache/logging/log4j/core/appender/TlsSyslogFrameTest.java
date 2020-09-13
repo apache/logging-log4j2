@@ -19,8 +19,10 @@ package org.apache.logging.log4j.core.appender;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.util.Chars;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class TlsSyslogFrameTest {
     private static final String TEST_MESSAGE = "The quick brown fox jumps over the lazy dog";
@@ -29,16 +31,16 @@ public class TlsSyslogFrameTest {
     public void equals() {
         final TlsSyslogFrame first = new TlsSyslogFrame(TEST_MESSAGE);
         final TlsSyslogFrame second = new TlsSyslogFrame(TEST_MESSAGE);
-        Assert.assertEquals(first, second);
-        Assert.assertEquals(first.hashCode(), second.hashCode());
+        assertEquals(first, second);
+        assertEquals(first.hashCode(), second.hashCode());
     }
 
     @Test
     public void notEquals() {
         final TlsSyslogFrame first = new TlsSyslogFrame("A message");
         final TlsSyslogFrame second = new TlsSyslogFrame("B message");
-        Assert.assertNotEquals(first, second);
-        Assert.assertNotEquals(first.hashCode(), second.hashCode());
+        assertNotEquals(first, second);
+        assertNotEquals(first.hashCode(), second.hashCode());
     }
 
     @Test
@@ -46,6 +48,6 @@ public class TlsSyslogFrameTest {
         final TlsSyslogFrame frame = new TlsSyslogFrame(TEST_MESSAGE);
         final int length = TEST_MESSAGE.getBytes(StandardCharsets.UTF_8).length;
         final String expected = Integer.toString(length) + Chars.SPACE + TEST_MESSAGE;
-        Assert.assertEquals(expected, frame.toString());
+        assertEquals(expected, frame.toString());
     }
 }
