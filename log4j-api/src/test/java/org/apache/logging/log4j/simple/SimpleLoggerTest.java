@@ -18,16 +18,17 @@ package org.apache.logging.log4j.simple;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.RegisterLoggerContextFactory;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.junit.LoggerContextFactoryExtension;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 @Tag("smoke")
 public class SimpleLoggerTest {
 
-    @RegisterLoggerContextFactory
-    static final LoggerContextFactory FACTORY = new SimpleLoggerContextFactory();
+    @RegisterExtension
+    public static final LoggerContextFactoryExtension EXTENSION =
+            new LoggerContextFactoryExtension(new SimpleLoggerContextFactory());
 
     private final Logger logger = LogManager.getLogger("TestError");
 

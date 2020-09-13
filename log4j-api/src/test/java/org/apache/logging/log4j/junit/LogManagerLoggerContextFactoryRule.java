@@ -24,7 +24,7 @@ import org.junit.rules.ExternalResource;
  * Sets the {@link LogManager}'s {@link LoggerContextFactory} to the given instance before the test and restores it to
  * the original value after the test.
  *
- * @deprecated Use {@link RegisterLoggerContextFactory} with JUnit 5
+ * @deprecated Use {@link LoggerContextFactoryExtension} with JUnit 5
  */
 public class LogManagerLoggerContextFactoryRule extends ExternalResource {
 
