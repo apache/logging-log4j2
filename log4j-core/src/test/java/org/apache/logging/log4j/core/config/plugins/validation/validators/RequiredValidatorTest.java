@@ -22,10 +22,10 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.validation.ValidatingPlugin;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RequiredValidatorTest {
 
@@ -33,12 +33,12 @@ public class RequiredValidatorTest {
     private Node node;
 
     @SuppressWarnings("unchecked")
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<ValidatingPlugin>) manager.getPluginType("Validator");
-        assertNotNull("Rebuild this module to make sure annotation processing kicks in.", plugin);
+        assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
         node = new Node(null, "Validator", plugin);
     }
 

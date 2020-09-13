@@ -21,20 +21,18 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.AfterClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 
-/**
- *
- */
 public class XmlConfigurationPropsTest {
 
     private static final String CONFIG = "log4j-props.xml";
     private static final String CONFIG1 = "log4j-props1.xml";
 
-    @AfterClass
+    @AfterAll
     public static void cleanupClass() {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext ctx = LoggerContext.getContext();
@@ -48,9 +46,8 @@ public class XmlConfigurationPropsTest {
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
-        assertTrue("Configuration is not an XmlConfiguration", config instanceof XmlConfiguration);
+        assertThat(config, instanceOf(XmlConfiguration.class));
     }
-
 
     @Test
     public void testDefaultStatus() {
@@ -60,7 +57,7 @@ public class XmlConfigurationPropsTest {
             final LoggerContext ctx = LoggerContext.getContext();
             ctx.reconfigure();
             final Configuration config = ctx.getConfiguration();
-            assertTrue("Configuration is not an XmlConfiguration", config instanceof XmlConfiguration);
+            assertThat(config, instanceOf(XmlConfiguration.class));
         } finally {
             System.clearProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL);
         }
@@ -74,10 +71,9 @@ public class XmlConfigurationPropsTest {
             final LoggerContext ctx = LoggerContext.getContext();
             ctx.reconfigure();
             final Configuration config = ctx.getConfiguration();
-            assertTrue("Configuration is not an XmlConfiguration", config instanceof XmlConfiguration);
+            assertThat(config, instanceOf(XmlConfiguration.class));
         } finally {
             System.clearProperty("log4j.level");
-
         }
     }
 
@@ -90,7 +86,7 @@ public class XmlConfigurationPropsTest {
             final LoggerContext ctx = LoggerContext.getContext();
             ctx.reconfigure();
             final Configuration config = ctx.getConfiguration();
-            assertTrue("Configuration is not an XmlConfiguration", config instanceof XmlConfiguration);
+            assertThat(config, instanceOf(XmlConfiguration.class));
         } finally {
             System.clearProperty("log4j.level");
             System.clearProperty("log.level");

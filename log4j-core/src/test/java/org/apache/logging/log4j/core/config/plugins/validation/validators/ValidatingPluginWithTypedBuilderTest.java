@@ -16,18 +16,16 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.validation.ValidatingPluginWithTypedBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidatingPluginWithTypedBuilderTest {
 
@@ -35,13 +33,13 @@ public class ValidatingPluginWithTypedBuilderTest {
     private Node node;
 
     @SuppressWarnings("unchecked")
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<ValidatingPluginWithTypedBuilder>) manager
                 .getPluginType("ValidatingPluginWithTypedBuilder");
-        assertNotNull("Rebuild this module to make sure annotation processing kicks in.", plugin);
+        assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
         node = new Node(null, "Validator", plugin);
     }
 

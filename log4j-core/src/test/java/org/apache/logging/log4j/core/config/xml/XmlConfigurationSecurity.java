@@ -18,15 +18,20 @@ package org.apache.logging.log4j.core.config.xml;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.junit.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class XmlConigurationSecurity {
+@Tag("functional")
+@Tag("security")
+public class XmlConfigurationSecurity {
 
-    @Test(timeout = 5000L)
+    @Test
+    @Timeout(5)
     public void xmlSecurity() throws IOException {
         final LoggerContext context = Configurator.initialize("XmlConfigurationSecurity", "XmlConfigurationSecurity.xml");
         assertNotNull(context.getConfiguration().getAppender("list"));

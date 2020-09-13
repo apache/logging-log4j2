@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.properties;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -24,37 +25,85 @@ import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
-public class PropertiesConfigurationTest {
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-properties.properties");
+class PropertiesConfigurationTest {
 
     @Test
-    public void testPropertiesConfiguration() {
-        final Configuration config = context.getConfiguration();
-        assertNotNull("No configuration created", config);
-        assertEquals("Incorrect State: " + config.getState(), config.getState(), LifeCycle.State.STARTED);
+    @LoggerContextSource("log4j2-properties.properties")
+    void testPropertiesConfiguration(final Configuration config) {
+        assertEquals(config.getState(), LifeCycle.State.STARTED, "Incorrect State: " + config.getState());
         final Map<String, Appender> appenders = config.getAppenders();
         assertNotNull(appenders);
-        assertTrue("Incorrect number of Appenders: " + appenders.size(), appenders.size() == 1);
+        assertEquals(1, appenders.size(), "Incorrect number of Appenders: " + appenders.size());
         final Map<String, LoggerConfig> loggers = config.getLoggers();
         assertNotNull(loggers);
-        assertTrue("Incorrect number of LoggerConfigs: " + loggers.size(), loggers.size() == 2);
+        assertEquals(2, loggers.size(), "Incorrect number of LoggerConfigs: " + loggers.size());
         final Filter filter = config.getFilter();
-        assertNotNull("No Filter", filter);
-        assertTrue("Not a Threshold Filter", filter instanceof ThresholdFilter);
+        assertNotNull(filter, "No Filter");
+        assertTrue(filter instanceof ThresholdFilter, "Not a Threshold Filter");
         final Logger logger = LogManager.getLogger(getClass());
         logger.info("Welcome to Log4j!");
+    }
+
+    @Test
+    @LoggerContextSource("log4j2-properties-root-only.properties")
+    void testRootLoggerOnly(final Configuration config) {
+        assertEquals(config.getState(), LifeCycle.State.STARTED, "Incorrect State: " + config.getState());
+        final Map<String, Appender> appenders = config.getAppenders();
+        assertNotNull(appenders);
+        assertEquals(appenders.size(), 1, "Incorrect number of Appenders: " + appenders.size());
+        final Map<String, LoggerConfig> loggers = config.getLoggers();
+        assertNotNull(loggers);
+        assertEquals(loggers.size(), 1, "Incorrect number of LoggerConfigs: " + loggers.size());
+        final Filter filter = config.getFilter();
+        assertNotNull(filter, "No Filter");
+        assertThat(filter, instanceOf(ThresholdFilter.class));
+        final Logger logger = LogManager.getLogger(getClass());
+        logger.info("Welcome to Log4j!");
+    }
+
+    @Test
+    @LoggerContextSource("log4j-rolling.properties")
+    void testRollingFile(final Configuration config) {
+        assertEquals(config.getState(), LifeCycle.State.STARTED, "Incorrect State: " + config.getState());
+        final Map<String, Appender> appenders = config.getAppenders();
+        assertNotNull(appenders);
+        assertEquals(appenders.size(), 3, "Incorrect number of Appenders: " + appenders.size());
+        final Map<String, LoggerConfig> loggers = config.getLoggers();
+        assertNotNull(loggers);
+        assertEquals(loggers.size(), 2, "Incorrect number of LoggerConfigs: " + loggers.size());
+        final Filter filter = config.getFilter();
+        assertNotNull(filter, "No Filter");
+        assertThat(filter, instanceOf(ThresholdFilter.class));
+        final Logger logger = LogManager.getLogger(getClass());
+        logger.info("Welcome to Log4j!");
+    }
+
+    @Test
+    @LoggerContextSource("log4j2-properties-trailing-space-on-level.properties")
+    void testTrailingSpaceOnLevel(final Configuration config) {
+        assertEquals(config.getState(), LifeCycle.State.STARTED, "Incorrect State: " + config.getState());
+        final Map<String, Appender> appenders = config.getAppenders();
+        assertNotNull(appenders);
+        assertEquals(appenders.size(), 1, "Incorrect number of Appenders: " + appenders.size());
+        final Map<String, LoggerConfig> loggers = config.getLoggers();
+        assertNotNull(loggers);
+        assertEquals(loggers.size(), 2, "Incorrect number of LoggerConfigs: " + loggers.size());
+        final Filter filter = config.getFilter();
+        assertNotNull(filter, "No Filter");
+        assertThat(filter, instanceOf(ThresholdFilter.class));
+        final Logger logger = LogManager.getLogger(getClass());
+
+        assertEquals(Level.DEBUG, logger.getLevel(), "Incorrect level " + logger.getLevel());
+
+        logger.debug("Welcome to Log4j!");
     }
 }

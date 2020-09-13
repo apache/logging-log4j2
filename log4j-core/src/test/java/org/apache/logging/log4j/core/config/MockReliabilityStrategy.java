@@ -52,13 +52,6 @@ public class MockReliabilityStrategy implements ReliabilityStrategy {
     }
 
     @Override
-    public void log(
-            final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn,
-            final StackTraceElement location, final Marker marker, final Level level, final Message data, final Throwable t) {
-        config.log(loggerName, fqcn, location, marker, level, data, t);
-    }
-
-    @Override
     public void log(final Supplier<LoggerConfig> reconfigured, final LogEvent event) {
         config.log(event);
     }
