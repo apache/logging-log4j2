@@ -23,25 +23,19 @@ import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-/**
- * JUnit 5 test extension that sets a specific StatusLogger logging level for each test.
- *
- * @since 2.14.0
- */
-public class StatusLoggerLevelExtension implements BeforeEachCallback, AfterEachCallback {
+class StatusLoggerLevelExtension implements BeforeEachCallback, AfterEachCallback {
 
     private static final String KEY = "previousLevel";
-    private final Level level;
-
-    public StatusLoggerLevelExtension(Level level) {
-        this.level = level;
-    }
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
+        final StatusLoggerLevel annotation = context.getRequiredTestClass().getAnnotation(StatusLoggerLevel.class);
+        if (annotation == null) {
+            return;
+        }
         final StatusLogger logger = StatusLogger.getLogger();
         getStore(context).put(KEY, logger.getLevel());
-        logger.setLevel(level);
+        logger.setLevel(Level.valueOf(annotation.value()));
     }
 
     @Override
@@ -51,6 +45,6 @@ public class StatusLoggerLevelExtension implements BeforeEachCallback, AfterEach
 
     private ExtensionContext.Store getStore(ExtensionContext context) {
         return context.getStore(ExtensionContext.Namespace
-                .create(getClass(), context.getRequiredTestInstance(), context.getRequiredTestMethod()));
+                .create(getClass(), context.getRequiredTestInstance()));
     }
 }
