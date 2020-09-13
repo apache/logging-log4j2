@@ -16,11 +16,7 @@
  */
 package org.apache.logging.log4j;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.apache.logging.log4j.junit.StatusLoggerLevelExtension;
+import org.apache.logging.log4j.junit.StatusLoggerLevel;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -33,10 +29,14 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+@StatusLoggerLevel("WARN")
 public class AbstractLoggerTest {
 
     private static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");
@@ -59,9 +59,6 @@ public class AbstractLoggerTest {
 
     private static final Marker MARKER = MarkerManager.getMarker("TEST");
     private static final String MARKER_NAME = "TEST";
-
-    @RegisterExtension
-    public StatusLoggerLevelExtension status = new StatusLoggerLevelExtension(Level.WARN);
 
     private static final LogEvent[] EVENTS = new LogEvent[] {
         new LogEvent(null, simple, null),
