@@ -17,34 +17,34 @@
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.junit.StatusLoggerLevelExtension;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.validation.HostAndPort;
-import org.apache.logging.log4j.junit.StatusLoggerRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidHostValidatorTest {
 
-    @Rule
-    public StatusLoggerRule rule = new StatusLoggerRule(Level.FATAL);
+    @RegisterExtension
+    static StatusLoggerLevelExtension extension = new StatusLoggerLevelExtension(Level.FATAL);
 
     private PluginType<HostAndPort> plugin;
     private Node node;
 
     @SuppressWarnings("unchecked")
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<HostAndPort>) manager.getPluginType("HostAndPort");
-        assertNotNull("Rebuild this module to ensure annotation processing has been done.", plugin);
+        assertNotNull(plugin, "Rebuild this module to ensure annotation processing has been done.");
         node = new Node(null, "HostAndPort", plugin);
     }
 
@@ -58,7 +58,7 @@ public class ValidHostValidatorTest {
         node.getAttributes().put("host", "256.256.256.256");
         node.getAttributes().put("port", "1");
         final HostAndPort plugin = buildPlugin();
-        assertNull("Expected null, but got: " + plugin, plugin);
+        assertNull(plugin, "Expected null, but got: " + plugin);
     }
 
     @Test

@@ -21,11 +21,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.sax.SAXSource;
@@ -37,13 +39,14 @@ import javax.xml.validation.Validator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
 import org.xml.sax.helpers.XMLReaderFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class XmlSchemaTest {
 
@@ -100,33 +103,35 @@ public class XmlSchemaTest {
         final MutableInt configs = new MutableInt();
         final MutableInt failures = new MutableInt();
 
-        Files.list(Paths.get("src/test/resources")) //
-                .filter(filePath -> {
-                    final String fileName = filePath.getFileName().toString();
-                    if (!fileName.endsWith(".xml"))
-                        return false;
-                    for (final String ignore : IGNORE_CONFIGS) {
-                        if (fileName.contains(ignore))
+        try (final Stream<Path> testResources = Files.list(Paths.get("src", "test", "resources"))) {
+            testResources
+                    .filter(filePath -> {
+                        final String fileName = filePath.getFileName().toString();
+                        if (!fileName.endsWith(".xml"))
                             return false;
-                    }
-                    return true;
-                }) //
-                .forEach(filePath -> {
-                    System.out.println("Validating " + configs.incrementAndGet() + ". [" + filePath + "]...");
-                    System.out.flush();
+                        for (final String ignore : IGNORE_CONFIGS) {
+                            if (fileName.contains(ignore))
+                                return false;
+                        }
+                        return true;
+                    }) //
+                    .forEach(filePath -> {
+                        System.out.println("Validating " + configs.incrementAndGet() + ". [" + filePath + "]...");
+                        System.out.flush();
 
-                    try {
-                        final String xml = fixXml(
-                                FileUtils.readFileToString(filePath.toFile(), Charset.defaultCharset()));
-                        validator.validate(new SAXSource(namespaceAdder,
-                                new InputSource(new ByteArrayInputStream(xml.getBytes()))), null);
-                    } catch (final Exception ex) {
-                        System.err.println(ex);
-                        System.err.flush();
-                        failures.increment();
-                    }
-                });
+                        try {
+                            final String xml = fixXml(
+                                    FileUtils.readFileToString(filePath.toFile(), Charset.defaultCharset()));
+                            validator.validate(new SAXSource(namespaceAdder,
+                                    new InputSource(new ByteArrayInputStream(xml.getBytes()))), null);
+                        } catch (final Exception ex) {
+                            System.err.println(ex);
+                            System.err.flush();
+                            failures.increment();
+                        }
+                    });
+        }
 
-        Assert.assertEquals(0, failures.intValue());
+        assertEquals(0, failures.intValue());
     }
 }

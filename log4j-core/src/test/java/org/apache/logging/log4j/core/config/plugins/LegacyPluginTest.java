@@ -19,43 +19,34 @@ package org.apache.logging.log4j.core.config.plugins;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
-import org.apache.logging.log4j.spi.LoggerContext;
-import org.junit.Test;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Class Description goes here.
- */
+@LoggerContextSource("legacy-plugins.xml")
 public class LegacyPluginTest {
 
-    private static final String CONFIG_FILE = "legacy-plugins.xml";
-
     @Test
-    public void testLegacy() throws Exception {
-        LoggerContext context = Configurator.initialize("LegacyTest", null, CONFIG_FILE);
-        assertNotNull("No Logger Context", context);
-        Configuration configuration = ((org.apache.logging.log4j.core.LoggerContext) context).getConfiguration();
-        assertNotNull("No Configuration", configuration);
-        assertTrue("Incorrect Configuration class " + configuration.getClass().getName(),
-                configuration instanceof XmlConfiguration);
+    public void testLegacy(final Configuration configuration) throws Exception {
+        assertThat(configuration, instanceOf(XmlConfiguration.class));
         for (Map.Entry<String, Appender> entry : configuration.getAppenders().entrySet()) {
             if (entry.getKey().equalsIgnoreCase("console")) {
                 Layout layout = entry.getValue().getLayout();
                 assertNotNull("No layout for Console Appender");
                 String name = layout.getClass().getSimpleName();
-                assertTrue("Incorrect Layout class. Expected LogstashLayout, Actual " + name,
-                        name.equals("LogstashLayout"));
+                assertEquals("LogstashLayout", name, "Incorrect Layout class. Expected LogstashLayout, Actual " + name);
             } else if (entry.getKey().equalsIgnoreCase("customConsole")) {
                 Layout layout = entry.getValue().getLayout();
                 assertNotNull("No layout for CustomConsole Appender");
                 String name = layout.getClass().getSimpleName();
-                assertTrue("Incorrect Layout class. Expected CustomConsoleLayout, Actual " + name,
-                        name.equals("CustomConsoleLayout"));
+                assertEquals("CustomConsoleLayout",
+                        name, "Incorrect Layout class. Expected CustomConsoleLayout, Actual " + name);
             }
         }
     }

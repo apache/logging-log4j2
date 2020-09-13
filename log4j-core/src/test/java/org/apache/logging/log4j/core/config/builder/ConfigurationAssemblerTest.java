@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.builder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 import java.util.Map;
 
@@ -43,11 +38,12 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Constants;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ConfigurationAssemblerTest {
 
     @Test
@@ -85,16 +81,16 @@ public class ConfigurationAssemblerTest {
         assertNotNull(config);
         assertNotNull(config.getName());
         assertFalse(config.getName().isEmpty());
-        assertNotNull("No configuration created", config);
-        assertEquals("Incorrect State: " + config.getState(), config.getState(), LifeCycle.State.STARTED);
+        assertNotNull(config, "No configuration created");
+        assertEquals(config.getState(), LifeCycle.State.STARTED, "Incorrect State: " + config.getState());
         final Map<String, Appender> appenders = config.getAppenders();
         assertNotNull(appenders);
-        assertTrue("Incorrect number of Appenders: " + appenders.size(), appenders.size() == 1);
+        assertEquals(appenders.size(), 1, "Incorrect number of Appenders: " + appenders.size());
         final ConsoleAppender consoleAppender = (ConsoleAppender)appenders.get("Stdout");
         final PatternLayout gelfLayout = (PatternLayout)consoleAppender.getLayout();
         final Map<String, LoggerConfig> loggers = config.getLoggers();
         assertNotNull(loggers);
-        assertTrue("Incorrect number of LoggerConfigs: " + loggers.size(), loggers.size() == 2);
+        assertEquals(loggers.size(), 2, "Incorrect number of LoggerConfigs: " + loggers.size());
         final LoggerConfig rootLoggerConfig = loggers.get("");
         assertEquals(Level.ERROR, rootLoggerConfig.getLevel());
         assertFalse(rootLoggerConfig.isIncludeLocation());
@@ -102,10 +98,10 @@ public class ConfigurationAssemblerTest {
         assertEquals(Level.DEBUG, loggerConfig.getLevel());
         assertTrue(loggerConfig.isIncludeLocation());
         final Filter filter = config.getFilter();
-        assertNotNull("No Filter", filter);
-        assertTrue("Not a Threshold Filter", filter instanceof ThresholdFilter);
+        assertNotNull(filter, "No Filter");
+        assertThat(filter, instanceOf(ThresholdFilter.class));
         final List<CustomLevelConfig> customLevels = config.getCustomLevels();
-        assertNotNull("No CustomLevels", filter);
+        assertNotNull(filter, "No CustomLevels");
         assertEquals(1, customLevels.size());
         final CustomLevelConfig customLevel = customLevels.get(0);
         assertEquals("Panic", customLevel.getLevelName());
