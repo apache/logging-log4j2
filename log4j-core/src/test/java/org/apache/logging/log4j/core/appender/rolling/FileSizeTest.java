@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link FileSize}.
@@ -27,10 +28,10 @@ public class FileSizeTest {
     private final static long EXPECTED = 10 * 1024;
 
     @Test
-    public void testFileSize() throws Exception {
+    public void testFileSize() {
         long value = FileSize.parse("10KB", 0);
-        assertTrue("unexpected value " + value, value == EXPECTED);
+        assertEquals(EXPECTED, value, "unexpected value " + value);
         value = FileSize.parse("10 KB", 0);
-        assertTrue("unexpected value " + value, value == EXPECTED);
+        assertEquals(EXPECTED, value, "unexpected value " + value);
     }
 }
