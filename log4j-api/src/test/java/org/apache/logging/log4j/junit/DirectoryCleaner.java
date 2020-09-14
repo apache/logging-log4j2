@@ -26,17 +26,26 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.stream.Collectors;
+import java.util.HashSet;
 
 class DirectoryCleaner extends AbstractFileCleaner {
     @Override
     Collection<Path> getPathsForTest(final ExtensionContext context) {
-        final CleanUpDirectories cleanUpDirectories = context.getRequiredTestClass().getAnnotation(CleanUpDirectories.class);
-        return cleanUpDirectories == null ? Collections.emptySet() :
-                Arrays.stream(cleanUpDirectories.value()).map(Paths::get).collect(Collectors.toSet());
+        final Collection<Path> paths = new HashSet<>();
+        final CleanUpDirectories testClassAnnotation = context.getRequiredTestClass().getAnnotation(CleanUpDirectories.class);
+        if (testClassAnnotation != null) {
+            for (final String path : testClassAnnotation.value()) {
+                paths.add(Paths.get(path));
+            }
+        }
+        final CleanUpDirectories testMethodAnnotation = context.getRequiredTestMethod().getAnnotation(CleanUpDirectories.class);
+        if (testMethodAnnotation != null) {
+            for (final String path : testMethodAnnotation.value()) {
+                paths.add(Paths.get(path));
+            }
+        }
+        return paths;
     }
 
     @Override

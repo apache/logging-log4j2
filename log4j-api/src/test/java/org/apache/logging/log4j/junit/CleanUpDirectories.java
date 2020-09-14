@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
  * @since 2.14.0
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Documented
 @Inherited
 @ExtendWith(DirectoryCleaner.class)
