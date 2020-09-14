@@ -22,8 +22,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,6 +39,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testDontInterpretBackslashAsEscape() {
         final PatternProcessor pp = new PatternProcessor("c:\\test\\new/app-%d{HH-mm-ss}.log");
         final Calendar cal = Calendar.getInstance();
@@ -50,6 +53,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextHour() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -64,6 +68,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextHour2() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -78,6 +83,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextYear() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -91,6 +97,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMillisecondlyReturnsNextMillisec() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm-ss.SSS}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -107,6 +114,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMinutelyReturnsFirstSecondOfNextMinute() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -123,6 +131,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -137,6 +146,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth2() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -151,6 +161,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth3() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -165,6 +176,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextYear() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -179,6 +191,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeSecondlyReturnsFirstMillisecOfNextSecond() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm-ss}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -195,7 +208,7 @@ public class PatternProcessorTest {
     }
 
     @Test
-    @Tag("locale")
+    @ResourceLock(Resources.LOCALE)
     public void testGetNextTimeWeeklyReturnsFirstDayOfNextWeek_FRANCE() {
         final Locale old = Locale.getDefault();
         Locale.setDefault(Locale.FRANCE); // force 1st day of the week to be Monday
@@ -217,7 +230,7 @@ public class PatternProcessorTest {
     }
 
     @Test
-    @Tag("locale")
+    @ResourceLock(Resources.LOCALE)
     public void testGetNextTimeWeeklyReturnsFirstDayOfNextWeek_US() {
         final Locale old = Locale.getDefault();
         Locale.setDefault(Locale.US); // force 1st day of the week to be Sunday
@@ -242,7 +255,7 @@ public class PatternProcessorTest {
      * Tests https://issues.apache.org/jira/browse/LOG4J2-1232
      */
     @Test
-    @Tag("locale")
+    @ResourceLock(Resources.LOCALE)
     public void testGetNextTimeWeeklyReturnsFirstWeekInYear_US() {
         final Locale old = Locale.getDefault();
         Locale.setDefault(Locale.US); // force 1st day of the week to be Sunday

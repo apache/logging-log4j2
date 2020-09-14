@@ -17,8 +17,9 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import org.apache.logging.log4j.core.appender.rolling.FileSize;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.util.Locale;
 
@@ -32,7 +33,7 @@ public class FileSizeTest {
     }
 
     @Test
-    @Tag("locale")
+    @ResourceLock(Resources.LOCALE)
     public void testParseInEurope() {
         // Caveat: Breaks the ability for this test to run in parallel with other tests :(
         Locale previousDefault = Locale.getDefault();
