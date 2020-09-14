@@ -1553,7 +1553,7 @@ During startup this configuration produces:
 2011-11-23 17:08:00,976 DEBUG Reconfiguration completed
 ....
 
-If the status attribute is set to error than only error messages will be
+If the status attribute is set to error then only error messages will be
 written to the console. This makes troubleshooting configuration errors
 possible. As an example, if the configuration above is changed to have
 the status set to error and the logger declaration is:
