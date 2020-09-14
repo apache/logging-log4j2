@@ -17,6 +17,10 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
@@ -24,48 +28,35 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the SortingVisitor class.
  */
 public class SortingVisitorTest {
 
-    private Path base;
+    @TempDir
+    Path base;
     private Path aaa;
     private Path bbb;
     private Path ccc;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        base = Files.createTempDirectory("tempDir", new FileAttribute<?>[0]);
-        aaa = Files.createTempFile(base, "aaa", null, new FileAttribute<?>[0]);
-        bbb = Files.createTempFile(base, "bbb", null, new FileAttribute<?>[0]);
-        ccc = Files.createTempFile(base, "ccc", null, new FileAttribute<?>[0]);
+        aaa = Files.createFile(base.resolve("aaa"));
+        bbb = Files.createFile(base.resolve("bbb"));
+        ccc = Files.createFile(base.resolve("ccc"));
 
         // lastModified granularity is 1 sec(!) on some file systems...
         final long now = System.currentTimeMillis();
         Files.setLastModifiedTime(aaa, FileTime.fromMillis(now));
         Files.setLastModifiedTime(bbb, FileTime.fromMillis(now + 1000));
         Files.setLastModifiedTime(ccc, FileTime.fromMillis(now + 2000));
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        Files.deleteIfExists(ccc);
-        Files.deleteIfExists(bbb);
-        Files.deleteIfExists(aaa);
-        Files.deleteIfExists(base);
     }
 
     @Test
@@ -76,10 +67,10 @@ public class SortingVisitorTest {
 
         final List<PathWithAttributes> found = visitor.getSortedPaths();
         assertNotNull(found);
-        assertEquals("file count", 3, found.size());
-        assertEquals("1st: most recent; sorted=" + found, ccc, found.get(0).getPath());
-        assertEquals("2nd; sorted=" + found, bbb, found.get(1).getPath());
-        assertEquals("3rd: oldest; sorted=" + found, aaa, found.get(2).getPath());
+        assertEquals(3, found.size(), "file count");
+        assertEquals(ccc, found.get(0).getPath(), "1st: most recent; sorted=" + found);
+        assertEquals(bbb, found.get(1).getPath(), "2nd; sorted=" + found);
+        assertEquals(aaa, found.get(2).getPath(), "3rd: oldest; sorted=" + found);
     }
 
     @Test
@@ -90,16 +81,16 @@ public class SortingVisitorTest {
 
         final List<PathWithAttributes> found = visitor.getSortedPaths();
         assertNotNull(found);
-        assertEquals("file count", 3, found.size());
-        assertEquals("1st: oldest first; sorted=" + found, aaa, found.get(0).getPath());
-        assertEquals("2nd; sorted=" + found, bbb, found.get(1).getPath());
-        assertEquals("3rd: most recent sorted; list=" + found, ccc, found.get(2).getPath());
+        assertEquals(3, found.size(), "file count");
+        assertEquals(aaa, found.get(0).getPath(), "1st: oldest first; sorted=" + found);
+        assertEquals(bbb, found.get(1).getPath(), "2nd; sorted=" + found);
+        assertEquals(ccc, found.get(2).getPath(), "3rd: most recent sorted; list=" + found);
     }
 
     @Test
     public void testNoSuchFileFailure() throws IOException {
         SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
-        assertEquals(
+        assertSame(
                 FileVisitResult.CONTINUE,
                 visitor.visitFileFailed(Paths.get("doesNotExist"), new NoSuchFileException("doesNotExist")));
     }
@@ -108,11 +99,7 @@ public class SortingVisitorTest {
     public void testIOException() {
         SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
         IOException exception = new IOException();
-        try {
-            visitor.visitFileFailed(Paths.get("doesNotExist"), exception);
-            fail();
-        } catch (IOException e) {
-            assertSame(exception, e);
-        }
+        assertSame(exception,
+                assertThrows(IOException.class, () -> visitor.visitFileFailed(Paths.get("doesNotExist"), exception)));
     }
 }

@@ -17,34 +17,33 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.core.appender.rolling.action.Duration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the Duration class.
  */
 public class DurationTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testParseFailsIfNullText() {
-        Duration.parse(null);
+        assertThrows(NullPointerException.class, () -> Duration.parse(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testParseFailsIfInvalidPattern() {
-        Duration.parse("abc");
+        assertThrows(IllegalArgumentException.class, () -> Duration.parse("abc"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testParseFailsIfSectionsOutOfOrder() {
-        Duration.parse("P4DT2M1S3H");
+        assertThrows(IllegalArgumentException.class, () -> Duration.parse("P4DT2M1S3H"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testParseFailsIfTButMissingTime() {
-        Duration.parse("P1dT");
+        assertThrows(IllegalArgumentException.class, () -> Duration.parse("P1dT"));
     }
 
     @Test

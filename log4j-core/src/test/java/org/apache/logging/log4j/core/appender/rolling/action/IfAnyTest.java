@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the Or composite condition.
@@ -35,12 +35,12 @@ public class IfAnyTest {
         assertTrue(IfAny.createOrCondition(TRUE, FALSE).accept(null, null, null));
         assertFalse(IfAny.createOrCondition(FALSE, FALSE).accept(null, null, null));
     }
-
+    
     @Test
     public void testEmptyIsFalse() {
         assertFalse(IfAny.createOrCondition().accept(null, null, null));
     }
-
+    
     @Test
     public void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);

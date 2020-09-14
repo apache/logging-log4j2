@@ -28,9 +28,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@code DeletingVisitor} class.
@@ -58,7 +58,7 @@ public class DeletingVisitorTest {
     public void testAcceptedFilesAreDeleted() throws IOException {
         final Path base = Paths.get("/a/b/c");
         final FixedCondition ACCEPT_ALL = new FixedCondition(true);
-        final DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Arrays.asList(ACCEPT_ALL), false);
+        final DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Collections.singletonList(ACCEPT_ALL), false);
 
         final Path any = Paths.get("/a/b/c/any");
         visitor.visitFile(any, null);
@@ -69,7 +69,7 @@ public class DeletingVisitorTest {
     public void testRejectedFilesAreNotDeleted() throws IOException {
         final Path base = Paths.get("/a/b/c");
         final FixedCondition REJECT_ALL = new FixedCondition(false);
-        final DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Arrays.asList(REJECT_ALL), false);
+        final DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Collections.singletonList(REJECT_ALL), false);
 
         final Path any = Paths.get("/a/b/c/any");
         visitor.visitFile(any, null);
@@ -130,7 +130,7 @@ public class DeletingVisitorTest {
             }
         };
         final Path base = Paths.get("/a/b/c");
-        final DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Arrays.asList(filter), false);
+        final DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Collections.singletonList(filter), false);
 
         final Path child = Paths.get("/a/b/c/relative");
         visitor.visitFile(child, null);

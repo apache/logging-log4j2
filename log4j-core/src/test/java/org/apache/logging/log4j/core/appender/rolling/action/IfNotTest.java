@@ -17,10 +17,9 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.core.appender.rolling.action.IfNot;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the Not composite condition.
@@ -36,9 +35,10 @@ public class IfNotTest {
         assertTrue(IfNot.createNotCondition(new FixedCondition(false)).accept(null, null, null));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testEmptyIsFalse() {
-        assertFalse(IfNot.createNotCondition(null).accept(null, null, null));
+        assertThrows(NullPointerException.class,
+                () -> IfNot.createNotCondition(null).accept(null, null, null));
     }
 
     @Test

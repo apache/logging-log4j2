@@ -17,33 +17,33 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.script.Script;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.categories.Scripts;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.script.Script;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the ScriptCondition class.
  */
 public class ScriptConditionTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorDisallowsNullScript() {
-        new ScriptCondition(null, new DefaultConfiguration());
+        assertThrows(NullPointerException.class, () -> new ScriptCondition(null, new DefaultConfiguration()));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorDisallowsNullConfig() {
-        new ScriptCondition(new Script("test", "js", "print('hi')"), null);
+        assertThrows(NullPointerException.class,
+                () -> new ScriptCondition(new Script("test", "js", "print('hi')"), null));
     }
 
     @Test
@@ -51,9 +51,10 @@ public class ScriptConditionTest {
         assertNull(ScriptCondition.createCondition(null, new DefaultConfiguration()));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testCreateConditionDisallowsNullConfig() {
-        ScriptCondition.createCondition(new Script("test", "js", "print('hi')"), null);
+        assertThrows(NullPointerException.class, () -> ScriptCondition.createCondition(
+                new Script("test", "js", "print('hi')"), null));
     }
 
     @Test
@@ -92,7 +93,7 @@ public class ScriptConditionTest {
     }
 
     @Test
-    @Category(Scripts.Groovy.class)
+    @Tag("groovy")
     public void testSelectFilesToDelete3() {
         final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager

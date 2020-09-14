@@ -20,18 +20,18 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IfFileNameTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateNameConditionFailsIfBothRegexAndPathAreNull() {
-        IfFileName.createNameCondition(null, null);
+        assertThrows(IllegalArgumentException.class, () -> IfFileName.createNameCondition(null, null));
     }
 
-    @Test()
+    @Test
     public void testCreateNameConditionAcceptsIfEitherRegexOrPathOrBothAreNonNull() {
         IfFileName.createNameCondition("bar", null);
         IfFileName.createNameCondition(null, "foo");
@@ -51,7 +51,7 @@ public class IfFileNameTest {
         final IfFileName filter = IfFileName.createNameCondition("path", "regex");
         final Path relativePath = Paths.get("path");
         assertTrue(filter.accept(null, relativePath, null));
-
+        
         final Path pathMatchingRegex = Paths.get("regex");
         assertFalse(filter.accept(null, pathMatchingRegex, null));
     }
@@ -61,7 +61,7 @@ public class IfFileNameTest {
         final IfFileName regexFilter = IfFileName.createNameCondition(null, "regex");
         final Path pathMatchingRegex = Paths.get("regex");
         assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
-
+        
         final Path noMatch = Paths.get("nomatch");
         assertFalse(regexFilter.accept(null, noMatch, null));
     }
@@ -71,7 +71,7 @@ public class IfFileNameTest {
         final IfFileName pathFilter = IfFileName.createNameCondition("path", null);
         final Path relativePath = Paths.get("path");
         assertTrue(pathFilter.accept(null, relativePath, null));
-
+        
         final IfFileName regexFilter = IfFileName.createNameCondition(null, "regex");
         final Path pathMatchingRegex = Paths.get("regex");
         assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
@@ -82,14 +82,14 @@ public class IfFileNameTest {
         final CountingCondition counter = new CountingCondition(true);
         final IfFileName regexFilter = IfFileName.createNameCondition(null, "regex", counter);
         final Path pathMatchingRegex = Paths.get("regex");
-
+        
         assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
         assertEquals(1, counter.getAcceptCount());
         assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
         assertEquals(2, counter.getAcceptCount());
         assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
         assertEquals(3, counter.getAcceptCount());
-
+        
         final Path noMatch = Paths.get("nomatch");
         assertFalse(regexFilter.accept(null, noMatch, null));
         assertEquals(3, counter.getAcceptCount()); // no increase
@@ -104,7 +104,7 @@ public class IfFileNameTest {
         final CountingCondition counter = new CountingCondition(true);
         final IfFileName globFilter = IfFileName.createNameCondition("glob", null, counter);
         final Path pathMatchingGlob = Paths.get("glob");
-
+        
         assertTrue(globFilter.accept(null, pathMatchingGlob, null));
         assertEquals(1, counter.getAcceptCount());
         assertTrue(globFilter.accept(null, pathMatchingGlob, null));
