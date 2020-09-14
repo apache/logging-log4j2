@@ -23,17 +23,26 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.stream.Collectors;
+import java.util.HashSet;
 
 class FileCleaner extends AbstractFileCleaner {
     @Override
     Collection<Path> getPathsForTest(final ExtensionContext context) {
-        final CleanUpFiles cleanUpFiles = context.getRequiredTestClass().getAnnotation(CleanUpFiles.class);
-        return cleanUpFiles == null ? Collections.emptySet() :
-                Arrays.stream(cleanUpFiles.value()).map(Paths::get).collect(Collectors.toSet());
+        final Collection<Path> paths = new HashSet<>();
+        final CleanUpFiles testClassAnnotation = context.getRequiredTestClass().getAnnotation(CleanUpFiles.class);
+        if (testClassAnnotation != null) {
+            for (final String path : testClassAnnotation.value()) {
+                paths.add(Paths.get(path));
+            }
+        }
+        final CleanUpFiles testMethodAnnotation = context.getRequiredTestMethod().getAnnotation(CleanUpFiles.class);
+        if (testMethodAnnotation != null) {
+            for (final String path : testMethodAnnotation.value()) {
+                paths.add(Paths.get(path));
+            }
+        }
+        return paths;
     }
 
     @Override
