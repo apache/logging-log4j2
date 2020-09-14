@@ -16,58 +16,50 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.BasicFileAttributeView;
-import java.nio.file.attribute.FileTime;
-import java.util.Arrays;
-
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
-import org.apache.logging.log4j.junit.CleanFolders;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.FileTime;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link OnStartupTriggeringPolicy}.
  */
-// @Ignore
 public class OnStartupTriggeringPolicyTest {
 
-    private static final String TARGET_FOLDER = "target/rollOnStartup";
-    private static final String TARGET_FILE = TARGET_FOLDER + "/testfile";
-    private static final String TARGET_PATTERN = TARGET_FOLDER + "/test1-%d{MM-dd-yyyy}-%i.log";
-    private static final String ROLLED_FILE_PREFIX = TARGET_FOLDER + "/test1-";
-    private static final String ROLLED_FILE_SUFFIX = "-1.log";
+    private static final String TARGET_PATTERN = "/test1-%d{MM-dd-yyyy}-%i.log";
     private static final String TEST_DATA = "Hello world!";
     private static final FastDateFormat formatter = FastDateFormat.getInstance("MM-dd-yyyy");
 
-    @Rule
-    public CleanFolders rule = new CleanFolders(TARGET_FOLDER);
+    @TempDir
+    Path tempDir;
 
     @Test
     public void testPolicy() throws Exception {
-        //System.setProperty("log4j2.debug", "true");
-        //System.setProperty("log4j2.StatusLogger.level", "trace");
         final Configuration configuration = new DefaultConfiguration();
-        final Path target = Paths.get(TARGET_FILE);
-        target.toFile().getParentFile().mkdirs();
-        final long timeStamp = System.currentTimeMillis() - (1000 * 60 * 60 * 24);
+        final Path target = tempDir.resolve("testfile");
+        final long timeStamp = Instant.now().minus(Duration.ofDays(1)).toEpochMilli();
         final String expectedDate = formatter.format(timeStamp);
-        final String rolledFileName = ROLLED_FILE_PREFIX + expectedDate + ROLLED_FILE_SUFFIX;
-        final Path rolled = Paths.get(rolledFileName);
+        final Path rolled = tempDir.resolve("test1-" + expectedDate + "-1.log");
         final long copied;
-        try (final InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes("UTF-8"))) {
+        try (final InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes(StandardCharsets.UTF_8))) {
             copied = Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
         }
         final long size = Files.size(target);
@@ -82,14 +74,18 @@ public class OnStartupTriggeringPolicyTest {
         final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder().setCompressionLevelStr("0")
                 .setStopCustomActionsOnError(true).setConfig(configuration).build();
         final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy(1);
-        try (final RollingFileManager manager = RollingFileManager.getFileManager(TARGET_FILE, TARGET_PATTERN, true,
+
+        try (final RollingFileManager manager = RollingFileManager.getFileManager(target.toString(), tempDir.toString() + TARGET_PATTERN, true,
                 false, policy, strategy, null, layout, 8192, true, false, null, null, null, configuration)) {
             manager.initialize();
-            final String files = Arrays.toString(new File(TARGET_FOLDER).listFiles());
-            assertTrue(target.toString() + ", files = " + files, Files.exists(target));
-            assertEquals(target.toString(), 0, Files.size(target));
-            assertTrue("Missing: " + rolled.toString() + ", files on disk = " + files, Files.exists(rolled));
-            assertEquals(rolled.toString(), size, Files.size(rolled));
+            final String files;
+            try (Stream<Path> contents = Files.list(tempDir)) {
+                files = contents.map(Path::toString).collect(Collectors.joining(", ", "[", "]"));
+            }
+            assertTrue(Files.exists(target), target.toString() + ", files = " + files);
+            assertEquals(0, Files.size(target), target.toString());
+            assertTrue(Files.exists(rolled), "Missing: " + rolled.toString() + ", files on disk = " + files);
+            assertEquals(size, Files.size(rolled), rolled.toString());
         }
     }
 
