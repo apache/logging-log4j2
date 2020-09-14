@@ -17,30 +17,33 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests Bzip2CompressAction.
  */
 public class Bzip2CompressActionTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorDisallowsNullSource() {
-        new CommonsCompressAction("bzip2", null, new File("any"), true);
+        assertThrows(NullPointerException.class,
+                () -> new CommonsCompressAction("bzip2", null, new File("any"), true));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorDisallowsNullDestination() {
-        new CommonsCompressAction("bzip2", new File("any"), null, true);
+        assertThrows(NullPointerException.class,
+                () -> new CommonsCompressAction("bzip2", new File("any"), null, true));
     }
 
     @Test
@@ -50,29 +53,28 @@ public class Bzip2CompressActionTest {
             source = new File(source.getName() + Math.random());
         }
         final boolean actual = CommonsCompressAction.execute("bzip2", source, new File("any2"), true);
-        assertEquals("Cannot compress non-existing file", false, actual);
+        assertFalse(actual, "Cannot compress non-existing file");
     }
 
     @Test
-    public void testExecuteCompressesSourceFileToDestinationFile() throws IOException {
+    public void testExecuteCompressesSourceFileToDestinationFile(@TempDir final File tempDir) throws IOException {
         final String LINE1 = "Here is line 1. Random text: ABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n";
         final String LINE2 = "Here is line 2. Random text: ABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n";
         final String LINE3 = "Here is line 3. Random text: ABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n";
-        final File source = new File("target/compressme");
+        final File source = new File(tempDir, "compressme");
         try (FileWriter fw = new FileWriter(source, false)) {
             fw.write(LINE1);
             fw.write(LINE2);
             fw.write(LINE3);
             fw.flush();
         }
-        final File destination = new File("target/compressme.bz2");
-        destination.delete(); // just in case
-        assertFalse("Destination should not exist yet", destination.exists());
+        final File destination = new File(tempDir, "compressme.bz2");
+        assertFalse(destination.exists(), "Destination should not exist yet");
 
         final boolean actual = CommonsCompressAction.execute("bzip2", source, destination, true);
-        assertEquals("Bzip2CompressAction should have succeeded", true, actual);
-        assertTrue("Destination should exist after Bzip2CompressAction", destination.exists());
-        assertFalse("Source should have been deleted", source.exists());
+        assertTrue(actual, "Bzip2CompressAction should have succeeded");
+        assertTrue(destination.exists(), "Destination should exist after Bzip2CompressAction");
+        assertFalse(source.exists(), "Source should have been deleted");
 
         final byte[] bz2 = new byte[] { (byte) 0x42, (byte) 0x5A, (byte) 0x68, (byte) 0x39, (byte) 0x31, (byte) 0x41,
                 (byte) 0x59, (byte) 0x26, (byte) 0x53, (byte) 0x59, (byte) 0x9C, (byte) 0xE1, (byte) 0xE8, (byte) 0x2D,
@@ -102,9 +104,8 @@ public class Bzip2CompressActionTest {
                 n = fis.read(actualBz2, offset, actualBz2.length - offset);
                 offset += n;
             } while (offset < actualBz2.length);
-            assertArrayEquals("Compressed data corrupt", bz2, actualBz2);
+            assertArrayEquals(bz2, actualBz2, "Compressed data corrupt");
         }
-        destination.delete();
 
         // uncompress
         try (BZip2CompressorInputStream bzin = new BZip2CompressorInputStream(new ByteArrayInputStream(bz2))) {

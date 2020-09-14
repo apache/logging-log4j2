@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the IfAccumulatedFileCount class.
@@ -54,7 +54,7 @@ public class IfAccumulatedFileCountTest {
 
         for (int i = 1; i < 10; i++) {
             if (i <= 3) {
-                assertFalse("i=" + i, condition.accept(null, null, null));
+                assertFalse(condition.accept(null, null, null), "i=" + i);
                 assertEquals(0, counter.getAcceptCount());
             } else {
                 assertTrue(condition.accept(null, null, null));
