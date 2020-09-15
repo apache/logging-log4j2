@@ -19,6 +19,8 @@ package org.apache.logging.log4j.util;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
@@ -30,6 +32,7 @@ import java.util.concurrent.Future;
  * Tests https://issues.apache.org/jira/browse/LOG4J2-2276.
  */
 @Tag("concurrency")
+@ResourceLock(Resources.SYSTEM_PROPERTIES)
 public class SystemPropertiesPropertySourceTest {
 
     private static final int ITERATIONS = 10000;

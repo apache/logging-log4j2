@@ -18,9 +18,11 @@ package org.apache.logging.log4j;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ResourceLock("log4j2.MarkerManager")
 public class MarkerTest {
 
     @BeforeEach

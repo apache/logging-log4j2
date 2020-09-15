@@ -25,12 +25,13 @@ import java.util.Locale;
 
 import org.apache.logging.log4j.junit.Mutable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
+@ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class StringFormattedMessageTest {
 
     private static final int LOOP_CNT = 500;

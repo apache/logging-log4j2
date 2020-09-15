@@ -19,12 +19,14 @@ package org.apache.logging.log4j;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 import java.util.List;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ResourceLock("log4j2.TestLogger")
 public class EventLoggerTest {
 
     TestLogger logger = (TestLogger) LogManager.getLogger("EventLogger");

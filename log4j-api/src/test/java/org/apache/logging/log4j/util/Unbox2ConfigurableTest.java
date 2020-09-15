@@ -20,6 +20,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -33,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * enable the test, too.
  */
 @EnabledIfSystemProperty(named = "test", matches = ".*Unbox2ConfigurableTest.*")
+@ResourceLock(Resources.SYSTEM_PROPERTIES)
 public class Unbox2ConfigurableTest {
     @BeforeAll
     public static void beforeClass() {

@@ -22,6 +22,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests {@link ThreadContext}.
  */
 @UsingAnyThreadContext
+@ResourceLock(Resources.SYSTEM_PROPERTIES)
 public class ThreadContextInheritanceTest {
 
     @BeforeAll

@@ -29,6 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 import java.util.List;
 
@@ -37,6 +38,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @StatusLoggerLevel("WARN")
+@ResourceLock("log4j2.MarkerManager")
+@ResourceLock("log4j2.StatusLogger")
 public class AbstractLoggerTest {
 
     private static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");

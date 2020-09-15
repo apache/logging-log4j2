@@ -21,8 +21,12 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.logging.log4j.AbstractSerializationTest;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 import org.junit.runners.Parameterized;
 
+@ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class MessageFormatMessageSerializationTest extends AbstractSerializationTest {
 
     @Parameterized.Parameters

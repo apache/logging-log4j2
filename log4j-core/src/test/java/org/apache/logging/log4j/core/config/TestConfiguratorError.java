@@ -21,9 +21,11 @@ import org.apache.logging.log4j.junit.LoggerContextFactoryExtension;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@ResourceLock("log4j2.LoggerContextFactory")
 public class TestConfiguratorError {
 
     @RegisterExtension

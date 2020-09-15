@@ -31,15 +31,21 @@ import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+@ResourceLock("log4j2.MarkerManager")
+@ResourceLock("log4j2.TestLogger")
 public class LoggerTest {
 
     private static class TestParameterizedMessageFactory {
@@ -61,12 +67,12 @@ public class LoggerTest {
         logger.atWarn().withThrowable(new Throwable("This is a test")).log((Message) new SimpleMessage("Log4j rocks!"));
         assertEquals(3, results.size());
         assertThat("Incorrect message 1", results.get(0),
-                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:59) Hello"));
+                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:64) Hello"));
         assertThat("Incorrect message 2", results.get(1), equalTo("test ERROR Hello John"));
         assertThat("Incorrect message 3", results.get(2),
                 startsWith(" WARN Log4j rocks! java.lang.Throwable: This is a test"));
         assertThat("Throwable incorrect in message 3", results.get(2),
-                containsString("at org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:61)"));
+                containsString("at org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:66)"));
     }
 
     @Test
@@ -81,12 +87,14 @@ public class LoggerTest {
 
     @Test
     public void flowTracingMessage() {
-        logger.traceEntry(new JsonMessage(System.getProperties()));
+        Properties props = new Properties();
+        props.setProperty("foo", "bar");
+        logger.traceEntry(new JsonMessage(props));
         final Response response = new Response(-1, "Generic error");
         logger.traceExit(new JsonMessage(response),  response);
         assertEquals(2, results.size());
         assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("\"java.runtime.name\":"));
+        assertThat("Missing entry data", results.get(0), containsString("\"foo\":\"bar\""));
         assertThat("incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
         assertThat("Missing exit data", results.get(1), containsString("\"message\":\"Generic error\""));
     }

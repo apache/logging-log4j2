@@ -22,12 +22,16 @@ import java.util.Locale;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.logging.log4j.junit.Mutable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests LocalizedMessage.
  */
+@ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class LocalizedMessageTest {
 
     private <T extends Serializable> T roundtrip(final T msg) {

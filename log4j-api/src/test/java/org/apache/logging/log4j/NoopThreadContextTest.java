@@ -19,12 +19,15 @@ package org.apache.logging.log4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests {@link ThreadContext}.
  */
+@ResourceLock(Resources.SYSTEM_PROPERTIES)
 public class NoopThreadContextTest {
 
     private static final String TRUE = "true";

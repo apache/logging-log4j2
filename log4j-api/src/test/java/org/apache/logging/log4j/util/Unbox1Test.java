@@ -19,12 +19,15 @@ package org.apache.logging.log4j.util;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the Unbox class.
  */
+@ResourceLock(Resources.SYSTEM_PROPERTIES)
 public class Unbox1Test {
     @BeforeAll
     public static void beforeClass() {
