@@ -24,6 +24,9 @@ import org.apache.logging.log4j.junit.SecurityManagerTestRule;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+
+import static org.junit.Assert.assertNull;
 
 /**
  * Test related to https://issues.apache.org/jira/browse/LOG4J2-2274.
@@ -38,6 +41,7 @@ import org.junit.Test;
  * @see System#setSecurityManager(SecurityManager)
  * @see PropertyPermission
  */
+@ResourceLock("java.lang.SecurityManager")
 public class SystemPropertiesPropertySourceSecurityManagerIT {
 
 	@Rule
@@ -47,7 +51,7 @@ public class SystemPropertiesPropertySourceSecurityManagerIT {
 	 * Always throws a SecurityException for any environment variables permission
 	 * check.
 	 */
-	private class TestSecurityManager extends SecurityManager {
+	private static class TestSecurityManager extends SecurityManager {
 		@Override
 		public void checkPermission(final Permission permission) {
 			if (permission instanceof PropertyPermission) {
@@ -81,6 +85,6 @@ public class SystemPropertiesPropertySourceSecurityManagerIT {
 	@Test
 	public void test() {
 		final PropertiesUtil propertiesUtil = new PropertiesUtil("src/test/resources/PropertiesUtilTest.properties");
-		Assert.assertEquals(null, propertiesUtil.getStringProperty("a.1"));
+		assertNull(propertiesUtil.getStringProperty("a.1"));
 	}
 }

@@ -18,6 +18,9 @@
 package org.apache.logging.log4j.junit;
 
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -37,5 +40,6 @@ import java.lang.annotation.Target;
 @Documented
 @Inherited
 @ExtendWith(ThreadContextExtension.class)
+@ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
 public @interface UsingThreadContextStack {
 }

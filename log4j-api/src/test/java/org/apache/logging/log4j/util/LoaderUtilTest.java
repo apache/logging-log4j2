@@ -19,6 +19,8 @@ package org.apache.logging.log4j.util;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.net.URL;
 import java.util.Collections;
@@ -26,6 +28,7 @@ import java.util.Enumeration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ResourceLock(Resources.SYSTEM_PROPERTIES)
 public class LoaderUtilTest {
     @BeforeEach
     @AfterEach

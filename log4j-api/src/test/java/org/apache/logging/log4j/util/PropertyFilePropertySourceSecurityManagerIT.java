@@ -28,6 +28,10 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test related to https://issues.apache.org/jira/browse/LOG4J2-2274.
@@ -42,11 +46,12 @@ import org.junit.Test;
  * @see System#setSecurityManager(SecurityManager)
  * @see PropertyPermission
  */
+@ResourceLock("java.lang.SecurityManager")
 public class PropertyFilePropertySourceSecurityManagerIT {
 
     @BeforeClass
     public static void beforeClass() {
-        Assert.assertTrue(TEST_FIXTURE_PATH, Files.exists(Paths.get(TEST_FIXTURE_PATH)));
+        assertTrue(TEST_FIXTURE_PATH, Files.exists(Paths.get(TEST_FIXTURE_PATH)));
     }
     
     @Rule
@@ -58,7 +63,7 @@ public class PropertyFilePropertySourceSecurityManagerIT {
      * Always throws a SecurityException for any environment variables permission
      * check.
      */
-    private class TestSecurityManager extends SecurityManager {
+    private static class TestSecurityManager extends SecurityManager {
 
         @Override
         public void checkPermission(final Permission permission) {
@@ -79,6 +84,6 @@ public class PropertyFilePropertySourceSecurityManagerIT {
     @Test
     public void test() {
         final PropertiesUtil propertiesUtil = new PropertiesUtil(TEST_FIXTURE_PATH);
-        Assert.assertEquals(null, propertiesUtil.getStringProperty("a.1"));
+        assertNull(propertiesUtil.getStringProperty("a.1"));
     }
 }

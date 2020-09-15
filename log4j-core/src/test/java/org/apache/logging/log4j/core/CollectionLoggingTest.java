@@ -23,6 +23,9 @@ import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -41,6 +44,7 @@ public class CollectionLoggingTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     public void testSystemProperties(final LoggerContext context) {
         final Logger logger = context.getLogger(CollectionLoggingTest.class.getName());
         logger.error(System.getProperties());
@@ -49,6 +53,7 @@ public class CollectionLoggingTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     public void testSimpleMap(final LoggerContext context) {
         final Logger logger = context.getLogger(CollectionLoggingTest.class.getName());
         logger.error(System.getProperties());

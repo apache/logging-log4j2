@@ -19,13 +19,10 @@ package org.apache.logging.log4j.message;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
 public class ThreadDumpMessageTest {
 
     @Test
@@ -90,7 +87,7 @@ public class ThreadDumpMessageTest {
         other.start();
         other.join();
 
-        assertTrue(!actual[0].contains("OtherThread"), "No mention of other thread in msg");
+        assertFalse(actual[0].contains("OtherThread"), "No mention of other thread in msg");
     }
 
     @Test
@@ -114,7 +111,7 @@ public class ThreadDumpMessageTest {
         keepAlive.countDown(); // allow thread to die
     }
 
-    private class Thread1 extends Thread {
+    private static class Thread1 extends Thread {
         private final ReentrantLock lock;
 
         public Thread1(final ReentrantLock lock) {
@@ -128,7 +125,7 @@ public class ThreadDumpMessageTest {
         }
     }
 
-    private class Thread2 extends Thread {
+    private static class Thread2 extends Thread {
         private final Object obj;
 
         public Thread2(final Object obj) {
@@ -142,7 +139,7 @@ public class ThreadDumpMessageTest {
         }
     }
 
-    private class ThreadWithCountDownLatch extends Thread {
+    private static class ThreadWithCountDownLatch extends Thread {
         private final CountDownLatch started;
         private final CountDownLatch keepAlive;
         volatile boolean finished;

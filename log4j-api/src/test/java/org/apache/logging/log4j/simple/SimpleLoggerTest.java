@@ -22,8 +22,10 @@ import org.apache.logging.log4j.junit.LoggerContextFactoryExtension;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 @Tag("smoke")
+@ResourceLock("log4j2.LoggerContextFactory")
 public class SimpleLoggerTest {
 
     @RegisterExtension

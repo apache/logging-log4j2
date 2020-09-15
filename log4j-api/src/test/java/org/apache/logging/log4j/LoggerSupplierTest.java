@@ -30,15 +30,21 @@ import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests Logger APIs with {@link Supplier}.
  */
+@ResourceLock(Resources.LOCALE)
+@ResourceLock("log4j2.TestLogger")
 public class LoggerSupplierTest {
 
     private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
@@ -59,11 +65,13 @@ public class LoggerSupplierTest {
 
     @Test
     public void flowTracing_SupplierOfJsonMessage() {
-        logger.traceEntry(() -> new JsonMessage(System.getProperties()));
+        Properties props = new Properties();
+        props.setProperty("foo", "bar");
+        logger.traceEntry(() -> new JsonMessage(props));
         assertThat(results).hasSize(1);
         String entry = results.get(0);
         assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
-                .contains("\"java.runtime.name\":")
+                .contains("\"foo\":\"bar\"")
                 .doesNotContain("JsonMessage");
     }
 

@@ -19,6 +19,9 @@ package org.apache.logging.log4j.util;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -76,6 +79,7 @@ public class PropertiesUtilTest {
     }
     
     @Test
+    @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     public void testGetMappedProperty_sun_stdout_encoding() {
         final PropertiesUtil pu = new PropertiesUtil(System.getProperties());
         Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
@@ -83,6 +87,7 @@ public class PropertiesUtilTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     public void testGetMappedProperty_sun_stderr_encoding() {
         final PropertiesUtil pu = new PropertiesUtil(System.getProperties());
         Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
@@ -90,6 +95,7 @@ public class PropertiesUtilTest {
     }
 
     @Test
+    @ResourceLock(Resources.SYSTEM_PROPERTIES)
     public void testNonStringSystemProperties() {
         Object key1 = "1";
         Object key2 = new Object();
@@ -105,6 +111,7 @@ public class PropertiesUtilTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     public void testPublish() {
         final Properties props = new Properties();
         final PropertiesUtil util = new PropertiesUtil(props);

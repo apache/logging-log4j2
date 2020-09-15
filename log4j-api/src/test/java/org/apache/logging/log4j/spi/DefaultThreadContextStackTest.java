@@ -21,11 +21,13 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@UsingAnyThreadContext
 public class DefaultThreadContextStackTest {
 
     @BeforeEach
@@ -85,7 +87,7 @@ public class DefaultThreadContextStackTest {
         assertEquals(stack, actual);
     }
 
-    @Test //(expected = UnsupportedOperationException.class)
+    @Test
     public void testModifyingImmutableOrNullThrowsException() {
         final DefaultThreadContextStack stack = createStack();
         final int originalSize = stack.size();
