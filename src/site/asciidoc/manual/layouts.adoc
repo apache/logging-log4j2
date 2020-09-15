@@ -309,7 +309,27 @@ expensive operation and may impact performance. Use with caution.
 |fontSize
 |String
 |The `font-size` to use. The default is "small".
+
+|datePattern
+|String
+|The date format of the logging event. The default is "JVM_ELAPSE_TIME", which outputs the milliseconds since JVM started. For other valid values, refer to the date pattern of link:#Patterns[Patterns] in PatternLayout.
+
+|timezone
+|String
+|The timezone id of the logging event. If not specified, this layout uses the https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getDefault()[java.util.TimeZone.getDefault] as default timezone. Like date pattern of link:#Patterns[Patterns] in PatternLayout, you can use timezone id from
+https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[java.util.TimeZone.getTimeZone].
+
 |===
+
+Configure as follows to use dataPattern and timezone in HtmlLayout:
+[source,xml]
+----
+<Appenders>
+  <Console name="console">
+    <HtmlLayout datePattern="ISO8601" timezone="GMT+0"/>
+  </Console>
+</Appenders>
+----
 
 [#JSONLayout]
 == JSON Layout
