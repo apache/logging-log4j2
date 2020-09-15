@@ -67,12 +67,12 @@ public class LoggerTest {
         logger.atWarn().withThrowable(new Throwable("This is a test")).log((Message) new SimpleMessage("Log4j rocks!"));
         assertEquals(3, results.size());
         assertThat("Incorrect message 1", results.get(0),
-                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:64) Hello"));
+                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:65) Hello"));
         assertThat("Incorrect message 2", results.get(1), equalTo("test ERROR Hello John"));
         assertThat("Incorrect message 3", results.get(2),
                 startsWith(" WARN Log4j rocks! java.lang.Throwable: This is a test"));
         assertThat("Throwable incorrect in message 3", results.get(2),
-                containsString("at org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:66)"));
+                containsString("at org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:67)"));
     }
 
     @Test
