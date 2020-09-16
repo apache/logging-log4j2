@@ -33,7 +33,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-appserver</projectDir>
-    <tomcat.version>8.5.20</tomcat.version>
+    <tomcat.version>9.0.38</tomcat.version>
     <jetty.version>9.4.31.v20200723</jetty.version> <!--  Jetty 9 requires Java 8 -->
     <module.name>org.apache.logging.log4j.appserver</module.name>
   </properties>
