@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.junit;
 
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -36,6 +37,7 @@ import java.lang.annotation.Target;
 @Documented
 @Inherited
 @ExtendWith(StatusLoggerLevelExtension.class)
+@ResourceLock("log4j2.StatusLogger")
 public @interface StatusLoggerLevel {
     /** Name of {@link org.apache.logging.log4j.Level} to use for status logger. */
     String value();
