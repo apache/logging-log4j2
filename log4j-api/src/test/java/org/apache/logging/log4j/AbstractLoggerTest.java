@@ -39,7 +39,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @StatusLoggerLevel("WARN")
 @ResourceLock("log4j2.MarkerManager")
-@ResourceLock("log4j2.StatusLogger")
 public class AbstractLoggerTest {
 
     private static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");
@@ -892,6 +891,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
+    @ResourceLock("log4j2.StatusLogger")
     public void testMessageThrows() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
         logger.error(new TestMessage(() -> {
@@ -906,6 +906,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
+    @ResourceLock("log4j2.StatusLogger")
     public void testMessageThrowsAndNullFormat() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
         logger.error(new TestMessage(() -> {
