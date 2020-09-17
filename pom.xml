@@ -242,7 +242,7 @@
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <junitVersion>4.13</junitVersion>
-    <junitJupiterVersion>5.6.2</junitJupiterVersion>
+    <junitJupiterVersion>5.7.0</junitJupiterVersion>
     <mockitoVersion>2.25.1</mockitoVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>
