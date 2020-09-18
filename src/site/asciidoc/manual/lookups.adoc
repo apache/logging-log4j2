@@ -314,7 +314,7 @@ Log4j Kubernetes provides access to the following container attributes:
 |imageId|The id assigned to the container image
 |imageName|The name assigned to the container image
 |labels|All labels formatted in a list
-|labesl.app|The application name
+|labels.app|The application name
 |labels.podTemplateHash|The pod's template hash value
 |masterUrl|The URL used to access the API server
 |namespaceId|The id of the namespace the various kubernetes components are located within
