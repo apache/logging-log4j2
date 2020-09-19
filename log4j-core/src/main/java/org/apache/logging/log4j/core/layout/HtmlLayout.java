@@ -339,36 +339,6 @@ public final class HtmlLayout extends AbstractStringLayout {
     }
 
     /**
-     * Creates an HTML Layout.
-     * @param locationInfo If "true", location information will be included. The default is false.
-     * @param title The title to include in the file header. If none is specified the default title will be used.
-     * @param contentType The content type. Defaults to "text/html".
-     * @param charset The character set to use. If not specified, the default will be used.
-     * @param fontSize The font size of the text.
-     * @param font The font to use for the text.
-     * @return An HTML Layout.
-     */
-    @PluginFactory
-    public static HtmlLayout createLayout(
-            @PluginAttribute final boolean locationInfo,
-            @PluginAttribute(defaultString = DEFAULT_TITLE) final String title,
-            @PluginAttribute String contentType,
-            @PluginAttribute(defaultString = "UTF-8") final Charset charset,
-            @PluginAttribute String fontSize,
-            @PluginAttribute(value = "fontName", defaultString = DEFAULT_FONT_FAMILY) final String font,
-            @PluginAttribute(defaultString = DEFAULT_DATE_PATTERN) final String datePattern,
-            @PluginAttribute final String timezone) {
-        final FontSize fs = FontSize.getFontSize(fontSize);
-        fontSize = fs.getFontSize();
-        final String headerSize = fs.larger().getFontSize();
-        if (contentType == null) {
-            contentType = DEFAULT_CONTENT_TYPE + "; charset=" + charset;
-        }
-        return new HtmlLayout(locationInfo, title, contentType, charset, font, fontSize, headerSize, datePattern,
-            timezone);
-    }
-
-    /**
      * Creates an HTML Layout using the default settings.
      *
      * @return an HTML Layout.
