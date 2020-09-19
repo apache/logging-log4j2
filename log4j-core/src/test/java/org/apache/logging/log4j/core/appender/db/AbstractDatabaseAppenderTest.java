@@ -16,18 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Property;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.BDDMockito.given;
@@ -35,7 +26,18 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
-@ExtendWith(MockitoExtension.class)
+import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Property;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+@RunWith(MockitoJUnitRunner.class)
 public class AbstractDatabaseAppenderTest {
     private static class LocalAbstractDatabaseAppender extends AbstractDatabaseAppender<LocalAbstractDatabaseManager> {
 
@@ -82,16 +84,16 @@ public class AbstractDatabaseAppenderTest {
     public void testNameAndGetLayout01() {
         setUp("testName01");
 
-        assertEquals("testName01", appender.getName(), "The name is not correct.");
-        assertNull(appender.getLayout(), "The layout should always be null.");
+        assertEquals("The name is not correct.", "testName01", appender.getName());
+        assertNull("The layout should always be null.", appender.getLayout());
     }
 
     @Test
     public void testNameAndGetLayout02() {
         setUp("anotherName02");
 
-        assertEquals("anotherName02", appender.getName(), "The name is not correct.");
-        assertNull(appender.getLayout(), "The layout should always be null.");
+        assertEquals("The name is not correct.", "anotherName02", appender.getName());
+        assertNull("The layout should always be null.", appender.getLayout());
     }
 
     @Test
@@ -99,7 +101,7 @@ public class AbstractDatabaseAppenderTest {
         setUp("name");
 
         final LocalAbstractDatabaseManager oldManager = appender.getManager();
-        assertSame(manager, oldManager, "The manager should be the same.");
+        assertSame("The manager should be the same.", manager, oldManager);
 
         final LocalAbstractDatabaseManager newManager = mock(LocalAbstractDatabaseManager.class);
         appender.replaceManager(newManager);

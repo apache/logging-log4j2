@@ -16,33 +16,56 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-import static org.apache.logging.log4j.util.Unbox.box;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-@LoggerContextSource(value = "log4j-test5.xml", timeout = 10)
+/**
+ *
+ */
+@RunWith(Parameterized.class)
 public class RandomRollingAppenderOnStartupTest {
 
     private static final String DIR = "target/onStartup";
 
-    private final Logger logger;
+    private Logger logger;
 
-    public RandomRollingAppenderOnStartupTest(final LoggerContext context) {
-        logger = context.getLogger(getClass());
+    @Parameterized.Parameters(name = "{0} \u2192 {1}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] { //
+                // @formatter:off
+                {"log4j-test5.xml"},
+                {"log4j-test5.xml"},});
+                // @formatter:on
     }
 
-    @BeforeAll
+    @Rule
+    public LoggerContextRule loggerContextRule;
+
+    public RandomRollingAppenderOnStartupTest(final String configFile) {
+        this.loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(configFile);
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        this.logger = this.loggerContextRule.getLogger(RandomRollingAppenderOnStartupTest.class.getName());
+    }
+
+    @BeforeClass
     public static void beforeClass() throws Exception {
         if (Files.exists(Paths.get("target/onStartup"))) {
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
@@ -54,7 +77,7 @@ public class RandomRollingAppenderOnStartupTest {
         }
     }
 
-    @AfterAll
+    @AfterClass
     public static void afterClass() throws Exception {
         long size = 0;
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
@@ -63,7 +86,8 @@ public class RandomRollingAppenderOnStartupTest {
                     size = Files.size(path);
                 } else {
                     final long fileSize = Files.size(path);
-                    assertEquals(fileSize, size, "Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize);
+                    assertTrue("Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize,
+                            size == fileSize);
                 }
                 Files.delete(path);
             }
@@ -74,7 +98,7 @@ public class RandomRollingAppenderOnStartupTest {
     @Test
     public void testAppender() throws Exception {
         for (int i = 0; i < 100; ++i) {
-            logger.debug("This is test message number {}", box(i));
+            logger.debug("This is test message number " + i);
         }
 
     }

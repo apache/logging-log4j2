@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 public class NoSqlAppenderTest {
 
     @Mock
@@ -33,17 +33,17 @@ public class NoSqlAppenderTest {
     public void testNoProvider() {
         final NoSqlAppender appender = NoSqlAppender.newBuilder().setName("myName01").build();
 
-        assertNull(appender, "The appender should be null.");
+        assertNull("The appender should be null.", appender);
     }
 
     @Test
     public void testProvider() {
         final NoSqlAppender appender = NoSqlAppender.newBuilder().setName("myName01").setProvider(provider).build();
 
-        assertNotNull(appender, "The appender should not be null.");
-        assertEquals(
+        assertNotNull("The appender should not be null.", appender);
+        assertEquals("The toString value is not correct.",
                 "myName01{ manager=noSqlManager{ description=myName01, bufferSize=0, provider=" + provider + " } }",
-                appender.toString(), "The toString value is not correct.");
+                appender.toString());
 
         appender.stop();
     }
@@ -53,11 +53,11 @@ public class NoSqlAppenderTest {
         final NoSqlAppender appender = NoSqlAppender.newBuilder().setName("anotherName02").setProvider(provider)
                 .setBufferSize(25).build();
 
-        assertNotNull(appender, "The appender should not be null.");
-        assertEquals(
+        assertNotNull("The appender should not be null.", appender);
+        assertEquals("The toString value is not correct.",
                 "anotherName02{ manager=noSqlManager{ description=anotherName02, bufferSize=25, provider=" + provider
                         + " } }",
-                appender.toString(), "The toString value is not correct.");
+                appender.toString());
 
         appender.stop();
     }
