@@ -214,16 +214,8 @@
         </reportSets>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>${findbugs.plugin.version}</version>
-        <configuration>
-          <fork>true</fork>
-          <jvmArgs>-Duser.language=en</jvmArgs>
-          <threshold>Normal</threshold>
-          <effort>Default</effort>
-          <excludeFilterFile>${log4jParentDir}/findbugs-exclude-filter.xml</excludeFilterFile>
-        </configuration>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

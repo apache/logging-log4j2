@@ -201,7 +201,6 @@
     <groovy.version>3.0.5</groovy.version>
     <compiler.plugin.version>3.8.1</compiler.plugin.version>
     <pmd.plugin.version>3.10.0</pmd.plugin.version>
-    <findbugs.plugin.version>3.0.5</findbugs.plugin.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
     <javadoc.plugin.version>3.0.1</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
@@ -1011,6 +1010,24 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>${failsafe.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>4.0.4</version>
+          <configuration>
+            <plugins>
+              <plugin>
+                <groupId>com.h3xstream.findsecbugs</groupId>
+                <artifactId>findsecbugs-plugin</artifactId>
+                <version>1.10.1</version>
+              </plugin>
+            </plugins>
+            <excludeFilterFile>${log4jParentDir}/findbugs-exclude-filter.xml</excludeFilterFile>
+            <fork>true</fork>
+            <effort>Default</effort>
+            <threshold>Normal</threshold>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
