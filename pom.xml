@@ -1102,6 +1102,20 @@
               <version>${spotbugs.version}</version>
             </dependency>
           </dependencies>
+          <configuration>
+            <plugins>
+              <plugin>
+                <groupId>com.h3xstream.findsecbugs</groupId>
+                <artifactId>findsecbugs-plugin</artifactId>
+                <version>1.10.1</version>
+              </plugin>
+            </plugins>
+            <excludeFilterFile>${log4jParentDir}/spotbugs-exclude-filter.xml</excludeFilterFile>
+            <fork>true</fork>
+            <jvmArgs>-Duser.language=en</jvmArgs>
+            <effort>Default</effort>
+            <threshold>Normal</threshold>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
