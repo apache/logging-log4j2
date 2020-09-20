@@ -29,6 +29,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
+    <log4jParentDir>../..</log4jParentDir>
   </properties>
   <dependencies>
     <dependency>

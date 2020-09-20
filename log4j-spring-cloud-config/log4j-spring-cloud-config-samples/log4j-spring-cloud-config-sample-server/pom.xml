@@ -8,7 +8,7 @@
   <version>3.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Log4j Sample Configuration Service</name>
+  <name>Apache Log4j Sample Configuration Service</name>
   <description>Sample Cloud Config Server</description>
 
   <parent>
@@ -133,6 +133,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
         <version>${deploy.plugin.version}</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
         <configuration>
           <skip>true</skip>
         </configuration>

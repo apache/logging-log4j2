@@ -21,7 +21,6 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-spring-cloud-config</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-spring-cloud-config-client</artifactId>
   <packaging>jar</packaging>

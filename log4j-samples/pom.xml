@@ -21,7 +21,6 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
   <groupId>org.apache.logging.log4j.samples</groupId>
   <artifactId>log4j-samples</artifactId>

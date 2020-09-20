@@ -21,14 +21,13 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-spring-boot</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j Spring Boot Support</name>
   <description>Apache Log4j Spring iBoot Support</description>
   <properties>
-    <log4jParentDir>${basedir}/../..</log4jParentDir>
+    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Spring Boot Documentation</docLabel>
     <projectDir>/log4j-spring-boot</projectDir>
     <module.name>org.apache.logging.log4j.spring.boot</module.name>
@@ -231,16 +230,8 @@
         </reportSets>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>${findbugs.plugin.version}</version>
-        <configuration>
-          <fork>true</fork>
-          <jvmArgs>-Duser.language=en</jvmArgs>
-          <threshold>Normal</threshold>
-          <effort>Default</effort>
-          <excludeFilterFile>${log4jParentDir}/findbugs-exclude-filter.xml</excludeFilterFile>
-        </configuration>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
