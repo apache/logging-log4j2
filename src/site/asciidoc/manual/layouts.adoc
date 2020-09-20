@@ -312,11 +312,11 @@ expensive operation and may impact performance. Use with caution.
 
 |datePattern
 |String
-|The date format of the logging event. The default is "JVM_ELAPSE_TIME", which outputs the milliseconds since JVM started. For other valid values, refer to the date pattern of link:#Patterns[Patterns] in PatternLayout.
+|The date format of the logging event. The default is "JVM_ELAPSE_TIME", which outputs the milliseconds since JVM started. For other valid values, refer to the link:#PatternDate[date pattern] of PatternLayout.
 
 |timezone
 |String
-|The timezone id of the logging event. If not specified, this layout uses the https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getDefault()[java.util.TimeZone.getDefault] as default timezone. Like date pattern of link:#Patterns[Patterns] in PatternLayout, you can use timezone id from
+|The timezone id of the logging event. If not specified, this layout uses the https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getDefault()[java.util.TimeZone.getDefault] as default timezone. Like link:#PatternDate[date pattern] of PatternLayout, you can use timezone id from
 https://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[java.util.TimeZone.getTimeZone].
 
 |===
@@ -821,7 +821,7 @@ Generating the class name of the caller
 (link:#LocationInformation[location information]) is an expensive
 operation and may impact performance. Use with caution.
 
-|*d*{pattern} +
+|[[PatternDate]] *d*{pattern} +
 *date*{pattern}
 |Outputs the date of the logging event. The date conversion specifier may
 be followed by a set of braces containing a date and time pattern string per
