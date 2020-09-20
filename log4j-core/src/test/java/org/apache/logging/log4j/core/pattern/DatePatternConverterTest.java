@@ -417,7 +417,7 @@ public class DatePatternConverterTest {
         final StringBuilder milliBuilder = new StringBuilder();
         final LogEvent event = new MyLogEvent();
 
-        for (final String timeZone : new String[]{"PDT", null}) { // Pacific Daylight Time=UTC-8:00
+        for (final String timeZone : new String[]{"PST", null}) { // Pacific Standard Time=UTC-8:00
             for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
                 for (int i = 1; i <= 9; i++) {
                     final String pattern = format.getPattern();
@@ -467,7 +467,7 @@ public class DatePatternConverterTest {
     @Test
     public void testPredefinedFormatWithTimezone() {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
-            final String[] options = {format.name(), "PDT"}; // Pacific Daylight Time=UTC-8:00
+            final String[] options = {format.name(), "PST"}; // Pacific Standard Time=UTC-8:00
             final DatePatternConverter converter = DatePatternConverter.newInstance(options);
             assertEquals(format.getPattern(), converter.getPattern());
         }

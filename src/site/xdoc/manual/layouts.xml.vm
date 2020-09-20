@@ -447,8 +447,35 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>String</td>
               <td>The <code>font-size</code> to use. The default is "small".</td>
             </tr>
+            <tr>
+              <td>datePattern</td>
+              <td>String</td>
+              <td>The date format of the logging event. The default is "JVM_ELAPSE_TIME", which outputs the
+                milliseconds since JVM started. For other valid values, refer to the
+                <a href="#PatternDate">date pattern</a> of PatternLayout.</td>
+            </tr>
+            <tr>
+              <td>timezone</td>
+              <td>String</td>
+              <td>The timezone id of the logging event. If not specified, this layout uses the
+                <a class="javadoc" href="${javadocRoot}/java/util/TimeZone.html${sharp}getDefault()">
+                  java.util.TimeZone.getDefault</a> as default timezone.
+                Like <a href="#PatternDate">date pattern</a> of PatternLayout, you can use timezone id from
+                <a class="javadoc" href="${javadocRoot}/java/util/TimeZone.html${sharp}getTimeZone(java.lang.String)">
+                  java.util.TimeZone.getTimeZone</a>.</td>
+            </tr>
             <caption align="top">HtmlLayout Parameters</caption>
           </table>
+          <p>
+            Configure as follows to use dataPattern and timezone in HtmlLayout:
+          </p>
+          <pre class="prettyprint linenums">
+&lt;Appenders&gt;
+  &lt;Console name="console"&gt;
+    &lt;HtmlLayout datePattern="ISO8601" timezone="GMT+0"/&gt;
+  &lt;/Console&gt;
+&lt;/Appenders&gt;
+</pre>
         </subsection>
         <a name="JSONLayout"/>
         <subsection name="JSON Layout">
@@ -850,6 +877,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+              <a name="PatternDate" />
                 <b>d</b>{pattern}<br />
                 <b>date</b>{pattern}
               </td>
