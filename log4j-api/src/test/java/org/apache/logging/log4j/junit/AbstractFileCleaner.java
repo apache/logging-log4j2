@@ -34,7 +34,10 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.fail;
 
 abstract class AbstractFileCleaner implements BeforeEachCallback, AfterEachCallback {
+
     private static final int MAX_TRIES = Integer.getInteger("log4j2.junit.fileCleanerMaxTries", 10);
+
+    private static final int SLEEP_PERIOD_MILLIS = Integer.getInteger("log4j2.junit.fileCleanerSleepPeriodMillis", 200);
 
     @Override
     public void beforeEach(final ExtensionContext context) throws Exception {
@@ -64,7 +67,7 @@ abstract class AbstractFileCleaner implements BeforeEachCallback, AfterEachCallb
                         failures.put(path, e);
                     }
                     try {
-                        TimeUnit.MILLISECONDS.sleep(200);
+                        TimeUnit.MILLISECONDS.sleep(SLEEP_PERIOD_MILLIS);
                     } catch (final InterruptedException ignored) {
                         failures.put(path, new InterruptedIOException());
                         Thread.currentThread().interrupt();

@@ -28,9 +28,11 @@ import java.lang.annotation.Target;
 
 /**
  * JUnit extension to automatically clean up a list of directories and their contents before and after test execution.
- * This will automatically retry deletion up to 10 times per file while pausing a short duration each time.
- * This can be overridden with the system property {@code log4j2.junit.fileCleanerMaxTries}.
+ * This will automatically retry deletion up to 10 times per file while pausing for 200ms each time.
+ * These can be overridden with system properties {@code log4j2.junit.fileCleanerMaxTries} and
+ * {@code log4j2.junit.fileCleanerSleepPeriodMillis}.
  *
+ * @see DirectoryCleaner
  * @see CleanUpFiles
  * @since 2.14.0
  */

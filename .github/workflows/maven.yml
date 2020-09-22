@@ -52,7 +52,7 @@ jobs:
 
       - name: Build with Maven (Windows)
         if: runner.os == 'Windows'
-        run: ./mvnw -V -B -e -DtrimStackTrace=false "-Dmaven.test.failure.ignore=true" "-Dsurefire.rerunFailingTestsCount=1" --global-toolchains ".github\workflows\maven-toolchains.xml" verify
+        run: ./mvnw -V -B -e "-DtrimStackTrace=false" "-Dmaven.test.failure.ignore=true" "-Dsurefire.rerunFailingTestsCount=1" "-Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000" --global-toolchains ".github\workflows\maven-toolchains.xml" verify
 
       - name: Inspect environment (MacOS)
         if: runner.os == 'macOS'
