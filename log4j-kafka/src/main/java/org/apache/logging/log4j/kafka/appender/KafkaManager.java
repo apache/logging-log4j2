@@ -154,10 +154,9 @@ public class KafkaManager extends AbstractManager {
 
     public void startup() {
         // Avoid kafka thread leak
-        if (producer != null){
-            producer.close();
+        if (producer == null){
+            producer = producerFactory.newKafkaProducer(config);
         }
-        producer = producerFactory.newKafkaProducer(config);
     }
 
     public String getTopic() {
