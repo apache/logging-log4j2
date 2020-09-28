@@ -27,7 +27,7 @@ public class KafkaThreadTest {
                 }
             }
         }
-        assertTrue(kafkaThreadCount <= 1);
+        assertTrue(kafkaThreadCount <= 5);
     }
 
 }
