@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.pattern.DatePatternConverter;
 import org.apache.logging.log4j.core.util.Transform;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -58,6 +59,7 @@ public final class HtmlLayout extends AbstractStringLayout {
     private static final String REGEXP = Strings.LINE_SEPARATOR.equals("\n") ? "\n" : Strings.LINE_SEPARATOR + "|\n";
     private static final String DEFAULT_TITLE = "Log4j Log Messages";
     private static final String DEFAULT_CONTENT_TYPE = "text/html";
+    private static final String DEFAULT_DATE_PATTERN = "JVM_ELAPSE_TIME";
 
     private final long jvmStartTime = ManagementFactory.getRuntimeMXBean().getStartTime();
 
@@ -68,6 +70,7 @@ public final class HtmlLayout extends AbstractStringLayout {
     private final String font;
     private final String fontSize;
     private final String headerSize;
+    private final DatePatternConverter datePatternConverter;
 
     /**Possible font sizes */
     public static enum FontSize {
@@ -99,7 +102,7 @@ public final class HtmlLayout extends AbstractStringLayout {
     }
 
     private HtmlLayout(final boolean locationInfo, final String title, final String contentType, final Charset charset,
-            final String font, final String fontSize, final String headerSize) {
+        final String font, final String fontSize, final String headerSize, String datePattern, String timezone) {
         super(charset);
         this.locationInfo = locationInfo;
         this.title = title;
@@ -107,6 +110,8 @@ public final class HtmlLayout extends AbstractStringLayout {
         this.font = font;
         this.fontSize = fontSize;
         this.headerSize = headerSize;
+        this.datePatternConverter = DEFAULT_DATE_PATTERN.equals(datePattern) ? null
+            : DatePatternConverter.newInstance(new String[] {datePattern, timezone});
     }
 
     /**
@@ -148,7 +153,12 @@ public final class HtmlLayout extends AbstractStringLayout {
         sbuf.append(Strings.LINE_SEPARATOR).append("<tr>").append(Strings.LINE_SEPARATOR);
 
         sbuf.append("<td>");
-        sbuf.append(event.getTimeMillis() - jvmStartTime);
+
+        if (datePatternConverter == null) {
+            sbuf.append(event.getTimeMillis() - jvmStartTime);
+        } else {
+            datePatternConverter.format(event, sbuf);
+        }
         sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
 
         final String escapedThread = Transform.escapeHtmlTags(event.getThreadName());
@@ -329,33 +339,6 @@ public final class HtmlLayout extends AbstractStringLayout {
     }
 
     /**
-     * Creates an HTML Layout.
-     * @param locationInfo If "true", location information will be included. The default is false.
-     * @param title The title to include in the file header. If none is specified the default title will be used.
-     * @param contentType The content type. Defaults to "text/html".
-     * @param charset The character set to use. If not specified, the default will be used.
-     * @param fontSize The font size of the text.
-     * @param font The font to use for the text.
-     * @return An HTML Layout.
-     */
-    @PluginFactory
-    public static HtmlLayout createLayout(
-            @PluginAttribute final boolean locationInfo,
-            @PluginAttribute(defaultString = DEFAULT_TITLE) final String title,
-            @PluginAttribute String contentType,
-            @PluginAttribute(defaultString = "UTF-8") final Charset charset,
-            @PluginAttribute String fontSize,
-            @PluginAttribute(value = "fontName", defaultString = DEFAULT_FONT_FAMILY) final String font) {
-        final FontSize fs = FontSize.getFontSize(fontSize);
-        fontSize = fs.getFontSize();
-        final String headerSize = fs.larger().getFontSize();
-        if (contentType == null) {
-            contentType = DEFAULT_CONTENT_TYPE + "; charset=" + charset;
-        }
-        return new HtmlLayout(locationInfo, title, contentType, charset, font, fontSize, headerSize);
-    }
-
-    /**
      * Creates an HTML Layout using the default settings.
      *
      * @return an HTML Layout.
@@ -388,6 +371,12 @@ public final class HtmlLayout extends AbstractStringLayout {
 
         @PluginBuilderAttribute
         private String fontName = DEFAULT_FONT_FAMILY;
+
+        @PluginBuilderAttribute
+        private String datePattern = DEFAULT_DATE_PATTERN;
+
+        @PluginBuilderAttribute
+        private String timezone = null; // null means default timezone
 
         private Builder() {
         }
@@ -422,6 +411,16 @@ public final class HtmlLayout extends AbstractStringLayout {
             return this;
         }
 
+        public Builder setDatePattern(final String datePattern) {
+            this.datePattern = datePattern;
+            return this;
+        }
+
+        public Builder setTimezone(final String timezone) {
+            this.timezone = timezone;
+            return this;
+        }
+
         @Override
         public HtmlLayout build() {
             // TODO: extract charset from content-type
@@ -429,7 +428,7 @@ public final class HtmlLayout extends AbstractStringLayout {
                 contentType = DEFAULT_CONTENT_TYPE + "; charset=" + charset;
             }
             return new HtmlLayout(locationInfo, title, contentType, charset, fontName, fontSize.getFontSize(),
-                fontSize.larger().getFontSize());
+                fontSize.larger().getFontSize(), datePattern, timezone);
         }
     }
 }
