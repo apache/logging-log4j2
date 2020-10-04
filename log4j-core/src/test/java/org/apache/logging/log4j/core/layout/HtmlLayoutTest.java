@@ -16,27 +16,69 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.lang.management.ManagementFactory;
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 
 @UsingAnyThreadContext
 public class HtmlLayoutTest {
+    private static class MyLogEvent extends AbstractLogEvent {
+        private static final long serialVersionUID = 0;
+
+        @Override
+        public Instant getInstant() {
+            MutableInstant result = new MutableInstant();
+            result.initFromEpochMilli(getTimeMillis(), 456789);
+            return result;
+        }
+
+        @Override
+        public long getTimeMillis() {
+            final Calendar cal = Calendar.getInstance();
+            cal.set(2012, Calendar.NOVEMBER, 02, 14, 34, 02);
+            cal.set(Calendar.MILLISECOND, 123);
+            return cal.getTimeInMillis();
+        }
+
+        @Override
+        public Level getLevel() {
+            return Level.DEBUG;
+        }
+
+        @Override
+        public Message getMessage() {
+            return new SimpleMessage("msg");
+        }
+    }
+
     private final LoggerContext ctx = LoggerContext.getContext();
     private final Logger root = ctx.getRootLogger();
 
@@ -149,5 +191,86 @@ public class HtmlLayoutTest {
         for (final Appender app : appenders.values()) {
             root.addAppender(app);
         }
+    }
+
+    @Test
+    public void testLayoutWithoutDataPattern() {
+        final HtmlLayout layout = HtmlLayout.newBuilder().build();
+
+        MyLogEvent event = new MyLogEvent();
+        String actual = getDateLine(layout.toSerializable(event));
+
+        long jvmStratTime = ManagementFactory.getRuntimeMXBean().getStartTime();
+        assertEquals("<td>" + (event.getTimeMillis() - jvmStratTime) + "</td>", actual, "Incorrect date:" + actual);
+    }
+
+    @Test
+    public void testLayoutWithDatePatternJvmElapseTime() {
+        final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern("JVM_ELAPSE_TIME").build();
+
+        MyLogEvent event = new MyLogEvent();
+        String actual = getDateLine(layout.toSerializable(event));
+
+        long jvmStratTime = ManagementFactory.getRuntimeMXBean().getStartTime();
+        assertEquals("<td>" + (event.getTimeMillis() - jvmStratTime) + "</td>", actual, "Incorrect date:" + actual);
+    }
+
+    @Test
+    public void testLayoutWithDatePatternUnix() {
+        final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern("UNIX").build();
+
+        MyLogEvent event = new MyLogEvent();
+        String actual = getDateLine(layout.toSerializable(event));
+
+        assertEquals("<td>" + event.getInstant().getEpochSecond() + "</td>", actual, "Incorrect date:" + actual);
+    }
+
+    @Test
+    public void testLayoutWithDatePatternUnixMillis() {
+        final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern("UNIX_MILLIS").build();
+
+        MyLogEvent event = new MyLogEvent();
+        String actual = getDateLine(layout.toSerializable(event));
+
+        assertEquals("<td>" + event.getTimeMillis() + "</td>", actual, "Incorrect date:" + actual);
+    }
+
+    @Test
+    public void testLayoutWithDatePatternFixedFormat() {
+        for (final String timeZone : new String[] {"GMT+8", "UTC", null}) {
+            for (final FixedFormat format : FixedFormat.values()) {
+                testLayoutWithDatePatternFixedFormat(format, timeZone);
+            }
+        }
+    }
+    
+    private String getDateLine(String logEventString) {
+        return logEventString.split(System.lineSeparator())[2];
+    }
+
+    private void testLayoutWithDatePatternFixedFormat(FixedFormat format, String timezone) {
+        final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern(format.name()).setTimezone(timezone).build();
+
+        LogEvent event = new MyLogEvent();
+        String actual = getDateLine(layout.toSerializable(event));
+
+        // build expected date string
+        java.time.Instant instant =
+            java.time.Instant.ofEpochSecond(event.getInstant().getEpochSecond(), event.getInstant().getNanoOfSecond());
+        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
+        if (timezone != null) {
+            zonedDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of(timezone));
+        }
+
+        // For DateTimeFormatter of jdk,
+        // Pattern letter 'S' means fraction-of-second, 'n' means nano-of-second. Log4j2 needs S.
+        // Pattern letter 'X' (upper case) will output 'Z' when the offset to be output would be zero,
+        // whereas pattern letter 'x' (lower case) will output '+00', '+0000', or '+00:00'. Log4j2 needs x.
+        DateTimeFormatter dateTimeFormatter =
+            DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'));
+        String expected = zonedDateTime.format(dateTimeFormatter);
+
+        assertEquals("<td>" + expected + "</td>", actual,
+            MessageFormat.format("Incorrect date={0}, format={1}, timezone={2}", actual, format.name(), timezone));
     }
 }
