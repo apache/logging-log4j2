@@ -32,6 +32,7 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.slf4j.MDC;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -164,6 +165,13 @@ public class LoggerTest {
         logger.debug("Debug message");
         assertThat(list.strList, hasSize(2));
         assertTrue("Incorrect year", list.strList.get(0).startsWith("2010"));
+    }
+
+    @Test
+    public void mdcNullBacked() {
+        assertNull("Setup wrong", MDC.getCopyOfContextMap());
+        assertTrue(ThreadContext.isEmpty());
+        assertFalse(ThreadContext.containsKey("something"));
     }
 }
 
