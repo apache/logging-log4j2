@@ -168,10 +168,41 @@ public class LoggerTest {
     }
 
     @Test
-    public void mdcNullBacked() {
+    public void mdcNullBackedIsEmpty() {
         assertNull("Setup wrong", MDC.getCopyOfContextMap());
         assertTrue(ThreadContext.isEmpty());
+    }
+
+    @Test
+    public void mdcNullBackedContainsKey() {
+        assertNull("Setup wrong", MDC.getCopyOfContextMap());
         assertFalse(ThreadContext.containsKey("something"));
     }
-}
 
+    @Test
+    public void mdcNullBackedContainsNullKey() {
+        assertNull("Setup wrong", MDC.getCopyOfContextMap());
+        assertFalse(ThreadContext.containsKey(null));
+    }
+
+    @Test
+    public void mdcContainsNullKey() {
+        try {
+            ThreadContext.put("some", "thing");
+            assertNotNull("Setup wrong", MDC.getCopyOfContextMap());
+            assertFalse(ThreadContext.containsKey(null));
+        } finally {
+            ThreadContext.clearMap();
+        }
+    }
+
+    @Test
+    public void mdcCannotContainNullKey() {
+        try {
+            ThreadContext.put(null, "something");
+            fail("should throw");
+        } catch (IllegalArgumentException | NullPointerException e) {
+            // expected
+        }
+    }
+}
