@@ -33,6 +33,7 @@ import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.slf4j.MDC;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -183,5 +184,43 @@ public class LoggerTest {
         assertThat(list.strList, hasSize(2));
         assertTrue("Incorrect year", list.strList.get(0).startsWith("2010"));
     }
-}
 
+    @Test
+    public void mdcNullBackedIsEmpty() {
+        assertNull("Setup wrong", MDC.getCopyOfContextMap());
+        assertTrue(ThreadContext.isEmpty());
+    }
+
+    @Test
+    public void mdcNullBackedContainsKey() {
+        assertNull("Setup wrong", MDC.getCopyOfContextMap());
+        assertFalse(ThreadContext.containsKey("something"));
+    }
+
+    @Test
+    public void mdcNullBackedContainsNullKey() {
+        assertNull("Setup wrong", MDC.getCopyOfContextMap());
+        assertFalse(ThreadContext.containsKey(null));
+    }
+
+    @Test
+    public void mdcContainsNullKey() {
+        try {
+            ThreadContext.put("some", "thing");
+            assertNotNull("Setup wrong", MDC.getCopyOfContextMap());
+            assertFalse(ThreadContext.containsKey(null));
+        } finally {
+            ThreadContext.clearMap();
+        }
+    }
+
+    @Test
+    public void mdcCannotContainNullKey() {
+        try {
+            ThreadContext.put(null, "something");
+            fail("should throw");
+        } catch (IllegalArgumentException | NullPointerException e) {
+            // expected
+        }
+    }
+}
