@@ -59,7 +59,7 @@ public class XmlSchemaTest {
             "log4j-xinclude", //
             "log4j12", // log4j 1.x configs
             "perf-CountingNoOpAppender.xml", // uses test-appender CountingNoOp
-            "reconfiguration-deadlock.xml", // uses test-appender UsesLoggingAppender
+            "reconfiguration-deadlock.xml", // uses test-appender ReconfigurationDeadlockTestAppender
             "XmlConfigurationSecurity.xml" //
     );
 
