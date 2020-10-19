@@ -176,7 +176,7 @@
         <configuration>
           <toolchains>
             <jdk>
-              <version>[9, )</version>
+              <version>[11, )</version>
             </jdk>
           </toolchains>
         </configuration>

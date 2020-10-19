@@ -23,27 +23,21 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.bus.ConditionalOnBusEnabled;
 import org.springframework.cloud.bus.SpringCloudBusClient;
 import org.springframework.cloud.bus.event.RemoteApplicationEvent;
+import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnBusEnabled
-@EnableBinding(SpringCloudBusClient.class)
 @ConditionalOnProperty(value = "spring.cloud.config.watch.enabled")
-public class Log4j2EventListener {
+public class Log4j2EventListener implements ApplicationListener<EnvironmentChangeEvent> {
     private static Logger LOGGER = LogManager.getLogger(Log4j2EventListener.class);
 
-    @EventListener(classes = RemoteApplicationEvent.class)
-    public void acceptLocal(RemoteApplicationEvent event) {
-        LOGGER.debug("Refresh application event triggered");
-        WatchEventManager.publishEvent();
-    }
-
-    @StreamListener(SpringCloudBusClient.INPUT)
-    public void acceptRemote(RemoteApplicationEvent event) {
-        LOGGER.debug("Refresh application event triggered");
+    @Override
+    public void onApplicationEvent(EnvironmentChangeEvent environmentChangeEvent) {
+        LOGGER.debug("Application change event triggered");
         WatchEventManager.publishEvent();
     }
 }
