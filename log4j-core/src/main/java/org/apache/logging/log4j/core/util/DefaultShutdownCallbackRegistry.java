@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.core.util;
 
 import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -70,7 +69,7 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
     @Override
     public void run() {
         if (state.compareAndSet(State.STARTED, State.STOPPING)) {
-            for (final Runnable hook : hooks) {
+            for (final Cancellable hook : hooks) {
                 try {
                     hook.run();
                 } catch (final Throwable t1) {
@@ -87,34 +86,33 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
     }
 
     private static class RegisteredCancellable implements Cancellable {
-        // use a reference to prevent memory leaks
-        private final Reference<Runnable> hook;
+        private Runnable callback;
         private Collection<Cancellable> registered;
 
         RegisteredCancellable(final Runnable callback, final Collection<Cancellable> registered) {
+            this.callback = callback;
             this.registered = registered;
-            hook = new SoftReference<>(callback);
         }
 
         @Override
         public void cancel() {
-            hook.clear();
+            callback = null;
             registered.remove(this);
             registered = null;
         }
 
         @Override
         public void run() {
-            final Runnable runnableHook = this.hook.get();
+            final Runnable runnableHook = callback;
             if (runnableHook != null) {
                 runnableHook.run();
-                this.hook.clear();
+                callback = null;
             }
         }
 
         @Override
         public String toString() {
-            return String.valueOf(hook.get());
+            return String.valueOf(callback);
         }
     }
 
