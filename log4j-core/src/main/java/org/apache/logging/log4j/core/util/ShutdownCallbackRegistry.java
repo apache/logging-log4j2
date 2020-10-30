@@ -47,6 +47,10 @@ public interface ShutdownCallbackRegistry {
     /**
      * Adds a Runnable shutdown callback to this class.
      *
+     * Note: The returned {@code Cancellable} must be retained on heap by caller
+     * to avoid premature garbage-collection of the registered callback (and to ensure
+     * the callback runs on shutdown).
+     *
      * @param callback the shutdown callback to be executed upon shutdown.
      * @return a Cancellable wrapper of the provided callback or {@code null} if the shutdown hook is disabled and
      * cannot be added.
