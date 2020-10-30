@@ -21,6 +21,7 @@ import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDO
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.lang.ref.SoftReference;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -306,21 +307,8 @@ public class LoggerContext extends AbstractLifeCycle
                 LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Shutdown hook enabled. Registering a new one.");
                 try {
                     final long shutdownTimeoutMillis = this.configuration.getShutdownTimeoutMillis();
-                    this.shutdownCallback = ((ShutdownCallbackRegistry) factory).addShutdownCallback(new Runnable() {
-                        @Override
-                        public void run() {
-                            @SuppressWarnings("resource")
-                            final LoggerContext context = LoggerContext.this;
-                            LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Stopping LoggerContext[name={}, {}]",
-                                    context.getName(), context);
-                            context.stop(shutdownTimeoutMillis, TimeUnit.MILLISECONDS);
-                        }
-
-                        @Override
-                        public String toString() {
-                            return "Shutdown callback for LoggerContext[name=" + LoggerContext.this.getName() + ']';
-                        }
-                    });
+                    this.shutdownCallback = ((ShutdownCallbackRegistry) factory).addShutdownCallback(
+                            new SoftReferencedShutdownHook(this, shutdownTimeoutMillis));
                 } catch (final IllegalStateException e) {
                     throw new IllegalStateException(
                             "Unable to register Log4j shutdown hook because JVM is shutting down.", e);
@@ -329,6 +317,36 @@ public class LoggerContext extends AbstractLifeCycle
                             e);
                 }
             }
+        }
+    }
+
+    // Allow garbage collection of unreferenced contexts by avoiding a strong reference
+    private static final class SoftReferencedShutdownHook implements Runnable {
+        private final SoftReference<LoggerContext> contextRef;
+        private final long shutdownTimeoutMillis;
+
+        private SoftReferencedShutdownHook(LoggerContext context, long shutdownTimeoutMillis) {
+            this.contextRef = new SoftReference<>(context);
+            this.shutdownTimeoutMillis = shutdownTimeoutMillis;
+        }
+
+        @Override
+        public void run() {
+            final LoggerContext context = contextRef.get();
+            if (context != null) {
+                LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Stopping LoggerContext[name={}, {}]",
+                        context.getName(), context);
+                context.stop(shutdownTimeoutMillis, TimeUnit.MILLISECONDS);
+            }
+        }
+
+        @Override
+        public String toString() {
+            final LoggerContext context = contextRef.get();
+            String contextString = context == null
+                    ? "<collected LoggerContext>"
+                    : "LoggerContext[name=" + context.getName() + ']';
+            return "Shutdown callback for " + contextString;
         }
     }
 

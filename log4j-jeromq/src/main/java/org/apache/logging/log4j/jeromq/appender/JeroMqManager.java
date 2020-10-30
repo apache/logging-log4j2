@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.zeromq.ZMQ;
@@ -49,9 +48,6 @@ public class JeroMqManager extends AbstractManager {
     private static final JeroMqManagerFactory FACTORY = new JeroMqManagerFactory();
     private static final ZMQ.Context CONTEXT;
 
-    // Retained to avoid garbage collection of the hook
-    private static final Cancellable SHUTDOWN_HOOK;
-
     static {
         LOGGER.trace("JeroMqManager using ZMQ version {}", ZMQ.getVersionString());
 
@@ -62,14 +58,12 @@ public class JeroMqManager extends AbstractManager {
         final boolean enableShutdownHook = PropertiesUtil.getProperties().getBooleanProperty(
             SYS_PROPERTY_ENABLE_SHUTDOWN_HOOK, true);
         if (enableShutdownHook) {
-            SHUTDOWN_HOOK = ((ShutdownCallbackRegistry) LogManager.getFactory()).addShutdownCallback(new Runnable() {
+            ((ShutdownCallbackRegistry) LogManager.getFactory()).addShutdownCallback(new Runnable() {
                 @Override
                 public void run() {
                     CONTEXT.close();
                 }
             });
-        } else {
-            SHUTDOWN_HOOK = null;
         }
     }
 

@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.core.util;
 
 import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -45,9 +44,7 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
 
     private final AtomicReference<State> state = new AtomicReference<>(State.INITIALIZED);
     private final ThreadFactory threadFactory;
-
-    // use references to prevent memory leaks
-    private final Collection<Reference<Cancellable>> hooks = new CopyOnWriteArrayList<>();
+    private final Collection<Cancellable> hooks = new CopyOnWriteArrayList<>();
     private Reference<Thread> shutdownHookRef;
 
     /**
@@ -72,18 +69,15 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
     @Override
     public void run() {
         if (state.compareAndSet(State.STARTED, State.STOPPING)) {
-            for (final Reference<Cancellable> hookRef : hooks) {
-                Cancellable hook = hookRef.get();
-                if (hook != null) {
+            for (final Cancellable hook : hooks) {
+                try {
+                    hook.run();
+                } catch (final Throwable t1) {
                     try {
-                        hook.run();
-                    } catch (final Throwable t1) {
-                        try {
-                            LOGGER.error(SHUTDOWN_HOOK_MARKER, "Caught exception executing shutdown hook {}", hook, t1);
-                        } catch (final Throwable t2) {
-                            System.err.println("Caught exception " + t2.getClass() + " logging exception " + t1.getClass());
-                            t1.printStackTrace();
-                        }
+                        LOGGER.error(SHUTDOWN_HOOK_MARKER, "Caught exception executing shutdown hook {}", hook, t1);
+                    } catch (final Throwable t2) {
+                        System.err.println("Caught exception " + t2.getClass() + " logging exception " + t1.getClass());
+                        t1.printStackTrace();
                     }
                 }
             }
@@ -93,9 +87,9 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
 
     private static class RegisteredCancellable implements Cancellable {
         private Runnable callback;
-        private Collection<Reference<Cancellable>> registered;
+        private Collection<Cancellable> registered;
 
-        RegisteredCancellable(final Runnable callback, final Collection<Reference<Cancellable>> registered) {
+        RegisteredCancellable(final Runnable callback, final Collection<Cancellable> registered) {
             this.callback = callback;
             this.registered = registered;
         }
@@ -103,7 +97,7 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
         @Override
         public void cancel() {
             callback = null;
-            registered.removeIf(ref -> ref.get() == this);
+            registered.remove(this);
             registered = null;
         }
 
@@ -126,7 +120,7 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
     public Cancellable addShutdownCallback(final Runnable callback) {
         if (isStarted()) {
             final Cancellable receipt = new RegisteredCancellable(callback, hooks);
-            hooks.add(new SoftReference<>(receipt));
+            hooks.add(receipt);
             return receipt;
         }
         throw new IllegalStateException("Cannot add new shutdown hook as this is not started. Current state: " +
