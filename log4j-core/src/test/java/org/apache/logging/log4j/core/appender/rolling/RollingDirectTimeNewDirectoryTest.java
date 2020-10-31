@@ -44,6 +44,12 @@ public class RollingDirectTimeNewDirectoryTest {
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
+    /**
+     * This test logs directly to the target file. Rollover is set to happen once per second. We pause once
+     * to ensure a rollover takes place. However, it is possible that 3 or 4 rollovers could occur, depending
+     * on when the test starts and what else is going on on the machine running the test.
+     * @throws Exception
+     */
     @Test
     public void streamClosedError() throws Exception {
 
@@ -63,7 +69,7 @@ public class RollingDirectTimeNewDirectoryTest {
         File[] logFolders = logDir.listFiles();
         assertNotNull(logFolders);
         Arrays.sort(logFolders);
-
+        int totalFiles = 0;
         try {
 
             final int minExpectedLogFolderCount = 2;
@@ -75,10 +81,12 @@ public class RollingDirectTimeNewDirectoryTest {
             for (File logFolder : logFolders) {
                 File[] logFiles = logFolder.listFiles();
                 if (logFiles != null) {
-                    Arrays.sort(logFiles);
+                    assertTrue("Only 1 file per folder expected: got " + logFiles.length,
+                            logFiles.length <= 1);
+                    totalFiles += logFiles.length;
                 }
-                assertTrue("empty folder: " + logFolder, logFiles != null && logFiles.length > 0);
             }
+            assertTrue("Expected at least 2 files", totalFiles >= 2);
 
         } catch (AssertionError error) {
             System.out.format("log directory (%s) contents:%n", DIR);

@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -27,8 +28,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileRenameActionTest {
 
-    @TempDir
-    File tempDir;
+    static File tempDir = new File("./target");
+
+    @AfterEach
+    public void cleanup() {
+        File file = new File(tempDir, "newFile.log");
+        file.delete();
+    }
 
     @Test
     public void testRename1() throws Exception {
@@ -52,12 +58,26 @@ public class FileRenameActionTest {
         try (final PrintStream pos = new PrintStream(file)) {
             // do nothing
         }
-
+        assertTrue(file.exists(), "File to rename does not exist");
         final File dest = new File(tempDir, "newFile.log");
         final FileRenameAction action = new FileRenameAction(file, dest, false);
         action.execute();
-        assertFalse(dest.exists(), "Renamed file does not exist");
-        assertFalse(file.exists(), "Old file does not exist");
+        assertFalse(dest.exists(), "Renamed file should not exist");
+        assertFalse(file.exists(), "Old file still exists");
+    }
+
+    @Test
+    public void testRenameEmpty() throws Exception {
+        final File file = new File(tempDir, "fileRename.log");
+        try (final PrintStream pos = new PrintStream(file)) {
+            // do nothing
+        }
+        assertTrue(file.exists(), "File to rename does not exist");
+        final File dest = new File(tempDir, "newFile.log");
+        final FileRenameAction action = new FileRenameAction(file, dest, true);
+        action.execute();
+        assertTrue(dest.exists(), "Renamed file should exist");
+        assertFalse(file.exists(), "Old file still exists");
     }
 
 
@@ -70,7 +90,7 @@ public class FileRenameActionTest {
             }
         }
 
-        final File dest = new File("newFile.log");
+        final File dest = new File(tempDir, "newFile.log");
         final FileRenameAction action = new FileRenameAction(file, dest, false);
         action.execute();
         assertTrue(dest.exists(), "Renamed file does not exist");
