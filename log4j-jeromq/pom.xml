@@ -26,6 +26,7 @@
     <docLabel>Log4j ZeroMQ using JeroMQ Documentation</docLabel>
     <projectDir>/log4j-jpa</projectDir>
     <module.name>org.apache.logging.log4j.jeromq</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>

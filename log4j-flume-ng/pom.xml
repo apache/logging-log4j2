@@ -32,6 +32,7 @@
     <docLabel>Flume Documentation</docLabel>
     <projectDir>/flume-ng</projectDir>
     <module.name>org.apache.logging.log4j.flume</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>

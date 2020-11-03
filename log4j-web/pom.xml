@@ -34,6 +34,7 @@
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-web</projectDir>
     <module.name>org.apache.logging.log4j.web</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>

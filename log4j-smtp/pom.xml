@@ -26,6 +26,7 @@
     <docLabel>Log4j SMTP Appender Documentation</docLabel>
     <projectDir>/log4j-smtp</projectDir>
     <module.name>org.apache.logging.log4j.smtp</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>

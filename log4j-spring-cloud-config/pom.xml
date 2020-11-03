@@ -31,6 +31,7 @@
     <revapi.skip>true</revapi.skip>
     <spring-cloud-version>Hoxton.SR7</spring-cloud-version>
     <log4jParentDir>${basedir}/..</log4jParentDir>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencyManagement>
     <dependencies>

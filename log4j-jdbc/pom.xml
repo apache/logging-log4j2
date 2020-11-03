@@ -26,6 +26,7 @@
     <docLabel>Log4j JDBC Documentation</docLabel>
     <projectDir>/log4j-jdbc</projectDir>
     <module.name>org.apache.logging.log4j.jdbc</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>

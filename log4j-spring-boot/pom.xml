@@ -31,6 +31,7 @@
     <docLabel>Log4j Spring Boot Documentation</docLabel>
     <projectDir>/log4j-spring-boot</projectDir>
     <module.name>org.apache.logging.log4j.spring.boot</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencyManagement>
     <dependencies>

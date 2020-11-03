@@ -26,6 +26,7 @@
     <docLabel>Log4j CSV Documentation</docLabel>
     <projectDir>/log4j-csv</projectDir>
     <module.name>org.apache.logging.log4j.csv</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>

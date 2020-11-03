@@ -26,6 +26,7 @@
     <docLabel>Log4j Kafka Documentation</docLabel>
     <projectDir>/log4j-kafka</projectDir>
     <module.name>org.apache.logging.log4j.kafka</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>

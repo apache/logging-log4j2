@@ -26,6 +26,7 @@
     <docLabel>Log4j Layout for Jackson YAML Documentation</docLabel>
     <projectDir>/log4j-layout-yaml</projectDir>
     <module.name>org.apache.logging.log4j.jackson.yaml</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>

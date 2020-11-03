@@ -34,6 +34,7 @@
     <docLabel>MongoDB 3 Documentation</docLabel>
     <projectDir>/log4j-mongodb3</projectDir>
     <module.name>org.apache.logging.log4j.mongodb3</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>

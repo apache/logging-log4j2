@@ -26,6 +26,7 @@
     <docLabel>Log4j Layout for Jackson XML Documentation</docLabel>
     <projectDir>/log4j-layout-xml</projectDir>
     <module.name>org.apache.logging.log4j.jackson.xml</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>
