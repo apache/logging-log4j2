@@ -42,6 +42,7 @@
     <javac.target>1.7</javac.target>
     <uberjar.name>benchmarks</uberjar.name>
     <revapi.skip>true</revapi.skip>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>

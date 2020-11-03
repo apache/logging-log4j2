@@ -229,6 +229,7 @@
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.doap.skip>false</maven.doap.skip>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
@@ -1341,6 +1342,7 @@
             </charter>
             <pmc>https://logging.apache.org</pmc>
           </asfExtOptions>
+          <skip>${maven.doap.skip}</skip>
         </configuration>
         <executions>
           <execution>

@@ -32,6 +32,7 @@
     <docLabel>Streaming Documentation</docLabel>
     <projectDir>/log4j-iostreams</projectDir>
     <module.name>org.apache.logging.log4j.iostreams</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>
