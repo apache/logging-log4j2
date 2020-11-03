@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
+import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -52,6 +52,7 @@ public class KafkaManager extends AbstractManager {
     private final String key;
     private final boolean syncSend;
     private final boolean sendTimestamp;
+    private static boolean enabled = false;
 
     private static final KafkaManagerFactory factory = new KafkaManagerFactory();
 
@@ -121,7 +122,9 @@ public class KafkaManager extends AbstractManager {
     }
 
     public void send(final byte[] msg, final Long eventTimestamp) throws ExecutionException, InterruptedException, TimeoutException {
-        if (producer != null) {
+        // To avoid lots of error logs stuck in arrayblocking queue when kafka  broker is not up.
+        // Other appenders will also get affected during consuming logevents
+        if (producer != null && enabled) {
             byte[] newKey = null;
             Long timestamp = null;
 
@@ -153,7 +156,21 @@ public class KafkaManager extends AbstractManager {
     }
 
     public void startup() {
-        producer = producerFactory.newKafkaProducer(config);
+        // Avoid kafka thread leak
+        if (producer == null || !enabled) {
+            producer = producerFactory.newKafkaProducer(config);
+            try {
+                // Try to get metadata from kafka. If failed then mark this appender as disabled
+                // User should be noticed during app startup. To Prevent unnecessary unlimit reconnection and lots of logs
+                producer.partitionsFor(topic);
+                enabled = true;
+            }catch (KafkaException e){
+                LOGGER.error("Failed to start Kafka in appender [" + getName() + "]." +
+                        " LogEvent sent to this appender will be dropped.", e);
+                producer.close();
+                enabled = false;
+            }
+        }
     }
 
     public String getTopic() {
