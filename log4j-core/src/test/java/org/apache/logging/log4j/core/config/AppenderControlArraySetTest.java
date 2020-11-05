@@ -38,7 +38,7 @@ public class AppenderControlArraySetTest {
     }
 
     private AppenderControl createControl(final String name) {
-        final Appender appender = FailOnceAppender.createAppender(name);
+        final Appender appender = FailOnceAppender.createAppender(name, null);
         return new AppenderControl(appender, Level.INFO, null);
     }
 

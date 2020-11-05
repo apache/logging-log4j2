@@ -16,51 +16,102 @@
  */
 package org.apache.logging.log4j.test.appender;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.util.SneakyThrow;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
- *
+ * An {@link Appender} that fails on the first use and works for the rest.
  */
 @Plugin(name="FailOnce", category ="Core", elementType=Appender.ELEMENT_TYPE, printObject=true)
 public class FailOnceAppender extends AbstractAppender {
 
-    boolean fail = true;
+    private final Supplier<Throwable> throwableSupplier;
 
-    private final List<LogEvent> events = new ArrayList<>();
+    private boolean failed = false;
 
-    private FailOnceAppender(final String name) {
-        super(name, null, null, false, null);
+    private List<LogEvent> events = new ArrayList<>();
+
+    private FailOnceAppender(final String name, final Supplier<Throwable> throwableSupplier) {
+        super(name, null, null, false, Property.EMPTY_ARRAY);
+        this.throwableSupplier = throwableSupplier;
     }
 
     @Override
-    public void append(final LogEvent event) {
-        if (fail) {
-            fail = false;
-            throw new LoggingException("Always fail");
+    public synchronized void append(final LogEvent event) {
+        if (!failed) {
+            failed = true;
+            Throwable throwable = throwableSupplier.get();
+            SneakyThrow.sneakyThrow(throwable);
         }
         events.add(event);
     }
 
-    public List<LogEvent> getEvents() {
-        final List<LogEvent> list = new ArrayList<>(events);
-        events.clear();
-        return list;
+    public synchronized boolean isFailed() {
+        return failed;
+    }
+
+    /**
+     * Returns the list of accumulated events and resets the internal buffer.
+     */
+    public synchronized List<LogEvent> drainEvents() {
+        final List<LogEvent> oldEvents = events;
+        this.events = new ArrayList<>();
+        return oldEvents;
     }
 
     @PluginFactory
     public static FailOnceAppender createAppender(
-        @PluginAttribute @Required(message = "A name for the Appender must be specified") final String name) {
-        return new FailOnceAppender(name);
+        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name,
+        @PluginAttribute("throwableClassName") final String throwableClassName) {
+        final Supplier<Throwable> throwableSupplier = createThrowableSupplier(name, throwableClassName);
+        return new FailOnceAppender(name, throwableSupplier);
+    }
+
+    private static Supplier<Throwable> createThrowableSupplier(
+            final String name,
+            final String throwableClassName) {
+
+        // Fallback to LoggingException if none is given.
+        final String message = String.format("failing on purpose for appender '%s'", name);
+        if (throwableClassName == null || ThrowableClassName.LOGGING_EXCEPTION.equals(throwableClassName)) {
+            return () -> new LoggingException(message);
+        }
+
+        // Check against the expected exception classes.
+        switch (throwableClassName) {
+            case ThrowableClassName.RUNTIME_EXCEPTION: return () -> new RuntimeException(message);
+            case ThrowableClassName.EXCEPTION: return () -> new Exception(message);
+            case ThrowableClassName.ERROR: return () -> new Error(message);
+            case ThrowableClassName.THROWABLE: return () -> new Throwable(message);
+            default: throw new IllegalArgumentException("unknown throwable class name: " + throwableClassName);
+        }
+
+    }
+
+    public enum ThrowableClassName {;
+
+        public static final String RUNTIME_EXCEPTION = "RuntimeException";
+
+        public static final String LOGGING_EXCEPTION = "LoggingException";
+
+        public static final String EXCEPTION = "Exception";
+
+        public static final String ERROR = "Error";
+
+        public static final String THROWABLE = "Throwable";
+
     }
 
 }
