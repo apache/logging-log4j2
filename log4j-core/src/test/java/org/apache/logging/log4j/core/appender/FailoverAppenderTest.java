@@ -77,7 +77,7 @@ public class FailoverAppenderTest {
         onceLogger.error("Second log message");
         events = app.getEvents();
         assertEquals(events.size(), 0, "Did not recover");
-        events = foApp.getEvents();
+        events = foApp.drainEvents();
         assertEquals(events.size(), 2, "Incorrect number of events in primary appender");
     }
 }
