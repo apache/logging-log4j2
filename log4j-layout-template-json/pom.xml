@@ -15,16 +15,14 @@
   ~ See the license for the specific language governing permissions and
   ~ limitations under the license.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.14.0-SNAPSHOT</version>
+    <version>2.14.0</version>
   </parent>
 
   <artifactId>log4j-layout-template-json</artifactId>
@@ -387,16 +385,16 @@
                         <arg>
                           input {
                             gelf {
-                              host => "logstash"
-                              use_tcp => true
-                              use_udp => false
-                              port => 12222
-                              type => "gelf"
+                              host =&gt; "logstash"
+                              use_tcp =&gt; true
+                              use_udp =&gt; false
+                              port =&gt; 12222
+                              type =&gt; "gelf"
                             }
                             tcp {
-                              port => 12345
-                              codec => json
-                              type => "tcp"
+                              port =&gt; 12345
+                              codec =&gt; json
+                              type =&gt; "tcp"
                             }
                           }
 
@@ -405,17 +403,17 @@
                               # These are GELF/Syslog logging levels as defined in RFC 3164.
                               # Map the integer level to its human readable format.
                               translate {
-                                field => "[level]"
-                                destination => "[levelName]"
-                                dictionary => {
-                                  "0" => "EMERG"
-                                  "1" => "ALERT"
-                                  "2" => "CRITICAL"
-                                  "3" => "ERROR"
-                                  "4" => "WARN"
-                                  "5" => "NOTICE"
-                                  "6" => "INFO"
-                                  "7" => "DEBUG"
+                                field =&gt; "[level]"
+                                destination =&gt; "[levelName]"
+                                dictionary =&gt; {
+                                  "0" =&gt; "EMERG"
+                                  "1" =&gt; "ALERT"
+                                  "2" =&gt; "CRITICAL"
+                                  "3" =&gt; "ERROR"
+                                  "4" =&gt; "WARN"
+                                  "5" =&gt; "NOTICE"
+                                  "6" =&gt; "INFO"
+                                  "7" =&gt; "DEBUG"
                                 }
                               }
                             }
@@ -423,10 +421,10 @@
 
                           output {
                             # (Un)comment for debugging purposes
-                            # stdout { codec => rubydebug }
+                            # stdout { codec =&gt; rubydebug }
                             elasticsearch {
-                              hosts => ["http://elasticsearch:9200"]
-                              index => "log4j"
+                              hosts =&gt; ["http://elasticsearch:9200"]
+                              index =&gt; "log4j"
                             }
                           }
                         </arg>

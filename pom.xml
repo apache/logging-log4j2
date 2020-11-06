@@ -20,12 +20,12 @@
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.14.0-SNAPSHOT</version>
+  <version>2.14.0</version>
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
     <version>3</version>
-    <relativePath/>
+    <relativePath />
   </parent>
   <description>Apache Log4j 2</description>
   <url>https://logging.apache.org/log4j/2.x/</url>
@@ -174,7 +174,7 @@
     <connection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</developerConnection>
     <url>https://gitbox.apache.org/repos/asf?p=logging-log4j2.git</url>
-    <tag>log4j-${Log4jReleaseVersion}</tag>
+    <tag>log4j-2.14.0-rc1</tag>
   </scm>
   <properties>
     <!-- make sure to update these for each release! -->
