@@ -27,7 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Level resolver.
+ * {@link Level} resolver.
  *
  * <h3>Configuration</h3>
  *

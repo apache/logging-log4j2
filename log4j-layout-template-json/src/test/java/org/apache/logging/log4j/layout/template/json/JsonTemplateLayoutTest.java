@@ -40,6 +40,7 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.test.AvailablePortFinder;
@@ -1781,6 +1782,56 @@ public class JsonTemplateLayoutTest {
                     "%s:%s",
                     level, message.getFormattedMessage());
             assertThat(accessor.getString("message")).isEqualTo(expectedMessage);
+        });
+
+    }
+
+    @Test
+    public void test_MessageParameterResolver() {
+
+        // Create the event template.
+        final String eventTemplate = writeJson(Map(
+                "po*", Map(
+                        "$resolver", "messageParameter"),
+                "ps*", Map(
+                        "$resolver", "messageParameter",
+                        "stringified", true),
+                "po2", Map(
+                        "$resolver", "messageParameter",
+                        "index", 2),
+                "ps2", Map(
+                        "$resolver", "messageParameter",
+                        "index", 2,
+                        "stringified", true)));
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        // Create the log event.
+        final Object[] parameters = {1L + (long) Integer.MAX_VALUE, "foo", 56};
+        final Message message = new ParameterizedMessage("foo", parameters);
+        final Level level = Level.FATAL;
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setMessage(message)
+                .setLevel(level)
+                .build();
+
+        // Check the serialized event.
+        usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
+            assertThat(accessor.getObject("po*")).isEqualTo(Arrays.asList(parameters));
+            List<String> stringifiedParameters = Arrays
+                    .stream(parameters)
+                    .map(String::valueOf)
+                    .collect(Collectors.toList());
+            assertThat(accessor.getObject("ps*")).isEqualTo(stringifiedParameters);
+            assertThat(accessor.getObject("po2")).isEqualTo(parameters[2]);
+            assertThat(accessor.getString("ps2")).isEqualTo(stringifiedParameters.get(2));
         });
 
     }
