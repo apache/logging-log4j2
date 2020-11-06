@@ -39,8 +39,10 @@ import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ObjectMessage;
-import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.test.AvailablePortFinder;
@@ -1787,7 +1789,16 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_MessageParameterResolver() {
+    public void test_MessageParameterResolver_with_ParameterizedMessageFactory() {
+        testMessageParameterResolver(ParameterizedMessageFactory.INSTANCE);
+    }
+
+    @Test
+    public void test_MessageParameterResolver_with_ReusableMessageFactory() {
+        testMessageParameterResolver(ReusableMessageFactory.INSTANCE);
+    }
+
+    private void testMessageParameterResolver(MessageFactory messageFactory) {
 
         // Create the event template.
         final String eventTemplate = writeJson(Map(
@@ -1813,7 +1824,7 @@ public class JsonTemplateLayoutTest {
 
         // Create the log event.
         final Object[] parameters = {1L + (long) Integer.MAX_VALUE, "foo", 56};
-        final Message message = new ParameterizedMessage("foo", parameters);
+        final Message message = messageFactory.newMessage("foo", parameters);
         final Level level = Level.FATAL;
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
