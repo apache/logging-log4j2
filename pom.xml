@@ -179,7 +179,7 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.13.3</Log4jReleaseVersion>
+    <Log4jReleaseVersion>2.14.0</Log4jReleaseVersion>
     <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
     <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <!--<Log4jReleaseManager>Matt Sicker</Log4jReleaseManager> -->
@@ -1315,6 +1315,7 @@
             <exclude>felix-cache/**</exclude>
             <exclude>**/README.md</exclude>
             <exclude>RELEASE-NOTES.md</exclude>
+            <exclude>SECURITY.md</exclude>
             <exclude>**/*.yml</exclude>
             <exclude>**/*.yaml</exclude>
             <exclude>**/*.json</exclude>
@@ -1448,6 +1449,7 @@
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
             <exclude>**/README.md</exclude>
+            <exclude>SECURITY.md</exclude>
             <exclude>RELEASE-NOTES.md</exclude>
             <exclude>**/*.yml</exclude>
             <exclude>**/*.yaml</exclude>
@@ -1621,6 +1623,7 @@
                 <exclude>felix-cache/**</exclude>
                 <exclude>**/README.md</exclude>
                 <exclude>RELEASE-NOTES.md</exclude>
+                <exclude>SECURITY.md</exclude>
                 <exclude>**/*.yml</exclude>
                 <exclude>**/*.yaml</exclude>
                 <exclude>**/*.json</exclude>

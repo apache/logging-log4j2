@@ -29,7 +29,13 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.14.0" date="2020-MM-DD" description="GA Release 2.14.0">
+    <release version="2.14.0" date="2020-11-06" description="GA Release 2.14.0">
+      <action issue="LOG4J2-2925" dev="rgoers" type="fix">
+        Fix broken link in FAQ.
+      </action>
+      <action issue="LOG4J2-2957" dev="vy" type="add">
+        Add JsonTemplateLayout.
+      </action>
       <action issue="LOG4J2-2911" dev="rgoers" type="fix">
         Log4j2EventListener in spring.cloud.config.client listens for wrong event.
       </action>

@@ -434,7 +434,7 @@ Log4j 2 API lets you log any java.lang.CharSequence, and even any Objects.
 Log4j can log any Object that implements `java.lang.CharSequence`
 or `org.apache.logging.log4j.util.StringBuilderFormattable` without creating garbage.
 
-The [`org.slf4j.spi.LocationAwareLogger::log`](http://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html\#log(org.slf4j.Marker, java.lang.String, int, java.lang.String, java.lang.Object[], java.lang.Throwable))
+The [`org.slf4j.spi.LocationAwareLogger::log`](http://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html\#log(org.slf4j.Marker,java.lang.String,int,java.lang.String,java.lang.Object%5B%5D,java.lang.Throwable))
 method is not yet implemented
 in a garbage-free manner in the log4j-slf4j-impl binding. It creates a new message object for each call.
 
