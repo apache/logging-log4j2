@@ -35,7 +35,7 @@ final class MessageParameterResolverFactory implements EventResolverFactory<Mess
     public MessageParameterResolver create(
             final EventResolverContext context,
             final TemplateResolverConfig config) {
-        return new MessageParameterResolver(config);
+        return new MessageParameterResolver(context, config);
     }
 
 }

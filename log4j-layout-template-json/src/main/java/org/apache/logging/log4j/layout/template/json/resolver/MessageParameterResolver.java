@@ -18,7 +18,10 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+import org.apache.logging.log4j.layout.template.json.util.Recycler;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ParameterConsumer;
+import org.apache.logging.log4j.message.ParameterVisitable;
 
 /**
  * {@link Message} parameter (i.e., {@link Message#getParameters()}) resolver.
@@ -70,11 +73,18 @@ import org.apache.logging.log4j.message.Message;
  */
 final class MessageParameterResolver implements EventResolver {
 
+    private final Recycler<ParameterConsumerState> parameterConsumerStateRecycler;
+
     private final boolean stringified;
 
     private final int index;
 
-    MessageParameterResolver(final TemplateResolverConfig config) {
+    MessageParameterResolver(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        this.parameterConsumerStateRecycler = context
+                .getRecyclerFactory()
+                .create(ParameterConsumerState::new);
         this.stringified = config.getBoolean("stringified", false);
         final Integer index = config.getInteger("index");
         if (index != null && index < 0) {
@@ -90,9 +100,17 @@ final class MessageParameterResolver implements EventResolver {
     @Override
     public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
 
+        // If possible, perform a garbage-free resolution.
+        final Message message = logEvent.getMessage();
+        if (message instanceof ParameterVisitable) {
+            final ParameterVisitable parameterVisitable = (ParameterVisitable) message;
+            resolve(parameterVisitable, jsonWriter);
+            return;
+        }
+
         // Short-circuit if there are no parameters.
-        final Object[] parameters = logEvent.getMessage().getParameters();
-        if (parameters.length == 0) {
+        final Object[] parameters = message.getParameters();
+        if (parameters == null || parameters.length == 0) {
             jsonWriter.writeNull();
             return;
         }
@@ -127,5 +145,61 @@ final class MessageParameterResolver implements EventResolver {
         }
 
     }
+
+    /**
+     * Perform a garbage-free resolution via {@link ParameterVisitable} interface.
+     */
+    private void resolve(
+            final ParameterVisitable parameterVisitable,
+            final JsonWriter jsonWriter) {
+        final ParameterConsumerState parameterConsumerState =
+                parameterConsumerStateRecycler.acquire();
+        try {
+            final boolean arrayNeeded = index < 0;
+            if (arrayNeeded) {
+                jsonWriter.writeArrayStart();
+            }
+            parameterConsumerState.resolver = this;
+            parameterConsumerState.jsonWriter = jsonWriter;
+            parameterVisitable.forEachParameter(
+                    PARAMETER_CONSUMER, parameterConsumerState);
+            if (arrayNeeded) {
+                jsonWriter.writeArrayEnd();
+            }
+        } finally {
+            parameterConsumerStateRecycler.release(parameterConsumerState);
+        }
+    }
+
+    private static final class ParameterConsumerState {
+
+        private MessageParameterResolver resolver;
+
+        private JsonWriter jsonWriter;
+
+        private ParameterConsumerState() {}
+
+    }
+
+    private static final ParameterConsumer<ParameterConsumerState> PARAMETER_CONSUMER =
+            (final Object parameter, final int index, final ParameterConsumerState state) -> {
+
+                // Write the separator, if needed.
+                final boolean arrayNeeded = state.resolver.index < 0;
+                if (arrayNeeded && index > 0) {
+                    state.jsonWriter.writeSeparator();
+                }
+
+                // Write the value.
+                if (arrayNeeded || state.resolver.index == index) {
+                    if (state.resolver.stringified) {
+                        final String stringifiedParameter = String.valueOf(parameter);
+                        state.jsonWriter.writeString(stringifiedParameter);
+                    } else {
+                        state.jsonWriter.writeValue(parameter);
+                    }
+                }
+
+            };
 
 }
