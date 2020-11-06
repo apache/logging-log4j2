@@ -804,6 +804,58 @@ Using this configuration, a `SimpleMessage` will generate a
 `{"action": "login", "sessionId": "87asd97a"}`. Note that both emitted JSONs are
 of type `object` and have no type-conflicting fields.
 
+| messageParameter
+a|
+[source]
+----
+config      = [ stringified ] , [ index ]
+stringified = "stringified" -> boolean
+index       = "index" -> number
+----
+| `logEvent.getMessage().getParameters()`
+| `stringified` flag translates to `String.valueOf(value)`, hence mind
+  not-`String`-typed values.
+a|
+Resolve the message parameters into an array:
+
+[source,json]
+----
+{
+  "$resolver": "messageParameter"
+}
+----
+
+Resolve the string representation of all message parameters into an array:
+
+[source,json]
+----
+{
+  "$resolver": "messageParameter",
+  "stringified": true
+}
+----
+
+Resolve the first message parameter:
+
+[source,json]
+----
+{
+  "$resolver": "messageParameter",
+  "index": 0
+}
+----
+
+Resolve the string representation of the first message parameter:
+
+[source,json]
+----
+{
+  "$resolver": "messageParameter",
+  "index": 0,
+  "stringified": true
+}
+----
+
 | ndc
 a|
 [source]

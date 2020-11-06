@@ -44,6 +44,7 @@ enum EventResolverFactories {;
                 MapResolverFactory.getInstance(),
                 MarkerResolverFactory.getInstance(),
                 MessageResolverFactory.getInstance(),
+                MessageParameterResolverFactory.getInstance(),
                 PatternResolverFactory.getInstance(),
                 SourceResolverFactory.getInstance(),
                 ThreadResolverFactory.getInstance(),
