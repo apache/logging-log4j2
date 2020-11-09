@@ -261,14 +261,14 @@ public class TestConfigurator {
         }
         assertTrue(file.setLastModified(System.currentTimeMillis()), "setLastModified should have succeeded.");
         TimeUnit.SECONDS.sleep(config.getWatchManager().getIntervalSeconds()+1);
-        for (int i = 0; i < 17; ++i) {
+        for (int i = 0; i < 100; ++i) {
             logger.debug("Test message " + i);
         }
 
         // Sleep and check
-        Thread.sleep(50);
+        Thread.sleep(100);
         if (is(theInstance(config)).matches(ctx.getConfiguration())) {
-            Thread.sleep(500);
+            Thread.sleep(2000);
         }
         final Configuration newConfig = ctx.getConfiguration();
         assertThat("Configuration not reset", newConfig, is(not(theInstance(config))));
