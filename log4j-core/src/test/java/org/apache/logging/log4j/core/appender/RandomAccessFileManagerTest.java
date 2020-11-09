@@ -132,10 +132,11 @@ public class RandomAccessFileManagerTest {
         }
         assertEquals(bytes.length, file.length(), "all flushed to disk");
 
-        final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
-                file.getAbsolutePath(), isAppend, true, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, null);
-        manager.write(bytes, 0, bytes.length, true);
-        final int expected = bytes.length * 2;
-        assertEquals(expected, file.length(), "appended, not overwritten");
+        try (final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(file.getAbsolutePath(),
+                isAppend, true, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, null)) {
+            manager.write(bytes, 0, bytes.length, true);
+            final int expected = bytes.length * 2;
+            assertEquals(expected, file.length(), "appended, not overwritten");
+        }
     }
 }
