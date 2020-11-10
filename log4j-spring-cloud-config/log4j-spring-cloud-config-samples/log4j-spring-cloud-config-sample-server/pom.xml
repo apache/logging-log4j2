@@ -23,7 +23,7 @@
   <packaging>jar</packaging>
   <version>2.14.1-SNAPSHOT</version>
 
-  <name>Log4j Sample Configuration Service</name>
+  <name>Apache Log4j Sample Configuration Service</name>
   <description>Sample Cloud Config Server</description>
 
   <parent>

@@ -28,7 +28,7 @@
   <artifactId>sample-app</artifactId>
   <packaging>jar</packaging>
 
-  <name>Spring Cloud Config Sample Application</name>
+  <name>Apache Spring Cloud Config Sample Application</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
