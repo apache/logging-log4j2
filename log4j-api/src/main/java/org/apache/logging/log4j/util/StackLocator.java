@@ -19,8 +19,6 @@ package org.apache.logging.log4j.util;
 import java.lang.reflect.Method;
 import java.util.Stack;
 
-import org.apache.logging.log4j.LogBuilder;
-
 /**
  * <em>Consider this class private.</em> Provides various methods to determine the caller class. <h3>Background</h3>
  * <p>

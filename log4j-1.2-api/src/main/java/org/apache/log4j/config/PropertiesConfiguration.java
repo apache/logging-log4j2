@@ -22,7 +22,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.AppenderWrapper;
-import org.apache.log4j.builders.BuilderManager;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;

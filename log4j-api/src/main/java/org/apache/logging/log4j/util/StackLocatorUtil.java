@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**

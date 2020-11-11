@@ -21,7 +21,6 @@ import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
-import com.fasterxml.jackson.databind.ser.FilterProvider;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.JsonConstants;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;

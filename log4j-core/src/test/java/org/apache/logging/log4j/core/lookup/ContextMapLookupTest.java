@@ -25,8 +25,6 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import static org.junit.Assert.*;

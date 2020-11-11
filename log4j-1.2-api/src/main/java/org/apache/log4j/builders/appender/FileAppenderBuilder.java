@@ -19,8 +19,6 @@ package org.apache.log4j.builders.appender;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
-import org.apache.log4j.bridge.FilterAdapter;
-import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.bridge.LayoutAdapter;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;

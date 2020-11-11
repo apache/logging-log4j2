@@ -20,14 +20,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
-import org.springframework.cloud.bus.ConditionalOnBusEnabled;
-import org.springframework.cloud.bus.SpringCloudBusClient;
-import org.springframework.cloud.bus.event.RemoteApplicationEvent;
 import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component

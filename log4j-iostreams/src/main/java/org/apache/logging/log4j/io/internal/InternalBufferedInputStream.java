@@ -24,7 +24,6 @@ import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.io.LoggerInputStream;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**

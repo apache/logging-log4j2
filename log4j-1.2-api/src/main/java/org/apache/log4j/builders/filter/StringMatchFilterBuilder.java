@@ -29,8 +29,6 @@ import org.apache.logging.log4j.core.filter.StringMatchFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
-import java.util.Properties;
-
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 import static org.apache.log4j.xml.XmlConfiguration.*;
 

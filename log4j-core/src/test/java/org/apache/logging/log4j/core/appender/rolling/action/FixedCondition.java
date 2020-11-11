@@ -20,8 +20,6 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
-
 /**
  * Test helper class.
  */

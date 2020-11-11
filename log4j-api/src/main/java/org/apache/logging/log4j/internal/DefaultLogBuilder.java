@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.internal;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.Logger;

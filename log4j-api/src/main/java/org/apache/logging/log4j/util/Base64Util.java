@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Base64 encodes Strings. This utility is only necessary because the mechanism to do this changed in Java 8 and

@@ -21,7 +21,6 @@ import java.security.Permission;
 import java.util.PropertyPermission;
 
 import org.apache.logging.log4j.junit.SecurityManagerTestRule;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;

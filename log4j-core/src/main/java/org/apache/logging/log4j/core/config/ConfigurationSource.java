@@ -32,7 +32,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Objects;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;

@@ -25,7 +25,6 @@ import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.ReconfigurationPolicy;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

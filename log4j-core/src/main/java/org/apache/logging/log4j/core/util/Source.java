@@ -17,23 +17,11 @@
 
 package org.apache.logging.log4j.core.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Objects;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Represents the source for the logging configuration.

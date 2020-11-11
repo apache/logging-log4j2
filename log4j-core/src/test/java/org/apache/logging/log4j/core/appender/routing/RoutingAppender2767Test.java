@@ -17,8 +17,6 @@
 package org.apache.logging.log4j.core.appender.routing;
 
 import org.apache.logging.log4j.EventLogger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.After;
@@ -33,7 +31,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**

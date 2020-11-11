@@ -17,7 +17,6 @@
 package org.apache.log4j.builders.appender;
 
 import org.apache.log4j.Appender;
-import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.builders.BooleanHolder;
@@ -40,7 +39,6 @@ import java.util.Properties;
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.REF_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;

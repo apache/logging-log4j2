@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**

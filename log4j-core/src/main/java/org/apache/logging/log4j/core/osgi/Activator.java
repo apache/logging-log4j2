@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.osgi;
 
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.LogManager;

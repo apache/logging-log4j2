@@ -45,9 +45,6 @@ import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**

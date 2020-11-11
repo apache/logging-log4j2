@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.Supplier;
 

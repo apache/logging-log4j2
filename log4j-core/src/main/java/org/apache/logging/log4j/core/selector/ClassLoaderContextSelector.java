@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.ArrayList;

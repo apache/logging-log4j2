@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.io.File;
 import java.util.List;
 
 import org.apache.logging.log4j.core.config.Configuration;
