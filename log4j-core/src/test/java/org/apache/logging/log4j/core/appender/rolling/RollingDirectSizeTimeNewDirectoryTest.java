@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.util.Arrays;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Logger;
@@ -23,12 +29,6 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Iterator;
-
-import static org.junit.Assert.*;
 
 public class RollingDirectSizeTimeNewDirectoryTest {
 
@@ -74,6 +74,7 @@ public class RollingDirectSizeTimeNewDirectoryTest {
 
                 File logFolder = logFolders[logFolderIndex];
                 File[] logFiles = logFolder.listFiles();
+                Arrays.sort(logFiles);
                 assertTrue(
                         "no files found in folder: " + logFolder,
                         logFiles != null && logFiles.length > 0);
@@ -90,13 +91,9 @@ public class RollingDirectSizeTimeNewDirectoryTest {
 
         } catch (AssertionError error) {
             System.out.format("log directory (%s) contents:%n", DIR);
-            final Iterator<File> fileIterator =
-                    FileUtils.iterateFilesAndDirs(
-                            logDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
             int totalFileCount = 0;
-            while (fileIterator.hasNext()) {
+            for (final File file : FileUtils.listFilesAndDirs(logDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE)) {
                 totalFileCount++;
-                final File file = fileIterator.next();
                 System.out.format("-> %s (%d)%n", file, file.length());
             }
             System.out.format("total file count: %d%n", totalFileCount);
