@@ -73,7 +73,7 @@ public class RollingAppenderRestartTest {
 
     @AfterClass
     public static void tearDown() throws IOException {
-        if (DIR.toFile().exists()) {
+        if (Files.exists(DIR)) {
             PathUtils.deleteDirectory(DIR);
         }
     }
