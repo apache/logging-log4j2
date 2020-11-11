@@ -16,22 +16,22 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.junit.CleanUpFiles;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.logging.log4j.junit.CleanUpFiles;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
-@CleanUpFiles("target/status.log")
+@CleanUpFiles("target/test.log") // File name MUST match the one in log4j-filetest.xml.
 public class FileOutputTest {
 
     @Test
-    @LoggerContextSource("classpath:log4j-filetest.xml")
+    @LoggerContextSource(value="classpath:log4j-filetest.xml")
     public void testConfig() throws IOException {
         final Path logFile = Paths.get("target", "status.log");
         assertTrue(Files.exists(logFile), "Status output file does not exist");
