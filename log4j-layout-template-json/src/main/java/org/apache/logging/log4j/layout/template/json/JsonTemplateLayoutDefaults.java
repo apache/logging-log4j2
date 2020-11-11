@@ -29,71 +29,7 @@ public enum JsonTemplateLayoutDefaults {;
 
     private static final PropertiesUtil PROPERTIES = PropertiesUtil.getProperties();
 
-    private static final Charset CHARSET = readCharset();
-
-    private static final boolean LOCATION_INFO_ENABLED =
-            PROPERTIES.getBooleanProperty(
-                    "log4j.layout.jsonTemplate.locationInfoEnabled",
-                    false);
-
-    private static final boolean STACK_TRACE_ENABLED =
-            PROPERTIES.getBooleanProperty(
-                    "log4j.layout.jsonTemplate.stackTraceEnabled",
-                    true);
-
-    private static final String TIMESTAMP_FORMAT_PATTERN =
-            PROPERTIES.getStringProperty(
-                    "log4j.layout.jsonTemplate.timestampFormatPattern",
-                    "yyyy-MM-dd'T'HH:mm:ss.SSSZZZ");
-
-    private static final TimeZone TIME_ZONE = readTimeZone();
-
-    private static final Locale LOCALE = readLocale();
-
-    private static final String EVENT_TEMPLATE =
-            PROPERTIES.getStringProperty(
-                    "log4j.layout.jsonTemplate.eventTemplate");
-
-    private static final String EVENT_TEMPLATE_URI =
-            PROPERTIES.getStringProperty(
-                    "log4j.layout.jsonTemplate.eventTemplateUri",
-                    "classpath:EcsLayout.json");
-
-    private static final String STACK_TRACE_ELEMENT_TEMPLATE =
-            PROPERTIES.getStringProperty(
-                    "log4j.layout.jsonTemplate.stackTraceElementTemplate");
-
-    private static final String STACK_TRACE_ELEMENT_TEMPLATE_URI =
-            PROPERTIES.getStringProperty(
-                    "log4j.layout.jsonTemplate.stackTraceElementTemplateUri",
-                    "classpath:StackTraceElementLayout.json");
-
-    private static final String MDC_KEY_PATTERN =
-            PROPERTIES.getStringProperty("log4j.layout.jsonTemplate.mdcKeyPattern");
-
-    private static final String NDC_PATTERN =
-            PROPERTIES.getStringProperty("log4j.layout.jsonTemplate.ndcPattern");
-
-    private static final String EVENT_DELIMITER =
-            PROPERTIES.getStringProperty(
-                    "log4j.layout.jsonTemplate.eventDelimiter",
-                    System.lineSeparator());
-
-    private static final boolean NULL_EVENT_DELIMITER_ENABLED =
-            PROPERTIES.getBooleanProperty(
-                    "log4j.layout.jsonTemplate.nullEventDelimiterEnabled",
-                    false);
-
-    private static final int MAX_STRING_LENGTH = readMaxStringLength();
-
-    private static final String TRUNCATED_STRING_SUFFIX =
-            PROPERTIES.getStringProperty(
-                    "log4j.layout.jsonTemplate.truncatedStringSuffix",
-                    "…");
-
-    private static final RecyclerFactory RECYCLER_FACTORY = readRecyclerFactory();
-
-    private static Charset readCharset() {
+    public static Charset getCharset() {
         final String charsetName =
                 PROPERTIES.getStringProperty("log4j.layout.jsonTemplate.charset");
         return charsetName != null
@@ -101,7 +37,25 @@ public enum JsonTemplateLayoutDefaults {;
                 : StandardCharsets.UTF_8;
     }
 
-    private static TimeZone readTimeZone() {
+    public static boolean isLocationInfoEnabled() {
+        return PROPERTIES.getBooleanProperty(
+                "log4j.layout.jsonTemplate.locationInfoEnabled",
+                false);
+    }
+
+    public static boolean isStackTraceEnabled() {
+        return PROPERTIES.getBooleanProperty(
+                "log4j.layout.jsonTemplate.stackTraceEnabled",
+                true);
+    }
+
+    public static String getTimestampFormatPattern() {
+        return PROPERTIES.getStringProperty(
+                "log4j.layout.jsonTemplate.timestampFormatPattern",
+                "yyyy-MM-dd'T'HH:mm:ss.SSSZZZ");
+    }
+
+    public static TimeZone getTimeZone() {
         final String timeZoneId =
                 PROPERTIES.getStringProperty("log4j.layout.jsonTemplate.timeZone");
         return timeZoneId != null
@@ -109,7 +63,7 @@ public enum JsonTemplateLayoutDefaults {;
                 : TimeZone.getDefault();
     }
 
-    private static Locale readLocale() {
+    public static Locale getLocale() {
         final String locale =
                 PROPERTIES.getStringProperty("log4j.layout.jsonTemplate.locale");
         if (locale == null) {
@@ -124,7 +78,41 @@ public enum JsonTemplateLayoutDefaults {;
         }
     }
 
-    private static int readMaxStringLength() {
+    public static String getEventTemplate() {
+        return PROPERTIES.getStringProperty(
+                "log4j.layout.jsonTemplate.eventTemplate");
+    }
+
+    public static String getEventTemplateUri() {
+        return PROPERTIES.getStringProperty(
+                "log4j.layout.jsonTemplate.eventTemplateUri",
+                "classpath:EcsLayout.json");
+    }
+
+    public static String getStackTraceElementTemplate() {
+        return PROPERTIES.getStringProperty(
+                "log4j.layout.jsonTemplate.stackTraceElementTemplate");
+    }
+
+    public static String getStackTraceElementTemplateUri() {
+        return PROPERTIES.getStringProperty(
+                "log4j.layout.jsonTemplate.stackTraceElementTemplateUri",
+                "classpath:StackTraceElementLayout.json");
+    }
+
+    public static String getEventDelimiter() {
+        return PROPERTIES.getStringProperty(
+                "log4j.layout.jsonTemplate.eventDelimiter",
+                System.lineSeparator());
+    }
+
+    public static boolean isNullEventDelimiterEnabled() {
+        return PROPERTIES.getBooleanProperty(
+                "log4j.layout.jsonTemplate.nullEventDelimiterEnabled",
+                false);
+    }
+
+    public static int getMaxStringLength() {
         final int maxStringLength = PROPERTIES.getIntegerProperty(
                 "log4j.layout.jsonTemplate.maxStringLength",
                 16 * 1_024);
@@ -136,78 +124,16 @@ public enum JsonTemplateLayoutDefaults {;
         return maxStringLength;
     }
 
-    private static RecyclerFactory readRecyclerFactory() {
-        final String recyclerFactorySpec = PROPERTIES.getStringProperty(
-                "log4j.layout.jsonTemplate.recyclerFactory");
-        return RecyclerFactories.ofSpec(recyclerFactorySpec);
-    }
-
-    public static Charset getCharset() {
-        return CHARSET;
-    }
-
-    public static boolean isLocationInfoEnabled() {
-        return LOCATION_INFO_ENABLED;
-    }
-
-    public static boolean isStackTraceEnabled() {
-        return STACK_TRACE_ENABLED;
-    }
-
-    public static String getTimestampFormatPattern() {
-        return TIMESTAMP_FORMAT_PATTERN;
-    }
-
-    public static TimeZone getTimeZone() {
-        return TIME_ZONE;
-    }
-
-    public static Locale getLocale() {
-        return LOCALE;
-    }
-
-    public static String getEventTemplate() {
-        return EVENT_TEMPLATE;
-    }
-
-    public static String getEventTemplateUri() {
-        return EVENT_TEMPLATE_URI;
-    }
-
-    public static String getStackTraceElementTemplate() {
-        return STACK_TRACE_ELEMENT_TEMPLATE;
-    }
-
-    public static String getStackTraceElementTemplateUri() {
-        return STACK_TRACE_ELEMENT_TEMPLATE_URI;
-    }
-
-    public static String getMdcKeyPattern() {
-        return MDC_KEY_PATTERN;
-    }
-
-    public static String getNdcPattern() {
-        return NDC_PATTERN;
-    }
-
-    public static String getEventDelimiter() {
-        return EVENT_DELIMITER;
-    }
-
-    public static boolean isNullEventDelimiterEnabled() {
-        return NULL_EVENT_DELIMITER_ENABLED;
-    }
-
-    public static int getMaxStringLength() {
-        return MAX_STRING_LENGTH;
-    }
-
     public static String getTruncatedStringSuffix() {
-        return TRUNCATED_STRING_SUFFIX;
+        return PROPERTIES.getStringProperty(
+                "log4j.layout.jsonTemplate.truncatedStringSuffix",
+                "…");
     }
 
     public static RecyclerFactory getRecyclerFactory() {
-        return RECYCLER_FACTORY;
+        final String recyclerFactorySpec = PROPERTIES.getStringProperty(
+                "log4j.layout.jsonTemplate.recyclerFactory");
+        return RecyclerFactories.ofSpec(recyclerFactorySpec);
     }
 
 }
