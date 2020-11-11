@@ -42,6 +42,7 @@ public class CompositeConfigurationMissingTest {
 
         //Test for no cat2 level override
         final LoggerConfig cat2 = config.getLogger("cat2");
+        assertNotNull(cat2, "cat2");
         assertEquals(Level.DEBUG, cat2.getLevel(), "Expected cat2 log level to be INFO");
     }
 }
