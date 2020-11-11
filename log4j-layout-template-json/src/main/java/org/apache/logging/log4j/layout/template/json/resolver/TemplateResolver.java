@@ -21,20 +21,47 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 @FunctionalInterface
 public interface TemplateResolver<V> {
 
+    /**
+     * Indicates if the resolution should be appended to the parent JSON object.
+     * <p>
+     * For instance, {@link ThreadContextDataResolver}, i.e., MDC resolver,
+     * uses this flag to indicate whether the contents should be appended to the
+     * parent JSON object or not.
+     */
     default boolean isFlattening() {
         return false;
     }
 
+    /**
+     * Indicates if the resolver if applicable at all.
+     * <p>
+     * For instance, the source line resolver can be short-circuited using this
+     * check if the location information is disabled in the layout configuration.
+     */
     default boolean isResolvable() {
         return true;
     }
 
+    /**
+     * Indicates if the resolver if applicable for the given {@code value}.
+     * <p>
+     * For instance, the stack trace resolver can be short-circuited using this
+     * check if the stack traces are disabled in the layout configuration.
+     */
     default boolean isResolvable(V value) {
         return true;
     }
 
+    /**
+     * Resolves the given {@code value} using the provided {@link JsonWriter}.
+     */
     void resolve(V value, JsonWriter jsonWriter);
 
+    /**
+     * Resolves the given {@code value} using the provided {@link JsonWriter}.
+     *
+     * @param succeedingEntry false, if this is the first element in a collection; true, otherwise
+     */
     default void resolve(V value, JsonWriter jsonWriter, boolean succeedingEntry) {
         resolve(value, jsonWriter);
     }
