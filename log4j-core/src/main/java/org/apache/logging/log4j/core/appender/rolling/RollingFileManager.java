@@ -409,6 +409,15 @@ public class RollingFileManager extends FileManager {
     }
 
     /**
+     * Package-private access for tests only.
+     *
+     * @return The semaphore that controls access to the rollover operation.
+     */
+    Semaphore getSemaphore() {
+        return semaphore;
+    }
+
+    /**
      * Returns the rollover strategy.
      * @return The RolloverStrategy
      */

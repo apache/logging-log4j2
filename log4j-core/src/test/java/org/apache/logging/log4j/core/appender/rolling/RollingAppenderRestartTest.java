@@ -16,15 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.commons.io.file.PathUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.hamcrest.Matcher;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,12 +35,18 @@ import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertTrue;
+import org.apache.commons.io.file.PathUtils;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.hamcrest.Matcher;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 public class RollingAppenderRestartTest {
 
@@ -82,11 +86,26 @@ public class RollingAppenderRestartTest {
     public void testAppender() throws Exception {
         final Logger logger = loggerContextRule.getLogger();
         logger.info("This is test message number 1");
+        // The GZ compression takes place asynchronously.
+        // Make sure it's done before validating.
+        Thread.yield();
+        final String name = "RollingFile";
+        RollingFileAppender appender = loggerContextRule.getAppender(name);
+        assertNotNull(appender, name);
+        if (appender.getManager().getSemaphore().tryAcquire(5, TimeUnit.SECONDS)) {
+            // If we are in here, either the rollover is done or has not taken place yet.
+            validate();            
+        } else {
+            fail("Rolling over is taking too long.");
+        }
+    }
+
+    private void validate() {
         final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));
         final File[] files = DIR.toFile().listFiles();
-        assertTrue(
-                "was expecting files with '.gz' suffix, found: " + Arrays.toString(files),
-                hasGzippedFile.matches(files));
+        Arrays.sort(files);
+        assertTrue(hasGzippedFile.matches(files),
+                () -> "was expecting files with '.gz' suffix, found: " + Arrays.toString(files));
     }
 
 }
