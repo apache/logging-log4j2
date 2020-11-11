@@ -90,4 +90,11 @@ public class LocalizedMessageTest {
         final String actual = msg.getFormattedMessage();
         assertEquals("Test message abc", actual, "Should use initial param value");
     }
+	
+	@Test
+    public void testMessageUsingBaseName() { // LOG4J2-2850
+        final String testMsg = "hello_world";
+        final LocalizedMessage msg = new LocalizedMessage("MF", testMsg, null);
+        assertEquals("Hello world.", msg.getFormattedMessage());
+    }
 }
