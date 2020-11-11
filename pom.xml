@@ -188,9 +188,9 @@
     <slf4jVersion>1.7.25</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.11.2</jackson2Version>
+    <jackson2Version>2.11.3</jackson2Version>
     <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
-    <springVersion>5.2.8.RELEASE</springVersion>
+    <springVersion>5.3.1</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.2</disruptorVersion>
@@ -198,7 +198,7 @@
     <elastic.version>7.6.2</elastic.version>
     <mongodb3.version>3.12.6</mongodb3.version>
     <mongodb4.version>4.1.0</mongodb4.version>
-    <groovy.version>3.0.5</groovy.version>
+    <groovy.version>3.0.6</groovy.version>
     <compiler.plugin.version>3.8.1</compiler.plugin.version>
     <pmd.plugin.version>3.10.0</pmd.plugin.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
@@ -241,9 +241,10 @@
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
-    <junitVersion>4.13</junitVersion>
+    <junitVersion>4.13.1</junitVersion>
     <junitJupiterVersion>5.7.0</junitJupiterVersion>
     <mockitoVersion>2.25.1</mockitoVersion>
+    <xmlunitVersion>2.8.0</xmlunitVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />
@@ -718,7 +719,7 @@
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>3.14.0</version>
+        <version>3.18.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -730,13 +731,13 @@
       <dependency>
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
-        <version>4.0.2</version>
+        <version>4.0.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -851,13 +852,13 @@
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
-        <version>2.7.0</version>
+        <version>${xmlunitVersion}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-matchers</artifactId>
-        <version>2.7.0</version>
+        <version>${xmlunitVersion}</version>
         <scope>test</scope>
       </dependency>
       <dependency>

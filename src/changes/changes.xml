@@ -48,6 +48,30 @@
       <action dev="ggregory" type="update">
         Update commons-io:commons-io 2.7 -> 2.8.0.
       </action>
+      <action dev="ggregory" type="update">
+        Update org.codehaus.groovy:* 3.0.5 -> 3.0.6.
+      </action>
+      <action dev="ggregory" type="update">
+        Update com.fasterxml.jackson.*:* 2.11.2 - 2.11.3.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.springframework:* 5.2.8.RELEASE -> 5.3.1.
+      </action>
+      <action dev="ggregory" type="update">
+        Update junit:junit 4.13 -> 4.13.1.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.xmlunit:* 2.7.0 -> 2.8.0.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.assertj:assertj-core 3.14.0 -> 3.18.0.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.awaitility:awaitility 4.0.2 -> 4.0.3.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.codehaus.plexus:plexus-utils 3.2.0 -> 3.3.0.
+      </action>
     </release>
     <release version="2.14.0" date="2020-11-06" description="GA Release 2.14.0">
       <action issue="LOG4J2-2925" dev="rgoers" type="fix">
