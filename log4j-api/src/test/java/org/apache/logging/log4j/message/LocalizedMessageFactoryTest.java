@@ -35,4 +35,12 @@ public class LocalizedMessageFactoryTest {
         final Message message = localizedMessageFactory.newMessage("hello_world");
         assertEquals("Hello world.", message.getFormattedMessage());
     }
+	
+	  @Test
+    public void testNewMessageUsingBaseName() {
+        final LocalizedMessageFactory localizedMessageFactory = new LocalizedMessageFactory("MF");
+		final String testMsg = "hello_world";
+        final Message message = localizedMessageFactory.newMessage(testMsg);
+        assertEquals("Hello world.", message.getFormattedMessage());
+    }
 }

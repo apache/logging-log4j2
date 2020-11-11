@@ -277,6 +277,9 @@
       <action issue="LOG4J2-2954" dev="ckozak" type="fix" due-to="Henry Tung">
         Prevent premature garbage collection of shutdown hooks in DefaultShutdownCallbackRegistry.
       </action>
+	  <action issue="LOG4J2-2850" dev="sandeepbarnwal" type="fix">
+		Fix incorrect constructor call in LocalizedMessageFactory.
+      </action>
     </release>
     <release version="2.13.3" date="2020-05-10" description="GA Release 2.13.3">
       <action issue="LOG4J2-2838" dev="rgoers" type="fix">
