@@ -33,6 +33,21 @@
       <action dev="ggregory" type="update">
         Update org.fusesource.jansi:jansi 1.17.1 -> 2.0.1.
       </action>
+      <action dev="ggregory" type="update">
+        Update commons-codec:commons-codec 1.14 -> 1.15.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.apache.commons:commons-lang3 3.10 -> 3.11.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.apache.commons:commons-pool2 2.8.1 -> 2.9.0.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.apache.commons:commons-dbcp2 2.4.0 -> 2.8.0.
+      </action>
+      <action dev="ggregory" type="update">
+        Update commons-io:commons-io 2.7 -> 2.8.0.
+      </action>
     </release>
     <release version="2.14.0" date="2020-11-06" description="GA Release 2.14.0">
       <action issue="LOG4J2-2925" dev="rgoers" type="fix">
