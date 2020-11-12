@@ -125,14 +125,14 @@ public class FixedDateFormatTest {
 
     @Test
     public void testCreateIfSupported_defaultTimeZoneIfOptionsArrayWithSecondNullElement() {
-        final FixedDateFormat fmt = FixedDateFormat.createIfSupported(new String[] {DEFAULT.getPattern(), null, ""});
+        final FixedDateFormat fmt = FixedDateFormat.createIfSupported(DEFAULT.getPattern(), null, "");
         assertEquals(DEFAULT.getPattern(), fmt.getFormat());
         assertEquals(TimeZone.getDefault(), fmt.getTimeZone());
     }
 
     @Test
     public void testCreateIfSupported_customTimeZoneIfOptionsArrayWithTimeZoneElement() {
-        final FixedDateFormat fmt = FixedDateFormat.createIfSupported(new String[] {DEFAULT.getPattern(), "+08:00", ""});
+        final FixedDateFormat fmt = FixedDateFormat.createIfSupported(DEFAULT.getPattern(), "+08:00", "");
         assertEquals(DEFAULT.getPattern(), fmt.getFormat());
         assertEquals(TimeZone.getTimeZone("+08:00"), fmt.getTimeZone());
     }

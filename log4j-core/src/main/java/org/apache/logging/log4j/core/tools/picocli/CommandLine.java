@@ -3126,7 +3126,7 @@ public class CommandLine {
 
             // right-adjust the command name by length of synopsis heading
             final Text PADDING = Ansi.OFF.new Text(stringOf('X', synopsisHeadingLength));
-            textTable.addRowValues(new Text[] {PADDING.append(colorScheme.commandText(commandName)), optionText});
+            textTable.addRowValues(PADDING.append(colorScheme.commandText(commandName)), optionText);
             return textTable.toString().substring(synopsisHeadingLength); // cut off leading synopsis heading spaces
         }
 

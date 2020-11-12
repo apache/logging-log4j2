@@ -56,7 +56,7 @@ public class TimeFormatBenchmark {
         }
     };
     FastDateFormat fastDateFormat = FastDateFormat.getInstance("HH:mm:ss.SSS");
-    FixedDateFormat fixedDateFormat = FixedDateFormat.createIfSupported(new String[]{"ABSOLUTE"});
+    FixedDateFormat fixedDateFormat = FixedDateFormat.createIfSupported("ABSOLUTE");
     volatile long midnightToday;
     volatile long midnightTomorrow;
 

@@ -631,7 +631,7 @@ public class XmlConfiguration extends Log4j1Configuration {
                 try {
                     Class<?> clazz = LoaderUtil.loadClass(className);
                     Method toLevelMethod = clazz.getMethod("toLevel", ONE_STRING_PARAM);
-                    Level pri = (Level) toLevelMethod.invoke(null, new Object[]{priStr});
+                    Level pri = (Level) toLevelMethod.invoke(null, priStr);
                     logger.setLevel(OptionConverter.convertLevel(pri));
                 } catch (Exception oops) {
                     if (oops instanceof InterruptedException || oops instanceof InterruptedIOException) {
