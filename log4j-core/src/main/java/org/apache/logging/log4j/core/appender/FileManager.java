@@ -209,7 +209,7 @@ public class FileManager extends OutputStreamManager {
     protected void defineAttributeView(final Path path) {
         if (attributeViewEnabled) {
             try {
-                // FileOutputStream may not create new file on all jvm
+                // FileOutputStream may not create new file on all JVM
                 path.toFile().createNewFile();
 
                 FileUtils.defineFilePosixAttributeView(path, filePermissions, fileOwner, fileGroup);

@@ -42,7 +42,7 @@ public final class GarbageCollectionHelper implements Closeable, Runnable {
                         sink.write(new byte[1024 * 1024]);
                     } catch (final IOException ignored) {
                     }
-                    // May no-op depending on the jvm configuration
+                    // May no-op depending on the JVM configuration
                     System.gc();
                 }
             } finally {
