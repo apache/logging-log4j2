@@ -196,8 +196,8 @@
     <disruptorVersion>3.4.2</disruptorVersion>
     <conversantDisruptorVersion>1.2.15</conversantDisruptorVersion> <!-- Version 1.2.16 requires Java 9 -->
     <elastic.version>7.6.2</elastic.version>
-    <mongodb3.version>3.12.6</mongodb3.version>
-    <mongodb4.version>4.1.0</mongodb4.version>
+    <mongodb3.version>3.12.7</mongodb3.version>
+    <mongodb4.version>4.1.1</mongodb4.version>
     <groovy.version>3.0.6</groovy.version>
     <compiler.plugin.version>3.8.1</compiler.plugin.version>
     <pmd.plugin.version>3.10.0</pmd.plugin.version>
@@ -243,7 +243,7 @@
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <junitVersion>4.13.1</junitVersion>
     <junitJupiterVersion>5.7.0</junitJupiterVersion>
-    <mockitoVersion>2.25.1</mockitoVersion>
+    <mockitoVersion>3.6.0</mockitoVersion>
     <xmlunitVersion>2.8.0</xmlunitVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>
@@ -291,7 +291,7 @@
       <dependency>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>org.eclipse.osgi</artifactId>
-        <version>3.12.1.v20170821-1548</version>
+        <version>3.13.0.v20180226-1711</version>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
@@ -933,7 +933,7 @@
         <!-- Testing MongoDB -->
         <groupId>de.flapdoodle.embed</groupId>
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <version>2.2.0</version>
+        <version>3.0.0</version>
         <scope>test</scope>
       </dependency>
     </dependencies>

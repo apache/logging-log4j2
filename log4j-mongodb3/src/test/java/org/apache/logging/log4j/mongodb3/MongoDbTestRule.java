@@ -32,12 +32,11 @@ import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
+import de.flapdoodle.embed.mongo.config.Defaults;
+import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.mongo.config.Timeout;
 import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.runtime.Network;
 
@@ -69,14 +68,12 @@ public class MongoDbTestRule implements TestRule {
         switch (loggingTarget) {
         case NULL:
             final Logger logger = LoggerFactory.getLogger(MongoDbTestRule.class.getName());
-            final IRuntimeConfig runtimeConfig = new RuntimeConfigBuilder()
             // @formatter:off
-                .defaultsWithLogger(Command.MongoD, logger)
-                .processOutput(ProcessOutput.getDefaultInstanceSilent())
-                .build();
+            return MongodStarter.getInstance(
+                    Defaults
+                        .runtimeConfigFor(Command.MongoD, logger)
+                        .processOutput(ProcessOutput.getDefaultInstanceSilent()).build());
             // @formatter:on
-
-            return MongodStarter.getInstance(runtimeConfig);
         case CONSOLE:
             return MongodStarter.getDefaultInstance();
         default:
@@ -129,11 +126,10 @@ public class MongoDbTestRule implements TestRule {
                 final int port = Integer.parseInt(value);
                 mongodExecutable = starter.prepare(
                 // @formatter:off
-                        new MongodConfigBuilder()
+                        MongodConfig.builder()
                             .version(Version.Main.PRODUCTION)
                             .timeout(new Timeout(BUILDER_TIMEOUT_MILLIS))
-                            .net(
-                                    new Net("localhost", port, Network.localhostIsIPv6()))
+                            .net(new Net("localhost", port, Network.localhostIsIPv6()))
                             .build());
                 // @formatter:on
                 mongodProcess = mongodExecutable.start();

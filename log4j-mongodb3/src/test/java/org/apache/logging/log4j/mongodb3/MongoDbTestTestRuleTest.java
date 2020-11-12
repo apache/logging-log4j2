@@ -29,6 +29,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoIterable;
 
 /**
@@ -55,6 +56,7 @@ public class MongoDbTestTestRuleTest {
 
     @Test
     public void testAccess() {
+        @SuppressWarnings("resource") // Mongo client is managed by the test rule.
         final MongoIterable<String> databaseNames = mongoDbTestRule.getMongoClient().listDatabaseNames();
         Assert.assertNotNull(databaseNames);
         Assert.assertNotNull(databaseNames.first());
@@ -64,7 +66,9 @@ public class MongoDbTestTestRuleTest {
     public void testMongoDbTestRule() {
         Assert.assertNotNull(mongoDbTestRule);
         Assert.assertNotNull(mongoDbTestRule.getStarter());
-        Assert.assertNotNull(mongoDbTestRule.getMongoClient());
+        @SuppressWarnings("resource") // Mongo client is managed by the test rule.
+        final MongoClient mongoClient = mongoDbTestRule.getMongoClient();
+        Assert.assertNotNull(mongoClient);
         Assert.assertNotNull(mongoDbTestRule.getMongodExecutable());
         Assert.assertNotNull(mongoDbTestRule.getMongodProcess());
     }

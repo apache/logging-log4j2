@@ -56,14 +56,14 @@ public class MongoDbCappedTest {
     public void test() {
         final Logger logger = LogManager.getLogger();
         logger.info("Hello log");
-        try (final MongoClient mongoClient = mongoDbTestRule.getMongoClient()) {
-            final MongoDatabase database = mongoClient.getDatabase("test");
-            Assert.assertNotNull(database);
-            final MongoCollection<Document> collection = database.getCollection("applog");
-            Assert.assertNotNull(collection);
-            final Document first = collection.find().first();
-            Assert.assertNotNull(first);
-            Assert.assertEquals(first.toJson(), "Hello log", first.getString("message"));
-        }
+        @SuppressWarnings("resource") // Mongo client is managed by the test rule.
+        final MongoClient mongoClient = mongoDbTestRule.getMongoClient();
+        final MongoDatabase database = mongoClient.getDatabase("test");
+        Assert.assertNotNull(database);
+        final MongoCollection<Document> collection = database.getCollection("applog");
+        Assert.assertNotNull(collection);
+        final Document first = collection.find().first();
+        Assert.assertNotNull(first);
+        Assert.assertEquals(first.toJson(), "Hello log", first.getString("message"));
     }
 }

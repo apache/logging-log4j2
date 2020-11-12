@@ -72,6 +72,18 @@
       <action dev="ggregory" type="update">
         Update org.codehaus.plexus:plexus-utils 3.2.0 -> 3.3.0.
       </action>
+      <action dev="ggregory" type="update">
+        Update MongoDB 3 plugin: org.mongodb:mongodb-driver 3.12.6 -> 3.12.7.
+      </action>
+      <action dev="ggregory" type="update">
+        Update MongoDB 4 plugin: org.mongodb:* 4.1.0 -> 4.1.1.
+      </action>
+      <action dev="ggregory" type="update">
+        Update org.eclipse.tycho:org.eclipse.osgi 3.12.1.v20170821-1548 -> 3.13.0.v20180226-1711.
+      </action>
+      <action dev="ggregory" type="update">
+        Update de.flapdoodle.embed:de.flapdoodle.embed.mongo 2.2.0 -> 3.0.0.
+      </action>
     </release>
     <release version="2.14.0" date="2020-11-06" description="GA Release 2.14.0">
       <action issue="LOG4J2-2925" dev="rgoers" type="fix">
