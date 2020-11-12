@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.jackson;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.categories.Layouts;
@@ -52,11 +53,7 @@ public abstract class LevelMixInTest {
                 return false;
             }
             final Fixture other = (Fixture) obj;
-            if (this.level == null) {
-                if (other.level != null) {
-                    return false;
-                }
-            } else if (!this.level.equals(other.level)) {
+            if (!Objects.equals(this.level, other.level)) {
                 return false;
             }
             return true;

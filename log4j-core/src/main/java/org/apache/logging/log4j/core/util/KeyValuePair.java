@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.util;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -115,18 +117,10 @@ public final class KeyValuePair {
             return false;
         }
         final KeyValuePair other = (KeyValuePair) obj;
-        if (key == null) {
-            if (other.key != null) {
-                return false;
-            }
-        } else if (!key.equals(other.key)) {
+        if (!Objects.equals(key, other.key)) {
             return false;
         }
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
+        if (!Objects.equals(value, other.value)) {
             return false;
         }
         return true;

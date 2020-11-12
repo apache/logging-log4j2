@@ -24,6 +24,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.NetUtils;
@@ -128,18 +129,10 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
             return false;
         }
         final AbstractKeyStoreConfiguration other = (AbstractKeyStoreConfiguration) obj;
-        if (keyStore == null) {
-            if (other.keyStore != null) {
-                return false;
-            }
-        } else if (!keyStore.equals(other.keyStore)) {
+        if (!Objects.equals(keyStore, other.keyStore)) {
             return false;
         }
-        if (keyStoreType == null) {
-            if (other.keyStoreType != null) {
-                return false;
-            }
-        } else if (!keyStoreType.equals(other.keyStoreType)) {
+        if (!Objects.equals(keyStoreType, other.keyStoreType)) {
             return false;
         }
         return true;

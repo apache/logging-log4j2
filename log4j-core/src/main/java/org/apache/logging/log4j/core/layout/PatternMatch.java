@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.layout;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -123,18 +124,10 @@ public final class PatternMatch {
             return false;
         }
         final PatternMatch other = (PatternMatch) obj;
-        if (key == null) {
-            if (other.key != null) {
-                return false;
-            }
-        } else if (!key.equals(other.key)) {
+        if (!Objects.equals(key, other.key)) {
             return false;
         }
-        if (pattern == null) {
-            if (other.pattern != null) {
-                return false;
-            }
-        } else if (!pattern.equals(other.pattern)) {
+        if (!Objects.equals(pattern, other.pattern)) {
             return false;
         }
         return true;

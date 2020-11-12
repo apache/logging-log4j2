@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
@@ -67,18 +68,10 @@ public final class ExtendedStackTraceElement implements Serializable {
             return false;
         }
         final ExtendedStackTraceElement other = (ExtendedStackTraceElement) obj;
-        if (this.extraClassInfo == null) {
-            if (other.extraClassInfo != null) {
-                return false;
-            }
-        } else if (!this.extraClassInfo.equals(other.extraClassInfo)) {
+        if (!Objects.equals(this.extraClassInfo, other.extraClassInfo)) {
             return false;
         }
-        if (this.stackTraceElement == null) {
-            if (other.stackTraceElement != null) {
-                return false;
-            }
-        } else if (!this.stackTraceElement.equals(other.stackTraceElement)) {
+        if (!Objects.equals(this.stackTraceElement, other.stackTraceElement)) {
             return false;
         }
         return true;

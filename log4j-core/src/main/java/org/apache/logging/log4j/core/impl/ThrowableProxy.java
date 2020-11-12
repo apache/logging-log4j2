@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 
@@ -152,21 +153,13 @@ public class ThrowableProxy implements Serializable {
             return false;
         }
         final ThrowableProxy other = (ThrowableProxy) obj;
-        if (this.causeProxy == null) {
-            if (other.causeProxy != null) {
-                return false;
-            }
-        } else if (!this.causeProxy.equals(other.causeProxy)) {
+        if (!Objects.equals(this.causeProxy, other.causeProxy)) {
             return false;
         }
         if (this.commonElementCount != other.commonElementCount) {
             return false;
         }
-        if (this.name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!this.name.equals(other.name)) {
+        if (!Objects.equals(this.name, other.name)) {
             return false;
         }
         if (!Arrays.equals(this.extendedStackTrace, other.extendedStackTrace)) {

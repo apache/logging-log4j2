@@ -20,6 +20,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.util.Arrays;
+import java.util.Objects;
 
 import javax.net.ssl.KeyManagerFactory;
 
@@ -197,11 +198,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
             return false;
         }
         final KeyStoreConfiguration other = (KeyStoreConfiguration) obj;
-        if (keyManagerFactoryAlgorithm == null) {
-            if (other.keyManagerFactoryAlgorithm != null) {
-                return false;
-            }
-        } else if (!keyManagerFactoryAlgorithm.equals(other.keyManagerFactoryAlgorithm)) {
+        if (!Objects.equals(keyManagerFactoryAlgorithm, other.keyManagerFactoryAlgorithm)) {
             return false;
         }
         return true;

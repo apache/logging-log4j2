@@ -98,25 +98,13 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             return false;
         }
         final DynamicThresholdFilter other = (DynamicThresholdFilter) obj;
-        if (defaultThreshold == null) {
-            if (other.defaultThreshold != null) {
-                return false;
-            }
-        } else if (!defaultThreshold.equals(other.defaultThreshold)) {
+        if (!Objects.equals(defaultThreshold, other.defaultThreshold)) {
             return false;
         }
-        if (key == null) {
-            if (other.key != null) {
-                return false;
-            }
-        } else if (!key.equals(other.key)) {
+        if (!Objects.equals(key, other.key)) {
             return false;
         }
-        if (levelMap == null) {
-            if (other.levelMap != null) {
-                return false;
-            }
-        } else if (!levelMap.equals(other.levelMap)) {
+        if (!Objects.equals(levelMap, other.levelMap)) {
             return false;
         }
         return true;

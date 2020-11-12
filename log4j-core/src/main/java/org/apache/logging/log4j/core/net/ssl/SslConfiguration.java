@@ -20,6 +20,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
+import java.util.Objects;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -280,32 +281,16 @@ public class SslConfiguration {
             return false;
         }
         final SslConfiguration other = (SslConfiguration) obj;
-        if (keyStoreConfig == null) {
-            if (other.keyStoreConfig != null) {
-                return false;
-            }
-        } else if (!keyStoreConfig.equals(other.keyStoreConfig)) {
+        if (!Objects.equals(keyStoreConfig, other.keyStoreConfig)) {
             return false;
         }
-        if (protocol == null) {
-            if (other.protocol != null) {
-                return false;
-            }
-        } else if (!protocol.equals(other.protocol)) {
+        if (!Objects.equals(protocol, other.protocol)) {
             return false;
         }
-        if (sslContext == null) {
-            if (other.sslContext != null) {
-                return false;
-            }
-        } else if (!sslContext.equals(other.sslContext)) {
+        if (!Objects.equals(sslContext, other.sslContext)) {
             return false;
         }
-        if (trustStoreConfig == null) {
-            if (other.trustStoreConfig != null) {
-                return false;
-            }
-        } else if (!trustStoreConfig.equals(other.trustStoreConfig)) {
+        if (!Objects.equals(trustStoreConfig, other.trustStoreConfig)) {
             return false;
         }
         return true;

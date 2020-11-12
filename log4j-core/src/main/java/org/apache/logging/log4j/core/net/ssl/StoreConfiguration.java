@@ -121,11 +121,7 @@ public class StoreConfiguration<T> {
             return false;
         }
         final StoreConfiguration<?> other = (StoreConfiguration<?>) obj;
-        if (location == null) {
-            if (other.location != null) {
-                return false;
-            }
-        } else if (!location.equals(other.location)) {
+        if (!Objects.equals(location, other.location)) {
             return false;
         }
         if (!Arrays.equals(passwordProvider.getPassword(), other.passwordProvider.getPassword())) {

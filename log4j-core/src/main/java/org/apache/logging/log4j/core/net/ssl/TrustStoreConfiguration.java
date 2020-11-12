@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.net.ssl;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Objects;
 
 import javax.net.ssl.TrustManagerFactory;
 
@@ -177,11 +178,7 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
             return false;
         }
         final TrustStoreConfiguration other = (TrustStoreConfiguration) obj;
-        if (trustManagerFactoryAlgorithm == null) {
-            if (other.trustManagerFactoryAlgorithm != null) {
-                return false;
-            }
-        } else if (!trustManagerFactoryAlgorithm.equals(other.trustManagerFactoryAlgorithm)) {
+        if (!Objects.equals(trustManagerFactoryAlgorithm, other.trustManagerFactoryAlgorithm)) {
             return false;
         }
         return true;

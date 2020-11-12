@@ -19,6 +19,7 @@ package org.apache.logging.slf4j;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.logging.log4j.MarkerManager;
 import org.slf4j.IMarkerFactory;
@@ -78,11 +79,7 @@ class Log4jMarker implements Marker {
 			return false;
 		}
 		final Log4jMarker other = (Log4jMarker) obj;
-		if (marker == null) {
-			if (other.marker != null) {
-				return false;
-			}
-		} else if (!marker.equals(other.marker)) {
+		if (!Objects.equals(marker, other.marker)) {
 			return false;
 		}
 		return true;
