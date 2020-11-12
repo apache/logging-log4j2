@@ -485,7 +485,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
 
     public void addProperties(final Object obj, final String[] keys, final Properties props, final String prefix) {
         final Properties edited = new Properties();
-        props.stringPropertyNames().stream().filter((name) -> {
+        props.stringPropertyNames().stream().filter(name -> {
             if (name.startsWith(prefix)) {
                 for (String key : keys) {
                     if (name.equals(key)) {
@@ -495,7 +495,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
                 return true;
             }
             return false;
-        }).forEach((name) -> edited.put(name, props.getProperty(name)));
+        }).forEach(name -> edited.put(name, props.getProperty(name)));
         PropertySetter.setProperties(obj, edited, prefix + ".");
     }
 

@@ -131,51 +131,31 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
      * Factory used to populate the RingBuffer with events. These event objects are then re-used during the life of the
      * RingBuffer.
      */
-    private static final EventFactory<Log4jEventWrapper> FACTORY = new EventFactory<Log4jEventWrapper>() {
-        @Override
-        public Log4jEventWrapper newInstance() {
-            return new Log4jEventWrapper();
-        }
-    };
+    private static final EventFactory<Log4jEventWrapper> FACTORY = Log4jEventWrapper::new;
 
     /**
      * Factory used to populate the RingBuffer with events. These event objects are then re-used during the life of the
      * RingBuffer.
      */
-    private static final EventFactory<Log4jEventWrapper> MUTABLE_FACTORY = new EventFactory<Log4jEventWrapper>() {
-        @Override
-        public Log4jEventWrapper newInstance() {
-            return new Log4jEventWrapper(new MutableLogEvent());
-        }
-    };
+    private static final EventFactory<Log4jEventWrapper> MUTABLE_FACTORY = () -> new Log4jEventWrapper(new MutableLogEvent());
 
     /**
      * Object responsible for passing on data to a specific RingBuffer event.
      */
     private static final EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig> TRANSLATOR =
-            new EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig>() {
-
-        @Override
-        public void translateTo(final Log4jEventWrapper ringBufferElement, final long sequence,
-                final LogEvent logEvent, final AsyncLoggerConfig loggerConfig) {
-            ringBufferElement.event = logEvent;
-            ringBufferElement.loggerConfig = loggerConfig;
-        }
-    };
+            (ringBufferElement, sequence, logEvent, loggerConfig) -> {
+         ringBufferElement.event = logEvent;
+         ringBufferElement.loggerConfig = loggerConfig;
+      };
 
     /**
      * Object responsible for passing on data to a RingBuffer event with a MutableLogEvent.
      */
     private static final EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig> MUTABLE_TRANSLATOR =
-            new EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig>() {
-
-        @Override
-        public void translateTo(final Log4jEventWrapper ringBufferElement, final long sequence,
-                final LogEvent logEvent, final AsyncLoggerConfig loggerConfig) {
-            ((MutableLogEvent) ringBufferElement.event).initFrom(logEvent);
-            ringBufferElement.loggerConfig = loggerConfig;
-        }
-    };
+            (ringBufferElement, sequence, logEvent, loggerConfig) -> {
+         ((MutableLogEvent) ringBufferElement.event).initFrom(logEvent);
+         ringBufferElement.loggerConfig = loggerConfig;
+      };
 
     private int ringBufferSize;
     private AsyncQueueFullPolicy asyncQueueFullPolicy;

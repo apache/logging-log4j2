@@ -34,27 +34,21 @@ public class TestAsyncServlet extends HttpServlet {
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         final AsyncContext asyncContext = req.startAsync();
-        asyncContext.start(WebLoggerContextUtils.wrapExecutionContext(this.getServletContext(), new Runnable() {
-            @Override
-            public void run() {
-                final Logger logger = LogManager.getLogger(TestAsyncServlet.class);
-                logger.info("Hello, servlet!");
-            }
+        asyncContext.start(WebLoggerContextUtils.wrapExecutionContext(this.getServletContext(), () -> {
+            final Logger logger = LogManager.getLogger(TestAsyncServlet.class);
+            logger.info("Hello, servlet!");
         }));
     }
 
     @Override
     protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         final AsyncContext asyncContext = req.startAsync();
-        asyncContext.start(new Runnable() {
-            @Override
-            public void run() {
-                final Log4jWebSupport webSupport =
-                    WebLoggerContextUtils.getWebLifeCycle(TestAsyncServlet.this.getServletContext());
-                webSupport.setLoggerContext();
-                // do stuff
-                webSupport.clearLoggerContext();
-            }
+        asyncContext.start(() -> {
+            final Log4jWebSupport webSupport =
+                WebLoggerContextUtils.getWebLifeCycle(TestAsyncServlet.this.getServletContext());
+            webSupport.setLoggerContext();
+            // do stuff
+            webSupport.clearLoggerContext();
         });
     }
 }

@@ -31,23 +31,20 @@ public final class GarbageCollectionHelper implements Closeable, Runnable {
     private static final OutputStream sink = ByteStreams.nullOutputStream();
     private final AtomicBoolean running = new AtomicBoolean();
     private final CountDownLatch latch = new CountDownLatch(1);
-    private final Thread gcThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                while (running.get()) {
-                    // Allocate data to help suggest a GC
-                    try {
-                        // 1mb of heap
-                        sink.write(new byte[1024 * 1024]);
-                    } catch (final IOException ignored) {
-                    }
-                    // May no-op depending on the JVM configuration
-                    System.gc();
+    private final Thread gcThread = new Thread(() -> {
+        try {
+            while (running.get()) {
+                // Allocate data to help suggest a GC
+                try {
+                    // 1mb of heap
+                    sink.write(new byte[1024 * 1024]);
+                } catch (final IOException ignored) {
                 }
-            } finally {
-                latch.countDown();
+                // May no-op depending on the JVM configuration
+                System.gc();
             }
+        } finally {
+            latch.countDown();
         }
     });
 

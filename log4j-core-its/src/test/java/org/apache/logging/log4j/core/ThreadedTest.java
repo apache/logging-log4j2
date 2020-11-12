@@ -29,8 +29,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 /**
@@ -50,20 +48,15 @@ public class ThreadedTest {
 
     // this would look pretty sweet with lambdas
     @ClassRule
-    public static RuleChain chain = RuleChain.outerRule(new TestRule() {
+    public static RuleChain chain = RuleChain.outerRule((base, description) -> new Statement() {
         @Override
-        public Statement apply(final Statement base, final Description description) {
-            return new Statement() {
-                @Override
-                public void evaluate() throws Throwable {
-                    deleteDir();
-                    try {
-                        base.evaluate();
-                    } finally {
-                        deleteDir();
-                    }
-                }
-            };
+        public void evaluate() throws Throwable {
+            deleteDir();
+            try {
+                base.evaluate();
+            } finally {
+                deleteDir();
+            }
         }
     }).around(context);
 

@@ -189,12 +189,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         }
     }
     private static final TriConsumer<String, Object, StringMap> PUT_ALL =
-            new TriConsumer<String, Object, StringMap>() {
-        @Override
-        public void accept(final String key, final Object value, final StringMap contextData) {
-            contextData.putValue(key, value);
-        }
-    };
+            (key, value, contextData) -> contextData.putValue(key, value);
 
     private void assertNotFrozen() {
         if (immutable) {
@@ -247,12 +242,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     }
 
     private static final TriConsumer<String, Object, Map<String, String>> COPY_INTO_MAP =
-            new TriConsumer<String, Object, Map<String, String>>() {
-        @Override
-        public void accept(final String k, final Object v, final Map<String, String> map) {
-            map.put(k, v == null ? null : v.toString());
-        }
-    };
+            (k, v, map) -> map.put(k, v == null ? null : v.toString());
 
     /*
      * Removes all elements from this map.
@@ -770,17 +760,14 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     }
 
     private static final TriConsumer<String, Object, ObjectOutputStream> SERIALIZER =
-            new TriConsumer<String, Object, ObjectOutputStream>() {
-                @Override
-                public void accept(final String k, final Object v, final ObjectOutputStream objectOutputStream) {
-                    try {
-                        objectOutputStream.writeObject(k);
-                        objectOutputStream.writeObject(v);
-                    } catch (final IOException ioex) {
-                        throw new IllegalStateException(ioex);
-                    }
-                }
-            };
+            (k, v, objectOutputStream) -> {
+        try {
+            objectOutputStream.writeObject(k);
+            objectOutputStream.writeObject(v);
+        } catch (final IOException ioex) {
+            throw new IllegalStateException(ioex);
+        }
+    };
 
     @Override
     public String toString() {

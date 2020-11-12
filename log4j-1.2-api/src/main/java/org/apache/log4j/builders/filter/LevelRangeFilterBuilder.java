@@ -59,7 +59,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBu
         final Holder<String> levelMax = new Holder<>();
         final Holder<String> levelMin = new Holder<>();
         final Holder<Boolean> acceptOnMatch = new BooleanHolder();
-        forEachElement(filterElement.getElementsByTagName("param"), (currentElement) -> {
+        forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals("param")) {
                 switch (currentElement.getAttribute(NAME_ATTR)) {
                     case LEVEL_MAX:

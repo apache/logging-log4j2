@@ -57,7 +57,7 @@ public class LevelMatchFilterBuilder extends AbstractBuilder implements FilterBu
     public Filter parseFilter(Element filterElement, XmlConfiguration config) {
         final Holder<String> level = new Holder<>();
         final Holder<Boolean> acceptOnMatch = new BooleanHolder();
-        forEachElement(filterElement.getElementsByTagName("param"), (currentElement) -> {
+        forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals("param")) {
                 switch (currentElement.getAttribute(NAME_ATTR)) {
                     case LEVEL:

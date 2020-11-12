@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.core.async;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -160,12 +159,7 @@ final class DisruptorUtil {
      * @return the thread ID of the background appender thread
      */
     public static long getExecutorThreadId(final ExecutorService executor) {
-        final Future<Long> result = executor.submit(new Callable<Long>() {
-            @Override
-            public Long call() {
-                return Thread.currentThread().getId();
-            }
-        });
+        final Future<Long> result = executor.submit(() -> Thread.currentThread().getId());
         try {
             return result.get();
         } catch (final Exception ex) {

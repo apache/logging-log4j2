@@ -20,6 +20,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,7 +31,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.Transform;
-import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
 
@@ -137,16 +137,13 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
             final ReadOnlyStringMap contextMap = event.getContextData();
             if (!contextMap.isEmpty()) {
                 buf.append("<log4j:properties>\r\n");
-                contextMap.forEach(new BiConsumer<String, String>() {
-                    @Override
-                    public void accept(final String key, final String val) {
-                        if (val != null) {
-                            buf.append("<log4j:data name=\"");
-                            buf.append(Transform.escapeHtmlTags(key));
-                            buf.append("\" value=\"");
-                            buf.append(Transform.escapeHtmlTags(val));
-                            buf.append("\"/>\r\n");
-                        }
+                contextMap.forEach((key, val) -> {
+                    if (val != null) {
+                        buf.append("<log4j:data name=\"");
+                        buf.append(Transform.escapeHtmlTags(key));
+                        buf.append("\" value=\"");
+                        buf.append(Transform.escapeHtmlTags(Objects.toString(val, null)));
+                        buf.append("\"/>\r\n");
                     }
                 });
                 buf.append("</log4j:properties>\r\n");

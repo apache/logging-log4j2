@@ -63,7 +63,7 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
         final Holder<Boolean> contextPrinting = new BooleanHolder();
         final Holder<String> dateFormat = new Holder<>();
         final Holder<String> timezone = new Holder<>();
-        forEachElement(layoutElement.getElementsByTagName("param"), (currentElement) -> {
+        forEachElement(layoutElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals(PARAM_TAG)) {
                 switch (currentElement.getAttribute(NAME_ATTR)) {
                     case THREAD_PRINTING_PARAM:

@@ -42,8 +42,6 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 /**
  * Unit tests {@link MapMessage}s for JdbcAppender using a {@link DataSource} configuration.
@@ -75,12 +73,7 @@ public class JdbcAppenderMapMessageDataSourceTest {
     private DataSource createMockDataSource() {
         try {
             final DataSource dataSource = mock(DataSource.class);
-            given(dataSource.getConnection()).willAnswer(new Answer<Connection>() {
-                @Override
-                public Connection answer(final InvocationOnMock invocation) throws Throwable {
-                    return jdbcRule.getConnectionSource().getConnection();
-                }
-            });
+            given(dataSource.getConnection()).willAnswer(invocation -> jdbcRule.getConnectionSource().getConnection());
             return dataSource;
         } catch (final SQLException e) {
             Throwables.rethrow(e);

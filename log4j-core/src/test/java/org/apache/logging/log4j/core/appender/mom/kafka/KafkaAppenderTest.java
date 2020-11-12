@@ -29,13 +29,11 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.kafka.clients.producer.MockProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.log4j.MDC;
@@ -94,12 +92,7 @@ public class KafkaAppenderTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		KafkaManager.producerFactory = new KafkaProducerFactory() {
-			@Override
-			public Producer<byte[], byte[]> newKafkaProducer(final Properties config) {
-				return kafka;
-			}
-		};
+		KafkaManager.producerFactory = config -> kafka;
 	}
 
 	@Rule

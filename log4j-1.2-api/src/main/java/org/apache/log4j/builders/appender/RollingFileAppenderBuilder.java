@@ -80,7 +80,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         Holder<String> maxSize = new Holder<>();
         Holder<String> maxBackups = new Holder<>();
         Holder<String> level = new Holder<>();
-        forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+        forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
                     layout.set(config.parseLayout(currentElement));

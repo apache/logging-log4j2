@@ -83,7 +83,7 @@ public class ThreadContextDataInjector {
         for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
             try {
                 for (final ContextDataProvider provider : ServiceLoader.load(ContextDataProvider.class, classLoader)) {
-                    if (providers.stream().noneMatch((p) -> p.getClass().isAssignableFrom(provider.getClass()))) {
+                    if (providers.stream().noneMatch(p -> p.getClass().isAssignableFrom(provider.getClass()))) {
                         providers.add(provider);
                     }
                 }

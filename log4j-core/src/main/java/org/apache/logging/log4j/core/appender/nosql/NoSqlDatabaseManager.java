@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.message.MapMessage;
-import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
@@ -86,12 +85,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
 
     private void setFields(final MapMessage<?, ?> mapMessage, final NoSqlObject<W> noSqlObject) {
         // Map without calling org.apache.logging.log4j.message.MapMessage#getData() which makes a copy of the map.
-        mapMessage.forEach(new BiConsumer<String, Object>() {
-            @Override
-            public void accept(final String key, final Object value) {
-                noSqlObject.set(key, value);
-            }
-        });
+        mapMessage.forEach((key, value) -> noSqlObject.set(key, value));
     }
 
     private void setFields(final LogEvent event, final NoSqlObject<W> entity) {
@@ -147,12 +141,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
             entity.set("contextMap", (Object) null);
         } else {
             final NoSqlObject<W> contextMapEntity = this.connection.createObject();
-            contextMap.forEach(new BiConsumer<String, String>() {
-                @Override
-                public void accept(final String key, final String val) {
-                    contextMapEntity.set(key, val);
-                }
-            });
+            contextMap.forEach((key, val) -> contextMapEntity.set(key, val));
             entity.set("contextMap", contextMapEntity);
         }
 

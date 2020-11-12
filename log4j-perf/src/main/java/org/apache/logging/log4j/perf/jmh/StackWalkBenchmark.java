@@ -63,7 +63,7 @@ public class StackWalkBenchmark {
     @Benchmark
     public void throwableSearch(Blackhole bh)  {
 
-        stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> {
+        stackDriver.deepCall(initialDepth, callDepth, fqcn -> {
             final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
             boolean found = false;
             for (int i = 0; i < stackTrace.length; i++) {
@@ -82,20 +82,18 @@ public class StackWalkBenchmark {
 
     @Benchmark
     public void stackWalkerWalk(Blackhole bh) {
-        stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> {
-            return walker.walk(
-                    s -> s.dropWhile(f -> !f.getClassName().equals(fqcn)) // drop the top frames until we reach the logger
-                            .dropWhile(f -> f.getClassName().equals(fqcn)) // drop the logger frames
-                            .findFirst())
-                    .get()
-                    .toStackTraceElement();
-        });
+        stackDriver.deepCall(initialDepth, callDepth, fqcn -> walker.walk(
+                s -> s.dropWhile(f -> !f.getClassName().equals(fqcn)) // drop the top frames until we reach the logger
+                        .dropWhile(f -> f.getClassName().equals(fqcn)) // drop the logger frames
+                        .findFirst())
+                .get()
+                .toStackTraceElement());
     }
 
     @Benchmark
     public void stackWalkerArray(Blackhole bh)  {
 
-        stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> {
+        stackDriver.deepCall(initialDepth, callDepth, fqcn -> {
             FQCN.set(fqcn);
             final StackWalker.StackFrame walk = walker.walk(LOCATOR);
             final StackTraceElement element = walk == null ? null : walk.toStackTraceElement();
@@ -107,9 +105,7 @@ public class StackWalkBenchmark {
     @Benchmark
     public void baseline(Blackhole bh)  {
 
-        stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> {
-            return null;
-        });
+        stackDriver.deepCall(initialDepth, callDepth, fqcn -> null);
     }
 
     static final class FqcnCallerLocator implements Function<Stream<StackWalker.StackFrame>, StackWalker.StackFrame> {

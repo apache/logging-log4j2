@@ -73,7 +73,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         Holder<String> facility = new Holder<>();
         Holder<String> level = new Holder<>();
         Holder<String> host = new Holder<>();
-        forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+        forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
                     layout.set(config.parseLayout(currentElement));

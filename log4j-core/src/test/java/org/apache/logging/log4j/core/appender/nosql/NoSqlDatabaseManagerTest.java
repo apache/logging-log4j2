@@ -41,9 +41,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -70,18 +68,8 @@ public class NoSqlDatabaseManagerTest {
     @Before
     public void setUp() {
         given(provider.getConnection()).willReturn(connection);
-        given(connection.createObject()).willAnswer(new Answer<DefaultNoSqlObject>() {
-            @Override
-            public DefaultNoSqlObject answer(final InvocationOnMock invocation) throws Throwable {
-                return new DefaultNoSqlObject();
-            }
-        });
-        given(connection.createList(anyInt())).willAnswer(new Answer<DefaultNoSqlObject[]>() {
-            @Override
-            public DefaultNoSqlObject[] answer(final InvocationOnMock invocation) throws Throwable {
-                return new DefaultNoSqlObject[invocation.<Integer>getArgument(0)];
-            }
-        });
+        given(connection.createObject()).willAnswer(invocation -> new DefaultNoSqlObject());
+        given(connection.createList(anyInt())).willAnswer(invocation -> new DefaultNoSqlObject[invocation.<Integer>getArgument(0)]);
     }
 
     @Test

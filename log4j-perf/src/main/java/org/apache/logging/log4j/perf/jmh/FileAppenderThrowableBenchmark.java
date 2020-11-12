@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.FileHandler;
@@ -119,11 +118,8 @@ public class FileAppenderThrowableBenchmark {
     interface TestIface30 extends ThrowableHelper {}
 
     private static Throwable getComplexThrowable() {
-        ThrowableHelper helper = new ThrowableHelper() {
-            @Override
-            public void action() {
-                throw new IllegalStateException("Test Throwable");
-            }
+        ThrowableHelper helper = () -> {
+            throw new IllegalStateException("Test Throwable");
         };
         try {
             for (int i = 0; i < 31; i++) {
@@ -131,14 +127,11 @@ public class FileAppenderThrowableBenchmark {
                 helper = (ThrowableHelper) Proxy.newProxyInstance(
                         FileAppenderThrowableBenchmark.class.getClassLoader(),
                         new Class<?>[]{Class.forName(FileAppenderThrowableBenchmark.class.getName() + "$TestIface" + (i % 31))},
-                        new InvocationHandler() {
-                            @Override
-                            public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-                                try {
-                                    return method.invoke(delegate, args);
-                                } catch (final InvocationTargetException e) {
-                                    throw e.getCause();
-                                }
+                        (InvocationHandler) (proxy, method, args) -> {
+                            try {
+                                return method.invoke(delegate, args);
+                            } catch (final InvocationTargetException e) {
+                                throw e.getCause();
                             }
                         });
             }

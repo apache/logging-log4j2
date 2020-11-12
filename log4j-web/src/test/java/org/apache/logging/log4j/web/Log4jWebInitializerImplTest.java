@@ -303,13 +303,10 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final LoggerContext context = ContextAnchor.THREAD_CONTEXT.get();
-                assertNotNull("The context should not be null.", context);
-                assertSame("The context is not correct.", loggerContext, context);
-            }
+        final Runnable runnable = () -> {
+            final LoggerContext context = ContextAnchor.THREAD_CONTEXT.get();
+            assertNotNull("The context should not be null.", context);
+            assertSame("The context is not correct.", loggerContext, context);
         };
 
         this.initializerImpl.wrapExecution(runnable);

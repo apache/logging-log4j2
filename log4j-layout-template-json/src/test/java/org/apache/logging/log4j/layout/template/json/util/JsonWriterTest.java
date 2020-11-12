@@ -377,12 +377,7 @@ public class JsonWriterTest {
         final String expectedJson = "\"foo\\tbar\\tbuzz\"";
         @SuppressWarnings("Convert2Lambda")
         final String actualJson = WRITER.use(() ->
-                WRITER.writeString(new StringBuilderFormattable() {
-                    @Override
-                    public void formatTo(StringBuilder stringBuilder) {
-                        stringBuilder.append("foo\tbar\tbuzz");
-                    }
-                }));
+                WRITER.writeString(stringBuilder -> stringBuilder.append("foo\tbar\tbuzz")));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 
@@ -396,12 +391,7 @@ public class JsonWriterTest {
                 '"';
         @SuppressWarnings("Convert2Lambda")
         final String actualJson = WRITER.use(() ->
-                WRITER.writeString(new StringBuilderFormattable() {
-                    @Override
-                    public void formatTo(StringBuilder stringBuilder) {
-                        stringBuilder.append(excessiveString);
-                    }
-                }));
+                WRITER.writeString(stringBuilder -> stringBuilder.append(excessiveString)));
         Assertions.assertThat(actualJson).isEqualTo(expectedJson);
     }
 

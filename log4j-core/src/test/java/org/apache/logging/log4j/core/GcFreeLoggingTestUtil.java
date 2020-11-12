@@ -81,26 +81,23 @@ public enum GcFreeLoggingTestUtil {;
                 "com/google/monitoring/runtime/instrumentation/Sampler", //
         };
         final AtomicBoolean samplingEnabled = new AtomicBoolean(true);
-        final Sampler sampler = new Sampler() {
-            @Override
-            public void sampleAllocation(final int count, final String desc, final Object newObj, final long size) {
-                if (!samplingEnabled.get()) {
-                    return;
-                }
-                for (int i = 0; i < exclude.length; i++) {
-                    if (exclude[i].equals(desc)) {
-                        return; // exclude
-                    }
-                }
-                System.err.println("I just allocated the object " + newObj +
-                        " of type " + desc + " whose size is " + size);
-                if (count != -1) {
-                    System.err.println("It's an array of size " + count);
-                }
-
-                // show a stack trace to see which line caused allocation
-                new RuntimeException().printStackTrace();
+        final Sampler sampler = (count, desc, newObj, size) -> {
+            if (!samplingEnabled.get()) {
+                return;
             }
+            for (int i = 0; i < exclude.length; i++) {
+                if (exclude[i].equals(desc)) {
+                    return; // exclude
+                }
+            }
+            System.err.println("I just allocated the object " + newObj +
+                    " of type " + desc + " whose size is " + size);
+            if (count != -1) {
+                System.err.println("It's an array of size " + count);
+            }
+
+            // show a stack trace to see which line caused allocation
+            new RuntimeException().printStackTrace();
         };
         Thread.sleep(500);
         final StringMapMessage mapMessage = new StringMapMessage().with("eventId", "Login");

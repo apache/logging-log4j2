@@ -350,16 +350,13 @@ public class FlumePersistentAppenderTest {
     @Test
 	public void testLogInterrupted() {
 		final ExecutorService executor = Executors.newSingleThreadExecutor();
-		executor.execute(new Runnable() {
-			@Override
-            public void run() {
-				executor.shutdownNow();
-				final Logger logger = LogManager.getLogger("EventLogger");
-				final Marker marker = MarkerManager.getMarker("EVENT");
-				logger.info(marker, "This is a test message");
-				Assert.assertTrue("Interruption status not preserved", Thread.currentThread().isInterrupted());
-			}
-		});
+		executor.execute(() -> {
+        	executor.shutdownNow();
+        	final Logger logger = LogManager.getLogger("EventLogger");
+        	final Marker marker = MarkerManager.getMarker("EVENT");
+        	logger.info(marker, "This is a test message");
+        	Assert.assertTrue("Interruption status not preserved", Thread.currentThread().isInterrupted());
+        });
 	}
 
     /*

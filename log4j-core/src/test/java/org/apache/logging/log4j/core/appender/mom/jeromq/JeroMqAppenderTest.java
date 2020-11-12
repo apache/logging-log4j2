@@ -93,12 +93,9 @@ public class JeroMqAppenderTest {
             appender.resetSendRcs();
             final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(nThreads);
             for (int i = 0; i < 10.; i++) {
-                fixedThreadPool.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        logger.info("Hello");
-                        logger.info("Again");
-                    }
+                fixedThreadPool.submit(() -> {
+                    logger.info("Hello");
+                    logger.info("Again");
                 });
             }
             final List<String> list = future.get();

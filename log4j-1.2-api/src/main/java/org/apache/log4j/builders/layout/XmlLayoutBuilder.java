@@ -58,7 +58,7 @@ public class XmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
     public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
         final Holder<Boolean> properties = new BooleanHolder();
         final Holder<Boolean> locationInfo = new BooleanHolder();
-        forEachElement(layoutElement.getElementsByTagName(PARAM_TAG), (currentElement) -> {
+        forEachElement(layoutElement.getElementsByTagName(PARAM_TAG), currentElement -> {
             if (PROPERTIES.equalsIgnoreCase(currentElement.getAttribute("name"))) {
                 properties.set(Boolean.parseBoolean(currentElement.getAttribute("value")));
             } else if (LOCATION_INFO.equalsIgnoreCase(currentElement.getAttribute("name"))) {

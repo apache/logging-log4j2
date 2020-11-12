@@ -32,7 +32,6 @@ import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
-import org.apache.logging.log4j.message.ParameterConsumer;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.StringMap;
@@ -253,11 +252,6 @@ public class RingBufferLogEventTest {
     @Test
     public void testForEachParameterNothingSet() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
-        evt.forEachParameter(new ParameterConsumer<Void>() {
-            @Override
-            public void accept(final Object parameter, final int parameterIndex, final Void state) {
-                fail("Should not have been called");
-            }
-        }, null);
+        evt.forEachParameter((parameter, parameterIndex, state) -> fail("Should not have been called"), null);
     }
 }

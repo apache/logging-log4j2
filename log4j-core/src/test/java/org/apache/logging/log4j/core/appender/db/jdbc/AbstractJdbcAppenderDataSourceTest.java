@@ -34,8 +34,6 @@ import org.h2.util.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
@@ -62,12 +60,7 @@ public abstract class AbstractJdbcAppenderDataSourceTest {
     private DataSource createMockDataSource() {
         try {
             final DataSource dataSource = mock(DataSource.class);
-            given(dataSource.getConnection()).willAnswer(new Answer<Connection>() {
-                @Override
-                public Connection answer(final InvocationOnMock invocation) throws Throwable {
-                    return jdbcRule.getConnectionSource().getConnection();
-                }
-            });
+            given(dataSource.getConnection()).willAnswer(invocation -> jdbcRule.getConnectionSource().getConnection());
             return dataSource;
         } catch (final SQLException e) {
             Throwables.rethrow(e);

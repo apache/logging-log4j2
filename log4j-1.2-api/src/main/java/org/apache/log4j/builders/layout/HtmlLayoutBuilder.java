@@ -57,7 +57,7 @@ public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
     public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
         final Holder<String> title = new Holder<>();
         final Holder<Boolean> locationInfo = new BooleanHolder();
-        forEachElement(layoutElement.getElementsByTagName("param"), (currentElement) -> {
+        forEachElement(layoutElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals(PARAM_TAG)) {
                 if (TITLE.equalsIgnoreCase(currentElement.getAttribute("name"))) {
                     title.set(currentElement.getAttribute("value"));

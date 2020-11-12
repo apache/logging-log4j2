@@ -353,7 +353,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             PropertySetter propSetter = new PropertySetter(appender);
 
             appender.setName(subst(appenderElement.getAttribute(NAME_ATTR)));
-            forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+            forEachElement(appenderElement.getChildNodes(), currentElement -> {
                 // Parse appender parameters
                 switch (currentElement.getTagName()) {
                     case PARAM_TAG:
@@ -427,7 +427,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             RewritePolicy policy = LoaderUtil.newInstanceOf(className);
             PropertySetter propSetter = new PropertySetter(policy);
 
-            forEachElement(element.getChildNodes(), (currentElement) -> {
+            forEachElement(element.getChildNodes(), currentElement -> {
                 if (currentElement.getTagName().equalsIgnoreCase(PARAM_TAG)) {
                     setParameter(currentElement, propSetter);
                 }
@@ -462,7 +462,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             eh.setAppender(appender);
 
             PropertySetter propSetter = new PropertySetter(eh);
-            forEachElement(element.getChildNodes(), (currentElement) -> {
+            forEachElement(element.getChildNodes(), currentElement -> {
                 String tagName = currentElement.getTagName();
                 if (tagName.equals(PARAM_TAG)) {
                     setParameter(currentElement, propSetter);
@@ -482,7 +482,7 @@ public class XmlConfiguration extends Log4j1Configuration {
         Filter filter = manager.parseFilter(className, filterElement, this);
         if (filter == null) {
             PropertySetter propSetter = new PropertySetter(filter);
-            forEachElement(filterElement.getChildNodes(), (currentElement) -> {
+            forEachElement(filterElement.getChildNodes(), currentElement -> {
                 String tagName = currentElement.getTagName();
                 if (tagName.equals(PARAM_TAG)) {
                     setParameter(currentElement, propSetter);
@@ -527,7 +527,7 @@ public class XmlConfiguration extends Log4j1Configuration {
 
         final PropertySetter propSetter = new PropertySetter(loggerConfig);
         loggerConfig.getAppenderRefs().clear();
-        forEachElement(catElement.getChildNodes(), (currentElement) -> {
+        forEachElement(catElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case APPENDER_REF_TAG: {
                     Appender appender = findAppenderByReference(currentElement);
@@ -574,7 +574,7 @@ public class XmlConfiguration extends Log4j1Configuration {
         try {
             Layout layout = LoaderUtil.newInstanceOf(className);
             PropertySetter propSetter = new PropertySetter(layout);
-            forEachElement(layout_element.getChildNodes(), (currentElement) -> {
+            forEachElement(layout_element.getChildNodes(), currentElement -> {
                 String tagName = currentElement.getTagName();
                 if (tagName.equals(PARAM_TAG)) {
                     setParameter(currentElement, propSetter);
@@ -696,7 +696,7 @@ public class XmlConfiguration extends Log4j1Configuration {
         final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(status);
         statusConfig.initialize();
 
-        forEachElement(element.getChildNodes(), (currentElement) -> {
+        forEachElement(element.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case CATEGORY: case LOGGER_ELEMENT:
                     parseCategory(currentElement);

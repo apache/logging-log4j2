@@ -46,7 +46,7 @@ public class StringMatchFilterBuilder extends AbstractBuilder implements FilterB
     public Filter parseFilter(Element filterElement, XmlConfiguration config) {
         final Holder<Boolean> acceptOnMatch = new BooleanHolder();
         final Holder<String> text = new Holder<>();
-        forEachElement(filterElement.getElementsByTagName("param"), (currentElement) -> {
+        forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals("param")) {
                 switch (currentElement.getAttribute(NAME_ATTR)) {
                     case STRING_TO_MATCH:

@@ -17,11 +17,9 @@
 
 package org.apache.logging.log4j.core.appender.mom.kafka;
 
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.producer.MockProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -54,12 +52,7 @@ public class KafkaAppenderCloseTimeoutTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        KafkaManager.producerFactory = new KafkaProducerFactory() {
-            @Override
-            public Producer<byte[], byte[]> newKafkaProducer(final Properties config) {
-                return kafka;
-            }
-        };
+        KafkaManager.producerFactory = config -> kafka;
     }
 
     @Rule

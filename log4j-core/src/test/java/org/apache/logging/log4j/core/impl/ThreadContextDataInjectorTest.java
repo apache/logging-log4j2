@@ -124,12 +124,7 @@ public class ThreadContextDataInjectorTest {
     public void testInheritableThreadContextImmutability() throws Throwable {
         prepareThreadContext(true);
         try {
-            newSingleThreadExecutor().submit(new Runnable() {
-                @Override
-                public void run() {
-                    testContextDataInjector();
-                }
-            }).get();
+            newSingleThreadExecutor().submit(this::testContextDataInjector).get();
         } catch (final ExecutionException ee) {
             throw ee.getCause();
         }

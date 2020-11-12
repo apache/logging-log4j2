@@ -71,7 +71,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         Holder<Layout> layout = new Holder<>();
         Holder<List<Filter>> filters = new Holder<>(new ArrayList<>());
         Holder<String> level = new Holder<>();
-        forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+        forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
                     layout.set(config.parseLayout(currentElement));

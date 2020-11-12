@@ -62,12 +62,7 @@ public class ConcurrentLoggingWithJsonLayoutTest {
 
             // Appender is configured with ignoreExceptions="false";
             // any exceptions are propagated to the caller, so we can catch them here.
-            t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                @Override
-                public void uncaughtException(final Thread t, final Throwable e) {
-                    thrown.add(e);
-                }
-            });
+            t.setUncaughtExceptionHandler((t1, e) -> thrown.add(e));
             t.start();
         }
 

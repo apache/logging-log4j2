@@ -77,7 +77,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         Holder<Boolean> append = new BooleanHolder();
         Holder<Boolean> bufferedIo = new BooleanHolder();
         Holder<Integer> bufferSize = new Holder<>(8192);
-        forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+        forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
                     layout.set(config.parseLayout(currentElement));

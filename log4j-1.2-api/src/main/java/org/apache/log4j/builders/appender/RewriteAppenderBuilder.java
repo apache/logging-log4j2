@@ -72,7 +72,7 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
         Holder<RewritePolicy> rewritePolicyHolder = new Holder<>();
         Holder<String> level = new Holder<>();
         Holder<Filter> filter = new Holder<>();
-        forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+        forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case APPENDER_REF_TAG:
                     Appender appender = config.findAppenderByReference(currentElement);

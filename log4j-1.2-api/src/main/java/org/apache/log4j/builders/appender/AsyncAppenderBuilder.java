@@ -70,7 +70,7 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
         Holder<Boolean> includeLocation = new BooleanHolder();
         Holder<String> level = new Holder<>("trace");
         Holder<Integer> bufferSize = new Holder<>(1024);
-        forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+        forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case APPENDER_REF_TAG:
                     Appender appender = config.findAppenderByReference(currentElement);
