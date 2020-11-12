@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2019-xx-xx" description="GA Release 3.0.0">
+      <action issue="LOG4J2-2916" dev="vy" type="fix" due-to="wuqian0808">
+        Avoid redundant Kafka producer instantiation causing thread leaks.
+      </action>
       <action dev="vy" type="update">
         Update jetty-util from 8.2.0.v20160908 to 9.4.31.v20200723.
       </action>
