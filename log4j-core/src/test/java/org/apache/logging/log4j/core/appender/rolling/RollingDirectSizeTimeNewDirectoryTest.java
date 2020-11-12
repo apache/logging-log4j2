@@ -24,6 +24,7 @@ import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
@@ -46,8 +47,7 @@ public class RollingDirectSizeTimeNewDirectoryTest {
     @Test
     public void streamClosedError() throws Exception {
 
-        final Logger logger =
-                loggerContextRule.getLogger(RollingDirectSizeTimeNewDirectoryTest.class);
+        final Logger logger = loggerContextRule.getLogger(RollingDirectSizeTimeNewDirectoryTest.class);
 
         for (int i = 0; i < 1000; i++) {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
@@ -59,32 +59,33 @@ public class RollingDirectSizeTimeNewDirectoryTest {
 
         final File logDir = new File(DIR);
         final File[] logFolders = logDir.listFiles();
-        assertNotNull(logFolders);
+        assertNotNull("Not a folder: " + logDir, logFolders);
         Arrays.sort(logFolders);
 
         try {
-
             final int minExpectedLogFolderCount = 2;
             assertTrue(
-                    "was expecting at least " + minExpectedLogFolderCount + " folders, " +
-                            "found " + logFolders.length,
+                    "was expecting at least " + minExpectedLogFolderCount + " folders, " + "found " + logFolders.length,
                     logFolders.length >= minExpectedLogFolderCount);
 
             for (int logFolderIndex = 0; logFolderIndex < logFolders.length; ++logFolderIndex) {
 
                 File logFolder = logFolders[logFolderIndex];
                 File[] logFiles = logFolder.listFiles();
+                assertNotNull("Not a folder: " + logFolder, logFiles);
                 Arrays.sort(logFiles);
-                assertTrue(
-                        "no files found in folder: " + logFolder,
-                        logFiles != null && logFiles.length > 0);
-
+                if (logFolderIndex == 0 && logFolders.length > 0 && logFiles.length == 0) {
+                    // In a slow execution period, it is possible for the initial directory to be
+                    // empty because it has not received events yet. If this is the case, then the
+                    // next directory MUST contain at least one log file.
+                } else {
+                    assertTrue("no files found in folder: " + logFolder, ArrayUtils.isNotEmpty(logFiles));
+                }
                 final int minExpectedLogFileCount = 2;
-                if (logFolderIndex > 0
-                        && logFolderIndex < logFolders.length - 1) {
+                if (logFolderIndex > 0 && logFolderIndex < logFolders.length - 1) {
                     assertTrue(
-                            "was expecting at least " + minExpectedLogFileCount + " files, " +
-                                    "found " + logFiles.length + ": " + Arrays.toString(logFiles),
+                            "was expecting at least " + minExpectedLogFileCount + " files, " + "found "
+                                    + logFiles.length + ": " + Arrays.toString(logFiles),
                             logFiles.length >= minExpectedLogFileCount);
                 }
             }
