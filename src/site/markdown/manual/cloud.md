@@ -140,28 +140,26 @@ will be formatted without newlines.
             port="12345"
             protocol="tcp"
             bufferedIo="true">
-        <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json">
-            <EventTemplateAdditionalFields>
-                <EventTemplateAdditionalField key="containerId" value="${docker:containerId:-}"/>
-                <EventTemplateAdditionalField key="application" value="${lower:${spring:spring.application.name:-spring}}"/>
-                <EventTemplateAdditionalField key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
-                <EventTemplateAdditionalField key="kubernetes.containerId" value="${k8s:containerId:-}"/>
-                <EventTemplateAdditionalField key="kubernetes.containerName" value="${k8s:containerName:-}"/>
-                <EventTemplateAdditionalField key="kubernetes.host" value="${k8s:host:-}"/>
-                <EventTemplateAdditionalField key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
-                <EventTemplateAdditionalField key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
-                <EventTemplateAdditionalField key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
-                <EventTemplateAdditionalField key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
-                <EventTemplateAdditionalField key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
-                <EventTemplateAdditionalField key="kubernetes.podID" value="${k8s:podId:-}"/>
-                <EventTemplateAdditionalField key="kubernetes.podIP" value="${k8s:podIp:-}"/>
-                <EventTemplateAdditionalField key="kubernetes.podName" value="${k8s:podName:-}"/>
-                <EventTemplateAdditionalField key="kubernetes.imageId" value="${k8s:imageId:-}"/>
-                <EventTemplateAdditionalField key="kubernetes.imageName" value="${k8s:imageName:-}"/>
-            </EventTemplateAdditionalFields>
-        </JsonTemplateLayout>
+      <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json">
+        <EventTemplateAdditionalField key="containerId" value="${docker:containerId:-}"/>
+        <EventTemplateAdditionalField key="application" value="${lower:${spring:spring.application.name:-spring}}"/>
+        <EventTemplateAdditionalField key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.containerId" value="${k8s:containerId:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.containerName" value="${k8s:containerName:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.host" value="${k8s:host:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.podID" value="${k8s:podId:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.podIP" value="${k8s:podIp:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.podName" value="${k8s:podName:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.imageId" value="${k8s:imageId:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.imageName" value="${k8s:imageName:-}"/>
+      </JsonTemplateLayout>
     </Socket>
-    
+
 The JsonTemplateLayout can also be used to generate JSON that matches the GELF specification which can     
 format the message attribute using a pattern in accordance with the PatternLayout. For example, the following
 template, named EnhancedGelf.json, can be used to generate GELF-compliant data that can be passed to Logstash. 
@@ -212,7 +210,7 @@ can be queried.
             "stringified": true
         }
     }
-    
+
 The logging configuration to use this template would be    
 
     <Socket name="Elastic"
@@ -221,33 +219,32 @@ The logging configuration to use this template would be
             protocol="tcp"
             bufferedIo="true">
       <JsonTemplateLayout eventTemplateUri="classpath:EnhancedGelf.json" nullEventDelimiterEnabled="true">
-        <EventTemplateAdditionalFields>
-          <EventTemplateAdditionalField key="containerId" value="${docker:containerId:-}"/>
-          <EventTemplateAdditionalField key="application" value="${lower:${spring:spring.application.name:-spring}}"/>
-          <EventTemplateAdditionalField key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
-          <EventTemplateAdditionalField key="kubernetes.containerId" value="${k8s:containerId:-}"/>
-          <EventTemplateAdditionalField key="kubernetes.containerName" value="${k8s:containerName:-}"/>
-          <EventTemplateAdditionalField key="kubernetes.host" value="${k8s:host:-}"/>
-          <EventTemplateAdditionalField key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
-          <EventTemplateAdditionalField key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
-          <EventTemplateAdditionalField key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
-          <EventTemplateAdditionalField key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
-          <EventTemplateAdditionalField key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
-          <EventTemplateAdditionalField key="kubernetes.podID" value="${k8s:podId:-}"/>
-          <EventTemplateAdditionalField key="kubernetes.podIP" value="${k8s:podIp:-}"/>
-          <EventTemplateAdditionalField key="kubernetes.podName" value="${k8s:podName:-}"/>
-          <EventTemplateAdditionalField key="kubernetes.imageId" value="${k8s:imageId:-}"/>
-          <EventTemplateAdditionalField key="kubernetes.imageName" value="${k8s:imageName:-}"/>
-        </EventTemplateAdditionalFields>
+        <EventTemplateAdditionalField key="containerId" value="${docker:containerId:-}"/>
+        <EventTemplateAdditionalField key="application" value="${lower:${spring:spring.application.name:-spring}}"/>
+        <EventTemplateAdditionalField key="kubernetes.serviceAccountName" value="${k8s:accountName:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.containerId" value="${k8s:containerId:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.containerName" value="${k8s:containerName:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.host" value="${k8s:host:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.labels.app" value="${k8s:labels.app:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.labels.pod-template-hash" value="${k8s:labels.podTemplateHash:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.master_url" value="${k8s:masterUrl:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.namespaceId" value="${k8s:namespaceId:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.namespaceName" value="${k8s:namespaceName:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.podID" value="${k8s:podId:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.podIP" value="${k8s:podIp:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.podName" value="${k8s:podName:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.imageId" value="${k8s:imageId:-}"/>
+        <EventTemplateAdditionalField key="kubernetes.imageName" value="${k8s:imageName:-}"/>
       </JsonTemplateLayout>
     </Socket>
+
 The significant difference with this configuration from the first example is that it references the 
 custom template and it specifies an event delimiter of a null character ('\0');   
-    
+
 Note: The level being passed with the above template does not strictly conform to the GELF spec as the
 Level being passed is the Log4j Level NOT the Level defined in the GELF spec. However, testing has shown 
 that Logstash, Elk, and Kibana are pretty tolerant of whatever data is passed to it.    
-    
+
 Finally, the GelfLayout can be used to generate GELF compliant output. Unlike the JsonTemplateLayout it 
 adheres closely to the GELF spec.    
 
@@ -299,7 +296,7 @@ and then forward these to (either console and/or) an Elasticsearch server.
       }
 
     }
-    
+
 When one of the GELF compliant formats is used Logstash should be configured as 
 
    gelf {

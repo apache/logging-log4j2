@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2019-xx-xx" description="GA Release 3.0.0">
+      <action issue="LOG4J2-2961" dev="vy" type="fix">
+        Fix reading of JsonTemplateLayout event additional fields from config.
+      </action>
       <action issue="LOG4J2-2916" dev="vy" type="fix" due-to="wuqian0808">
         Avoid redundant Kafka producer instantiation causing thread leaks.
       </action>

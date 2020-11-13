@@ -80,18 +80,14 @@ public class LogstashIT {
             .setCharset(CHARSET)
             .setEventTemplateUri("classpath:GelfLayout.json")
             .setEventDelimiter("\0")
-            .setEventTemplateAdditionalFields(JsonTemplateLayout
-                    .EventTemplateAdditionalFields
-                    .newBuilder()
-                    .setAdditionalFields(
-                            new EventTemplateAdditionalField[]{
-                                    EventTemplateAdditionalField
-                                            .newBuilder()
-                                            .setKey("host")
-                                            .setValue(HOST_NAME)
-                                            .build()
-                            })
-                    .build())
+            .setEventTemplateAdditionalFields(
+                    new EventTemplateAdditionalField[]{
+                            EventTemplateAdditionalField
+                                    .newBuilder()
+                                    .setKey("host")
+                                    .setValue(HOST_NAME)
+                                    .build()
+                    })
             .build();
 
     private static final EcsLayout ECS_LAYOUT = EcsLayout
@@ -108,23 +104,19 @@ public class LogstashIT {
             .setCharset(CHARSET)
             .setEventTemplateUri("classpath:EcsLayout.json")
             .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
-            .setEventTemplateAdditionalFields(JsonTemplateLayout
-                    .EventTemplateAdditionalFields
-                    .newBuilder()
-                    .setAdditionalFields(
-                            new EventTemplateAdditionalField[]{
-                                    EventTemplateAdditionalField
-                                            .newBuilder()
-                                            .setKey("service.name")
-                                            .setValue(SERVICE_NAME)
-                                            .build(),
-                                    EventTemplateAdditionalField
-                                            .newBuilder()
-                                            .setKey("event.dataset")
-                                            .setValue(EVENT_DATASET)
-                                            .build()
-                            })
-                    .build())
+            .setEventTemplateAdditionalFields(
+                    new EventTemplateAdditionalField[]{
+                            EventTemplateAdditionalField
+                                    .newBuilder()
+                                    .setKey("service.name")
+                                    .setValue(SERVICE_NAME)
+                                    .build(),
+                            EventTemplateAdditionalField
+                                    .newBuilder()
+                                    .setKey("event.dataset")
+                                    .setValue(EVENT_DATASET)
+                                    .build()
+                    })
             .build();
 
     private static final int LOG_EVENT_COUNT = 100;
