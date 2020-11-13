@@ -17,22 +17,18 @@
 -->
 <Configuration status="OFF">
   <Appenders>
-    <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%p %c{1.} [%t] %X{aKey} %X %m%ex%n"/>
-    </Console>
-    <File name="File"
-          fileName="target/gcFreeJsonTemplateLayoutLogging.log"
-          bufferedIO="false"
-          append="false">
-      <JsonTemplateLayout recyclerFactory="threadLocal"/>
-    </File>
+    <List name="List" raw="true">
+      <JsonTemplateLayout>
+        <EventTemplateAdditionalField key="stringField" value="string"/>
+        <EventTemplateAdditionalField key="numberField" value="1" type="JSON"/>
+        <EventTemplateAdditionalField key="objectField" value='{"numberField":1}' type="JSON"/>
+        <EventTemplateAdditionalField key="listField" value='[1, "two"]' type="JSON"/>
+      </JsonTemplateLayout>
+    </List>
   </Appenders>
   <Loggers>
-    <Root level="trace" includeLocation="false">
-      <Property name="prop1">value1</Property>
-      <Property name="prop2">value2</Property>
-      <appender-ref ref="Console" level="FATAL"/>
-      <appender-ref ref="File"/>
+    <Root level="TRACE">
+      <AppenderRef ref="List"/>
     </Root>
   </Loggers>
 </Configuration>

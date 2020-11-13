@@ -34,7 +34,6 @@ import org.apache.logging.log4j.core.lookup.MainMapLookup;
 import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields;
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
@@ -1221,7 +1220,7 @@ public class JsonTemplateLayoutTest {
         final String eventTemplate = "{}";
 
         // Create the layout.
-        final EventTemplateAdditionalField[] additionalFieldPairs = {
+        final EventTemplateAdditionalField[] additionalFields = {
                 EventTemplateAdditionalField
                         .newBuilder()
                         .setKey("number")
@@ -1240,10 +1239,6 @@ public class JsonTemplateLayoutTest {
                         .setType(EventTemplateAdditionalField.Type.JSON)
                         .build()
         };
-        final EventTemplateAdditionalFields additionalFields = EventTemplateAdditionalFields
-                .newBuilder()
-                .setAdditionalFields(additionalFieldPairs)
-                .build();
         final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)

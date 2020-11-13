@@ -43,18 +43,13 @@ public class GelfLayoutTest {
             .setConfiguration(CONFIGURATION)
             .setEventTemplateUri("classpath:GelfLayout.json")
             .setEventTemplateAdditionalFields(
-                    JsonTemplateLayout
-                            .EventTemplateAdditionalFields
-                            .newBuilder()
-                            .setAdditionalFields(
-                                    new EventTemplateAdditionalField[]{
-                                            EventTemplateAdditionalField
-                                                    .newBuilder()
-                                                    .setKey("host")
-                                                    .setValue(HOST_NAME)
-                                                    .build()
-                                    })
-                            .build())
+                    new EventTemplateAdditionalField[]{
+                            EventTemplateAdditionalField
+                                    .newBuilder()
+                                    .setKey("host")
+                                    .setValue(HOST_NAME)
+                                    .build()
+                    })
             .build();
 
     private static final GelfLayout GELF_LAYOUT = GelfLayout

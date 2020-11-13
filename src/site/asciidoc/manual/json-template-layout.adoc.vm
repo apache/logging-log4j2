@@ -242,14 +242,13 @@ custom fields:
 [source,xml]
 ----
 <JsonTemplateLayout eventTemplateUri="classpath:GelfLayout.json">
-    <EventTemplateAdditionalFields>
-        <EventTemplateAdditionalField key="host" value="www.apache.org"/>
-        <EventTemplateAdditionalField key="_serviceName" value="auth-service"/>
-        <EventTemplateAdditionalField key="_containerId" value="6ede3f0ca7d9"/>
-    </EventTemplateAdditionalFields>
+  <EventTemplateAdditionalField key="host" value="www.apache.org"/>
+  <EventTemplateAdditionalField key="_serviceName" value="auth-service"/>
+  <EventTemplateAdditionalField key="_containerId" value="6ede3f0ca7d9"/>
 </JsonTemplateLayout>
 ----
 
+The default `type` for the added new fields are `String`.
 One can also pass JSON literals into additional fields:
 
 [source,xml]

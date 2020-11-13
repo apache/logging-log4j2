@@ -43,23 +43,18 @@ public class EcsLayoutTest {
             .setConfiguration(CONFIGURATION)
             .setEventTemplateUri("classpath:EcsLayout.json")
             .setEventTemplateAdditionalFields(
-                    JsonTemplateLayout
-                            .EventTemplateAdditionalFields
-                            .newBuilder()
-                            .setAdditionalFields(
-                                    new EventTemplateAdditionalField[]{
-                                            EventTemplateAdditionalField
-                                                    .newBuilder()
-                                                    .setKey("service.name")
-                                                    .setValue(SERVICE_NAME)
-                                                    .build(),
-                                            EventTemplateAdditionalField
-                                                    .newBuilder()
-                                                    .setKey("event.dataset")
-                                                    .setValue(EVENT_DATASET)
-                                                    .build()
-                                    })
-                            .build())
+                    new EventTemplateAdditionalField[]{
+                            EventTemplateAdditionalField
+                                    .newBuilder()
+                                    .setKey("service.name")
+                                    .setValue(SERVICE_NAME)
+                                    .build(),
+                            EventTemplateAdditionalField
+                                    .newBuilder()
+                                    .setKey("event.dataset")
+                                    .setValue(EVENT_DATASET)
+                                    .build()
+                    })
             .build();
 
     private static final EcsLayout ECS_LAYOUT = EcsLayout

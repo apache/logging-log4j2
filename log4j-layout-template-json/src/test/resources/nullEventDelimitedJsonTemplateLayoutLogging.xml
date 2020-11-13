@@ -14,26 +14,25 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
 -->
 <Configuration status="OFF">
-    <Appenders>
-        <Socket name="Socket"
-                host="localhost"
-                port="50514"
-                protocol="TCP"
-                ignoreExceptions="false"
-                reconnectionDelay="100"
-                immediateFlush="true">
-            <JsonTemplateLayout eventTemplate='{"$resolver": "message"}'
-                                eventDelimiter=""
-                                nullEventDelimiterEnabled="true"
-                                charset="US-ASCII"/>
-        </Socket>
-    </Appenders>
-    <Loggers>
-        <Root level="TRACE">
-            <AppenderRef ref="Socket"/>
-        </Root>
-    </Loggers>
+  <Appenders>
+    <Socket name="Socket"
+            host="localhost"
+            port="50514"
+            protocol="TCP"
+            ignoreExceptions="false"
+            reconnectionDelay="100"
+            immediateFlush="true">
+      <JsonTemplateLayout eventTemplate='{"$resolver": "message"}'
+                          eventDelimiter=""
+                          nullEventDelimiterEnabled="true"
+                          charset="US-ASCII"/>
+    </Socket>
+  </Appenders>
+  <Loggers>
+    <Root level="TRACE">
+      <AppenderRef ref="Socket"/>
+    </Root>
+  </Loggers>
 </Configuration>
