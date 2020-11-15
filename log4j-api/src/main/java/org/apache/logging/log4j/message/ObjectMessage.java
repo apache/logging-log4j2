@@ -31,8 +31,8 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
 
     private static final long serialVersionUID = -5903272448334166185L;
 
-    private transient Object obj;
-    private transient String objectString;
+    protected transient Object obj;
+    protected transient String objectString;
 
     /**
      * Creates the ObjectMessage.
