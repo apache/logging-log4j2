@@ -74,7 +74,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     private String messagePattern;
     private transient Object[] argArray;
 
-    private String formattedMessage;
+    protected String formattedMessage;
     private transient Throwable throwable;
     private int[] indices;
     private int usedCount;
@@ -192,7 +192,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
         return formattedMessage;
     }
 
-    private static StringBuilder getThreadLocalStringBuilder() {
+    protected static StringBuilder getThreadLocalStringBuilder() {
         StringBuilder buffer = threadLocalStringBuilder.get();
         if (buffer == null) {
             buffer = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
