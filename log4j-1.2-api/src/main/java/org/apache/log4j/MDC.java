@@ -38,7 +38,7 @@ public final class MDC {
 
             @Override
             protected Map<String, Object> childValue(final Map<String, Object> parentValue) {
-                return parentValue == null ? new HashMap<String, Object>() : new HashMap<>(parentValue);
+                return parentValue == null ? new HashMap<>() : new HashMap<>(parentValue);
             }
         };
 
