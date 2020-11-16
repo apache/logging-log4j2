@@ -125,6 +125,7 @@ public class XmlConfiguration extends Log4j1Configuration {
         ParseAction action = new ParseAction() {
             @Override
             public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
+                @SuppressWarnings("resource") // The ConfigurationSource manages the InputStream.
                 InputSource inputSource = new InputSource(source.getInputStream());
                 inputSource.setSystemId("dummy://log4j.dtd");
                 return parser.parse(inputSource);
