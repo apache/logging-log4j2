@@ -44,8 +44,7 @@ public class Log4jEntityResolver implements EntityResolver {
                 in = new ByteArrayInputStream(new byte[0]);
             }
             return new InputSource(in);
-        } else {
-            return null;
         }
+        return null;
     }
 }

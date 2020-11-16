@@ -62,8 +62,7 @@ public class QuietWriter extends FilterWriter {
         if (eh == null) {
             // This is a programming error on the part of the enclosing appender.
             throw new IllegalArgumentException("Attempted to set null ErrorHandler.");
-        } else {
-            this.errorHandler = eh;
         }
+        this.errorHandler = eh;
     }
 }

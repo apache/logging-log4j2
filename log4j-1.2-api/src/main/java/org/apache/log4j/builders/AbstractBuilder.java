@@ -111,9 +111,8 @@ public abstract class AbstractBuilder {
         } else if (filter != null) {
             if (filter instanceof FilterWrapper) {
                 return ((FilterWrapper) filter).getFilter();
-            } else {
-                return new FilterAdapter(filter);
             }
+            return new FilterAdapter(filter);
         }
         return null;
     }

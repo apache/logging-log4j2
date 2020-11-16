@@ -293,36 +293,31 @@ public class XmlConfiguration extends Log4j1Configuration {
 
         if (appender != null) {
             return appender;
-        } else {
-            // Doesn't work on DOM Level 1 :
-            // Element element = doc.getElementById(appenderName);
-
-            // Endre's hack:
-            Element element = null;
-            NodeList list = doc.getElementsByTagName("appender");
-            for (int t = 0; t < list.getLength(); t++) {
-                Node node = list.item(t);
-                NamedNodeMap map = node.getAttributes();
-                Node attrNode = map.getNamedItem("name");
-                if (appenderName.equals(attrNode.getNodeValue())) {
-                    element = (Element) node;
-                    break;
-                }
-            }
-            // Hack finished.
-
-            if (element == null) {
-
-                LOGGER.error("No appender named [{}] could be found.", appenderName);
-                return null;
-            } else {
-                appender = parseAppender(element);
-                if (appender != null) {
-                    appenderMap.put(appenderName, appender);
-                }
-                return appender;
+        }
+        // Endre's hack:
+        Element element = null;
+        NodeList list = doc.getElementsByTagName("appender");
+        for (int t = 0; t < list.getLength(); t++) {
+            Node node = list.item(t);
+            NamedNodeMap map = node.getAttributes();
+            Node attrNode = map.getNamedItem("name");
+            if (appenderName.equals(attrNode.getNodeValue())) {
+                element = (Element) node;
+                break;
             }
         }
+        // Hack finished.
+
+        if (element == null) {
+
+            LOGGER.error("No appender named [{}] could be found.", appenderName);
+            return null;
+        }
+        appender = parseAppender(element);
+        if (appender != null) {
+            appenderMap.put(appenderName, appender);
+        }
+        return appender;
     }
 
     /**

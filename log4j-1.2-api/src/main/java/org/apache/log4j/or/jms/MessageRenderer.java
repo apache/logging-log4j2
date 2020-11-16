@@ -80,8 +80,7 @@ public class MessageRenderer implements ObjectRenderer {
                 LOGGER.error("Could not parse Message.", e);
             }
             return sb.toString();
-        } else {
-            return obj.toString();
         }
+        return obj.toString();
     }
 }

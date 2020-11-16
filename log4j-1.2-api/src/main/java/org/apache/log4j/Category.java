@@ -564,13 +564,12 @@ public class Category {
         ObjectRenderer renderer = rendererMap.get(c);
         if(renderer != null) {
             return renderer;
-        } else {
-            Class[] ia = c.getInterfaces();
-            for (Class clazz : ia) {
-                renderer = searchInterfaces(clazz);
-                if (renderer != null) {
-                    return renderer;
-                }
+        }
+        Class[] ia = c.getInterfaces();
+        for (Class clazz : ia) {
+            renderer = searchInterfaces(clazz);
+            if (renderer != null) {
+                return renderer;
             }
         }
         return null;

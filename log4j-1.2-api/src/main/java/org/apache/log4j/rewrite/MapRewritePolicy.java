@@ -105,9 +105,8 @@ public class MapRewritePolicy implements RewritePolicy {
                         .build();
             }
             return new LogEventAdapter(event);
-        } else {
-            return source;
         }
+        return source;
 
     }
 

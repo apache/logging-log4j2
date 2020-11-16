@@ -161,11 +161,10 @@ public class BuilderManager {
                 Constructor<T> constructor =
                         (Constructor<T>) clazz.getConstructor(constructorParams);
                 return constructor.newInstance(prefix, props);
-            } else {
-                @SuppressWarnings("unchecked")
-                T builder = (T) LoaderUtil.newInstanceOf(clazz);
-                return builder;
             }
+            @SuppressWarnings("unchecked")
+            T builder = (T) LoaderUtil.newInstanceOf(clazz);
+            return builder;
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
             LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
             return null;

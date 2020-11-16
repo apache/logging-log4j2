@@ -159,9 +159,8 @@ public class LogEventAdapter extends LoggingEvent {
     public Object getMDC(String key) {
         if (event.getContextData() != null) {
             return event.getContextData().getValue(key);
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**

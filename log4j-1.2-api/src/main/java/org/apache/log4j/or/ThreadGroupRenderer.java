@@ -45,13 +45,12 @@ public class ThreadGroupRenderer implements ObjectRenderer {
                 sb.append("]");
             }
             return sb.toString();
-        } else {
-            try {
-                // this is the best we can do
-                return obj.toString();
-            } catch(Exception ex) {
-                return ex.toString();
-            }
+        }
+        try {
+            // this is the best we can do
+            return obj.toString();
+        } catch(Exception ex) {
+            return ex.toString();
         }
     }
 }
