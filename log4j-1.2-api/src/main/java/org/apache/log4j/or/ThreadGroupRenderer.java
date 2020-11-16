@@ -22,6 +22,7 @@ import org.apache.log4j.Layout;
  */
 public class ThreadGroupRenderer implements ObjectRenderer {
 
+    @Override
     public
     String  doRender(Object obj) {
         if(obj instanceof ThreadGroup) {

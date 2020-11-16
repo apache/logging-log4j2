@@ -122,12 +122,14 @@ public class XmlConfiguration extends Log4j1Configuration {
     public void doConfigure() throws FactoryConfigurationError {
         ConfigurationSource source = getConfigurationSource();
         ParseAction action = new ParseAction() {
+            @Override
             public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
                 InputSource inputSource = new InputSource(source.getInputStream());
                 inputSource.setSystemId("dummy://log4j.dtd");
                 return parser.parse(inputSource);
             }
 
+            @Override
             public String toString() {
                 return getConfigurationSource().getLocation();
             }
@@ -746,14 +748,17 @@ public class XmlConfiguration extends Log4j1Configuration {
     private static class SAXErrorHandler implements org.xml.sax.ErrorHandler {
         private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
 
+        @Override
         public void error(final SAXParseException ex) {
             emitMessage("Continuable parsing error ", ex);
         }
 
+        @Override
         public void fatalError(final SAXParseException ex) {
             emitMessage("Fatal parsing error ", ex);
         }
 
+        @Override
         public void warning(final SAXParseException ex) {
             emitMessage("Parsing warning ", ex);
         }

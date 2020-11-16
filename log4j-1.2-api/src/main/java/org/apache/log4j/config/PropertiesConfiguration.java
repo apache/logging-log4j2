@@ -76,6 +76,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
         registry = new HashMap<>();
     }
 
+    @Override
     public void doConfigure() {
         InputStream is = getConfigurationSource().getInputStream();
         Properties props = new Properties();
@@ -582,6 +583,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
             this.value = value;
         }
 
+        @Override
         public String toString() {
             return key + "=" + value;
         }

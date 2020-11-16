@@ -33,6 +33,7 @@ public class MessageRenderer implements ObjectRenderer {
     /**
      Render a {@link javax.jms.Message}.
      */
+    @Override
     public
     String  doRender(Object obj) {
         if (obj instanceof Message) {

@@ -49,6 +49,7 @@ public class MapRewritePolicy implements RewritePolicy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public LoggingEvent rewrite(final LoggingEvent source) {
         Object msg = source.getMessage();
         if (msg instanceof MapMessage || msg instanceof Map) {

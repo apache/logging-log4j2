@@ -67,6 +67,7 @@ public class PropertyRewritePolicy implements RewritePolicy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public LoggingEvent rewrite(final LoggingEvent source) {
         if (!properties.isEmpty()) {
             Map<String, String> rewriteProps = source.getProperties() != null ? new HashMap<>(source.getProperties())

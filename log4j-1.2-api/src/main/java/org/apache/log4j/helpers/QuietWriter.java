@@ -37,6 +37,7 @@ public class QuietWriter extends FilterWriter {
         setErrorHandler(errorHandler);
     }
 
+    @Override
     public void write(String string) {
         if (string != null) {
             try {
@@ -48,6 +49,7 @@ public class QuietWriter extends FilterWriter {
         }
     }
 
+    @Override
     public void flush() {
         try {
             out.flush();
