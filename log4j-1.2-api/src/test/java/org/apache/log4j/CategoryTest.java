@@ -65,7 +65,7 @@ public class CategoryTest {
     public void before() {
         appender.clear();
     }
-    
+
     /**
      * Tests Category.forcedLog.
      */

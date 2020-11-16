@@ -29,7 +29,7 @@ import javax.jms.DeliveryMode;
  */
 public class MessageRenderer implements ObjectRenderer {
     private static final Logger LOGGER = StatusLogger.getLogger();
-    
+
     /**
      Render a {@link javax.jms.Message}.
      */
