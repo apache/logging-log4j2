@@ -89,6 +89,7 @@ public class XmlConfiguration extends Log4j1Configuration {
     private static final String THROWABLE_RENDERER_TAG = "throwableRenderer";
 
     public static final long DEFAULT_DELAY = 60000;
+
     /**
      * File name prefix for test configurations.
      */
@@ -115,7 +116,7 @@ public class XmlConfiguration extends Log4j1Configuration {
     }
 
     /**
-     * Configure log4j by reading in a log4j.dtd compliant XML
+     * Configures log4j by reading in a log4j.dtd compliant XML
      * configuration file.
      */
     @Override
