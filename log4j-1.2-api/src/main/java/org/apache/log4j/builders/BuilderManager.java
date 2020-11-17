@@ -58,7 +58,6 @@ public class BuilderManager {
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
             try {
-                @SuppressWarnings("unchecked")
                 AppenderBuilder builder = (AppenderBuilder) LoaderUtil.newInstanceOf(plugin.getPluginClass());
                 return builder.parseAppender(appenderElement, config);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
@@ -84,7 +83,6 @@ public class BuilderManager {
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
             try {
-                @SuppressWarnings("unchecked")
                 FilterBuilder builder = (FilterBuilder) LoaderUtil.newInstanceOf(plugin.getPluginClass());
                 return builder.parseFilter(filterElement, config);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
@@ -109,7 +107,6 @@ public class BuilderManager {
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
             try {
-                @SuppressWarnings("unchecked")
                 LayoutBuilder builder = (LayoutBuilder) LoaderUtil.newInstanceOf(plugin.getPluginClass());
                 return builder.parseLayout(layoutElement, config);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
@@ -133,7 +130,6 @@ public class BuilderManager {
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
             try {
-                @SuppressWarnings("unchecked")
                 RewritePolicyBuilder builder = (RewritePolicyBuilder) LoaderUtil.newInstanceOf(plugin.getPluginClass());
                 return builder.parseRewritePolicy(rewriteElement, config);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
