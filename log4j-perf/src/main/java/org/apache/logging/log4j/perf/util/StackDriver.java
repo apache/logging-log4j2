@@ -27,9 +27,8 @@ public class StackDriver {
         if (--initialDepth == 0) {
             Processor processor = new Processor();
             return processor.apply(targetDepth, supplier);
-        } else {
-            return deepCall(initialDepth, targetDepth, supplier);
         }
+        return deepCall(initialDepth, targetDepth, supplier);
     }
 
     public static class Processor implements BiFunction<Integer, Function<String, StackTraceElement>, StackTraceElement> {
@@ -39,9 +38,8 @@ public class StackDriver {
         public StackTraceElement apply(Integer depth, Function<String, StackTraceElement> function) {
             if (--depth == 0) {
                 return function.apply(FQCN);
-            } else {
-                return apply(depth, function);
             }
+            return apply(depth, function);
         }
     }
 }

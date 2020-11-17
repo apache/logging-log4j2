@@ -187,12 +187,11 @@ public final class OptionConverter {
             + ":pri=[" + levelName + "]");
 
         try {
-            Class customLevel = Loader.loadClass(clazz);
+            Class<?> customLevel = Loader.loadClass(clazz);
 
             // get a ref to the specified class' static method
             // toLevel(String, org.apache.log4j.Level)
-            Class[] paramTypes = new Class[] { String.class, Level.class
-            };
+            Class<?>[] paramTypes = new Class[] { String.class, Level.class };
             java.lang.reflect.Method toLevelMethod =
                 customLevel.getMethod("toLevel", paramTypes);
 

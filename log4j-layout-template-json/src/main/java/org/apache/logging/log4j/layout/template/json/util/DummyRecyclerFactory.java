@@ -33,7 +33,7 @@ public class DummyRecyclerFactory implements RecyclerFactory {
     public <V> Recycler<V> create(
             final Supplier<V> supplier,
             final Consumer<V> cleaner) {
-        return new DummyRecycler<V>(supplier);
+        return new DummyRecycler<>(supplier);
     }
 
 }

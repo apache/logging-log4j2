@@ -63,25 +63,23 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
                                 int index = Integer.parseInt(matcher.group(1));
                                 if (index < env.getActiveProfiles().length) {
                                     return env.getActiveProfiles()[index];
-                                } else {
-                                    LOGGER.warn("Index out of bounds for Spring active profiles: {}", index);
-                                    return null;
                                 }
+                                LOGGER.warn("Index out of bounds for Spring active profiles: {}", index);
+                                return null;
                             } catch (Exception ex) {
                                 LOGGER.warn("Unable to parse {} as integer value", matcher.group(1));
                                 return null;
                             }
 
-                        } else {
-                            StringBuilder sb = new StringBuilder();
-                            for (String profile : env.getActiveProfiles()) {
-                                if (sb.length() > 0) {
-                                    sb.append(",");
-                                }
-                                sb.append(profile);
-                            }
-                            return sb.toString();
                         }
+                        StringBuilder sb = new StringBuilder();
+                        for (String profile : env.getActiveProfiles()) {
+                            if (sb.length() > 0) {
+                                sb.append(",");
+                            }
+                            sb.append(profile);
+                        }
+                        return sb.toString();
                     }
                 }
             } else if (lowerKey.startsWith(DEFAULT)) {
@@ -99,25 +97,23 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
                                 int index = Integer.parseInt(matcher.group(1));
                                 if (index < env.getDefaultProfiles().length) {
                                     return env.getDefaultProfiles()[index];
-                                } else {
-                                    LOGGER.warn("Index out of bounds for Spring default profiles: {}", index);
-                                    return null;
                                 }
+                                LOGGER.warn("Index out of bounds for Spring default profiles: {}", index);
+                                return null;
                             } catch (Exception ex) {
                                 LOGGER.warn("Unable to parse {} as integer value", matcher.group(1));
                                 return null;
                             }
 
-                        } else {
-                            StringBuilder sb = new StringBuilder();
-                            for (String profile : env.getDefaultProfiles()) {
-                                if (sb.length() > 0) {
-                                    sb.append(",");
-                                }
-                                sb.append(profile);
-                            }
-                            return sb.toString();
                         }
+                        StringBuilder sb = new StringBuilder();
+                        for (String profile : env.getDefaultProfiles()) {
+                            if (sb.length() > 0) {
+                                sb.append(",");
+                            }
+                            sb.append(profile);
+                        }
+                        return sb.toString();
                     }
                 }
             }

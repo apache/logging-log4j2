@@ -49,7 +49,7 @@ import org.openjdk.jmh.annotations.State;
 @State(Scope.Benchmark)
 public class TimeFormatBenchmark {
 
-    ThreadLocal<SimpleDateFormat> threadLocalSimpleDateFormat = new ThreadLocal<SimpleDateFormat>() {
+    ThreadLocal<SimpleDateFormat> threadLocalSimpleDateFormat = new ThreadLocal<>() {
         @Override
         protected SimpleDateFormat initialValue() {
             return new SimpleDateFormat("HH:mm:ss.SSS");

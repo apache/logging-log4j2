@@ -43,7 +43,7 @@ public class StatusConfiguration {
     private static final Level DEFAULT_STATUS = Level.ERROR;
     private static final Verbosity DEFAULT_VERBOSITY = Verbosity.QUIET;
 
-    private final Collection<String> errorMessages = new LinkedBlockingQueue<String>();
+    private final Collection<String> errorMessages = new LinkedBlockingQueue<>();
     private final StatusLogger logger = StatusLogger.getLogger();
 
     private volatile boolean initialized;

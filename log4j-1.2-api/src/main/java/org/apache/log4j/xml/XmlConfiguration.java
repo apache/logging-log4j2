@@ -84,7 +84,7 @@ public class XmlConfiguration extends Log4j1Configuration {
     private static final String CONFIG_DEBUG_ATTR = "configDebug";
     private static final String INTERNAL_DEBUG_ATTR = "debug";
     private static final String EMPTY_STR = "";
-    private static final Class[] ONE_STRING_PARAM = new Class[] { String.class };
+    private static final Class<?>[] ONE_STRING_PARAM = new Class[] { String.class };
     private static final String dbfKey = "javax.xml.parsers.DocumentBuilderFactory";
     private static final String THROWABLE_RENDERER_TAG = "throwableRenderer";
 

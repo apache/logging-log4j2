@@ -548,9 +548,9 @@ public class Category {
         return logger.isEnabled(level);
     }
 
-    private ObjectRenderer get(Class clazz) {
+    private <T> ObjectRenderer get(Class<T> clazz) {
         ObjectRenderer renderer = null;
-        for(Class c = clazz; c != null; c = c.getSuperclass()) {
+        for (Class<? super T> c = clazz; c != null; c = c.getSuperclass()) {
             renderer = rendererMap.get(c);
             if (renderer != null) {
                 return renderer;
@@ -563,13 +563,13 @@ public class Category {
         return null;
     }
 
-    ObjectRenderer searchInterfaces(Class c) {
+    ObjectRenderer searchInterfaces(Class<?> c) {
         ObjectRenderer renderer = rendererMap.get(c);
-        if(renderer != null) {
+        if (renderer != null) {
             return renderer;
         }
-        Class[] ia = c.getInterfaces();
-        for (Class clazz : ia) {
+        Class<?>[] ia = c.getInterfaces();
+        for (Class<?> clazz : ia) {
             renderer = searchInterfaces(clazz);
             if (renderer != null) {
                 return renderer;

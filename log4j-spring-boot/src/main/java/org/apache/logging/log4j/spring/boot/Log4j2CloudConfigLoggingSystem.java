@@ -199,9 +199,8 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
         try {
             if (file != null) {
                 return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
-            } else {
-                return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
             }
+            return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
         } catch (FileNotFoundException ex) {
             LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
             return null;

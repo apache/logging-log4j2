@@ -34,7 +34,7 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
             final Consumer<V> cleaner) {
         @SuppressWarnings("unchecked")
         final Queue<V> queue = (Queue<V>) queueSupplier.get();
-        return new QueueingRecycler<V>(supplier, cleaner, queue);
+        return new QueueingRecycler<>(supplier, cleaner, queue);
     }
 
 }

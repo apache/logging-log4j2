@@ -84,7 +84,7 @@ public abstract class QueueFullAbstractTest {
         }
     }
 
-    static Stack transform(final List<LogEvent> logEvents) {
+    static Stack<String> transform(final List<LogEvent> logEvents) {
         final List<String> filtered = new ArrayList<>(logEvents.size());
         for (final LogEvent event : logEvents) {
             filtered.add(event.getMessage().getFormattedMessage());

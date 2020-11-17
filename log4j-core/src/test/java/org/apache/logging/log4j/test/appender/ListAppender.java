@@ -199,12 +199,12 @@ public class ListAppender extends AbstractAppender {
 
     /** Returns an immutable snapshot of captured log events */
     public List<LogEvent> getEvents() {
-        return Collections.<LogEvent>unmodifiableList(new ArrayList<LogEvent>(events));
+        return Collections.<LogEvent>unmodifiableList(new ArrayList<>(events));
     }
 
     /** Returns an immutable snapshot of captured messages */
     public List<String> getMessages() {
-        return Collections.<String>unmodifiableList(new ArrayList<String>(messages));
+        return Collections.<String>unmodifiableList(new ArrayList<>(messages));
     }
 
     /**
@@ -221,7 +221,7 @@ public class ListAppender extends AbstractAppender {
 
     /** Returns an immutable snapshot of captured data */
     public List<byte[]> getData() {
-        return Collections.<byte[]>unmodifiableList(new ArrayList<byte[]>(data));
+        return Collections.<byte[]>unmodifiableList(new ArrayList<>(data));
     }
 
     public static ListAppender createAppender(final String name, final boolean newLine, final boolean raw,

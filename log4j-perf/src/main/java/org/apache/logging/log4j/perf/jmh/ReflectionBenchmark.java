@@ -63,7 +63,7 @@ public class ReflectionBenchmark {
     @State(Scope.Benchmark)
     public static class ClassContextManager extends SecurityManager {
         @Override
-        protected Class[] getClassContext() {
+        protected Class<?>[] getClassContext() {
             return super.getClassContext();
         }
     }
@@ -148,9 +148,8 @@ public class ReflectionBenchmark {
         private Class<?> findClass(final int depth) {
             if (depth == 1) {
                 return locateCaller();
-            } else {
-                return findClass(depth - 1);
             }
+            return findClass(depth - 1);
         }
 
         private Class<?> locateCaller() {
@@ -163,9 +162,8 @@ public class ReflectionBenchmark {
         private String findMethodName(final int depth) {
             if (depth == 1) {
                 return locateMethodName();
-            } else {
-                return findMethodName(depth - 1);
             }
+            return findMethodName(depth - 1);
         }
 
         private String locateMethodName() {

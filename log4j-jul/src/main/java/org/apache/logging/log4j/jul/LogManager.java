@@ -97,10 +97,9 @@ public class LogManager extends java.util.logging.LogManager {
             } finally {
                 activeRequests.remove(name);
             }
-        } else {
-            LOGGER.warn("Recursive call to getLogger for {} ignored.", name);
-            return new NoOpLogger(name);
         }
+        LOGGER.warn("Recursive call to getLogger for {} ignored.", name);
+        return new NoOpLogger(name);
     }
 
     @Override
