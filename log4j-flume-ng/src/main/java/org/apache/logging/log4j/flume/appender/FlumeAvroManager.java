@@ -97,7 +97,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
 
         if (batchSize <= 0) {
             batchSize = 1;
-        };
+        }
         final StringBuilder sb = new StringBuilder(name);
         sb.append(" FlumeAvro[");
         boolean first = true;

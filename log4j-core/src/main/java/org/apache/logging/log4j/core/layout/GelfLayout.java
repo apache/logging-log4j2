@@ -571,7 +571,7 @@ public final class GelfLayout extends AbstractStringLayout {
         public ListChecker getChecker() {
             return checker;
         }
-    };
+    }
 
     private static final ThreadLocal<StringBuilder> messageStringBuilder = new ThreadLocal<>();
 

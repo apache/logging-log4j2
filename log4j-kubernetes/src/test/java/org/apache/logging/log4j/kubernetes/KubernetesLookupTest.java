@@ -61,7 +61,7 @@ public class KubernetesLookupTest {
             assertEquals("Incorrect host name", "docker-desktop", lookup.lookup("host"));
             assertEquals("Incorrect pod name", "sampleapp-584f99476d-mnrp4", lookup.lookup("podName"));
         } finally {
-            lookup.clearInfo();;
+            lookup.clearInfo();
         }
     }
 

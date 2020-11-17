@@ -36,7 +36,7 @@ import java.util.Map;
  * For this demo we cannot
  * </p>
  */
-public class NoGcLayout implements Layout<Serializable>, Encoder<LogEvent> {
+public class NoGcLayout implements Layout<Serializable> {
     private final StringBuilder cachedStringBuilder = new StringBuilder(2048);
     private final PatternSerializer2 serializer = new PatternSerializer2();
     private final StringBuilderEncoder cachedHelper;
