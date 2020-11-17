@@ -1,0 +1,43 @@
+[
+  {
+    "extension": "revapi.ignore",
+    "configuration": [
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder::getEventTemplateAdditionalFields()",
+        "new": "method org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField[] org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder::getEventTemplateAdditionalFields()",
+        "justification": "Refactored for simplicity since it was already broken on release-2.x due to missing @PluginBuilderAttribute annotations",
+        "oldType": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields",
+        "newType": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField[]",
+        "package": "org.apache.logging.log4j.layout.template.json",
+        "classQualifiedName": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder",
+        "classSimpleName": "Builder",
+        "methodName": "getEventTemplateAdditionalFields",
+        "elementKind": "method"
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder::setEventTemplateAdditionalFields(===org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields===)",
+        "new": "parameter org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder::setEventTemplateAdditionalFields(===org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField[]===)",
+        "justification": "Refactored for simplicity since it was already broken on release-2.x due to missing @PluginBuilderAttribute annotations",
+        "oldType": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields",
+        "newType": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField[]",
+        "package": "org.apache.logging.log4j.layout.template.json",
+        "classQualifiedName": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder",
+        "classSimpleName": "Builder",
+        "methodName": "setEventTemplateAdditionalFields",
+        "parameterIndex": "0",
+        "elementKind": "parameter"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields",
+        "justification": "Refactored for simplicity since it was already broken on release-2.x due to missing @PluginBuilderAttribute annotations",
+        "package": "org.apache.logging.log4j.layout.template.json",
+        "classQualifiedName": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields",
+        "classSimpleName": "EventTemplateAdditionalFields",
+        "elementKind": "class"
+      }
+    ]
+  }
+]
