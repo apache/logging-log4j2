@@ -35,7 +35,7 @@ final class MapResolverFactory implements EventResolverFactory<MapResolver> {
     public MapResolver create(
             final EventResolverContext context,
             final TemplateResolverConfig config) {
-        return new MapResolver(config);
+        return new MapResolver(context, config);
     }
 
 }

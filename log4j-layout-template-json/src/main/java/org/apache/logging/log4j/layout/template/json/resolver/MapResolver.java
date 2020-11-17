@@ -17,75 +17,35 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
- * {@link MapMessage} field resolver.
+ * {@link MapMessage} resolver.
  *
- * <h3>Configuration</h3>
- *
- * <pre>
- * config      = key , [ stringified ]
- * key         = "key" -> string
- * stringified = "stringified" -> boolean
- * </pre>
- *
- * <h3>Examples</h3>
- *
- * Resolve the <tt>userRole</tt> field of the message:
- *
- * <pre>
- * {
- *   "$resolver": "map",
- *   "key": "userRole"
- * }
- * </pre>
+ * @see ReadOnlyStringMapResolver
  */
-final class MapResolver implements EventResolver {
+final class MapResolver extends ReadOnlyStringMapResolver {
 
-    private final String key;
+    MapResolver(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        super(context, config, MapResolver::toMap);
+    }
 
-    private final boolean stringified;
+    private static ReadOnlyStringMap toMap(final LogEvent logEvent) {
+        final Message message = logEvent.getMessage();
+        if (!(message instanceof MapMessage)) {
+            return null;
+        }
+        @SuppressWarnings("unchecked")
+        final MapMessage<?, Object> mapMessage = (MapMessage<?, Object>) message;
+        return mapMessage.getIndexedReadOnlyStringMap();
+    }
 
     static String getName() {
         return "map";
-    }
-
-    MapResolver(final TemplateResolverConfig config) {
-        this.key = config.getString("key");
-        this.stringified = config.getBoolean("stringified", false);
-        if (key == null) {
-            throw new IllegalArgumentException("missing key: " + config);
-        }
-    }
-
-    @Override
-    public boolean isResolvable(final LogEvent logEvent) {
-        return logEvent.getMessage() instanceof MapMessage;
-    }
-
-    @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
-        final Message message = logEvent.getMessage();
-        if (!(message instanceof MapMessage)) {
-            jsonWriter.writeNull();
-        } else {
-            @SuppressWarnings("unchecked")
-            MapMessage<?, Object> mapMessage = (MapMessage<?, Object>) message;
-            final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
-            final Object value = map.getValue(key);
-            if (stringified) {
-                final String stringifiedValue = String.valueOf(value);
-                jsonWriter.writeString(stringifiedValue);
-            } else {
-                jsonWriter.writeValue(value);
-            }
-        }
     }
 
 }

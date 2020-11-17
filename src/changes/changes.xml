@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2019-xx-xx" description="GA Release 3.0.0">
+      <action issue="LOG4J2-2962" dev="vy" type="add">
+        Enrich "map" resolver by unifying its backend with "mdc" resolver.
+      </action>
       <action issue="LOG4J2-2961" dev="vy" type="fix">
         Fix reading of JsonTemplateLayout event additional fields from config.
       </action>
