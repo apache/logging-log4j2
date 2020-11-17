@@ -176,14 +176,17 @@ public class Category {
     }
 
     /**
-     Returns all the currently defined categories in the default
-     hierarchy as an {@link java.util.Enumeration Enumeration}.
-
-     <p>The root category is <em>not</em> included in the returned
-     {@link Enumeration}.
-     @return and Enumeration of the Categories.
-
-     @deprecated Please use {@link LogManager#getCurrentLoggers()} instead.
+     * Returns all the currently defined categories in the default hierarchy as an
+     * {@link java.util.Enumeration Enumeration}.
+     * 
+     * <p>
+     * The root category is <em>not</em> included in the returned
+     * {@link Enumeration}.
+     * </p>
+     * 
+     * @return and Enumeration of the Categories.
+     * 
+     * @deprecated Please use {@link LogManager#getCurrentLoggers()} instead.
      */
     @SuppressWarnings("rawtypes")
     @Deprecated
@@ -444,18 +447,18 @@ public class Category {
     }
 
     /**
-     If <code>assertion</code> parameter is {@code false}, then
-     logs <code>msg</code> as an {@link #error(Object) error} statement.
-
-     <p>The <code>assert</code> method has been renamed to
-     <code>assertLog</code> because <code>assert</code> is a language
-     reserved word in JDK 1.4.
-
-     @param assertion The assertion.
-     @param msg The message to print if <code>assertion</code> is
-     false.
-
-     @since 1.2
+     * If <code>assertion</code> parameter is {@code false}, then logs
+     * <code>msg</code> as an {@link #error(Object) error} statement.
+     * 
+     * <p>
+     * The <code>assert</code> method has been renamed to <code>assertLog</code>
+     * because <code>assert</code> is a language reserved word in JDK 1.4.
+     * </p>
+     *
+     * @param assertion The assertion.
+     * @param msg       The message to print if <code>assertion</code> is false.
+     * 
+     * @since 1.2
      */
     public void assertLog(final boolean assertion, final String msg) {
         if (!assertion) {

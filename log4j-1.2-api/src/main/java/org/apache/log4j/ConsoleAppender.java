@@ -21,32 +21,28 @@ import org.apache.log4j.spi.LoggingEvent;
 /**
  * Console-appender.
  */
-public class ConsoleAppender extends AppenderSkeleton
-{
+public class ConsoleAppender extends AppenderSkeleton {
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void close()
-  {
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void close() {
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean requiresLayout()
-  {
-    return false;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean requiresLayout() {
+        return false;
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void append(final LoggingEvent theEvent)
-  {
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void append(final LoggingEvent theEvent) {
+    }
 
 }

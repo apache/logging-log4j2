@@ -37,8 +37,8 @@ import java.util.StringTokenizer;
  * <p>
  * The combination of the RewriteAppender and this policy
  * performs the same actions as the PropertyFilter from log4j 1.3.
+ * </p>
  */
-
 public class PropertyRewritePolicy implements RewritePolicy {
     private Map<String, String> properties = Collections.EMPTY_MAP;
 
@@ -48,19 +48,23 @@ public class PropertyRewritePolicy implements RewritePolicy {
     /**
      * Set a string representing the property name/value pairs.
      * <p>
-     * Form: propname1=propvalue1,propname2=propvalue2
+     * Form:
+     * </p>
+     * <pre>
+     * propname1=propvalue1,propname2=propvalue2
+     * </pre>
      *
-     * @param props The properties.
+     * @param properties The properties.
      */
-    public void setProperties(String props) {
-        Map hashTable = new HashMap();
-        StringTokenizer pairs = new StringTokenizer(props, ",");
+    public void setProperties(String properties) {
+        Map<String, String> newMap = new HashMap<>();
+        StringTokenizer pairs = new StringTokenizer(properties, ",");
         while (pairs.hasMoreTokens()) {
             StringTokenizer entry = new StringTokenizer(pairs.nextToken(), "=");
-            hashTable.put(entry.nextElement().toString().trim(), entry.nextElement().toString().trim());
+            newMap.put(entry.nextElement().toString().trim(), entry.nextElement().toString().trim());
         }
         synchronized (this) {
-            properties = hashTable;
+            this.properties = newMap;
         }
     }
 

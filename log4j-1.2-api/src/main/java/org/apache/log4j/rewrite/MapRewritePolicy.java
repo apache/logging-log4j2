@@ -44,6 +44,7 @@ import java.util.Map;
  * <p>
  * The combination of the RewriteAppender and this policy
  * performs the same actions as the MapFilter from log4j 1.3.
+ * </p>
  */
 public class MapRewritePolicy implements RewritePolicy {
     /**

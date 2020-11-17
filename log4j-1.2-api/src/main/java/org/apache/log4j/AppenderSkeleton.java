@@ -118,7 +118,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
     }
 
     /**
-     * Set the {@link ErrorHandler} for this Appender.
+     * Sets the {@link ErrorHandler} for this Appender.
      *
      * @since 0.9.0
      */

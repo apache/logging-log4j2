@@ -186,7 +186,6 @@ public class LogEventWrapper implements LogEvent {
         return 0;
     }
 
-
     private static class ContextDataMap extends HashMap<String, String> implements ReadOnlyStringMap {
 
         ContextDataMap(Map<String, String> map) {

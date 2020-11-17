@@ -20,6 +20,7 @@ package org.apache.log4j.builders;
  * Holds Boolean values created inside of a Lambda expression.
  */
 public class BooleanHolder extends Holder<Boolean> {
+
     public BooleanHolder() {
         super(Boolean.FALSE);
     }

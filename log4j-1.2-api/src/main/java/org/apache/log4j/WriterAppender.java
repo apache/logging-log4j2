@@ -195,8 +195,7 @@ public class WriterAppender extends AppenderSkeleton {
      * @since 0.8.4
      */
     @Override
-    public
-    synchronized void close() {
+    public synchronized void close() {
         if (this.closed) {
             return;
         }

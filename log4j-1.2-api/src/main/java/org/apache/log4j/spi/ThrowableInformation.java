@@ -30,13 +30,11 @@ public class ThrowableInformation implements java.io.Serializable {
     private transient Throwable throwable;
     private Method toStringList;
 
-    @SuppressWarnings("unchecked")
-    public
-    ThrowableInformation(Throwable throwable) {
+    public ThrowableInformation(Throwable throwable) {
         this.throwable = throwable;
         Method method = null;
         try {
-            Class throwables = Class.forName("org.apache.logging.log4j.core.util.Throwables");
+            Class<?> throwables = Class.forName("org.apache.logging.log4j.core.util.Throwables");
             method = throwables.getMethod("toStringList", Throwable.class);
         } catch (ClassNotFoundException | NoSuchMethodException ex) {
             // Ignore the exception if Log4j-core is not present.
@@ -44,8 +42,7 @@ public class ThrowableInformation implements java.io.Serializable {
         this.toStringList = method;
     }
 
-    public
-    Throwable getThrowable() {
+    public Throwable getThrowable() {
         return throwable;
     }
 

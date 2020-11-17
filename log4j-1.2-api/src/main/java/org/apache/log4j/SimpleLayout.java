@@ -22,25 +22,22 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Simple-layout.
  */
-public class SimpleLayout extends Layout
-{
+public class SimpleLayout extends Layout {
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String format(final LoggingEvent theEvent)
-  {
-    return Strings.EMPTY;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String format(final LoggingEvent theEvent) {
+        return Strings.EMPTY;
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean ignoresThrowable()
-  {
-    return true;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean ignoresThrowable() {
+        return true;
+    }
 
 }
