@@ -17,8 +17,6 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
@@ -84,37 +82,21 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
 final class MessageResolver implements EventResolver {
 
     private static final String[] FORMATS = { "JSON" };
-    /**
-     * Default length for new StringBuilder instances: {@value} .
-     */
-    protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
 
     private final EventResolver internalResolver;
 
-    private PatternLayout patternLayout;
-
-    MessageResolver(final Configuration configuration, final TemplateResolverConfig config) {
-        this.internalResolver = createInternalResolver(configuration, config);
+    MessageResolver(final TemplateResolverConfig config) {
+        this.internalResolver = createInternalResolver(config);
     }
 
     static String getName() {
         return "message";
     }
 
-    private EventResolver createInternalResolver(final Configuration configuration,
+    private static EventResolver createInternalResolver(
             final TemplateResolverConfig config) {
         final boolean stringified = config.getBoolean("stringified", false);
         final String fallbackKey = config.getString("fallbackKey");
-        final String pattern = config.getString("pattern");
-        final boolean includeStacktrace = config.getBoolean("includeStacktrace", true);
-        if (pattern != null) {
-            patternLayout = PatternLayout.newBuilder().setPattern(pattern)
-                    .setAlwaysWriteExceptions(includeStacktrace)
-                    .setConfiguration(configuration)
-                    .build();
-        } else {
-            patternLayout = null;
-        }
         if (stringified && fallbackKey != null) {
             throw new IllegalArgumentException(
                     "fallbackKey is not allowed when stringified is enable: " + config);
@@ -131,26 +113,20 @@ final class MessageResolver implements EventResolver {
         internalResolver.resolve(logEvent, jsonWriter);
     }
 
-    private EventResolver createStringResolver(final String fallbackKey) {
+    private static EventResolver createStringResolver(final String fallbackKey) {
         return (final LogEvent logEvent, final JsonWriter jsonWriter) ->
                 resolveString(fallbackKey, logEvent, jsonWriter);
     }
 
-    private void resolveString(
+    private static void resolveString(
             final String fallbackKey,
             final LogEvent logEvent,
             final JsonWriter jsonWriter) {
-        if (patternLayout != null) {
-            final StringBuilder messageBuffer = getMessageStringBuilder();
-            patternLayout.serialize(logEvent, messageBuffer);
-            jsonWriter.writeString(messageBuffer.toString());
-        } else {
-            final Message message = logEvent.getMessage();
-            resolveString(fallbackKey, message, jsonWriter);
-        }
+        final Message message = logEvent.getMessage();
+        resolveString(fallbackKey, message, jsonWriter);
     }
 
-    private void resolveString(
+    private static void resolveString(
             final String fallbackKey,
             final Message message,
             final JsonWriter jsonWriter) {
@@ -171,7 +147,7 @@ final class MessageResolver implements EventResolver {
         }
     }
 
-    private EventResolver createObjectResolver(final String fallbackKey) {
+    private static EventResolver createObjectResolver(final String fallbackKey) {
         return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
 
             // Skip custom serializers for SimpleMessage.
@@ -197,7 +173,7 @@ final class MessageResolver implements EventResolver {
         };
     }
 
-    private boolean writeMultiformatMessage(
+    private static boolean writeMultiformatMessage(
             final JsonWriter jsonWriter,
             final Message message) {
 
@@ -227,7 +203,7 @@ final class MessageResolver implements EventResolver {
 
     }
 
-    private boolean writeObjectMessage(
+    private static boolean writeObjectMessage(
             final JsonWriter jsonWriter,
             final Message message) {
 
@@ -242,18 +218,6 @@ final class MessageResolver implements EventResolver {
         jsonWriter.writeValue(object);
         return true;
 
-    }
-
-    private static final ThreadLocal<StringBuilder> messageStringBuilder = new ThreadLocal<>();
-
-    private static StringBuilder getMessageStringBuilder() {
-        StringBuilder result = messageStringBuilder.get();
-        if (result == null) {
-            result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-            messageStringBuilder.set(result);
-        }
-        result.setLength(0);
-        return result;
     }
 
 }

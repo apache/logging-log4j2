@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 /**
  * Resolver for the {@link StackTraceElement} returned by {@link LogEvent#getSource()}.

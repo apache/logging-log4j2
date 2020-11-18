@@ -238,11 +238,7 @@ public class JsonTemplateLayout implements StringLayout {
 
             // Render the JSON.
             eventResolver.resolve(event, jsonWriter);
-            if (eventDelimiter != null && eventDelimiter.equalsIgnoreCase("null")) {
-                stringBuilder.append('\0');
-            } else {
-                stringBuilder.append(eventDelimiter);
-            }
+            stringBuilder.append(eventDelimiter);
 
             // Write to the destination.
             if (encoder == null) {

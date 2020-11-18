@@ -1,42 +1,37 @@
 [
   {
+    "extension": "revapi.java",
+    "configuration": {
+      "filter": {
+        "classes": {
+          "exclude": [
+            "org\\.apache\\.logging\\.log4j\\.layout\\.template\\.json\\.resolver\\.TemplateResolverConfig",
+            "org\\.apache\\.logging\\.log4j\\.layout\\.template\\.json\\.resolver\\.TemplateResolverContext",
+            "org\\.apache\\.logging\\.log4j\\.layout\\.template\\.json\\.resolver\\.TemplateResolverFactory"
+          ]
+        }
+      }
+    }
+  },
+  {
     "extension": "revapi.ignore",
     "configuration": [
       {
         "code": "java.method.returnTypeChanged",
         "old": "method org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder::getEventTemplateAdditionalFields()",
         "new": "method org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField[] org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder::getEventTemplateAdditionalFields()",
-        "justification": "Refactored for simplicity since it was already broken on release-2.x due to missing @PluginBuilderAttribute annotations",
-        "oldType": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields",
-        "newType": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField[]",
-        "package": "org.apache.logging.log4j.layout.template.json",
-        "classQualifiedName": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder",
-        "classSimpleName": "Builder",
-        "methodName": "getEventTemplateAdditionalFields",
-        "elementKind": "method"
+        "justification": "LOG4J2-2961 Refactored for simplicity since it was already broken due to missing @PluginBuilderAttribute annotations"
       },
       {
         "code": "java.method.parameterTypeChanged",
         "old": "parameter org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder::setEventTemplateAdditionalFields(===org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields===)",
         "new": "parameter org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder::setEventTemplateAdditionalFields(===org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField[]===)",
-        "justification": "Refactored for simplicity since it was already broken on release-2.x due to missing @PluginBuilderAttribute annotations",
-        "oldType": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields",
-        "newType": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField[]",
-        "package": "org.apache.logging.log4j.layout.template.json",
-        "classQualifiedName": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.Builder",
-        "classSimpleName": "Builder",
-        "methodName": "setEventTemplateAdditionalFields",
-        "parameterIndex": "0",
-        "elementKind": "parameter"
+        "justification": "LOG4J2-2961 Refactored for simplicity since it was already broken due to missing @PluginBuilderAttribute annotations"
       },
       {
         "code": "java.class.removed",
         "old": "class org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields",
-        "justification": "Refactored for simplicity since it was already broken on release-2.x due to missing @PluginBuilderAttribute annotations",
-        "package": "org.apache.logging.log4j.layout.template.json",
-        "classQualifiedName": "org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields",
-        "classSimpleName": "EventTemplateAdditionalFields",
-        "elementKind": "class"
+        "justification": "LOG4J2-2961 Refactored for simplicity since it was already broken due to missing @PluginBuilderAttribute annotations"
       }
     ]
   }

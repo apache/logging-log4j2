@@ -1135,7 +1135,7 @@ public class JsonTemplateLayoutTest {
 
     }
 
-    private static final class NonAsciiUtf8MethodNameContainingException extends RuntimeException {;
+    private static final class NonAsciiUtf8MethodNameContainingException extends RuntimeException {
 
         public static final long serialVersionUID = 0;
 
