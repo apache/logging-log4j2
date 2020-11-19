@@ -24,7 +24,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-enum EventResolverFactories {;
+final class EventResolverFactories {
+
+    private EventResolverFactories() {}
 
     private static final Map<String, TemplateResolverFactory<LogEvent, EventResolverContext, ? extends TemplateResolver<LogEvent>>> RESOLVER_FACTORY_BY_NAME =
             createResolverFactoryByName();

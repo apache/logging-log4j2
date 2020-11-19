@@ -26,7 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public enum TemplateResolvers {;
+public final class TemplateResolvers {
+
+    private TemplateResolvers() {}
 
     private static final String RESOLVER_FIELD_NAME = "$resolver";
 

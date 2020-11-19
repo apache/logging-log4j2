@@ -25,7 +25,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public enum JsonTemplateLayoutDefaults {;
+public final class JsonTemplateLayoutDefaults {
+
+    private JsonTemplateLayoutDefaults() {}
 
     private static final PropertiesUtil PROPERTIES = PropertiesUtil.getProperties();
 

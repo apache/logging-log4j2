@@ -20,7 +20,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-enum StackTraceElementObjectResolverFactories {;
+final class StackTraceElementObjectResolverFactories {
+
+    private StackTraceElementObjectResolverFactories() {}
 
     private static final Map<String, TemplateResolverFactory<StackTraceElement, StackTraceElementObjectResolverContext, ? extends TemplateResolver<StackTraceElement>>> RESOLVER_FACTORY_BY_NAME =
             createResolverFactoryByName();

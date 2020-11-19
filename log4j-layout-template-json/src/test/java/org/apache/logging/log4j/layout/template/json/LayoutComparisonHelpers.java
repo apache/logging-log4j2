@@ -22,7 +22,9 @@ import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 
 import java.util.Map;
 
-enum LayoutComparisonHelpers {;
+final class LayoutComparisonHelpers {
+
+    private LayoutComparisonHelpers() {}
 
     @SuppressWarnings("unchecked")
     static Map<String, Object> renderUsing(
