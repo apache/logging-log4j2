@@ -32,6 +32,16 @@
         "code": "java.class.removed",
         "old": "class org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalFields",
         "justification": "LOG4J2-2961 Refactored for simplicity since it was already broken due to missing @PluginBuilderAttribute annotations"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.String org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults::getMdcKeyPattern()",
+        "justification": "Removed unused property getter."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.String org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults::getNdcPattern()",
+        "justification": "Removed unused property getter."
       }
     ]
   }

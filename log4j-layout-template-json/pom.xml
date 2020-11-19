@@ -383,18 +383,19 @@
                         <arg>1</arg>
                         <arg>-e</arg>
                         <arg>
+                          <![CDATA[
                           input {
                             gelf {
-                              host =&gt; "logstash"
-                              use_tcp =&gt; true
-                              use_udp =&gt; false
-                              port =&gt; 12222
-                              type =&gt; "gelf"
+                              host => "logstash"
+                              use_tcp => true
+                              use_udp => false
+                              port => 12222
+                              type => "gelf"
                             }
                             tcp {
-                              port =&gt; 12345
-                              codec =&gt; json
-                              type =&gt; "tcp"
+                              port => 12345
+                              codec => json
+                              type => "tcp"
                             }
                           }
 
@@ -403,17 +404,17 @@
                               # These are GELF/Syslog logging levels as defined in RFC 3164.
                               # Map the integer level to its human readable format.
                               translate {
-                                field =&gt; "[level]"
-                                destination =&gt; "[levelName]"
-                                dictionary =&gt; {
-                                  "0" =&gt; "EMERG"
-                                  "1" =&gt; "ALERT"
-                                  "2" =&gt; "CRITICAL"
-                                  "3" =&gt; "ERROR"
-                                  "4" =&gt; "WARN"
-                                  "5" =&gt; "NOTICE"
-                                  "6" =&gt; "INFO"
-                                  "7" =&gt; "DEBUG"
+                                field => "[level]"
+                                destination => "[levelName]"
+                                dictionary => {
+                                  "0" => "EMERG"
+                                  "1" => "ALERT"
+                                  "2" => "CRITICAL"
+                                  "3" => "ERROR"
+                                  "4" => "WARN"
+                                  "5" => "NOTICE"
+                                  "6" => "INFO"
+                                  "7" => "DEBUG"
                                 }
                               }
                             }
@@ -421,12 +422,13 @@
 
                           output {
                             # (Un)comment for debugging purposes
-                            # stdout { codec =&gt; rubydebug }
+                            # stdout { codec => rubydebug }
                             elasticsearch {
-                              hosts =&gt; ["http://elasticsearch:9200"]
-                              index =&gt; "log4j"
+                              hosts => ["http://elasticsearch:9200"]
+                              index => "log4j"
                             }
                           }
+                          ]]>
                         </arg>
                       </exec>
                     </entrypoint>
@@ -498,6 +500,11 @@
             </reports>
           </reportSet>
         </reportSets>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
 
       <plugin>

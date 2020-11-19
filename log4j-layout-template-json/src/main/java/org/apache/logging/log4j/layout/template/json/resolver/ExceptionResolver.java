@@ -22,7 +22,7 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 /**
  * Exception resolver.
- *
+ * <p>
  * Note that this resolver is toggled by {@link
  * JsonTemplateLayout.Builder#setStackTraceEnabled(boolean)}.
  *
