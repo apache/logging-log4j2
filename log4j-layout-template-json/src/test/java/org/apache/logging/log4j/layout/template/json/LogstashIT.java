@@ -142,7 +142,9 @@ public class LogstashIT {
     /**
      * Constants hardcoded in docker-maven-plugin configuration, do not change!
      */
-    private enum MavenHardcodedConstants {;
+    private static final class MavenHardcodedConstants {
+
+        private MavenHardcodedConstants() {}
 
         private static final int LS_GELF_INPUT_PORT = 12222;
 

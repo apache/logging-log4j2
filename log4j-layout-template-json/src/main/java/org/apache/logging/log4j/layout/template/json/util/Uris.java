@@ -34,7 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public enum Uris {;
+public final class Uris {
+
+    private Uris() {}
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 

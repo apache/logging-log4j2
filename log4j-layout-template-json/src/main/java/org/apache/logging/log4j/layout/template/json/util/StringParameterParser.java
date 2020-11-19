@@ -25,9 +25,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-public enum StringParameterParser {;
+public final class StringParameterParser {
 
-    public enum Values {;
+    private StringParameterParser() {}
+
+    public static final class Values {
+
+        private Values() {}
 
         static NullValue nullValue() {
             return NullValue.INSTANCE;

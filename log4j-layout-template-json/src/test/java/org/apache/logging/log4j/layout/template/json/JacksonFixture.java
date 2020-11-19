@@ -18,7 +18,9 @@ package org.apache.logging.log4j.layout.template.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public enum JacksonFixture {;
+public final class JacksonFixture {
+
+    private JacksonFixture() {}
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 

@@ -30,7 +30,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-enum LogEventFixture {;
+final class LogEventFixture {
+
+    private LogEventFixture() {}
 
     private static final int TIME_OVERLAPPING_CONSECUTIVE_EVENT_COUNT = 10;
 

@@ -32,7 +32,9 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Supplier;
 
-public enum RecyclerFactories {;
+public final class RecyclerFactories {
+
+    private RecyclerFactories() {}
 
     private static final String JCTOOLS_QUEUE_CLASS_SUPPLIER_PATH =
             "org.jctools.queues.MpmcArrayQueue.new";
