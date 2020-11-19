@@ -392,6 +392,7 @@
                         <arg>1</arg>
                         <arg>-e</arg>
                         <arg>
+                          <![CDATA[
                           input {
                             gelf {
                               host => "logstash"
@@ -436,6 +437,7 @@
                               index => "log4j"
                             }
                           }
+                          ]]>
                         </arg>
                       </exec>
                     </entrypoint>
