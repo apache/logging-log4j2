@@ -42,6 +42,372 @@
         "code": "java.method.removed",
         "old": "method java.lang.String org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults::getNdcPattern()",
         "justification": "Removed unused property getter."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::compareTo(E) @ org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.Class<E> java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::getDeclaringClass() @ org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.String java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::name() @ org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::ordinal() @ org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.Uris",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.Uris",
+        "interface": "java.lang.Comparable<org.apache.logging.log4j.layout.template.json.util.Uris>",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.Uris",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.Uris",
+        "interface": "java.io.Serializable",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <T extends java.lang.Enum<T extends java.lang.Enum<T>>> T java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::valueOf(java.lang.Class<T>, java.lang.String) @ org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults::valueOf(java.lang.String)",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults[] org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults::values()",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerInheritsFromClass",
+        "old": "enum org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults",
+        "new": "class org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.kindChanged",
+        "old": "enum org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults",
+        "new": "class org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "enum org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults",
+        "new": "class org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults",
+        "interface": "java.lang.Comparable<org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults>",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "enum org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults",
+        "new": "class org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults",
+        "interface": "java.io.Serializable",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::compareTo(E) @ org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.Class<E> java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::getDeclaringClass() @ org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.String java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::name() @ org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::ordinal() @ org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <T extends java.lang.Enum<T extends java.lang.Enum<T>>> T java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::valueOf(java.lang.Class<T>, java.lang.String) @ org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers::valueOf(java.lang.String)",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers[] org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers::values()",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerInheritsFromClass",
+        "old": "enum org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.kindChanged",
+        "old": "enum org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "enum org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers",
+        "interface": "java.lang.Comparable<org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers>",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "enum org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers",
+        "interface": "java.io.Serializable",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::compareTo(E) @ org.apache.logging.log4j.layout.template.json.util.RecyclerFactories",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.Class<E> java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::getDeclaringClass() @ org.apache.logging.log4j.layout.template.json.util.RecyclerFactories",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.String java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::name() @ org.apache.logging.log4j.layout.template.json.util.RecyclerFactories",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::ordinal() @ org.apache.logging.log4j.layout.template.json.util.RecyclerFactories",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <T extends java.lang.Enum<T extends java.lang.Enum<T>>> T java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::valueOf(java.lang.Class<T>, java.lang.String) @ org.apache.logging.log4j.layout.template.json.util.RecyclerFactories",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.util.RecyclerFactories org.apache.logging.log4j.layout.template.json.util.RecyclerFactories::valueOf(java.lang.String)",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.util.RecyclerFactories[] org.apache.logging.log4j.layout.template.json.util.RecyclerFactories::values()",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerInheritsFromClass",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.RecyclerFactories",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.RecyclerFactories",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.kindChanged",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.RecyclerFactories",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.RecyclerFactories",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.RecyclerFactories",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.RecyclerFactories",
+        "interface": "java.lang.Comparable<org.apache.logging.log4j.layout.template.json.util.RecyclerFactories>",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.RecyclerFactories",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.RecyclerFactories",
+        "interface": "java.io.Serializable",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::compareTo(E) @ org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.Class<E> java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::getDeclaringClass() @ org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.String java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::name() @ org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::ordinal() @ org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <T extends java.lang.Enum<T extends java.lang.Enum<T>>> T java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::valueOf(java.lang.Class<T>, java.lang.String) @ org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values::valueOf(java.lang.String)",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values[] org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values::values()",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerInheritsFromClass",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.kindChanged",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values",
+        "interface": "java.lang.Comparable<org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values>",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values",
+        "interface": "java.io.Serializable",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::compareTo(E) @ org.apache.logging.log4j.layout.template.json.util.StringParameterParser",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.Class<E> java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::getDeclaringClass() @ org.apache.logging.log4j.layout.template.json.util.StringParameterParser",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.String java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::name() @ org.apache.logging.log4j.layout.template.json.util.StringParameterParser",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::ordinal() @ org.apache.logging.log4j.layout.template.json.util.StringParameterParser",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <T extends java.lang.Enum<T extends java.lang.Enum<T>>> T java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::valueOf(java.lang.Class<T>, java.lang.String) @ org.apache.logging.log4j.layout.template.json.util.StringParameterParser",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.util.StringParameterParser org.apache.logging.log4j.layout.template.json.util.StringParameterParser::valueOf(java.lang.String)",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.util.StringParameterParser[] org.apache.logging.log4j.layout.template.json.util.StringParameterParser::values()",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerInheritsFromClass",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.StringParameterParser",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.StringParameterParser",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.kindChanged",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.StringParameterParser",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.StringParameterParser",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.StringParameterParser",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.StringParameterParser",
+        "interface": "java.lang.Comparable<org.apache.logging.log4j.layout.template.json.util.StringParameterParser>",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerImplementsInterface",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.StringParameterParser",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.StringParameterParser",
+        "interface": "java.io.Serializable",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::compareTo(E) @ org.apache.logging.log4j.layout.template.json.util.Uris",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.Class<E> java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::getDeclaringClass() @ org.apache.logging.log4j.layout.template.json.util.Uris",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.String java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::name() @ org.apache.logging.log4j.layout.template.json.util.Uris",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::ordinal() @ org.apache.logging.log4j.layout.template.json.util.Uris",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <T extends java.lang.Enum<T extends java.lang.Enum<T>>> T java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::valueOf(java.lang.Class<T>, java.lang.String) @ org.apache.logging.log4j.layout.template.json.util.Uris",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.util.Uris org.apache.logging.log4j.layout.template.json.util.Uris::valueOf(java.lang.String)",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.util.Uris[] org.apache.logging.log4j.layout.template.json.util.Uris::values()",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.noLongerInheritsFromClass",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.Uris",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.Uris",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.class.kindChanged",
+        "old": "enum org.apache.logging.log4j.layout.template.json.util.Uris",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.Uris",
+        "justification": "Replaced 'enum' singletons with 'final class'es."
       }
     ]
   }
