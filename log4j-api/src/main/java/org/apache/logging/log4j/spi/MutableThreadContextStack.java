@@ -228,14 +228,7 @@ public class MutableThreadContextStack implements ThreadContextStack, StringBuil
         }
         final ThreadContextStack other = (ThreadContextStack) obj;
         final List<String> otherAsList = other.asList();
-        if (this.list == null) {
-            if (otherAsList != null) {
-                return false;
-            }
-        } else if (!this.list.equals(otherAsList)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.list, otherAsList);
     }
 
     @Override
