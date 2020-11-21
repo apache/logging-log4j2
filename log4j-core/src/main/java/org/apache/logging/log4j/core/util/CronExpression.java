@@ -1172,14 +1172,11 @@ public final class CronExpression {
                 return null;
             }
 
-            SortedSet<Integer> st = null;
-            int t = 0;
-
             int sec = cl.get(Calendar.SECOND);
             int min = cl.get(Calendar.MINUTE);
 
             // get second.................................................
-            st = seconds.tailSet(sec);
+            SortedSet<Integer> st = seconds.tailSet(sec);
             if (st != null && st.size() != 0) {
                 sec = st.first();
             } else {
@@ -1191,7 +1188,7 @@ public final class CronExpression {
 
             min = cl.get(Calendar.MINUTE);
             int hr = cl.get(Calendar.HOUR_OF_DAY);
-            t = -1;
+            int t = -1;
 
             // get minute.................................................
             st = minutes.tailSet(min);
