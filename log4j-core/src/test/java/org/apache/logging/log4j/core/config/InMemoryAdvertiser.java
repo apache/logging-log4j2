@@ -27,11 +27,8 @@ import org.apache.logging.log4j.core.net.Advertiser;
 public class InMemoryAdvertiser implements Advertiser {
     private static Map<Object, Map<String, String>> properties = new HashMap<>();
 
-    public static Map<Object, Map<String, String>> getAdvertisedEntries()
-    {
-        final Map<Object, Map<String, String>> result = new HashMap<>();
-        result.putAll(properties);
-        return result;
+    public static Map<Object, Map<String, String>> getAdvertisedEntries() {
+        return new HashMap<>(properties);
     }
 
     @Override
