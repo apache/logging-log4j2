@@ -260,7 +260,6 @@ public class SocketReconnectTest {
                         ex.printStackTrace();
                     }
                 }
-                return;
             }
         }
 
