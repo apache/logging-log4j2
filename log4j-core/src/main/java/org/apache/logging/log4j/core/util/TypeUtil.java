@@ -22,6 +22,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,9 +54,7 @@ public final class TypeUtil {
     public static List<Field> getAllDeclaredFields(Class<?> cls) {
         final List<Field> fields = new ArrayList<>();
         while (cls != null) {
-            for (final Field field : cls.getDeclaredFields()) {
-                fields.add(field);
-            }
+            Collections.addAll(fields, cls.getDeclaredFields());
             cls = cls.getSuperclass();
         }
         return fields;
