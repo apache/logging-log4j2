@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -211,10 +212,7 @@ public class MutableThreadContextStack implements ThreadContextStack, StringBuil
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((this.list == null) ? 0 : this.list.hashCode());
-        return result;
+        return Objects.hash(list);
     }
 
     @Override

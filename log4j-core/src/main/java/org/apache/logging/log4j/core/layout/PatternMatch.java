@@ -105,11 +105,7 @@ public final class PatternMatch {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((key == null) ? 0 : key.hashCode());
-        result = prime * result + ((pattern == null) ? 0 : pattern.hashCode());
-        return result;
+        return Objects.hash(key, pattern);
     }
 
     @Override

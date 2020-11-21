@@ -101,10 +101,7 @@ class Log4jMarker implements Marker {
 
     @Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((marker == null) ? 0 : marker.hashCode());
-		return result;
+		return Objects.hash(marker);
 	}
 
     @Override

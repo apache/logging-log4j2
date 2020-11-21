@@ -87,12 +87,7 @@ public final class ExtendedClassInfo implements Serializable {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (this.exact ? 1231 : 1237);
-        result = prime * result + ((this.location == null) ? 0 : this.location.hashCode());
-        result = prime * result + ((this.version == null) ? 0 : this.version.hashCode());
-        return result;
+        return Objects.hash(exact, location, version);
     }
 
     public void renderOn(final StringBuilder output, final TextRenderer textRenderer) {

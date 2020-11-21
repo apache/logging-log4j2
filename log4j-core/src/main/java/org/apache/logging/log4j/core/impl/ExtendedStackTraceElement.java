@@ -115,11 +115,7 @@ public final class ExtendedStackTraceElement implements Serializable {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((this.extraClassInfo == null) ? 0 : this.extraClassInfo.hashCode());
-        result = prime * result + ((this.stackTraceElement == null) ? 0 : this.stackTraceElement.hashCode());
-        return result;
+        return Objects.hash(extraClassInfo, stackTraceElement);
     }
 
     public boolean isNativeMethod() {
