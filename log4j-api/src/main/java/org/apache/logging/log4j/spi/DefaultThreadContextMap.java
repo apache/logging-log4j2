@@ -86,7 +86,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
             return;
         }
         Map<String, String> map = localMap.get();
-        map = map == null ? new HashMap<String, String>(1) : new HashMap<>(map);
+        map = map == null ? new HashMap<>(1) : new HashMap<>(map);
         map.put(key, value);
         localMap.set(Collections.unmodifiableMap(map));
     }
@@ -96,7 +96,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
             return;
         }
         Map<String, String> map = localMap.get();
-        map = map == null ? new HashMap<String, String>(m.size()) : new HashMap<>(map);
+        map = map == null ? new HashMap<>(m.size()) : new HashMap<>(map);
         for (final Map.Entry<String, String> e : m.entrySet()) {
             map.put(e.getKey(), e.getValue());
         }
@@ -186,7 +186,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     @Override
     public Map<String, String> getCopy() {
         final Map<String, String> map = localMap.get();
-        return map == null ? new HashMap<String, String>() : new HashMap<>(map);
+        return map == null ? new HashMap<>() : new HashMap<>(map);
     }
 
     @Override

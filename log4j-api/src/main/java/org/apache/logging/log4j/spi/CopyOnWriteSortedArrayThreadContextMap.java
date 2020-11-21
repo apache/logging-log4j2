@@ -214,7 +214,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     @Override
     public Map<String, String> getCopy() {
         final StringMap map = localMap.get();
-        return map == null ? new HashMap<String, String>() : map.toMap();
+        return map == null ? new HashMap<>() : map.toMap();
     }
 
     /**
