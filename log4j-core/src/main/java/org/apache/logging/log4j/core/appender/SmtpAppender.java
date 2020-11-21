@@ -280,6 +280,7 @@ public final class SmtpAppender extends AbstractAppender {
      * @deprecated Use {@link #newBuilder()} to create and configure a {@link Builder} instance.
      * @see Builder
      */
+    @Deprecated
     public static SmtpAppender createAppender(
             @PluginConfiguration final Configuration config,
             @PluginAttribute("name") @Required final String name,

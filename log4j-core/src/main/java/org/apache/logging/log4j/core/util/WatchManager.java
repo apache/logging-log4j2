@@ -246,6 +246,7 @@ public class WatchManager extends AbstractLifeCycle {
      * @return A Map of the file watchers.
      * @deprecated use getConfigurationWatchers.
      */
+    @Deprecated
     public Map<File, FileWatcher> getWatchers() {
         final Map<File, FileWatcher> map = new HashMap<>(watchers.size());
         for (Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
