@@ -46,6 +46,7 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
         this.watcher = watcher;
     }
 
+    @Override
     public long getLastModified() {
         return lastModifiedMillis;
     }

@@ -59,8 +59,10 @@ public abstract class AbstractWatcher implements Watcher {
         return configuration;
     }
 
+    @Override
     public abstract long getLastModified();
 
+    @Override
     public abstract boolean isModified();
 
     @Override

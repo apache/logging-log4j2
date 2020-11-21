@@ -72,21 +72,25 @@ public class DefaultLogBuilder implements LogBuilder {
         return this;
     }
 
+    @Override
     public LogBuilder withMarker(Marker marker) {
         this.marker = marker;
         return this;
     }
 
+    @Override
     public LogBuilder withThrowable(Throwable throwable) {
         this.throwable = throwable;
         return this;
     }
 
+    @Override
     public LogBuilder withLocation() {
         location = StackLocatorUtil.getStackTraceElement(2);
         return this;
     }
 
+    @Override
     public LogBuilder withLocation(StackTraceElement location) {
         this.location = location;
         return this;

@@ -88,6 +88,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     }
 
+    @Override
     public boolean requiresLocation() {
         return false;
     }

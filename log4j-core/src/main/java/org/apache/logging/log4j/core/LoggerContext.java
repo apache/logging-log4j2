@@ -170,6 +170,7 @@ public class LoggerContext extends AbstractLifeCycle
         CompletableFuture.runAsync(ThreadContextDataInjector::initServiceProviders);
     }
 
+    @Override
     public void addShutdownListener(LoggerContextShutdownAware listener) {
         if (listeners == null) {
             synchronized(this) {
@@ -181,6 +182,7 @@ public class LoggerContext extends AbstractLifeCycle
         listeners.add(listener);
     }
 
+    @Override
     public List<LoggerContextShutdownAware> getListeners() {
         return listeners;
     }

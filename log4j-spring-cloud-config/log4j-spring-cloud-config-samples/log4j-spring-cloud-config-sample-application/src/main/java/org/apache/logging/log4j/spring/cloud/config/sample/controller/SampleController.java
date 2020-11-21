@@ -107,6 +107,7 @@ public class SampleController {
             this.count = count;
         }
 
+        @Override
         public void run() {
             String prefix = "Thread " + id + " record ";
             for (int i = 0; i < count; ++i) {

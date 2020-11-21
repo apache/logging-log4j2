@@ -38,6 +38,7 @@ public class ConfigurationFileWatcher extends AbstractWatcher implements FileWat
         this.lastModifiedMillis = lastModifiedMillis;
     }
 
+    @Override
     public long getLastModified() {
         return file != null ? file.lastModified() : 0;
     }

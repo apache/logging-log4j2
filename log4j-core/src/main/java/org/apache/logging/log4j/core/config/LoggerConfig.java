@@ -504,6 +504,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         logParent(event, predicate);
     }
 
+    @Override
     public boolean requiresLocation() {
         if (!includeLocation) {
             return false;

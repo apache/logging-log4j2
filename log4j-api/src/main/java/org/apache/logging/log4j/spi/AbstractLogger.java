@@ -2092,6 +2092,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    @Override
     public void logMessage(final Level level, final Marker marker, final String fqcn, final StackTraceElement location,
         final Message message, final Throwable throwable) {
         try {
