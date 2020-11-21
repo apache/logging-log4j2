@@ -160,17 +160,7 @@ public class LoggerTest {
 
     @Test
     public void flowTracingString_SupplierOfObjectMessages() {
-        final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<Message>() {
-            @Override
-            public Message get() {
-                return new ObjectMessage(1);
-            }
-        }, new Supplier<Message>() {
-            @Override
-            public Message get() {
-                return new ObjectMessage(2);
-            }
-        });
+        final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", (Supplier<Message>) () -> new ObjectMessage(1), (Supplier<Message>) () -> new ObjectMessage(2));
         logger.traceExit(msg, 3);
         assertEquals(2, results.size());
         assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
@@ -181,17 +171,7 @@ public class LoggerTest {
 
     @Test
     public void flowTracingString_SupplierOfStrings() {
-        final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<String>() {
-            @Override
-            public String get() {
-                return "1";
-            }
-        }, new Supplier<String>() {
-            @Override
-            public String get() {
-                return "2";
-            }
-        });
+        final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", (Supplier<String>) () -> "1", (Supplier<String>) () -> "2");
         logger.traceExit(msg, 3);
         assertEquals(2, results.size());
         assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));

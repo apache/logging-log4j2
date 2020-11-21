@@ -35,7 +35,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;
@@ -216,12 +215,7 @@ public class MapFilter extends AbstractFilter {
     @Deprecated
     protected Map<String, List<String>> getMap() {
         final Map<String, List<String>> result = new HashMap<>(map.size());
-        map.forEach(new BiConsumer<String, List<String>>() {
-            @Override
-            public void accept(final String key, final List<String> value) {
-                result.put(key, value);
-            }
-        });
+        map.forEach((key, value) -> result.put(key, (List<String>) value));
         return result;
     }
 

@@ -158,12 +158,7 @@ public class ReusableParameterizedMessageTest {
         expected.add("msg");
         expected.add(EXCEPTION1);
         final List<Object> actual = new LinkedList<>();
-        msg.forEachParameter(new ParameterConsumer<Void>() {
-            @Override
-            public void accept(final Object parameter, final int parameterIndex, final Void state) {
-                actual.add(parameter);
-            }
-        }, null);
+        msg.forEachParameter((parameter, parameterIndex, state) -> actual.add(parameter), null);
         assertEquals(expected, actual);
     }
 }
