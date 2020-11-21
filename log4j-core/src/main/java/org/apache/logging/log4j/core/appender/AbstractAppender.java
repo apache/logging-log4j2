@@ -163,7 +163,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
 
     @Override
     public boolean requiresLocation() {
-        return layout != null && layout instanceof LocationAware && ((LocationAware) layout).requiresLocation();
+        return layout instanceof LocationAware && ((LocationAware) layout).requiresLocation();
     }
 
     /**

@@ -421,7 +421,7 @@ public class LogManager {
      * @since 2.6
      */
     public static void shutdown(final LoggerContext context) {
-        if (context != null && context instanceof Terminable) {
+        if (context instanceof Terminable) {
             ((Terminable) context).terminate();
         }
     }
