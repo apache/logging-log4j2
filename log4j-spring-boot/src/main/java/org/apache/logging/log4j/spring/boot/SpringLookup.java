@@ -72,14 +72,7 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
                             }
 
                         }
-                        StringBuilder sb = new StringBuilder();
-                        for (String profile : env.getActiveProfiles()) {
-                            if (sb.length() > 0) {
-                                sb.append(",");
-                            }
-                            sb.append(profile);
-                        }
-                        return sb.toString();
+                        return String.join(",", env.getActiveProfiles());
                     }
                 }
             } else if (lowerKey.startsWith(DEFAULT)) {
@@ -106,14 +99,7 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
                             }
 
                         }
-                        StringBuilder sb = new StringBuilder();
-                        for (String profile : env.getDefaultProfiles()) {
-                            if (sb.length() > 0) {
-                                sb.append(",");
-                            }
-                            sb.append(profile);
-                        }
-                        return sb.toString();
+                        return String.join(",", env.getDefaultProfiles());
                     }
                 }
             }
