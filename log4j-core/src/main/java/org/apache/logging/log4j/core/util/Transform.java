@@ -64,17 +64,24 @@ public final class Transform {
             final char ch = input.charAt(i);
             if (ch > '>') {
                 buf.append(ch);
-            } else if (ch == '<') {
-                buf.append("&lt;");
-            } else if (ch == '>') {
-                buf.append("&gt;");
-            } else if (ch == '&') {
-                buf.append("&amp;");
-            } else if (ch == '"') {
-                buf.append("&quot;");
-            } else {
-                buf.append(ch);
-            }
+            } else
+                switch (ch) {
+                case '<':
+                    buf.append("&lt;");
+                    break;
+                case '>':
+                    buf.append("&gt;");
+                    break;
+                case '&':
+                    buf.append("&amp;");
+                    break;
+                case '"':
+                    buf.append("&quot;");
+                    break;
+                default:
+                    buf.append(ch);
+                    break;
+                }
         }
         return buf.toString();
     }
