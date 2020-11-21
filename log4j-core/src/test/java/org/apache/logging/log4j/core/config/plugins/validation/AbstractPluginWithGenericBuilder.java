@@ -49,7 +49,6 @@ public class AbstractPluginWithGenericBuilder {
     private final String thing;
 
     public AbstractPluginWithGenericBuilder(final String thing) {
-        super();
         this.thing = thing;
     }
 

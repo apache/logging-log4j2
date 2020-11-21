@@ -75,7 +75,6 @@ public class TimestampMessageTest {
 
     public static class PoisonClock implements Clock {
         public PoisonClock() {
-            super();
             // Breakpoint here for debuging.
         }
 

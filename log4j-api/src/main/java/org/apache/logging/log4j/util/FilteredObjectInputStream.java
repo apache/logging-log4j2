@@ -52,7 +52,6 @@ public class FilteredObjectInputStream extends ObjectInputStream {
     private final Collection<String> allowedClasses;
 
     public FilteredObjectInputStream() throws IOException, SecurityException {
-        super();
         this.allowedClasses = new HashSet<>();
     }
 
@@ -62,7 +61,6 @@ public class FilteredObjectInputStream extends ObjectInputStream {
     }
 
     public FilteredObjectInputStream(final Collection<String> allowedClasses) throws IOException, SecurityException {
-        super();
         this.allowedClasses = allowedClasses;
     }
 

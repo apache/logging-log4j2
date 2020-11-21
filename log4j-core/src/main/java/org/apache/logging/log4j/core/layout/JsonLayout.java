@@ -87,7 +87,6 @@ public final class JsonLayout extends AbstractJacksonLayout {
         private KeyValuePair[] additionalFields;
 
         public Builder() {
-            super();
             setCharset(StandardCharsets.UTF_8);
         }
 

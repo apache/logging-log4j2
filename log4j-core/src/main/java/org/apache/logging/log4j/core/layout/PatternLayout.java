@@ -323,7 +323,6 @@ public final class PatternLayout extends AbstractStringLayout {
         private final RegexReplacement replace;
 
         private PatternSerializer(final PatternFormatter[] formatters, final RegexReplacement replace) {
-            super();
             this.formatters = formatters;
             this.replace = replace;
         }
@@ -454,7 +453,6 @@ public final class PatternLayout extends AbstractStringLayout {
         private final RegexReplacement replace;
 
         private PatternSelectorSerializer(final PatternSelector patternSelector, final RegexReplacement replace) {
-            super();
             this.patternSelector = patternSelector;
             this.replace = replace;
         }

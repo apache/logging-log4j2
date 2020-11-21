@@ -51,7 +51,6 @@ public abstract class AbstractLoadBundleTest {
      * Constructs a test for a given bundle.
      */
     public AbstractLoadBundleTest() {
-        super();
         this.bundleTestInfo = new BundleTestInfo();
     }
 

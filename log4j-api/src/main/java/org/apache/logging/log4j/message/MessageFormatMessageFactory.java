@@ -32,7 +32,6 @@ public class MessageFormatMessageFactory extends AbstractMessageFactory {
      * Constructs a message factory with default flow strings.
      */
     public MessageFormatMessageFactory() {
-        super();
     }
 
     /**

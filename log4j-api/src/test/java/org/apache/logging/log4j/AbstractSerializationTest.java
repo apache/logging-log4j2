@@ -34,7 +34,6 @@ public abstract class AbstractSerializationTest {
     private final Serializable serializable;
 
     public AbstractSerializationTest(final Serializable serializable) {
-        super();
         this.serializable = serializable;
     }
 

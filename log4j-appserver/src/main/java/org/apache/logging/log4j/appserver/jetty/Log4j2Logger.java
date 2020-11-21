@@ -72,7 +72,6 @@ public class Log4j2Logger extends AbstractLogger {
     }
 
     public Log4j2Logger(final String name) {
-        super();
         this.name = name;
         this.logger = PrivateManager.getLogger(name);
     }

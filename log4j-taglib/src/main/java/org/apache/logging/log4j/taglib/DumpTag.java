@@ -35,7 +35,6 @@ public class DumpTag extends TagSupport {
     private int scope;
 
     public DumpTag() {
-        super();
         init();
     }
 

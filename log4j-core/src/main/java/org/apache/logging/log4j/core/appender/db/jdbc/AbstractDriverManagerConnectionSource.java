@@ -128,7 +128,6 @@ public class AbstractDriverManagerConnectionSource extends AbstractConnectionSou
 
     public AbstractDriverManagerConnectionSource(final String driverClassName, final String connectionString,
             final String actualConnectionString, final char[] userName, final char[] password, final Property[] properties) {
-        super();
         this.driverClassName = driverClassName;
         this.connectionString = connectionString;
         this.actualConnectionString = actualConnectionString;

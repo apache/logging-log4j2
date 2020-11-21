@@ -46,7 +46,6 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      * Constructs a message factory.
      */
     public ParameterizedMessageFactory() {
-        super();
     }
 
     /**

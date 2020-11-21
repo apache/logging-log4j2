@@ -147,7 +147,6 @@ public final class GelfLayout extends AbstractStringLayout {
 
 
         public Builder() {
-            super();
             setCharset(StandardCharsets.UTF_8);
         }
 

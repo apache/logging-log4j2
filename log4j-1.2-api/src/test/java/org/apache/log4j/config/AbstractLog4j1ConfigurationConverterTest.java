@@ -49,7 +49,6 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
     private final Path pathIn;
 
     public AbstractLog4j1ConfigurationConverterTest(final Path path) {
-        super();
         this.pathIn = path;
     }
 

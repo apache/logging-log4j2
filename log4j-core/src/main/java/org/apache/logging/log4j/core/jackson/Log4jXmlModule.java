@@ -33,7 +33,6 @@ final class Log4jXmlModule extends JacksonXmlModule {
     private final boolean stacktraceAsString;
 
     Log4jXmlModule(final boolean includeStacktrace, final boolean stacktraceAsString) {
-        super();
         this.includeStacktrace = includeStacktrace;
         this.stacktraceAsString = stacktraceAsString;
         // MUST init here.

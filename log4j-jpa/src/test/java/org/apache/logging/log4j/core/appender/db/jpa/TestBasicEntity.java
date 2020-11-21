@@ -38,7 +38,6 @@ public class TestBasicEntity extends BasicLogEventEntity {
     private long id = 0L;
 
     public TestBasicEntity() {
-        super();
     }
 
     public TestBasicEntity(final LogEvent wrapped) {

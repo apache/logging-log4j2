@@ -80,7 +80,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     public ConfigurationFactory() {
-        super();
         // TEMP For breakpoints
     }
 

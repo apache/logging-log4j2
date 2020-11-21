@@ -36,7 +36,6 @@ public class StringMapMessage extends MapMessage<StringMapMessage, String> {
      * Constructs a new instance.
      */
     public StringMapMessage() {
-        super();
     }
 
     /**

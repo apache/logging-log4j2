@@ -45,7 +45,6 @@ public class PropertySetterException extends Exception {
      * @param rootCause The root cause
      */
     public PropertySetterException(final Throwable rootCause) {
-        super();
         this.rootCause = rootCause;
     }
 

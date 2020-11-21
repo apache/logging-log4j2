@@ -54,7 +54,6 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             implements org.apache.logging.log4j.core.util.Builder<RollingRandomAccessFileAppender> {
 
         public Builder() {
-            super();
             withBufferSize(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
             setIgnoreExceptions(true);
             withImmediateFlush(true);

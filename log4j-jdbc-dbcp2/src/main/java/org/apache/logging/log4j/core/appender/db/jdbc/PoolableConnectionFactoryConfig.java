@@ -228,7 +228,6 @@ public class PoolableConnectionFactoryConfig {
             final boolean fastFailValidation, final long maxConnLifetimeMillis, final int maxOpenPreparedStatements,
             final boolean poolStatements, final boolean rollbackOnReturn, final String validationQuery,
             final int validationQueryTimeoutSeconds) {
-        super();
         this.cacheState = cacheState;
         this.connectionInitSqls = connectionInitSqls;
         this.defaultAutoCommit = defaultAutoCommit;

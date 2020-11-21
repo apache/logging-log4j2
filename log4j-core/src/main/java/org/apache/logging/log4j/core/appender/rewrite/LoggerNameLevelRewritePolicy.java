@@ -70,7 +70,6 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
     private final Map<Level, Level> map;
 
     private LoggerNameLevelRewritePolicy(final String loggerName, final Map<Level, Level> map) {
-        super();
         this.loggerName = loggerName;
         this.map = map;
     }

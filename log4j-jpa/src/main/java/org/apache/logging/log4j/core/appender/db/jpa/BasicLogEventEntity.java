@@ -68,7 +68,6 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
      * entity.
      */
     public BasicLogEventEntity() {
-        super();
     }
 
     /**

@@ -42,7 +42,6 @@ public class JmxRuntimeInputArgumentsLookup extends MapLookup {
      * Constructor when used directly as a plugin.
      */
     public JmxRuntimeInputArgumentsLookup() {
-        super();
     }
 
     public JmxRuntimeInputArgumentsLookup(final Map<String, String> map) {

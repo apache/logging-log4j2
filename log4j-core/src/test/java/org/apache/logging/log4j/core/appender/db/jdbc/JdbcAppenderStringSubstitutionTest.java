@@ -28,7 +28,6 @@ public class JdbcAppenderStringSubstitutionTest {
     private static final String KEY = "Test.TableName";
 
     public JdbcAppenderStringSubstitutionTest() {
-        super();
         System.setProperty(KEY, VALUE);
     }
 

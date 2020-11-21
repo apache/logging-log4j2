@@ -34,7 +34,6 @@ public class TestLogger extends AbstractLogger {
     private static final long serialVersionUID = 1L;
 
     public TestLogger() {
-        super();
     }
 
     public TestLogger(final String name, final MessageFactory messageFactory) {

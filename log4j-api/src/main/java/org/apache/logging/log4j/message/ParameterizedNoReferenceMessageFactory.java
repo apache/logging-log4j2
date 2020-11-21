@@ -80,7 +80,6 @@ public final class ParameterizedNoReferenceMessageFactory extends AbstractMessag
      * Constructs a message factory with default flow strings.
      */
     public ParameterizedNoReferenceMessageFactory() {
-        super();
     }
 
     /**

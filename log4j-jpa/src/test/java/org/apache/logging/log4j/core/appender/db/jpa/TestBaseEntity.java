@@ -52,7 +52,6 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
     private long id = 0L;
 
     public TestBaseEntity() {
-        super();
     }
 
     public TestBaseEntity(final LogEvent wrappedEvent) {

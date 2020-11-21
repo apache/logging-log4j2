@@ -43,7 +43,6 @@ public final class ExtendedClassInfo implements Serializable {
      * @param version
      */
     public ExtendedClassInfo(final boolean exact, final String location, final String version) {
-        super();
         this.exact = exact;
         this.location = location;
         this.version = version;

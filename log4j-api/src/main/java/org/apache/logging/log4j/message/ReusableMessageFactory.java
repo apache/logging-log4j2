@@ -46,7 +46,6 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
      * Constructs a message factory.
      */
     public ReusableMessageFactory() {
-        super();
     }
 
     private static ReusableParameterizedMessage getParameterized() {

@@ -58,7 +58,6 @@ public final class SyslogLayout extends AbstractStringLayout {
             implements org.apache.logging.log4j.core.util.Builder<SyslogLayout> {
 
         public Builder() {
-            super();
             setCharset(StandardCharsets.UTF_8);
         }
 

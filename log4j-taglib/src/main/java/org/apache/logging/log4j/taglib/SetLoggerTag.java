@@ -42,7 +42,6 @@ public class SetLoggerTag extends BodyTagSupport {
     private int scope;
 
     public SetLoggerTag() {
-        super();
         init();
     }
 

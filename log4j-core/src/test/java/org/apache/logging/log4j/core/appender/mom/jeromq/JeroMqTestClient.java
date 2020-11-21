@@ -32,7 +32,6 @@ class JeroMqTestClient implements Callable<List<String>> {
     private final int receiveCount;
 
     JeroMqTestClient(final ZMQ.Context context, final String endpoint, final int receiveCount) {
-        super();
         this.context = context;
         this.endpoint = endpoint;
         this.receiveCount = receiveCount;

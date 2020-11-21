@@ -84,7 +84,6 @@ public class NoGcLayout implements Layout<Serializable> {
         }
 
         private PatternSerializer2(final PatternFormatter[] formatters) {
-            super();
             this.formatters = formatters;
         }
 

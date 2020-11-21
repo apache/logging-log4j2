@@ -78,7 +78,6 @@ public class Duration implements Serializable, Comparable<Duration> {
      * @param seconds the length of the duration in seconds, positive or negative
      */
     private Duration(final long seconds) {
-        super();
         this.seconds = seconds;
     }
 

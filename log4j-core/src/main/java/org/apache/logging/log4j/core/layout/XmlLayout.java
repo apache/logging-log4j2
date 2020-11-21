@@ -68,7 +68,6 @@ public final class XmlLayout extends AbstractJacksonLayout {
         implements org.apache.logging.log4j.core.util.Builder<XmlLayout> {
 
         public Builder() {
-            super();
             setCharset(StandardCharsets.UTF_8);
         }
 

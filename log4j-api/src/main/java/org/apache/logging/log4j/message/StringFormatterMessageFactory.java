@@ -45,7 +45,6 @@ public final class StringFormatterMessageFactory extends AbstractMessageFactory 
      * Constructs a message factory with default flow strings.
      */
     public StringFormatterMessageFactory() {
-        super();
     }
 
     /**

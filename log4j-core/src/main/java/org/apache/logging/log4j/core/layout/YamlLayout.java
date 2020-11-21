@@ -58,7 +58,6 @@ public final class YamlLayout extends AbstractJacksonLayout {
         implements org.apache.logging.log4j.core.util.Builder<YamlLayout> {
 
         public Builder() {
-            super();
             setCharset(StandardCharsets.UTF_8);
         }
 

@@ -59,7 +59,6 @@ public class SecurityManagerTestRule implements TestRule {
      *            the {@link SecurityManager} to use while running a test.
      */
     public SecurityManagerTestRule(final SecurityManager securityManager) {
-        super();
         this.securityManager = securityManager;
     }
 

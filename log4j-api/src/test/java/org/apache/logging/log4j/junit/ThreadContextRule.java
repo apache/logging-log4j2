@@ -55,7 +55,6 @@ public class ThreadContextRule extends ExternalResource {
      *            Whether to restore the thread context stack.
      */
     public ThreadContextRule(final boolean restoreMap, final boolean restoreStack) {
-        super();
         this.restoreMap = restoreMap;
         this.restoreStack = restoreStack;
     }
