@@ -120,8 +120,12 @@ public class MapAccessor {
 
     @Override
     public boolean equals(final Object instance) {
-        if (this == instance) return true;
-        if (instance == null || getClass() != instance.getClass()) return false;
+        if (this == instance) {
+            return true;
+        }
+        if (instance == null || getClass() != instance.getClass()) {
+            return false;
+        }
         final MapAccessor that = (MapAccessor) instance;
         return map.equals(that.map);
     }

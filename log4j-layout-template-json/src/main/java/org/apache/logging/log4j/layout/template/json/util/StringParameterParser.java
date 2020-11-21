@@ -77,8 +77,12 @@ public final class StringParameterParser {
 
         @Override
         public boolean equals(Object object) {
-            if (this == object) return true;
-            if (object == null || getClass() != object.getClass()) return false;
+            if (this == object) {
+                return true;
+            }
+            if (object == null || getClass() != object.getClass()) {
+                return false;
+            }
             StringValue that = (StringValue) object;
             return string.equals(that.string);
         }
@@ -109,8 +113,12 @@ public final class StringParameterParser {
 
         @Override
         public boolean equals(Object object) {
-            if (this == object) return true;
-            if (object == null || getClass() != object.getClass()) return false;
+            if (this == object) {
+                return true;
+            }
+            if (object == null || getClass() != object.getClass()) {
+                return false;
+            }
             DoubleQuotedStringValue that = (DoubleQuotedStringValue) object;
             return doubleQuotedString.equals(that.doubleQuotedString);
         }

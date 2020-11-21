@@ -94,8 +94,9 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
             int foundEvents = 0;
             final Pattern eventMatcher = Pattern.compile("title=\"Message\"");
             for (File file : files) {
-                if (!file.getName().startsWith(prefix))
+                if (!file.getName().startsWith(prefix)) {
                     continue;
+                }
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                     String data = IOUtils.toString(reader).trim();
                     // check that every file starts with the header

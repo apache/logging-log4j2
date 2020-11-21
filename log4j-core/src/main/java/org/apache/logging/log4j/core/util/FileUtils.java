@@ -61,11 +61,13 @@ public final class FileUtils {
             return null;
         }
         if (uri.isAbsolute()) {
-            if (JBOSS_FILE.equals(uri.getScheme())) try {
-                // patch the scheme
-                uri = new URI(PROTOCOL_FILE, uri.getSchemeSpecificPart(), uri.getFragment());
-            } catch (URISyntaxException use) {
-                // should not happen, ignore
+            if (JBOSS_FILE.equals(uri.getScheme())) {
+                try {
+                    // patch the scheme
+                    uri = new URI(PROTOCOL_FILE, uri.getSchemeSpecificPart(), uri.getFragment());
+                } catch (URISyntaxException use) {
+                    // should not happen, ignore
+                }
             }
             try {
                 if (PROTOCOL_FILE.equals(uri.getScheme())) {

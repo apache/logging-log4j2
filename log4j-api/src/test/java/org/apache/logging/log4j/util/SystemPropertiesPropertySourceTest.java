@@ -59,10 +59,11 @@ public class SystemPropertiesPropertySourceTest {
                     properties.setProperty("FOO_" + i, "BAR");
                 }
             });
-            for (int i = 0; i < ITERATIONS; i++)
+            for (int i = 0; i < ITERATIONS; i++) {
                 new SystemPropertiesPropertySource().forEach((key, value) -> {
                     // nothing
                 });
+            }
             future.get();
         } finally {
             threadPool.shutdown();
