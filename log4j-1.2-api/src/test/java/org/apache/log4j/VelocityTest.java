@@ -50,7 +50,7 @@ private static LoggerContext context;
     public void testVelocity() {
         Velocity.init();
         final VelocityContext vContext = new VelocityContext();
-        vContext.put("name", new String("Velocity"));
+        vContext.put("name", "Velocity");
 
         final Template template = Velocity.getTemplate("target/test-classes/hello.vm");
 
