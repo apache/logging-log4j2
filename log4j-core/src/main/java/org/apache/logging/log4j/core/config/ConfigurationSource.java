@@ -321,11 +321,7 @@ public class ConfigurationSource {
         if (ConfigurationFactory.isClassLoaderUri(configLocation)) {
             final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
             final String path = ConfigurationFactory.extractClassLoaderUriPath(configLocation);
-            final ConfigurationSource source = fromResource(path, loader);
-            if (source != null) {
-                return source;
-            }
-            return null;
+            return fromResource(path, loader);
         }
         if (!configLocation.isAbsolute()) { // LOG4J2-704 avoid confusing error message thrown by uri.toURL()
             ConfigurationFactory.LOGGER.error("File not found in file system or classpath: {}", configLocation.toString());
