@@ -61,7 +61,6 @@ public class MapMessageLookup extends AbstractLookup {
                 return mapMessage.get(key);
             } catch (final Exception ex) {
                 LOGGER.warn(LOOKUP, "Error while getting property [{}].", key, ex);
-                return null;
             }
         }
         return null;

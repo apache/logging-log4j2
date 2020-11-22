@@ -86,7 +86,6 @@ public class Log4jLookup extends AbstractConfigurationAwareLookup {
                     }
                 } catch (final URISyntaxException use) {
                     LOGGER.error(use);
-                    return null;
                 }
             }
         }
