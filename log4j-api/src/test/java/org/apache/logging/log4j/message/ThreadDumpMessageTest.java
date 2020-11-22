@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.message;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.jupiter.api.Test;
@@ -77,17 +78,17 @@ public class ThreadDumpMessageTest {
     public void testUseConstructorThread() throws InterruptedException { // LOG4J2-763
         final ThreadDumpMessage msg = new ThreadDumpMessage("Test");
 
-        final String[] actual = new String[1];
+        final AtomicReference<String> actual = new AtomicReference<>();
         final Thread other = new Thread("OtherThread") {
             @Override
             public void run() {
-                actual[0] = msg.getFormattedMessage();
+                actual.set(msg.getFormattedMessage());
             }
         };
         other.start();
         other.join();
 
-        assertFalse(actual[0].contains("OtherThread"), "No mention of other thread in msg");
+        assertFalse(actual.get().contains("OtherThread"), "No mention of other thread in msg");
     }
 
     @Test

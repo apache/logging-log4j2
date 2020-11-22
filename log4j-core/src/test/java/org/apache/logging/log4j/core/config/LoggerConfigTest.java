@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,13 +50,13 @@ public class LoggerConfigTest {
         assertEquals(new HashSet<>(list),
         		     new HashSet<>(loggerConfig.getPropertyList()), "map and list contents equal");
 
-        final Object[] actualList = new Object[1];
+        final AtomicReference<Object> actualList = new AtomicReference<>();
         loggerConfig.setLogEventFactory((loggerName, marker, fqcn, level, data, properties, t) -> {
-            actualList[0] = properties;
+            actualList.set(properties);
             return new Builder().setTimeMillis(System.currentTimeMillis()).build();
         });
         loggerConfig.log("name", "fqcn", null, Level.INFO, new SimpleMessage("msg"), null);
-        assertSame(list, actualList[0], "propertiesList passed in as is if no substitutions required");
+        assertSame(list, actualList.get(), "propertiesList passed in as is if no substitutions required");
     }
 
     @Test
@@ -69,16 +70,16 @@ public class LoggerConfigTest {
         assertEquals(new HashSet<>(list),
         		     new HashSet<>(loggerConfig.getPropertyList()), "map and list contents equal");
 
-        final Object[] actualListHolder = new Object[1];
+        final AtomicReference<Object> actualListHolder = new AtomicReference<>();
         loggerConfig.setLogEventFactory((loggerName, marker, fqcn, level, data, properties, t) -> {
-            actualListHolder[0] = properties;
+            actualListHolder.set(properties);
             return new Builder().setTimeMillis(System.currentTimeMillis()).build();
         });
         loggerConfig.log("name", "fqcn", null, Level.INFO, new SimpleMessage("msg"), null);
-        assertNotSame(list, actualListHolder[0], "propertiesList with substitutions");
+        assertNotSame(list, actualListHolder.get(), "propertiesList with substitutions");
 
         @SuppressWarnings("unchecked")
-		final List<Property> actualList = (List<Property>) actualListHolder[0];
+		final List<Property> actualList = (List<Property>) actualListHolder.get();
 
         for (int i = 0; i < list.size(); i++) {
             assertEquals(list.get(i).getName(), actualList.get(i).getName(), "name[" + i + "]");
