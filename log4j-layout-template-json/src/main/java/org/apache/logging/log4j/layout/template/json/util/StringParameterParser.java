@@ -89,7 +89,7 @@ public final class StringParameterParser {
 
         @Override
         public int hashCode() {
-            return Objects.hash(string);
+            return 31 + Objects.hashCode(string);
         }
 
         @Override
@@ -125,7 +125,7 @@ public final class StringParameterParser {
 
         @Override
         public int hashCode() {
-            return Objects.hash(doubleQuotedString);
+            return 31 + Objects.hashCode(doubleQuotedString);
         }
 
         @Override

@@ -61,7 +61,7 @@ public abstract class LevelMixInTest {
 
         @Override
         public int hashCode() {
-            return Objects.hash(level);
+            return 31 + Objects.hashCode(level);
         }
     }
     private ObjectMapper log4jObjectMapper;

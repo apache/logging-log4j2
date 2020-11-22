@@ -212,7 +212,7 @@ public class MutableThreadContextStack implements ThreadContextStack, StringBuil
 
     @Override
     public int hashCode() {
-        return Objects.hash(list);
+        return 31 + Objects.hashCode(list);
     }
 
     @Override

@@ -118,6 +118,6 @@ public class Source {
 
     @Override
     public int hashCode() {
-        return Objects.hash(location);
+        return 31 + Objects.hashCode(location);
     }
 }

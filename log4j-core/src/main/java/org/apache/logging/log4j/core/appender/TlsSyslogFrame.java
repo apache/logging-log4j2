@@ -47,7 +47,7 @@ public class TlsSyslogFrame {
 
     @Override
     public int hashCode() {
-        return Objects.hash(message);
+        return 31 + Objects.hashCode(message);
     }
 
     @Override

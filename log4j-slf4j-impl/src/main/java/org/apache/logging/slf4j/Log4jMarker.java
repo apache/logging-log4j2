@@ -101,7 +101,7 @@ public class Log4jMarker implements Marker {
 
     @Override
 	public int hashCode() {
-		return Objects.hash(marker);
+		return 31 + Objects.hashCode(marker);
 	}
 
     @Override

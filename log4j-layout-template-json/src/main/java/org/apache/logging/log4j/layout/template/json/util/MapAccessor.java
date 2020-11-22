@@ -132,7 +132,7 @@ public class MapAccessor {
 
     @Override
     public int hashCode() {
-        return Objects.hash(map);
+        return 31 + Objects.hashCode(map);
     }
 
     @Override
