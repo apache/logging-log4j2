@@ -68,7 +68,7 @@
             one for JSON, one for YAML, one for properties, and one for XML.
           </p>
             <ol>
-              <li>Log4j will inspect the <code>"log4j.configurationFile"</code> system property and, if set,  will attempt to
+              <li>Log4j will inspect the <code>"log4j2.configurationFile"</code> system property and, if set,  will attempt to
                 load the configuration using the <code>ConfigurationFactory</code> that matches the file
                 extension. Note that this is not restricted to a location on the local file system and may contain
                 a URL.</li>

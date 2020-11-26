@@ -596,147 +596,18 @@ Resolve the argument coming right after `--userId`:
 ----
 
 | map
-a|
-[source]
-----
-config      = key , [ stringified ]
-key         = "key" -> string
-stringified = "stringified" -> boolean
-----
-| resolves the given `key` of ``MapMessage``s
-| `stringified` flag translates to `String.valueOf(value)`, hence mind
-  not-`String`-typed values.
-a|
-Resolve the `userRole` field of the message:
-
-[source,json]
-----
-{
-  "$resolver": "map",
-  "key": "userRole"
-}
-----
-
-| marker
-a|
-[source]
-----
-config = "field" -> "name"
-----
-| `logEvent.getMarker().getName()`
-| none
-a|
-Resolve the marker name:
-
-[source,json]
-----
-{
-  "$resolver": "marker",
-  "field": "name"
-}
-----
+| see link:#map-resolver-template[Map Resolver Template]
+| resolves ``MapMessage``s
+| see link:#map-resolver-template[Map Resolver Template]
+| see link:#map-resolver-template[Map Resolver Template]
 
 | mdc
-a|
-[source]
-----
-config        = singleAccess \| multiAccess
-
-singleAccess  = key , [ stringified ]
-key           = "key" -> string
-stringified   = "stringified" -> boolean
-
-multi-access  = [ pattern ] , [ flatten ] , [ stringified ]
-pattern       = "pattern" -> string
-flatten       = "flatten" -> ( boolean \| flattenConfig )
-flattenConfig = [ flattenPrefix ]
-flattenPrefix = "prefix" -> string
-----
-a| Mapped Diagnostic Context (MDC), aka. Thread Context Data, resolver.
-
-`singleAccess` resolves the MDC value as is, whilst `multiAccess` resolves a
-multitude of MDC values. If `flatten` is provided, `multiAccess` merges the
-values with the parent, otherwise creates a new JSON object containing the
-values.
-
-Enabling `stringified` flag converts each value to its string representation.
-
-Regex provided in the `pattern` is used to match against the keys.
-a|
-`log4j2.garbagefreeThreadContextMap` flag needs to be turned on to iterate
-the map without allocations.
-
-`stringified` allocates a new `String` for values that are not of type `String`.
-
-Writing certain non-primitive values (e.g., `BigDecimal`, `Set`, etc.) to JSON
-generates garbage, though most (e.g., `int`, `long`, `String`, `List`,
-`boolean[]`, etc.) don't.
-a|
-Resolve the `userRole` MDC value:
-
-[source,json]
-----
-{
-  "$resolver": "mdc",
-  "key": "userRole"
-}
-----
-
-Resolve the string representation of the `userRank` MDC value:
-
-[source,json]
-----
-{
-  "$resolver": "mdc",
-  "key": "userRank",
-  "stringified": true
-}
-----
-
-Resolve all MDC entries into an object:
-
-[source,json]
-----
-{
-  "$resolver": "mdc"
-}
-----
-
-Resolve all MDC entries into an object such that values are converted to string:
-
-[source,json]
-----
-{
-  "$resolver": "mdc",
-  "stringified": true
-}
-----
-
-Merge all MDC entries whose keys are matching with the `user(Role\|Rank)` regex
-into the parent:
-
-[source,json]
-----
-{
-  "$resolver": "mdc",
-  "flatten": true,
-  "pattern": "user(Role\|Rank)"
-}
-----
-
-After converting the corresponding entries to string, merge all MDC entries to
-parent such that keys are prefixed with `_`:
-
-[source,json]
-----
-{
-  "$resolver": "mdc",
-  "stringified": true,
-  "flatten": {
-    "prefix": "_"
-  }
-}
-----
+| see link:#map-resolver-template[Map Resolver Template]
+| resolves Mapped Diagnostic Context (MDC), aka. Thread Context Data
+| `log4j2.garbagefreeThreadContextMap` flag needs to be turned on to iterate
+  the map without allocations. See
+  link:#map-resolver-template[Map Resolver Template] for other details.
+| see link:#map-resolver-template[Map Resolver Template]
 
 | message
 a|
@@ -1107,6 +978,117 @@ a!
 ----
 ! 1581082727982123456
 !===
+|===
+
+[#map-resolver-template]
+==== Map Resolver Template
+
+`ReadOnlyStringMap` is Log4j's `Map<String, Object>` equivalent with
+garbage-free accessors and heavily employed throughout the code base. It is the
+data structure backing both Mapped Diagnostic Context (MDC), aka. Thread Context
+Data and `MapMessage` implementations. Hence template resolvers for both of
+these are provided by a single backend: `ReadOnlyStringMapResolver`. Put another
+way, both `mdc` and `map` resolvers support identical configuration, behaviour,
+and garbage footprint, which are detailed below.
+
+[#stringmap-template-resolver]
+.`ReadOnlyStringMap` template resolver
+[cols="3,2,2,4"]
+|===
+| Syntax
+| Description
+| Garbage Footprint
+| Examples
+
+a|
+[source]
+----
+config        = singleAccess \| multiAccess
+
+singleAccess  = key , [ stringified ]
+key           = "key" -> string
+stringified   = "stringified" -> boolean
+
+multiAccess   = [ pattern ] , [ flatten ] , [ stringified ]
+pattern       = "pattern" -> string
+flatten       = "flatten" -> ( boolean \| flattenConfig )
+flattenConfig = [ flattenPrefix ]
+flattenPrefix = "prefix" -> string
+----
+| `singleAccess` resolves a single field, whilst `multiAccess` resolves a
+  multitude of fields. If `flatten` is provided, `multiAccess` merges the fields
+  with the parent, otherwise creates a new JSON object containing the values.
+| `stringified` flag translates to `String.valueOf(value)`, hence mind
+  not-`String`-typed values.
+a|
+`"${dollar}resolver"` is left out in the following examples, since it is to be
+defined by the actual resolver, e.g., `map`, `mdc`.
+
+Resolve the value of the field keyed with `userRole`:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "key": "userRole"
+}
+----
+
+Resolve the string representation of the `userRank` field value:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "key": "userRank",
+  "stringified": true
+}
+----
+
+Resolve all fields into an object:
+
+[source,json]
+----
+{
+  "$resolver": "…"
+}
+----
+
+Resolve all fields into an object such that values are converted to string:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "stringified": true
+}
+----
+
+Merge all fields whose keys are matching with the `user(Role\|Rank)` regex into
+the parent:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "flatten": true,
+  "pattern": "user(Role\|Rank)"
+}
+----
+
+After converting the corresponding field values to string, merge all fields to
+parent such that keys are prefixed with `_`:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "stringified": true,
+  "flatten": {
+    "prefix": "_"
+  }
+}
+----
 |===
 
 [#stack-trace-element-templates]
