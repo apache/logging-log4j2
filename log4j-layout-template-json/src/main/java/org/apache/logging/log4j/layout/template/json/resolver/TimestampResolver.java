@@ -18,7 +18,7 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
@@ -381,7 +381,10 @@ final class TimestampResolver implements EventResolver {
 
         private Instant instant;
 
-        private char[] resolution = new char[/* integral: */MAX_LONG_LENGTH + /* dot: */1 + /* fractional: */MAX_LONG_LENGTH ];
+        private char[] resolution = new char[
+                /* integral: */ MAX_LONG_LENGTH +
+                /* dot: */ 1 +
+                /* fractional: */ MAX_LONG_LENGTH];
 
         private int resolutionLength;
 
