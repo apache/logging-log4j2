@@ -19,15 +19,15 @@ package org.apache.logging.log4j.layout.template.json.util;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.convert.TypeConverterRegistry;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayDeque;
 import java.util.concurrent.ArrayBlockingQueue;
 
-public class RecyclerFactoriesTest {
+class RecyclerFactoriesTest {
 
     @Test
-    public void test_RecyclerFactoryConverter() throws Exception {
+    void test_RecyclerFactoryConverter() throws Exception {
 
         // Check if the type converter is registered.
         final TypeConverter<?> converter = TypeConverterRegistry

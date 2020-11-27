@@ -22,7 +22,7 @@ import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.
 import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Value;
 import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -30,66 +30,67 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class StringParameterParserTest {
+@SuppressWarnings("DoubleBraceInitialization")
+class StringParameterParserTest {
 
     @Test
-    public void test_empty_string() {
+    void test_empty_string() {
         testSuccess(
                 "",
                 Collections.emptyMap());
     }
 
     @Test
-    public void test_blank_string() {
+    void test_blank_string() {
         testSuccess(
                 "\t",
                 Collections.emptyMap());
     }
 
     @Test
-    public void test_simple_pair() {
+    void test_simple_pair() {
         testSuccess(
                 "a=b",
                 Collections.singletonMap("a", Values.stringValue("b")));
     }
 
     @Test
-    public void test_simple_pair_with_whitespace_1() {
+    void test_simple_pair_with_whitespace_1() {
         testSuccess(
                 " a=b",
                 Collections.singletonMap("a", Values.stringValue("b")));
     }
 
     @Test
-    public void test_simple_pair_with_whitespace_2() {
+    void test_simple_pair_with_whitespace_2() {
         testSuccess(
                 " a =b",
                 Collections.singletonMap("a", Values.stringValue("b")));
     }
 
     @Test
-    public void test_simple_pair_with_whitespace_3() {
+    void test_simple_pair_with_whitespace_3() {
         testSuccess(
                 " a = b",
                 Collections.singletonMap("a", Values.stringValue("b")));
     }
 
     @Test
-    public void test_simple_pair_with_whitespace_4() {
+    void test_simple_pair_with_whitespace_4() {
         testSuccess(
                 " a = b ",
                 Collections.singletonMap("a", Values.stringValue("b")));
     }
 
     @Test
-    public void test_null_value_1() {
+    void test_null_value_1() {
         testSuccess(
                 "a",
                 Collections.singletonMap("a", Values.nullValue()));
     }
 
     @Test
-    public void test_null_value_2() {
+    void test_null_value_2() {
         testSuccess(
                 "a,b=c,d=",
                 new LinkedHashMap<String, Value>() {{
@@ -100,7 +101,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_null_value_3() {
+    void test_null_value_3() {
         testSuccess(
                 "a,b=c,d",
                 new LinkedHashMap<String, Value>() {{
@@ -111,7 +112,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_null_value_4() {
+    void test_null_value_4() {
         testSuccess(
                 "a,b=\"c,=\\\"\",d=,e=f",
                 new LinkedHashMap<String, Value>() {{
@@ -123,7 +124,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_two_pairs() {
+    void test_two_pairs() {
         testSuccess(
                 "a=b,c=d",
                 new LinkedHashMap<String, Value>() {{
@@ -133,14 +134,14 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_01() {
+    void test_quoted_string_01() {
         testSuccess(
                 "a=\"b\"",
                 Collections.singletonMap("a", Values.doubleQuotedStringValue("b")));
     }
 
     @Test
-    public void test_quoted_string_02() {
+    void test_quoted_string_02() {
         testSuccess(
                 "a=\"b\",c=d",
                 new LinkedHashMap<String, Value>() {{
@@ -150,7 +151,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_03() {
+    void test_quoted_string_03() {
         testSuccess(
                 "a=b,c=\"d\"",
                 new LinkedHashMap<String, Value>() {{
@@ -160,7 +161,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_04() {
+    void test_quoted_string_04() {
         testSuccess(
                 "a=\"b\",c=\"d\"",
                 new LinkedHashMap<String, Value>() {{
@@ -170,21 +171,21 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_05() {
+    void test_quoted_string_05() {
         testSuccess(
                 "a=\"\\\"b\"",
                 Collections.singletonMap("a", Values.doubleQuotedStringValue("\"b")));
     }
 
     @Test
-    public void test_quoted_string_06() {
+    void test_quoted_string_06() {
         testSuccess(
                 "a=\"\\\"b\\\"\"",
                 Collections.singletonMap("a", Values.doubleQuotedStringValue("\"b\"")));
     }
 
     @Test
-    public void test_quoted_string_07() {
+    void test_quoted_string_07() {
         testSuccess(
                 "a=\"\\\"b\",c=d",
                 new LinkedHashMap<String, Value>() {{
@@ -194,7 +195,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_08() {
+    void test_quoted_string_08() {
         testSuccess(
                 "a=\"\\\"b\\\"\",c=d",
                 new LinkedHashMap<String, Value>() {{
@@ -204,7 +205,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_09() {
+    void test_quoted_string_09() {
         testSuccess(
                 "a=\"\\\"b,\",c=d",
                 new LinkedHashMap<String, Value>() {{
@@ -214,7 +215,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_10() {
+    void test_quoted_string_10() {
         testSuccess(
                 "a=\"\\\"b\\\",\",c=d",
                 new LinkedHashMap<String, Value>() {{
@@ -224,7 +225,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_11() {
+    void test_quoted_string_11() {
         testSuccess(
                 "a=\"\\\"b\",c=\"d\"",
                 new LinkedHashMap<String, Value>() {{
@@ -234,7 +235,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_12() {
+    void test_quoted_string_12() {
         testSuccess(
                 "a=\"\\\"b\\\"\",c=\"d\"",
                 new LinkedHashMap<String, Value>() {{
@@ -244,7 +245,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_13() {
+    void test_quoted_string_13() {
         testSuccess(
                 "a=\"\\\"b,\",c=\"\\\"d\"",
                 new LinkedHashMap<String, Value>() {{
@@ -254,7 +255,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_14() {
+    void test_quoted_string_14() {
         testSuccess(
                 "a=\"\\\"b\\\",\",c=\"\\\"d\\\"\"",
                 new LinkedHashMap<String, Value>() {{
@@ -264,7 +265,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_15() {
+    void test_quoted_string_15() {
         testSuccess(
                 "a=\"\\\"b\",c=\",d\"",
                 new LinkedHashMap<String, Value>() {{
@@ -274,7 +275,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_16() {
+    void test_quoted_string_16() {
         testSuccess(
                 "a=\"\\\"b\\\"\",c=\",d\"",
                 new LinkedHashMap<String, Value>() {{
@@ -284,7 +285,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_17() {
+    void test_quoted_string_17() {
         testSuccess(
                 "a=\"\\\"b,\",c=\"\\\"d,\"",
                 new LinkedHashMap<String, Value>() {{
@@ -294,7 +295,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_quoted_string_18() {
+    void test_quoted_string_18() {
         testSuccess(
                 "a=\"\\\"b\\\",\",c=\"\\\"d\\\",\"",
                 new LinkedHashMap<String, Value>() {{
@@ -314,7 +315,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_missing_key() {
+    void test_missing_key() {
         Assertions
                 .assertThatThrownBy(() -> {
                     final String input = ",a=b";
@@ -324,7 +325,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_conflicting_key() {
+    void test_conflicting_key() {
         Assertions
                 .assertThatThrownBy(() -> {
                     final String input = "a,a";
@@ -334,7 +335,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_prematurely_ending_quoted_string_01() {
+    void test_prematurely_ending_quoted_string_01() {
         Assertions
                 .assertThatThrownBy(() -> {
                     final String input = "a,b=\"";
@@ -344,7 +345,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_prematurely_ending_quoted_string_02() {
+    void test_prematurely_ending_quoted_string_02() {
         Assertions
                 .assertThatThrownBy(() -> {
                     final String input = "a,b=\"c";
@@ -354,7 +355,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_prematurely_ending_quoted_string_03() {
+    void test_prematurely_ending_quoted_string_03() {
         Assertions
                 .assertThatThrownBy(() -> {
                     final String input = "a,b=\",c";
@@ -364,7 +365,7 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_prematurely_ending_quoted_string_04() {
+    void test_prematurely_ending_quoted_string_04() {
         Assertions
                 .assertThatThrownBy(() -> {
                     final String input = "a,b=\",c\" x";
@@ -374,28 +375,28 @@ public class StringParameterParserTest {
     }
 
     @Test
-    public void test_NullValue_toString() {
+    void test_NullValue_toString() {
         final Map<String, Value> map = StringParameterParser.parse("a");
         final NullValue value = (NullValue) map.get("a");
         Assertions.assertThat(value.toString()).isEqualTo(null);
     }
 
     @Test
-    public void test_StringValue_toString() {
+    void test_StringValue_toString() {
         final Map<String, Value> map = StringParameterParser.parse("a=b");
         final StringValue value = (StringValue) map.get("a");
         Assertions.assertThat(value.toString()).isEqualTo("b");
     }
 
     @Test
-    public void test_DoubleQuotedStringValue_toString() {
+    void test_DoubleQuotedStringValue_toString() {
         final Map<String, Value> map = StringParameterParser.parse("a=\"\\\"b\"");
         final DoubleQuotedStringValue value = (DoubleQuotedStringValue) map.get("a");
         Assertions.assertThat(value.toString()).isEqualTo("\"b");
     }
 
     @Test
-    public void test_allowedKeys() {
+    void test_allowedKeys() {
         Assertions
                 .assertThatThrownBy(() -> {
                     final String input = "a,b";

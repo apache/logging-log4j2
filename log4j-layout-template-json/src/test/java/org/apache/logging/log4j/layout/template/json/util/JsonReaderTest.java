@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.layout.template.json.util;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -25,16 +25,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 
-public class JsonReaderTest {
+class JsonReaderTest {
 
     @Test
-    public void test_valid_null() {
+    void test_valid_null() {
         test("null", null);
         test("[null, null]", Arrays.asList(null, null));
     }
 
     @Test
-    public void test_invalid_null() {
+    void test_invalid_null() {
         for (final String json : new String[]{"nuL", "nulL", "nul1"}) {
             Assertions
                     .assertThatThrownBy(() -> JsonReader.read(json))
@@ -46,14 +46,14 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_valid_boolean() {
+    void test_valid_boolean() {
         test("true", true);
         test("false", false);
         test("[true, false]", Arrays.asList(true, false));
     }
 
     @Test
-    public void test_invalid_boolean() {
+    void test_invalid_boolean() {
         for (final String json : new String[]{"tru", "truE", "fals", "falsE"}) {
             Assertions
                     .assertThatThrownBy(() -> JsonReader.read(json))
@@ -65,7 +65,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_valid_string() {
+    void test_valid_string() {
         test("\"\"", "");
         test("\" \"", " ");
         test("\" a\"", " a");
@@ -76,7 +76,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_string_start() {
+    void test_invalid_string_start() {
         final String json = "abc\"";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))
@@ -86,7 +86,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_string_end() {
+    void test_invalid_string_end() {
         for (final String json : new String[]{"", " ", "\r", "\t", "\"abc"}) {
             Assertions
                     .assertThatThrownBy(() -> JsonReader.read(json))
@@ -97,7 +97,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_string_escape() {
+    void test_invalid_string_escape() {
         for (final String json : new String[]{"\"\\k\"", "\"\\d\""}) {
             Assertions
                     .assertThatThrownBy(() -> JsonReader.read(json))
@@ -109,7 +109,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_string_concat() {
+    void test_invalid_string_concat() {
         final String json = "\"foo\"\"bar\"";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))
@@ -119,7 +119,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_valid_unicode_string() {
+    void test_valid_unicode_string() {
         final String json = "\"a\\u00eF4bc\"";
         Assertions
                 .assertThat(JsonReader.read(json))
@@ -128,7 +128,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_unicode() {
+    void test_invalid_unicode() {
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read("\"\\u000x\""))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -136,7 +136,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_valid_integers() {
+    void test_valid_integers() {
         for (final String integer : new String[]{
                 "0",
                 "1",
@@ -152,7 +152,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_integers() {
+    void test_invalid_integers() {
         for (final String integer : new String[]{
                 "0-",
                 "1a"}) {
@@ -167,7 +167,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_valid_decimals() {
+    void test_valid_decimals() {
         for (final String decimal : new String[]{
                 "0.0",
                 "1.0",
@@ -183,7 +183,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_decimals() {
+    void test_invalid_decimals() {
         for (final String decimal : new String[]{
                 "0.",
                 ".1",
@@ -201,7 +201,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_valid_arrays() {
+    void test_valid_arrays() {
         for (final String json : new String[]{
                 "[]",
                 "[ ]"}) {
@@ -225,7 +225,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_array_start() {
+    void test_invalid_array_start() {
         final String json = "[";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))
@@ -235,7 +235,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_array_end_1() {
+    void test_invalid_array_end_1() {
         final String json = "]";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))
@@ -245,7 +245,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_array_comma() {
+    void test_invalid_array_comma() {
         final String json = "[,";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))
@@ -255,7 +255,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_array_end_2() {
+    void test_invalid_array_end_2() {
         final String json = "[1,";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))
@@ -265,7 +265,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_array_end_3() {
+    void test_invalid_array_end_3() {
         final String json = "[1,]";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))
@@ -275,13 +275,13 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_valid_objects() {
+    void test_valid_objects() {
         test("{}", Collections.emptyMap());
         test("{\"foo\":\"bar\"}", Collections.singletonMap("foo", "bar"));
     }
 
     @Test
-    public void test_invalid_object_start() {
+    void test_invalid_object_start() {
         final String json = "{";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))
@@ -291,7 +291,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_object_end() {
+    void test_invalid_object_end() {
         final String json = "}";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))
@@ -301,7 +301,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_object_colon_1() {
+    void test_invalid_object_colon_1() {
         final String json = "{\"foo\"\"bar\"}";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))
@@ -311,7 +311,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_object_colon_2() {
+    void test_invalid_object_colon_2() {
         final String json = "{\"foo\":}";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))
@@ -321,7 +321,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_object_token() {
+    void test_invalid_object_token() {
         final String json = "{\"foo\":\"bar}";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))
@@ -331,7 +331,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_object_comma() {
+    void test_invalid_object_comma() {
         final String json = "{\"foo\":\"bar\",}";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))
@@ -341,7 +341,7 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void test_invalid_object_key() {
+    void test_invalid_object_key() {
         final String json = "{\"foo\":\"bar\",]}";
         Assertions
                 .assertThatThrownBy(() -> JsonReader.read(json))

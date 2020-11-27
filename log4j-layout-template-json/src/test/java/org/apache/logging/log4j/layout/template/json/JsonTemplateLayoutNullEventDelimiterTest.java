@@ -21,7 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -64,7 +64,7 @@ public class JsonTemplateLayoutNullEventDelimiterTest {
             Awaitility
                     .await()
                     .atMost(Duration.ofSeconds(10))
-                    .pollDelay(Duration.ofSeconds(2))
+                    .pollDelay(Duration.ofSeconds(1))
                     .until(() -> server.getTotalReadByteCount() >= expectedBytes.length);
 
             // Verify the received log events.

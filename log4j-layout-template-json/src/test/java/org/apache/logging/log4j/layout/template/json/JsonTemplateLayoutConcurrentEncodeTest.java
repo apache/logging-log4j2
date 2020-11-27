@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class JsonTemplateLayoutConcurrentEncodeTest {
+class JsonTemplateLayoutConcurrentEncodeTest {
 
     private static class ConcurrentAccessError extends RuntimeException {
 
@@ -118,7 +118,7 @@ public class JsonTemplateLayoutConcurrentEncodeTest {
     }
 
     @Test
-    public void test_concurrent_encode() {
+    void test_concurrent_encode() {
         final AtomicReference<Exception> encodeFailureRef = new AtomicReference<>(null);
         produce(encodeFailureRef);
         Assertions.assertThat(encodeFailureRef.get()).isNull();

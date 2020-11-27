@@ -18,8 +18,8 @@ package org.apache.logging.log4j.layout.template.json.util;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,22 +29,20 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-public class UrisTest {
+class UrisTest {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     @Test
-    public void testClassPathResource() {
+    void testClassPathResource() {
         final String content = Uris.readUri(
                 "classpath:JsonLayout.json",
                 StandardCharsets.US_ASCII);
-        Assert.assertTrue(
-                "was expecting content to start with '{': " + content,
-                content.startsWith("{"));
+        Assertions.assertThat(content).startsWith("{");
     }
 
     @Test
-    public void testFilePathResource() throws IOException {
+    void testFilePathResource() throws IOException {
         final String nonAsciiUtfText = "அஆஇฬ๘";
         final File file = Files.createTempFile("log4j-UriUtilTest-", ".txt").toFile();
         try {
@@ -53,7 +51,7 @@ public class UrisTest {
             }
             final URI uri = file.toURI();
             final String content = Uris.readUri(uri, StandardCharsets.UTF_8);
-            Assert.assertEquals(nonAsciiUtfText, content);
+            Assertions.assertThat(content).isEqualTo(nonAsciiUtfText);
         } finally {
             final boolean deleted = file.delete();
             if (!deleted) {

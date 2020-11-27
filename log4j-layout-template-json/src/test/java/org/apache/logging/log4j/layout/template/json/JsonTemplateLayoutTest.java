@@ -49,7 +49,7 @@ import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -80,7 +80,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("DoubleBraceInitialization")
-public class JsonTemplateLayoutTest {
+class JsonTemplateLayoutTest {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
 
@@ -97,7 +97,7 @@ public class JsonTemplateLayoutTest {
     private static final String LOGGER_NAME = JsonTemplateLayoutTest.class.getSimpleName();
 
     @Test
-    public void test_serialized_event() throws IOException {
+    void test_serialized_event() throws IOException {
         final String lookupTestKey = "lookup_test_key";
         final String lookupTestVal =
                 String.format("lookup_test_value_%d", (int) (1000 * Math.random()));
@@ -205,7 +205,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_inline_template() throws Exception {
+    void test_inline_template() throws Exception {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World");
@@ -247,7 +247,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_log4j_deferred_runtime_resolver_for_MapMessage() {
+    void test_log4j_deferred_runtime_resolver_for_MapMessage() {
 
         // Create the event template.
         final String eventTemplate = writeJson(Map(
@@ -288,7 +288,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_MapMessage_serialization() {
+    void test_MapMessage_serialization() {
 
         // Create the event template.
         final String eventTemplate = writeJson(Map(
@@ -324,7 +324,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_MapMessage_keyed_access() {
+    void test_MapMessage_keyed_access() {
 
         // Create the event template.
         final String key = "list";
@@ -365,7 +365,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_message_fallbackKey() {
+    void test_message_fallbackKey() {
 
         // Create the event template.
         final String eventTemplate = writeJson(Map(
@@ -414,7 +414,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_property_injection() {
+    void test_property_injection() {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World");
@@ -449,7 +449,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_empty_root_cause() {
+    void test_empty_root_cause() {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World!");
@@ -512,7 +512,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_root_cause() {
+    void test_root_cause() {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World!");
@@ -576,7 +576,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_marker_name() {
+    void test_marker_name() {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World!");
@@ -615,7 +615,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_lineSeparator_suffix() {
+    void test_lineSeparator_suffix() {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World!");
@@ -651,7 +651,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_main_key_access() {
+    void test_main_key_access() {
 
         // Set main() arguments.
         final String kwKey = "--name";
@@ -699,7 +699,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_mdc_key_access() {
+    void test_mdc_key_access() {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World!");
@@ -786,7 +786,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_mdc_pattern() {
+    void test_mdc_pattern() {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World!");
@@ -874,7 +874,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_mdc_flatten() {
+    void test_mdc_flatten() {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World!");
@@ -963,7 +963,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_MapResolver() {
+    void test_MapResolver() {
 
         // Create the log event.
         final StringMapMessage message = new StringMapMessage().with("key1", "val1");
@@ -999,7 +999,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_StringMapMessage() {
+    void test_StringMapMessage() {
 
         // Create the log event.
         final StringMapMessage message = new StringMapMessage();
@@ -1033,7 +1033,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_ObjectMessage() {
+    void test_ObjectMessage() {
 
         // Create the log event.
         final int id = 0xDEADBEEF;
@@ -1071,7 +1071,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_StackTraceElement_template() {
+    void test_StackTraceElement_template() {
 
         // Create the stack trace element template.
         final String classNameFieldName = "className";
@@ -1148,7 +1148,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_toSerializable_toByteArray_encode_outputs() {
+    void test_toSerializable_toByteArray_encode_outputs() {
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout
@@ -1211,7 +1211,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_maxStringLength() {
+    void test_maxStringLength() {
 
         // Create the log event.
         final int maxStringLength = 30;
@@ -1297,7 +1297,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_exception_with_nonAscii_utf8_method_name() {
+    void test_exception_with_nonAscii_utf8_method_name() {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World!");
@@ -1333,7 +1333,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_event_template_additional_fields() {
+    void test_event_template_additional_fields() {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World!");
@@ -1389,7 +1389,7 @@ public class JsonTemplateLayoutTest {
 
     @Test
     @SuppressWarnings("FloatingPointLiteralPrecision")
-    public void test_timestamp_epoch_resolvers() {
+    void test_timestamp_epoch_resolvers() {
 
         final List<Map<String, Object>> testCases = Arrays.asList(
                 Map(
@@ -1477,7 +1477,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_timestamp_pattern_resolver() {
+    void test_timestamp_pattern_resolver() {
 
         // Create log events.
         final String logEvent1FormattedInstant = "2019-01-02T09:34:11Z";
@@ -1541,7 +1541,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_level_severity() {
+    void test_level_severity() {
 
         // Create the event template.
         final String eventTemplate = writeJson(Map(
@@ -1586,7 +1586,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_exception_resolvers_against_no_exceptions() {
+    void test_exception_resolvers_against_no_exceptions() {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World!");
@@ -1634,7 +1634,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_StackTraceTextResolver_with_maxStringLength() {
+    void test_StackTraceTextResolver_with_maxStringLength() {
 
         // Create the event template.
         final String eventTemplate = writeJson(Map(
@@ -1672,7 +1672,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_null_eventDelimiter() {
+    void test_null_eventDelimiter() {
 
         // Create the event template.
         final String eventTemplate = writeJson(Map("key", "val"));
@@ -1701,7 +1701,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_against_SocketAppender() throws Exception {
+    void test_against_SocketAppender() throws Exception {
 
         // Craft nasty events.
         final List<LogEvent> logEvents = createNastyLogEvents();
@@ -1879,7 +1879,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_PatternResolver() {
+    void test_PatternResolver() {
 
         // Create the event template.
         final String eventTemplate = writeJson(Map(
@@ -1915,12 +1915,12 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_MessageParameterResolver_with_ParameterizedMessageFactory() {
+    void test_MessageParameterResolver_with_ParameterizedMessageFactory() {
         testMessageParameterResolver(ParameterizedMessageFactory.INSTANCE);
     }
 
     @Test
-    public void test_MessageParameterResolver_with_ReusableMessageFactory() {
+    void test_MessageParameterResolver_with_ReusableMessageFactory() {
         testMessageParameterResolver(ReusableMessageFactory.INSTANCE);
     }
 
@@ -1974,7 +1974,7 @@ public class JsonTemplateLayoutTest {
     }
 
     @Test
-    public void test_unresolvable_nested_fields_are_skipped() {
+    void test_unresolvable_nested_fields_are_skipped() {
 
         // Create the event template.
         final String eventTemplate = writeJson(Map(
@@ -2034,7 +2034,7 @@ public class JsonTemplateLayoutTest {
 
     }
 
-    private static String writeJson(final Object value) {
+    private static synchronized String writeJson(final Object value) {
         final StringBuilder stringBuilder = JSON_WRITER.getStringBuilder();
         stringBuilder.setLength(0);
         try {

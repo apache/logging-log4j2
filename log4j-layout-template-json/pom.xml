@@ -186,17 +186,33 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <skip>${maven.test.skip}</skip>
-          <excludes>
-            <exclude>**/JsonTemplateLayoutConcurrentEncodeTest.java</exclude>
-            <exclude>**/JsonTemplateLayoutTest.java</exclude>
-          </excludes>
+          <!-- Disabling the default execution and only using it to provide
+               the shared settings between individual executions. -->
+          <skip>true</skip>
           <!-- Enforcing a non-UTF-8 encoding to check that the layout
                indeed handles everything in UTF-8 without implicitly
                relying on the system defaults. -->
           <argLine>-Dfile.encoding=US-ASCII</argLine>
+          <systemPropertyVariables>
+            <!-- Enable JUnit 5 parallel execution. -->
+            <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
+            <junit.jupiter.execution.parallel.mode.default>concurrent</junit.jupiter.execution.parallel.mode.default>
+          </systemPropertyVariables>
         </configuration>
         <executions>
+          <execution>
+            <id>default</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <skip>${skipTests}</skip>
+              <excludes>
+                <exclude>**/JsonTemplateLayoutConcurrentEncodeTest.java</exclude>
+                <exclude>**/JsonTemplateLayoutTest.java</exclude>
+              </excludes>
+            </configuration>
+          </execution>
           <!-- Dummy recycler execution -->
           <execution>
             <id>recycler-dummy</id>
@@ -206,7 +222,7 @@
             <configuration>
               <skip>${skipTests}</skip>
               <systemPropertyVariables>
-                <log4j2.layout.jsonTemplate.recyclerFactory>threadLocal</log4j2.layout.jsonTemplate.recyclerFactory>
+                <log4j2.layout.jsonTemplate.recyclerFactory>dummy</log4j2.layout.jsonTemplate.recyclerFactory>
               </systemPropertyVariables>
               <includes>
                 <include>**/JsonTemplateLayoutConcurrentEncodeTest.java</include>
@@ -309,7 +325,6 @@
               </execution>
             </executions>
             <configuration>
-              <skip>${skipTests}</skip>
               <includes>
                 <include>**/*IT.java</include>
               </includes>

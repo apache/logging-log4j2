@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.layout.template.json;
 
 import org.apache.logging.log4j.core.GcFreeLoggingTestUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 
 @Tag("allocation")
@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Tag;
 public class JsonTemplateLayoutGcFreeTest {
 
     @Test
-    public void test_no_allocation_during_steady_state_logging() throws Exception {
+    void test_no_allocation_during_steady_state_logging() throws Exception {
         GcFreeLoggingTestUtil.runTest(getClass());
     }
 

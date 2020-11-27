@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,7 +29,7 @@ import java.util.Map;
 
 import static org.apache.logging.log4j.layout.template.json.LayoutComparisonHelpers.renderUsing;
 
-public class JsonLayoutTest {
+class JsonLayoutTest {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
 
@@ -45,13 +45,13 @@ public class JsonLayoutTest {
             .build();
 
     @Test
-    public void test_lite_log_events() {
+    void test_lite_log_events() {
         final List<LogEvent> logEvents = LogEventFixture.createLiteLogEvents(1_000);
         test(logEvents);
     }
 
     @Test
-    public void test_full_log_events() {
+    void test_full_log_events() {
         final List<LogEvent> logEvents = LogEventFixture.createFullLogEvents(1_000);
         test(logEvents);
     }

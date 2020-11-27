@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.Map;
 
 import static org.apache.logging.log4j.layout.template.json.LayoutComparisonHelpers.renderUsing;
 
-public class EcsLayoutTest {
+class EcsLayoutTest {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
 
@@ -65,13 +65,13 @@ public class EcsLayoutTest {
             .build();
 
     @Test
-    public void test_lite_log_events() {
+    void test_lite_log_events() {
         final List<LogEvent> logEvents = LogEventFixture.createLiteLogEvents(1_000);
         test(logEvents);
     }
 
     @Test
-    public void test_full_log_events() {
+    void test_full_log_events() {
         final List<LogEvent> logEvents = LogEventFixture.createFullLogEvents(1_000);
         test(logEvents);
     }
