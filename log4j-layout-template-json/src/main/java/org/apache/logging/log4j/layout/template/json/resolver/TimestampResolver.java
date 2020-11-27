@@ -381,7 +381,10 @@ final class TimestampResolver implements EventResolver {
 
         private Instant instant;
 
-        private char[] resolution = new char[/* integral: */MAX_LONG_LENGTH + /* dot: */1 + /* fractional: */MAX_LONG_LENGTH ];
+        private char[] resolution = new char[
+                /* integral: */ MAX_LONG_LENGTH +
+                /* dot: */ 1 +
+                /* fractional: */ MAX_LONG_LENGTH];
 
         private int resolutionLength;
 

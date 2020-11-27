@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -215,7 +216,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         else {
             final String stringValue = value instanceof String
                     ? (String) value
-                    : String.valueOf(value);
+                    : ParameterizedMessage.deepToString(value);
             writeString(stringValue);
         }
 

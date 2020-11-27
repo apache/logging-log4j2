@@ -20,6 +20,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.Recycler;
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -201,7 +202,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
                 final ReadOnlyStringMap map = mapAccessor.apply(logEvent);
                 final Object value = map == null ? null : map.getValue(key);
                 if (stringified) {
-                    final String valueString = String.valueOf(value);
+                    final String valueString =
+                            ParameterizedMessage.deepToString(value);
                     jsonWriter.writeString(valueString);
                 } else {
                     jsonWriter.writeValue(value);
@@ -348,7 +350,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
                     loopContext.jsonWriter.writeObjectKey(loopContext.prefixedKey);
                 }
                 if (loopContext.stringified && !(value instanceof String)) {
-                    final String valueString = String.valueOf(value);
+                    final String valueString = ParameterizedMessage.deepToString(value);
                     loopContext.jsonWriter.writeString(valueString);
                 } else {
                     loopContext.jsonWriter.writeValue(value);
