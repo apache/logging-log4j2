@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -32,7 +32,7 @@ import java.util.Map;
 
 import static org.apache.logging.log4j.layout.template.json.LayoutComparisonHelpers.renderUsing;
 
-public class GelfLayoutTest {
+class GelfLayoutTest {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
 
@@ -60,13 +60,13 @@ public class GelfLayoutTest {
             .build();
 
     @Test
-    public void test_lite_log_events() {
+    void test_lite_log_events() {
         final List<LogEvent> logEvents = LogEventFixture.createLiteLogEvents(1_000);
         test(logEvents);
     }
 
     @Test
-    public void test_full_log_events() {
+    void test_full_log_events() {
         final List<LogEvent> logEvents = LogEventFixture.createFullLogEvents(1_000);
         test(logEvents);
     }

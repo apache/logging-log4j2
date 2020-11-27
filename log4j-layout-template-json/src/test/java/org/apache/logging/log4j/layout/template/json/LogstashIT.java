@@ -48,7 +48,9 @@ import org.elasticsearch.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -67,7 +69,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class LogstashIT {
+@Execution(ExecutionMode.SAME_THREAD)
+class LogstashIT {
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
@@ -157,14 +160,14 @@ public class LogstashIT {
     }
 
     @Test
-    public void test_lite_events() throws IOException {
+    void test_lite_events() throws IOException {
         final List<LogEvent> logEvents =
                 LogEventFixture.createLiteLogEvents(LOG_EVENT_COUNT);
         testEvents(logEvents);
     }
 
     @Test
-    public void test_full_events() throws IOException {
+    void test_full_events() throws IOException {
         final List<LogEvent> logEvents =
                 LogEventFixture.createFullLogEvents(LOG_EVENT_COUNT);
         testEvents(logEvents);
@@ -227,7 +230,7 @@ public class LogstashIT {
     }
 
     @Test
-    public void test_newlines() throws IOException {
+    void test_newlines() throws IOException {
 
         // Create two log events containing new lines.
         final Level level = Level.DEBUG;
@@ -295,7 +298,7 @@ public class LogstashIT {
     }
 
     @Test
-    public void test_GelfLayout() throws IOException {
+    void test_GelfLayout() throws IOException {
 
         // Create log events.
         final List<LogEvent> logEvents =
@@ -330,7 +333,7 @@ public class LogstashIT {
     }
 
     @Test
-    public void test_EcsLayout() throws IOException {
+    void test_EcsLayout() throws IOException {
 
         // Create log events.
         final List<LogEvent> logEvents =

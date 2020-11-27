@@ -17,19 +17,19 @@
 package org.apache.logging.log4j.layout.template.json.util;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class TruncatingBufferedWriterTest {
+class TruncatingBufferedWriterTest {
 
     @Test
-    public void test_ctor_invalid_args() {
+    void test_ctor_invalid_args() {
         Assertions
                 .assertThatThrownBy(() -> new TruncatingBufferedWriter(-1))
                 .isInstanceOf(NegativeArraySizeException.class);
     }
 
     @Test
-    public void test_okay_payloads() {
+    void test_okay_payloads() {
 
         // Fill in the writer.
         final int capacity = 1_000;
@@ -84,7 +84,7 @@ public class TruncatingBufferedWriterTest {
     }
 
     @Test
-    public void test_write_int_truncation() {
+    void test_write_int_truncation() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         writer.write('a');
         writer.write('b');
@@ -92,21 +92,21 @@ public class TruncatingBufferedWriterTest {
     }
 
     @Test
-    public void test_write_char_array_truncation() {
+    void test_write_char_array_truncation() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         writer.write(new char[]{'a', 'b'});
         verifyTruncation(writer, 'a');
     }
 
     @Test
-    public void test_write_String_truncation() {
+    void test_write_String_truncation() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         writer.write("ab");
         verifyTruncation(writer, 'a');
     }
 
     @Test
-    public void test_write_String_slice_invalid_args() {
+    void test_write_String_slice_invalid_args() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         final String string = "a";
         Assertions
@@ -128,14 +128,14 @@ public class TruncatingBufferedWriterTest {
     }
 
     @Test
-    public void test_write_String_slice_truncation() {
+    void test_write_String_slice_truncation() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         writer.write("ab", 0, 2);
         verifyTruncation(writer, 'a');
     }
 
     @Test
-    public void test_write_char_array_slice_invalid_args() {
+    void test_write_char_array_slice_invalid_args() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         final char[] buffer = new char[]{'a'};
         Assertions
@@ -157,14 +157,14 @@ public class TruncatingBufferedWriterTest {
     }
 
     @Test
-    public void test_write_char_array_slice_truncation() {
+    void test_write_char_array_slice_truncation() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         writer.write(new char[]{'a', 'b'}, 0, 2);
         verifyTruncation(writer, 'a');
     }
 
     @Test
-    public void test_append_char_truncation() {
+    void test_append_char_truncation() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         writer.append('a');
         writer.append('b');
@@ -172,21 +172,21 @@ public class TruncatingBufferedWriterTest {
     }
 
     @Test
-    public void test_append_seq_truncation() {
+    void test_append_seq_truncation() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         writer.append("ab");
         verifyTruncation(writer, 'a');
     }
 
     @Test
-    public void test_append_seq_null_truncation() {
+    void test_append_seq_null_truncation() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         writer.append(null);
         verifyTruncation(writer, 'n');
     }
 
     @Test
-    public void test_append_seq_slice_invalid_args() {
+    void test_append_seq_slice_invalid_args() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         final CharSequence seq = "ab";
         Assertions
@@ -212,14 +212,14 @@ public class TruncatingBufferedWriterTest {
     }
 
     @Test
-    public void test_append_seq_slice_truncation() {
+    void test_append_seq_slice_truncation() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         writer.append("ab", 0, 1);
         verifyTruncation(writer, 'a');
     }
 
     @Test
-    public void test_append_seq_slice_null_truncation() {
+    void test_append_seq_slice_null_truncation() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         writer.append(null, -1, -1);
         verifyTruncation(writer, 'n');
