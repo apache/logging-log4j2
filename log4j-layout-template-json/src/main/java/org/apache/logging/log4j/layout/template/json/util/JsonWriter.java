@@ -84,6 +84,9 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         ESC_CODES = table;
     }
 
+    private static final BiConsumer<StringBuilder, Object> STRING_PARAMETER_EMITTER = (sb, par) ->
+            ParameterizedMessage.deepToString(par, sb);
+
     private final char[] quoteBuffer;
 
     private final StringBuilder stringBuilder;
@@ -211,13 +214,11 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
             final Object[] values = (Object[]) value;
             writeArray(values);
         }
-
         // string
-        else {
-            final String stringValue = value instanceof String
-                    ? (String) value
-                    : ParameterizedMessage.deepToString(value);
-            writeString(stringValue);
+        else if (value instanceof String) {
+            writeString((String) value);
+        } else {
+            writeAsString(value);
         }
 
     }
@@ -570,6 +571,10 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         }
         stringBuilder.append('"');
 
+    }
+
+    public void writeAsString(Object object) {
+        writeString(STRING_PARAMETER_EMITTER, object);
     }
 
     /**

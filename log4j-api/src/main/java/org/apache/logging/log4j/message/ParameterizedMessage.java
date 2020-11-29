@@ -302,6 +302,10 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
         return ParameterFormatter.deepToString(o);
     }
 
+    public static void deepToString(final Object o, final StringBuilder buf) {
+        ParameterFormatter.deepToString(o, buf);
+    }
+
     /**
      * This method returns the same as if Object.toString() would not have been
      * overridden in obj.
