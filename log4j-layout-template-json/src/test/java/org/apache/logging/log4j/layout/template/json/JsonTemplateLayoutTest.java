@@ -1934,7 +1934,7 @@ class JsonTemplateLayoutTest {
         testMessageParameterResolverNoParameters(ReusableMessageFactory.INSTANCE);
     }
 
-    private static void testMessageParameterResolver(MessageFactory messageFactory) {
+    private static void testMessageParameterResolver(final MessageFactory messageFactory) {
 
         // Create the event template.
         final String eventTemplate = writeJson(asMap(
@@ -1987,7 +1987,9 @@ class JsonTemplateLayoutTest {
 
     }
 
-    private static void testMessageParameterResolverNoParameters(MessageFactory messageFactory) {
+    private static void testMessageParameterResolverNoParameters(
+            final MessageFactory messageFactory) {
+
         // Create the event template.
         final String eventTemplate = writeJson(asMap(
                 "po*", asMap(
