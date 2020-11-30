@@ -167,8 +167,8 @@ final class MessageParameterResolver implements EventResolver {
             if (arrayNeeded) {
                 jsonWriter.writeArrayStart();
             }
-            StringBuilder buf = jsonWriter.getStringBuilder();
-            int startIndex = buf.length();
+            final StringBuilder buf = jsonWriter.getStringBuilder();
+            final int startIndex = buf.length();
             parameterConsumerState.resolver = this;
             parameterConsumerState.jsonWriter = jsonWriter;
             parameterVisitable.forEachParameter(
