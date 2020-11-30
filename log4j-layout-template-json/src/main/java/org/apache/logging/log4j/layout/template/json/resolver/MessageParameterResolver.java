@@ -111,8 +111,13 @@ final class MessageParameterResolver implements EventResolver {
 
         // Short-circuit if there are no parameters.
         final Object[] parameters = message.getParameters();
-        if (parameters == null || parameters.length == 0) {
-            jsonWriter.writeNull();
+        if (parameters == null || parameters.length == 0 || index >= parameters.length) {
+            if (index < 0) {
+                jsonWriter.writeArrayStart();
+                jsonWriter.writeArrayEnd();
+            } else {
+                jsonWriter.writeNull();
+            }
             return;
         }
 
@@ -162,12 +167,17 @@ final class MessageParameterResolver implements EventResolver {
             if (arrayNeeded) {
                 jsonWriter.writeArrayStart();
             }
+            final StringBuilder buf = jsonWriter.getStringBuilder();
+            final int startIndex = buf.length();
             parameterConsumerState.resolver = this;
             parameterConsumerState.jsonWriter = jsonWriter;
             parameterVisitable.forEachParameter(
                     PARAMETER_CONSUMER, parameterConsumerState);
             if (arrayNeeded) {
                 jsonWriter.writeArrayEnd();
+            } else if (startIndex == buf.length()) {
+                // Handle the case in which index was not present in the event.
+                jsonWriter.writeNull();
             }
         } finally {
             parameterConsumerStateRecycler.release(parameterConsumerState);
