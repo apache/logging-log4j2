@@ -424,6 +424,51 @@ final class ParameterFormatter {
         return str.toString();
     }
 
+    static void deepToString(final Object o, final StringBuilder buf) {
+        if (o == null) {
+            // Unclear if this is ideal
+            buf.append("null");
+            return;
+        }
+        // Check special types to avoid unnecessary StringBuilder usage
+        if (o instanceof String) {
+            buf.append((String) o);
+            return;
+        }
+        if (o instanceof Integer) {
+            buf.append((int) o);
+            return;
+        }
+        if (o instanceof Long) {
+            buf.append((long) o);
+            return;
+        }
+        if (o instanceof Double) {
+            buf.append((double) o);
+        }
+        if (o instanceof Boolean) {
+            buf.append((boolean) o);
+            return;
+        }
+        if (o instanceof Character) {
+            buf.append((char) o);
+            return;
+        }
+        if (o instanceof Short) {
+            buf.append((short) o);
+            return;
+        }
+        if (o instanceof Float) {
+            buf.append((float) o);
+            return;
+        }
+        if (o instanceof Byte) {
+            buf.append((byte) o);
+            return;
+        }
+        recursiveDeepToString(o, buf, null);
+    }
+
     /**
      * This method performs a deep toString of the given Object.
      * Primitive arrays are converted using their respective Arrays.toString methods while

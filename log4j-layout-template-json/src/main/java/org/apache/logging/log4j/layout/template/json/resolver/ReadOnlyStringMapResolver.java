@@ -202,9 +202,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
                 final ReadOnlyStringMap map = mapAccessor.apply(logEvent);
                 final Object value = map == null ? null : map.getValue(key);
                 if (stringified) {
-                    final String valueString =
-                            ParameterizedMessage.deepToString(value);
-                    jsonWriter.writeString(valueString);
+                    jsonWriter.writeAsString(value);
                 } else {
                     jsonWriter.writeValue(value);
                 }

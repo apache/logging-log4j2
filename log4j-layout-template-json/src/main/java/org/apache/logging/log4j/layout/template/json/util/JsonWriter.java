@@ -20,6 +20,7 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 
 import java.math.BigDecimal;
@@ -84,11 +85,12 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         ESC_CODES = table;
     }
 
+    private static final BiConsumer<StringBuilder, Object> STRING_PARAMETER_EMITTER = (sb, par) ->
+            ParameterizedMessage.deepToString(par, sb);
+
     private final char[] quoteBuffer;
 
     private final StringBuilder stringBuilder;
-
-    private final StringBuilder formattableBuffer;
 
     private final int maxStringLength;
 
@@ -99,7 +101,6 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
     private JsonWriter(final Builder builder) {
         this.quoteBuffer = new char[]{'\\', '-', '0', '0', '-', '-'};
         this.stringBuilder = new StringBuilder();
-        this.formattableBuffer = new StringBuilder();
         this.maxStringLength = builder.maxStringLength;
         this.truncatedStringSuffix = builder.truncatedStringSuffix;
         this.quotedTruncatedStringSuffix = quoteString(builder.truncatedStringSuffix);
@@ -211,13 +212,11 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
             final Object[] values = (Object[]) value;
             writeArray(values);
         }
-
         // string
-        else {
-            final String stringValue = value instanceof String
-                    ? (String) value
-                    : ParameterizedMessage.deepToString(value);
-            writeString(stringValue);
+        else if (value instanceof String) {
+            writeString((String) value);
+        } else {
+            writeAsString(value);
         }
 
     }
@@ -493,18 +492,15 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
             final S state) {
         Objects.requireNonNull(emitter, "emitter");
         stringBuilder.append('"');
-        formattableBuffer.setLength(0);
-        emitter.accept(formattableBuffer, state);
-        final int length = formattableBuffer.length();
-        // Handle max. string length complying input.
-        if (length <= maxStringLength) {
-            quoteString(formattableBuffer, 0, length);
-        }
-        // Handle max. string length violating input.
-        else {
-            quoteString(formattableBuffer, 0, maxStringLength);
+        int position = stringBuilder.length();
+        emitter.accept(stringBuilder, state);
+        final int length = stringBuilder.length() - position;
+        if (length > maxStringLength) {
+            // Handle max. string length violating input
+            stringBuilder.setLength(position + maxStringLength);
             stringBuilder.append(quotedTruncatedStringSuffix);
         }
+        StringBuilders.escapeJson(stringBuilder, position);
         stringBuilder.append('"');
     }
 
@@ -513,18 +509,15 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
             writeNull();
         } else {
             stringBuilder.append('"');
-            formattableBuffer.setLength(0);
-            formattable.formatTo(formattableBuffer);
-            final int length = formattableBuffer.length();
-            // Handle max. string length complying input.
-            if (length <= maxStringLength) {
-                quoteString(formattableBuffer, 0, length);
-            }
+            int position = stringBuilder.length();
+            formattable.formatTo(stringBuilder);
+            final int length = stringBuilder.length() - position;
             // Handle max. string length violating input.
-            else {
-                quoteString(formattableBuffer, 0, maxStringLength);
+            if (length > maxStringLength) {
+                stringBuilder.setLength(position + maxStringLength);
                 stringBuilder.append(quotedTruncatedStringSuffix);
             }
+            StringBuilders.escapeJson(stringBuilder, position);
             stringBuilder.append('"');
         }
     }
@@ -570,6 +563,10 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         }
         stringBuilder.append('"');
 
+    }
+
+    public void writeAsString(Object object) {
+        writeString(STRING_PARAMETER_EMITTER, object);
     }
 
     /**
