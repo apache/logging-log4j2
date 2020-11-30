@@ -225,10 +225,10 @@ class JsonTemplateLayoutTest {
         final String timestampFieldName = "@timestamp";
         final String staticFieldName = "staticFieldName";
         final String staticFieldValue = "staticFieldValue";
-        final String eventTemplate = writeJson(Map(
-                timestampFieldName, Map(
+        final String eventTemplate = writeJson(asMap(
+                timestampFieldName, asMap(
                         "$resolver", "timestamp",
-                        "pattern", Map("timeZone", "Europe/Amsterdam")),
+                        "pattern", asMap("timeZone", "Europe/Amsterdam")),
                 staticFieldName, staticFieldValue));
 
         // Create the layout.
@@ -250,8 +250,8 @@ class JsonTemplateLayoutTest {
     void test_log4j_deferred_runtime_resolver_for_MapMessage() {
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "mapValue3", Map("$resolver", "message"),
+        final String eventTemplate = writeJson(asMap(
+                "mapValue3", asMap("$resolver", "message"),
                 "mapValue1", "${map:key1}",
                 "mapValue2", "${map:key2}",
                 "nestedLookupEmptyValue", "${map:noExist:-${map:noExist2:-${map:noExist3:-}}}",
@@ -291,8 +291,8 @@ class JsonTemplateLayoutTest {
     void test_MapMessage_serialization() {
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "message", Map("$resolver", "message")));
+        final String eventTemplate = writeJson(asMap(
+                "message", asMap("$resolver", "message")));
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout
@@ -328,11 +328,11 @@ class JsonTemplateLayoutTest {
 
         // Create the event template.
         final String key = "list";
-        final String eventTemplate = writeJson(Map(
-                "typedValue", Map(
+        final String eventTemplate = writeJson(asMap(
+                "typedValue", asMap(
                         "$resolver", "map",
                         "key", key),
-                "stringifiedValue", Map(
+                "stringifiedValue", asMap(
                         "$resolver", "map",
                         "key", key,
                         "stringified", true)));
@@ -368,8 +368,8 @@ class JsonTemplateLayoutTest {
     void test_message_fallbackKey() {
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "message", Map(
+        final String eventTemplate = writeJson(asMap(
+                "message", asMap(
                         "$resolver", "message",
                         "fallbackKey", "formattedMessage")));
 
@@ -427,7 +427,7 @@ class JsonTemplateLayoutTest {
 
         // Create the event template with property.
         final String propertyName = "propertyName";
-        final String eventTemplate = writeJson(Map(
+        final String eventTemplate = writeJson(asMap(
                 propertyName, "${" + propertyName + "}"));
 
         // Create the layout with property.
@@ -463,24 +463,24 @@ class JsonTemplateLayoutTest {
                 .build();
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "ex_class", Map(
+        final String eventTemplate = writeJson(asMap(
+                "ex_class", asMap(
                         "$resolver", "exception",
                         "field", "className"),
-                "ex_message", Map(
+                "ex_message", asMap(
                         "$resolver", "exception",
                         "field", "message"),
-                "ex_stacktrace", Map(
+                "ex_stacktrace", asMap(
                         "$resolver", "exception",
                         "field", "stackTrace",
                         "stringified", true),
-                "root_ex_class", Map(
+                "root_ex_class", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "className"),
-                "root_ex_message", Map(
+                "root_ex_message", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "message"),
-                "root_ex_stacktrace", Map(
+                "root_ex_stacktrace", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "stackTrace",
                         "stringified", true)));
@@ -527,24 +527,24 @@ class JsonTemplateLayoutTest {
                 .build();
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "ex_class", Map(
+        final String eventTemplate = writeJson(asMap(
+                "ex_class", asMap(
                         "$resolver", "exception",
                         "field", "className"),
-                "ex_message", Map(
+                "ex_message", asMap(
                         "$resolver", "exception",
                         "field", "message"),
-                "ex_stacktrace", Map(
+                "ex_stacktrace", asMap(
                         "$resolver", "exception",
                         "field", "stackTrace",
                         "stringified", true),
-                "root_ex_class", Map(
+                "root_ex_class", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "className"),
-                "root_ex_message", Map(
+                "root_ex_message", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "message"),
-                "root_ex_stacktrace", Map(
+                "root_ex_stacktrace", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "stackTrace",
                         "stringified", true)));
@@ -593,9 +593,9 @@ class JsonTemplateLayoutTest {
         // Create the event template.
         final String messageKey = "message";
         final String markerNameKey = "marker";
-        final String eventTemplate = writeJson(Map(
-                "message", Map("$resolver", "message"),
-                "marker", Map(
+        final String eventTemplate = writeJson(asMap(
+                "message", asMap("$resolver", "message"),
+                "marker", asMap(
                         "$resolver", "marker",
                         "field", "name")));
 
@@ -671,14 +671,14 @@ class JsonTemplateLayoutTest {
             .build();
 
         // Create the template.
-        final String template = writeJson(Map(
-                "name", Map(
+        final String template = writeJson(asMap(
+                "name", asMap(
                         "$resolver", "main",
                         "key", kwKey),
-                "positionArg", Map(
+                "positionArg", asMap(
                         "$resolver", "main",
                         "index", 2),
-                "notFoundArg", Map(
+                "notFoundArg", asMap(
                         "$resolver", "main",
                         "key", missingKwKey)));
 
@@ -761,11 +761,11 @@ class JsonTemplateLayoutTest {
             final String resolverName) {
 
         // Create the event template.
-        String eventTemplate = writeJson(Map(
-                directlyAccessedKey, Map(
+        String eventTemplate = writeJson(asMap(
+                directlyAccessedKey, asMap(
                         "$resolver", resolverName,
                         "key", directlyAccessedKey),
-                directlyAccessedNullPropertyKey, Map(
+                directlyAccessedNullPropertyKey, asMap(
                         "$resolver", resolverName,
                         "key", directlyAccessedNullPropertyKey)));
 
@@ -852,8 +852,8 @@ class JsonTemplateLayoutTest {
 
         // Create the event template.
         final String mapFieldName = "map";
-        final String eventTemplate = writeJson(Map(
-                mapFieldName, Map(
+        final String eventTemplate = writeJson(asMap(
+                mapFieldName, asMap(
                         "$resolver", resolverName,
                         "pattern", patternMatchedKey)));
 
@@ -940,11 +940,11 @@ class JsonTemplateLayoutTest {
 
         // Create the event template.
         final String prefix = "_map.";
-        final String eventTemplate = writeJson(Map(
-                "ignoredFieldName", Map(
+        final String eventTemplate = writeJson(asMap(
+                "ignoredFieldName", asMap(
                         "$resolver", resolverName,
                         "pattern", patternMatchedKey,
-                        "flatten", Map("prefix", prefix))));
+                        "flatten", asMap("prefix", prefix))));
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout
@@ -975,11 +975,11 @@ class JsonTemplateLayoutTest {
                 .build();
 
         // Create the event template node with map values.
-        final String eventTemplate = writeJson(Map(
-                "mapValue1", Map(
+        final String eventTemplate = writeJson(asMap(
+                "mapValue1", asMap(
                         "$resolver", "map",
                         "key", "key1"),
-                "mapValue2", Map(
+                "mapValue2", asMap(
                         "$resolver", "map",
                         "key", "key?")));
 
@@ -1013,8 +1013,8 @@ class JsonTemplateLayoutTest {
                 .build();
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "message", Map("$resolver", "message")));
+        final String eventTemplate = writeJson(asMap(
+                "message", asMap("$resolver", "message")));
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout
@@ -1051,8 +1051,8 @@ class JsonTemplateLayoutTest {
                 .build();
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "message", Map("$resolver", "message")));
+        final String eventTemplate = writeJson(asMap(
+                "message", asMap("$resolver", "message")));
 
         // Create the layout.
         JsonTemplateLayout layout = JsonTemplateLayout
@@ -1078,24 +1078,24 @@ class JsonTemplateLayoutTest {
         final String methodNameFieldName = "methodName";
         final String fileNameFieldName = "fileName";
         final String lineNumberFieldName = "lineNumber";
-        final String stackTraceElementTemplate = writeJson(Map(
-                classNameFieldName, Map(
+        final String stackTraceElementTemplate = writeJson(asMap(
+                classNameFieldName, asMap(
                         "$resolver", "stackTraceElement",
                         "field", "className"),
-                methodNameFieldName, Map(
+                methodNameFieldName, asMap(
                         "$resolver", "stackTraceElement",
                         "field", "methodName"),
-                fileNameFieldName, Map(
+                fileNameFieldName, asMap(
                         "$resolver", "stackTraceElement",
                         "field", "fileName"),
-                lineNumberFieldName, Map(
+                lineNumberFieldName, asMap(
                         "$resolver", "stackTraceElement",
                         "field", "lineNumber")));
 
         // Create the event template.
         final String stackTraceFieldName = "stackTrace";
-        final String eventTemplate = writeJson(Map(
-                stackTraceFieldName, Map(
+        final String eventTemplate = writeJson(asMap(
+                stackTraceFieldName, asMap(
                         "$resolver", "exception",
                         "field", "stackTrace")));
 
@@ -1231,10 +1231,10 @@ class JsonTemplateLayoutTest {
         final String excessiveKey = Strings.repeat("k", maxStringLength) + 'K';
         final String excessiveValue = Strings.repeat("v", maxStringLength) + 'V';
         final String nullValueKey = "nullValueKey";
-        final String eventTemplate = writeJson(Map(
-                messageKey, Map("$resolver", "message"),
+        final String eventTemplate = writeJson(asMap(
+                messageKey, asMap("$resolver", "message"),
                 excessiveKey, excessiveValue,
-                nullValueKey, Map(
+                nullValueKey, asMap(
                         "$resolver", "exception",
                         "field", "message")));
 
@@ -1311,8 +1311,8 @@ class JsonTemplateLayoutTest {
                 .build();
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "ex_stacktrace", Map(
+        final String eventTemplate = writeJson(asMap(
+                "ex_stacktrace", asMap(
                         "$resolver", "exception",
                         "field", "stackTrace",
                         "stringified", true)));
@@ -1392,7 +1392,7 @@ class JsonTemplateLayoutTest {
     void test_timestamp_epoch_resolvers() {
 
         final List<Map<String, Object>> testCases = Arrays.asList(
-                Map(
+                asMap(
                         "epochSecs", new BigDecimal("1581082727.982123456"),
                         "epochSecsRounded", 1581082727,
                         "epochSecsNanos", 982123456,
@@ -1400,7 +1400,7 @@ class JsonTemplateLayoutTest {
                         "epochMillisRounded", 1581082727982L,
                         "epochMillisNanos", 123456,
                         "epochNanos", 1581082727982123456L),
-                Map(
+                asMap(
                         "epochSecs", new BigDecimal("1591177590.005000001"),
                         "epochSecsRounded", 1591177590,
                         "epochSecsNanos", 5000001,
@@ -1410,32 +1410,32 @@ class JsonTemplateLayoutTest {
                         "epochNanos", 1591177590005000001L));
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "epochSecs", Map(
+        final String eventTemplate = writeJson(asMap(
+                "epochSecs", asMap(
                         "$resolver", "timestamp",
-                        "epoch", Map("unit", "secs")),
-                "epochSecsRounded", Map(
+                        "epoch", asMap("unit", "secs")),
+                "epochSecsRounded", asMap(
                         "$resolver", "timestamp",
-                        "epoch", Map(
+                        "epoch", asMap(
                                 "unit", "secs",
                                 "rounded", true)),
-                "epochSecsNanos", Map(
+                "epochSecsNanos", asMap(
                         "$resolver", "timestamp",
-                        "epoch", Map("unit", "secs.nanos")),
-                "epochMillis", Map(
+                        "epoch", asMap("unit", "secs.nanos")),
+                "epochMillis", asMap(
                         "$resolver", "timestamp",
-                        "epoch", Map("unit", "millis")),
-                "epochMillisRounded", Map(
+                        "epoch", asMap("unit", "millis")),
+                "epochMillisRounded", asMap(
                         "$resolver", "timestamp",
-                        "epoch", Map(
+                        "epoch", asMap(
                                 "unit", "millis",
                                 "rounded", true)),
-                "epochMillisNanos", Map(
+                "epochMillisNanos", asMap(
                         "$resolver", "timestamp",
-                        "epoch", Map("unit", "millis.nanos")),
-                "epochNanos", Map(
+                        "epoch", asMap("unit", "millis.nanos")),
+                "epochNanos", asMap(
                         "$resolver", "timestamp",
-                        "epoch", Map("unit", "nanos"))));
+                        "epoch", asMap("unit", "nanos"))));
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout
@@ -1491,10 +1491,10 @@ class JsonTemplateLayoutTest {
         final LogEvent logEvent4 = createLogEventAtInstant(logEvent4FormattedInstant);
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "timestamp", Map(
+        final String eventTemplate = writeJson(asMap(
+                "timestamp", asMap(
                         "$resolver", "timestamp",
-                        "pattern", Map(
+                        "pattern", asMap(
                                 "format", "yyyy-MM-dd'T'HH:mm:ss'Z'",
                                 "timeZone", "UTC"))));
 
@@ -1544,15 +1544,15 @@ class JsonTemplateLayoutTest {
     void test_level_severity() {
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "severityKeyword", Map(
+        final String eventTemplate = writeJson(asMap(
+                "severityKeyword", asMap(
                         "$resolver", "level",
                         "field", "severity",
-                        "severity", Map("field", "keyword")),
-                "severityCode", Map(
+                        "severity", asMap("field", "keyword")),
+                "severityCode", asMap(
                         "$resolver", "level",
                         "field", "severity",
-                        "severity", Map("field", "code"))));
+                        "severity", asMap("field", "code"))));
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout
@@ -1597,18 +1597,18 @@ class JsonTemplateLayoutTest {
                 .build();
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "exStackTrace", Map(
+        final String eventTemplate = writeJson(asMap(
+                "exStackTrace", asMap(
                         "$resolver", "exception",
                         "field", "stackTrace"),
-                "exStackTraceString", Map(
+                "exStackTraceString", asMap(
                         "$resolver", "exception",
                         "field", "stackTrace",
                         "stringified", true),
-                "exRootCauseStackTrace", Map(
+                "exRootCauseStackTrace", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "stackTrace"),
-                "exRootCauseStackTraceString", Map(
+                "exRootCauseStackTraceString", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "stackTrace",
                         "stringified", true),
@@ -1637,8 +1637,8 @@ class JsonTemplateLayoutTest {
     void test_StackTraceTextResolver_with_maxStringLength() {
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "stackTrace", Map(
+        final String eventTemplate = writeJson(asMap(
+                "stackTrace", asMap(
                         "$resolver", "exception",
                         "field", "stackTrace",
                         "stringified", true)));
@@ -1675,7 +1675,7 @@ class JsonTemplateLayoutTest {
     void test_null_eventDelimiter() {
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map("key", "val"));
+        final String eventTemplate = writeJson(asMap("key", "val"));
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout
@@ -1707,8 +1707,8 @@ class JsonTemplateLayoutTest {
         final List<LogEvent> logEvents = createNastyLogEvents();
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "message", Map("$resolver", "message")));
+        final String eventTemplate = writeJson(asMap(
+                "message", asMap("$resolver", "message")));
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout
@@ -1882,8 +1882,8 @@ class JsonTemplateLayoutTest {
     void test_PatternResolver() {
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "message", Map(
+        final String eventTemplate = writeJson(asMap(
+                "message", asMap(
                         "$resolver", "pattern",
                         "pattern", "%p:%m")));
 
@@ -1920,26 +1920,39 @@ class JsonTemplateLayoutTest {
     }
 
     @Test
+    void test_MessageParameterResolver_noParameters_with_ParameterizedMessageFactory() {
+        testMessageParameterResolverNoParameters(ParameterizedMessageFactory.INSTANCE);
+    }
+
+    @Test
     void test_MessageParameterResolver_with_ReusableMessageFactory() {
         testMessageParameterResolver(ReusableMessageFactory.INSTANCE);
     }
 
-    private static void testMessageParameterResolver(MessageFactory messageFactory) {
+    @Test
+    void test_MessageParameterResolver_noParameters_with_ReusableMessageFactory() {
+        testMessageParameterResolverNoParameters(ReusableMessageFactory.INSTANCE);
+    }
+
+    private static void testMessageParameterResolver(final MessageFactory messageFactory) {
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "po*", Map(
+        final String eventTemplate = writeJson(asMap(
+                "po*", asMap(
                         "$resolver", "messageParameter"),
-                "ps*", Map(
+                "ps*", asMap(
                         "$resolver", "messageParameter",
                         "stringified", true),
-                "po2", Map(
+                "po2", asMap(
                         "$resolver", "messageParameter",
                         "index", 2),
-                "ps2", Map(
+                "ps2", asMap(
                         "$resolver", "messageParameter",
                         "index", 2,
-                        "stringified", true)));
+                        "stringified", true),
+                "po3", asMap(
+                        "$resolver", "messageParameter",
+                        "index", 3)));
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout
@@ -1969,6 +1982,43 @@ class JsonTemplateLayoutTest {
             assertThat(accessor.getObject("ps*")).isEqualTo(stringifiedParameters);
             assertThat(accessor.getObject("po2")).isEqualTo(parameters[2]);
             assertThat(accessor.getString("ps2")).isEqualTo(stringifiedParameters.get(2));
+            assertThat(accessor.getString("ps3")).isNull();
+        });
+
+    }
+
+    private static void testMessageParameterResolverNoParameters(
+            final MessageFactory messageFactory) {
+
+        // Create the event template.
+        final String eventTemplate = writeJson(asMap(
+                "po*", asMap(
+                        "$resolver", "messageParameter"),
+                "ps*", asMap(
+                        "$resolver", "messageParameter",
+                        "stringified", true)));
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        // Create the log event.
+        final Message message = messageFactory.newMessage("foo", new Object[0]);
+        final Level level = Level.FATAL;
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setMessage(message)
+                .setLevel(level)
+                .build();
+
+        // Check the serialized event.
+        usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
+            assertThat(accessor.getObject("po*")).isEqualTo(Collections.emptyList());
+            assertThat(accessor.getObject("ps*")).isEqualTo(Collections.emptyList());
         });
 
     }
@@ -1977,26 +2027,26 @@ class JsonTemplateLayoutTest {
     void test_unresolvable_nested_fields_are_skipped() {
 
         // Create the event template.
-        final String eventTemplate = writeJson(Map(
-                "exception", Map(
-                        "message", Map(
+        final String eventTemplate = writeJson(asMap(
+                "exception", asMap(
+                        "message", asMap(
                                 "$resolver", "exception",
                                 "field", "message"),
-                        "className", Map(
+                        "className", asMap(
                                 "$resolver", "exception",
                                 "field", "className")),
-                "exceptionRootCause", Map(
-                        "message", Map(
+                "exceptionRootCause", asMap(
+                        "message", asMap(
                                 "$resolver", "exceptionRootCause",
                                 "field", "message"),
-                        "className", Map(
+                        "className", asMap(
                                 "$resolver", "exceptionRootCause",
                                 "field", "className")),
-                "source", Map(
-                        "lineNumber", Map(
+                "source", asMap(
+                        "lineNumber", asMap(
                                 "$resolver", "source",
                                 "field", "lineNumber"),
-                        "fileName", Map(
+                        "fileName", asMap(
                                 "$resolver", "source",
                                 "field", "fileName")),
                 "emptyMap", Collections.emptyMap(),
@@ -2061,7 +2111,7 @@ class JsonTemplateLayoutTest {
         return JsonReader.read(json);
     }
 
-    private static Map<String, Object> Map(final Object... pairs) {
+    private static Map<String, Object> asMap(final Object... pairs) {
         final Map<String, Object> map = new LinkedHashMap<>();
         if (pairs.length % 2 != 0) {
             throw new IllegalArgumentException("odd number of arguments");
