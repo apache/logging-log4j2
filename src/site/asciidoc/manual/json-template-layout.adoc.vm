@@ -1221,6 +1221,22 @@ Yes, link:lookups.html[lookups] (e.g., `${dollar}{java:version}`,
 `${dollar}{env:USER}`, `${dollar}{date:MM-dd-yyyy}`) are supported in string
 literals of templates. Though note that they are not garbage-free.
 
+=== Are recursive collections supported?
+
+No. Consider a `Message` containing a recursive value as follows:
+
+[source,java]
+----
+Object[] recursiveCollection = new Object[1];
+recursiveCollection[0] = recursiveCollection;
+----
+
+While the exact exception might vary, you will most like get a
+`StackOverflowError` while trying to render `recursiveCollection` into a
+`String`. Note that this is also the default behaviour for other Java standard
+library methods, e.g., `Arrays.toString()`. Hence mind self references while
+logging.
+
 [#faq-garbage-free]
 === Is `JsonTemplateLayout` garbage-free?
 
