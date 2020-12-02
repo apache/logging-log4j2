@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
-import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -50,6 +49,9 @@ import java.util.Objects;
  * <p>
  * JSON standard quoting routines are borrowed from
  * <a href="https://github.com/FasterXML/jackson-core">Jackson</a>.
+ * <p>
+ * Note that this class provides no protection against recursive collections,
+ * e.g., an array where one or more elements reference to the array itself.
  */
 public final class JsonWriter implements AutoCloseable, Cloneable {
 
@@ -216,7 +218,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         else {
             final String stringValue = value instanceof String
                     ? (String) value
-                    : ParameterizedMessage.deepToString(value);
+                    : String.valueOf(value);
             writeString(stringValue);
         }
 

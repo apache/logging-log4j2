@@ -2064,13 +2064,11 @@ class JsonTemplateLayoutTest {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("foo");
-        final Level level = Level.FATAL;
         final Exception thrown = new RuntimeException("bar");
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
                 .setLoggerName(LOGGER_NAME)
                 .setMessage(message)
-                .setLevel(level)
                 .setThrown(thrown)
                 .build();
 
@@ -2081,6 +2079,39 @@ class JsonTemplateLayoutTest {
         Assertions
                 .assertThat(actualSerializedLogEventJson)
                 .isEqualTo(expectedSerializedLogEventJson);
+
+    }
+
+    @Test
+    void test_recursive_collections() {
+
+        // Create the event template.
+        final String eventTemplate = writeJson(asMap(
+                "message", asMap("$resolver", "message")));
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        // Create a recursive collection.
+        final Object[] recursiveCollection = new Object[1];
+        recursiveCollection[0] = recursiveCollection;
+
+        // Create the log event.
+        final Message message = new ObjectMessage(recursiveCollection);
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setMessage(message)
+                .build();
+
+        // Check the serialized event.
+        Assertions
+                .assertThatThrownBy(() -> layout.toSerializable(logEvent))
+                .isInstanceOf(StackOverflowError.class);
 
     }
 

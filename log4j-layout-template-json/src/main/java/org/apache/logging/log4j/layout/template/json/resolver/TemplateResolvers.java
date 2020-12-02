@@ -20,7 +20,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.message.ParameterizedMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -404,7 +403,7 @@ public final class TemplateResolvers {
     }
 
     private static <V> TemplateResolver<V> ofNumber(final Number number) {
-        final String numberString = ParameterizedMessage.deepToString(number);
+        final String numberString = String.valueOf(number);
         return (final V ignored, final JsonWriter jsonWriter) ->
                 jsonWriter.writeRawString(numberString);
     }

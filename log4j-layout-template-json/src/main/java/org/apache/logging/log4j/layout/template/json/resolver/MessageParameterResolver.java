@@ -22,7 +22,6 @@ import org.apache.logging.log4j.layout.template.json.util.Recycler;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterConsumer;
 import org.apache.logging.log4j.message.ParameterVisitable;
-import org.apache.logging.log4j.message.ParameterizedMessage;
 
 /**
  * {@link Message} parameter (i.e., {@link Message#getParameters()}) resolver.
@@ -130,8 +129,7 @@ final class MessageParameterResolver implements EventResolver {
                 }
                 final Object parameter = parameters[i];
                 if (stringified) {
-                    final String stringifiedParameter =
-                            ParameterizedMessage.deepToString(parameter);
+                    final String stringifiedParameter = String.valueOf(parameter);
                     jsonWriter.writeString(stringifiedParameter);
                 } else {
                     jsonWriter.writeValue(parameter);
@@ -144,8 +142,7 @@ final class MessageParameterResolver implements EventResolver {
         else {
             final Object parameter = parameters[index];
             if (stringified) {
-                final String stringifiedParameter =
-                        ParameterizedMessage.deepToString(parameter);
+                final String stringifiedParameter = String.valueOf(parameter);
                 jsonWriter.writeString(stringifiedParameter);
             } else {
                 jsonWriter.writeValue(parameter);
@@ -206,8 +203,7 @@ final class MessageParameterResolver implements EventResolver {
                 // Write the value.
                 if (arrayNeeded || state.resolver.index == index) {
                     if (state.resolver.stringified) {
-                        final String stringifiedParameter =
-                                ParameterizedMessage.deepToString(parameter);
+                        final String stringifiedParameter = String.valueOf(parameter);
                         state.jsonWriter.writeString(stringifiedParameter);
                     } else {
                         state.jsonWriter.writeValue(parameter);
