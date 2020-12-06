@@ -245,7 +245,7 @@
     <jctoolsVersion>3.1.0</jctoolsVersion>
     <junitVersion>4.13.1</junitVersion>
     <junitJupiterVersion>5.7.0</junitJupiterVersion>
-    <mockitoVersion>3.5.5</mockitoVersion>
+    <mockitoVersion>3.6.28</mockitoVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />
