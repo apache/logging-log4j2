@@ -49,34 +49,34 @@ public class FilteredObjectInputStream extends ObjectInputStream {
             "[Lorg.apache.logging.log4j."
     );
 
-    private final Collection<String> allowedClasses;
+    private final Collection<String> allowedExtraClasses;
 
     public FilteredObjectInputStream() throws IOException, SecurityException {
-        this.allowedClasses = new HashSet<>();
+        this.allowedExtraClasses = new HashSet<>();
     }
 
     public FilteredObjectInputStream(final InputStream in) throws IOException {
         super(in);
-        this.allowedClasses = new HashSet<>();
+        this.allowedExtraClasses = new HashSet<>();
     }
 
     public FilteredObjectInputStream(final Collection<String> allowedClasses) throws IOException, SecurityException {
-        this.allowedClasses = allowedClasses;
+        this.allowedExtraClasses = allowedClasses;
     }
 
     public FilteredObjectInputStream(final InputStream in, final Collection<String> allowedClasses) throws IOException {
         super(in);
-        this.allowedClasses = allowedClasses;
+        this.allowedExtraClasses = allowedClasses;
     }
 
     public Collection<String> getAllowedClasses() {
-        return allowedClasses;
+        return allowedExtraClasses;
     }
 
     @Override
     protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
         final String name = desc.getName();
-        if (!(isAllowedByDefault(name) || allowedClasses.contains(name))) {
+        if (!(isAllowedByDefault(name) || allowedExtraClasses.contains(name))) {
             throw new InvalidObjectException("Class is not allowed for deserialization: " + name);
         }
         return super.resolveClass(desc);
