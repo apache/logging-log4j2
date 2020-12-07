@@ -55,8 +55,8 @@ public class FilteredObjectInputStream extends ObjectInputStream {
         this.allowedExtraClasses = new HashSet<>();
     }
 
-    public FilteredObjectInputStream(final InputStream in) throws IOException {
-        super(in);
+    public FilteredObjectInputStream(final InputStream inputStream) throws IOException {
+        super(inputStream);
         this.allowedExtraClasses = new HashSet<>();
     }
 
@@ -64,8 +64,8 @@ public class FilteredObjectInputStream extends ObjectInputStream {
         this.allowedExtraClasses = allowedClasses;
     }
 
-    public FilteredObjectInputStream(final InputStream in, final Collection<String> allowedClasses) throws IOException {
-        super(in);
+    public FilteredObjectInputStream(final InputStream inputStream, final Collection<String> allowedClasses) throws IOException {
+        super(inputStream);
         this.allowedExtraClasses = allowedClasses;
     }
 
