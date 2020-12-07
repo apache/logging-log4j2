@@ -36,19 +36,23 @@ import java.util.Set;
 public class FilteredObjectInputStream extends ObjectInputStream {
 
     private static final Set<String> REQUIRED_JAVA_CLASSES = new HashSet<>(Arrays.asList(
+    // @formatter:off
             "java.math.BigDecimal",
             "java.math.BigInteger",
             // for Message delegate
             "java.rmi.MarshalledObject",
             "[B"
+    // @formatter:on
     ));
 
     private static final Set<String> REQUIRED_JAVA_PACKAGES = new HashSet<>(Arrays.asList(
+    // @formatter:off
             "java.lang.",
             "java.time.",
             "java.util.",
             "org.apache.logging.log4j.",
             "[Lorg.apache.logging.log4j."
+    // @formatter:on
     ));
 
     private final Collection<String> allowedExtraClasses;
@@ -62,13 +66,15 @@ public class FilteredObjectInputStream extends ObjectInputStream {
         this.allowedExtraClasses = Collections.emptySet();
     }
 
-    public FilteredObjectInputStream(final Collection<String> allowedClasses) throws IOException, SecurityException {
-        this.allowedExtraClasses = allowedClasses;
+    public FilteredObjectInputStream(final Collection<String> allowedExtraClasses)
+        throws IOException, SecurityException {
+        this.allowedExtraClasses = allowedExtraClasses;
     }
 
-    public FilteredObjectInputStream(final InputStream inputStream, final Collection<String> allowedClasses) throws IOException {
+    public FilteredObjectInputStream(final InputStream inputStream, final Collection<String> allowedExtraClasses)
+        throws IOException {
         super(inputStream);
-        this.allowedExtraClasses = allowedClasses;
+        this.allowedExtraClasses = allowedExtraClasses;
     }
 
     public Collection<String> getAllowedClasses() {
