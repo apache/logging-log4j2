@@ -23,6 +23,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -52,12 +53,12 @@ public class FilteredObjectInputStream extends ObjectInputStream {
     private final Collection<String> allowedExtraClasses;
 
     public FilteredObjectInputStream() throws IOException, SecurityException {
-        this.allowedExtraClasses = new HashSet<>();
+        this.allowedExtraClasses = Collections.emptySet();
     }
 
     public FilteredObjectInputStream(final InputStream inputStream) throws IOException {
         super(inputStream);
-        this.allowedExtraClasses = new HashSet<>();
+        this.allowedExtraClasses = Collections.emptySet();
     }
 
     public FilteredObjectInputStream(final Collection<String> allowedClasses) throws IOException, SecurityException {
