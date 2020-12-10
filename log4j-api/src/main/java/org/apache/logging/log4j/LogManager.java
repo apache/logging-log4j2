@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.internal.LogManagerStatus;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
@@ -121,6 +122,7 @@ public class LogManager {
                         + "Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
                 factory = new SimpleLoggerContextFactory();
             }
+            LogManagerStatus.setInitialized(true);
         }
     }
 
