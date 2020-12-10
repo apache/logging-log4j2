@@ -20,6 +20,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.internal.LogManagerStatus;
 import org.springframework.core.env.Environment;
 
 /**
@@ -32,7 +33,8 @@ public class SpringEnvironmentHolder {
 
 
     protected Environment getEnvironment() {
-        if (environment == null && LogManager.getFactory() != null && LogManager.getFactory().hasContext(SpringEnvironmentHolder.class.getName(), null, false)) {
+        if (environment == null && LogManagerStatus.isInitialized() && LogManager.getFactory() != null &&
+                LogManager.getFactory().hasContext(SpringEnvironmentHolder.class.getName(), null, false)) {
             lock.lock();
             try {
                 if (environment == null) {

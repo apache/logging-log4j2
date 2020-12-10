@@ -30,18 +30,12 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="3.0.0" date="2019-xx-xx" description="GA Release 3.0.0">
+    <release version="3.0.0" date="2021-MM-DD" description="GA Release 3.0.0">
       <action issue="LOG4J2-2967" dev="ckozak" type="fix">
         Fix JsonTemplateLayout index based parameter resolution when messages contain too few parameters.
       </action>
       <action issue="LOG4J2-2962" dev="vy" type="add">
         Enrich "map" resolver by unifying its backend with "mdc" resolver.
-      </action>
-      <action issue="LOG4J2-2961" dev="vy" type="fix">
-        Fix reading of JsonTemplateLayout event additional fields from config.
-      </action>
-      <action issue="LOG4J2-2916" dev="vy" type="fix" due-to="wuqian0808">
-        Avoid redundant Kafka producer instantiation causing thread leaks.
       </action>
       <action dev="vy" type="update">
         Update jetty-util from 8.2.0.v20160908 to 9.4.31.v20200723.
@@ -202,6 +196,17 @@
       </action>
 	  <action issue="LOG4J2-2850" dev="sandeepbarnwal" type="fix">
 		Fixes incorrect constructor call in LocalizedMessageFactory.
+      </action>
+    </release>
+    <release version="2.14.1" date="2020-MM-DD" description="GA Release 2.14.1">
+      <action issue="LOG4J2-2974" dev="rgoers" type="fix">
+        Log4j would fail to initialize in Java 8 with log4j-spring-boot.
+      </action>
+      <action issue="LOG4J2-2961" dev="vy" type="fix">
+        Fix reading of JsonTemplateLayout event additional fields from config.
+      </action>
+      <action issue="LOG4J2-2916" dev="vy" type="fix" due-to="wuqian0808">
+        Avoid redundant Kafka producer instantiation causing thread leaks.
       </action>
     </release>
     <release version="2.14.0" date="2020-MM-DD" description="GA Release 2.14.0">
