@@ -194,11 +194,14 @@
       <action issue="LOG4J2-2844" dev="ggregory" type="fix">
         Null pointer exception when no network interfaces are available.
       </action>
-	  <action issue="LOG4J2-2850" dev="sandeepbarnwal" type="fix">
-		Fixes incorrect constructor call in LocalizedMessageFactory.
+	    <action issue="LOG4J2-2850" dev="sandeepbarnwal" type="fix">
+		    Fixes incorrect constructor call in LocalizedMessageFactory.
       </action>
     </release>
     <release version="2.14.1" date="2020-MM-DD" description="GA Release 2.14.1">
+      <action dev="rgoers" type="update">
+        Update Spring dependencies to 5.3.2, Spring Boot to 2.3.6, and Spring Cloud to Hoxton.SR9.
+      </action>
       <action issue="LOG4J2-2974" dev="rgoers" type="fix">
         Log4j would fail to initialize in Java 8 with log4j-spring-boot.
       </action>

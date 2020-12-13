@@ -101,7 +101,7 @@
       <SizeBasedTriggeringPolicy size="10MB" />
       <DefaultRolloverStrategy max="5"/>
     </RollingFile>-->
-    <Socket name="Elastic"
+    <!--<Socket name="Elastic"
             host="\${sys:logstash.search.host}"
             port="12222"
             protocol="tcp"
@@ -124,8 +124,8 @@
         <EventTemplateAdditionalField key="kubernetes.imageId" value="\${k8s:imageId:-}"/>
         <EventTemplateAdditionalField key="kubernetes.imageName" value="\${k8s:imageName:-}"/>
       </JsonTemplateLayout>
-    </Socket>
-    <!--<Socket name="Elastic" host="\${sys:logstash.search.host:-localhost}" port="12222" protocol="tcp" bufferedIo="true" ignoreExceptions="false">
+    </Socket> -->
+    <Socket name="Elastic" host="\${sys:logstash.search.host:-localhost}" port="12222" protocol="tcp" bufferedIo="true" ignoreExceptions="false">
       <GelfLayout includeStackTrace="true" host="${hostName}" includeThreadContext="true" includeNullDelimiter="true"
                   compressionType="OFF">
         <ThreadContextIncludes>requestId,sessionId,loginId,userId,ipAddress,corpAcctNumber,callingHost,ohBehalfOf,onBehalfOfAccount</ThreadContextIncludes>
@@ -147,7 +147,7 @@
         <KeyValuePair key="kubernetes.imageId" value="\${k8s:imageId:-}"/>
         <KeyValuePair key="kubernetes.imageName" value="\${k8s:imageName:-}"/>
       </GelfLayout>
-    </Socket>-->
+    </Socket>
     <Console name="Console" target="SYSTEM_OUT">
       <RFC5424Layout enterpriseNumber="50177" includeMDC="true" mdcId="RequestContext" appName="SalesforceGateway"
                      mdcPrefix="" newLine="true" mdcIncludes="requestId,sessionId,loginId,userId,ipAddress,corpAcctNumber"/>
