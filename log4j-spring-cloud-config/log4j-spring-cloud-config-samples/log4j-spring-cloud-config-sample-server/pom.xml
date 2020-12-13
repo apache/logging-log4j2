@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.1.2.RELEASE</version>
+    <version>2.3.6.RELEASE</version>
     <relativePath /> <!-- lookup parent from repository -->
   </parent>
 
@@ -38,7 +38,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <log4jParentDir>${basedir}/../../..</log4jParentDir>
     <java.version>1.8</java.version>
-    <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
+    <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
 
     <!-- paths -->

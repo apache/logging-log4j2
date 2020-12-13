@@ -31,9 +31,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <revapi.skip>true</revapi.skip>
-    <spring-cloud-version>Hoxton.SR7</spring-cloud-version>
-    <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
-    <springVersion>5.2.8.RELEASE</springVersion>
+    <spring-cloud-version>Hoxton.SR9</spring-cloud-version>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <maven.doap.skip>true</maven.doap.skip>
   </properties>
