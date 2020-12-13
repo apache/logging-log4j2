@@ -359,14 +359,14 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                         colMapping);
                 i++;
             }
-            if (data.columnConfigs != null) {
-                for (final ColumnConfig colConfig : data.columnConfigs) {
-                    final String columnName = colConfig.getColumnName();
-                    appendColumnName(i, columnName, sb);
-                    logger().trace(messagePattern, sqlVerb, colConfig.getClass().getSimpleName(), i, columnName,
-                            colConfig);
-                    i++;
-                }
+        }
+        if (data.columnConfigs != null) {
+            for (final ColumnConfig colConfig : data.columnConfigs) {
+                final String columnName = colConfig.getColumnName();
+                appendColumnName(i, columnName, sb);
+                logger().trace(messagePattern, sqlVerb, colConfig.getClass().getSimpleName(), i, columnName,
+                        colConfig);
+                i++;
             }
         }
     }

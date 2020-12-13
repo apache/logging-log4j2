@@ -102,6 +102,9 @@
       <action issue="LOG4J2-2967" dev="ckozak" type="fix">
         Fix JsonTemplateLayout index based parameter resolution when messages contain too few parameters.
       </action>
+      <action issue="LOG4J2-2976" dev="ckozak" type="fix">
+        JdbcAppender composes an incorrect INSERT statement without a ColumnMapping element.
+      </action>      
     </release>
     <release version="2.14.0" date="2020-11-06" description="GA Release 2.14.0">
       <action issue="LOG4J2-2925" dev="rgoers" type="fix">
