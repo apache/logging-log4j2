@@ -1681,10 +1681,9 @@ public interface Logger {
     /**
      * Gets the message factory used to convert message Objects and Strings/CharSequences into actual log Messages.
      *
-     * @param <MF> The type of the MessageFactory.
-     * @return the message factory, as an instance of {@link MessageFactory}
+     * @return the message factory
      */
-    <MF extends MessageFactory> MF getMessageFactory();
+    MessageFactory getMessageFactory();
 
     /**
      * Gets the logger name.
