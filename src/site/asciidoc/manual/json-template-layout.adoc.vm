@@ -186,6 +186,13 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
   `classpath:EcsLayout.json` set by `log4j.layout.jsonTemplate.eventTemplateUri`
   property)
 
+| eventTemplateRootObjectKey
+| String
+| if given, puts the event template into a JSON object composed of a single
+  member with the given key (defaults to `null` set by
+  `log4j.layout.jsonTemplate.eventTemplateRootObjectKey`
+  property)
+
 | eventTemplateAdditionalFields
 | EventTemplateAdditionalField[]
 | additional key-value pairs appended to the root of the event template

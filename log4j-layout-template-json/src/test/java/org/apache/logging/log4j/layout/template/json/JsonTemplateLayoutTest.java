@@ -2115,6 +2115,36 @@ class JsonTemplateLayoutTest {
 
     }
 
+    @Test
+    void test_eventTemplateRootObjectKey() {
+
+        // Create the event template.
+        final String eventTemplate = writeJson(asMap(
+                "message", asMap("$resolver", "message")));
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .setEventTemplateRootObjectKey("event")
+                .build();
+
+        // Create the log event.
+        final Message message = new SimpleMessage("LOG4J2-2985");
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setMessage(message)
+                .build();
+
+        // Check the serialized event.
+        usingSerializedLogEventAccessor(layout, logEvent, accessor ->
+                assertThat(accessor.getObject(new String[]{"event", "message"}))
+                        .isEqualTo("LOG4J2-2985"));
+
+    }
+
     private static synchronized String writeJson(final Object value) {
         final StringBuilder stringBuilder = JSON_WRITER.getStringBuilder();
         stringBuilder.setLength(0);

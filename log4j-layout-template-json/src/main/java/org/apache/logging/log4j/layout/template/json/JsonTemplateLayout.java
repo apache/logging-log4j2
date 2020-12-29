@@ -154,6 +154,7 @@ public class JsonTemplateLayout implements StringLayout {
                 .setLocationInfoEnabled(builder.locationInfoEnabled)
                 .setStackTraceEnabled(builder.stackTraceEnabled)
                 .setStackTraceElementObjectResolver(stackTraceElementObjectResolver)
+                .setEventTemplateRootObjectKey(builder.eventTemplateRootObjectKey)
                 .setEventTemplateAdditionalFields(eventTemplateAdditionalFields)
                 .build();
         return TemplateResolvers.ofTemplate(resolverContext, eventTemplate);
@@ -319,6 +320,10 @@ public class JsonTemplateLayout implements StringLayout {
         private String eventTemplateUri =
                 JsonTemplateLayoutDefaults.getEventTemplateUri();
 
+        @PluginBuilderAttribute
+        private String eventTemplateRootObjectKey =
+                JsonTemplateLayoutDefaults.getEventTemplateRootObjectKey();
+
         @PluginElement("EventTemplateAdditionalField")
         private EventTemplateAdditionalField[] eventTemplateAdditionalFields;
 
@@ -403,6 +408,15 @@ public class JsonTemplateLayout implements StringLayout {
 
         public Builder setEventTemplateUri(final String eventTemplateUri) {
             this.eventTemplateUri = eventTemplateUri;
+            return this;
+        }
+
+        public String getEventTemplateRootObjectKey() {
+            return eventTemplateRootObjectKey;
+        }
+
+        public Builder setEventTemplateRootObjectKey(String eventTemplateRootObjectKey) {
+            this.eventTemplateRootObjectKey = eventTemplateRootObjectKey;
             return this;
         }
 
