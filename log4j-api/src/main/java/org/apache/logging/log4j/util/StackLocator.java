@@ -174,15 +174,12 @@ public final class StackLocator {
         // LOG4J2-1029 new Throwable().getStackTrace is faster than Thread.currentThread().getStackTrace().
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         boolean found = false;
-        for (int i = 0; i < stackTrace.length; i++) {
-            final String className = stackTrace[i].getClassName();
+        for (StackTraceElement stackTraceElement : stackTrace) {
+            final String className = stackTraceElement.getClassName();
             if (fqcnOfLogger.equals(className)) {
-
                 found = true;
-                continue;
-            }
-            if (found && !fqcnOfLogger.equals(className)) {
-                return stackTrace[i];
+            } else if (found) {
+                return stackTraceElement;
             }
         }
         return null;
