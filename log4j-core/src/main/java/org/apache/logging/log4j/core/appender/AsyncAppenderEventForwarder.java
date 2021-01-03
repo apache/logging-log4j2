@@ -19,14 +19,16 @@ package org.apache.logging.log4j.core.appender;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
+import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Supplier;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicLong;
 
-class AsyncAppenderEventForwarder {
+class AsyncAppenderEventForwarder extends Log4jThread {
+
+    private static final AtomicLong THREAD_COUNTER = new AtomicLong(0);
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -36,161 +38,47 @@ class AsyncAppenderEventForwarder {
 
     private final BlockingQueue<LogEvent> queue;
 
-    private final ThreadFactory threadFactory;
-
     private volatile boolean stopped;
 
-    private volatile Thread activeThread;
-
     AsyncAppenderEventForwarder(
+            final String name,
             final AppenderControl errorAppender,
             final List<AppenderControl> appenders,
-            final BlockingQueue<LogEvent> queue,
-            final ThreadFactory threadFactory) {
+            final BlockingQueue<LogEvent> queue) {
+        super("AsyncAppenderEventForwarder-" + THREAD_COUNTER.incrementAndGet() + "-" + name);
         this.errorAppender = errorAppender;
         this.appenders = appenders;
         this.queue = queue;
-        this.threadFactory = threadFactory;
-        this.stopped = true;
-        this.activeThread = null;
+        this.stopped = false;
     }
 
-    synchronized void start() {
-        if (stopped) {
-            final Thread thread = createForwarder();
-            stopped = false;
-            activeThread = thread;
-            thread.start();
-        }
-    }
-
-    private Thread createForwarder() {
-
-        // Create the holder for the thread supplier. (We need this holder to
-        // avoid recursive calls to createForwarder() in the uncaught exception
-        // handler, since this might result in a stack overflow.)
-        @SuppressWarnings("unchecked")
-        final Supplier<Thread>[] threadSupplierRef = new Supplier[1];
-
-        // Create the uncaught exception handler, which respawns the forwarder
-        // upon unexpected termination.
-        final Thread.UncaughtExceptionHandler uncaughtExceptionHandler =
-                (final Thread ignored, final Throwable error) -> {
-
-                    // In a synchronized block, determine if respawning should commence.
-                    final Thread nextActiveThread;
-                    synchronized (AsyncAppenderEventForwarder.this) {
-                        if (stopped) {
-                            nextActiveThread = null;
-                        } else {
-                            nextActiveThread = threadSupplierRef[0].get();
-                            activeThread = nextActiveThread;
-                        }
-                    }
-
-                    // Execute the result determined above — no synchronization
-                    // is needed at this stage.
-                    if (nextActiveThread == null) {
-                        LOGGER.warn("forwarder has failed", error);
-                    } else {
-                        LOGGER.warn("respawning failed forwarder", error);
-                        nextActiveThread.start();
-                    }
-
-                };
-
-        // Create the thread supplier injecting the above created uncaught
-        // exception handler.
-        final Supplier<Thread> threadSupplier = () -> {
-            final Thread thread =
-                    threadFactory.newThread(this::forwardAll);
-            thread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
-            return thread;
-        };
-
-        // Fill in the holder.
-        threadSupplierRef[0] = threadSupplier;
-
-        // Return the initial thread.
-        return threadSupplierRef[0].get();
-
+    @Override
+    public void run() {
+        LOGGER.trace("{} has started.", getName());
+        forwardAll();
+        forwardRemaining();
     }
 
     private void forwardAll() {
-        // Here we don't need to check against the "stopped" flag, since it is
-        // only used for determining if respawning should take place.
-        final Thread thread = Thread.currentThread();
-        while (!thread.isInterrupted()) {
+        while (!stopped) {
             LogEvent event;
             try {
                 event = queue.take();
             } catch (final InterruptedException ignored) {
                 // Restore the interrupted flag cleared when the exception is caught.
-                thread.interrupt();
+                interrupt();
                 break;
             }
             event.setEndOfBatch(queue.isEmpty());
             forwardOne(event);
         }
-    }
-
-    synchronized long getActiveThreadId() {
-        return stopped ? -1 : activeThread.getId();
-    }
-
-    void stop(final long timeoutMillis) throws InterruptedException {
-
-        // Disable respawning, if necessary.
-        final Thread lastActiveThread;
-        synchronized (this) {
-            if (stopped) {
-                return;
-            } else {
-                lastActiveThread = activeThread;
-                activeThread = null;
-                stopped = true;
-            }
-        }
-
-        // Put the termination sequence into a thread.
-        final Thread stopper = threadFactory.newThread(() -> {
-
-            // Update the thread name to reflect the purpose.
-            final Thread thread = Thread.currentThread();
-            final String threadName = String.format("%s-Stopper", thread.getName());
-            thread.setName(threadName);
-
-            // There is a slight chance that the last active forwarder thread is
-            // not started yet, wait for it to get picked up by a thread.
-            // Otherwise, interrupt+join will block.
-            // noinspection LoopConditionNotUpdatedInsideLoop, StatementWithEmptyBody
-            while (Thread.State.NEW.equals(lastActiveThread.getState()));
-
-            // Interrupt the last active forwarder.
-            lastActiveThread.interrupt();
-
-            // Forward any last remaining events.
-            forwardRemaining();
-
-            // Wait for the last active forwarder to stop.
-            try {
-                lastActiveThread.join();
-            } catch (final InterruptedException ignored) {
-                // Restore the interrupted flag cleared when the exception is caught.
-                thread.interrupt();
-            }
-
-        });
-
-        // Commence the termination sequence and wait at most for the given amount of time.
-        stopper.start();
-        stopper.join(timeoutMillis);
-
+        LOGGER.trace("{} has stopped.", getName());
     }
 
     private void forwardRemaining() {
         int eventCount = 0;
         while (true) {
+            // Note the non-blocking Queue#poll() method!
             final LogEvent event = queue.poll();
             if (event == null) {
                 break;
@@ -199,7 +87,9 @@ class AsyncAppenderEventForwarder {
             forwardOne(event);
             eventCount++;
         }
-        LOGGER.trace("AsyncAppenderThreadTask processed the last {} remaining event(s).", eventCount);
+        LOGGER.trace(
+                "{} has processed the last {} remaining event(s).",
+                getName(), eventCount);
     }
 
     void forwardOne(final LogEvent event) {
@@ -212,7 +102,7 @@ class AsyncAppenderEventForwarder {
             try {
                 control.callAppender(event);
                 succeeded = true;
-            } catch (final Exception ignored) {
+            } catch (final Throwable ignored) {
                 // If no appender is successful, the error appender will get it.
             }
         }
@@ -221,11 +111,36 @@ class AsyncAppenderEventForwarder {
         if (!succeeded && errorAppender != null) {
             try {
                 errorAppender.callAppender(event);
-            } catch (final Exception ignored) {
+            } catch (final Throwable ignored) {
                 // If the error appender also fails, there is nothing further
                 // we can do about it.
             }
         }
+
+    }
+
+    void stop(final long timeoutMillis) throws InterruptedException {
+
+        // Mark the completion, if necessary.
+        synchronized (this) {
+            if (!stopped) {
+                stopped = true;
+                LOGGER.trace("{} is signaled to stop.", getName());
+            }
+        }
+
+        // There is a slight chance that the thread is not started yet, wait for
+        // it to run. Otherwise, interrupt+join might block.
+        // noinspection StatementWithEmptyBody
+        while (Thread.State.NEW.equals(getState()));
+
+        // Interrupt the thread. (Note that there is neither a check on
+        // "stopped", nor a synchronization here. It is okay to interrupt
+        // concurrently and/or multiple times.)
+        interrupt();
+
+        // Wait for the completion.
+        join(timeoutMillis);
 
     }
 

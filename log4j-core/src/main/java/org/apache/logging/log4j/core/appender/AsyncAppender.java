@@ -42,14 +42,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TransferQueue;
 
@@ -111,10 +109,8 @@ public final class AsyncAppender extends AbstractAppender {
             }
         }
         if (appenders.size() > 0) {
-            final ThreadFactory threadFactory =
-                    new Log4jThreadFactory(getName(), true, Thread.NORM_PRIORITY);
             forwarder = new AsyncAppenderEventForwarder(
-                    errorAppender, appenders, queue, threadFactory);
+                    getName(), errorAppender, appenders, queue);
         } else if (errorRef == null) {
             throw new ConfigurationException("No appenders are available for AsyncAppender " + getName());
         }
@@ -131,7 +127,9 @@ public final class AsyncAppender extends AbstractAppender {
         LOGGER.trace("AsyncAppender stopping. Queue still has {} events.", queue.size());
         try {
             forwarder.stop(shutdownTimeout);
-        } catch (final InterruptedException ex) {
+        } catch (final InterruptedException ignored) {
+            // Restore the interrupted flag cleared when the exception is caught.
+            Thread.currentThread().interrupt();
             LOGGER.warn("Interrupted while stopping AsyncAppender {}", getName());
         }
         LOGGER.trace("AsyncAppender stopped. Queue has {} events.", queue.size());
@@ -164,7 +162,7 @@ public final class AsyncAppender extends AbstractAppender {
                     logMessageInCurrentThread(logEvent);
                 } else {
                     // delegate to the event router (which may discard, enqueue and block, or log in current thread)
-                    final EventRoute route = asyncQueueFullPolicy.getRoute(forwarder.getActiveThreadId(), memento.getLevel());
+                    final EventRoute route = asyncQueueFullPolicy.getRoute(forwarder.getId(), memento.getLevel());
                     route.logMessage(this, memento);
                 }
             } else {
@@ -199,7 +197,7 @@ public final class AsyncAppender extends AbstractAppender {
         try {
             // wait for free slots in the queue
             queue.put(logEvent);
-        } catch (final InterruptedException e) {
+        } catch (final InterruptedException ignored) {
             final boolean appendSuccessful = handleInterruptedException(logEvent);
             logToErrorAppenderIfNecessary(appendSuccessful, logEvent);
         }
