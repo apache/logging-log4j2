@@ -91,6 +91,11 @@ public final class JsonTemplateLayoutDefaults {
                 "classpath:EcsLayout.json");
     }
 
+    public static String getEventTemplateRootObjectKey() {
+        return PROPERTIES.getStringProperty(
+                "log4j.layout.jsonTemplate.eventTemplateRootObjectKey");
+    }
+
     public static String getStackTraceElementTemplate() {
         return PROPERTIES.getStringProperty(
                 "log4j.layout.jsonTemplate.stackTraceElementTemplate");
