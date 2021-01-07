@@ -71,7 +71,7 @@ class AsyncAppenderEventForwarder extends Log4jThread {
                 break;
             }
             event.setEndOfBatch(queue.isEmpty());
-            forwardOne(event);
+            forward(event);
         }
         LOGGER.trace("{} has stopped.", getName());
     }
@@ -85,7 +85,7 @@ class AsyncAppenderEventForwarder extends Log4jThread {
                 break;
             }
             event.setEndOfBatch(queue.isEmpty());
-            forwardOne(event);
+            forward(event);
             eventCount++;
         }
         LOGGER.trace(
@@ -93,7 +93,7 @@ class AsyncAppenderEventForwarder extends Log4jThread {
                 getName(), eventCount);
     }
 
-    void forwardOne(final LogEvent event) {
+    void forward(final LogEvent event) {
 
         // Forward the event to all registered appenders.
         boolean succeeded = false;

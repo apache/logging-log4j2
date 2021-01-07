@@ -185,7 +185,7 @@ public final class AsyncAppender extends AbstractAppender {
      */
     public void logMessageInCurrentThread(final LogEvent logEvent) {
         logEvent.setEndOfBatch(queue.isEmpty());
-        forwarder.forwardOne(logEvent);
+        forwarder.forward(logEvent);
     }
 
     /**
