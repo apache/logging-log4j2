@@ -24,6 +24,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 class AsyncAppenderEventForwarder extends Log4jThread {
@@ -38,7 +39,7 @@ class AsyncAppenderEventForwarder extends Log4jThread {
 
     private final BlockingQueue<LogEvent> queue;
 
-    private volatile boolean stopped;
+    private final AtomicBoolean stoppedRef;
 
     AsyncAppenderEventForwarder(
             final String name,
@@ -49,7 +50,7 @@ class AsyncAppenderEventForwarder extends Log4jThread {
         this.errorAppender = errorAppender;
         this.appenders = appenders;
         this.queue = queue;
-        this.stopped = false;
+        this.stoppedRef = new AtomicBoolean(false);
     }
 
     @Override
@@ -60,7 +61,7 @@ class AsyncAppenderEventForwarder extends Log4jThread {
     }
 
     private void forwardAll() {
-        while (!stopped) {
+        while (!stoppedRef.get()) {
             LogEvent event;
             try {
                 event = queue.take();
@@ -122,11 +123,9 @@ class AsyncAppenderEventForwarder extends Log4jThread {
     void stop(final long timeoutMillis) throws InterruptedException {
 
         // Mark the completion, if necessary.
-        synchronized (this) {
-            if (!stopped) {
-                stopped = true;
-                LOGGER.trace("{} is signaled to stop.", getName());
-            }
+        final boolean stopped = stoppedRef.compareAndSet(false, true);
+        if (stopped) {
+            LOGGER.trace("{} is signaled to stop.", getName());
         }
 
         // There is a slight chance that the thread is not started yet, wait for
