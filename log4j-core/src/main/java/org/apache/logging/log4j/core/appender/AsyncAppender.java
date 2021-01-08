@@ -70,7 +70,7 @@ public final class AsyncAppender extends AbstractAppender {
     private final String errorRef;
     private final boolean includeLocation;
     private AppenderControl errorAppender;
-    private AsyncAppenderEventForwarder forwarder;
+    private AsyncAppenderEventDispatcher dispatcher;
     private AsyncQueueFullPolicy asyncQueueFullPolicy;
 
     private AsyncAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
@@ -109,14 +109,14 @@ public final class AsyncAppender extends AbstractAppender {
             }
         }
         if (appenders.size() > 0) {
-            forwarder = new AsyncAppenderEventForwarder(
+            dispatcher = new AsyncAppenderEventDispatcher(
                     getName(), errorAppender, appenders, queue);
         } else if (errorRef == null) {
             throw new ConfigurationException("No appenders are available for AsyncAppender " + getName());
         }
         asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
 
-        forwarder.start();
+        dispatcher.start();
         super.start();
     }
 
@@ -126,7 +126,7 @@ public final class AsyncAppender extends AbstractAppender {
         super.stop(timeout, timeUnit, false);
         LOGGER.trace("AsyncAppender stopping. Queue still has {} events.", queue.size());
         try {
-            forwarder.stop(shutdownTimeout);
+            dispatcher.stop(shutdownTimeout);
         } catch (final InterruptedException ignored) {
             // Restore the interrupted flag cleared when the exception is caught.
             Thread.currentThread().interrupt();
@@ -162,7 +162,7 @@ public final class AsyncAppender extends AbstractAppender {
                     logMessageInCurrentThread(logEvent);
                 } else {
                     // delegate to the event router (which may discard, enqueue and block, or log in current thread)
-                    final EventRoute route = asyncQueueFullPolicy.getRoute(forwarder.getId(), memento.getLevel());
+                    final EventRoute route = asyncQueueFullPolicy.getRoute(dispatcher.getId(), memento.getLevel());
                     route.logMessage(this, memento);
                 }
             } else {
@@ -185,7 +185,7 @@ public final class AsyncAppender extends AbstractAppender {
      */
     public void logMessageInCurrentThread(final LogEvent logEvent) {
         logEvent.setEndOfBatch(queue.isEmpty());
-        forwarder.forward(logEvent);
+        dispatcher.dispatch(logEvent);
     }
 
     /**

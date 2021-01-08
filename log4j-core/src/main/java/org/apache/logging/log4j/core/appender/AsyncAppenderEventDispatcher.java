@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -27,7 +28,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-class AsyncAppenderEventForwarder extends Log4jThread {
+class AsyncAppenderEventDispatcher extends Log4jThread {
+
+    private static final LogEvent STOP_EVENT = new Log4jLogEvent();
 
     private static final AtomicLong THREAD_COUNTER = new AtomicLong(0);
 
@@ -41,12 +44,12 @@ class AsyncAppenderEventForwarder extends Log4jThread {
 
     private final AtomicBoolean stoppedRef;
 
-    AsyncAppenderEventForwarder(
+    AsyncAppenderEventDispatcher(
             final String name,
             final AppenderControl errorAppender,
             final List<AppenderControl> appenders,
             final BlockingQueue<LogEvent> queue) {
-        super("AsyncAppenderEventForwarder-" + THREAD_COUNTER.incrementAndGet() + "-" + name);
+        super("AsyncAppenderEventDispatcher-" + THREAD_COUNTER.incrementAndGet() + "-" + name);
         this.errorAppender = errorAppender;
         this.appenders = appenders;
         this.queue = queue;
@@ -56,11 +59,11 @@ class AsyncAppenderEventForwarder extends Log4jThread {
     @Override
     public void run() {
         LOGGER.trace("{} has started.", getName());
-        forwardAll();
-        forwardRemaining();
+        dispatchAll();
+        dispatchRemaining();
     }
 
-    private void forwardAll() {
+    private void dispatchAll() {
         while (!stoppedRef.get()) {
             LogEvent event;
             try {
@@ -70,22 +73,25 @@ class AsyncAppenderEventForwarder extends Log4jThread {
                 interrupt();
                 break;
             }
+            if (event == STOP_EVENT) {
+                break;
+            }
             event.setEndOfBatch(queue.isEmpty());
-            forward(event);
+            dispatch(event);
         }
         LOGGER.trace("{} has stopped.", getName());
     }
 
-    private void forwardRemaining() {
+    private void dispatchRemaining() {
         int eventCount = 0;
         while (true) {
             // Note the non-blocking Queue#poll() method!
             final LogEvent event = queue.poll();
-            if (event == null) {
+            if (event == null || event == STOP_EVENT) {
                 break;
             }
             event.setEndOfBatch(queue.isEmpty());
-            forward(event);
+            dispatch(event);
             eventCount++;
         }
         LOGGER.trace(
@@ -93,9 +99,9 @@ class AsyncAppenderEventForwarder extends Log4jThread {
                 getName(), eventCount);
     }
 
-    void forward(final LogEvent event) {
+    void dispatch(final LogEvent event) {
 
-        // Forward the event to all registered appenders.
+        // Dispatch the event to all registered appenders.
         boolean succeeded = false;
         // noinspection ForLoopReplaceableByForEach (avoid iterator instantion)
         for (int appenderIndex = 0; appenderIndex < appenders.size(); appenderIndex++) {
@@ -103,8 +109,12 @@ class AsyncAppenderEventForwarder extends Log4jThread {
             try {
                 control.callAppender(event);
                 succeeded = true;
-            } catch (final Throwable ignored) {
+            } catch (final Throwable error) {
                 // If no appender is successful, the error appender will get it.
+                // It is okay to simply log it here.
+                LOGGER.trace(
+                        "{} has failed to call appender {}",
+                        getName(), control.getAppenderName(), error);
             }
         }
 
@@ -112,9 +122,12 @@ class AsyncAppenderEventForwarder extends Log4jThread {
         if (!succeeded && errorAppender != null) {
             try {
                 errorAppender.callAppender(event);
-            } catch (final Throwable ignored) {
+            } catch (final Throwable error) {
                 // If the error appender also fails, there is nothing further
                 // we can do about it.
+                LOGGER.trace(
+                        "{} has failed to call the error appender {}",
+                        getName(), errorAppender.getAppenderName(), error);
             }
         }
 
@@ -133,10 +146,17 @@ class AsyncAppenderEventForwarder extends Log4jThread {
         // noinspection StatementWithEmptyBody
         while (Thread.State.NEW.equals(getState()));
 
-        // Interrupt the thread. (Note that there is neither a check on
-        // "stopped", nor a synchronization here. It is okay to interrupt
-        // concurrently and/or multiple times.)
-        interrupt();
+        // Enqueue the stop event, if there is sufficient room; otherwise,
+        // fallback to interruption. (We should avoid interrupting the thread if
+        // at all possible due to the subtleties of Java interruption, which
+        // will actually close sockets if any blocking operations are in
+        // progress! This means a socket appender may surprisingly fail to
+        // deliver final events. I recall some oddities with file I/O as well.
+        // — ckozak)
+        final boolean added = queue.offer(STOP_EVENT);
+        if (!added) {
+            interrupt();
+        }
 
         // Wait for the completion.
         join(timeoutMillis);
