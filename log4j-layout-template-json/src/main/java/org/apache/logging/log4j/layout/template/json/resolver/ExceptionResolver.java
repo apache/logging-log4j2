@@ -17,75 +17,23 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 /**
  * Exception resolver.
- * <p>
- * Note that this resolver is toggled by {@link
- * JsonTemplateLayout.Builder#setStackTraceEnabled(boolean)}.
  *
- * @see ExceptionInternalResolverFactory
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config      = field , [ stringified ]
+ * field       = "field" -> ( "className" | "message" | "stackTrace" )
+ * stringified = "stringified" -> boolean
+ * </pre>
  */
 class ExceptionResolver implements EventResolver {
 
-    private static final ExceptionInternalResolverFactory INTERNAL_RESOLVER_FACTORY =
-            new ExceptionInternalResolverFactory() {
-
-                @Override
-                EventResolver createClassNameResolver() {
-                    return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                        final Throwable exception = logEvent.getThrown();
-                        if (exception == null) {
-                            jsonWriter.writeNull();
-                        } else {
-                            String exceptionClassName = exception.getClass().getCanonicalName();
-                            jsonWriter.writeString(exceptionClassName);
-                        }
-                    };
-                }
-
-                @Override
-                EventResolver createMessageResolver(final EventResolverContext context) {
-                    return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                        final Throwable exception = logEvent.getThrown();
-                        if (exception == null) {
-                            jsonWriter.writeNull();
-                        } else {
-                            String exceptionMessage = exception.getMessage();
-                            jsonWriter.writeString(exceptionMessage);
-                        }
-                    };
-                }
-
-                @Override
-                EventResolver createStackTraceStringResolver(final EventResolverContext context) {
-                    StackTraceStringResolver stackTraceStringResolver =
-                            new StackTraceStringResolver(context);
-                    return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                        final Throwable exception = logEvent.getThrown();
-                        if (exception == null) {
-                            jsonWriter.writeNull();
-                        } else {
-                            stackTraceStringResolver.resolve(exception, jsonWriter);
-                        }
-                    };
-                }
-
-                @Override
-                EventResolver createStackTraceObjectResolver(final EventResolverContext context) {
-                    return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                        final Throwable exception = logEvent.getThrown();
-                        if (exception == null) {
-                            jsonWriter.writeNull();
-                        } else {
-                            context.getStackTraceObjectResolver().resolve(exception, jsonWriter);
-                        }
-                    };
-                }
-
-            };
+    private static final EventResolver NULL_RESOLVER =
+            (ignored, jsonGenerator) -> jsonGenerator.writeNull();
 
     private final boolean stackTraceEnabled;
 
@@ -95,8 +43,84 @@ class ExceptionResolver implements EventResolver {
             final EventResolverContext context,
             final TemplateResolverConfig config) {
         this.stackTraceEnabled = context.isStackTraceEnabled();
-        this.internalResolver = INTERNAL_RESOLVER_FACTORY
-                .createInternalResolver(context, config);
+        this.internalResolver = createInternalResolver(context, config);
+    }
+
+    EventResolver createInternalResolver(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        final String fieldName = config.getString("field");
+        switch (fieldName) {
+            case "className": return createClassNameResolver();
+            case "message": return createMessageResolver();
+            case "stackTrace": return createStackTraceResolver(context, config);
+        }
+        throw new IllegalArgumentException("unknown field: " + config);
+
+    }
+
+    private EventResolver createClassNameResolver() {
+        return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+            final Throwable exception = extractThrowable(logEvent);
+            if (exception == null) {
+                jsonWriter.writeNull();
+            } else {
+                String exceptionClassName = exception.getClass().getCanonicalName();
+                jsonWriter.writeString(exceptionClassName);
+            }
+        };
+    }
+
+    private EventResolver createMessageResolver() {
+        return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+            final Throwable exception = extractThrowable(logEvent);
+            if (exception == null) {
+                jsonWriter.writeNull();
+            } else {
+                String exceptionMessage = exception.getMessage();
+                jsonWriter.writeString(exceptionMessage);
+            }
+        };
+    }
+
+    private EventResolver createStackTraceResolver(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        if (!context.isStackTraceEnabled()) {
+            return NULL_RESOLVER;
+        }
+        final boolean stringified = config.getBoolean("stringified", false);
+        return stringified
+                ? createStackTraceStringResolver(context)
+                : createStackTraceObjectResolver(context);
+    }
+
+    private EventResolver createStackTraceStringResolver(EventResolverContext context) {
+        StackTraceStringResolver stackTraceStringResolver =
+                new StackTraceStringResolver(context);
+        return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+            final Throwable exception = extractThrowable(logEvent);
+            if (exception == null) {
+                jsonWriter.writeNull();
+            } else {
+                stackTraceStringResolver.resolve(exception, jsonWriter);
+            }
+        };
+    }
+
+    private EventResolver createStackTraceObjectResolver(EventResolverContext context) {
+        return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+            final Throwable exception = extractThrowable(logEvent);
+            if (exception == null) {
+                jsonWriter.writeNull();
+            } else {
+                context.getStackTraceObjectResolver().resolve(exception, jsonWriter);
+            }
+        };
+    }
+
+    Throwable extractThrowable(LogEvent logEvent) {
+        return logEvent.getThrown();
     }
 
     static String getName() {
