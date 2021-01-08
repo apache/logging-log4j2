@@ -87,7 +87,8 @@ public class SslConfigurationTest {
 
     @Test
     public void equals() {
-        assertEquals(SslConfiguration.createSSLConfiguration(null, null, null), SslConfiguration.createSSLConfiguration(null, null, null));
+        assertEquals(SslConfiguration.createSSLConfiguration(null, null, null),
+                SslConfiguration.createSSLConfiguration(null, null, null));
     }
 
     @Test
@@ -105,9 +106,7 @@ public class SslConfigurationTest {
             try (final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT)) {
                 assertNotNull(clientSocket);
             }
-        } catch (final UnknownHostException offline) {
-            // this exception is thrown on Windows when offline
-        } catch (final ConnectException connectionTimeout) {
+        } catch (final UnknownHostException | ConnectException connectionTimeout) {
             // this exception is thrown on Windows when host is behind a proxy that does not allow connection to external network
         }
     }
@@ -124,9 +123,7 @@ public class SslConfigurationTest {
                     assertThrows(IOException.class, () -> os.write("GET config/login_verify2?".getBytes()));
                 }
             }
-        } catch (final UnknownHostException offline) {
-            // this exception is thrown on Windows when offline
-        } catch (final ConnectException connectionTimeout) {
+        } catch (final UnknownHostException | ConnectException connectionTimeout) {
             // this exception is thrown on Windows when host is behind a proxy that does not allow connection to external network
         }
     }
