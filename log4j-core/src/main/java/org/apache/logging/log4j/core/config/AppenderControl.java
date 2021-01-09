@@ -156,7 +156,7 @@ public class AppenderControl extends AbstractFilterable {
             appender.append(event);
         } catch (final RuntimeException error) {
             handleAppenderError(event, error);
-        } catch (final Throwable error) {
+        } catch (final Exception error) {
             handleAppenderError(event, new AppenderLoggingException(error));
         }
     }
