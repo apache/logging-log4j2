@@ -22,6 +22,7 @@ import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -78,7 +79,7 @@ public final class TemplateResolvers {
             final String template) {
 
         // Read the template.
-        final Object node;
+        Object node;
         try {
             node = JsonReader.read(template);
         } catch (final Exception error) {
@@ -86,11 +87,19 @@ public final class TemplateResolvers {
             throw new RuntimeException(message, error);
         }
 
-        // Append the additional fields.
         if (context instanceof EventResolverContext) {
+
+            // Append the additional fields.
             final EventResolverContext eventResolverContext = (EventResolverContext) context;
             final EventTemplateAdditionalField[] additionalFields = eventResolverContext.getAdditionalFields();
             appendAdditionalFields(node, additionalFields);
+
+            // Set the root object key, if given.
+            final String rootObjectKey = eventResolverContext.getEventTemplateRootObjectKey();
+            if (rootObjectKey != null) {
+                node = Collections.singletonMap(rootObjectKey, node);
+            }
+
         }
 
         // Resolve the template.

@@ -92,10 +92,6 @@ public class PluginProcessor extends AbstractProcessor {
             writeServiceFile(packageName);
             messager.printMessage(Kind.NOTE, "Annotations processed");
             return true;
-        } catch (final IOException e) {
-            e.printStackTrace();
-            error(e.getMessage());
-            return false;
         } catch (final Exception ex) {
             ex.printStackTrace();
             error(ex.getMessage());

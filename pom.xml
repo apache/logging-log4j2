@@ -219,7 +219,7 @@
     <release.plugin.version>2.5.3</release.plugin.version>
     <scm.plugin.version>1.9.5</scm.plugin.version>
     <jxr.plugin.version>2.5</jxr.plugin.version>
-    <revapi.plugin.version>0.10.5</revapi.plugin.version>
+    <revapi.plugin.version>0.12.2</revapi.plugin.version>
     <revapi.skip>true</revapi.skip>
     <site.plugin.version>3.8.2</site.plugin.version>
     <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
@@ -1401,7 +1401,7 @@
           <dependency>
             <groupId>org.revapi</groupId>
             <artifactId>revapi-java</artifactId>
-            <version>0.18.2</version>
+            <version>0.22.1</version>
           </dependency>
         </dependencies>
         <executions>

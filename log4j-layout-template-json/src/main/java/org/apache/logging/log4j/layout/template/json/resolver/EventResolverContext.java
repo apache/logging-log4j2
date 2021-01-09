@@ -47,6 +47,8 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
     private final TemplateResolver<Throwable> stackTraceObjectResolver;
 
+    private final String eventTemplateRootObjectKey;
+
     private final EventTemplateAdditionalField[] additionalFields;
 
     private EventResolverContext(final Builder builder) {
@@ -61,6 +63,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         this.stackTraceObjectResolver = stackTraceEnabled
                 ? new StackTraceObjectResolver(builder.stackTraceElementObjectResolver)
                 : null;
+        this.eventTemplateRootObjectKey = builder.eventTemplateRootObjectKey;
         this.additionalFields = builder.eventTemplateAdditionalFields;
     }
 
@@ -112,6 +115,10 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         return stackTraceObjectResolver;
     }
 
+    String getEventTemplateRootObjectKey() {
+        return eventTemplateRootObjectKey;
+    }
+
     EventTemplateAdditionalField[] getAdditionalFields() {
         return additionalFields;
     }
@@ -139,6 +146,8 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         private boolean stackTraceEnabled;
 
         private TemplateResolver<StackTraceElement> stackTraceElementObjectResolver;
+
+        private String eventTemplateRootObjectKey;
 
         private EventTemplateAdditionalField[] eventTemplateAdditionalFields;
 
@@ -189,6 +198,11 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         public Builder setStackTraceElementObjectResolver(
                 final TemplateResolver<StackTraceElement> stackTraceElementObjectResolver) {
             this.stackTraceElementObjectResolver = stackTraceElementObjectResolver;
+            return this;
+        }
+
+        public Builder setEventTemplateRootObjectKey(String eventTemplateRootObjectKey) {
+            this.eventTemplateRootObjectKey = eventTemplateRootObjectKey;
             return this;
         }
 
