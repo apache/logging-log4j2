@@ -87,8 +87,12 @@ class AsyncAppenderEventDispatcher extends Log4jThread {
         while (true) {
             // Note the non-blocking Queue#poll() method!
             final LogEvent event = queue.poll();
-            if (event == null || event == STOP_EVENT) {
+            if (event == null) {
                 break;
+            }
+            // Allow events that managed to be submitted after the sentinel.
+            if (event == STOP_EVENT) {
+                continue;
             }
             event.setEndOfBatch(queue.isEmpty());
             dispatch(event);
@@ -99,6 +103,10 @@ class AsyncAppenderEventDispatcher extends Log4jThread {
                 getName(), eventCount);
     }
 
+    /**
+     * Dispatches the given {@code event} to the registered appenders <b>in the
+     * current thread</b>.
+     */
     void dispatch(final LogEvent event) {
 
         // Dispatch the event to all registered appenders.
