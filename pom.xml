@@ -243,8 +243,8 @@
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <junitVersion>4.13.1</junitVersion>
     <junitJupiterVersion>5.7.0</junitJupiterVersion>
-    <mockitoVersion>3.6.0</mockitoVersion>
-    <xmlunitVersion>2.8.0</xmlunitVersion>
+    <mockitoVersion>3.7.0</mockitoVersion>
+    <xmlunitVersion>2.8.2</xmlunitVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />
@@ -846,7 +846,7 @@
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit</artifactId>
-        <version>2.21.0</version>
+        <version>2.22.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
