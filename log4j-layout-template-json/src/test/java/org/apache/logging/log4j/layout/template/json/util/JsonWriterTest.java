@@ -49,6 +49,18 @@ class JsonWriterTest {
             .setTruncatedStringSuffix("~")
             .build();
 
+    private static final int SURROGATE_CODE_POINT = 65536;
+
+    private static final char[] SURROGATE_PAIR = new char[2];
+    static {
+        // noinspection ResultOfMethodCallIgnored
+        Character.toChars(SURROGATE_CODE_POINT, SURROGATE_PAIR, 0);
+    }
+
+    private static final char HI_SURROGATE = SURROGATE_PAIR[0];
+
+    private static final char LO_SURROGATE = SURROGATE_PAIR[1];
+
     private static synchronized <V> V withLockedWriterReturning(
             final Function<JsonWriter, V> consumer) {
         synchronized (WRITER) {
@@ -61,6 +73,23 @@ class JsonWriterTest {
         synchronized (WRITER) {
             consumer.accept(WRITER);
         }
+    }
+
+    @Test
+    void test_surrogate_code_point() {
+        Assertions
+                .assertThat(HI_SURROGATE)
+                .matches(Character::isHighSurrogate, "is high surrogate");
+        Assertions
+                .assertThat(LO_SURROGATE)
+                .matches(Character::isLowSurrogate, "is low surrogate");
+        Assertions
+                .assertThat(Character.isSurrogatePair(HI_SURROGATE, LO_SURROGATE))
+                .as("is surrogate pair")
+                .isTrue();
+        Assertions
+                .assertThat(SURROGATE_CODE_POINT)
+                .matches(Character::isDefined, "is defined");
     }
 
     @Test
@@ -402,6 +431,27 @@ class JsonWriterTest {
     }
 
     @Test
+    void test_writeString_emitter_excessive_string_ending_with_high_surrogate() {
+        withLockedWriter(writer -> {
+            final int maxStringLength = writer.getMaxStringLength();
+            @SuppressWarnings("StringBufferReplaceableByString")
+            final String excessiveString = new StringBuilder()
+                    .append(Strings.repeat("x", maxStringLength - 1))
+                    .append(HI_SURROGATE)
+                    .append(LO_SURROGATE)
+                    .toString();
+            final String expectedJson = "\"" +
+                    Strings.repeat("x", maxStringLength - 1) +
+                    writer.getTruncatedStringSuffix() +
+                    '"';
+            final BiConsumer<StringBuilder, String> emitter = StringBuilder::append;
+            final String actualJson =
+                    writer.use(() -> writer.writeString(emitter, excessiveString));
+            Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+        });
+    }
+
+    @Test
     void test_writeString_null_formattable() {
         expectNull(writer -> writer.writeString((StringBuilderFormattable) null));
     }
@@ -423,6 +473,27 @@ class JsonWriterTest {
             final String excessiveString = Strings.repeat("x", maxStringLength) + 'y';
             final String expectedJson = '"' +
                     excessiveString.substring(0, maxStringLength) +
+                    writer.getTruncatedStringSuffix() +
+                    '"';
+            final String actualJson = writer.use(() ->
+                    writer.writeString(stringBuilder ->
+                            stringBuilder.append(excessiveString)));
+            Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+        });
+    }
+
+    @Test
+    void test_writeString_formattable_excessive_string_ending_with_high_surrogate() {
+        withLockedWriter(writer -> {
+            final int maxStringLength = writer.getMaxStringLength();
+            @SuppressWarnings("StringBufferReplaceableByString")
+            final String excessiveString = new StringBuilder()
+                    .append(Strings.repeat("x", maxStringLength - 1))
+                    .append(HI_SURROGATE)
+                    .append(LO_SURROGATE)
+                    .toString();
+            final String expectedJson = "\"" +
+                    Strings.repeat("x", maxStringLength - 1) +
                     writer.getTruncatedStringSuffix() +
                     '"';
             final String actualJson = writer.use(() ->
@@ -474,9 +545,31 @@ class JsonWriterTest {
     }
 
     @Test
+    void test_writeString_excessive_seq_ending_with_high_surrogate() {
+        withLockedWriter(writer -> {
+            final int maxStringLength = writer.getMaxStringLength();
+            @SuppressWarnings("StringBufferReplaceableByString")
+            final CharSequence seq = new StringBuilder()
+                    .append(Strings.repeat("x", maxStringLength - 1))
+                    .append(HI_SURROGATE)
+                    .append(LO_SURROGATE)
+                    .toString();
+            final String expectedJson = "\"" +
+                    Strings.repeat("x", maxStringLength - 1) +
+                    writer.getTruncatedStringSuffix() +
+                    '"';
+            final String actualJson = writer.use(() -> writer.writeString(seq));
+            Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+        });
+    }
+
+    @Test
     void test_writeString_seq() throws IOException {
-        testQuoting((final Character c) -> {
-            final String s = "" + c;
+        final char[] surrogates = new char[2];
+        testQuoting((final Integer codePoint) -> {
+            // noinspection ResultOfMethodCallIgnored
+            Character.toChars(codePoint, surrogates, 0);
+            final String s = new String(surrogates);
             return withLockedWriterReturning(writer ->
                     writer.use(() -> writer.writeString(s)));
         });
@@ -526,31 +619,54 @@ class JsonWriterTest {
     }
 
     @Test
+    void test_writerString_excessive_buffer_ending_with_high_surrogate() {
+        withLockedWriter(writer -> {
+            final int maxStringLength = writer.getMaxStringLength();
+            @SuppressWarnings("StringBufferReplaceableByString")
+            final char[] buffer = new StringBuilder()
+                    .append(Strings.repeat("x", maxStringLength - 1))
+                    .append(HI_SURROGATE)
+                    .append(LO_SURROGATE)
+                    .toString()
+                    .toCharArray();
+            final String expectedJson = "\"" +
+                    Strings.repeat("x", maxStringLength - 1) +
+                    writer.getTruncatedStringSuffix() +
+                    '"';
+            final String actualJson = writer.use(() -> writer.writeString(buffer));
+            Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+        });
+    }
+
+    @Test
     void test_writeString_buffer() throws IOException {
-        final char[] buffer = new char[1];
-        testQuoting((final Character c) -> {
-            buffer[0] = c;
+        final char[] buffer = new char[2];
+        testQuoting((final Integer codePoint) -> {
+            // noinspection ResultOfMethodCallIgnored
+            Character.toChars(codePoint, buffer, 0);
             return withLockedWriterReturning(writer ->
                     writer.use(() -> writer.writeString(buffer)));
         });
     }
 
     private static void testQuoting(
-            final Function<Character, String> quoter) throws IOException {
+            final Function<Integer, String> quoter) throws IOException {
         final SoftAssertions assertions = new SoftAssertions();
-        for (char c = Character.MIN_VALUE;; c++) {
-            final String s = "" + c;
+        final char[] surrogates = new char[2];
+        for (int codePoint = Character.MIN_CODE_POINT;
+             codePoint <= Character.MAX_CODE_POINT;
+             codePoint++) {
+            // noinspection ResultOfMethodCallIgnored
+            Character.toChars(codePoint, surrogates, 0);
+            final String s = new String(surrogates);
             final String expectedJson = JacksonFixture
                     .getObjectMapper()
                     .writeValueAsString(s);
-            final String actualJson = quoter.apply(c);
+            final String actualJson = quoter.apply(codePoint);
             assertions
                     .assertThat(actualJson)
-                    .as("c='%c' (%d)", c, (int) c)
+                    .as("codePoint='%s' (%d)", s, codePoint)
                     .isEqualTo(expectedJson);
-            if (c == Character.MAX_VALUE) {
-                break;
-            }
         }
         assertions.assertAll();
     }
