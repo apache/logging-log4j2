@@ -434,20 +434,43 @@ a|
 a|
 [source]
 ----
-config      = field , [ stringified ]
-field       = "field" -> (
-                "className"  \|
-                "message"    \|
-                "stackTrace" )
-stringified = "stringified" -> boolean
+config                        = field , [ stringified ] , [ stackTrace ]
+field                         = "field" -> ( "className" \| "message" \| "stackTrace" )
+stackTrace                    = "stackTrace" -> (
+                                  [ stringified ]
+                                , [ truncatedStringSuffix ]
+                                , [ truncationPointMatcherStrings ]
+                                , [ truncationPointMatcherRegexes ]
+                                )
+stringified                   = "stringified" -> boolean
+truncatedStringSuffix         = "truncatedStringSuffix" -> string
+truncationPointMatcherStrings = "truncationPointMatcherStrings" -> string[]
+truncationPointMatcherRegexes = "truncationPointMatcherRegexes" -> string[]
 ----
 a|
 Resolves fields of the `Throwable` returned by `logEvent.getThrown()`.
 
+`stringified` is set to `false` by default. `stringified` at the root level is
+*deprecated*, instead prefer the one in the `stackTrace` object, which has
+precedence if both are provided.
+
+`truncationPointMatcherStrings` and `truncationPointMatcherRegexes` enable the
+truncation of the stack trace after the given matching point. If both parameters
+are provided, `truncationPointMatcherStrings` will be checked first. Note that
+these configurations are only taken into account when `stringified` is set to
+`true`.
+
+`truncatedStringSuffix` will be set to the one configured in the layout, unless
+explicitly provided.
+
 Note that this resolver is toggled by
 `log4j.layout.jsonTemplate.stackTraceEnabled` property.
-| Since `Throwable#getStackTrace()` clones the original `StackTraceElement[]`,
-  access to (and hence rendering of) stack traces are not garbage-free.
+a|
+Since `Throwable#getStackTrace()` clones the original `StackTraceElement[]`,
+access to (and hence rendering of) stack traces are not garbage-free.
+
+Each `truncationPointMatcherRegexes` item triggers a `Pattern\#matcher()` call,
+which is not garbage-free.
 a|
 Resolve `logEvent.getThrown().getClass().getCanonicalName()`:
 
@@ -476,20 +499,35 @@ Resolve the stack trace into a string field:
 {
   "$resolver": "exception",
   "field": "stackTrace",
-  "stringified": true
+  "stackTrace": {
+    "stringified": true
+  }
+}
+----
+
+Resolve the stack trace into a string field such that the content will be
+truncated by the given points:
+
+[source,json]
+----
+{
+  "$resolver": "exception",
+  "field": "stackTrace",
+  "stackTrace": {
+    "stringified": true,
+    "truncatedStringSuffix": ">",
+    "truncationPointStrings": ["at javax.servlet.http.HttpServlet.service"]
+  }
 }
 ----
 
 | exceptionRootCause
 | identical to `exception` resolver
-a|
-Resolves the fields of the innermost `Throwable` returned by
-`logEvent.getThrown()`.
-
-Note that this resolver is toggled by
-`log4j.layout.jsonTemplate.stackTraceEnabled` property.
+| identical to `exception` resolver with the exception that the innermost
+  `Throwable` in the causal-chain of `logEvent.getThrown()` is resolved
 | identical to `exception` resolver
-| identical to `exception` resolver
+| identical to `exception` resolver with the exception that `${dollar}resolver`
+  field needs to be set to `exceptionRootCause`
 
 | level
 a|

@@ -41,6 +41,8 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
     private final int maxStringByteCount;
 
+    private final String truncatedStringSuffix;
+
     private final boolean locationInfoEnabled;
 
     private final boolean stackTraceEnabled;
@@ -58,6 +60,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         this.jsonWriter = builder.jsonWriter;
         this.recyclerFactory = builder.recyclerFactory;
         this.maxStringByteCount = builder.maxStringByteCount;
+        this.truncatedStringSuffix = builder.truncatedStringSuffix;
         this.locationInfoEnabled = builder.locationInfoEnabled;
         this.stackTraceEnabled = builder.stackTraceEnabled;
         this.stackTraceObjectResolver = stackTraceEnabled
@@ -103,6 +106,10 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         return maxStringByteCount;
     }
 
+    String getTruncatedStringSuffix() {
+        return truncatedStringSuffix;
+    }
+
     boolean isLocationInfoEnabled() {
         return locationInfoEnabled;
     }
@@ -140,6 +147,8 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         private RecyclerFactory recyclerFactory;
 
         private int maxStringByteCount;
+
+        private String truncatedStringSuffix;
 
         private boolean locationInfoEnabled;
 
@@ -182,6 +191,15 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         public Builder setMaxStringByteCount(final int maxStringByteCount) {
             this.maxStringByteCount = maxStringByteCount;
+            return this;
+        }
+
+        public String getTruncatedStringSuffix() {
+            return truncatedStringSuffix;
+        }
+
+        public Builder setTruncatedStringSuffix(final String truncatedStringSuffix) {
+            this.truncatedStringSuffix = truncatedStringSuffix;
             return this;
         }
 

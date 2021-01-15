@@ -408,6 +408,32 @@
         "old": "enum org.apache.logging.log4j.layout.template.json.util.Uris",
         "new": "class org.apache.logging.log4j.layout.template.json.util.Uris",
         "justification": "Replaced 'enum' singletons with 'final class'es."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method char[] org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedPrintWriter::getBuffer()",
+        "justification": "LOG4J2-2993 Massaged (internal) API to make method names more Java-like and restrict access if possible."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedPrintWriter::getCapacity()",
+        "justification": "LOG4J2-2993 Massaged (internal) API to make method names more Java-like and restrict access if possible."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedPrintWriter::getPosition()",
+        "justification": "LOG4J2-2993 Massaged (internal) API to make method names more Java-like and restrict access if possible."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method boolean org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedPrintWriter::isTruncated()",
+        "justification": "LOG4J2-2993 Massaged (internal) API to make method names more Java-like and restrict access if possible."
+      },
+      {
+        "code": "java.class.visibilityReduced",
+        "old": "class org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedWriter",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedWriter",
+        "justification": "LOG4J2-2993 Massaged (internal) API to make method names more Java-like and restrict access if possible."
       }
     ]
   }

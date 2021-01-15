@@ -41,7 +41,7 @@ final class ExceptionRootCauseResolver extends ExceptionResolver {
     }
 
     @Override
-    Throwable extractThrowable(LogEvent logEvent) {
+    Throwable extractThrowable(final LogEvent logEvent) {
         final Throwable thrown = logEvent.getThrown();
         return thrown != null ? Throwables.getRootCause(thrown) : null;
     }

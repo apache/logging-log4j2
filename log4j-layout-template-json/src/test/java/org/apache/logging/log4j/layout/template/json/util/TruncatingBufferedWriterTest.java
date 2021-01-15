@@ -75,10 +75,10 @@ class TruncatingBufferedWriterTest {
         expectedBuffer[expectedPosition++] = 'u';
         expectedBuffer[expectedPosition++] = 'l';
         expectedBuffer[expectedPosition++] = 'l';
-        Assertions.assertThat(writer.getBuffer()).isEqualTo(expectedBuffer);
-        Assertions.assertThat(writer.getPosition()).isEqualTo(expectedPosition);
-        Assertions.assertThat(writer.getCapacity()).isEqualTo(capacity);
-        Assertions.assertThat(writer.isTruncated()).isFalse();
+        Assertions.assertThat(writer.buffer()).isEqualTo(expectedBuffer);
+        Assertions.assertThat(writer.position()).isEqualTo(expectedPosition);
+        Assertions.assertThat(writer.capacity()).isEqualTo(capacity);
+        Assertions.assertThat(writer.truncated()).isFalse();
         verifyClose(writer);
 
     }
@@ -228,17 +228,17 @@ class TruncatingBufferedWriterTest {
     private void verifyTruncation(
             final TruncatingBufferedWriter writer,
             final char c) {
-        Assertions.assertThat(writer.getBuffer()).isEqualTo(new char[]{c});
-        Assertions.assertThat(writer.getPosition()).isEqualTo(1);
-        Assertions.assertThat(writer.getCapacity()).isEqualTo(1);
-        Assertions.assertThat(writer.isTruncated()).isTrue();
+        Assertions.assertThat(writer.buffer()).isEqualTo(new char[]{c});
+        Assertions.assertThat(writer.position()).isEqualTo(1);
+        Assertions.assertThat(writer.capacity()).isEqualTo(1);
+        Assertions.assertThat(writer.truncated()).isTrue();
         verifyClose(writer);
     }
 
     private void verifyClose(final TruncatingBufferedWriter writer) {
         writer.close();
-        Assertions.assertThat(writer.getPosition()).isEqualTo(0);
-        Assertions.assertThat(writer.isTruncated()).isFalse();
+        Assertions.assertThat(writer.position()).isEqualTo(0);
+        Assertions.assertThat(writer.truncated()).isFalse();
     }
 
 }

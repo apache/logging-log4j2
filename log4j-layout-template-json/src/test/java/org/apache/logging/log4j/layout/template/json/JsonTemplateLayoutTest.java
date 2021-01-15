@@ -473,7 +473,8 @@ class JsonTemplateLayoutTest {
                 "ex_stacktrace", asMap(
                         "$resolver", "exception",
                         "field", "stackTrace",
-                        "stringified", true),
+                        "stackTrace", asMap(
+                                "stringified", true)),
                 "root_ex_class", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "className"),
@@ -483,7 +484,8 @@ class JsonTemplateLayoutTest {
                 "root_ex_stacktrace", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "stackTrace",
-                        "stringified", true)));
+                        "stackTrace", asMap(
+                                "stringified", true))));
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout
@@ -547,7 +549,8 @@ class JsonTemplateLayoutTest {
                 "root_ex_stacktrace", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "stackTrace",
-                        "stringified", true)));
+                        "stackTrace", asMap(
+                                "stringified", true))));
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout
@@ -1604,14 +1607,16 @@ class JsonTemplateLayoutTest {
                 "exStackTraceString", asMap(
                         "$resolver", "exception",
                         "field", "stackTrace",
-                        "stringified", true),
+                        "stackTrace", asMap(
+                                "stringified", true)),
                 "exRootCauseStackTrace", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "stackTrace"),
                 "exRootCauseStackTraceString", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "stackTrace",
-                        "stringified", true),
+                        "stackTrace", asMap(
+                                "stringified", true)),
                 "requiredFieldTriggeringError", true));
 
         // Create the layout.
@@ -1634,7 +1639,7 @@ class JsonTemplateLayoutTest {
     }
 
     @Test
-    void test_StackTraceTextResolver_with_maxStringLength() {
+    void test_stringified_exception_resolver_with_maxStringLength() {
 
         // Create the event template.
         final String eventTemplate = writeJson(asMap(
@@ -1667,6 +1672,119 @@ class JsonTemplateLayoutTest {
             final int expectedLength = maxStringLength +
                     JsonTemplateLayoutDefaults.getTruncatedStringSuffix().length();
             assertThat(accessor.getString("stackTrace").length()).isEqualTo(expectedLength);
+        });
+
+    }
+
+    @Test
+    void test_stack_trace_truncation() {
+
+        // Create the exception to be logged.
+        final Exception childError =
+                new Exception("unique child exception message");
+        final Exception parentError =
+                new Exception("unique parent exception message", childError);
+
+        // Create the event template.
+        final String truncatedStringSuffix = "~";
+        final String eventTemplate = writeJson(asMap(
+                // Raw exception.
+                "ex", asMap(
+                        "$resolver", "exception",
+                        "field", "stackTrace",
+                        "stackTrace", asMap(
+                                "stringified", true)),
+                // Exception matcher using strings.
+                "stringMatchedEx", asMap(
+                        "$resolver", "exception",
+                        "field", "stackTrace",
+                        "stackTrace", asMap(
+                                "stringified", true,
+                                "truncatedStringSuffix", truncatedStringSuffix,
+                                "truncationPointMatcherStrings", Arrays.asList(
+                                        "this string shouldn't match with anything",
+                                        parentError.getMessage()))),
+                // Exception matcher using regexes.
+                "regexMatchedEx", asMap(
+                        "$resolver", "exception",
+                        "field", "stackTrace",
+                        "stackTrace", asMap(
+                                "stringified", true,
+                                "truncatedStringSuffix", truncatedStringSuffix,
+                                "truncationPointMatcherRegexes", Arrays.asList(
+                                        "this string shouldn't match with anything",
+                                        parentError
+                                                .getMessage()
+                                                .replace("unique", "[xu]n.que")))),
+                // Raw exception root cause.
+                "rootEx", asMap(
+                        "$resolver", "exceptionRootCause",
+                        "field", "stackTrace",
+                        "stackTrace", asMap(
+                                "stringified", true)),
+                // Exception root cause matcher using strings.
+                "stringMatchedRootEx", asMap(
+                        "$resolver", "exceptionRootCause",
+                        "field", "stackTrace",
+                        "stackTrace", asMap(
+                                "stringified", true,
+                                "truncatedStringSuffix", truncatedStringSuffix,
+                                "truncationPointMatcherStrings", Arrays.asList(
+                                        "this string shouldn't match with anything",
+                                        childError.getMessage()))),
+                // Exception root cause matcher using regexes.
+                "regexMatchedRootEx", asMap(
+                        "$resolver", "exceptionRootCause",
+                        "field", "stackTrace",
+                        "stackTrace", asMap(
+                                "stringified", true,
+                                "truncatedStringSuffix", truncatedStringSuffix,
+                                "truncationPointMatcherRegexes", Arrays.asList(
+                                        "this string shouldn't match with anything",
+                                        childError
+                                                .getMessage()
+                                                .replace("unique", "[xu]n.que"))))));
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .setStackTraceEnabled(true)
+                .build();
+
+        // Create the log event.
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setThrown(parentError)
+                .build();
+
+        // Check the serialized event.
+        final String expectedMatchedExEnd =
+                parentError.getMessage() + truncatedStringSuffix;
+        final String expectedMatchedRootExEnd =
+                childError.getMessage() + truncatedStringSuffix;
+        usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
+
+            // Check the serialized exception.
+            assertThat(accessor.getString("ex"))
+                    .doesNotEndWith(expectedMatchedExEnd)
+                    .doesNotEndWith(expectedMatchedRootExEnd);
+            assertThat(accessor.getString("stringMatchedEx"))
+                    .endsWith(expectedMatchedExEnd);
+            assertThat(accessor.getString("regexMatchedEx"))
+                    .endsWith(expectedMatchedExEnd);
+
+            // Check the serialized exception root cause.
+            assertThat(accessor.getString("rootEx"))
+                    .doesNotEndWith(expectedMatchedExEnd)
+                    .doesNotEndWith(expectedMatchedRootExEnd);
+            assertThat(accessor.getString("stringMatchedRootEx"))
+                    .endsWith(expectedMatchedRootExEnd);
+            assertThat(accessor.getString("regexMatchedRootEx"))
+                    .endsWith(expectedMatchedRootExEnd);
+
         });
 
     }
