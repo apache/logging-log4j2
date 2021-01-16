@@ -581,7 +581,11 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
             final CharSequence seq,
             final int offset,
             final int length) {
-        final int limit = offset + length;
+        final int surrogateCorrection =
+                length > 0 && Character.isHighSurrogate(seq.charAt(offset + length - 1))
+                        ? -1
+                        : 0;
+        final int limit = offset + length + surrogateCorrection;
         int i = offset;
         outer:
         while (i < limit) {
@@ -654,7 +658,11 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
             final char[] buffer,
             final int offset,
             final int length) {
-        final int limit = offset + length;
+        final int surrogateCorrection =
+                length > 0 && Character.isHighSurrogate(buffer[offset + length - 1])
+                        ? -1
+                        : 0;
+        final int limit = offset + length + surrogateCorrection;
         int i = offset;
         outer:
         while (i < limit) {
