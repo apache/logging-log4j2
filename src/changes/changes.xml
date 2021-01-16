@@ -109,7 +109,19 @@
         Update de.flapdoodle.embed:de.flapdoodle.embed.mongo 2.2.0 -> 3.0.0.
       </action>
       <action dev="ggregory" type="update">
-        Update net.javacrumbs.json-unit:json-unit 1.31.1 -> 2.21.0.
+        Update net.javacrumbs.json-unit:json-unit 1.31.1 -> 2.22.0.
+      </action>
+      <action dev="ggregory" type="update">
+        Update Mockito 3.6.0 -> 3.7.0.
+      </action>
+      <action dev="ggregory" type="update">
+        Update XML Unit 2.8.0 -> 2.8.2.
+      </action>
+      <action dev="ggregory" type="update">
+        Update JSON Unit 2.21.0 -> 2.22.0.
+      </action>
+      <action dev="ggregory" type="update">
+        Update JaCoCo 0.8.3 -> 0.8.6.
       </action>
       <action issue="LOG4J2-2967" dev="ckozak" type="fix">
         Fix JsonTemplateLayout index based parameter resolution when messages contain too few parameters.
