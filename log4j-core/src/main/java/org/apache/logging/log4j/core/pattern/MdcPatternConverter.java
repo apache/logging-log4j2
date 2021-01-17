@@ -93,14 +93,14 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
         // if there is no additional options, we output every single
         // Key/Value pair for the MDC in a similar format to Hashtable.toString()
         if (full) {
-            if (contextData == null || contextData.size() == 0) {
+            if (contextData == null || contextData.isEmpty()) {
                 toAppendTo.append("{}");
                 return;
             }
             appendFully(contextData, toAppendTo);
         } else {
             if (keys != null) {
-                if (contextData == null || contextData.size() == 0) {
+                if (contextData == null || contextData.isEmpty()) {
                     toAppendTo.append("{}");
                     return;
                 }

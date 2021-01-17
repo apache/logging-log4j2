@@ -57,7 +57,7 @@ public class EntryTag extends LoggerAwareTagSupport implements DynamicAttributes
         final Log4jTaglibLogger logger = this.getLogger();
 
         if (TagUtils.isEnabled(logger, Level.TRACE, null)) {
-            if (this.attributes.size() == 0) {
+            if (this.attributes.isEmpty()) {
                 logger.entry(FQCN);
             } else {
                 logger.entry(FQCN, this.attributes.toArray());

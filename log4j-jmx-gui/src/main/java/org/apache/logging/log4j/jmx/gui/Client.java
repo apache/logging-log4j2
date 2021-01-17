@@ -140,7 +140,7 @@ public class Client {
         final String mbean = String.format(pattern, Server.escape(contextName));
         final ObjectName search = new ObjectName(mbean);
         final Set<ObjectName> result = connection.queryNames(search, null);
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             return null;
         }
         if (result.size() > 1) {

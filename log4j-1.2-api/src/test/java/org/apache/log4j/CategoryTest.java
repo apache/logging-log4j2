@@ -118,7 +118,7 @@ public class CategoryTest {
         logger.setLevel(Level.ERROR);
         final Priority debug = Level.DEBUG;
         logger.l7dlog(debug, "Hello, World", null);
-        assertTrue(appender.getEvents().size() == 0);
+        assertTrue(appender.getEvents().isEmpty());
     }
 
     /**
@@ -130,7 +130,7 @@ public class CategoryTest {
         logger.setLevel(Level.ERROR);
         final Priority debug = Level.DEBUG;
         logger.l7dlog(debug, "Hello, World", new Object[0], null);
-        assertTrue(appender.getEvents().size() == 0);
+        assertTrue(appender.getEvents().isEmpty());
     }
 
     /**
@@ -149,7 +149,7 @@ public class CategoryTest {
         // the next line will throw an exception if the LogManager loggers
         // aren't supported by 1.2 Logger/Category
         logger.l7dlog(debug, "Hello, World", new Object[0], null);
-        assertTrue(appender.getEvents().size() == 0);
+        assertTrue(appender.getEvents().isEmpty());
     }
 
     /**

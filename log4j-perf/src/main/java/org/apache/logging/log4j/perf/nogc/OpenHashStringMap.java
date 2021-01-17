@@ -477,7 +477,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         assertNotFrozen();
         assertNoConcurrentModification();
 
-        if (size() == 0 && source instanceof OpenHashStringMap) {
+        if (isEmpty() && source instanceof OpenHashStringMap) {
             initFrom0((OpenHashStringMap) source);
         } else if (source != null) {
             source.forEach(PUT_ALL, this);
