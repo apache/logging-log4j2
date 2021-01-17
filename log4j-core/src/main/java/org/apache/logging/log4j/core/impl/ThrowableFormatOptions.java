@@ -75,7 +75,9 @@ public final class ThrowableFormatOptions {
     /**
      * The list of packages to filter.
      */
-    private final List<String> ignorePackages;
+    private final List<String> filterPackages;
+
+    private final List<String> filterStartFrames;
 
     public static final String CLASS_NAME = "short.className";
     public static final String METHOD_NAME = "short.methodName";
@@ -91,17 +93,20 @@ public final class ThrowableFormatOptions {
      *            The number of lines.
      * @param separator
      *            The stack trace separator.
-     * @param ignorePackages
+     * @param filterPackages
      *            The packages to filter.
+     * @param filterStartFrames
+     *            The frame (package+method) to filter.
      * @param textRenderer
      *            The ANSI renderer
      * @param suffix
      */
-    protected ThrowableFormatOptions(final int lines, final String separator, final List<String> ignorePackages,
-            final TextRenderer textRenderer, final String suffix) {
+    protected ThrowableFormatOptions(final int lines, final String separator, final List<String> filterPackages,
+            final List<String> filterStartFrames, final TextRenderer textRenderer, final String suffix) {
         this.lines = lines;
         this.separator = separator == null ? Strings.LINE_SEPARATOR : separator;
-        this.ignorePackages = ignorePackages;
+        this.filterPackages = filterPackages;
+        this.filterStartFrames = filterStartFrames;
         this.textRenderer = textRenderer == null ? PlainTextRenderer.getInstance() : textRenderer;
         this.suffix = suffix;
     }
@@ -109,18 +114,18 @@ public final class ThrowableFormatOptions {
     /**
      * Constructs the options for printing stack trace.
      *
-     * @param packages
+     * @param filterPackages
      *            The packages to filter.
      */
-    protected ThrowableFormatOptions(final List<String> packages) {
-        this(DEFAULT_LINES, null, packages, null, null);
+    protected ThrowableFormatOptions(final List<String> filterPackages) {
+        this(DEFAULT_LINES, null, filterPackages, null, null, null);
     }
 
     /**
      * Constructs the options for printing stack trace.
      */
     protected ThrowableFormatOptions() {
-        this(DEFAULT_LINES, null, null, null, null);
+        this(DEFAULT_LINES, null, null, null, null, null);
     }
 
     /**
@@ -155,8 +160,17 @@ public final class ThrowableFormatOptions {
      *
      * @return The list of packages to ignore (filter out).
      */
-    public List<String> getIgnorePackages() {
-        return this.ignorePackages;
+    public List<String> getFilterPackages() {
+        return this.filterPackages;
+    }
+
+    /**
+     * Returns the list of frames (package + method name) that identify a stack trace starting point.
+     *
+     * @return the list of frames (package + method name) that identify a stack trace starting point.
+     */
+    public List<String> getFilterStartFrames() {
+        return this.filterStartFrames;
     }
 
     /**
@@ -193,9 +207,19 @@ public final class ThrowableFormatOptions {
      *
      * @return true if there are packages, false otherwise.
      */
-    public boolean hasPackages() {
-        return this.ignorePackages != null && !this.ignorePackages.isEmpty();
+    public boolean hasFilterPackages() {
+        return this.filterPackages != null && !this.filterPackages.isEmpty();
     }
+
+    /**
+     * Determines if there are any packages to filter.
+     *
+     * @return true if there are packages, false otherwise.
+     */
+    public boolean hasfilterStartFrames() {
+        return this.filterStartFrames != null && !this.filterStartFrames.isEmpty();
+    }
+
 
     /**
      * {@inheritDoc}
@@ -207,9 +231,17 @@ public final class ThrowableFormatOptions {
                 .append(allLines() ? FULL : this.lines == 2 ? SHORT : anyLines() ? String.valueOf(this.lines) : NONE)
                 .append('}');
         s.append("{separator(").append(this.separator).append(")}");
-        if (hasPackages()) {
+        if (hasFilterPackages()) { // duplicate code
             s.append("{filters(");
-            for (final String p : this.ignorePackages) {
+            for (final String p : this.filterPackages) {
+                s.append(p).append(',');
+            }
+            s.deleteCharAt(s.length() - 1);
+            s.append(")}");
+        }
+        if (hasfilterStartFrames()) { // duplicate code
+            s.append("{filters.startFrames(");
+            for (final String p : this.filterStartFrames) {
                 s.append(p).append(',');
             }
             s.deleteCharAt(s.length() - 1);
@@ -248,7 +280,8 @@ public final class ThrowableFormatOptions {
 
         int lines = DEFAULT.lines;
         String separator = DEFAULT.separator;
-        List<String> packages = DEFAULT.ignorePackages;
+        List<String> filterPackages = DEFAULT.filterPackages;
+        List<String> filterStartFrames = DEFAULT.filterStartFrames;
         TextRenderer ansiRenderer = DEFAULT.textRenderer;
         String suffix = DEFAULT.getSuffix();
         for (final String rawOption : options) {
@@ -259,19 +292,9 @@ public final class ThrowableFormatOptions {
                 } else if (option.startsWith("separator(") && option.endsWith(")")) {
                     separator = option.substring("separator(".length(), option.length() - 1);
                 } else if (option.startsWith("filters(") && option.endsWith(")")) {
-                    final String filterStr = option.substring("filters(".length(), option.length() - 1);
-                    if (filterStr.length() > 0) {
-                        final String[] array = filterStr.split(Patterns.COMMA_SEPARATOR);
-                        if (array.length > 0) {
-                            packages = new ArrayList<>(array.length);
-                            for (String token : array) {
-                                token = token.trim();
-                                if (token.length() > 0) {
-                                    packages.add(token);
-                                }
-                            }
-                        }
-                    }
+                    filterPackages = extractFilters(filterPackages, option, "filters(");
+                } else if (option.startsWith("filters.startFrames(") && option.endsWith(")")) {
+                    filterStartFrames = extractFilters(filterStartFrames, option, "filters.startFrames(");
                 } else if (option.equalsIgnoreCase(NONE)) {
                     lines = 0;
                 } else if (option.equalsIgnoreCase(SHORT) || option.equalsIgnoreCase(CLASS_NAME)
@@ -298,7 +321,28 @@ public final class ThrowableFormatOptions {
                 }
             }
         }
-        return new ThrowableFormatOptions(lines, separator, packages, ansiRenderer, suffix);
+        return new ThrowableFormatOptions(lines, separator, filterPackages, filterStartFrames, ansiRenderer, suffix);
+    }
+
+    /**
+     * Common code for extracting packages from "filters(com.example)" and "filters.startFrames(com.example)"
+     *
+     */
+    private static List<String> extractFilters(List<String> packages, String option, String conversionWord) {
+        final String filterStr = option.substring(conversionWord.length(), option.length() - 1);
+        if (filterStr.length() > 0) {
+            final String[] array = filterStr.split(Patterns.COMMA_SEPARATOR);
+            if (array.length > 0) {
+                packages = new ArrayList<>(array.length);
+                for (String token : array) {
+                    token = token.trim();
+                    if (token.length() > 0) {
+                        packages.add(token);
+                    }
+                }
+            }
+        }
+        return packages;
     }
 
     public String getSuffix() {

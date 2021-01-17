@@ -71,8 +71,8 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(' ');
             }
-            proxy.formatExtendedStackTraceTo(toAppendTo, options.getIgnorePackages(),
-                    options.getTextRenderer(), getSuffix(event), options.getSeparator());
+            proxy.formatExtendedStackTraceTo(toAppendTo, options.getFilterPackages(),
+                    options.getFilterStartFrames(), options.getTextRenderer(), getSuffix(event), options.getSeparator());
         }
     }
 

@@ -377,8 +377,8 @@ public class PatternParserTest {
         assertEquals(ExtendedThrowablePatternConverter.class, converter.getClass());
         final ExtendedThrowablePatternConverter exConverter = (ExtendedThrowablePatternConverter) converter;
         final ThrowableFormatOptions options = exConverter.getOptions();
-        assertTrue(options.getIgnorePackages().contains("org.junit"));
-        assertTrue(options.getIgnorePackages().contains("org.eclipse"));
+        assertTrue(options.getFilterPackages().contains("org.junit"));
+        assertTrue(options.getFilterPackages().contains("org.eclipse"));
         assertEquals(System.lineSeparator(), options.getSeparator());
     }
 
@@ -393,7 +393,7 @@ public class PatternParserTest {
         assertEquals(ExtendedThrowablePatternConverter.class, converter.getClass());
         final ExtendedThrowablePatternConverter exConverter = (ExtendedThrowablePatternConverter) converter;
         final ThrowableFormatOptions options = exConverter.getOptions();
-        final List<String> ignorePackages = options.getIgnorePackages();
+        final List<String> ignorePackages = options.getFilterPackages();
         assertNotNull(ignorePackages);
         final String ignorePackagesString = ignorePackages.toString();
         assertTrue(ignorePackages.contains("org.junit"), ignorePackagesString);

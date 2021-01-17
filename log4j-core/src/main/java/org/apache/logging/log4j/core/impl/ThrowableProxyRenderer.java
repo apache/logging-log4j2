@@ -37,11 +37,12 @@ class ThrowableProxyRenderer {
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    static void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages,
-                              final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+    static void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> filterPackages,
+                              final List<String> filterStartFrames, final TextRenderer textRenderer,
+                              final String suffix, final String lineSeparator) {
         final Throwable caused = cause.getCauseProxy() != null ? cause.getCauseProxy().getThrowable() : null;
         if (caused != null) {
-            formatWrapper(sb, cause.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator);
+            formatWrapper(sb, cause.getCauseProxy(), filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
             sb.append(WRAPPED_BY_LABEL);
             renderSuffix(suffix, sb, textRenderer);
         }
@@ -49,17 +50,18 @@ class ThrowableProxyRenderer {
         renderSuffix(suffix, sb, textRenderer);
         textRenderer.render(lineSeparator, sb, "Text");
         formatElements(sb, Strings.EMPTY, cause.getCommonElementCount(),
-                cause.getThrowable().getStackTrace(), cause.getExtendedStackTrace(), ignorePackages, textRenderer, suffix, lineSeparator);
+                cause.getThrowable().getStackTrace(), cause.getExtendedStackTrace(), filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
     }
 
     private static void formatCause(final StringBuilder sb, final String prefix, final ThrowableProxy cause,
-                                    final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, String lineSeparator) {
-        formatThrowableProxy(sb, prefix, CAUSED_BY_LABEL, cause, ignorePackages, textRenderer, suffix, lineSeparator);
+                                    final List<String> filterPackages, final List<String> filterStartFrames, final TextRenderer textRenderer, final String suffix, String lineSeparator) {
+        formatThrowableProxy(sb, prefix, CAUSED_BY_LABEL, cause, filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
     }
 
     private static void formatThrowableProxy(final StringBuilder sb, final String prefix, final String causeLabel,
-                                             final ThrowableProxy throwableProxy, final List<String> ignorePackages,
-                                             final TextRenderer textRenderer, final String suffix, String lineSeparator) {
+                                             final ThrowableProxy throwableProxy, final List<String> filterPackages,
+                                             final List<String> filterStartFrames, final TextRenderer textRenderer,
+                                             final String suffix, String lineSeparator) {
         if (throwableProxy == null) {
             return;
         }
@@ -69,32 +71,36 @@ class ThrowableProxyRenderer {
         renderSuffix(suffix, sb, textRenderer);
         textRenderer.render(lineSeparator, sb, "Text");
         formatElements(sb, prefix, throwableProxy.getCommonElementCount(),
-                throwableProxy.getStackTrace(), throwableProxy.getExtendedStackTrace(), ignorePackages, textRenderer, suffix, lineSeparator);
-        formatSuppressed(sb, prefix + TAB, throwableProxy.getSuppressedProxies(), ignorePackages, textRenderer, suffix, lineSeparator);
-        formatCause(sb, prefix, throwableProxy.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator);
+                throwableProxy.getStackTrace(), throwableProxy.getExtendedStackTrace(), filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
+        formatSuppressed(sb, prefix + TAB, throwableProxy.getSuppressedProxies(), filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
+        formatCause(sb, prefix, throwableProxy.getCauseProxy(), filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
     }
 
     private static void formatSuppressed(final StringBuilder sb, final String prefix, final ThrowableProxy[] suppressedProxies,
-                                         final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, String lineSeparator) {
+                                         final List<String> filterPackages, final List<String> filterStartFrames, final TextRenderer textRenderer, final String suffix, String lineSeparator) {
         if (suppressedProxies == null) {
             return;
         }
         for (final ThrowableProxy suppressedProxy : suppressedProxies) {
-            formatThrowableProxy(sb, prefix, SUPPRESSED_LABEL, suppressedProxy, ignorePackages, textRenderer, suffix, lineSeparator);
+            formatThrowableProxy(sb, prefix, SUPPRESSED_LABEL, suppressedProxy, filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
         }
     }
 
     private static void formatElements(final StringBuilder sb, final String prefix, final int commonCount,
                                        final StackTraceElement[] causedTrace, final ExtendedStackTraceElement[] extStackTrace,
-                                       final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, String lineSeparator) {
-        if (ignorePackages == null || ignorePackages.isEmpty()) {
+                                       final List<String> filterPackages, final List<String> filterStartFrames, final TextRenderer textRenderer, final String suffix, String lineSeparator) {
+        if ((filterPackages == null || filterPackages.isEmpty()) && (filterStartFrames == null || filterStartFrames.isEmpty())) {
             for (final ExtendedStackTraceElement element : extStackTrace) {
                 formatEntry(element, sb, prefix, textRenderer, suffix, lineSeparator);
             }
         } else {
             int count = 0;
             for (int i = 0; i < extStackTrace.length; ++i) {
-                if (!ignoreElement(causedTrace[i], ignorePackages)) {
+                if (elementStartsWith(causedTrace[i], filterStartFrames, true)) {
+                    ++count; // indicate the stack was suppressed
+                    break; // exit early if we matched on a starting frame
+                }
+                if (!elementStartsWith(causedTrace[i], filterPackages, false)) {
                     if (count > 0) {
                         appendSuppressedCount(sb, prefix, count, textRenderer, suffix, lineSeparator);
                         count = 0;
@@ -148,11 +154,14 @@ class ThrowableProxyRenderer {
         textRenderer.render(lineSeparator, sb, "Text");
     }
 
-    private static boolean ignoreElement(final StackTraceElement element, final List<String> ignorePackages) {
-        if (ignorePackages != null) {
-            final String className = element.getClassName();
-            for (final String pkg : ignorePackages) {
-                if (className.startsWith(pkg)) {
+    private static boolean elementStartsWith(final StackTraceElement element, final List<String> packagesOrStartFrames, boolean includeMethodName) {
+        if (packagesOrStartFrames != null) {
+            String className = element.getClassName();
+            if (includeMethodName) { // support startFrames
+                className += "." + element.getMethodName();
+            }
+            for (final String item : packagesOrStartFrames) {
+                if (className.startsWith(item)) {
                     return true;
                 }
             }
@@ -165,21 +174,22 @@ class ThrowableProxyRenderer {
      *
      * @param src            ThrowableProxy instance to format
      * @param sb             Destination.
-     * @param ignorePackages List of packages to be ignored in the trace.
+     * @param filterPackages List of packages to be ignored in the trace.
+     * @param filterStartFrames List of packages to be ignored in the trace.
      * @param textRenderer   The message renderer.
      * @param suffix         Append this to the end of each stack frame.
      * @param lineSeparator  The end-of-line separator.
      */
-    static void formatExtendedStackTraceTo(ThrowableProxy src, final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+    static void formatExtendedStackTraceTo(ThrowableProxy src, final StringBuilder sb, final List<String> filterPackages, final List<String> filterStartFrames, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         textRenderer.render(src.getName(), sb, "Name");
         textRenderer.render(": ", sb, "NameMessageSeparator");
         textRenderer.render(src.getMessage(), sb, "Message");
         renderSuffix(suffix, sb, textRenderer);
         textRenderer.render(lineSeparator, sb, "Text");
         final StackTraceElement[] causedTrace = src.getThrowable() != null ? src.getThrowable().getStackTrace() : null;
-        formatElements(sb, Strings.EMPTY, 0, causedTrace, src.getExtendedStackTrace(), ignorePackages, textRenderer, suffix, lineSeparator);
-        formatSuppressed(sb, TAB, src.getSuppressedProxies(), ignorePackages, textRenderer, suffix, lineSeparator);
-        formatCause(sb, Strings.EMPTY, src.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator);
+        formatElements(sb, Strings.EMPTY, 0, causedTrace, src.getExtendedStackTrace(), filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
+        formatSuppressed(sb, TAB, src.getSuppressedProxies(), filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
+        formatCause(sb, Strings.EMPTY, src.getCauseProxy(), filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
     }
 
     /**
@@ -187,15 +197,16 @@ class ThrowableProxyRenderer {
      *
      * @param src            Throwable whose cause to render
      * @param sb             Destination to render the formatted Throwable that caused this Throwable onto.
-     * @param ignorePackages The List of packages to be suppressed from the stack trace.
+     * @param filterPackages The List of packages to be suppressed from the stack trace.
+     * @param filterStartFrames The List of packages for the starting point of the stack trace.
      * @param textRenderer   The text renderer.
      * @param suffix         Append this to the end of each stack frame.
      * @param lineSeparator  The end-of-line separator.
      */
-    static void formatCauseStackTrace(final ThrowableProxy src, final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+    static void formatCauseStackTrace(final ThrowableProxy src, final StringBuilder sb, final List<String> filterPackages, final List<String> filterStartFrames, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         ThrowableProxy causeProxy = src.getCauseProxy();
         if (causeProxy != null) {
-            formatWrapper(sb, causeProxy, ignorePackages, textRenderer, suffix, lineSeparator);
+            formatWrapper(sb, causeProxy, filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
             sb.append(WRAPPED_BY_LABEL);
             ThrowableProxyRenderer.renderSuffix(suffix, sb, textRenderer);
         }
@@ -203,7 +214,7 @@ class ThrowableProxyRenderer {
         ThrowableProxyRenderer.renderSuffix(suffix, sb, textRenderer);
         textRenderer.render(lineSeparator, sb, "Text");
         ThrowableProxyRenderer.formatElements(sb, Strings.EMPTY, 0, src.getStackTrace(), src.getExtendedStackTrace(),
-                ignorePackages, textRenderer, suffix, lineSeparator);
+                filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
     }
 
     private static void renderOn(final ThrowableProxy src, final StringBuilder output, final TextRenderer textRenderer) {

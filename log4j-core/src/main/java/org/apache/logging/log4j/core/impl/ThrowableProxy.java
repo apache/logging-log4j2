@@ -185,48 +185,53 @@ public class ThrowableProxy implements Serializable {
      * @param suffix
      */
     public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final String suffix) {
-        this.formatWrapper(sb, cause, null, PlainTextRenderer.getInstance(), suffix);
+        this.formatWrapper(sb, cause, null, null, PlainTextRenderer.getInstance(), suffix);
     }
 
     /**
      * Formats the specified Throwable.
      *  @param sb             StringBuilder to contain the formatted Throwable.
      * @param cause          The Throwable to format.
-     * @param ignorePackages The List of packages to be suppressed from the trace.
+     * @param filterPackages The List of packages to be suppressed from the trace.
+     * @param filterStartFrames The List of packages to be suppressed from the trace.
      * @param suffix
      */
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages, final String suffix) {
-        this.formatWrapper(sb, cause, ignorePackages, PlainTextRenderer.getInstance(), suffix);
+    public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> filterPackages,
+                              final List<String> filterStartFrames, final String suffix) {
+        this.formatWrapper(sb, cause, filterPackages, filterStartFrames, PlainTextRenderer.getInstance(), suffix);
     }
 
     /**
      * Formats the specified Throwable.
      * @param sb StringBuilder to contain the formatted Throwable.
      * @param cause The Throwable to format.
-     * @param ignorePackages The List of packages to be suppressed from the stack trace.
+     * @param filterPackages The List of packages to be suppressed from the stack trace.
+     * @param filterStartFrames The List of packages to be suppressed from the stack trace.
      * @param textRenderer The text renderer.
      * @param suffix Append this to the end of each stack frame.
      */
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages,
-            final TextRenderer textRenderer, final String suffix) {
-        formatWrapper(sb, cause, ignorePackages, textRenderer, suffix, EOL_STR);
+    public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> filterPackages,
+                              final List<String> filterStartFrames, final TextRenderer textRenderer, final String suffix) {
+        formatWrapper(sb, cause, filterPackages, filterStartFrames, textRenderer, suffix, EOL_STR);
     }
 
     /**
      * Formats the specified Throwable.
      * @param sb StringBuilder to contain the formatted Throwable.
      * @param cause The Throwable to format.
-     * @param ignorePackages The List of packages to be suppressed from the stack trace.
+     * @param filterPackages The List of packages to be suppressed from the stack trace.
+     * @param filterStartFrames The List of packages to be suppressed from the stack trace.
      * @param textRenderer The text renderer.
      * @param suffix Append this to the end of each stack frame.
      * @param lineSeparator The end-of-line separator.
      */
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages,
-                              final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
-        ThrowableProxyRenderer.formatWrapper(sb,  cause, ignorePackages, textRenderer, suffix, lineSeparator);
+    public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> filterPackages,
+                              final List<String> filterStartFrames, final TextRenderer textRenderer, final String suffix,
+                              final String lineSeparator) {
+        ThrowableProxyRenderer.formatWrapper(sb,  cause, filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
     }
 
     public ThrowableProxy getCauseProxy() {
@@ -240,44 +245,47 @@ public class ThrowableProxy implements Serializable {
      * @param suffix
      */
     public String getCauseStackTraceAsString(final String suffix) {
-        return this.getCauseStackTraceAsString(null, PlainTextRenderer.getInstance(), suffix, EOL_STR);
+        return this.getCauseStackTraceAsString(null, null, PlainTextRenderer.getInstance(), suffix, EOL_STR);
     }
 
     /**
      * Formats the Throwable that is the cause of this Throwable.
      *
-     * @param packages The List of packages to be suppressed from the trace.
+     * @param filterPackages The List of packages to be suppressed from the trace.
+     * @param filterStartFrames The List of packages to be suppressed from the trace.
      * @param suffix Append this to the end of each stack frame.
      * @return The formatted Throwable that caused this Throwable.
      */
-    public String getCauseStackTraceAsString(final List<String> packages, final String suffix) {
-        return getCauseStackTraceAsString(packages, PlainTextRenderer.getInstance(), suffix, EOL_STR);
+    public String getCauseStackTraceAsString(final List<String> filterPackages, final List<String> filterStartFrames, final String suffix) {
+        return getCauseStackTraceAsString(filterPackages, filterStartFrames, PlainTextRenderer.getInstance(), suffix, EOL_STR);
     }
 
     /**
      * Formats the Throwable that is the cause of this Throwable.
      *
-     * @param ignorePackages The List of packages to be suppressed from the trace.
+     * @param filterPackages The List of packages to be suppressed from the trace.
+     * @param filterStartFrames The List of packages to be suppressed from the trace.
      * @param textRenderer The text renderer.
      * @param suffix Append this to the end of each stack frame.
      * @return The formatted Throwable that caused this Throwable.
      */
-    public String getCauseStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix) {
-        return getCauseStackTraceAsString(ignorePackages, textRenderer, suffix, EOL_STR);
+    public String getCauseStackTraceAsString(final List<String> filterPackages, final List<String> filterStartFrames, final TextRenderer textRenderer, final String suffix) {
+        return getCauseStackTraceAsString(filterPackages, filterStartFrames, textRenderer, suffix, EOL_STR);
     }
 
     /**
      * Formats the Throwable that is the cause of this Throwable.
      *
-     * @param ignorePackages The List of packages to be suppressed from the stack trace.
+     * @param filterPackages The List of packages to be suppressed from the stack trace.
+     * @param filterStartFrames The List of packages to be suppressed from the stack trace.
      * @param textRenderer The text renderer.
      * @param suffix Append this to the end of each stack frame.
      * @param lineSeparator The end-of-line separator.
      * @return The formatted Throwable that caused this Throwable.
      */
-    public String getCauseStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+    public String getCauseStackTraceAsString(final List<String> filterPackages, final List<String> filterStartFrames, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         final StringBuilder sb = new StringBuilder();
-        ThrowableProxyRenderer.formatCauseStackTrace(this, sb, ignorePackages, textRenderer, suffix, lineSeparator);
+        ThrowableProxyRenderer.formatCauseStackTrace(this, sb, filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
         return sb.toString();
     }
 
@@ -317,7 +325,7 @@ public class ThrowableProxy implements Serializable {
      * @return The formatted stack trace including packaging information.
      */
     public String getExtendedStackTraceAsString() {
-        return this.getExtendedStackTraceAsString(null, PlainTextRenderer.getInstance(), Strings.EMPTY, EOL_STR);
+        return this.getExtendedStackTraceAsString(null, null, PlainTextRenderer.getInstance(), Strings.EMPTY, EOL_STR);
     }
 
     /**
@@ -327,44 +335,47 @@ public class ThrowableProxy implements Serializable {
      * @param suffix Append this to the end of each stack frame.
      */
     public String getExtendedStackTraceAsString(final String suffix) {
-        return this.getExtendedStackTraceAsString(null, PlainTextRenderer.getInstance(), suffix, EOL_STR);
+        return this.getExtendedStackTraceAsString(null, null, PlainTextRenderer.getInstance(), suffix, EOL_STR);
     }
 
     /**
      * Formats the stack trace including packaging information.
      *
-     * @param ignorePackages List of packages to be ignored in the trace.
+     * @param filterPackages List of packages to be ignored in the trace.
+     * @param filterStartFrames List of packages to be ignored in the trace.
      * @param suffix Append this to the end of each stack frame.
      * @return The formatted stack trace including packaging information.
      */
-    public String getExtendedStackTraceAsString(final List<String> ignorePackages, final String suffix) {
-        return getExtendedStackTraceAsString(ignorePackages, PlainTextRenderer.getInstance(), suffix, EOL_STR);
+    public String getExtendedStackTraceAsString(final List<String> filterPackages, final List<String> filterStartFrames, final String suffix) {
+        return getExtendedStackTraceAsString(filterPackages, filterStartFrames, PlainTextRenderer.getInstance(), suffix, EOL_STR);
     }
 
     /**
      * Formats the stack trace including packaging information.
      *
-     * @param ignorePackages List of packages to be ignored in the trace.
+     * @param filterPackages List of packages to be ignored in the trace.
+     * @param filterStartFrames List of packages to be ignored in the trace.
      * @param textRenderer The message renderer.
      * @param suffix Append this to the end of each stack frame.
      * @return The formatted stack trace including packaging information.
      */
-    public String getExtendedStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix) {
-        return getExtendedStackTraceAsString(ignorePackages, textRenderer, suffix, EOL_STR);
+    public String getExtendedStackTraceAsString(final List<String> filterPackages, final List<String> filterStartFrames, final TextRenderer textRenderer, final String suffix) {
+        return getExtendedStackTraceAsString(filterPackages, filterStartFrames, textRenderer, suffix, EOL_STR);
     }
 
     /**
      * Formats the stack trace including packaging information.
      *
-     * @param ignorePackages List of packages to be ignored in the trace.
+     * @param filterPackages List of packages to be ignored in the trace.
+     * @param filterStartFrames List of packages to be ignored in the trace.
      * @param textRenderer The message renderer.
      * @param suffix Append this to the end of each stack frame.
      * @param lineSeparator The end-of-line separator.
      * @return The formatted stack trace including packaging information.
      */
-    public String getExtendedStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+    public String getExtendedStackTraceAsString(final List<String> filterPackages, final List<String> filterStartFrames, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         final StringBuilder sb = new StringBuilder(1024);
-        formatExtendedStackTraceTo(sb, ignorePackages, textRenderer, suffix, lineSeparator);
+        formatExtendedStackTraceTo(sb, filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
         return sb.toString();
     }
 
@@ -372,13 +383,14 @@ public class ThrowableProxy implements Serializable {
      * Formats the stack trace including packaging information.
      *
      * @param sb Destination.
-     * @param ignorePackages List of packages to be ignored in the trace.
+     * @param filterPackages List of packages to be ignored in the trace.
+     * @param filterStartFrames List of packages to be ignored in the trace.
      * @param textRenderer The message renderer.
      * @param suffix Append this to the end of each stack frame.
      * @param lineSeparator The end-of-line separator.
      */
-    public void formatExtendedStackTraceTo(final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
-        ThrowableProxyRenderer.formatExtendedStackTraceTo(this, sb, ignorePackages, textRenderer, suffix, lineSeparator);
+    public void formatExtendedStackTraceTo(final StringBuilder sb, final List<String> filterPackages, final List<String> filterStartFrames, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+        ThrowableProxyRenderer.formatExtendedStackTraceTo(this, sb, filterPackages, filterStartFrames, textRenderer, suffix, lineSeparator);
     }
 
     public String getLocalizedMessage() {
