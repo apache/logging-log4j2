@@ -103,7 +103,7 @@ import java.util.regex.PatternSyntaxException;
  *   "stackTrace": {
  *     "stringified": true,
  *     "truncatedStringSuffix": ">",
- *     "truncationPointStrings": ["at javax.servlet.http.HttpServlet.service"]
+ *     "truncationPointMatcherStrings": ["at javax.servlet.http.HttpServlet.service"]
  *   }
  * }
  * </pre>

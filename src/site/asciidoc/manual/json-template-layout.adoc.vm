@@ -516,7 +516,7 @@ truncated by the given points:
   "stackTrace": {
     "stringified": true,
     "truncatedStringSuffix": ">",
-    "truncationPointStrings": ["at javax.servlet.http.HttpServlet.service"]
+    "truncationPointMatcherStrings": ["at javax.servlet.http.HttpServlet.service"]
   }
 }
 ----
