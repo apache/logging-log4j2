@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.Collections;
 import java.util.List;
@@ -114,6 +116,8 @@ import java.util.regex.PatternSyntaxException;
  */
 class ExceptionResolver implements EventResolver {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     private static final EventResolver NULL_RESOLVER =
             (ignored, jsonGenerator) -> jsonGenerator.writeNull();
 
@@ -180,6 +184,12 @@ class ExceptionResolver implements EventResolver {
     private static boolean isStackTraceStringified(
             final TemplateResolverConfig config) {
         final Boolean stringifiedOld = config.getBoolean("stringified");
+        if (stringifiedOld != null) {
+            LOGGER.warn(
+                    "\"stringified\" flag at the root level of an exception " +
+                            "[root cause] resolver is deprecated in favor of " +
+                            "the one under \"stackTrace\" object");
+        }
         final Boolean stringifiedNew =
                 config.getBoolean(new String[]{"stackTrace", "stringified"});
         if (stringifiedOld == null && stringifiedNew == null) {
