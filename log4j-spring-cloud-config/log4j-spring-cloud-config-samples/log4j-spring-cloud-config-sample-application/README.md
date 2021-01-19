@@ -1,4 +1,4 @@
-#Log4j Spring Cloud Sample Application
+# Log4j Spring Cloud Sample Application
 
 This application uses Spring Boot and reads the logging configuration from the companion Spring Cloud Config Server
 project. The log4j2.xml file is located in the config-repo directory in that project.
@@ -20,7 +20,7 @@ brew install kafka
 zookeeper-server-start /usr/local/etc/kafka/zookeeper.properties & kafka-server-start /usr/local/etc/kafka/server.properties
 ```
 
-###Starting the Application
+### Starting the Application
 * Start the companion rabbit-mq, fluent-bit and flume images `./docker/up.sh`
 * Compile and start local application image `./docker/restartApp.sh`
 * The application exposes two endpoints.
@@ -29,7 +29,7 @@ zookeeper-server-start /usr/local/etc/kafka/zookeeper.properties & kafka-server-
     1. http://localhost:8080/sample/exception This endpoint generates an exception that can be used to verify whether
     multiline logging works with the chosen set of components.
 
-###Viewing the logs
+### Viewing the logs
 
 Accessing the log files varies depending on the appending being used. When logging to the console "docker logs" may 
 be used. As configured, Flume will write to files in /var/log/flume, fluent-bit to the standard output of its container.
