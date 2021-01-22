@@ -434,34 +434,34 @@ a|
 a|
 [source]
 ----
-config                        = field , [ stringified ] , [ stackTrace ]
-field                         = "field" -> ( "className" \| "message" \| "stackTrace" )
-stackTrace                    = "stackTrace" -> (
-                                  [ stringified ]
-                                , [ truncatedStringSuffix ]
-                                , [ truncationPointMatcherStrings ]
-                                , [ truncationPointMatcherRegexes ]
-                                )
-stringified                   = "stringified" -> boolean
-truncatedStringSuffix         = "truncatedStringSuffix" -> string
-truncationPointMatcherStrings = "truncationPointMatcherStrings" -> string[]
-truncationPointMatcherRegexes = "truncationPointMatcherRegexes" -> string[]
+config              = field , [ stringified ] , [ stackTrace ]
+field               = "field" -> ( "className" \| "message" \| "stackTrace" )
+
+stackTrace          = "stackTrace" -> stringified
+stringified         = "stringified" -> ( boolean \| truncation )
+truncation          = "truncation" -> (
+                        [ suffix ]
+                      , [ pointMatcherStrings ]
+                      , [ pointMatcherRegexes ]
+                      )
+suffix              = "suffix" -> string
+pointMatcherStrings = "pointMatcherStrings" -> string[]
+pointMatcherRegexes = "pointMatcherRegexes" -> string[]
 ----
 a|
 Resolves fields of the `Throwable` returned by `logEvent.getThrown()`.
 
 `stringified` is set to `false` by default. `stringified` at the root level is
-*deprecated*, instead prefer the one in the `stackTrace` object, which has
-precedence if both are provided.
+*deprecated* in favor of `stackTrace.stringified`, which has precedence if both
+are provided.
 
-`truncationPointMatcherStrings` and `truncationPointMatcherRegexes` enable the
-truncation of the stack trace after the given matching point. If both parameters
-are provided, `truncationPointMatcherStrings` will be checked first. Note that
-these configurations are only taken into account when `stringified` is set to
-`true`.
+`pointMatcherStrings` and `pointMatcherRegexes` enable the truncation of
+stringified stack traces after the given matching point. If both parameters are
+provided, `pointMatcherStrings` will be checked first.
 
-`truncatedStringSuffix` will be set to the one configured in the layout, unless
-explicitly provided.
+If a stringified stack trace truncation takes place, it will be indicated with
+`suffix`, which by default is set to the configured `truncatedStringSuffix` in
+the layout, unless explicitly provided.
 
 Note that this resolver is toggled by
 `log4j.layout.jsonTemplate.stackTraceEnabled` property.
@@ -506,7 +506,7 @@ Resolve the stack trace into a string field:
 ----
 
 Resolve the stack trace into a string field such that the content will be
-truncated by the given points:
+truncated by the given point matcher:
 
 [source,json]
 ----
@@ -514,9 +514,12 @@ truncated by the given points:
   "$resolver": "exception",
   "field": "stackTrace",
   "stackTrace": {
-    "stringified": true,
-    "truncatedStringSuffix": ">",
-    "truncationPointMatcherStrings": ["at javax.servlet.http.HttpServlet.service"]
+    "stringified": {
+      "truncation": {
+        "suffix": ">",
+        "pointMatcherStrings": ["at javax.servlet.http.HttpServlet.service"]
+      }
+    }
   }
 }
 ----

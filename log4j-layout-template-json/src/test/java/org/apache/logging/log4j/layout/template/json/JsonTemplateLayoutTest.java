@@ -1686,7 +1686,7 @@ class JsonTemplateLayoutTest {
                 new Exception("unique parent exception message", childError);
 
         // Create the event template.
-        final String truncatedStringSuffix = "~";
+        final String truncationSuffix = "~";
         final String eventTemplate = writeJson(asMap(
                 // Raw exception.
                 "ex", asMap(
@@ -1699,23 +1699,25 @@ class JsonTemplateLayoutTest {
                         "$resolver", "exception",
                         "field", "stackTrace",
                         "stackTrace", asMap(
-                                "stringified", true,
-                                "truncatedStringSuffix", truncatedStringSuffix,
-                                "truncationPointMatcherStrings", Arrays.asList(
-                                        "this string shouldn't match with anything",
-                                        parentError.getMessage()))),
+                                "stringified", asMap(
+                                        "truncation", asMap(
+                                                "suffix", truncationSuffix,
+                                                "pointMatcherStrings", Arrays.asList(
+                                                        "this string shouldn't match with anything",
+                                                        parentError.getMessage()))))),
                 // Exception matcher using regexes.
                 "regexMatchedEx", asMap(
                         "$resolver", "exception",
                         "field", "stackTrace",
                         "stackTrace", asMap(
-                                "stringified", true,
-                                "truncatedStringSuffix", truncatedStringSuffix,
-                                "truncationPointMatcherRegexes", Arrays.asList(
-                                        "this string shouldn't match with anything",
-                                        parentError
-                                                .getMessage()
-                                                .replace("unique", "[xu]n.que")))),
+                                "stringified", asMap(
+                                        "truncation", asMap(
+                                                "suffix", truncationSuffix,
+                                                "pointMatcherRegexes", Arrays.asList(
+                                                        "this string shouldn't match with anything",
+                                                        parentError
+                                                                .getMessage()
+                                                                .replace("unique", "[xu]n.que")))))),
                 // Raw exception root cause.
                 "rootEx", asMap(
                         "$resolver", "exceptionRootCause",
@@ -1727,23 +1729,25 @@ class JsonTemplateLayoutTest {
                         "$resolver", "exceptionRootCause",
                         "field", "stackTrace",
                         "stackTrace", asMap(
-                                "stringified", true,
-                                "truncatedStringSuffix", truncatedStringSuffix,
-                                "truncationPointMatcherStrings", Arrays.asList(
-                                        "this string shouldn't match with anything",
-                                        childError.getMessage()))),
+                                "stringified", asMap(
+                                        "truncation", asMap(
+                                                "suffix", truncationSuffix,
+                                                "pointMatcherStrings", Arrays.asList(
+                                                        "this string shouldn't match with anything",
+                                                        childError.getMessage()))))),
                 // Exception root cause matcher using regexes.
                 "regexMatchedRootEx", asMap(
                         "$resolver", "exceptionRootCause",
                         "field", "stackTrace",
                         "stackTrace", asMap(
-                                "stringified", true,
-                                "truncatedStringSuffix", truncatedStringSuffix,
-                                "truncationPointMatcherRegexes", Arrays.asList(
-                                        "this string shouldn't match with anything",
-                                        childError
-                                                .getMessage()
-                                                .replace("unique", "[xu]n.que"))))));
+                                "stringified", asMap(
+                                        "truncation", asMap(
+                                                "suffix", truncationSuffix,
+                                                "pointMatcherRegexes", Arrays.asList(
+                                                        "this string shouldn't match with anything",
+                                                        childError
+                                                                .getMessage()
+                                                                .replace("unique", "[xu]n.que"))))))));
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout
@@ -1762,9 +1766,9 @@ class JsonTemplateLayoutTest {
 
         // Check the serialized event.
         final String expectedMatchedExEnd =
-                parentError.getMessage() + truncatedStringSuffix;
+                parentError.getMessage() + truncationSuffix;
         final String expectedMatchedRootExEnd =
-                childError.getMessage() + truncatedStringSuffix;
+                childError.getMessage() + truncationSuffix;
         usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
 
             // Check the serialized exception.

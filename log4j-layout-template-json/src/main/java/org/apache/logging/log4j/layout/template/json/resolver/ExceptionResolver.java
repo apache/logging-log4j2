@@ -34,34 +34,33 @@ import java.util.regex.PatternSyntaxException;
  * <h3>Configuration</h3>
  *
  * <pre>
- * config                        = field , [ stringified ] , [ stackTrace ]
- * field                         = "field" -> ( "className" | "message" | "stackTrace" )
- * stackTrace                    = "stackTrace" -> (
- *                                   [ stringified ]
- *                                 , [ truncatedStringSuffix ]
- *                                 , [ truncationPointMatcherStrings ]
- *                                 , [ truncationPointMatcherRegexes ]
- *                                 )
- * stringified                   = "stringified" -> boolean
- * truncatedStringSuffix         = "truncatedStringSuffix" -> string
- * truncationPointMatcherStrings = "truncationPointMatcherStrings" -> string[]
- * truncationPointMatcherRegexes = "truncationPointMatcherRegexes" -> string[]
+ * config              = field , [ stringified ] , [ stackTrace ]
+ * field               = "field" -> ( "className" | "message" | "stackTrace" )
+ *
+ * stackTrace          = "stackTrace" -> stringified
+ * stringified         = "stringified" -> ( boolean | truncation )
+ * truncation          = "truncation" -> (
+ *                         [ suffix ]
+ *                       , [ pointMatcherStrings ]
+ *                       , [ pointMatcherRegexes ]
+ *                       )
+ * suffix              = "suffix" -> string
+ * pointMatcherStrings = "pointMatcherStrings" -> string[]
+ * pointMatcherRegexes = "pointMatcherRegexes" -> string[]
  * </pre>
  *
  * <tt>stringified</tt> is set to <tt>false</tt> by default.
- * <tt>stringified</tt> at the root level is <b>deprecated</b>,
- * instead prefer the one in the <tt>stackTrace</tt> object, which has
- * precedence if both are provided.
+ * <tt>stringified</tt> at the root level is <b>deprecated</b> in favor of
+ * <tt>stackTrace.stringified</tt>, which has precedence if both are provided.
  * <p>
- * <tt>truncationPointMatcherStrings</tt> and
- * <tt>truncationPointMatcherRegexes</tt> enable the truncation of the stack
- * trace after the given matching point. If both parameters are provided,
- * <tt>truncationPointMatcherStrings</tt> will be checked first. Note that
- * these configurations are only taken into account when <tt>stringified</tt>
- * is set to <tt>true</tt>.
+ * <tt>pointMatcherStrings</tt> and <tt>pointMatcherRegexes</tt> enable the
+ * truncation of stringified stack traces after the given matching point. If
+ * both parameters are provided, <tt>pointMatcherStrings</tt> will be checked
+ * first.
  * <p>
- * <tt>truncatedStringSuffix</tt> will be set to the one configured in the
- * layout, unless explicitly provided.
+ * If a stringified stack trace truncation takes place, it will be indicated
+ * with <tt>suffix</tt>, which by default is set to the configured
+ * <tt>truncatedStringSuffix</tt> in the layout, unless explicitly provided.
  *
  * <h3>Examples</h3>
  *
@@ -96,16 +95,19 @@ import java.util.regex.PatternSyntaxException;
  * </pre>
  *
  * Resolve the stack trace into a string field
- * such that the content will be truncated by the given points:
+ * such that the content will be truncated by the given point matcher:
  *
  * <pre>
  *  {
  *   "$resolver": "exception",
  *   "field": "stackTrace",
  *   "stackTrace": {
- *     "stringified": true,
- *     "truncatedStringSuffix": ">",
- *     "truncationPointMatcherStrings": ["at javax.servlet.http.HttpServlet.service"]
+ *     "stringified": {
+ *       "truncation": {
+ *         "suffix": ">",
+ *         "pointMatcherStrings": ["at javax.servlet.http.HttpServlet.service"]
+ *       }
+ *     }
  *   }
  * }
  * </pre>
@@ -188,16 +190,16 @@ class ExceptionResolver implements EventResolver {
             LOGGER.warn(
                     "\"stringified\" flag at the root level of an exception " +
                             "[root cause] resolver is deprecated in favor of " +
-                            "the one under \"stackTrace\" object");
+                            "\"stackTrace.stringified\"");
         }
-        final Boolean stringifiedNew =
-                config.getBoolean(new String[]{"stackTrace", "stringified"});
+        final Object stringifiedNew =
+                config.getObject(new String[]{"stackTrace", "stringified"});
         if (stringifiedOld == null && stringifiedNew == null) {
             return false;
         } else if (stringifiedNew == null) {
             return stringifiedOld;
         } else {
-            return stringifiedNew;
+            return !(stringifiedNew instanceof Boolean) || (boolean) stringifiedNew;
         }
     }
 
@@ -206,8 +208,8 @@ class ExceptionResolver implements EventResolver {
             final TemplateResolverConfig config) {
 
         // Read the configuration.
-        final String truncatedStringSuffix =
-                readTruncatedStringSuffix(context, config);
+        final String truncationSuffix =
+                readTruncationSuffix(context, config);
         final List<String> truncationPointMatcherStrings =
                 readTruncationPointMatcherStrings(config);
         final List<String> truncationPointMatcherRegexes =
@@ -217,7 +219,7 @@ class ExceptionResolver implements EventResolver {
         final StackTraceStringResolver resolver =
                 new StackTraceStringResolver(
                         context,
-                        truncatedStringSuffix,
+                        truncationSuffix,
                         truncationPointMatcherStrings,
                         truncationPointMatcherRegexes);
 
@@ -233,11 +235,11 @@ class ExceptionResolver implements EventResolver {
 
     }
 
-    private static String readTruncatedStringSuffix(
+    private static String readTruncationSuffix(
             final EventResolverContext context,
             final TemplateResolverConfig config) {
         final String suffix = config.getString(
-                new String[]{"stackTrace", "truncatedStringSuffix"});
+                new String[]{"stackTrace", "stringified", "truncation", "suffix"});
         return suffix != null
                 ? suffix
                 : context.getTruncatedStringSuffix();
@@ -246,7 +248,7 @@ class ExceptionResolver implements EventResolver {
     private static List<String> readTruncationPointMatcherStrings(
             final TemplateResolverConfig config) {
         List<String> strings = config.getList(
-                new String[]{"stackTrace", "truncationPointMatcherStrings"},
+                new String[]{"stackTrace", "stringified", "truncation", "pointMatcherStrings"},
                 String.class);
         if (strings == null) {
             strings = Collections.emptyList();
@@ -259,7 +261,7 @@ class ExceptionResolver implements EventResolver {
 
         // Extract the regexes.
         List<String> regexes = config.getList(
-                new String[]{"stackTrace", "truncationPointMatcherRegexes"},
+                new String[]{"stackTrace", "stringified", "truncation", "pointMatcherRegexes"},
                 String.class);
         if (regexes == null) {
             regexes = Collections.emptyList();

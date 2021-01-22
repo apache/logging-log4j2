@@ -30,9 +30,9 @@ final class StackTraceStringResolver implements StackTraceResolver {
 
     private final Recycler<TruncatingBufferedPrintWriter> writerRecycler;
 
-    private final String truncatedStringSuffix;
-
     private final boolean truncationEnabled;
+
+    private final String truncationSuffix;
 
     private final List<String> truncationPointMatcherStrings;
 
@@ -40,7 +40,7 @@ final class StackTraceStringResolver implements StackTraceResolver {
 
     StackTraceStringResolver(
             final EventResolverContext context,
-            final String truncatedStringSuffix,
+            final String truncationSuffix,
             final List<String> truncationPointMatcherStrings,
             final List<String> truncationPointMatcherRegexes) {
         final Supplier<TruncatingBufferedPrintWriter> writerSupplier =
@@ -52,7 +52,7 @@ final class StackTraceStringResolver implements StackTraceResolver {
         this.truncationEnabled =
                 !truncationPointMatcherStrings.isEmpty() ||
                         !truncationPointMatcherRegexes.isEmpty();
-        this.truncatedStringSuffix = truncatedStringSuffix;
+        this.truncationSuffix = truncationSuffix;
         this.truncationPointMatcherStrings = truncationPointMatcherStrings;
         this.groupedTruncationPointMatcherRegexes =
                 groupTruncationPointMatcherRegexes(truncationPointMatcherRegexes);
@@ -121,7 +121,7 @@ final class StackTraceStringResolver implements StackTraceResolver {
             final TruncatingBufferedPrintWriter writer,
             final int index) {
         writer.position(index);
-        writer.print(truncatedStringSuffix);
+        writer.print(truncationSuffix);
     }
 
 }
