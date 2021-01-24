@@ -59,13 +59,14 @@ https://github.com/logstash/log4j-jsonevent-layout[the official Logstash
     },
     "exception_message": {
       "$resolver": "exception",
-      "field": "message",
-      "stringified": true
+      "field": "message"
     },
     "stacktrace": {
       "$resolver": "exception",
       "field": "stackTrace",
-      "stringified": true
+      "stackTrace": {
+        "stringified": true
+      }
     }
   },
   "line_number": {
@@ -376,7 +377,9 @@ artifact:
   "error.stack_trace": {
     "$resolver": "exception",
     "field": "stackTrace",
-    "stringified": true
+    "stackTrace": {
+      "stringified": true
+    }
   }
 }
 
@@ -469,8 +472,8 @@ a|
 Since `Throwable#getStackTrace()` clones the original `StackTraceElement[]`,
 access to (and hence rendering of) stack traces are not garbage-free.
 
-Each `truncationPointMatcherRegexes` item triggers a `Pattern\#matcher()` call,
-which is not garbage-free.
+Each `pointMatcherRegexes` item triggers a `Pattern#matcher()` call, which is
+not garbage-free.
 a|
 Resolve `logEvent.getThrown().getClass().getCanonicalName()`:
 
@@ -662,8 +665,6 @@ a|
 [source]
 ----
 config      = [ stringified ] , [ fallbackKey ]
-pattern = "pattern" -> string
-includeStackTrace = "includeStacktrae" -> boolean
 stringified = "stringified" -> boolean
 fallbackKey = "fallbackKey" -> string
 ----
@@ -677,17 +678,6 @@ Resolve the message into a string:
 ----
 {
   "$resolver": "message",
-  "stringified": true
-}
-----
-
-Resolve the message into a string using a pattern:
-
-[source,json]
-----
-{
-  "$resolver": "message",
-  "pattern": ""[%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress, corpAcctNumber} %C{1.}.%M:%L - %m"",
   "stringified": true
 }
 ----
