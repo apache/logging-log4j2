@@ -30,18 +30,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@LoggerContextSource("additionalFieldEnrichedJsonTemplateLayoutLogging.xml")
-class JsonTemplateLayoutAdditionalFieldTest {
+
+@LoggerContextSource("log4j2-properties-with-arrays.yaml")
+class JsonTemplateLayoutAdditionalFieldTestYAML {
 
     @Test
-    void test_additional_fields_are_resolved(
-            final LoggerContext loggerContext,
-            @Named("List") final ListAppender appender) {
-
+    void test_array_with_yaml(final LoggerContext loggerContext,  @Named("List") final ListAppender appender){
         // Log an event.
         final Logger logger =
                 loggerContext.getLogger(
-                        JsonTemplateLayoutAdditionalFieldTest.class);
+                        JsonTemplateLayoutAdditionalFieldTestYAML.class);
         logger.info("trigger");
 
         // Verify that the appender has logged the event.
@@ -67,6 +65,7 @@ class JsonTemplateLayoutAdditionalFieldTest {
                 .containsEntry("numberField", 1)
                 .containsEntry("objectField", Collections.singletonMap("numberField", 1))
                 .containsEntry("listField", Arrays.asList(1, "two"));
+
 
     }
 
