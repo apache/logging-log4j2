@@ -41,6 +41,8 @@
   "error.stack_trace": {
     "$resolver": "exception",
     "field": "stackTrace",
-    "stringified": true
+    "stackTrace": {
+      "stringified": true
+    }
   }
 }

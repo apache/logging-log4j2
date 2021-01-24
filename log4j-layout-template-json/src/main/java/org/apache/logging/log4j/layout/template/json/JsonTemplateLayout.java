@@ -137,8 +137,8 @@ public class JsonTemplateLayout implements StringLayout {
         final String eventTemplate = readEventTemplate(builder);
         final float maxByteCountPerChar = builder.charset.newEncoder().maxBytesPerChar();
         final int maxStringByteCount =
-                Math.toIntExact(Math.round(
-                        maxByteCountPerChar * builder.maxStringLength));
+                Math.toIntExact(Math.round(Math.ceil(
+                        maxByteCountPerChar * builder.maxStringLength)));
         final EventTemplateAdditionalField[] eventTemplateAdditionalFields =
                 builder.eventTemplateAdditionalFields != null
                         ? builder.eventTemplateAdditionalFields
@@ -151,6 +151,7 @@ public class JsonTemplateLayout implements StringLayout {
                 .setJsonWriter(jsonWriter)
                 .setRecyclerFactory(builder.recyclerFactory)
                 .setMaxStringByteCount(maxStringByteCount)
+                .setTruncatedStringSuffix(builder.truncatedStringSuffix)
                 .setLocationInfoEnabled(builder.locationInfoEnabled)
                 .setStackTraceEnabled(builder.stackTraceEnabled)
                 .setStackTraceElementObjectResolver(stackTraceElementObjectResolver)

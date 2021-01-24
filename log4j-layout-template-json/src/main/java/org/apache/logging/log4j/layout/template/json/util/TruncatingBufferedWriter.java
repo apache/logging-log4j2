@@ -19,7 +19,7 @@ package org.apache.logging.log4j.layout.template.json.util;
 import java.io.Writer;
 import java.util.Objects;
 
-public final class TruncatingBufferedWriter extends Writer {
+final class TruncatingBufferedWriter extends Writer implements CharSequence {
 
     private final char[] buffer;
 
@@ -33,19 +33,26 @@ public final class TruncatingBufferedWriter extends Writer {
         this.truncated = false;
     }
 
-    char[] getBuffer() {
+    char[] buffer() {
         return buffer;
     }
 
-    int getPosition() {
+    int position() {
         return position;
     }
 
-    int getCapacity() {
+    void position(final int index) {
+        if (index < 0 || index >= buffer.length) {
+            throw new IllegalArgumentException("invalid index: " + index);
+        }
+        position = index;
+    }
+
+    int capacity() {
         return buffer.length;
     }
 
-    boolean isTruncated() {
+    boolean truncated() {
         return truncated;
     }
 
@@ -196,6 +203,53 @@ public final class TruncatingBufferedWriter extends Writer {
 
     }
 
+    int indexOf(final CharSequence seq) {
+
+        // Short-circuit if there is nothing to match.
+        final int seqLength = seq.length();
+        if (seqLength == 0) {
+            return 0;
+        }
+
+        // Short-circuit if the given input is longer than the buffer.
+        if (seqLength > position) {
+            return -1;
+        }
+
+        // Perform the search.
+        for (int bufferIndex = 0; bufferIndex < position; bufferIndex++) {
+            boolean found = true;
+            for (int seqIndex = 0; seqIndex < seqLength; seqIndex++) {
+                final char s = seq.charAt(seqIndex);
+                final char b = buffer[bufferIndex + seqIndex];
+                if (s != b) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                return bufferIndex;
+            }
+        }
+        return -1;
+
+    }
+
+    @Override
+    public int length() {
+        return position + 1;
+    }
+
+    @Override
+    public char charAt(final int index) {
+        return buffer[index];
+    }
+
+    @Override
+    public String subSequence(final int startIndex, final int endIndex) {
+        return new String(buffer, startIndex, endIndex - startIndex);
+    }
+
     @Override
     public void flush() {}
 
@@ -203,6 +257,11 @@ public final class TruncatingBufferedWriter extends Writer {
     public void close() {
         position = 0;
         truncated = false;
+    }
+
+    @Override
+    public String toString() {
+        return new String(buffer, 0, position);
     }
 
 }

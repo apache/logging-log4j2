@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2021-MM-DD" description="GA Release 3.0.0">
+      <action issue="LOG4J2-2993" dev="vy" type="add">
+        Support stack trace truncation in JsonTemplateLayout.
+      </action>
       <action issue="LOG4J2-2998" dev="vy" type="fix">
         Fix truncation of excessive strings ending with a high surrogate in JsonWriter.
       </action>

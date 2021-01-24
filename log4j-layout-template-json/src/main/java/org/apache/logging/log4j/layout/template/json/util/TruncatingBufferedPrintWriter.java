@@ -17,8 +17,11 @@
 package org.apache.logging.log4j.layout.template.json.util;
 
 import java.io.PrintWriter;
+import java.util.Objects;
 
-public final class TruncatingBufferedPrintWriter extends PrintWriter {
+public final class TruncatingBufferedPrintWriter
+        extends PrintWriter
+        implements CharSequence {
 
     private final TruncatingBufferedWriter writer;
 
@@ -36,25 +39,54 @@ public final class TruncatingBufferedPrintWriter extends PrintWriter {
         return new TruncatingBufferedPrintWriter(writer);
     }
 
-    public char[] getBuffer() {
-        return writer.getBuffer();
+    public char[] buffer() {
+        return writer.buffer();
     }
 
-    public int getPosition() {
-        return writer.getPosition();
+    public int position() {
+        return writer.position();
     }
 
-    public int getCapacity() {
-        return writer.getCapacity();
+    public void position(final int index) {
+        writer.position(index);
     }
 
-    public boolean isTruncated() {
-        return writer.isTruncated();
+    public int capacity() {
+        return writer.capacity();
+    }
+
+    public boolean truncated() {
+        return writer.truncated();
+    }
+
+    public int indexOf(final CharSequence seq) {
+        Objects.requireNonNull(seq, "seq");
+        return writer.indexOf(seq);
+    }
+
+    @Override
+    public int length() {
+        return writer.length();
+    }
+
+    @Override
+    public char charAt(final int index) {
+        return writer.charAt(index);
+    }
+
+    @Override
+    public CharSequence subSequence(final int startIndex, final int endIndex) {
+        return writer.subSequence(startIndex, endIndex);
     }
 
     @Override
     public void close() {
         writer.close();
+    }
+
+    @Override
+    public String toString() {
+        return writer.toString();
     }
 
 }

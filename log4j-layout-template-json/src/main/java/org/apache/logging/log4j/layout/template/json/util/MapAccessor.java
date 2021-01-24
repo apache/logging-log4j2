@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.layout.template.json.util;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -71,8 +72,56 @@ public class MapAccessor {
     }
 
     public boolean exists(final String[] path) {
-        final Object value = getObject(path, Object.class);
+        final Object value = getObject(path);
         return value != null;
+    }
+
+    public <E> List<E> getList(final String key, final Class<E> clazz) {
+        final String[] path = {key};
+        return getList(path, clazz);
+    }
+
+    public <E> List<E> getList(final String[] path, final Class<E> clazz) {
+
+        // Access the object.
+        final Object value = getObject(path);
+        if (value == null) {
+            return null;
+        }
+
+        // Check the type.
+        if (!(value instanceof List)) {
+            final String message = String.format(
+                    "was expecting a List<%s> at path %s: %s (of type %s)",
+                    clazz,
+                    Arrays.asList(path),
+                    value,
+                    value.getClass().getCanonicalName());
+            throw new IllegalArgumentException(message);
+        }
+
+        // Check the element types.
+        @SuppressWarnings("unchecked")
+        final List<Object> items = (List<Object>) value;
+        for (int itemIndex = 0; itemIndex < items.size(); itemIndex++) {
+            final Object item = items.get(itemIndex);
+            if (!clazz.isInstance(item)) {
+                final String message = String.format(
+                        "was expecting a List<%s> item at path %s and index %d: %s (of type %s)",
+                        clazz,
+                        Arrays.asList(path),
+                        itemIndex,
+                        item,
+                        item != null ? item.getClass().getCanonicalName() : null);
+                throw new IllegalArgumentException(message);
+            }
+        }
+
+        // Return the typed list.
+        @SuppressWarnings("unchecked")
+        final List<E> typedItems = (List<E>) items;
+        return typedItems;
+
     }
 
     public Object getObject(final String key) {
