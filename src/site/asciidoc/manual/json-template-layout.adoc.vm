@@ -59,13 +59,14 @@ https://github.com/logstash/log4j-jsonevent-layout[the official Logstash
     },
     "exception_message": {
       "$resolver": "exception",
-      "field": "message",
-      "stringified": true
+      "field": "message"
     },
     "stacktrace": {
       "$resolver": "exception",
       "field": "stackTrace",
-      "stringified": true
+      "stackTrace": {
+        "stringified": true
+      }
     }
   },
   "line_number": {
@@ -376,7 +377,9 @@ artifact:
   "error.stack_trace": {
     "$resolver": "exception",
     "field": "stackTrace",
-    "stringified": true
+    "stackTrace": {
+      "stringified": true
+    }
   }
 }
 
@@ -434,20 +437,43 @@ a|
 a|
 [source]
 ----
-config      = field , [ stringified ]
-field       = "field" -> (
-                "className"  \|
-                "message"    \|
-                "stackTrace" )
-stringified = "stringified" -> boolean
+config              = field , [ stringified ] , [ stackTrace ]
+field               = "field" -> ( "className" \| "message" \| "stackTrace" )
+
+stackTrace          = "stackTrace" -> stringified
+stringified         = "stringified" -> ( boolean \| truncation )
+truncation          = "truncation" -> (
+                        [ suffix ]
+                      , [ pointMatcherStrings ]
+                      , [ pointMatcherRegexes ]
+                      )
+suffix              = "suffix" -> string
+pointMatcherStrings = "pointMatcherStrings" -> string[]
+pointMatcherRegexes = "pointMatcherRegexes" -> string[]
 ----
 a|
 Resolves fields of the `Throwable` returned by `logEvent.getThrown()`.
 
+`stringified` is set to `false` by default. `stringified` at the root level is
+*deprecated* in favor of `stackTrace.stringified`, which has precedence if both
+are provided.
+
+`pointMatcherStrings` and `pointMatcherRegexes` enable the truncation of
+stringified stack traces after the given matching point. If both parameters are
+provided, `pointMatcherStrings` will be checked first.
+
+If a stringified stack trace truncation takes place, it will be indicated with
+`suffix`, which by default is set to the configured `truncatedStringSuffix` in
+the layout, unless explicitly provided.
+
 Note that this resolver is toggled by
 `log4j.layout.jsonTemplate.stackTraceEnabled` property.
-| Since `Throwable#getStackTrace()` clones the original `StackTraceElement[]`,
-  access to (and hence rendering of) stack traces are not garbage-free.
+a|
+Since `Throwable#getStackTrace()` clones the original `StackTraceElement[]`,
+access to (and hence rendering of) stack traces are not garbage-free.
+
+Each `pointMatcherRegexes` item triggers a `Pattern#matcher()` call, which is
+not garbage-free.
 a|
 Resolve `logEvent.getThrown().getClass().getCanonicalName()`:
 
@@ -476,20 +502,38 @@ Resolve the stack trace into a string field:
 {
   "$resolver": "exception",
   "field": "stackTrace",
-  "stringified": true
+  "stackTrace": {
+    "stringified": true
+  }
+}
+----
+
+Resolve the stack trace into a string field such that the content will be
+truncated by the given point matcher:
+
+[source,json]
+----
+{
+  "$resolver": "exception",
+  "field": "stackTrace",
+  "stackTrace": {
+    "stringified": {
+      "truncation": {
+        "suffix": ">",
+        "pointMatcherStrings": ["at javax.servlet.http.HttpServlet.service"]
+      }
+    }
+  }
 }
 ----
 
 | exceptionRootCause
 | identical to `exception` resolver
-a|
-Resolves the fields of the innermost `Throwable` returned by
-`logEvent.getThrown()`.
-
-Note that this resolver is toggled by
-`log4j.layout.jsonTemplate.stackTraceEnabled` property.
+| identical to `exception` resolver with the exception that the innermost
+  `Throwable` in the causal-chain of `logEvent.getThrown()` is resolved
 | identical to `exception` resolver
-| identical to `exception` resolver
+| identical to `exception` resolver with the exception that `${dollar}resolver`
+  field needs to be set to `exceptionRootCause`
 
 | level
 a|
@@ -621,8 +665,6 @@ a|
 [source]
 ----
 config      = [ stringified ] , [ fallbackKey ]
-pattern = "pattern" -> string
-includeStackTrace = "includeStacktrae" -> boolean
 stringified = "stringified" -> boolean
 fallbackKey = "fallbackKey" -> string
 ----
@@ -636,17 +678,6 @@ Resolve the message into a string:
 ----
 {
   "$resolver": "message",
-  "stringified": true
-}
-----
-
-Resolve the message into a string using a pattern:
-
-[source,json]
-----
-{
-  "$resolver": "message",
-  "pattern": ""[%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress, corpAcctNumber} %C{1.}.%M:%L - %m"",
   "stringified": true
 }
 ----
