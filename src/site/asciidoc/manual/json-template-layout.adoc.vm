@@ -1242,17 +1242,29 @@ alternatives.
 | ✕
 | ✓
 
+| Stack trace truncation?
+| ✓
+| ✕
+| ✕
+| ✕
+
 | JSON pretty print?
 | ✕
 | ✓
 | ✕
 | ✕
 
-| Additional field support?
+| Additional string fields?
 | ✓
 | ✓
 | ✓
 | ✓
+
+| Additional JSON fields?
+| ✓
+| ✕
+| ✕
+| ✕
 |===
 
 [#faq]
