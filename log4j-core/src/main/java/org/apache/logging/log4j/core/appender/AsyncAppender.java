@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -231,7 +232,7 @@ public final class AsyncAppender extends AbstractAppender {
         }
     }
 
-    @PluginFactory
+    @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();
     }
