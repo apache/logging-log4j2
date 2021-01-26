@@ -25,24 +25,23 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -56,8 +55,6 @@ public class Log4jWebInitializerImplTest {
     private ArgumentCaptor<Log4jWebLifeCycle> initializerCaptor;
     @Captor
     private ArgumentCaptor<LoggerContext> loggerContextCaptor;
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     private Log4jWebInitializerImpl initializerImpl;
 
@@ -77,8 +74,9 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testDeinitializeBeforeInitialize() {
-        expectedException.expect(IllegalStateException.class);
-        this.initializerImpl.stop();
+    	assertThrows(IllegalStateException.class, () -> {
+    		this.initializerImpl.stop();
+    	});
     }
 
     @Test
@@ -217,8 +215,9 @@ public class Log4jWebInitializerImplTest {
 
         then(servletContext).should().removeAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE));
 
-        expectedException.expect(IllegalStateException.class);
-        this.initializerImpl.start();
+    	assertThrows(IllegalStateException.class, () -> {
+    		this.initializerImpl.start();
+    	});
     }
 
     @Test
@@ -250,8 +249,9 @@ public class Log4jWebInitializerImplTest {
         given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        expectedException.expect(IllegalStateException.class);
-        this.initializerImpl.start();
+    	assertThrows(IllegalStateException.class, () -> {
+    		this.initializerImpl.start();
+    	});
     }
 
     @Test
