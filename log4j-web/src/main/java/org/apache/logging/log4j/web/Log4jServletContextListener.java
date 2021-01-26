@@ -50,6 +50,14 @@ public class Log4jServletContextListener implements ServletContextListener {
     public void contextInitialized(final ServletContextEvent event) {
         this.servletContext = event.getServletContext();
         LOGGER.debug("Log4jServletContextListener ensuring that Log4j starts up properly.");
+        
+        if ("true".equalsIgnoreCase(servletContext.getInitParameter(
+                Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED))) {
+        	throw new IllegalStateException("Do not use " + getClass().getSimpleName() + " when "
+        			+ Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED + " is true. Please use "
+        			+ Log4jShutdownOnContextDestroyedListener.class.getSimpleName() + " instead of "
+        			+ getClass().getSimpleName() + ".");
+        }
 
         this.initializer = WebLoggerContextUtils.getWebLifeCycle(this.servletContext);
         try {
