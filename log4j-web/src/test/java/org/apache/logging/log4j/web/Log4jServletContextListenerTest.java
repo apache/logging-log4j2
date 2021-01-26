@@ -20,18 +20,18 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class Log4jServletContextListenerTest {
     @Mock
     private ServletContextEvent event;
@@ -42,7 +42,7 @@ public class Log4jServletContextListenerTest {
 
     private Log4jServletContextListener listener;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.listener = new Log4jServletContextListener();
         given(event.getServletContext()).willReturn(servletContext);
@@ -70,7 +70,7 @@ public class Log4jServletContextListenerTest {
             this.listener.contextInitialized(this.event);
             fail("Expected a RuntimeException.");
         } catch (final RuntimeException e) {
-            assertEquals("The message is not correct.", "Failed to initialize Log4j properly.", e.getMessage());
+            assertEquals("Failed to initialize Log4j properly.", e.getMessage(), "The message is not correct.");
         }
     }
 
