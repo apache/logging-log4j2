@@ -135,6 +135,18 @@
       <action issue="LOG4J2-2976" dev="ckozak" type="fix">
         JdbcAppender composes an incorrect INSERT statement without a ColumnMapping element.
       </action>      
+      <action dev="ggregory" type="update">
+        org.apache.activemq:* 5.16.0 -> 5.16.1.
+      </action>
+      <action dev="ggregory" type="update">
+        org.mockito:mockito-* 3.7.0 -> 3.7.7.
+      </action>
+      <action dev="ggregory" type="update">
+        org.springframework:* 5.3.2 -> 5.3.3.
+      </action>
+      <action dev="ggregory" type="update">
+        mongodb4.version 4.1.1 -> 4.2.0.
+      </action>
     </release>
     <release version="2.14.0" date="2020-11-06" description="GA Release 2.14.0">
       <action issue="LOG4J2-2925" dev="rgoers" type="fix">
