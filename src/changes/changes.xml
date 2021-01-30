@@ -34,6 +34,15 @@
       <action issue="LOG4J2-2973" dev="fricchiuti" typ="fix">
         Rename EventTemplateAdditionalField#type (conflicting with properties file parser) to "format"
       </action>
+      <action issue="LOG4J2-2999" dev="vy" type="add">
+        Replace JsonTemplateLayout resolver configurations table in docs with sections.
+      </action>
+      <action issue="LOG4J2-2993" dev="vy" type="add">
+        Support stack trace truncation in JsonTemplateLayout.
+      </action>
+      <action issue="LOG4J2-2998" dev="vy" type="fix">
+        Fix truncation of excessive strings ending with a high surrogate in JsonWriter.
+      </action>
       <action issue="LOG4J2-2967" dev="ckozak" type="fix">
         Fix JsonTemplateLayout index based parameter resolution when messages contain too few parameters.
       </action>
@@ -64,9 +73,9 @@
       <action issue="LOG4J2-2678" dev="rgoers" type="update" due-to="Federico D'Ambrosio">
         Add LogEvent timestamp to ProducerRecord in KafkaAppender.
       </action>
-      <actino issue="LOG4J2-2688" dev="rgoers" type="add" due-to="Romain Manni-Bucau">
+      <action issue="LOG4J2-2688" dev="rgoers" type="add" due-to="Romain Manni-Bucau">
         Allow web lookup of session attributes.
-      </actino>
+      </action>
       <action issue="LOG4J2-2701" dev="rgoers" type="update">
         Update Jackson from 2.9.x to 2.10.1.
       </action>

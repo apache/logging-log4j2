@@ -59,13 +59,14 @@ https://github.com/logstash/log4j-jsonevent-layout[the official Logstash
     },
     "exception_message": {
       "$resolver": "exception",
-      "field": "message",
-      "stringified": true
+      "field": "message"
     },
     "stacktrace": {
       "$resolver": "exception",
       "field": "stackTrace",
-      "stringified": true
+      "stackTrace": {
+        "stringified": true
+      }
     }
   },
   "line_number": {
@@ -376,7 +377,9 @@ artifact:
   "error.stack_trace": {
     "$resolver": "exception",
     "field": "stackTrace",
-    "stringified": true
+    "stackTrace": {
+      "stringified": true
+    }
   }
 }
 
@@ -406,23 +409,14 @@ templates:
   `JsonTemplateLayout` employs the `StackTraceElementLayout.json` template
   for stack traces to generate a document-store-friendly flat structure.)
 
-Below is the list of supported event template resolvers:
-
 [#event-template-resolvers]
-.`LogEvent` template resolvers
-[cols="1m,3,2,2,4"]
-|===
-| Resolver Name
-| Syntax
-| Description
-| Garbage Footprint
-| Examples
+==== Event Template Resolvers
 
-| endOfBatch
-|
-| `logEvent.isEndOfBatch()`
-| none
-a|
+[#event-template-resolver-endOfBatch]
+===== `endOfBatch`
+
+Resolves `logEvent.isEndOfBatch()` boolean flag:
+
 [source,json]
 ----
 {
@@ -430,25 +424,52 @@ a|
 }
 ----
 
-| exception
-a|
+[#event-template-resolver-exception]
+===== `exception`
+
 [source]
 ----
-config      = field , [ stringified ]
-field       = "field" -> (
-                "className"  \|
-                "message"    \|
-                "stackTrace" )
-stringified = "stringified" -> boolean
+config              = field , [ stringified ] , [ stackTrace ]
+field               = "field" -> ( "className" \| "message" \| "stackTrace" )
+
+stackTrace          = "stackTrace" -> stringified
+stringified         = "stringified" -> ( boolean \| truncation )
+truncation          = "truncation" -> (
+                        [ suffix ]
+                      , [ pointMatcherStrings ]
+                      , [ pointMatcherRegexes ]
+                      )
+suffix              = "suffix" -> string
+pointMatcherStrings = "pointMatcherStrings" -> string[]
+pointMatcherRegexes = "pointMatcherRegexes" -> string[]
 ----
-a|
+
 Resolves fields of the `Throwable` returned by `logEvent.getThrown()`.
+
+`stringified` is set to `false` by default. `stringified` at the root level is
+*deprecated* in favor of `stackTrace.stringified`, which has precedence if both
+are provided.
+
+`pointMatcherStrings` and `pointMatcherRegexes` enable the truncation of
+stringified stack traces after the given matching point. If both parameters are
+provided, `pointMatcherStrings` will be checked first.
+
+If a stringified stack trace truncation takes place, it will be indicated with
+`suffix`, which by default is set to the configured `truncatedStringSuffix` in
+the layout, unless explicitly provided.
 
 Note that this resolver is toggled by
 `log4j.layout.jsonTemplate.stackTraceEnabled` property.
-| Since `Throwable#getStackTrace()` clones the original `StackTraceElement[]`,
-  access to (and hence rendering of) stack traces are not garbage-free.
-a|
+
+[WARNING]
+====
+Since `Throwable#getStackTrace()` clones the original `StackTraceElement[]`,
+access to (and hence rendering of) stack traces are not garbage-free.
+
+Each `pointMatcherRegexes` item triggers a `Pattern#matcher()` call, which is
+not garbage-free either.
+====
+
 Resolve `logEvent.getThrown().getClass().getCanonicalName()`:
 
 [source,json]
@@ -476,33 +497,51 @@ Resolve the stack trace into a string field:
 {
   "$resolver": "exception",
   "field": "stackTrace",
-  "stringified": true
+  "stackTrace": {
+    "stringified": true
+  }
 }
 ----
 
-| exceptionRootCause
-| identical to `exception` resolver
-a|
+Resolve the stack trace into a string field such that the content will be
+truncated by the given point matcher:
+
+[source,json]
+----
+{
+  "$resolver": "exception",
+  "field": "stackTrace",
+  "stackTrace": {
+    "stringified": {
+      "truncation": {
+        "suffix": ">",
+        "pointMatcherStrings": ["at javax.servlet.http.HttpServlet.service"]
+      }
+    }
+  }
+}
+----
+
+[#event-template-resolver-exceptionRootCause]
+===== `exceptionRootCause`
+
 Resolves the fields of the innermost `Throwable` returned by
-`logEvent.getThrown()`.
+`logEvent.getThrown()`. Its syntax and garbage-footprint are identical to the
+link:#event-template-exception[`exception`] resolver.
 
-Note that this resolver is toggled by
-`log4j.layout.jsonTemplate.stackTraceEnabled` property.
-| identical to `exception` resolver
-| identical to `exception` resolver
+[#event-template-resolver-level]
+===== `level`
 
-| level
-a|
 [source]
 ----
 config         = field , [ severity ]
-field          = "field" -> ( "name" \| "severity" )
+field          = "field" -> ( "name" | "severity" )
 severity       = severity-field
-severity-field = "field" -> ( "keyword" \| "code" )
+severity-field = "field" -> ( "keyword" | "code" )
 ----
-| resolves the fields of the `logEvent.getLevel()`
-| none
-a|
+
+Resolves the fields of the `logEvent.getLevel()`.
+
 Resolve the level name:
 
 [source,json]
@@ -541,15 +580,16 @@ code:
 }
 ----
 
-| logger
-a|
+[#event-template-resolver-logger]
+===== `logger`
+
 [source]
 ----
-config = "field" -> ( "name" \| "fqcn" )
+config = "field" -> ( "name" | "fqcn" )
 ----
-| resolves `logEvent.getLoggerFqcn()` and `logEvent.getLoggerName()`
-| none
-a|
+
+Resolves `logEvent.getLoggerFqcn()` and `logEvent.getLoggerName()`.
+
 Resolve the logger name:
 
 [source,json]
@@ -570,18 +610,19 @@ Resolve the logger's fully qualified class name:
 }
 ----
 
-| main
-a|
+[#event-template-resolver-main]
+===== `main`
+
 [source]
 ----
-config = ( index \| key )
+config = ( index | key )
 index  = "index" -> number
 key    = "key" -> string
 ----
-| performs link:lookups.html#AppMainArgsLookup[Main Argument Lookup] for the
-  given `index` or `key`
-| none
-a|
+
+Performs link:lookups.html#AppMainArgsLookup[Main Argument Lookup] for the
+given `index` or `key`.
+
 Resolve the 1st `main()` method argument:
 
 [source,json]
@@ -602,51 +643,48 @@ Resolve the argument coming right after `--userId`:
 }
 ----
 
-| map
-| see link:#map-resolver-template[Map Resolver Template]
-| resolves ``MapMessage``s
-| see link:#map-resolver-template[Map Resolver Template]
-| see link:#map-resolver-template[Map Resolver Template]
+[#event-template-resolver-map]
+===== `map`
 
-| mdc
-| see link:#map-resolver-template[Map Resolver Template]
-| resolves Mapped Diagnostic Context (MDC), aka. Thread Context Data
-| `log4j2.garbagefreeThreadContextMap` flag needs to be turned on to iterate
-  the map without allocations. See
-  link:#map-resolver-template[Map Resolver Template] for other details.
-| see link:#map-resolver-template[Map Resolver Template]
+Resolves ``MapMessage``s. See link:#map-resolver-template[Map Resolver Template]
+for details.
 
-| message
-a|
+[#event-template-resolver-mdc]
+===== `mdc`
+
+Resolves Mapped Diagnostic Context (MDC), aka. Thread Context Data. See
+link:#map-resolver-template[Map Resolver Template] for details.
+
+[WARNING]
+====
+`log4j2.garbagefreeThreadContextMap` flag needs to be turned on to iterate
+the map without allocations.
+====
+
+[#event-template-resolver-message]
+===== `message`
+
 [source]
 ----
 config      = [ stringified ] , [ fallbackKey ]
-pattern = "pattern" -> string
-includeStackTrace = "includeStacktrae" -> boolean
 stringified = "stringified" -> boolean
 fallbackKey = "fallbackKey" -> string
 ----
-a| `logEvent.getMessage()`
-| For simple string messages, the resolution is performed without allocations.
-  For ``ObjectMessage``s and ``MultiformatMessage``s, it depends.
-a|
+
+Resolves `logEvent.getMessage()`.
+
+[WARNING]
+====
+For simple string messages, the resolution is performed without allocations.
+For ``ObjectMessage``s and ``MultiformatMessage``s, it depends.
+====
+
 Resolve the message into a string:
 
 [source,json]
 ----
 {
   "$resolver": "message",
-  "stringified": true
-}
-----
-
-Resolve the message into a string using a pattern:
-
-[source,json]
-----
-{
-  "$resolver": "message",
-  "pattern": ""[%t] %-5p %X{requestId, sessionId, loginId, userId, ipAddress, corpAcctNumber} %C{1.}.%M:%L - %m"",
   "stringified": true
 }
 ----
@@ -682,20 +720,26 @@ Using this configuration, a `SimpleMessage` will generate a
 `{"action": "login", "sessionId": "87asd97a"}`. Note that both emitted JSONs are
 of type `object` and have no type-conflicting fields.
 
-| messageParameter
-a|
+[#event-template-resolver-messageParameter]
+===== `messageParameter`
+
 [source]
 ----
 config      = [ stringified ] , [ index ]
 stringified = "stringified" -> boolean
 index       = "index" -> number
 ----
-| `logEvent.getMessage().getParameters()`
-| `stringified` flag translates to `String.valueOf(value)`, hence mind
-  not-`String`-typed values. Further, `logEvent.getMessage()` is expected to
-  implement `ParameterVisitable` interface, which is the case if
-  `log4j2.enableThreadlocals` property set to true.
-a|
+
+Resolves `logEvent.getMessage().getParameters()`.
+
+[WARNING]
+====
+Regarding garbage footprint, `stringified` flag translates to
+`String.valueOf(value)`, hence mind not-`String`-typed values. Further,
+`logEvent.getMessage()` is expected to implement `ParameterVisitable` interface,
+which is the case if `log4j2.enableThreadLocals` property set to true.
+====
+
 Resolve the message parameters into an array:
 
 [source,json]
@@ -736,17 +780,18 @@ Resolve the string representation of the first message parameter:
 }
 ----
 
-| ndc
-a|
+[#event-template-resolver-ndc]
+===== `ndc`
+
 [source]
 ----
 config  = [ pattern ]
 pattern = "pattern" -> string
 ----
-| Resolves the Nested Diagnostic Context (NDC), aka. Thread Context Stack,
-  `String[]` returned by `logEvent.getContextStack()`
-| none
-a|
+
+Resolves the Nested Diagnostic Context (NDC), aka. Thread Context Stack,
+`String[]` returned by `logEvent.getContextStack()`.
+
 Resolve all NDC values into a list:
 
 [source,json]
@@ -762,25 +807,25 @@ Resolve all NDC values matching with the `pattern` regex:
 ----
 {
   "$resolver": "ndc",
-  "pattern": "user(Role\|Rank):\\w+"
+  "pattern": "user(Role|Rank):\\w+"
 }
 ----
 
-| pattern
-a|
+[#event-template-resolver-pattern]
+===== `pattern`
+
 [source]
 ----
 config            = pattern , [ stackTraceEnabled ]
 pattern           = "pattern" -> string
 stackTraceEnabled = "stackTraceEnabled" -> boolean
 ----
-a|
+
 Resolver delegating to link:layouts.html#PatternLayout[`PatternLayout`].
 
 The default value of `stackTraceEnabled` is inherited from the parent
 `JsonTemplateLayout`.
-| none
-a|
+
 Resolve the string produced by `%p %c{1.} [%t] %X{userId} %X %m%ex` pattern:
 
 [source,json]
@@ -791,24 +836,24 @@ Resolve the string produced by `%p %c{1.} [%t] %X{userId} %X %m%ex` pattern:
 }
 ----
 
-| source
-a|
+[#event-template-resolver-source]
+===== `source`
+
 [source]
 ----
 config = "field" -> (
-           "className"  \|
-           "fileName"   \|
-           "methodName" \|
+           "className"  |
+           "fileName"   |
+           "methodName" |
            "lineNumber" )
 ----
-a|
+
 Resolves the fields of the `StackTraceElement` returned by
 `logEvent.getSource()`.
 
 Note that this resolver is toggled by
 `log4j.layout.jsonTemplate.locationInfoEnabled` property.
-| none
-a|
+
 Resolve the line number:
 
 [source,json]
@@ -819,16 +864,17 @@ Resolve the line number:
 }
 ----
 
-| thread
-a|
+[#event-template-resolver-thread]
+===== `thread`
+
 [source]
 ----
-config = "field" -> ( "name" \| "id" \| "priority" )
+config = "field" -> ( "name" | "id" | "priority" )
 ----
-| resolves `logEvent.getThreadId()`, `logEvent.getThreadName()`,
-  `logEvent.getThreadPriority()`
-| none
-a|
+
+Resolves `logEvent.getThreadId()`, `logEvent.getThreadName()`,
+`logEvent.getThreadPriority()`.
+
 Resolve the thread name:
 
 [source,json]
@@ -839,53 +885,51 @@ Resolve the thread name:
 }
 ----
 
-| timestamp
-a|
+[#event-template-resolver-timestamp]
+===== `timestamp`
+
 [source]
 ----
-config        = [ patternConfig \| epochConfig ]
+config        = [ patternConfig | epochConfig ]
 
-patternConfig = "pattern" -> (
-                  [ format ]   ,
-                  [ timeZone ] ,
-                  [ locale ]   )
+patternConfig = "pattern" -> ( [ format ] , [ timeZone ] , [ locale ] )
 format        = "format" -> string
 timeZone      = "timeZone" -> string
 locale        = "locale" -> (
-                   language                                   \|
-                 ( language , "_" , country )                 \|
+                   language                                   |
+                 ( language , "_" , country )                 |
                  ( language , "_" , country , "_" , variant )
-               )
+                )
 
 epochConfig   = "epoch" -> ( unit , [ rounded ] )
 unit          = "unit" -> (
-                   "nanos"         \|
-                   "millis"        \|
-                   "secs"          \|
-                   "millis.nanos"  \|
-                   "secs.nanos"    \|
+                   "nanos"         |
+                   "millis"        |
+                   "secs"          |
+                   "millis.nanos"  |
+                   "secs.nanos"    |
                 )
 rounded       = "rounded" -> boolean
 ----
-| resolves `logEvent.getInstant()` in various forms
-| none
-a|
+
+Resolves `logEvent.getInstant()` in various forms.
+
 .`timestamp` template resolver examples
 [cols="5,2m"]
-!===
-! Configuration
-! Output
+|===
+| Configuration
+| Output
 
-a!
+a|
 [source,json]
 ----
 {
   "$resolver": "timestamp"
 }
 ----
-! 2020-02-07T13:38:47.098+02:00
+| 2020-02-07T13:38:47.098+02:00
 
-a!
+a|
 [source,json]
 ----
 {
@@ -897,9 +941,9 @@ a!
   }
 }
 ----
-! 2020-02-07T13:38:47.098Z
+| 2020-02-07T13:38:47.098Z
 
-a!
+a|
 [source,json]
 ----
 {
@@ -909,9 +953,9 @@ a!
   }
 }
 ----
-! 1581082727.982123456
+| 1581082727.982123456
 
-a!
+a|
 [source,json]
 ----
 {
@@ -922,9 +966,9 @@ a!
   }
 }
 ----
-! 1581082727
+| 1581082727
 
-a!
+a|
 [source,json]
 ----
 {
@@ -934,9 +978,9 @@ a!
   }
 }
 ----
-! 982123456
+| 982123456
 
-a!
+a|
 [source,json]
 ----
 {
@@ -946,9 +990,9 @@ a!
   }
 }
 ----
-! 1581082727982.123456
+| 1581082727982.123456
 
-a!
+a|
 [source,json]
 ----
 {
@@ -959,9 +1003,9 @@ a!
   }
 }
 ----
-! 1581082727982
+| 1581082727982
 
-a!
+a|
 [source,json]
 ----
 {
@@ -971,9 +1015,9 @@ a!
   }
 }
 ----
-! 123456
+| 123456
 
-a!
+a|
 [source,json]
 ----
 {
@@ -983,8 +1027,7 @@ a!
   }
 }
 ----
-! 1581082727982123456
-!===
+| 1581082727982123456
 |===
 
 [#map-resolver-template]
@@ -998,19 +1041,9 @@ these are provided by a single backend: `ReadOnlyStringMapResolver`. Put another
 way, both `mdc` and `map` resolvers support identical configuration, behaviour,
 and garbage footprint, which are detailed below.
 
-[#stringmap-template-resolver]
-.`ReadOnlyStringMap` template resolver
-[cols="3,2,2,4"]
-|===
-| Syntax
-| Description
-| Garbage Footprint
-| Examples
-
-a|
 [source]
 ----
-config        = singleAccess \| multiAccess
+config        = singleAccess | multiAccess
 
 singleAccess  = key , [ stringified ]
 key           = "key" -> string
@@ -1018,16 +1051,21 @@ stringified   = "stringified" -> boolean
 
 multiAccess   = [ pattern ] , [ flatten ] , [ stringified ]
 pattern       = "pattern" -> string
-flatten       = "flatten" -> ( boolean \| flattenConfig )
+flatten       = "flatten" -> ( boolean | flattenConfig )
 flattenConfig = [ flattenPrefix ]
 flattenPrefix = "prefix" -> string
 ----
-| `singleAccess` resolves a single field, whilst `multiAccess` resolves a
-  multitude of fields. If `flatten` is provided, `multiAccess` merges the fields
-  with the parent, otherwise creates a new JSON object containing the values.
-| `stringified` flag translates to `String.valueOf(value)`, hence mind
-  not-`String`-typed values.
-a|
+
+`singleAccess` resolves a single field, whilst `multiAccess` resolves a
+multitude of fields. If `flatten` is provided, `multiAccess` merges the fields
+with the parent, otherwise creates a new JSON object containing the values.
+
+[WARNING]
+====
+Regarding garbage footprint, `stringified` flag translates to
+`String.valueOf(value)`, hence mind not-`String`-typed values.
+====
+
 `"${dollar}resolver"` is left out in the following examples, since it is to be
 defined by the actual resolver, e.g., `map`, `mdc`.
 
@@ -1071,7 +1109,7 @@ Resolve all fields into an object such that values are converted to string:
 }
 ----
 
-Merge all fields whose keys are matching with the `user(Role\|Rank)` regex into
+Merge all fields whose keys are matching with the `user(Role|Rank)` regex into
 the parent:
 
 [source,json]
@@ -1079,7 +1117,7 @@ the parent:
 {
   "$resolver": "…",
   "flatten": true,
-  "pattern": "user(Role\|Rank)"
+  "pattern": "user(Role|Rank)"
 }
 ----
 
@@ -1096,7 +1134,6 @@ parent such that keys are prefixed with `_`:
   }
 }
 ----
-|===
 
 [#stack-trace-element-templates]
 === Stack Trace Element Templates
@@ -1205,17 +1242,29 @@ alternatives.
 | ✕
 | ✓
 
+| Stack trace truncation?
+| ✓
+| ✕
+| ✕
+| ✕
+
 | JSON pretty print?
 | ✕
 | ✓
 | ✕
 | ✕
 
-| Additional field support?
+| Additional string fields?
 | ✓
 | ✓
 | ✓
 | ✓
+
+| Additional JSON fields?
+| ✓
+| ✕
+| ✕
+| ✕
 |===
 
 [#faq]

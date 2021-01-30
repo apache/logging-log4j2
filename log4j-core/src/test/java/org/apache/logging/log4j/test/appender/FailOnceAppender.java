@@ -23,9 +23,9 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.util.SneakyThrow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ public class FailOnceAppender extends AbstractAppender {
         if (!failed) {
             failed = true;
             Throwable throwable = throwableSupplier.get();
-            SneakyThrow.sneakyThrow(throwable);
+            Throwables.rethrow(throwable);
         }
         events.add(event);
     }
@@ -95,9 +95,18 @@ public class FailOnceAppender extends AbstractAppender {
             case ThrowableClassName.EXCEPTION: return () -> new Exception(message);
             case ThrowableClassName.ERROR: return () -> new Error(message);
             case ThrowableClassName.THROWABLE: return () -> new Throwable(message);
+            case ThrowableClassName.THREAD_DEATH: return () -> {
+                stopCurrentThread();
+                throw new IllegalStateException("should not have reached here");
+            };
             default: throw new IllegalArgumentException("unknown throwable class name: " + throwableClassName);
         }
 
+    }
+
+    @SuppressWarnings("deprecation")
+    private static void stopCurrentThread() {
+        Thread.currentThread().stop();
     }
 
     public enum ThrowableClassName {;
@@ -111,6 +120,8 @@ public class FailOnceAppender extends AbstractAppender {
         public static final String ERROR = "Error";
 
         public static final String THROWABLE = "Throwable";
+
+        public static final String THREAD_DEATH = "ThreadDeath";
 
     }
 

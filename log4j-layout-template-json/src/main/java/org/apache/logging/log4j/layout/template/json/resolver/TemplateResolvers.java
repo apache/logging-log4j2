@@ -385,8 +385,10 @@ public final class TemplateResolvers {
             else {
                 final String replacedText = context.getSubstitutor().replace(null, fieldValue);
                 if (replacedText == null) {
-                    // noinspection unchecked
-                    return (TemplateResolver<V>) NULL_RESOLVER;
+                    @SuppressWarnings("unchecked")
+                    final TemplateResolver<V> resolver =
+                            (TemplateResolver<V>) NULL_RESOLVER;
+                    return resolver;
                 } else {
                     // Prepare the escaped replacement first.
                     final String escapedReplacedText =

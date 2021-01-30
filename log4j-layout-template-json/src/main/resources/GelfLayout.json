@@ -8,7 +8,9 @@
   "full_message": {
     "$resolver": "exception",
     "field": "stackTrace",
-    "stringified": true
+    "stackTrace": {
+      "stringified": true
+    }
   },
   "timestamp": {
     "$resolver": "timestamp",

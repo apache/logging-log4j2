@@ -39,10 +39,10 @@ import java.util.stream.Collectors;
  * Verifies {@link AsyncAppender} works after certain type of {@link Appender}
  * failures.
  * <p>
- * {@link AsyncAppender} thread is known to get killed due to
+ * {@code AsyncAppender} thread is known to get killed due to
  * {@link AppenderControl} leaking exceptions in the past. This class is more
- * of an end-to-end test to verify that {@link AppenderControl} catches all kind
- * of {@link Throwable}s.
+ * of an end-to-end test to verify that {@code AsyncAppender} still works even
+ * if the background thread gets killed.
  */
 class AsyncAppenderExceptionHandlingTest {
 
@@ -52,7 +52,8 @@ class AsyncAppenderExceptionHandlingTest {
             FailOnceAppender.ThrowableClassName.LOGGING_EXCEPTION,
             FailOnceAppender.ThrowableClassName.EXCEPTION,
             FailOnceAppender.ThrowableClassName.ERROR,
-            FailOnceAppender.ThrowableClassName.THROWABLE
+            FailOnceAppender.ThrowableClassName.THROWABLE,
+            FailOnceAppender.ThrowableClassName.THREAD_DEATH
     })
     void AsyncAppender_should_not_stop_on_appender_failures(String throwableClassName) {
 
