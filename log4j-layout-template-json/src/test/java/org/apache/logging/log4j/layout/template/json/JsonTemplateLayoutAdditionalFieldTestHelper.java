@@ -6,19 +6,18 @@ import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.assertj.core.api.Assertions;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 class JsonTemplateLayoutAdditionalFieldTestHelper {
-    static void assertAdditionalFields(
-            final LoggerContext loggerContext,
-            ListAppender appender
-            ) {
 
+    static void assertAdditionalFields(final LoggerContext loggerContext, ListAppender appender) {
         // Log an event.
         final Logger logger =
-                loggerContext.getLogger(UUID.randomUUID().toString());
+                loggerContext.getLogger(
+                        JsonTemplateLayoutAdditionalFieldTestHelper.class);
         logger.info("trigger");
 
         // Verify that the appender has logged the event.
