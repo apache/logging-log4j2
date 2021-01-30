@@ -624,7 +624,7 @@ public class JsonTemplateLayout implements StringLayout {
                 if (Strings.isBlank(value)) {
                     throw new IllegalArgumentException("blank value");
                 }
-                Objects.requireNonNull(format, "type");
+                Objects.requireNonNull(format, "format");
             }
 
         }

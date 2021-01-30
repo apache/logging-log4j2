@@ -20,7 +20,7 @@ Configuration:
       name: "List"
       raw: "true"
       JsonTemplateLayout:
-        eventtemplateadditionalfield:
+        EventTemplateadditionalField:
           - key: "stringField"
             value: "string"
           - key: "numberField"

@@ -145,7 +145,7 @@ public final class TemplateResolvers {
                         break;
                     default: {
                         final String message = String.format(
-                                "unknown type %s for additional field: %s",
+                                "unknown format %s for additional field: %s",
                                 additionalFieldKey, additionalField.getFormat());
                         throw new IllegalArgumentException(message);
                     }

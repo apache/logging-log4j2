@@ -25,50 +25,16 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
 
 @LoggerContextSource("additionalFieldEnrichedJsonTemplateLayoutLogging.xml")
 class JsonTemplateLayoutAdditionalFieldTestXML {
-
     @Test
     void test_additional_fields_are_resolved(
             final LoggerContext loggerContext,
-            @Named("List") final ListAppender appender) {
-
-        // Log an event.
-        final Logger logger =
-                loggerContext.getLogger(
-                        JsonTemplateLayoutAdditionalFieldTestXML.class);
-        logger.info("trigger");
-
-        // Verify that the appender has logged the event.
-        final List<byte[]> serializedEvents = appender.getData();
-        Assertions.assertThat(serializedEvents).hasSize(1);
-
-        // Deserialize the serialized event.
-        final byte[] serializedEvent = serializedEvents.get(0);
-        final String serializedEventJson =
-                new String(
-                        serializedEvent,
-                        JsonTemplateLayoutDefaults.getCharset());
-        final Object serializedEventObject = JsonReader.read(serializedEventJson);
-        Assertions.assertThat(serializedEventObject).isInstanceOf(Map.class);
-        @SuppressWarnings("unchecked")
-        final Map<String, Object> serializedEventMap =
-                (Map<String, Object>) serializedEventObject;
-
-        // Verify the serialized additional fields.
-        Assertions
-                .assertThat(serializedEventMap)
-                .containsEntry("stringField", "string")
-                .containsEntry("numberField", 1)
-                .containsEntry("objectField", Collections.singletonMap("numberField", 1))
-                .containsEntry("listField", Arrays.asList(1, "two"));
-
+            final @Named(value = "List") ListAppender appender) {
+        JsonTemplateLayoutAdditionalFieldTestHelper.assertAdditionalFields(loggerContext, appender);
     }
-
 }
