@@ -534,7 +534,7 @@ public class LoggerTest {
     @Test
     public void mdc() {
 
-        ThreadContext.put("TestYear", Integer.valueOf(2010).toString());
+        ThreadContext.put("TestYear", Integer.toString(2010));
         logger.debug("Debug message");
         final String testYear = ThreadContext.get("TestYear");
         assertNotNull(testYear, "Test Year is null");
