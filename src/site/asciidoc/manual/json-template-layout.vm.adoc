@@ -242,11 +242,12 @@ appender.console.json.eventTemplateUri = classpath:LogstashJsonEventLayoutV1.jso
 [#additional-event-template-fields]
 === Additonal event template fields
 
-Additional event template field is a convenient short-cut to add custom fields
-to a template or override the fields of a template. Following configuration
-overrides the `host` field of the `GelfLayout.json` template and adds two new
-custom fields:
+Additional event template fields are a convenient short-cut to add custom fields
+to a template or override the existing ones. Following configuration overrides
+the `host` field of the `GelfLayout.json` template and adds two new custom
+fields:
 
+.XML configuration with additional fields
 [source,xml]
 ----
 <JsonTemplateLayout eventTemplateUri="classpath:GelfLayout.json">
@@ -257,40 +258,63 @@ custom fields:
 ----
 
 The default `format` for the added new fields are `String`.
-One can also pass JSON literals into additional fields:
+One can also provide JSON-formatted additional fields:
 
+.XML-formatted configuration with JSON-formatted additional fields
 [source,xml]
 ----
-<EventTemplateAdditionalField
-     key="marker"
-     format="JSON"
-     value='{"$resolver": "marker", "field": "name"}'/>
-<EventTemplateAdditionalField
-     key="aNumber"
-     format="JSON"
-     value="1"/>
-<EventTemplateAdditionalField
-     key="aList"
-     format="JSON"
-     value='[1,2,"string"]'/>
+<JsonTemplateLayout eventTemplateUri="classpath:GelfLayout.json">
+  <EventTemplateAdditionalField
+       key="marker"
+       format="JSON"
+       value='{"$resolver": "marker", "field": "name"}'/>
+  <EventTemplateAdditionalField
+       key="aNumber"
+       format="JSON"
+       value="1"/>
+  <EventTemplateAdditionalField
+       key="aList"
+       format="JSON"
+       value='[1, 2, "three"]'/>
+</JsonTemplateLayout>
 ----
 
-When using a configuration file with a `.properties` extension, additional fields can be added as follows:
+Additional event template fields can also be introduced using properties- and
+YAML-formatted configuration:
 
+.Properties-formatted configuration with JSON-formatted additional fields
 [source, properties]
 ----
-appender.console.layout.extra[0].key = marker
-appender.console.layout.extra[0].value = {"$resolver": "marker", "field": "name"}
-appender.console.layout.extra[0].format = JSON
-appender.console.layout.extra[0].type = EventTemplateAdditionalField
-appender.console.layout.extra[1].key = aNumber
-appender.console.layout.extra[1].value = 1
-appender.console.layout.extra[1].format = JSON
-appender.console.layout.extra[1].type = EventTemplateAdditionalField
-appender.console.layout.extra[2].key = aList
-appender.console.layout.extra[2].value = [1,2,"string"]
-appender.console.layout.extra[2].format = JSON
-appender.console.layout.extra[2].type = EventTemplateAdditionalField
+appender.console.layout.type = JsonTemplateLayout
+appender.console.layout.eventTemplateUri = classpath:GelfLayout.json
+appender.console.layout.eventTemplateAdditionalField[0].type = EventTemplateAdditionalField
+appender.console.layout.eventTemplateAdditionalField[0].key = marker
+appender.console.layout.eventTemplateAdditionalField[0].value = {"$resolver": "marker", "field": "name"}
+appender.console.layout.eventTemplateAdditionalField[0].format = JSON
+appender.console.layout.eventTemplateAdditionalField[1].type = EventTemplateAdditionalField
+appender.console.layout.eventTemplateAdditionalField[1].key = aNumber
+appender.console.layout.eventTemplateAdditionalField[1].value = 1
+appender.console.layout.eventTemplateAdditionalField[1].format = JSON
+appender.console.layout.eventTemplateAdditionalField[2].type = EventTemplateAdditionalField
+appender.console.layout.eventTemplateAdditionalField[2].key = aList
+appender.console.layout.eventTemplateAdditionalField[2].value = [1, 2, "three"]
+appender.console.layout.eventTemplateAdditionalField[2].format = JSON
+----
+
+.YAML-formatted configuration with JSON-formatted additional fields
+[source,yaml]
+----
+JsonTemplateLayout:
+  eventTemplateAdditionalField:
+    - key: "marker"
+      value: '{"$resolver": "marker", "field": "name"}'
+      format: "JSON"
+    - key: "aNumber"
+      value: "1"
+      format: "JSON"
+    - key: "aList"
+      value: '[1, 2, "three"]'
+      format: "JSON"
 ----
 
 [#recycling-strategy]

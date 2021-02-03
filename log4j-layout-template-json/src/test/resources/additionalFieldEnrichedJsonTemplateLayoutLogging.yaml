@@ -14,13 +14,13 @@
 # limitations under the License.
 
 Configuration:
-  status: OFF
+  status: "OFF"
   appenders:
     List:
       name: "List"
       raw: "true"
       JsonTemplateLayout:
-        EventTemplateadditionalField:
+        eventTemplateAdditionalField:
           - key: "stringField"
             value: "string"
           - key: "numberField"
@@ -36,4 +36,4 @@ Configuration:
     root:
       level: "trace"
       AppenderRef:
-        ref: List
+        ref: "List"
