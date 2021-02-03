@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config.builder.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -27,6 +28,16 @@ import java.util.concurrent.TimeUnit;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
@@ -58,7 +69,6 @@ import org.apache.logging.log4j.core.util.Throwables;
 public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implements ConfigurationBuilder<T> {
 
     private static final String INDENT = "  ";
-    private static final String EOL = System.lineSeparator();
     
     private final Component root = new Component();
     private final Component loggers;
@@ -79,6 +89,14 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private String advertiser;
     private LoggerContext loggerContext;
     private String name;
+
+    public static void formatXml(final Source source, final Result result)
+            throws TransformerConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+            final Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(INDENT.length()));
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.transform(source, result);
+        }
 
     @SuppressWarnings("unchecked")
     public DefaultConfigurationBuilder() {
@@ -215,7 +233,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             xmlWriter.close();
         } catch (final XMLStreamException e) {
             if (e.getNestedException() instanceof IOException) {
-                throw (IOException)e.getNestedException();
+                throw (IOException) e.getNestedException();
             }
             Throwables.rethrow(e);
         }
@@ -223,20 +241,27 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public String toXmlConfiguration() {
-        final StringWriter sw = new StringWriter();
+        final StringWriter writer = new StringWriter();
         try {
-            final XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(sw);
+            final XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
             writeXmlConfiguration(xmlWriter);
             xmlWriter.close();
-        } catch (final XMLStreamException e) {
+            return formatXml(writer.toString());
+        } catch (final XMLStreamException | TransformerException e) {
             Throwables.rethrow(e);
         }
-        return sw.toString();
+        return writer.toString();
+    }
+
+    private String formatXml(String xml)
+            throws TransformerConfigurationException, TransformerException, TransformerFactoryConfigurationError {
+        final StringWriter writer = new StringWriter();
+        formatXml(new StreamSource(new StringReader(xml)), new StreamResult(writer));
+        return writer.toString();
     }
 
     private void writeXmlConfiguration(final XMLStreamWriter xmlWriter) throws XMLStreamException {
         xmlWriter.writeStartDocument();
-        xmlWriter.writeCharacters(EOL);
 
         xmlWriter.writeStartElement("Configuration");
         if (name != null) {
@@ -267,13 +292,11 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             xmlWriter.writeAttribute("monitorInterval", String.valueOf(monitorInterval));
         }
 
-        xmlWriter.writeCharacters(EOL);
-
         writeXmlSection(xmlWriter, properties);
         writeXmlSection(xmlWriter, scripts);
         writeXmlSection(xmlWriter, customLevels);
         if (filters.getComponents().size() == 1) {
-            writeXmlComponent(xmlWriter, filters.getComponents().get(0), 1);
+            writeXmlComponent(xmlWriter, filters.getComponents().get(0));
         } else if (filters.getComponents().size() > 1) {
             writeXmlSection(xmlWriter, filters);
         }
@@ -281,46 +304,29 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         writeXmlSection(xmlWriter, loggers);
 
         xmlWriter.writeEndElement(); // "Configuration"
-        xmlWriter.writeCharacters(EOL);
-
         xmlWriter.writeEndDocument();
     }
 
     private void writeXmlSection(final XMLStreamWriter xmlWriter, final Component component) throws XMLStreamException {
         if (!component.getAttributes().isEmpty() || !component.getComponents().isEmpty() || component.getValue() != null) {
-            writeXmlComponent(xmlWriter, component, 1);
+            writeXmlComponent(xmlWriter, component);
         }
     }
 
-    private void writeXmlComponent(final XMLStreamWriter xmlWriter, final Component component, final int nesting) throws XMLStreamException {
+    private void writeXmlComponent(final XMLStreamWriter xmlWriter, final Component component) throws XMLStreamException {
         if (!component.getComponents().isEmpty() || component.getValue() != null) {
-            writeXmlIndent(xmlWriter, nesting);
             xmlWriter.writeStartElement(component.getPluginType());
             writeXmlAttributes(xmlWriter, component);
-            if (!component.getComponents().isEmpty()) {
-                xmlWriter.writeCharacters(EOL);
-            }
             for (final Component subComponent : component.getComponents()) {
-                writeXmlComponent(xmlWriter, subComponent, nesting + 1);
+                writeXmlComponent(xmlWriter, subComponent);
             }
             if (component.getValue() != null) {
                 xmlWriter.writeCharacters(component.getValue());
             }
-            if (!component.getComponents().isEmpty()) {
-                writeXmlIndent(xmlWriter, nesting);
-            }
             xmlWriter.writeEndElement();
         } else {
-            writeXmlIndent(xmlWriter, nesting);
             xmlWriter.writeEmptyElement(component.getPluginType());
             writeXmlAttributes(xmlWriter, component);
-        }
-        xmlWriter.writeCharacters(EOL);
-    }
-
-    private void writeXmlIndent(final XMLStreamWriter xmlWriter, final int nesting) throws XMLStreamException {
-        for (int i = 0; i < nesting; i++) {
-            xmlWriter.writeCharacters(INDENT);
         }
     }
 
