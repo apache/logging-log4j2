@@ -156,6 +156,9 @@
       <action dev="ggregory" type="update">
         Update net.javacrumbs.json-unit:json-unit 2.22.0 -> 2.23.0.
       </action>
+      <action dev="ggregory" type="update">
+        Update Woodstox 5.0.3 -> 6.2.3 to match Jackson 2.12.1.
+      </action>
     </release>
     <release version="2.14.0" date="2020-11-06" description="GA Release 2.14.0">
       <action issue="LOG4J2-2925" dev="rgoers" type="fix">
