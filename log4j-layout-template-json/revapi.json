@@ -434,6 +434,21 @@
         "old": "class org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedWriter",
         "new": "class org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedWriter",
         "justification": "LOG4J2-2993 Massaged (internal) API to make method names more Java-like and restrict access if possible."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField.Builder org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField.Builder::setType(org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField.Type)",
+        "justification": "LOG4J2-2973 Rename EventTemplateAdditionalField#type (conflicting with properties file parser) to #format."
+      },
+      {
+        "code": "java.class.removed",
+        "old": "enum org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField.Type",
+        "justification": "LOG4J2-2973 Rename EventTemplateAdditionalField#type (conflicting with properties file parser) to #format."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField.Type org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField::getType()",
+        "justification": "LOG4J2-2973 Rename EventTemplateAdditionalField#type (conflicting with properties file parser) to #format."
       }
     ]
   }

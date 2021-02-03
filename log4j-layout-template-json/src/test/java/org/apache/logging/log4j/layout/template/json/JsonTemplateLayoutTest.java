@@ -1359,7 +1359,7 @@ class JsonTemplateLayoutTest {
                         .newBuilder()
                         .setKey("number")
                         .setValue("1")
-                        .setType(EventTemplateAdditionalField.Type.JSON)
+                        .setFormat(EventTemplateAdditionalField.Format.JSON)
                         .build(),
                 EventTemplateAdditionalField
                         .newBuilder()
@@ -1370,7 +1370,7 @@ class JsonTemplateLayoutTest {
                         .newBuilder()
                         .setKey("level")
                         .setValue("{\"$resolver\": \"level\", \"field\": \"name\"}")
-                        .setType(EventTemplateAdditionalField.Type.JSON)
+                        .setFormat(EventTemplateAdditionalField.Format.JSON)
                         .build()
         };
         final JsonTemplateLayout layout = JsonTemplateLayout

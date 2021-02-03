@@ -18,30 +18,27 @@ package org.apache.logging.log4j.layout.template.json;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@LoggerContextSource("additionalFieldEnrichedJsonTemplateLayoutLogging.xml")
-class JsonTemplateLayoutAdditionalFieldTest {
+final class JsonTemplateLayoutAdditionalFieldTestHelpers {
 
-    @Test
-    void test_additional_fields_are_resolved(
+    private JsonTemplateLayoutAdditionalFieldTestHelpers() {}
+
+    static void assertAdditionalFields(
             final LoggerContext loggerContext,
-            @Named("List") final ListAppender appender) {
+            final ListAppender appender) {
 
         // Log an event.
         final Logger logger =
                 loggerContext.getLogger(
-                        JsonTemplateLayoutAdditionalFieldTest.class);
+                        JsonTemplateLayoutAdditionalFieldTestHelpers.class);
         logger.info("trigger");
 
         // Verify that the appender has logged the event.
@@ -56,8 +53,7 @@ class JsonTemplateLayoutAdditionalFieldTest {
                         JsonTemplateLayoutDefaults.getCharset());
         final Object serializedEventObject = JsonReader.read(serializedEventJson);
         Assertions.assertThat(serializedEventObject).isInstanceOf(Map.class);
-        @SuppressWarnings("unchecked")
-        final Map<String, Object> serializedEventMap =
+        @SuppressWarnings("unchecked") final Map<String, Object> serializedEventMap =
                 (Map<String, Object>) serializedEventObject;
 
         // Verify the serialized additional fields.
