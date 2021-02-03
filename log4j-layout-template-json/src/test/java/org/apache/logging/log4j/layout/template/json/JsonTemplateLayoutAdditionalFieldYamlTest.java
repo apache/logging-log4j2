@@ -22,12 +22,15 @@ import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
 
-@LoggerContextSource("additionalFieldEnrichedJsonTemplateLayoutLogging.xml")
-class JsonTemplateLayoutAdditionalFieldTestXML {
+@LoggerContextSource("additionalFieldEnrichedJsonTemplateLayoutLogging.yaml")
+class JsonTemplateLayoutAdditionalFieldYamlTest {
+
     @Test
     void test_additional_fields_are_resolved(
             final LoggerContext loggerContext,
             final @Named(value = "List") ListAppender appender) {
-        JsonTemplateLayoutAdditionalFieldTestHelper.assertAdditionalFields(loggerContext, appender);
+        JsonTemplateLayoutAdditionalFieldTestHelpers
+                .assertAdditionalFields(loggerContext, appender);
     }
+
 }
