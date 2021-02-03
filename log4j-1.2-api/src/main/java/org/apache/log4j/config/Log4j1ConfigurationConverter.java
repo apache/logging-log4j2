@@ -16,6 +16,8 @@
  */
 package org.apache.log4j.config;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,9 +28,14 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.core.config.builder.impl.DefaultConfigurationBuilder;
 import org.apache.logging.log4j.core.tools.BasicCommandLineArguments;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Command;
@@ -175,11 +182,16 @@ public final class Log4j1ConfigurationConverter {
                             final int lastIndex = newFile.lastIndexOf(".");
                             newFile = lastIndex < 0 ? newFile + FILE_EXT_XML
                                     : newFile.substring(0, lastIndex) + FILE_EXT_XML;
-                            final Path resolved = file.resolveSibling(newFile);
+                            final Path resolvedPath = file.resolveSibling(newFile);
                             try (final InputStream input = new InputStreamWrapper(Files.newInputStream(file), file.toString());
-                                    final OutputStream output = Files.newOutputStream(resolved)) {
+                                final OutputStream output = Files.newOutputStream(resolvedPath)) {
                                 try {
-                                    convert(input, output);
+                                    final ByteArrayOutputStream tmpOutput = new ByteArrayOutputStream();
+                                    convert(input, tmpOutput);
+                                    tmpOutput.close();
+                                    DefaultConfigurationBuilder.formatXml(
+                                        new StreamSource(new ByteArrayInputStream(tmpOutput.toByteArray())),
+                                        new StreamResult(output));
                                     countOKs.incrementAndGet();
                                 } catch (ConfigurationException | IOException e) {
                                     countFails.incrementAndGet();
@@ -187,8 +199,14 @@ public final class Log4j1ConfigurationConverter {
                                         throw e;
                                     }
                                     e.printStackTrace();
+                                } catch (TransformerException e) {
+                                    countFails.incrementAndGet();
+                                    if (cla.isFailFast()) {
+                                        throw new IOException(e);
+                                    }
+                                    e.printStackTrace();
                                 }
-                                verbose("Wrote %s", resolved);
+                                verbose("Wrote %s", resolvedPath);
                             }
                         }
                         return FileVisitResult.CONTINUE;

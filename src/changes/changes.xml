@@ -54,7 +54,10 @@
       </action>
       <action issue="LOG4J2-2976" dev="ckozak" type="fix">
         JdbcAppender composes an incorrect INSERT statement without a ColumnMapping element.
-      </action> 
+      </action>
+      <action issue="LOG4J2-2976" dev="ggregory" type="fix" due-to="Lee Breisacher, Gary Gregory">
+        Log4j1ConfigurationConverter on Windows produces "&#xd;" at end of every line.
+      </action>
       <!-- ADDS -->     
       <action issue="LOG4J2-2962" dev="vy" type="add">
         Enrich "map" resolver by unifying its backend with "mdc" resolver.
