@@ -377,13 +377,12 @@ public class DatePatternConverterTest {
             final String precisePattern;
             if (foundIndex < 0) {
                 precisePattern = pattern;
-                preciseConverter = DatePatternConverter.newInstance(new String[] { precisePattern });
             } else {
                 final String subPattern = pattern.substring(0, foundIndex);
                 final String remainder = pattern.substring(foundIndex + search.length());
                 precisePattern = subPattern + "nnnnnnnnn" + "n" + remainder; // nanos too long
-                preciseConverter = DatePatternConverter.newInstance(new String[] { precisePattern });
             }
+            preciseConverter = DatePatternConverter.newInstance(new String[] { precisePattern });
             preciseConverter.format(event, preciseBuilder);
 
             final String[] milliOptions = { pattern };

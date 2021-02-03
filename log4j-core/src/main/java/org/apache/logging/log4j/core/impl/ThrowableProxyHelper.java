@@ -168,10 +168,8 @@ class ThrowableProxyHelper {
                         int index = str.lastIndexOf("/");
                         if (index >= 0 && index == str.length() - 1) {
                             index = str.lastIndexOf("/", index - 1);
-                            location = str.substring(index + 1);
-                        } else {
-                            location = str.substring(index + 1);
                         }
+                        location = str.substring(index + 1);
                     }
                 }
             } catch (final Exception ex) {

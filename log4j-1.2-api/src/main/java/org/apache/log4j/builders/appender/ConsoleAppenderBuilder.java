@@ -119,11 +119,10 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         for (Filter f : filters.get()) {
             if (head == null) {
                 head = f;
-                current = f;
             } else {
                 current.next = f;
-                current = f;
             }
+            current = f;
         }
         return createAppender(name, layout.get(), head, level.get(), target.get(), config);
     }
