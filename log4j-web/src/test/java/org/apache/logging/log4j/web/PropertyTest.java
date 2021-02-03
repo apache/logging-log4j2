@@ -19,9 +19,9 @@ package org.apache.logging.log4j.web;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.util.Constants;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -31,12 +31,12 @@ public class PropertyTest {
     @Test
     public void testShutdownHookDisabled() {
         assertFalse(
-                "Shutdown hook should be disabled by default in web applications",
-                ((Log4jContextFactory) LogManager.getFactory()).isShutdownHookEnabled());
+                ((Log4jContextFactory) LogManager.getFactory()).isShutdownHookEnabled(),
+                "Shutdown hook should be disabled by default in web applications");
     }
 
     @Test
     public void testIsWebApp() {
-        assertTrue("When servlet classes are available IS_WEB_APP should default to true", Constants.IS_WEB_APP);
+        assertTrue(Constants.IS_WEB_APP, "When servlet classes are available IS_WEB_APP should default to true");
     }
 }

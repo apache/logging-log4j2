@@ -31,10 +31,20 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2021-MM-DD" description="GA Release 3.0.0">
-      <action issue="LOG4J2-2977" dev="rgrabowski" type="fix">
+      <action issue="LOG4J2-2624" dev="mattsicker" type="fix" due-to="Tim Perry">
+        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a
+        ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j.
+        Register the listener at the top of web.xml to ensure the shutdown happens last.
+      </action>
+      <action issue="LOG4J2-1606" dev="mattsicker" type="fix" due-to="Tim Perry">
+        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a
+        ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j.
+        Register the listener at the top of web.xml to ensure the shutdown happens last.
+      </action>
+      <action issue="LOG4J2-2977" dev="vy" due-to="Ron Grabowski">
         Replace outdated PatternLayout.createLayout() calls in docs with createDefaultLayout().
       </action>
-      <action issue="LOG4J2-2973" dev="fricchiuti" type="fix">
+      <action issue="LOG4J2-2973" dev="vy" type="fix" due-to="Fabio Ricchiuti">
         Rename EventTemplateAdditionalField#type (conflicting with properties file parser) to "format".
       </action>
       <action issue="LOG4J2-2999" dev="vy" type="add">

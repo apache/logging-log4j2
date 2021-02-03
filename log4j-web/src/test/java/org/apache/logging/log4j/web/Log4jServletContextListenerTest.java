@@ -20,31 +20,33 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
 
-import java.util.concurrent.TimeUnit;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class Log4jServletContextListenerTest {
-    @Mock
-    private ServletContextEvent event;
-    @Mock
+	/* event and servletContext are marked lenient because they aren't used in the
+	 * testDestroyWithNoInit but are only accessed during initialization
+	 */
+	@Mock(lenient = true)
+	private ServletContextEvent event;
+	@Mock(lenient = true)
     private ServletContext servletContext;
     @Mock
     private Log4jWebLifeCycle initializer;
 
     private Log4jServletContextListener listener;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.listener = new Log4jServletContextListener();
         given(event.getServletContext()).willReturn(servletContext);
@@ -61,7 +63,7 @@ public class Log4jServletContextListenerTest {
         this.listener.contextDestroyed(this.event);
 
         then(initializer).should().clearLoggerContext();
-        then(initializer).should().stop(30L, TimeUnit.SECONDS);
+        then(initializer).should().stop();
     }
 
     @Test
@@ -72,8 +74,36 @@ public class Log4jServletContextListenerTest {
             this.listener.contextInitialized(this.event);
             fail("Expected a RuntimeException.");
         } catch (final RuntimeException e) {
-            assertEquals("The message is not correct.", "Failed to initialize Log4j properly.", e.getMessage());
+            assertEquals("Failed to initialize Log4j properly.", e.getMessage(), "The message is not correct.");
         }
     }
 
+    @Test
+    public void initializingLog4jServletContextListenerShouldFaileWhenAutoShutdownIsTrue() throws Exception {
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED)))
+                .willReturn("true");
+        ensureInitializingFailsWhenAuthShutdownIsEnabled();
+    }
+
+    @Test
+    public void initializingLog4jServletContextListenerShouldFaileWhenAutoShutdownIsTRUE() throws Exception {
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED)))
+                .willReturn("TRUE");
+        ensureInitializingFailsWhenAuthShutdownIsEnabled();
+    }
+    
+    private void ensureInitializingFailsWhenAuthShutdownIsEnabled() {
+        try {
+            this.listener.contextInitialized(this.event);
+            fail("Expected a RuntimeException.");
+        } catch (final RuntimeException e) {
+            String expectedMessage = 
+                    "Do not use " + Log4jServletContextListener.class.getSimpleName() + " when " 
+                    + Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED + " is true. Please use " 
+                    + Log4jShutdownOnContextDestroyedListener.class.getSimpleName() + " instead of " 
+                    + Log4jServletContextListener.class.getSimpleName() + ".";
+
+            assertEquals(expectedMessage, e.getMessage(), "The message is not correct");
+        }
+    }
 }
