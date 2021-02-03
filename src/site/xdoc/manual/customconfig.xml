@@ -267,8 +267,8 @@ public class MyXMLConfiguration extends XMLConfiguration {
     protected void doConfigure() {
         super.doConfigure();
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        final Layout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, config, null,
-              null,null, null);
+        final Configuration config = context.getConfiguration();
+        final Layout layout = PatternLayout.createDefaultLayout(config);
         final Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true",
               "false", "false", "4000", layout, null, "false", null, config);
         appender.start();
@@ -305,8 +305,7 @@ public class MyXMLConfiguration extends XMLConfiguration {
             <pre class="prettyprint linenums"><![CDATA[
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
-        Layout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, config, null,
-            null,null, null);
+        final Layout layout = PatternLayout.createDefaultLayout(config);
         Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true",
             "false", "false", "4000", layout, null, "false", null, config);
         appender.start();
