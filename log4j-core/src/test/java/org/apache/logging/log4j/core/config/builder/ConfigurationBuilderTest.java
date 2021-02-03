@@ -109,7 +109,6 @@ public class ConfigurationBuilderTest {
             "</Configuration>" + EOL;
 
     @Test
-    //@DisabledOnOs(OS.WINDOWS) // TODO make test run properly on Windows
     public void testXmlConstructing() throws Exception {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         addTestFixtures("config name", builder);
