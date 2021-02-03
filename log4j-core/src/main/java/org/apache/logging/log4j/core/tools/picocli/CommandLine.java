@@ -2055,12 +2055,8 @@ public class CommandLine {
                         args.push(optionParam);
                         arg = key;
                         if (tracer.isDebug()) {tracer.debug("Separated '%s' option from '%s' option parameter%n", key, optionParam);}
-                    } else {
-                        if (tracer.isDebug()) {tracer.debug("'%s' contains separator '%s' but '%s' is not a known option%n", arg, separator, key);}
-                    }
-                } else {
-                    if (tracer.isDebug()) {tracer.debug("'%s' cannot be separated into <option>%s<option-parameter>%n", arg, separator);}
-                }
+                    } else if (tracer.isDebug()) {tracer.debug("'%s' contains separator '%s' but '%s' is not a known option%n", arg, separator, key);}
+                } else if (tracer.isDebug()) {tracer.debug("'%s' cannot be separated into <option>%s<option-parameter>%n", arg, separator);}
                 if (optionName2Field.containsKey(arg)) {
                     processStandaloneOption(required, initialized, arg, args, paramAttachedToOption);
                 }

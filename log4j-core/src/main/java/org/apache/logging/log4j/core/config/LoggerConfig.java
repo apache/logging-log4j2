@@ -384,24 +384,22 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         List<Property> props = null;
         if (!propertiesRequireLookup) {
             props = properties;
-        } else {
-            if (properties != null) {
-                props = new ArrayList<>(properties.size());
-                final LogEvent event = Log4jLogEvent.newBuilder()
-                        .setMessage(data)
-                        .setMarker(marker)
-                        .setLevel(level)
-                        .setLoggerName(loggerName)
-                        .setLoggerFqcn(fqcn)
-                        .setThrown(t)
-                        .build();
-                for (int i = 0; i < properties.size(); i++) {
-                    final Property prop = properties.get(i);
-                    final String value = prop.isValueNeedsLookup() // since LOG4J2-1575
-                            ? config.getStrSubstitutor().replace(event, prop.getValue()) //
-                            : prop.getValue();
-                    props.add(Property.createProperty(prop.getName(), value));
-                }
+        } else if (properties != null) {
+            props = new ArrayList<>(properties.size());
+            final LogEvent event = Log4jLogEvent.newBuilder()
+                    .setMessage(data)
+                    .setMarker(marker)
+                    .setLevel(level)
+                    .setLoggerName(loggerName)
+                    .setLoggerFqcn(fqcn)
+                    .setThrown(t)
+                    .build();
+            for (int i = 0; i < properties.size(); i++) {
+                final Property prop = properties.get(i);
+                final String value = prop.isValueNeedsLookup() // since LOG4J2-1575
+                        ? config.getStrSubstitutor().replace(event, prop.getValue()) //
+                        : prop.getValue();
+                props.add(Property.createProperty(prop.getName(), value));
             }
         }
         final LogEvent logEvent = logEventFactory instanceof LocationAwareLogEventFactory ?
@@ -433,24 +431,22 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         List<Property> props = null;
         if (!propertiesRequireLookup) {
             props = properties;
-        } else {
-            if (properties != null) {
-                props = new ArrayList<>(properties.size());
-                final LogEvent event = Log4jLogEvent.newBuilder()
-                    .setMessage(data)
-                    .setMarker(marker)
-                    .setLevel(level)
-                    .setLoggerName(loggerName)
-                    .setLoggerFqcn(fqcn)
-                    .setThrown(t)
-                    .build();
-                for (int i = 0; i < properties.size(); i++) {
-                    final Property prop = properties.get(i);
-                    final String value = prop.isValueNeedsLookup() // since LOG4J2-1575
-                        ? config.getStrSubstitutor().replace(event, prop.getValue()) //
-                        : prop.getValue();
-                    props.add(Property.createProperty(prop.getName(), value));
-                }
+        } else if (properties != null) {
+            props = new ArrayList<>(properties.size());
+            final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(data)
+                .setMarker(marker)
+                .setLevel(level)
+                .setLoggerName(loggerName)
+                .setLoggerFqcn(fqcn)
+                .setThrown(t)
+                .build();
+            for (int i = 0; i < properties.size(); i++) {
+                final Property prop = properties.get(i);
+                final String value = prop.isValueNeedsLookup() // since LOG4J2-1575
+                    ? config.getStrSubstitutor().replace(event, prop.getValue()) //
+                    : prop.getValue();
+                props.add(Property.createProperty(prop.getName(), value));
             }
         }
         final LogEvent logEvent = logEventFactory instanceof LocationAwareLogEventFactory ?

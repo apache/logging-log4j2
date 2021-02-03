@@ -988,40 +988,33 @@ public class AbstractLoggerTest {
                 if (currentEvent.markerName != null) {
                     fail("Incorrect marker. Expected " + currentEvent.markerName + ", actual is null");
                 }
+            } else if (currentEvent.markerName == null) {
+                fail("Incorrect marker. Expected null. Actual is " + marker.getName());
             } else {
-                if (currentEvent.markerName == null) {
-                    fail("Incorrect marker. Expected null. Actual is " + marker.getName());
-                } else {
-                    assertEquals(currentEvent.markerName, marker.getName(),
-                            "Incorrect marker. Expected " + currentEvent.markerName + ", actual " + marker.getName());
-                }
+                assertEquals(currentEvent.markerName, marker.getName(),
+                    "Incorrect marker. Expected " + currentEvent.markerName + ", actual " + marker.getName());
             }
             if (data == null) {
                 if (currentEvent.data != null) {
                     fail("Incorrect message. Expected " + currentEvent.data + ", actual is null");
                 }
+            } else if (currentEvent.data == null) {
+                fail("Incorrect message. Expected null. Actual is " + data.getFormattedMessage());
             } else {
-                if (currentEvent.data == null) {
-                    fail("Incorrect message. Expected null. Actual is " + data.getFormattedMessage());
-                } else {
-                    assertTrue(
-                            data.getClass().isAssignableFrom(currentEvent.data.getClass()),
-                            "Incorrect message type. Expected " + currentEvent.data + ", actual " + data);
-                    assertEquals(currentEvent.data.getFormattedMessage(), data.getFormattedMessage(),
-                            "Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
-                                    data.getFormattedMessage());
-                }
+                assertTrue(data.getClass().isAssignableFrom(currentEvent.data.getClass()),
+                    "Incorrect message type. Expected " + currentEvent.data + ", actual " + data);
+                assertEquals(currentEvent.data.getFormattedMessage(), data.getFormattedMessage(),
+                    "Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual "
+                        + data.getFormattedMessage());
             }
             if (t == null) {
                 if (currentEvent.t != null) {
                     fail("Incorrect Throwable. Expected " + currentEvent.t + ", actual is null");
                 }
+            } else if (currentEvent.t == null) {
+                fail("Incorrect Throwable. Expected null. Actual is " + t);
             } else {
-                if (currentEvent.t == null) {
-                    fail("Incorrect Throwable. Expected null. Actual is " + t);
-                } else {
-                    assertEquals(currentEvent.t, t, "Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t);
-                }
+                assertEquals(currentEvent.t, t, "Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t);
             }
             return true;
         }
@@ -1123,46 +1116,40 @@ public class AbstractLoggerTest {
         }
 
         @Override
-        public void logMessage(final String fqcn, final Level level, final Marker marker, final Message data, final Throwable t) {
+        public void logMessage(final String fqcn, final Level level, final Marker marker, final Message data,
+            final Throwable t) {
             assertEquals(level, currentLevel, "Incorrect Level. Expected " + currentLevel + ", actual " + level);
             if (marker == null) {
                 if (currentEvent.markerName != null) {
                     fail("Incorrect marker. Expected " + currentEvent.markerName + ", actual is null");
                 }
+            } else if (currentEvent.markerName == null) {
+                fail("Incorrect marker. Expected null. Actual is " + marker.getName());
             } else {
-                if (currentEvent.markerName == null) {
-                    fail("Incorrect marker. Expected null. Actual is " + marker.getName());
-                } else {
-                    assertEquals(currentEvent.markerName, marker.getName(),
-                            "Incorrect marker. Expected " + currentEvent.markerName + ", actual " + marker.getName());
-                }
+                assertEquals(currentEvent.markerName, marker.getName(),
+                    "Incorrect marker. Expected " + currentEvent.markerName + ", actual " + marker.getName());
             }
             if (data == null) {
                 if (currentEvent.data != null) {
                     fail("Incorrect message. Expected " + currentEvent.data + ", actual is null");
                 }
+            } else if (currentEvent.data == null) {
+                fail("Incorrect message. Expected null. Actual is " + data.getFormattedMessage());
             } else {
-                if (currentEvent.data == null) {
-                    fail("Incorrect message. Expected null. Actual is " + data.getFormattedMessage());
-                } else {
-                    assertTrue(
-                            data.getClass().isAssignableFrom(currentEvent.data.getClass()),
-                            "Incorrect message type. Expected " + currentEvent.data + ", actual " + data);
-                    assertEquals(currentEvent.data.getFormattedMessage(), data.getFormattedMessage(),
-                            "Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
-                                    data.getFormattedMessage());
-                }
+                assertTrue(data.getClass().isAssignableFrom(currentEvent.data.getClass()),
+                    "Incorrect message type. Expected " + currentEvent.data + ", actual " + data);
+                assertEquals(currentEvent.data.getFormattedMessage(), data.getFormattedMessage(),
+                    "Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual "
+                        + data.getFormattedMessage());
             }
             if (t == null) {
                 if (currentEvent.t != null) {
                     fail("Incorrect Throwable. Expected " + currentEvent.t + ", actual is null");
                 }
+            } else if (currentEvent.t == null) {
+                fail("Incorrect Throwable. Expected null. Actual is " + t);
             } else {
-                if (currentEvent.t == null) {
-                    fail("Incorrect Throwable. Expected null. Actual is " + t);
-                } else {
-                    assertEquals(currentEvent.t, t, "Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t);
-                }
+                assertEquals(currentEvent.t, t, "Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t);
             }
         }
     }

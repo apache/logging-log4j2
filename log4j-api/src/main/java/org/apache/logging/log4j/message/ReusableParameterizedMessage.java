@@ -68,20 +68,18 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
             result = params;
             if (emptyReplacement.length >= MAX_PARMS) {
                 params = emptyReplacement;
-            } else {
+            } else if (argCount <= emptyReplacement.length) {
                 // Bad replacement! Too small, may blow up future 10-arg messages.
-                if (argCount <= emptyReplacement.length) {
-                    // copy params into the specified replacement array and return that
-                    System.arraycopy(params, 0, emptyReplacement, 0, argCount);
-                    // Do not retain references to objects in the reusable params array.
-                    for (int i = 0; i < argCount; i++) {
-                        params[i] = null;
-                    }
-                    result = emptyReplacement;
-                } else {
-                    // replacement array is too small for current content and future content: discard it
-                    params = new Object[MAX_PARMS];
+                // copy params into the specified replacement array and return that
+                System.arraycopy(params, 0, emptyReplacement, 0, argCount);
+                // Do not retain references to objects in the reusable params array.
+                for (int i = 0; i < argCount; i++) {
+                    params[i] = null;
                 }
+                result = emptyReplacement;
+            } else {
+                // replacement array is too small for current content and future content: discard it
+                params = new Object[MAX_PARMS];
             }
         } else {
             // The returned array will be reused by the caller in future swapParameter() calls.

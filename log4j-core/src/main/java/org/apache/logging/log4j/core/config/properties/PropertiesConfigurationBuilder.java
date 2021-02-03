@@ -270,13 +270,11 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             } else {
                 throw new ConfigurationException("Unknown Logger type " + type + " for Logger " + name);
             }
+        } else if (location != null) {
+            includeLocation = Boolean.parseBoolean(location);
+            loggerBuilder = builder.newLogger(name, level, includeLocation);
         } else {
-            if (location != null) {
-                includeLocation = Boolean.parseBoolean(location);
-                loggerBuilder = builder.newLogger(name, level, includeLocation);
-            } else {
-                loggerBuilder = builder.newLogger(name, level);
-            }
+            loggerBuilder = builder.newLogger(name, level);
         }
         addLoggersToComponent(loggerBuilder, properties);
         addFiltersToComponent(loggerBuilder, properties);
@@ -304,13 +302,11 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             } else {
                 throw new ConfigurationException("Unknown Logger type for root logger" + type);
             }
+        } else if (location != null) {
+            includeLocation = Boolean.parseBoolean(location);
+            loggerBuilder = builder.newRootLogger(level, includeLocation);
         } else {
-            if (location != null) {
-                includeLocation = Boolean.parseBoolean(location);
-                loggerBuilder = builder.newRootLogger(level, includeLocation);
-            } else {
-                loggerBuilder = builder.newRootLogger(level);
-            }
+            loggerBuilder = builder.newRootLogger(level);
         }
         addLoggersToComponent(loggerBuilder, properties);
         return addFiltersToComponent(loggerBuilder, properties);

@@ -129,11 +129,9 @@ public class SerializationTestHelper {
             for (int i = 0; i < endScan; i++) {
                 if ((skipIndex < skip.length) && (skip[skipIndex] == i)) {
                     skipIndex++;
-                } else {
-                    if (expected[i] != actual[i]) {
-                        assertEquals(
-                            "Difference at offset " + i, expected[i], actual[i]);
-                    }
+                } else if (expected[i] != actual[i]) {
+                    assertEquals(
+                        "Difference at offset " + i, expected[i], actual[i]);
                 }
             }
         } else {

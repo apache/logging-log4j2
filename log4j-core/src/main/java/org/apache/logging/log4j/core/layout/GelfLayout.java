@@ -509,12 +509,10 @@ public final class GelfLayout extends AbstractStringLayout {
                 final StringBuilder messageBuffer = getMessageStringBuilder();
                 layout.serialize(event, messageBuffer);
                 JsonUtils.quoteAsString(messageBuffer, builder);
+            } else if (includeStacktrace) {
+                JsonUtils.quoteAsString(formatThrowable(event.getThrown()), builder);
             } else {
-                if (includeStacktrace) {
-                    JsonUtils.quoteAsString(formatThrowable(event.getThrown()), builder);
-                } else {
-                    JsonUtils.quoteAsString(event.getThrown().toString(), builder);
-                }
+                JsonUtils.quoteAsString(event.getThrown().toString(), builder);
             }
             builder.append(QC);
         }

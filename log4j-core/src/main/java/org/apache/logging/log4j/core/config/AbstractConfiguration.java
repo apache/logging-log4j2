@@ -246,22 +246,21 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected void initializeWatchers(Reconfigurable reconfigurable, ConfigurationSource configSource,
         int monitorIntervalSeconds) {
         if (configSource.getFile() != null || configSource.getURL() != null) {
-        	if (monitorIntervalSeconds > 0) {
-				watchManager.setIntervalSeconds(monitorIntervalSeconds);
-				if (configSource.getFile() != null) {
-					final Source cfgSource = new Source(configSource);
-					final long lastModifeid = configSource.getFile().lastModified();
-					final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(this, reconfigurable,
-						listeners, lastModifeid);
-					watchManager.watch(cfgSource, watcher);
-				} else {
-					if (configSource.getURL() != null) {
-						monitorSource(reconfigurable, configSource);
-					}
-				}
-			} else if (watchManager.hasEventListeners() && configSource.getURL() != null && monitorIntervalSeconds >= 0) {
-				monitorSource(reconfigurable, configSource);
-			}
+            if (monitorIntervalSeconds > 0) {
+                watchManager.setIntervalSeconds(monitorIntervalSeconds);
+                if (configSource.getFile() != null) {
+                    final Source cfgSource = new Source(configSource);
+                    final long lastModifeid = configSource.getFile().lastModified();
+                    final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(this, reconfigurable,
+                        listeners, lastModifeid);
+                    watchManager.watch(cfgSource, watcher);
+                } else if (configSource.getURL() != null) {
+                    monitorSource(reconfigurable, configSource);
+                }
+            } else if (watchManager.hasEventListeners() && configSource.getURL() != null
+                && monitorIntervalSeconds >= 0) {
+                monitorSource(reconfigurable, configSource);
+            }
         }
     }
 
@@ -558,10 +557,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     if (script instanceof ScriptRef) {
                         LOGGER.error("Script reference to {} not added. Scripts definition cannot contain script references",
                                 script.getName());
-                    } else {
-                        if (scriptManager != null) {
-                            scriptManager.addScript(script);
-                        }}
+                    } else if (scriptManager != null) {
+                        scriptManager.addScript(script);
+                    }
                 }
             } else if (child.getName().equalsIgnoreCase("Appenders")) {
                 appenders = child.getObject();

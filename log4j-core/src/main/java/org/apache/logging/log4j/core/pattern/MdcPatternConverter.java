@@ -98,19 +98,17 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
                 return;
             }
             appendFully(contextData, toAppendTo);
-        } else {
-            if (keys != null) {
-                if (contextData == null || contextData.isEmpty()) {
-                    toAppendTo.append("{}");
-                    return;
-                }
-                appendSelectedKeys(keys, contextData, toAppendTo);
-            } else if (contextData != null){
-                // otherwise they just want a single key output
-                final Object value = contextData.getValue(key);
-                if (value != null) {
-                    StringBuilders.appendValue(toAppendTo, value);
-                }
+        } else if (keys != null) {
+            if (contextData == null || contextData.isEmpty()) {
+                toAppendTo.append("{}");
+                return;
+            }
+            appendSelectedKeys(keys, contextData, toAppendTo);
+        } else if (contextData != null){
+            // otherwise they just want a single key output
+            final Object value = contextData.getValue(key);
+            if (value != null) {
+                StringBuilders.appendValue(toAppendTo, value);
             }
         }
     }

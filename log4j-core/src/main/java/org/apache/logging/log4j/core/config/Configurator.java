@@ -366,10 +366,8 @@ public final class Configurator {
         final LoggerContext loggerContext = LoggerContext.getContext(false);
         if (Strings.isEmpty(loggerName)) {
             setRootLevel(level);
-        } else {
-            if (setLevel(loggerName, level, loggerContext.getConfiguration())) {
-                loggerContext.updateLoggers();
-            }
+        } else if (setLevel(loggerName, level, loggerContext.getConfiguration())) {
+            loggerContext.updateLoggers();
         }
     }
 

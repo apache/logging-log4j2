@@ -337,13 +337,11 @@ public final class RoutingAppender extends AbstractAppender {
             // Don't attempt to stop the appender in a synchronized block, since it may block flushing events
             // to disk.
             control.tryStopAppender();
+        } else if (referencedAppenders.containsKey(key)) {
+            LOGGER.debug("Route {} using an appender reference may not be removed because " +
+                    "the appender may be used outside of the RoutingAppender", key);
         } else {
-            if (referencedAppenders.containsKey(key)) {
-                LOGGER.debug("Route {} using an appender reference may not be removed because " +
-                        "the appender may be used outside of the RoutingAppender", key);
-            } else {
-                LOGGER.debug("Route with {} key already deleted", key);
-            }
+            LOGGER.debug("Route with {} key already deleted", key);
         }
     }
 

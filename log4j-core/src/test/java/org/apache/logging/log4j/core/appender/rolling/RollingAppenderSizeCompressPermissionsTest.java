@@ -90,14 +90,12 @@ public class RollingAppenderSizeCompressPermissionsTest {
                     assertEquals("r--r--r--",
                             PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
                 }
+            } else if (file.getName().startsWith("test1")) {
+                assertEquals("rw-------",
+                        PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
             } else {
-                if (file.getName().startsWith("test1")) {
-                    assertEquals("rw-------",
-                            PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
-                } else {
-                    assertEquals("rwx------",
-                            PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
-                }
+                assertEquals("rwx------",
+                        PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
             }
         }
         assertTrue("Files not rolled : " + files.length, files.length > 2);

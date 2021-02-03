@@ -382,10 +382,8 @@ public class RollingFileManager extends FileManager {
             if (policy instanceof LifeCycle) {
                 ((LifeCycle) policy).stop();
             }
-        } else {
-            if (triggeringPolicy instanceof LifeCycle) {
-                ((LifeCycle) triggeringPolicy).stop();
-            }
+        } else if (triggeringPolicy instanceof LifeCycle) {
+            ((LifeCycle) triggeringPolicy).stop();
         }
     }
 

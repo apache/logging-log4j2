@@ -93,13 +93,11 @@ public abstract class NameAbbreviator {
                 if (trimmed.charAt(pos) == '*') {
                     charCount = Integer.MAX_VALUE;
                     ellipsisPos++;
+                } else if (trimmed.charAt(pos) >= '0' && trimmed.charAt(pos) <= '9') {
+                    charCount = trimmed.charAt(pos) - '0';
+                    ellipsisPos++;
                 } else {
-                    if (trimmed.charAt(pos) >= '0' && trimmed.charAt(pos) <= '9') {
-                        charCount = trimmed.charAt(pos) - '0';
-                        ellipsisPos++;
-                    } else {
-                        charCount = 0;
-                    }
+                    charCount = 0;
                 }
 
                 ellipsis = '\0';
