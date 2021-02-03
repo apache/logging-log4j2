@@ -535,7 +535,8 @@ public final class CronExpression {
                 }
                 if (s.length() > i + 3) {
                     c = s.charAt(i + 3);
-                    if (c == '-') {
+                    switch (c) {
+                    case '-':
                         i += 4;
                         sub = s.substring(i, i + 3);
                         eval = getDayOfWeekNumber(sub);
@@ -544,7 +545,8 @@ public final class CronExpression {
                                     "Invalid Day-of-Week value: '" + sub
                                             + "'", i);
                         }
-                    } else if (c == '#') {
+                        break;
+                    case '#':
                         try {
                             i += 4;
                             nthdayOfWeek = Integer.parseInt(s.substring(i));
@@ -556,9 +558,13 @@ public final class CronExpression {
                                     "A numeric value between 1 and 5 must follow the '#' option",
                                     i);
                         }
-                    } else if (c == 'L') {
+                        break;
+                    case 'L':
                         lastdayOfWeek = true;
                         i++;
+                        break;
+                    default:
+                        break;
                     }
                 }
 
@@ -995,48 +1001,58 @@ public final class CronExpression {
             set.add(ALL_SPEC); // put in a marker, but also fill values
         }
 
-        if (type == SECOND || type == MINUTE) {
+        switch (type) {
+        case SECOND:
+        case MINUTE:
             if (stopAt == -1) {
                 stopAt = 59;
             }
             if (startAt == -1 || startAt == ALL_SPEC_INT) {
                 startAt = 0;
             }
-        } else if (type == HOUR) {
+            break;
+        case HOUR:
             if (stopAt == -1) {
                 stopAt = 23;
             }
             if (startAt == -1 || startAt == ALL_SPEC_INT) {
                 startAt = 0;
             }
-        } else if (type == DAY_OF_MONTH) {
+            break;
+        case DAY_OF_MONTH:
             if (stopAt == -1) {
                 stopAt = 31;
             }
             if (startAt == -1 || startAt == ALL_SPEC_INT) {
                 startAt = 1;
             }
-        } else if (type == MONTH) {
+            break;
+        case MONTH:
             if (stopAt == -1) {
                 stopAt = 12;
             }
             if (startAt == -1 || startAt == ALL_SPEC_INT) {
                 startAt = 1;
             }
-        } else if (type == DAY_OF_WEEK) {
+            break;
+        case DAY_OF_WEEK:
             if (stopAt == -1) {
                 stopAt = 7;
             }
             if (startAt == -1 || startAt == ALL_SPEC_INT) {
                 startAt = 1;
             }
-        } else if (type == YEAR) {
+            break;
+        case YEAR:
             if (stopAt == -1) {
                 stopAt = MAX_YEAR;
             }
             if (startAt == -1 || startAt == ALL_SPEC_INT) {
                 startAt = 1970;
             }
+            break;
+        default:
+            break;
         }
 
         // if the end of the range is before the start, then we need to overflow into
