@@ -49,6 +49,9 @@
       <action issue="LOG4J2-2974" dev="rgoers" type="fix">
         Log4j would fail to initialize in Java 8 with log4j-spring-boot.
       </action>
+      <action issue="LOG4J2-2964" dev="valfirst" type="fix">
+        Merge packages from several Configurations in Composite Configuration.
+      </action>
       <action issue="LOG4J2-2961" dev="vy" type="fix">
         Fix reading of JsonTemplateLayout event additional fields from config.
       </action>
