@@ -1,0 +1,42 @@
+{
+  "Configuration": {
+    "status": "OFF",
+    "appenders": {
+      "List": {
+        "name": "List",
+        "raw": "true",
+        "JsonTemplateLayout": {
+          "eventTemplateAdditionalField": [
+            {
+              "key": "stringField",
+              "value": "string"
+            },
+            {
+              "key": "numberField",
+              "value": "1",
+              "format": "JSON"
+            },
+            {
+              "key": "objectField",
+              "value": "{\"numberField\":1}",
+              "format": "JSON"
+            },
+            {
+              "key": "listField",
+              "value": "[1, \"two\"]",
+              "format": "JSON"
+            }
+          ]
+        }
+      }
+    },
+    "loggers": {
+      "root": {
+        "level": "trace",
+        "AppenderRef": {
+          "ref": "List"
+        }
+      }
+    }
+  }
+}

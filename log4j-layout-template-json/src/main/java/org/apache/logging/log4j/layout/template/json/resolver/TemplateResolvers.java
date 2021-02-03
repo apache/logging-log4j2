@@ -129,7 +129,7 @@ public final class TemplateResolvers {
             for (final EventTemplateAdditionalField additionalField : additionalFields) {
                 final String additionalFieldKey = additionalField.getKey();
                 final Object additionalFieldValue;
-                switch (additionalField.getType()) {
+                switch (additionalField.getFormat()) {
                     case STRING:
                         additionalFieldValue = additionalField.getValue();
                         break;
@@ -145,8 +145,8 @@ public final class TemplateResolvers {
                         break;
                     default: {
                         final String message = String.format(
-                                "unknown type %s for additional field: %s",
-                                additionalFieldKey, additionalField.getType());
+                                "unknown format %s for additional field: %s",
+                                additionalFieldKey, additionalField.getFormat());
                         throw new IllegalArgumentException(message);
                     }
                 }

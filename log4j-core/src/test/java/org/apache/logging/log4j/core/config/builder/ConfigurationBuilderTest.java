@@ -71,7 +71,7 @@ public class ConfigurationBuilderTest {
     }
 
     private final static String expectedXml =
-            "<?xml version='1.0' encoding='UTF-8'?>" + EOL +
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" /*+ EOL*/ +
             "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\" shutdownTimeout=\"5000\">" + EOL +
                 INDENT + "<Properties>" + EOL +
                 INDENT + INDENT + "<Property name=\"MyKey\">MyValue</Property>" + EOL +
@@ -109,7 +109,6 @@ public class ConfigurationBuilderTest {
             "</Configuration>" + EOL;
 
     @Test
-    @DisabledOnOs(OS.WINDOWS) // TODO make test run properly on Windows
     public void testXmlConstructing() throws Exception {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         addTestFixtures("config name", builder);

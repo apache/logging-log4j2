@@ -97,7 +97,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testInitializeWithNoParametersThenSetLoggerContextThenDeinitialize() throws Exception {
+    public void testInitializeWithNoParametersThenSetLoggerContextThenDeinitialize() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn(null);
@@ -134,7 +134,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testInitializeWithClassLoaderNoParametersThenSetLoggerContextThenDeinitialize() throws Exception {
+    public void testInitializeWithClassLoaderNoParametersThenSetLoggerContextThenDeinitialize() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn("false");
@@ -173,7 +173,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testInitializeIsIdempotent() throws Exception {
+    public void testInitializeIsIdempotent() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn("nothing");
@@ -196,7 +196,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testInitializeFailsAfterDeinitialize() throws Exception {
+    public void testInitializeFailsAfterDeinitialize() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn(null);
@@ -220,7 +220,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testDeinitializeIsIdempotent() throws Exception {
+    public void testDeinitializeIsIdempotent() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn(null);
@@ -241,7 +241,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testInitializeUsingJndiSelectorFails() throws Exception {
+    public void testInitializeUsingJndiSelectorFails() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn("true");
@@ -254,7 +254,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testInitializeUsingJndiSelector() throws Exception {
+    public void testInitializeUsingJndiSelector() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn("helloWorld06");
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn("true");
@@ -286,7 +286,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testWrapExecutionWithNoParameters() throws Exception {
+    public void testWrapExecutionWithNoParameters() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION))).willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))).willReturn(null);
