@@ -256,23 +256,41 @@ custom fields:
 </JsonTemplateLayout>
 ----
 
-The default `type` for the added new fields are `String`.
+The default `format` for the added new fields are `String`.
 One can also pass JSON literals into additional fields:
 
 [source,xml]
 ----
 <EventTemplateAdditionalField
      key="marker"
-     type="JSON"
+     format="JSON"
      value='{"$resolver": "marker", "field": "name"}'/>
 <EventTemplateAdditionalField
      key="aNumber"
-     type="JSON"
+     format="JSON"
      value="1"/>
 <EventTemplateAdditionalField
      key="aList"
-     type="JSON"
+     format="JSON"
      value='[1,2,"string"]'/>
+----
+
+When using a configuration file with a `.properties` extension, additional fields can be added as follows:
+
+[source, properties]
+----
+appender.console.layout.extra[0].key = marker
+appender.console.layout.extra[0].value = {"$resolver": "marker", "field": "name"}
+appender.console.layout.extra[0].format = JSON
+appender.console.layout.extra[0].type = EventTemplateAdditionalField
+appender.console.layout.extra[1].key = aNumber
+appender.console.layout.extra[1].value = 1
+appender.console.layout.extra[1].format = JSON
+appender.console.layout.extra[1].type = EventTemplateAdditionalField
+appender.console.layout.extra[2].key = aList
+appender.console.layout.extra[2].value = [1,2,"string"]
+appender.console.layout.extra[2].format = JSON
+appender.console.layout.extra[2].type = EventTemplateAdditionalField
 ----
 
 [#recycling-strategy]

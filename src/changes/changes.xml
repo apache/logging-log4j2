@@ -34,6 +34,9 @@
       <action issue="LOG4J2-2998" dev="vy" type="fix">
         Fix truncation of excessive strings ending with a high surrogate in JsonWriter.
       </action>
+      <action issue="LOG4J2-2973" dev="fricchiuti" type="fix">
+        Rename EventTemplateAdditionalField#type (conflicting with properties file parser) to "format".
+      </action>
       <action issue="LOG4J2-2972" dev="vy" type="fix">
         Refactor AsyncAppender and AppenderControl for handling of Throwables.
       </action>

@@ -20,9 +20,9 @@
     <List name="List" raw="true">
       <JsonTemplateLayout>
         <EventTemplateAdditionalField key="stringField" value="string"/>
-        <EventTemplateAdditionalField key="numberField" value="1" type="JSON"/>
-        <EventTemplateAdditionalField key="objectField" value='{"numberField":1}' type="JSON"/>
-        <EventTemplateAdditionalField key="listField" value='[1, "two"]' type="JSON"/>
+        <EventTemplateAdditionalField key="numberField" value="1" format="JSON"/>
+        <EventTemplateAdditionalField key="objectField" value='{"numberField":1}' format="JSON"/>
+        <EventTemplateAdditionalField key="listField" value='[1, "two"]' format="JSON"/>
       </JsonTemplateLayout>
     </List>
   </Appenders>
