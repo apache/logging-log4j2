@@ -85,16 +85,26 @@ public class DefaultMergeStrategy implements MergeStrategy {
                             if (sourceLevel != null) {
                                 targetAttribute.setValue(attribute.getValue());
                             }
-                    } else {
-                        if (attribute.getKey().equalsIgnoreCase("monitorInterval")) {
-                            final int sourceInterval = Integer.parseInt(attribute.getValue());
-                            final int targetInterval = Integer.parseInt(targetAttribute.getValue());
-                            if (targetInterval == 0 || sourceInterval < targetInterval) {
-                                targetAttribute.setValue(attribute.getValue());
-                            }
-                        } else {
+                    } else if (attribute.getKey().equalsIgnoreCase("monitorInterval")) {
+                        final int sourceInterval = Integer.parseInt(attribute.getValue());
+                        final int targetInterval = Integer.parseInt(targetAttribute.getValue());
+                        if (targetInterval == 0 || sourceInterval < targetInterval) {
                             targetAttribute.setValue(attribute.getValue());
                         }
+                    } else if (attribute.getKey().equalsIgnoreCase("packages")) {
+                        String sourcePackages = attribute.getValue();
+                        String targetPackages = targetAttribute.getValue();
+                        if (sourcePackages != null) {
+                            if (targetPackages != null) {
+                                targetAttribute.setValue(targetPackages + "," + sourcePackages);
+                            }
+                            else {
+                                targetAttribute.setValue(sourcePackages);
+                            }
+                        }
+                    }
+                    else {
+                        targetAttribute.setValue(attribute.getValue());
                     }
                     isFound = true;
                 }

@@ -1326,8 +1326,13 @@ rootLogger.appenderRef.stdout.ref = STDOUT
                 merge strategy will merge the files using the following rules:
               <ol>
                 <li>The global configuration attributes are aggregated with those in later configurations replacing
-                  those in previous configurations, with the exception that the highest status level and the lowest
-                  monitorInterval greater than 0 will be used.</li>
+                those in previous configurations, with the exceptions:
+                  <ul>
+                    <li>the highest status level will be used</li>
+                    <li>the lowest monitorInterval greater than 0 will be used</li>
+                    <li>packages are joined with comma</li>
+                  </ul>
+                </li>
                 <li>Properties from all configurations are aggregated. Duplicate properties replace those in previous
                   configurations.</li>
                 <li>Filters are aggregated under a CompositeFilter if more than one Filter is defined. Since Filters
