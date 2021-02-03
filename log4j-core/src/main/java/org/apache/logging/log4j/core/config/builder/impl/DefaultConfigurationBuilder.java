@@ -225,6 +225,13 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         return configuration;
     }
 
+    private String formatXml(String xml)
+        throws TransformerConfigurationException, TransformerException, TransformerFactoryConfigurationError {
+        final StringWriter writer = new StringWriter();
+        formatXml(new StreamSource(new StringReader(xml)), new StreamResult(writer));
+        return writer.toString();
+    }
+
     @Override
     public void writeXmlConfiguration(final OutputStream output) throws IOException {
         try {
@@ -247,16 +254,9 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             writeXmlConfiguration(xmlWriter);
             xmlWriter.close();
             return formatXml(writer.toString());
-        } catch (final XMLStreamException | TransformerException | TransformerFactoryConfigurationError e) {
+        } catch (final XMLStreamException | TransformerException e) {
             Throwables.rethrow(e);
         }
-        return writer.toString();
-    }
-
-    private String formatXml(String xml)
-        throws TransformerConfigurationException, TransformerException, TransformerFactoryConfigurationError {
-        final StringWriter writer = new StringWriter();
-        formatXml(new StreamSource(new StringReader(xml)), new StreamResult(writer));
         return writer.toString();
     }
 
