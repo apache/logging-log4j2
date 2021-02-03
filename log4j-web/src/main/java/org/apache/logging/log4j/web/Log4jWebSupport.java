@@ -56,6 +56,13 @@ public interface Log4jWebSupport {
     String IS_LOG4J_AUTO_INITIALIZATION_DISABLED = "isLog4jAutoInitializationDisabled";
 
     /**
+     * The {@link javax.servlet.ServletContext} parameter name for the flag that disables Log4j's auto-shutdown
+     * in Servlet 3.0+ web applications. Set a context parameter with this name to "true" to disable
+     * auto-shutdown.
+     */
+    String IS_LOG4J_AUTO_SHUTDOWN_DISABLED = "isLog4jAutoShutdownDisabled";
+
+    /**
      * The attribute key for the {@link javax.servlet.ServletContext} attribute that the singleton support instance
      * is stored in.
      */

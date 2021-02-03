@@ -24,22 +24,24 @@ import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.never;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class Log4jServletContainerInitializerTest {
     @Mock
     private ServletContext servletContext;
@@ -52,7 +54,7 @@ public class Log4jServletContainerInitializerTest {
 
     private Log4jServletContainerInitializer containerInitializer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.containerInitializer = new Log4jServletContainerInitializer();
     }
@@ -83,6 +85,29 @@ public class Log4jServletContainerInitializerTest {
     }
 
     @Test
+    public void testOnStartupWithServletVersion3_xEffectiveVersion3_xShutdownDisabled() throws Exception {
+        final FilterRegistration.Dynamic registration = mock(FilterRegistration.Dynamic.class);
+        given(servletContext.getMajorVersion()).willReturn(3);
+        given(servletContext.getEffectiveMajorVersion()).willReturn(3);
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED)))
+                      .willReturn("true");
+        given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))).willReturn(
+                null);
+        given(servletContext.addFilter(eq("log4jServletFilter"), filterCaptor.capture())).willReturn(registration);
+        given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).willReturn(initializer);
+
+        this.containerInitializer.onStartup(null, this.servletContext);
+
+        then(initializer).should().start();
+        then(initializer).should().setLoggerContext();
+        then(registration).should().setAsyncSupported(eq(true));
+        then(registration).should().addMappingForUrlPatterns(eq(EnumSet.allOf(DispatcherType.class)), eq(false), eq("/*"));
+
+        // initParam IS_LOG4J_AUTO_SHUTDOWN_DISABLED is "true" so addListener shouldn't be called.
+        then(servletContext).should(never()).addListener(any(Log4jServletContextListener.class));
+    }
+
+    @Test
     public void testOnStartupWithServletVersion3_xEffectiveVersion3_xDisabledTRUE() throws Exception {
         given(servletContext.getMajorVersion()).willReturn(3);
         given(servletContext.getEffectiveMajorVersion()).willReturn(3);
@@ -110,12 +135,13 @@ public class Log4jServletContainerInitializerTest {
         then(registration).should().setAsyncSupported(eq(true));
         then(registration).should().addMappingForUrlPatterns(eq(EnumSet.allOf(DispatcherType.class)), eq(false), eq("/*"));
 
-        assertNotNull("The listener should not be null.", listenerCaptor.getValue());
-        assertSame("The listener is not correct.", Log4jServletContextListener.class,
-            listenerCaptor.getValue().getClass());
+        assertNotNull(listenerCaptor.getValue(), "The listener should not be null.");
+        assertSame(Log4jServletContextListener.class,
+            listenerCaptor.getValue().getClass(),
+            "The listener is not correct.");
 
-        assertNotNull("The filter should not be null.", filterCaptor.getValue());
-        assertSame("The filter is not correct.", Log4jServletFilter.class, filterCaptor.getValue());
+        assertNotNull(filterCaptor.getValue(), "The filter should not be null.");
+        assertSame(Log4jServletFilter.class, filterCaptor.getValue(), "The filter is not correct.");
     }
 
     @Test
@@ -128,8 +154,8 @@ public class Log4jServletContainerInitializerTest {
 
         this.containerInitializer.onStartup(null, this.servletContext);
 
-        assertNotNull("The filter should not be null.", filterCaptor.getValue());
-        assertSame("The filter is not correct.", Log4jServletFilter.class, filterCaptor.getValue());
+        assertNotNull(filterCaptor.getValue(), "The filter should not be null.");
+        assertSame(Log4jServletFilter.class, filterCaptor.getValue(), "The filter is not correct.");
     }
 
     @Test
@@ -148,11 +174,11 @@ public class Log4jServletContainerInitializerTest {
             this.containerInitializer.onStartup(null, this.servletContext);
             fail("Expected the exception thrown by the initializer; got no exception.");
         } catch (final IllegalStateException e) {
-            assertSame("The exception is not correct.", exception, e);
+            assertSame(exception, e, "The exception is not correct.");
         }
 
         then(initializer).should().start();
-        assertNotNull("The filter should not be null.", filterCaptor.getValue());
-        assertSame("The filter is not correct.", Log4jServletFilter.class, filterCaptor.getValue());
+        assertNotNull(filterCaptor.getValue(), "The filter should not be null.");
+        assertSame(Log4jServletFilter.class, filterCaptor.getValue(), "The filter is not correct.");
     }
 }

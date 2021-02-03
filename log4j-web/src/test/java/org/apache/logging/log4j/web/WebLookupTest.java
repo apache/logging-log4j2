@@ -26,10 +26,10 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockServletContext;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WebLookupTest {
 
@@ -47,27 +47,27 @@ public class WebLookupTest {
             initializer.start();
             initializer.setLoggerContext();
             final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
-            assertNotNull("No LoggerContext", ctx);
-            assertNotNull("No ServletContext", WebLoggerContextUtils.getServletContext());
+            assertNotNull(ctx, "No LoggerContext");
+            assertNotNull(WebLoggerContextUtils.getServletContext(), "No ServletContext");
             final Configuration config = ctx.getConfiguration();
-            assertNotNull("No Configuration", config);
+            assertNotNull(config, "No Configuration");
             final StrSubstitutor substitutor = config.getStrSubstitutor();
-            assertNotNull("No Interpolator", substitutor);
+            assertNotNull(substitutor, "No Interpolator");
             String value = substitutor.replace("${web:initParam.TestParam}");
-            assertNotNull("No value for TestParam", value);
-            assertEquals("Incorrect value for TestParam: " + value, "ParamValue", value);
+            assertNotNull(value, "No value for TestParam");
+            assertEquals("ParamValue", value, "Incorrect value for TestParam: " + value);
             value = substitutor.replace("${web:attr.TestAttr}");
-            assertNotNull("No value for TestAttr", value);
-            assertEquals("Incorrect value for TestAttr: " + value, "AttrValue", value);
+            assertNotNull(value, "No value for TestAttr");
+            assertEquals("AttrValue", value, "Incorrect value for TestAttr: " + value);
             value = substitutor.replace("${web:Name1}");
-            assertNotNull("No value for Name1", value);
-            assertEquals("Incorrect value for Name1: " + value, "Ben", value);
+            assertNotNull(value, "No value for Name1");
+            assertEquals("Ben", value, "Incorrect value for Name1: " + value);
             value = substitutor.replace("${web:Name2}");
-            assertNotNull("No value for Name2", value);
-            assertEquals("Incorrect value for Name2: " + value, "Jerry", value);
+            assertNotNull(value, "No value for Name2");
+            assertEquals("Jerry", value, "Incorrect value for Name2: " + value);
             value = substitutor.replace("${web:contextPathName}");
-            assertNotNull("No value for context name", value);
-            assertEquals("Incorrect value for context name", "WebApp", value);
+            assertNotNull(value, "No value for context name");
+            assertEquals("WebApp", value, "Incorrect value for context name");
         } catch (final IllegalStateException e) {
             fail("Failed to initialize Log4j properly." + e.getMessage());
         }
@@ -89,10 +89,10 @@ public class WebLookupTest {
         initializer.start();
         initializer.setLoggerContext();
         final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
-        assertNotNull("No LoggerContext", ctx);
-        assertNotNull("No ServletContext", WebLoggerContextUtils.getServletContext());
+        assertNotNull(ctx, "No LoggerContext");
+        assertNotNull(WebLoggerContextUtils.getServletContext(), "No ServletContext");
         final Configuration config = ctx.getConfiguration();
-        assertNotNull("No Configuration", config);
+        assertNotNull(config, "No Configuration");
         final Map<String, Appender> appenders = config.getAppenders();
         for (final Map.Entry<String, Appender> entry : appenders.entrySet()) {
             if (entry.getKey().equals("file")) {
@@ -102,8 +102,8 @@ public class WebLookupTest {
         }
         final StrSubstitutor substitutor = config.getStrSubstitutor();
         String value = substitutor.replace("${web:contextPathName:-default}");
-        assertEquals("Incorrect value for context name", "default", value);
-        assertNotNull("No value for context name", value);
+        assertEquals("default", value, "Incorrect value for context name");
+        assertNotNull(value, "No value for context name");
         initializer.stop();
         ContextAnchor.THREAD_CONTEXT.remove();
     }
