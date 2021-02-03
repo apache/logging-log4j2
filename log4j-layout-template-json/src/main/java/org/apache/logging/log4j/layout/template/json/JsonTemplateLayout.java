@@ -531,18 +531,18 @@ public class JsonTemplateLayout implements StringLayout {
             printObject = true)
     public static final class EventTemplateAdditionalField {
 
-        public enum Type { STRING, JSON }
+        public enum Format { STRING, JSON }
 
         private final String key;
 
         private final String value;
 
-        private final Type type;
+        private final Format format;
 
         private EventTemplateAdditionalField(final Builder builder) {
             this.key = builder.key;
             this.value = builder.value;
-            this.type = builder.type;
+            this.format = builder.format;
         }
 
         public String getKey() {
@@ -553,8 +553,8 @@ public class JsonTemplateLayout implements StringLayout {
             return value;
         }
 
-        public Type getType() {
-            return type;
+        public Format getFormat() {
+            return format;
         }
 
         @Override
@@ -568,17 +568,17 @@ public class JsonTemplateLayout implements StringLayout {
             EventTemplateAdditionalField that = (EventTemplateAdditionalField) object;
             return key.equals(that.key) &&
                     value.equals(that.value) &&
-                    type == that.type;
+                    format == that.format;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(key, value, type);
+            return Objects.hash(key, value, format);
         }
 
         @Override
         public String toString() {
-            final String formattedValue = Type.STRING.equals(type)
+            final String formattedValue = Format.STRING.equals(format)
                     ? String.format("\"%s\"", value)
                     : value;
             return String.format("%s=%s", key, formattedValue);
@@ -599,7 +599,7 @@ public class JsonTemplateLayout implements StringLayout {
             private String value;
 
             @PluginBuilderAttribute
-            private Type type = Type.STRING;
+            private Format format = Format.STRING;
 
             public Builder setKey(final String key) {
                 this.key = key;
@@ -611,8 +611,8 @@ public class JsonTemplateLayout implements StringLayout {
                 return this;
             }
 
-            public Builder setType(final Type type) {
-                this.type = type;
+            public Builder setFormat(final Format format) {
+                this.format = format;
                 return this;
             }
 
@@ -629,7 +629,7 @@ public class JsonTemplateLayout implements StringLayout {
                 if (Strings.isBlank(value)) {
                     throw new IllegalArgumentException("blank value");
                 }
-                Objects.requireNonNull(type, "type");
+                Objects.requireNonNull(format, "format");
             }
 
         }
