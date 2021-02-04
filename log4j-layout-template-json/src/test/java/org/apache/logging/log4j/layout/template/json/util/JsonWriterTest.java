@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -653,9 +654,12 @@ class JsonWriterTest {
             final Function<Integer, String> quoter) throws IOException {
         final SoftAssertions assertions = new SoftAssertions();
         final char[] surrogates = new char[2];
+        final Random random = new Random(0);
         for (int codePoint = Character.MIN_CODE_POINT;
              codePoint <= Character.MAX_CODE_POINT;
-             codePoint++) {
+             // Incrementing randomly, since incrementing by one takes almost
+             // two minutes for this test to finish.
+             codePoint += Math.abs(random.nextInt(100))) {
             // noinspection ResultOfMethodCallIgnored
             Character.toChars(codePoint, surrogates, 0);
             final String s = new String(surrogates);
