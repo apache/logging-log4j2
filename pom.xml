@@ -875,7 +875,7 @@
       <dependency>
         <groupId>co.elastic.logging</groupId>
         <artifactId>log4j2-ecs-layout</artifactId>
-        <version>0.4.0</version>
+        <version>0.5.2</version>
       </dependency>
       <dependency>
         <groupId>org.elasticsearch.client</groupId>
