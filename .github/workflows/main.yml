@@ -1,4 +1,4 @@
-name: Maven
+name: CI
 
 on: [push]
 
@@ -44,6 +44,7 @@ jobs:
 
       - name: Build with Maven (Linux)
         if: runner.os == 'Linux'
+        continue-on-error: true
         run: ./mvnw -V -B --no-transfer-progress -e -DtrimStackTrace=false -Dmaven.test.failure.ignore=true -Dsurefire.rerunFailingTestsCount=1 --global-toolchains .github/workflows/maven-toolchains.xml verify
 
       - name: Inspect environment (Windows)
@@ -52,6 +53,7 @@ jobs:
 
       - name: Build with Maven (Windows)
         if: runner.os == 'Windows'
+        continue-on-error: true
         run: ./mvnw -V -B --no-transfer-progress -e "-DtrimStackTrace=false" "-Dmaven.test.failure.ignore=true" "-Dsurefire.rerunFailingTestsCount=1" "-Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000" --global-toolchains ".github\workflows\maven-toolchains.xml" verify
 
       - name: Inspect environment (MacOS)
@@ -60,6 +62,7 @@ jobs:
 
       - name: Build with Maven (MacOS)
         if: runner.os == 'macOS'
+        continue-on-error: true
         run: ./mvnw -V -B --no-transfer-progress -e -DtrimStackTrace=false -Dmaven.test.failure.ignore=true -Dsurefire.rerunFailingTestsCount=1 --global-toolchains .github/workflows/maven-toolchains.xml verify
 
       - name: Publish Test Results
