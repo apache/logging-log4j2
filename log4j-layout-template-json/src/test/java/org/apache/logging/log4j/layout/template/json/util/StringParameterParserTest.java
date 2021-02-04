@@ -378,7 +378,7 @@ class StringParameterParserTest {
     void test_NullValue_toString() {
         final Map<String, Value> map = StringParameterParser.parse("a");
         final NullValue value = (NullValue) map.get("a");
-        Assertions.assertThat(value.toString()).isEqualTo(null);
+        Assertions.assertThat(value.toString()).isEqualTo("null");
     }
 
     @Test

@@ -172,7 +172,7 @@ public class MapAccessor {
         if (this == instance) {
             return true;
         }
-        if (instance == null || getClass() != instance.getClass()) {
+        if (!(instance instanceof MapAccessor)) {
             return false;
         }
         final MapAccessor that = (MapAccessor) instance;

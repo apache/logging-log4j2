@@ -58,7 +58,7 @@ public final class StringParameterParser {
 
         @Override
         public String toString() {
-            return null;
+            return "null";
         }
 
     }

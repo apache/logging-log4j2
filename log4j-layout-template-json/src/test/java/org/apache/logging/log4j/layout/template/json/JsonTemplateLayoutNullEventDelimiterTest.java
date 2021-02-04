@@ -129,13 +129,20 @@ public class JsonTemplateLayoutNullEventDelimiterTest {
         }
 
         @Override
-        public synchronized void close() throws InterruptedException {
+        public synchronized void close() {
             if (closed) {
                 throw new IllegalStateException("shutdown has already been invoked");
             }
             closed = true;
             interrupt();
-            join(3_000L);
+            try {
+                join(3_000L);
+            } catch (InterruptedException ignored) {
+                // Due to JDK-7027157, we shouldn't throw an InterruptedException
+                // from an AutoCloseable#close() method. Hence we catch it and
+                // then restore the interrupted flag.
+                Thread.currentThread().interrupt();
+            }
         }
 
     }
