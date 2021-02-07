@@ -1094,6 +1094,16 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             <code>app.properties</code> would be used as the default value.
           </p>
         </subsection>
+        <a name="DisablingMessagePatternLookups"/>
+        <subsection name="Disables Message Pattern Lookups">
+        <p>
+          A message is processed (by default) by lookups, for example if you defined
+          <code> &lt;Property name="foo.bar">FOO_BAR &lt;/Property></code>, then <code>logger.info("${foo.bar}")</code>
+          will output <code>FOO_BAR</code> instead of <code>${dollar}{foo.bar}</code>. You could disable message pattern
+          lookups globally by setting system property <code>log4j2.formatMsgNoLookups</code> to true,
+          or defining message pattern using %m{nolookups}.
+        </p>
+        </subsection>
         <a name="RuntimeLookup"/>
         <subsection name="Lookup Variables with Multiple Leading '$' Characters">
           <p>
