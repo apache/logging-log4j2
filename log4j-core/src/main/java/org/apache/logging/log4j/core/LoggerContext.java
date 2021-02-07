@@ -137,7 +137,9 @@ public class LoggerContext extends AbstractLifeCycle
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }
         this.configLocation = configLocn;
-        CompletableFuture.runAsync(ThreadContextDataInjector::initServiceProviders);
+        Thread runner = new Thread(new ThreadContextDataTask(), "Thread Context Data Task");
+        runner.setDaemon(true);
+        runner.start();
     }
 
     /**
@@ -166,7 +168,9 @@ public class LoggerContext extends AbstractLifeCycle
         } else {
             configLocation = null;
         }
-        CompletableFuture.runAsync(ThreadContextDataInjector::initServiceProviders);
+        Thread runner = new Thread(new ThreadContextDataTask(), "Thread Context Data Task");
+        runner.setDaemon(true);
+        runner.start();
     }
 
     public void addShutdownListener(LoggerContextShutdownAware listener) {
@@ -768,4 +772,13 @@ public class LoggerContext extends AbstractLifeCycle
         return new Logger(ctx, name, messageFactory);
     }
 
+    private class ThreadContextDataTask implements Runnable {
+
+        @Override
+        public void run() {
+            LOGGER.debug("Initializing Thread Context Data Service Providers");
+            ThreadContextDataInjector.initServiceProviders();
+            LOGGER.debug("Thread Context Data Service Provider initialization complete");
+        }
+    }
 }
