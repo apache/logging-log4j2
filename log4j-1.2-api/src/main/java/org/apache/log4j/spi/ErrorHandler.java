@@ -49,7 +49,7 @@ public interface ErrorHandler {
 
     /**
      * Equivalent to the {@link #error(String, Exception, int,
-     * LoggingEvent)} with the the event parameter set to
+     * LoggingEvent)} with the event parameter set to
      * <code>null</code>.
      *
      * @param message   The message associated with the error.
