@@ -203,7 +203,7 @@
         Update mongodb4.version 4.1.1 -> 4.2.0.
       </action>
       <action dev="ggregory" type="update">
-        Update org.fusesource.jansi:jansi 1.18 -> 2.2.0.
+        Update org.fusesource.jansi:jansi 1.18 -> 2.3.1.
       </action>
       <action dev="ggregory" type="update">
         Update org.assertj:assertj-core 3.18.1 -> 3.19.0.
