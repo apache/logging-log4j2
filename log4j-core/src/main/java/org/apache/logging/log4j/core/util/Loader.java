@@ -73,7 +73,7 @@ public final class Loader {
      * <li>Search for {@code resource} using the thread context
      * class loader under Java2. If that fails, search for
      * {@code resource} using the class loader that loaded this
-     * class ({@code Loader}). Under JDK 1.1, only the the class
+     * class ({@code Loader}). Under JDK 1.1, only the class
      * loader that loaded this class ({@code Loader}) is used.</li>
      * <li>Try one last time with
      * {@code ClassLoader.getSystemResource(resource)}, that is is
@@ -135,7 +135,7 @@ public final class Loader {
      * <li>Search for {@code resource} using the thread context
      * class loader under Java2. If that fails, search for
      * {@code resource} using the class loader that loaded this
-     * class ({@code Loader}). Under JDK 1.1, only the the class
+     * class ({@code Loader}). Under JDK 1.1, only the class
      * loader that loaded this class ({@code Loader}) is used.</li>
      * <li>Try one last time with
      * {@code ClassLoader.getSystemResource(resource)}, that is is

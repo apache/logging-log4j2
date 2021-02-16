@@ -27,5 +27,5 @@ For more information, see [Runtime Dependencies](../runtime-dependencies.html).
 
 ## Usage
 
-Including this module will automatically make Liquibase log via Log4j 2, due the the plugin auto discovery mechanism of
+Including this module will automatically make Liquibase log via Log4j 2, due the plugin auto discovery mechanism of
 Liquibase.

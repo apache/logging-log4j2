@@ -42,7 +42,7 @@ enough to enable access to `JsonTemplateLayout` in your Log4j configuration:
 </dependency>
 ----
 
-For instance, given the following JSON template modelling the
+For instance, given the following JSON template modelling
 https://github.com/logstash/log4j-jsonevent-layout[the official Logstash
 `JSONEventLayoutV1`] (accessible via `classpath:LogstashJsonEventLayoutV1.json`)
 

@@ -516,7 +516,7 @@ required for using JsonLayout.
 `JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON
 emitting layout. It encodes ``LogEvent``s according to the structure described
 by the JSON template provided. For instance, given the following JSON template
-modelling the https://github.com/logstash/log4j-jsonevent-layout[the official
+modelling https://github.com/logstash/log4j-jsonevent-layout[the official
 Logstash `JSONEventLayoutV1`]
 
 [source,json]
