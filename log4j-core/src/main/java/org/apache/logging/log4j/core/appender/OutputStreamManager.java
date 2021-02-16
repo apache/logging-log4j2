@@ -331,7 +331,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * {@link #flushBuffer(ByteBuffer)} directly instead.
      * </p>
      *
-     * @param buf the buffer whose contents to write the the destination
+     * @param buf the buffer whose contents to write the destination
      * @return the specified buffer
      * @since 2.6
      */

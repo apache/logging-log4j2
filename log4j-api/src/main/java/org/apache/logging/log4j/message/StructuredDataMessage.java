@@ -373,7 +373,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     /**
-     * Formats the message according the the specified format.
+     * Formats the message according to the specified format.
      * @param formats An array of Strings that provide extra information about how to format the message.
      * StructuredDataMessage accepts only a format of "FULL" which will cause the event type to be
      * prepended and the event message to be appended. Specifying any other value will cause only the

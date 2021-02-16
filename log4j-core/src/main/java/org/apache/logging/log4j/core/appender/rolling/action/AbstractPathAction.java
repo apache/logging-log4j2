@@ -138,7 +138,7 @@ public abstract class AbstractPathAction extends AbstractAction {
     }
 
     /**
-     * Returns the the maximum number of directory levels to visit.
+     * Returns the maximum number of directory levels to visit.
      *
      * @return the maxDepth
      */

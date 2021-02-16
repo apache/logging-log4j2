@@ -153,7 +153,7 @@ public class LogEventAdapter extends LoggingEvent {
     }
 
     /*
-     Returns the the context corresponding to the <code>key</code> parameter.
+     Returns the context corresponding to the <code>key</code> parameter.
      */
     @Override
     public Object getMDC(String key) {

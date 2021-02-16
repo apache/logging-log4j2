@@ -139,7 +139,7 @@ public class ReconfigureAppenderTest {
 			ConfigurationBuilderFactory.newConfigurationBuilder();
 
 		// All loggers must have a root logger. The default root logger logs ERRORs to the console.
-		// Override this with a root logger that does not log anywhere as we leave it up the the
+		// Override this with a root logger that does not log anywhere as we leave it up the
 		// appenders on the logger.
 		config_builder.add(config_builder.newRootLogger(Level.INFO));
 
