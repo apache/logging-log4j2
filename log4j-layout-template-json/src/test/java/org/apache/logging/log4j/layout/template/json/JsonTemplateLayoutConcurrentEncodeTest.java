@@ -20,8 +20,11 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.layout.template.json.util.RecyclerFactories;
+import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -117,16 +120,25 @@ class JsonTemplateLayoutConcurrentEncodeTest {
         return logEvents;
     }
 
-    @Test
-    void test_concurrent_encode() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "dummy",
+            "threadLocal",
+            "queue:supplier=java.util.concurrent.ArrayBlockingQueue.new",
+            "queue:supplier=org.jctools.queues.MpmcArrayQueue.new"
+    })
+    void test_concurrent_encode(final String recyclerFactorySpec) {
+        final RecyclerFactory recyclerFactory = RecyclerFactories.ofSpec(recyclerFactorySpec);
         final AtomicReference<Exception> encodeFailureRef = new AtomicReference<>(null);
-        produce(encodeFailureRef);
+        produce(recyclerFactory, encodeFailureRef);
         Assertions.assertThat(encodeFailureRef.get()).isNull();
     }
 
-    private void produce(final AtomicReference<Exception> encodeFailureRef) {
+    private void produce(
+            final RecyclerFactory recyclerFactory,
+            final AtomicReference<Exception> encodeFailureRef) {
         final int threadCount = 10;
-        final JsonTemplateLayout layout = createLayout();
+        final JsonTemplateLayout layout = createLayout(recyclerFactory);
         final ByteBufferDestination destination =
                 new ConcurrentAccessDetectingByteBufferDestination();
         final AtomicLong encodeCounter = new AtomicLong(0);
@@ -150,7 +162,7 @@ class JsonTemplateLayoutConcurrentEncodeTest {
         });
     }
 
-    private static JsonTemplateLayout createLayout() {
+    private static JsonTemplateLayout createLayout(final RecyclerFactory recyclerFactory) {
         final Configuration config = new DefaultConfiguration();
         return JsonTemplateLayout
                 .newBuilder()
@@ -158,6 +170,7 @@ class JsonTemplateLayoutConcurrentEncodeTest {
                 .setEventTemplate("{\"message\": \"${json:message}\"}")
                 .setStackTraceEnabled(false)
                 .setLocationInfoEnabled(false)
+                .setRecyclerFactory(recyclerFactory)
                 .build();
     }
 
