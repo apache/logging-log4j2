@@ -18,9 +18,15 @@ package org.apache.logging.log4j.layout.template.json.util;
 
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.convert.TypeConverterRegistry;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
+import org.apache.logging.log4j.test.appender.ListAppender;
 import org.assertj.core.api.Assertions;
+import org.jctools.queues.MpmcArrayQueue;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
 import java.util.ArrayDeque;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -115,6 +121,19 @@ class RecyclerFactoriesTest {
             Assertions.assertThat(queue.remainingCapacity()).isEqualTo(100);
         }
 
+    }
+
+    @Test
+    @LoggerContextSource("recyclerFactoryCustomizedJsonTemplateLayoutLogging.xml")
+    void test_RecyclerFactoryConverter_using_XML_config(
+            final @Named(value = "List") ListAppender appender)
+            throws Exception {
+        final JsonTemplateLayout layout = (JsonTemplateLayout) appender.getLayout();
+        final Field field = JsonTemplateLayout.class.getDeclaredField("contextRecycler");
+        field.setAccessible(true);
+        final QueueingRecycler<?> contextRecycler = (QueueingRecycler<?>) field.get(layout);
+        final MpmcArrayQueue<?> queue = (MpmcArrayQueue<?>) contextRecycler.getQueue();
+        Assertions.assertThat(queue.capacity()).isEqualTo(512);
     }
 
 }
