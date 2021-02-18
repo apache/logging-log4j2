@@ -73,9 +73,7 @@ public class XmlSchemaTest {
     }
 
     private static String fixXml(String xml) {
-        xml = StringUtils.replace(xml, "JSONLayout", "JsonLayout");
         xml = StringUtils.replace(xml, "HTMLLayout", "HtmlLayout");
-        xml = StringUtils.replace(xml, "XMLLayout", "XmlLayout");
         xml = StringUtils.replace(xml, "appender-ref", "AppenderRef");
         xml = StringUtils.replace(xml, " onmatch=", " onMatch=");
         xml = StringUtils.replace(xml, " onMisMatch=", " onMismatch=");

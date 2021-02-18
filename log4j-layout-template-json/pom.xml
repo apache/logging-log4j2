@@ -57,13 +57,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-layout-jackson-json</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.jctools</groupId>
       <artifactId>jctools-core</artifactId>
       <optional>true</optional>

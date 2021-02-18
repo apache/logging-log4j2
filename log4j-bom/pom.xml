@@ -49,30 +49,6 @@
         <artifactId>log4j-core</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!--  Commons code for Jackson-based layouts -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-layout-jackson</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Jackson-based JSON layout -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-layout-jackson-json</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Jackson-based XML layout -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-layout-jackson-xml</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Jackson-based YAML layout -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-layout-jackson-yaml</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <!-- JSON template layout -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>

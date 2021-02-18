@@ -22,7 +22,4 @@ package org.apache.logging.log4j.categories;
 public interface Layouts {
     interface Csv {}
     interface Jansi {}
-    interface Json {}
-    interface Xml {}
-    interface Yaml {}
 }

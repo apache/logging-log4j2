@@ -31,21 +31,21 @@
       <Property name="agent1.port">5050</Property>
       <Property name="agent1.batch-size">1000</Property>
       <Property name="processor.type">default</Property>
-      <JsonLayout properties="true" compact="true" eventEol="true">
-        <KeyValuePair key="containerId" value="\${docker:containerId}"/>
-        <KeyValuePair key="containerName" value="\${docker:containerName}"/>
-        <KeyValuePair key="imageName" value="\${docker:imageName}"/>
-        <KeyValuePair key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
-      </JsonLayout>
+      <JsonTemplateLayout eventTemplateUri="classpath:EnhancedGelf.json" nullEventDelimiterEnabled="true">
+        <EventTemplateAdditionalField key="containerId" value="\${docker:containerId:-}"/>
+        <EventTemplateAdditionalField key="containerName" value="\${docker:containerName}"/>
+        <EventTemplateAdditionalField key="imageName" value="\${docker:imageName}"/>
+        <EventTemplateAdditionalField key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
+      </JsonTemplateLayout>
     </Flume>
     <Flume name="avro" ignoreExceptions="false" batchSize="1" compress="false">
       <Agent host="flume" port="5050"/>
-      <JsonLayout properties="true" compact="true" eventEol="true" stackTraceAsString="true">
-        <KeyValuePair key="containerId" value="\${docker:containerId}"/>
-        <KeyValuePair key="containerName" value="\${docker:containerName}"/>
-        <KeyValuePair key="imageName" value="\${docker:imageName}"/>
-        <KeyValuePair key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
-      </JsonLayout>
+      <JsonTemplateLayout eventTemplateUri="classpath:EnhancedGelf.json" nullEventDelimiterEnabled="true">
+        <EventTemplateAdditionalField key="containerId" value="\${docker:containerId}"/>
+        <EventTemplateAdditionalField key="containerName" value="\${docker:containerName}"/>
+        <EventTemplateAdditionalField key="imageName" value="\${docker:imageName}"/>
+        <EventTemplateAdditionalField key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
+      </JsonTemplateLayout>
     </Flume>
     <Flume name="avroSyslog" ignoreExceptions="false" batchSize="100" compress="false">
       <Agent host="flume" port="5050"/>
@@ -60,30 +60,30 @@
       </RFC5424Layout>
     </Flume>
     <Kafka name="Kafka" topic="log-test" syncSend="false">
-      <JsonLayout properties="true" compact="true" eventEol="true">
-        <KeyValuePair key="containerId" value="\${docker:containerId}"/>
-        <KeyValuePair key="containerName" value="\${docker:containerName}"/>
-        <KeyValuePair key="imageName" value="\${docker:imageName}"/>
-        <KeyValuePair key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
-      </JsonLayout>
+      <JsonTemplateLayout eventTemplateUri="classpath:EnhancedGelf.json" nullEventDelimiterEnabled="true">
+        <EventTemplateAdditionalField key="containerId" value="\${docker:containerId}"/>
+        <EventTemplateAdditionalField key="containerName" value="\${docker:containerName}"/>
+        <EventTemplateAdditionalField key="imageName" value="\${docker:imageName}"/>
+        <EventTemplateAdditionalField key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
+      </JsonTemplateLayout>
       <Property name="bootstrap.servers">host.docker.internal:9092</Property>
     </Kafka>
     <Socket name="fluent-bit" host="fluent-bit" port="24221">
-      <JsonLayout properties="true" compact="true" eventEol="true" stackTraceAsString="true">
-        <KeyValuePair key="containerId" value="\${docker:containerId}"/>
-        <KeyValuePair key="containerName" value="\${docker:containerName}"/>
-        <KeyValuePair key="imageName" value="\${docker:imageName}"/>
-        <KeyValuePair key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
-      </JsonLayout>
+      <JsonTemplateLayout eventTemplateUri="classpath:EnhancedGelf.json" nullEventDelimiterEnabled="true">
+        <EventTemplateAdditionalField key="containerId" value="\${docker:containerId}"/>
+        <EventTemplateAdditionalField key="containerName" value="\${docker:containerName}"/>
+        <EventTemplateAdditionalField key="imageName" value="\${docker:imageName}"/>
+        <EventTemplateAdditionalField key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
+      </JsonTemplateLayout>
     </Socket>
     <RollingFile name="RollingFile" fileName="/var/log/sampleapp/app.log"
                  filePattern="/var/log/sampleapp/archive/app.log.%i">
-      <JsonLayout properties="true" compact="true" eventEol="true" stackTraceAsString="true">
-        <KeyValuePair key="containerId" value="\${docker:containerId}"/>
-        <KeyValuePair key="containerName" value="\${docker:containerName}"/>
-        <KeyValuePair key="imageName" value="\${docker:imageName}"/>
-        <KeyValuePair key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
-      </JsonLayout>
+      <JsonTemplateLayout eventTemplateUri="classpath:EnhancedGelf.json" nullEventDelimiterEnabled="true">
+        <EventTemplateAdditionalField key="containerId" value="\${docker:containerId}"/>
+        <EventTemplateAdditionalField key="containerName" value="\${docker:containerName}"/>
+        <EventTemplateAdditionalField key="imageName" value="\${docker:imageName}"/>
+        <EventTemplateAdditionalField key="application" value="\$\${lower:\${spring:spring.application.name}}"/>
+      </JsonTemplateLayout>
       <SizeBasedTriggeringPolicy size="10MB" />
       <DefaultRolloverStrategy max="5"/>
     </RollingFile>

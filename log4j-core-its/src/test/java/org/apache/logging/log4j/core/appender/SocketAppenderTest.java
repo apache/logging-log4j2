@@ -39,6 +39,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -46,27 +47,23 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.jackson.json.Log4jJsonObjectMapper;
-import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- *
- */
 public class SocketAppenderTest {
 
     private static final int PORT = AvailablePortFinder.getNextAvailable();
     private static final int DYN_PORT = AvailablePortFinder.getNextAvailable();
     private static final int ERROR_PORT = AvailablePortFinder.getNextAvailable();
+    private static final Layout<?> LAYOUT = JsonTemplateLayout.newBuilder().build();
 
     private static TcpSocketTestServer tcpServer;
     private static UdpSocketTestServer udpServer;
@@ -117,12 +114,6 @@ public class SocketAppenderTest {
         testTcpAppender(tcpServer, logger, Constants.ENCODER_BYTE_BUFFER_SIZE);
     }
 
-    @Test
-    @Ignore("WIP Bug when this method runs after testTcpAppender1()")
-    public void testTcpAppender2() throws Exception {
-        testTcpAppender(tcpServer, logger, Constants.ENCODER_BYTE_BUFFER_SIZE);
-    }
-
     static void testTcpAppender(final TcpSocketTestServer tcpTestServer, final Logger logger, final int bufferSize)
             throws Exception {
         // @formatter:off
@@ -133,7 +124,7 @@ public class SocketAppenderTest {
                 .setName("test")
                 .setImmediateFail(false)
                 .setBufferSize(bufferSize)
-                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setLayout(LAYOUT)
                 .build();
         // @formatter:on
         appender.start();
@@ -180,7 +171,7 @@ public class SocketAppenderTest {
                 .setReconnectDelayMillis(-1)
                 .setName("test")
                 .setImmediateFail(false)
-                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setLayout(LAYOUT)
                 .build();
         // @formatter:on
         assertNotNull(appender);
@@ -202,7 +193,7 @@ public class SocketAppenderTest {
                 .setReconnectDelayMillis(-1)
                 .setName("test")
                 .setImmediateFail(false)
-                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setLayout(LAYOUT)
                 .build();
         // @formatter:on
         appender.start();
@@ -228,7 +219,7 @@ public class SocketAppenderTest {
                 .setReconnectDelayMillis(100)
                 .setName("test")
                 .setImmediateFail(false)
-                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setLayout(LAYOUT)
                 .build();
         // @formatter:on
         appender.start();
@@ -260,7 +251,7 @@ public class SocketAppenderTest {
                 .setName("test")
                 .setImmediateFail(false)
                 .setIgnoreExceptions(false)
-                .setLayout(JsonLayout.newBuilder().setProperties(true).build())
+                .setLayout(LAYOUT)
                 .build();
         // @formatter:on
         appender.start();
@@ -287,7 +278,7 @@ public class SocketAppenderTest {
         private final CountDownLatch latch = new CountDownLatch(1);
         private volatile int count = 0;
         private final BlockingQueue<LogEvent> queue;
-        private final ObjectMapper objectMapper = new Log4jJsonObjectMapper();
+        private final ObjectMapper objectMapper = new ObjectMapper();
 
         public UdpSocketTestServer() throws IOException {
             this.sock = new DatagramSocket(PORT);
@@ -345,7 +336,7 @@ public class SocketAppenderTest {
         private volatile boolean shutdown = false;
         private volatile int count = 0;
         private final BlockingQueue<LogEvent> queue;
-        private final ObjectMapper objectMapper = new Log4jJsonObjectMapper();
+        private final ObjectMapper objectMapper = new ObjectMapper();
 
         @SuppressWarnings("resource")
         public TcpSocketTestServer(final int port) throws IOException {

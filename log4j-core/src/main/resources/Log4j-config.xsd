@@ -489,34 +489,27 @@
       <attribute name="fontSize" type="string" />
    </complexType>
 
-   <complexType name="AbstractJsonLayoutType">
-      <sequence>
-         <element name="KeyValuePair" type="tns:KeyValuePairType" minOccurs="0" maxOccurs="unbounded">
-            <annotation>
-               <documentation>
-                  One or more KeyValuePair elements that define custom field in the output.
-               </documentation>
-            </annotation>
-         </element>
-      </sequence>
+   <complexType name="CsvParameterLayoutType">
+      <attribute name="format" type="string" />
+      <attribute name="delimiter" type="string" />
+      <attribute name="escape" type="string" />
+      <attribute name="quote" type="string" />
+      <attribute name="quoteMode">
+         <simpleType>
+            <restriction base="string">
+               <enumeration value="ALL" />
+               <enumeration value="ALL_NON_NULL" />
+               <enumeration value="MINIMAL" />
+               <enumeration value="NON_NUMERIC" />
+               <enumeration value="NONE" />
+            </restriction>
+         </simpleType>
+      </attribute>
+      <attribute name="nullString" type="string" />
+      <attribute name="recordSeparator" type="string" />
       <attribute name="charset" type="string" />
-      <attribute name="complete" type="tns:BooleanType" />
-      <attribute name="compact" type="tns:BooleanType" />
-      <attribute name="eventEol" type="tns:BooleanType" />
-      <attribute name="endOfLine" type="string" />
-      <attribute name="includeNullDelimiter" type="tns:BooleanType" />
-      <attribute name="includeStacktrace" type="tns:BooleanType" />
-      <attribute name="locationInfo" type="tns:BooleanType" />
-      <attribute name="properties" type="tns:BooleanType" />
-      <attribute name="stacktraceAsString" type="tns:BooleanType" />
-   </complexType>
-
-   <complexType name="JCsvParameterLayoutType">
-      <complexContent>
-         <extension base="tns:AbstractJsonLayoutType">
-            <anyAttribute processContents="lax" />
-         </extension>
-      </complexContent>
+      <attribute name="header" type="string" />
+      <attribute name="footer" type="string" />
    </complexType>
 
    <complexType name="GelfLayoutType">
@@ -549,20 +542,30 @@
       <attribute name="threadContextIncludes" type="string" />
    </complexType>
 
-   <complexType name="JsonLayoutType">
-      <complexContent>
-         <extension base="tns:AbstractJsonLayoutType">
-            <attribute name="propertiesAsList" type="tns:BooleanType" />
-         </extension>
-      </complexContent>
+   <complexType name="JsonTemplateLayoutType">
+      <sequence minOccurs="0" maxOccurs="unbounded">
+         <element name="EventTemplateAdditionalField" minOccurs="0" maxOccurs="unbounded">
+            <complexType>
+               <attribute name="key" type="string" use="required" />
+               <attribute name="value" type="string" use="required" />
+               <attribute name="format" type="string"/>
+            </complexType>
+         </element>
+      </sequence>
+      <attribute name="charset" type="string" />
+      <attribute name="locationInfoEnabled" type="tns:BooleanType" />
+      <attribute name="stackTraceEnabled" type="tns:BooleanType" />
+      <attribute name="eventTemplate" type="string" />
+      <attribute name="eventTemplateUri" type="anyURI" />
+      <attribute name="eventTemplateRootObjectKey" type="string" />
+      <attribute name="stackTraceElementTemplate" type="string" />
+      <attribute name="stackTraceElementTemplateUri" type="anyURI" />
+      <attribute name="eventDelimiter" type="string" />
+      <attribute name="nullEventDelimiterEnabled" type="tns:BooleanType" />
+      <attribute name="maxStringLength" type="tns:IntegerType" />
+      <attribute name="truncatedStringSuffix" type="string" />
+      <attribute name="recyclerFactory" type="string" />
    </complexType>
-
-   <complexType name="XmlLayoutType">
-      <complexContent>
-         <extension base="tns:AbstractJsonLayoutType"></extension>
-      </complexContent>
-   </complexType>
-
 
    <!--
     ================================================================================================================================
@@ -626,13 +629,12 @@
          </sequence>
          <choice minOccurs="0">
             <element name="Layout" type="tns:LayoutType" />
-            <element name="CsvParameterLayout" type="tns:JCsvParameterLayoutType" />
+            <element name="CsvParameterLayout" type="tns:CsvParameterLayoutType" />
             <element name="GelfLayout" type="tns:GelfLayoutType" />
             <element name="HtmlLayout" type="tns:HtmlLayoutType" />
-            <element name="JsonLayout" type="tns:JsonLayoutType" />
+            <element name="JsonTemplateLayout" type="tns:JsonTemplateLayoutType" />
             <element name="MessageLayout" type="tns:MessageLayoutType" />
             <element name="PatternLayout" type="tns:PatternLayoutType" />
-            <element name="XmlLayout" type="tns:XmlLayoutType" />
          </choice>
          <group ref="tns:FilterChoiceGroup" minOccurs="0" maxOccurs="1" />
       </sequence>

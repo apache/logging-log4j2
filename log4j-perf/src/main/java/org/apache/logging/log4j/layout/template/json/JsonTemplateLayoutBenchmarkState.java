@@ -22,9 +22,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.GelfLayout;
-import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.layout.template.json.util.ThreadLocalRecyclerFactory;
 import org.openjdk.jmh.annotations.Scope;
@@ -43,15 +41,9 @@ public class JsonTemplateLayoutBenchmarkState {
 
     private final ByteBufferDestination byteBufferDestination;
 
-    private final JsonTemplateLayout jsonTemplateLayout4JsonLayout;
-
     private final JsonTemplateLayout jsonTemplateLayout4EcsLayout;
 
     private final JsonTemplateLayout jsonTemplateLayout4GelfLayout;
-
-    private final JsonLayout defaultJsonLayout;
-
-    private final JsonLayout customJsonLayout;
 
     private final EcsLayout ecsLayout;
 
@@ -63,26 +55,13 @@ public class JsonTemplateLayoutBenchmarkState {
 
     public JsonTemplateLayoutBenchmarkState() {
         this.byteBufferDestination = new BlackHoleByteBufferDestination(1024 * 512);
-        this.jsonTemplateLayout4JsonLayout = createJsonTemplateLayout4JsonLayout();
         this.jsonTemplateLayout4EcsLayout = createJsonTemplateLayout4EcsLayout();
         this.jsonTemplateLayout4GelfLayout = createJsonTemplateLayout4GelfLayout();
-        this.defaultJsonLayout = createDefaultJsonLayout();
-        this.customJsonLayout = createCustomJsonLayout();
         this.ecsLayout = createEcsLayout();
         this.gelfLayout = createGelfLayout();
         int logEventCount = 1_000;
         this.fullLogEvents = LogEventFixture.createFullLogEvents(logEventCount);
         this.liteLogEvents = LogEventFixture.createLiteLogEvents(logEventCount);
-    }
-
-    private static JsonTemplateLayout createJsonTemplateLayout4JsonLayout() {
-        return JsonTemplateLayout
-                .newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setCharset(CHARSET)
-                .setEventTemplateUri("classpath:JsonLayout.json")
-                .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
-                .build();
     }
 
     private static JsonTemplateLayout createJsonTemplateLayout4EcsLayout() {
@@ -125,25 +104,6 @@ public class JsonTemplateLayoutBenchmarkState {
                 .build();
     }
 
-    private static JsonLayout createDefaultJsonLayout() {
-        return JsonLayout
-                .newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setCharset(CHARSET)
-                .build();
-    }
-
-    private static JsonLayout createCustomJsonLayout() {
-        return JsonLayout
-                .newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setCharset(CHARSET)
-                .setAdditionalFields(new KeyValuePair[]{
-                        new KeyValuePair("@version", "\"1\"")
-                })
-                .build();
-    }
-
     private static EcsLayout createEcsLayout() {
         return EcsLayout
                 .newBuilder()
@@ -166,24 +126,12 @@ public class JsonTemplateLayoutBenchmarkState {
         return byteBufferDestination;
     }
 
-    JsonTemplateLayout getJsonTemplateLayout4JsonLayout() {
-        return jsonTemplateLayout4JsonLayout;
-    }
-
     JsonTemplateLayout getJsonTemplateLayout4EcsLayout() {
         return jsonTemplateLayout4EcsLayout;
     }
 
     JsonTemplateLayout getJsonTemplateLayout4GelfLayout() {
         return jsonTemplateLayout4GelfLayout;
-    }
-
-    JsonLayout getDefaultJsonLayout() {
-        return defaultJsonLayout;
-    }
-
-    JsonLayout getCustomJsonLayout() {
-        return customJsonLayout;
     }
 
     EcsLayout getEcsLayout() {

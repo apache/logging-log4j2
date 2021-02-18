@@ -42,24 +42,6 @@ import java.util.List;
 public class JsonTemplateLayoutBenchmark {
 
     @Benchmark
-    public static int fullJsonTemplateLayout4JsonLayout(
-            final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(
-                state.getJsonTemplateLayout4JsonLayout(),
-                state.getFullLogEvents(),
-                state.getByteBufferDestination());
-    }
-
-    @Benchmark
-    public static int liteJsonTemplateLayout4JsonLayout(
-            final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(
-                state.getJsonTemplateLayout4JsonLayout(),
-                state.getLiteLogEvents(),
-                state.getByteBufferDestination());
-    }
-
-    @Benchmark
     public static int fullJsonTemplateLayout4EcsLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
@@ -91,42 +73,6 @@ public class JsonTemplateLayoutBenchmark {
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
                 state.getJsonTemplateLayout4GelfLayout(),
-                state.getLiteLogEvents(),
-                state.getByteBufferDestination());
-    }
-
-    @Benchmark
-    public static int fullDefaultJsonLayout(
-            final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(
-                state.getDefaultJsonLayout(),
-                state.getFullLogEvents(),
-                state.getByteBufferDestination());
-    }
-
-    @Benchmark
-    public static int liteDefaultJsonLayout(
-            final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(
-                state.getDefaultJsonLayout(),
-                state.getLiteLogEvents(),
-                state.getByteBufferDestination());
-    }
-
-    @Benchmark
-    public static int fullCustomJsonLayout(
-            final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(
-                state.getCustomJsonLayout(),
-                state.getFullLogEvents(),
-                state.getByteBufferDestination());
-    }
-
-    @Benchmark
-    public static int liteCustomJsonLayout(
-            final JsonTemplateLayoutBenchmarkState state) {
-        return benchmark(
-                state.getCustomJsonLayout(),
                 state.getLiteLogEvents(),
                 state.getByteBufferDestination());
     }
