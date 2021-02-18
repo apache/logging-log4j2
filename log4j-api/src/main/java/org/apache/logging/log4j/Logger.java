@@ -33,12 +33,12 @@ import org.apache.logging.log4j.util.Supplier;
  * {@link LogManager#getLogger()} method). Thus, the simplest way to use this would be like so:
  * </p>
  *
- * <pre><code>
+ * <pre>
  * public class MyClass {
  *     private static final Logger LOGGER = LogManager.getLogger();
  *     // ...
  * }
- * </code></pre>
+ * </pre>
  * <p>
  * For ease of filtering, searching, sorting, etc., it is generally a good idea to create Loggers for each class rather
  * than sharing Loggers. Instead, {@link Marker Markers} should be used for shared, filterable identification.
@@ -52,13 +52,13 @@ import org.apache.logging.log4j.util.Supplier;
  * allow client code to lazily log messages without explicitly checking if the requested log level is enabled. For
  * example, previously one would write:
  *
- * <pre><code>
+ * <pre>
  * // pre-Java 8 style optimization: explicitly check the log level
  * // to make sure the expensiveOperation() method is only called if necessary
  * if (logger.isTraceEnabled()) {
  *     logger.trace(&quot;Some long-running operation returned {}&quot;, expensiveOperation());
  * }
- * </code></pre>
+ * </pre>
  * <p>
  * With Java 8, the same effect can be achieved with a lambda expression:
  *
@@ -77,39 +77,41 @@ import org.apache.logging.log4j.util.Supplier;
 public interface Logger {
 
     /**
-     * Logs an exception or error that has been caught to a specific logging level.
+     * Logs a {@link Throwable} that has been caught to a specific logging level.
      *
      * @param level The logging Level.
-     * @param t The Throwable.
+     * @param throwable the Throwable.
      */
-    void catching(Level level, Throwable t);
+    void catching(Level level, Throwable throwable);
 
     /**
-     * Logs an exception or error that has been caught. Normally, one may wish to provide additional information with an
-     * exception while logging it; in these cases, one would not use this method. In other cases where simply logging
-     * the fact that an exception was swallowed somewhere (e.g., at the top of the stack trace in a {@code main()}
-     * method), this method is ideal for it.
+     * Logs a {@link Throwable} that has been caught at the {@link Level#ERROR ERROR} level.
+     * Normally, one may wish to provide additional information with an exception while logging it;
+     * in these cases, one would not use this method.
+     * In other cases where simply logging the fact that an exception was swallowed somewhere
+     * (e.g., at the top of the stack trace in a {@code main()} method),
+     * this method is ideal for it.
      *
-     * @param t The Throwable.
+     * @param throwable the Throwable.
      */
-    void catching(Throwable t);
-
-    /**
-     * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
-     */
-    void debug(Marker marker, Message msg);
+    void catching(Throwable throwable);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
      */
-    void debug(Marker marker, Message msg, Throwable t);
+    void debug(Marker marker, Message message);
+
+    /**
+     * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
+     *
+     * @param marker the marker data specific to this log statement
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
+     */
+    void debug(Marker marker, Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level with
@@ -117,22 +119,22 @@ public interface Logger {
      * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void debug(Marker marker, MessageSupplier msgSupplier);
+    void debug(Marker marker, MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter. The
+     * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t A Throwable or null.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void debug(Marker marker, MessageSupplier msgSupplier, Throwable t);
+    void debug(Marker marker, MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the {@link Level#DEBUG DEBUG} level.
@@ -144,13 +146,13 @@ public interface Logger {
 
     /**
      * Logs a message CharSequence at the {@link Level#DEBUG DEBUG} level including the stack trace of the
-     * {@link Throwable} <code>t</code> passed as parameter.
+     * {@link Throwable} <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void debug(Marker marker, CharSequence message, Throwable t);
+    void debug(Marker marker, CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
@@ -162,13 +164,13 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
      * @param message the message to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void debug(Marker marker, Object message, Throwable t);
+    void debug(Marker marker, Object message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
@@ -201,71 +203,71 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
      * @param message the message to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void debug(Marker marker, String message, Throwable t);
+    void debug(Marker marker, String message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level with
      * the specified Marker.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void debug(Marker marker, Supplier<?> msgSupplier);
+    void debug(Marker marker, Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t A Throwable or null.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void debug(Marker marker, Supplier<?> msgSupplier, Throwable t);
+    void debug(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
      *
-     * @param msg the message string to be logged
+     * @param message the message string to be logged
      */
-    void debug(Message msg);
+    void debug(Message message);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
      *
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
      */
-    void debug(Message msg, Throwable t);
+    void debug(Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level. The
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void debug(MessageSupplier msgSupplier);
+    void debug(MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier} may or may
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may
      * not use the {@link MessageFactory} to construct the {@code Message}.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t the exception to log, including its stack trace.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void debug(MessageSupplier msgSupplier, Throwable t);
+    void debug(MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the {@link Level#DEBUG DEBUG} level.
@@ -276,12 +278,12 @@ public interface Logger {
 
     /**
      * Logs a CharSequence at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void debug(CharSequence message, Throwable t);
+    void debug(CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
@@ -292,12 +294,12 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void debug(Object message, Throwable t);
+    void debug(Object message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
@@ -327,32 +329,32 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void debug(String message, Throwable t);
+    void debug(String message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void debug(Supplier<?> msgSupplier);
+    void debug(Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void debug(Supplier<?> msgSupplier, Throwable t);
+    void debug(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with parameters at debug level.
@@ -654,18 +656,18 @@ public interface Logger {
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
+     * @param message the message string to be logged
      */
-    void error(Marker marker, Message msg);
+    void error(Marker marker, Message message);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
      */
-    void error(Marker marker, Message msg, Throwable t);
+    void error(Marker marker, Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#ERROR ERROR} level with
@@ -673,22 +675,22 @@ public interface Logger {
      * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void error(Marker marker, MessageSupplier msgSupplier);
+    void error(Marker marker, MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#ERROR ERROR} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter. The
+     * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t A Throwable or null.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void error(Marker marker, MessageSupplier msgSupplier, Throwable t);
+    void error(Marker marker, MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the {@link Level#ERROR ERROR} level.
@@ -700,13 +702,13 @@ public interface Logger {
 
     /**
      * Logs a CharSequence at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void error(Marker marker, CharSequence message, Throwable t);
+    void error(Marker marker, CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
@@ -718,13 +720,13 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void error(Marker marker, Object message, Throwable t);
+    void error(Marker marker, Object message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
@@ -757,71 +759,71 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void error(Marker marker, String message, Throwable t);
+    void error(Marker marker, String message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#ERROR ERROR} level with
      * the specified Marker.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void error(Marker marker, Supplier<?> msgSupplier);
+    void error(Marker marker, Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#ERROR ERROR} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t A Throwable or null.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void error(Marker marker, Supplier<?> msgSupplier, Throwable t);
+    void error(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
-     * @param msg the message string to be logged
+     * @param message the message string to be logged
      */
-    void error(Message msg);
+    void error(Message message);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
      */
-    void error(Message msg, Throwable t);
+    void error(Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#ERROR ERROR} level. The
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void error(MessageSupplier msgSupplier);
+    void error(MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#ERROR ERROR} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier} may or may
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may
      * not use the {@link MessageFactory} to construct the {@code Message}.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t the exception to log, including its stack trace.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void error(MessageSupplier msgSupplier, Throwable t);
+    void error(MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the {@link Level#ERROR ERROR} level.
@@ -832,12 +834,12 @@ public interface Logger {
 
     /**
      * Logs a CharSequence at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void error(CharSequence message, Throwable t);
+    void error(CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
@@ -848,12 +850,12 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void error(Object message, Throwable t);
+    void error(Object message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
@@ -883,32 +885,32 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void error(String message, Throwable t);
+    void error(String message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#ERROR ERROR} level.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void error(Supplier<?> msgSupplier);
+    void error(Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#ERROR ERROR} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void error(Supplier<?> msgSupplier, Throwable t);
+    void error(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with parameters at error level.
@@ -1202,18 +1204,18 @@ public interface Logger {
      * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
+     * @param message the message string to be logged
      */
-    void fatal(Marker marker, Message msg);
+    void fatal(Marker marker, Message message);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
      */
-    void fatal(Marker marker, Message msg, Throwable t);
+    void fatal(Marker marker, Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#FATAL FATAL} level with
@@ -1221,22 +1223,22 @@ public interface Logger {
      * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void fatal(Marker marker, MessageSupplier msgSupplier);
+    void fatal(Marker marker, MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#FATAL FATAL} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter. The
+     * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t A Throwable or null.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void fatal(Marker marker, MessageSupplier msgSupplier, Throwable t);
+    void fatal(Marker marker, MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the {@link Level#FATAL FATAL} level.
@@ -1248,13 +1250,13 @@ public interface Logger {
 
     /**
      * Logs a CharSequence at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker The marker data specific to this log statement.
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void fatal(Marker marker, CharSequence message, Throwable t);
+    void fatal(Marker marker, CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
@@ -1266,13 +1268,13 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker The marker data specific to this log statement.
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void fatal(Marker marker, Object message, Throwable t);
+    void fatal(Marker marker, Object message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
@@ -1305,71 +1307,71 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker The marker data specific to this log statement.
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void fatal(Marker marker, String message, Throwable t);
+    void fatal(Marker marker, String message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#FATAL FATAL} level with
      * the specified Marker.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void fatal(Marker marker, Supplier<?> msgSupplier);
+    void fatal(Marker marker, Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#FATAL FATAL} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t A Throwable or null.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void fatal(Marker marker, Supplier<?> msgSupplier, Throwable t);
+    void fatal(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.
      *
-     * @param msg the message string to be logged
+     * @param message the message string to be logged
      */
-    void fatal(Message msg);
+    void fatal(Message message);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.
      *
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
      */
-    void fatal(Message msg, Throwable t);
+    void fatal(Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#FATAL FATAL} level. The
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void fatal(MessageSupplier msgSupplier);
+    void fatal(MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#FATAL FATAL} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier} may or may
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may
      * not use the {@link MessageFactory} to construct the {@code Message}.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t the exception to log, including its stack trace.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void fatal(MessageSupplier msgSupplier, Throwable t);
+    void fatal(MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the {@link Level#FATAL FATAL} level.
@@ -1380,12 +1382,12 @@ public interface Logger {
 
     /**
      * Logs a CharSequence at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void fatal(CharSequence message, Throwable t);
+    void fatal(CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
@@ -1396,12 +1398,12 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void fatal(Object message, Throwable t);
+    void fatal(Object message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
@@ -1431,32 +1433,32 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void fatal(String message, Throwable t);
+    void fatal(String message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#FATAL FATAL} level.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void fatal(Supplier<?> msgSupplier);
+    void fatal(Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#FATAL FATAL} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void fatal(Supplier<?> msgSupplier, Throwable t);
+    void fatal(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with parameters at fatal level.
@@ -1755,18 +1757,18 @@ public interface Logger {
      * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
+     * @param message the message string to be logged
      */
-    void info(Marker marker, Message msg);
+    void info(Marker marker, Message message);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
      */
-    void info(Marker marker, Message msg, Throwable t);
+    void info(Marker marker, Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#INFO INFO} level with the
@@ -1774,22 +1776,22 @@ public interface Logger {
      * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void info(Marker marker, MessageSupplier msgSupplier);
+    void info(Marker marker, MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#INFO INFO} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter. The
+     * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t A Throwable or null.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void info(Marker marker, MessageSupplier msgSupplier, Throwable t);
+    void info(Marker marker, MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the {@link Level#INFO INFO} level.
@@ -1801,13 +1803,13 @@ public interface Logger {
 
     /**
      * Logs a CharSequence at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void info(Marker marker, CharSequence message, Throwable t);
+    void info(Marker marker, CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
@@ -1819,13 +1821,13 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void info(Marker marker, Object message, Throwable t);
+    void info(Marker marker, Object message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
@@ -1858,71 +1860,71 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void info(Marker marker, String message, Throwable t);
+    void info(Marker marker, String message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#INFO INFO} level with the
      * specified Marker.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void info(Marker marker, Supplier<?> msgSupplier);
+    void info(Marker marker, Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#INFO INFO} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t A Throwable or null.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void info(Marker marker, Supplier<?> msgSupplier, Throwable t);
+    void info(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
      *
-     * @param msg the message string to be logged
+     * @param message the message string to be logged
      */
-    void info(Message msg);
+    void info(Message message);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
      *
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
      */
-    void info(Message msg, Throwable t);
+    void info(Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#INFO INFO} level. The
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void info(MessageSupplier msgSupplier);
+    void info(MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#INFO INFO} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier} may or may
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may
      * not use the {@link MessageFactory} to construct the {@code Message}.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t the exception to log, including its stack trace.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void info(MessageSupplier msgSupplier, Throwable t);
+    void info(MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the {@link Level#INFO INFO} level.
@@ -1933,12 +1935,12 @@ public interface Logger {
 
     /**
      * Logs a CharSequence at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void info(CharSequence message, Throwable t);
+    void info(CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
@@ -1949,12 +1951,12 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void info(Object message, Throwable t);
+    void info(Object message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
@@ -1984,32 +1986,32 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void info(String message, Throwable t);
+    void info(String message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#INFO INFO} level.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void info(Supplier<?> msgSupplier);
+    void info(Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#INFO INFO} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void info(Supplier<?> msgSupplier, Throwable t);
+    void info(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with parameters at info level.
@@ -2398,19 +2400,19 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
+     * @param message the message string to be logged
      */
-    void log(Level level, Marker marker, Message msg);
+    void log(Level level, Marker marker, Message message);
 
     /**
      * Logs a message with the specific Marker at the given level.
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
      */
-    void log(Level level, Marker marker, Message msg, Throwable t);
+    void log(Level level, Marker marker, Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the specified level with the specified
@@ -2419,23 +2421,23 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void log(Level level, Marker marker, MessageSupplier msgSupplier);
+    void log(Level level, Marker marker, MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the specified level) with the specified Marker and
-     * including the stack log of the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier}
+     * including the stack log of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier}
      * may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t A Throwable or null.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void log(Level level, Marker marker, MessageSupplier msgSupplier, Throwable t);
+    void log(Level level, Marker marker, MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the given level.
@@ -2447,15 +2449,15 @@ public interface Logger {
     void log(Level level, Marker marker, CharSequence message);
 
     /**
-     * Logs a CharSequence at the given level including the stack trace of the {@link Throwable} <code>t</code> passed as
+     * Logs a CharSequence at the given level including the stack trace of the {@link Throwable} <code>throwable</code> passed as
      * parameter.
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void log(Level level, Marker marker, CharSequence message, Throwable t);
+    void log(Level level, Marker marker, CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the given level.
@@ -2467,15 +2469,15 @@ public interface Logger {
     void log(Level level, Marker marker, Object message);
 
     /**
-     * Logs a message at the given level including the stack trace of the {@link Throwable} <code>t</code> passed as
+     * Logs a message at the given level including the stack trace of the {@link Throwable} <code>throwable</code> passed as
      * parameter.
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void log(Level level, Marker marker, Object message, Throwable t);
+    void log(Level level, Marker marker, Object message, Throwable throwable);
 
     /**
      * Logs a message object with the given level.
@@ -2509,78 +2511,78 @@ public interface Logger {
     void log(Level level, Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
-     * Logs a message at the given level including the stack trace of the {@link Throwable} <code>t</code> passed as
+     * Logs a message at the given level including the stack trace of the {@link Throwable} <code>throwable</code> passed as
      * parameter.
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void log(Level level, Marker marker, String message, Throwable t);
+    void log(Level level, Marker marker, String message, Throwable throwable);
 
     /**
      * Logs a message (only to be constructed if the logging level is the specified level) with the specified Marker.
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void log(Level level, Marker marker, Supplier<?> msgSupplier);
+    void log(Level level, Marker marker, Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the specified level) with the specified Marker and
-     * including the stack log of the {@link Throwable} <code>t</code> passed as parameter.
+     * including the stack log of the {@link Throwable} <code>throwable</code> passed as parameter.
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t A Throwable or null.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void log(Level level, Marker marker, Supplier<?> msgSupplier, Throwable t);
+    void log(Level level, Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with the specific Marker at the given level.
      *
      * @param level the logging level
-     * @param msg the message string to be logged
+     * @param message the message string to be logged
      */
-    void log(Level level, Message msg);
+    void log(Level level, Message message);
 
     /**
      * Logs a message with the specific Marker at the given level.
      *
      * @param level the logging level
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
      */
-    void log(Level level, Message msg, Throwable t);
+    void log(Level level, Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the specified level. The
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param level the logging level
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void log(Level level, MessageSupplier msgSupplier);
+    void log(Level level, MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the specified level) including the stack log of
-     * the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier} may or may not use the
+     * the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may not use the
      * {@link MessageFactory} to construct the {@code Message}.
      *
      * @param level the logging level
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t the exception to log, including its stack log.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable the {@code Throwable} to log, including its stack log.
      * @since 2.4
      */
-    void log(Level level, MessageSupplier msgSupplier, Throwable t);
+    void log(Level level, MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the given level.
@@ -2591,14 +2593,14 @@ public interface Logger {
     void log(Level level, CharSequence message);
 
     /**
-     * Logs a CharSequence at the given level including the stack trace of the {@link Throwable} <code>t</code> passed as
+     * Logs a CharSequence at the given level including the stack trace of the {@link Throwable} <code>throwable</code> passed as
      * parameter.
      *
      * @param level the logging level
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void log(Level level, CharSequence message, Throwable t);
+    void log(Level level, CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the given level.
@@ -2609,14 +2611,14 @@ public interface Logger {
     void log(Level level, Object message);
 
     /**
-     * Logs a message at the given level including the stack trace of the {@link Throwable} <code>t</code> passed as
+     * Logs a message at the given level including the stack trace of the {@link Throwable} <code>throwable</code> passed as
      * parameter.
      *
      * @param level the logging level
      * @param message the message to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void log(Level level, Object message, Throwable t);
+    void log(Level level, Object message, Throwable throwable);
 
     /**
      * Logs a message object with the given level.
@@ -2647,36 +2649,36 @@ public interface Logger {
     void log(Level level, String message, Supplier<?>... paramSuppliers);
 
     /**
-     * Logs a message at the given level including the stack trace of the {@link Throwable} <code>t</code> passed as
+     * Logs a message at the given level including the stack trace of the {@link Throwable} <code>throwable</code> passed as
      * parameter.
      *
      * @param level the logging level
      * @param message the message to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void log(Level level, String message, Throwable t);
+    void log(Level level, String message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the specified level.
      *
      * @param level the logging level
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void log(Level level, Supplier<?> msgSupplier);
+    void log(Level level, Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the specified level) including the stack log of
-     * the {@link Throwable} <code>t</code> passed as parameter.
+     * the {@link Throwable} <code>throwable</code> passed as parameter.
      *
      * @param level the logging level
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t the exception to log, including its stack log.
+     * @param throwable the {@code Throwable} to log, including its stack log.
      * @since 2.4
      */
-    void log(Level level, Supplier<?> msgSupplier, Throwable t);
+    void log(Level level, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with parameters at the specified level.
@@ -2984,7 +2986,7 @@ public interface Logger {
     void printf(Level level, String format, Object... params);
 
     /**
-     * Logs an exception or error to be thrown. This may be coded as:
+     * Logs a {@link Throwable} to be thrown. This may be coded as:
      *
      * <pre>
      * throw logger.throwing(Level.DEBUG, myException);
@@ -2992,40 +2994,41 @@ public interface Logger {
      *
      * @param <T> the Throwable type.
      * @param level The logging Level.
-     * @param t The Throwable.
+     * @param throwable The Throwable.
      * @return the Throwable.
      */
-    <T extends Throwable> T throwing(Level level, T t);
+    <T extends Throwable> T throwing(Level level, T throwable);
 
     /**
-     * Logs an exception or error to be thrown. This may be coded as:
+     * Logs a {@link Throwable} to be thrown at the {@link Level#ERROR ERROR} level.
+     * This may be coded as:
      *
      * <pre>
      * throw logger.throwing(myException);
      * </pre>
      *
      * @param <T> the Throwable type.
-     * @param t The Throwable.
+     * @param throwable The Throwable.
      * @return the Throwable.
      */
-    <T extends Throwable> T throwing(T t);
+    <T extends Throwable> T throwing(T throwable);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#TRACE TRACE} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
+     * @param message the message string to be logged
      */
-    void trace(Marker marker, Message msg);
+    void trace(Marker marker, Message message);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#TRACE TRACE} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
      */
-    void trace(Marker marker, Message msg, Throwable t);
+    void trace(Marker marker, Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#TRACE TRACE} level with
@@ -3033,22 +3036,22 @@ public interface Logger {
      * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void trace(Marker marker, MessageSupplier msgSupplier);
+    void trace(Marker marker, MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#TRACE TRACE} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter. The
+     * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t A Throwable or null.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void trace(Marker marker, MessageSupplier msgSupplier, Throwable t);
+    void trace(Marker marker, MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the {@link Level#TRACE TRACE} level.
@@ -3060,14 +3063,14 @@ public interface Logger {
 
     /**
      * Logs a CharSequence at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @see #debug(String)
      */
-    void trace(Marker marker, CharSequence message, Throwable t);
+    void trace(Marker marker, CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
@@ -3079,14 +3082,14 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @see #debug(String)
      */
-    void trace(Marker marker, Object message, Throwable t);
+    void trace(Marker marker, Object message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
@@ -3119,72 +3122,72 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @see #debug(String)
      */
-    void trace(Marker marker, String message, Throwable t);
+    void trace(Marker marker, String message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#TRACE TRACE} level with
      * the specified Marker.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void trace(Marker marker, Supplier<?> msgSupplier);
+    void trace(Marker marker, Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#TRACE TRACE} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     * specified Marker and including the stack trace of the {@link Throwable} <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t A Throwable or null.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void trace(Marker marker, Supplier<?> msgSupplier, Throwable t);
+    void trace(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#TRACE TRACE} level.
      *
-     * @param msg the message string to be logged
+     * @param message the message string to be logged
      */
-    void trace(Message msg);
+    void trace(Message message);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#TRACE TRACE} level.
      *
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
      */
-    void trace(Message msg, Throwable t);
+    void trace(Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#TRACE TRACE} level. The
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void trace(MessageSupplier msgSupplier);
+    void trace(MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#TRACE TRACE} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier} may or may
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may
      * not use the {@link MessageFactory} to construct the {@code Message}.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t the exception to log, including its stack trace.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void trace(MessageSupplier msgSupplier, Throwable t);
+    void trace(MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the {@link Level#TRACE TRACE} level.
@@ -3195,13 +3198,13 @@ public interface Logger {
 
     /**
      * Logs a CharSequence at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @see #debug(String)
      */
-    void trace(CharSequence message, Throwable t);
+    void trace(CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
@@ -3212,13 +3215,13 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @see #debug(String)
      */
-    void trace(Object message, Throwable t);
+    void trace(Object message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
@@ -3248,33 +3251,33 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @see #debug(String)
      */
-    void trace(String message, Throwable t);
+    void trace(String message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#TRACE TRACE} level.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void trace(Supplier<?> msgSupplier);
+    void trace(Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#TRACE TRACE} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     * stack trace of the {@link Throwable} <code>throwable</code> passed as parameter.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.4
      */
-    void trace(Supplier<?> msgSupplier, Throwable t);
+    void trace(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with parameters at trace level.
@@ -3554,20 +3557,20 @@ public interface Logger {
     /**
      * Logs entry to a method along with its parameters. For example,
      *
-     * <pre><code>
+     * <pre>
      * public void doSomething(String foo, int bar) {
      *     LOGGER.traceEntry("Parameters: {} and {}", foo, bar);
      *     // do something
      * }
-     * </code></pre>
+     * </pre>
      * or:
-     * <pre><code>
+     * <pre>
      * public int doSomething(String foo, int bar) {
      *     Message m = LOGGER.traceEntry("doSomething(foo={}, bar={})", foo, bar);
      *     // do something
      *     return traceExit(m, value);
      * }
-     * </code></pre>
+     * </pre>
      *
      * @param format The format String for the parameters.
      * @param params The parameters to the method.
@@ -3581,12 +3584,10 @@ public interface Logger {
      * Logs entry to a method along with its parameters. For example,
      *
      * <pre>
-     * <code>
      * public void doSomething(Request foo) {
      *     LOGGER.traceEntry(()->gson.toJson(foo));
      *     // do something
      * }
-     * </code>
      * </pre>
      *
      * @param paramSuppliers The Suppliers for the parameters to the method.
@@ -3600,12 +3601,10 @@ public interface Logger {
      * Logs entry to a method along with its parameters. For example,
      *
      * <pre>
-     * <code>
      * public void doSomething(String foo, int bar) {
      *     LOGGER.traceEntry("Parameters: {} and {}", ()->gson.toJson(foo), ()-> bar);
      *     // do something
      * }
-     * </code>
      * </pre>
      *
      * @param format The format String for the parameters.
@@ -3618,12 +3617,12 @@ public interface Logger {
 
     /**
      * Logs entry to a method using a Message to describe the parameters.
-     * <pre><code>
+     * <pre>
      * public void doSomething(Request foo) {
      *     LOGGER.traceEntry(new JsonMessage(foo));
      *     // do something
      * }
-     * </code></pre>
+     * </pre>
      * <p>
      * Avoid passing a {@code ReusableMessage} to this method (therefore, also avoid passing messages created by
      * calling {@code logger.getMessageFactory().newMessage("some message")}): Log4j will replace such messages with
@@ -3649,9 +3648,9 @@ public interface Logger {
     /**
      * Logs exiting from a method with the result. This may be coded as:
      *
-     * <pre><code>
+     * <pre>
      * return LOGGER.traceExit(myResult);
-     * </code></pre>
+     * </pre>
      *
      * @param <R> The type of the parameter and object being returned.
      * @param result The result being returned from the method call.
@@ -3664,9 +3663,9 @@ public interface Logger {
     /**
      * Logs exiting from a method with the result. This may be coded as:
      *
-     * <pre><code>
+     * <pre>
      * return LOGGER.traceExit("Result: {}", myResult);
-     * </code></pre>
+     * </pre>
      *
      * @param <R> The type of the parameter and object being returned.
      * @param format The format String for the result.
@@ -3680,13 +3679,13 @@ public interface Logger {
     /**
      * Logs exiting from a method with no result. Allows custom formatting of the result. This may be coded as:
      *
-     * <pre><code>
+     * <pre>
      * public long doSomething(int a, int b) {
      *    EntryMessage m = traceEntry("doSomething(a={}, b={})", a, b);
      *    // ...
      *    return LOGGER.traceExit(m);
      * }
-     * </code></pre>
+     * </pre>
      * @param message The Message containing the formatted result.
      *
      * @since 2.6
@@ -3696,13 +3695,13 @@ public interface Logger {
     /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
      *
-     * <pre><code>
+     * <pre>
      * public long doSomething(int a, int b) {
      *    EntryMessage m = traceEntry("doSomething(a={}, b={})", a, b);
      *    // ...
      *    return LOGGER.traceExit(m, myResult);
      * }
-     * </code></pre>
+     * </pre>
      * @param message The Message containing the formatted result.
      * @param result The result being returned from the method call.
      *
@@ -3716,9 +3715,9 @@ public interface Logger {
     /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
      *
-     * <pre><code>
+     * <pre>
      * return LOGGER.traceExit(new JsonMessage(myResult), myResult);
-     * </code></pre>
+     * </pre>
      * @param message The Message containing the formatted result.
      * @param result The result being returned from the method call.
      *
@@ -3733,18 +3732,18 @@ public interface Logger {
      * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
+     * @param message the message string to be logged
      */
-    void warn(Marker marker, Message msg);
+    void warn(Marker marker, Message message);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
      */
-    void warn(Marker marker, Message msg, Throwable t);
+    void warn(Marker marker, Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#WARN WARN} level with the
@@ -3752,22 +3751,22 @@ public interface Logger {
      * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void warn(Marker marker, MessageSupplier msgSupplier);
+    void warn(Marker marker, MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#WARN WARN} level) with the
-     * specified Marker and including the stack warn of the {@link Throwable} <code>t</code> passed as parameter. The
+     * specified Marker and including the stack warn of the {@link Throwable} <code>throwable</code> passed as parameter. The
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t A Throwable or null.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void warn(Marker marker, MessageSupplier msgSupplier, Throwable t);
+    void warn(Marker marker, MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the {@link Level#WARN WARN} level.
@@ -3779,13 +3778,13 @@ public interface Logger {
 
     /**
      * Logs a CharSequence at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void warn(Marker marker, CharSequence message, Throwable t);
+    void warn(Marker marker, CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
@@ -3797,13 +3796,13 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void warn(Marker marker, Object message, Throwable t);
+    void warn(Marker marker, Object message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
@@ -3836,71 +3835,71 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void warn(Marker marker, String message, Throwable t);
+    void warn(Marker marker, String message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#WARN WARN} level with the
      * specified Marker.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void warn(Marker marker, Supplier<?> msgSupplier);
+    void warn(Marker marker, Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#WARN WARN} level) with the
-     * specified Marker and including the stack warn of the {@link Throwable} <code>t</code> passed as parameter.
+     * specified Marker and including the stack warn of the {@link Throwable} <code>throwable</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t A Throwable or null.
+     * @param throwable A Throwable or null.
      * @since 2.4
      */
-    void warn(Marker marker, Supplier<?> msgSupplier, Throwable t);
+    void warn(Marker marker, Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.
      *
-     * @param msg the message string to be logged
+     * @param message the message string to be logged
      */
-    void warn(Message msg);
+    void warn(Message message);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.
      *
-     * @param msg the message string to be logged
-     * @param t A Throwable or null.
+     * @param message the message string to be logged
+     * @param throwable A Throwable or null.
      */
-    void warn(Message msg, Throwable t);
+    void warn(Message message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#WARN WARN} level. The
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param messageSupplier A function, which when called, produces the desired log message.
      * @since 2.4
      */
-    void warn(MessageSupplier msgSupplier);
+    void warn(MessageSupplier messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#WARN WARN} level) including the
-     * stack warn of the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier} may or may
+     * stack warn of the {@link Throwable} <code>throwable</code> passed as parameter. The {@code MessageSupplier} may or may
      * not use the {@link MessageFactory} to construct the {@code Message}.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t the exception to log, including its stack warn.
+     * @param messageSupplier A function, which when called, produces the desired log message.
+     * @param throwable the {@code Throwable} to log, including its stack warn.
      * @since 2.4
      */
-    void warn(MessageSupplier msgSupplier, Throwable t);
+    void warn(MessageSupplier messageSupplier, Throwable throwable);
 
     /**
      * Logs a message CharSequence with the {@link Level#WARN WARN} level.
@@ -3911,12 +3910,12 @@ public interface Logger {
 
     /**
      * Logs a CharSequence at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message CharSequence to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void warn(CharSequence message, Throwable t);
+    void warn(CharSequence message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
@@ -3927,12 +3926,12 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void warn(Object message, Throwable t);
+    void warn(Object message, Throwable throwable);
 
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
@@ -3962,32 +3961,32 @@ public interface Logger {
 
     /**
      * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
-     * <code>t</code> passed as parameter.
+     * <code>throwable</code> passed as parameter.
      *
      * @param message the message object to log.
-     * @param t the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      */
-    void warn(String message, Throwable t);
+    void warn(String message, Throwable throwable);
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#WARN WARN} level.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @since 2.4
      */
-    void warn(Supplier<?> msgSupplier);
+    void warn(Supplier<?> messageSupplier);
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#WARN WARN} level) including the
-     * stack warn of the {@link Throwable} <code>t</code> passed as parameter.
+     * stack warn of the {@link Throwable} <code>throwable</code> passed as parameter.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
+     * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
-     * @param t the exception to log, including its stack warn.
+     * @param throwable the {@code Throwable} to log, including its stack warn.
      * @since 2.4
      */
-    void warn(Supplier<?> msgSupplier, Throwable t);
+    void warn(Supplier<?> messageSupplier, Throwable throwable);
 
     /**
      * Logs a message with parameters at warn level.
@@ -4255,7 +4254,6 @@ public interface Logger {
     void warn(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
             Object p8, Object p9);
 
-
     /**
      * Logs a Message.
      * @param level The logging Level to check.
@@ -4264,7 +4262,7 @@ public interface Logger {
      *            method when location information needs to be logged.
      * @param location The location of the caller.
      * @param message The message format.
-     * @param throwable the exception to log, including its stack trace.
+     * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.13.0
      */
     default void logMessage(Level level, Marker marker, String fqcn, StackTraceElement location, Message message,
@@ -4280,6 +4278,7 @@ public interface Logger {
     default LogBuilder atTrace() {
         return LogBuilder.NOOP;
     }
+
     /**
      * Construct a trace log event.
      * @return a LogBuilder.
@@ -4288,6 +4287,7 @@ public interface Logger {
     default LogBuilder atDebug() {
         return LogBuilder.NOOP;
     }
+
     /**
      * Construct a trace log event.
      * @return a LogBuilder.
@@ -4296,6 +4296,7 @@ public interface Logger {
     default LogBuilder atInfo() {
         return LogBuilder.NOOP;
     }
+
     /**
      * Construct a trace log event.
      * @return a LogBuilder.
@@ -4304,6 +4305,7 @@ public interface Logger {
     default LogBuilder atWarn() {
         return LogBuilder.NOOP;
     }
+
     /**
      * Construct a trace log event.
      * @return a LogBuilder.
@@ -4312,6 +4314,7 @@ public interface Logger {
     default LogBuilder atError() {
         return LogBuilder.NOOP;
     }
+
     /**
      * Construct a trace log event.
      * @return a LogBuilder.
@@ -4320,6 +4323,7 @@ public interface Logger {
     default LogBuilder atFatal() {
         return LogBuilder.NOOP;
     }
+
     /**
      * Construct a log event that will always be logged.
      * @return a LogBuilder.
@@ -4328,6 +4332,7 @@ public interface Logger {
     default LogBuilder always() {
         return LogBuilder.NOOP;
     }
+
     /**
      * Construct a log event.
      * @return a LogBuilder.
@@ -4336,4 +4341,5 @@ public interface Logger {
     default LogBuilder atLevel(Level level) {
         return LogBuilder.NOOP;
     }
+
 }
