@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.junit.Mutable;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.junit.Mutable;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests ReusableParameterizedMessage.
@@ -41,15 +41,15 @@ public class ReusableParameterizedMessageTest {
         final ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
         msg.set(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
-        assertEquals(testMsg, result);
+        assertThat(result).isEqualTo(testMsg);
 
         msg.set(testMsg, (Object) null);
         result = msg.getFormattedMessage();
-        assertEquals("Test message null", result);
+        assertThat(result).isEqualTo("Test message null");
 
         msg.set(testMsg, null, null);
         result = msg.getFormattedMessage();
-        assertEquals("Test message null", result);
+        assertThat(result).isEqualTo("Test message null");
     }
 
     @Test
@@ -57,7 +57,7 @@ public class ReusableParameterizedMessageTest {
         final String testMsg = "Test message {}{} {}";
         final String[] args = { "a", "b", "c" };
         final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
-        assertEquals("Test message ab c", result);
+        assertThat(result).isEqualTo("Test message ab c");
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ReusableParameterizedMessageTest {
         final String testMsg = "Test message {} {} {} {} {} {}";
         final String[] args = { "a", null, "c", null, null, null };
         final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
-        assertEquals("Test message a null c null null null", result);
+        assertThat(result).isEqualTo("Test message a null c null null null");
     }
 
     @Test
@@ -73,7 +73,7 @@ public class ReusableParameterizedMessageTest {
         final String testMsg = "Test message {}{} {}";
         final String[] args = { "a", "b", "c", "unnecessary", "superfluous" };
         final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
-        assertEquals("Test message ab c", result);
+        assertThat(result).isEqualTo("Test message ab c");
     }
 
     @Test
@@ -81,7 +81,7 @@ public class ReusableParameterizedMessageTest {
         final String testMsg = "Test message \\{}{} {}";
         final String[] args = { "a", "b", "c" };
         final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
-        assertEquals("Test message {}a b", result);
+        assertThat(result).isEqualTo("Test message {}a b");
     }
 
     @Test
@@ -89,7 +89,7 @@ public class ReusableParameterizedMessageTest {
         final String testMsg = "Test message {}{} {}\\";
         final String[] args = { "a", "b", "c" };
         final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
-        assertEquals("Test message ab c\\", result);
+        assertThat(result).isEqualTo("Test message ab c\\");
     }
 
     @Test
@@ -97,7 +97,7 @@ public class ReusableParameterizedMessageTest {
         final String testMsg = "Test message {}{} {}Text";
         final String[] args = { "a", "b", "c" };
         final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
-        assertEquals("Test message ab cText", result);
+        assertThat(result).isEqualTo("Test message ab cText");
     }
 
     @Test
@@ -105,7 +105,7 @@ public class ReusableParameterizedMessageTest {
         final String testMsg = "Test message {}{} {}\\\\";
         final String[] args = { "a", "b", "c" };
         final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
-        assertEquals("Test message ab c\\\\", result);
+        assertThat(result).isEqualTo("Test message ab c\\\\");
     }
 
     @Test
@@ -113,7 +113,7 @@ public class ReusableParameterizedMessageTest {
         final String testMsg = "Test message \\\\{}{} {}";
         final Object[] args = { "a", "b", "c" };
         final String result = new ReusableParameterizedMessage().set(testMsg, args).getFormattedMessage();
-        assertEquals("Test message \\ab c", result);
+        assertThat(result).isEqualTo("Test message \\ab c");
     }
 
 
@@ -127,12 +127,12 @@ public class ReusableParameterizedMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Test message XYZ", actual, "Should use current param value");
+        assertThat(actual).describedAs("Should use current param value").isEqualTo("Test message XYZ");
 
         // modify parameter after calling msg.getFormattedMessage
         param.set("000");
         final String after = msg.getFormattedMessage();
-        assertEquals("Test message 000", after, "Renders again");
+        assertThat(after).describedAs("Renders again").isEqualTo("Test message 000");
     }
 
     @Test
@@ -141,11 +141,11 @@ public class ReusableParameterizedMessageTest {
         final ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
         final Throwable EXCEPTION1 = new IllegalAccessError("#1");
         msg.set(testMsg, "msg", EXCEPTION1);
-        assertSame(EXCEPTION1, msg.getThrowable());
+        assertThat(msg.getThrowable()).isSameAs(EXCEPTION1);
 
         final Throwable EXCEPTION2 = new UnsupportedOperationException("#2");
         msg.set(testMsg, "msgs", EXCEPTION2);
-        assertSame(EXCEPTION2, msg.getThrowable());
+        assertThat(msg.getThrowable()).isSameAs(EXCEPTION2);
     }
 
     @Test
@@ -164,6 +164,6 @@ public class ReusableParameterizedMessageTest {
                 actual.add(parameter);
             }
         }, null);
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 }

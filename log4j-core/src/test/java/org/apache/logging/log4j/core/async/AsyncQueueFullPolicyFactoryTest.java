@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
+import java.util.Locale;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -23,10 +27,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.util.Locale;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests the AsyncQueueFullPolicyFactory class.
@@ -45,38 +45,38 @@ public class AsyncQueueFullPolicyFactoryTest {
     @Test
     public void testCreateReturnsDefaultRouterByDefault() throws Exception {
         final AsyncQueueFullPolicy router = AsyncQueueFullPolicyFactory.create();
-        assertEquals(DefaultAsyncQueueFullPolicy.class, router.getClass());
+        assertThat(router.getClass()).isEqualTo(DefaultAsyncQueueFullPolicy.class);
     }
 
     @Test
     public void testCreateReturnsDiscardingRouterIfSpecified() throws Exception {
         System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
-        assertEquals(DiscardingAsyncQueueFullPolicy.class, AsyncQueueFullPolicyFactory.create().getClass());
+        assertThat(AsyncQueueFullPolicyFactory.create().getClass()).isEqualTo(DiscardingAsyncQueueFullPolicy.class);
 
         System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 DiscardingAsyncQueueFullPolicy.class.getSimpleName());
-        assertEquals(DiscardingAsyncQueueFullPolicy.class, AsyncQueueFullPolicyFactory.create().getClass());
+        assertThat(AsyncQueueFullPolicyFactory.create().getClass()).isEqualTo(DiscardingAsyncQueueFullPolicy.class);
 
         System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 DiscardingAsyncQueueFullPolicy.class.getName());
-        assertEquals(DiscardingAsyncQueueFullPolicy.class, AsyncQueueFullPolicyFactory.create().getClass());
+        assertThat(AsyncQueueFullPolicyFactory.create().getClass()).isEqualTo(DiscardingAsyncQueueFullPolicy.class);
     }
 
     @Test
     public void testCreateDiscardingRouterDefaultThresholdLevelInfo() throws Exception {
         System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
-        assertEquals(Level.INFO, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
-                getThresholdLevel());
+        assertThat(((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
+                getThresholdLevel()).isEqualTo(Level.INFO);
     }
 
     @Test
     public void testCreateDiscardingRouterCaseInsensitive() {
         System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER.toLowerCase(Locale.ENGLISH));
-        assertEquals(Level.INFO, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
-                getThresholdLevel());
+        assertThat(((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
+                getThresholdLevel()).isEqualTo(Level.INFO);
     }
 
     @Test
@@ -87,8 +87,8 @@ public class AsyncQueueFullPolicyFactoryTest {
         for (final Level level : Level.values()) {
             System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL,
                     level.name());
-            assertEquals(level, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
-                    getThresholdLevel());
+            assertThat(((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
+                    getThresholdLevel()).isEqualTo(level);
         }
     }
 
@@ -109,13 +109,13 @@ public class AsyncQueueFullPolicyFactoryTest {
     public void testCreateReturnsCustomRouterIfSpecified() throws Exception {
         System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 CustomRouterDefaultConstructor.class.getName());
-        assertEquals(CustomRouterDefaultConstructor.class, AsyncQueueFullPolicyFactory.create().getClass());
+        assertThat(AsyncQueueFullPolicyFactory.create().getClass()).isEqualTo(CustomRouterDefaultConstructor.class);
     }
 
     @Test
     public void testCreateReturnsDefaultRouterIfSpecifiedCustomRouterFails() throws Exception {
         System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 DoesNotImplementInterface.class.getName());
-        assertEquals(DefaultAsyncQueueFullPolicy.class, AsyncQueueFullPolicyFactory.create().getClass());
+        assertThat(AsyncQueueFullPolicyFactory.create().getClass()).isEqualTo(DefaultAsyncQueueFullPolicy.class);
     }
 }

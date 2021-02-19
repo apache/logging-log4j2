@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class SystemPropertiesLookupTest {
 
@@ -41,8 +42,8 @@ public class SystemPropertiesLookupTest {
     public void testLookup() {
         final StrLookup lookup = new SystemPropertiesLookup();
         String value = lookup.lookup(TESTKEY);
-        assertEquals(TESTVAL, value);
+        assertThat(value).isEqualTo(TESTVAL);
         value = lookup.lookup("BadKey");
-        assertNull(value);
+        assertThat(value).isNull();
     }
 }

@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("log4j-reference-level.xml")
 public class AppenderRefLevelTest {
@@ -55,9 +55,9 @@ public class AppenderRefLevelTest {
         logger1.warn("warn Message");
         logger1.traceExit();
         List<LogEvent> events = app1.getEvents();
-        assertEquals(6, events.size(), "Incorrect number of events. Expected 6, actual " + events.size());
+        assertThat(events.size()).describedAs("Incorrect number of events. Expected 6, actual " + events.size()).isEqualTo(6);
         events = app2.getEvents();
-        assertEquals(1, events.size(), "Incorrect number of events. Expected 1, actual " + events.size());
+        assertThat(events.size()).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).isEqualTo(1);
     }
 
     @Test
@@ -69,9 +69,9 @@ public class AppenderRefLevelTest {
         logger2.warn("warn Message");
         logger2.traceExit();
         List<LogEvent> events = app1.getEvents();
-        assertEquals(events.size(), 2, "Incorrect number of events. Expected 2, actual " + events.size());
+        assertThat(2).describedAs("Incorrect number of events. Expected 2, actual " + events.size()).isEqualTo(events.size());
         events = app2.getEvents();
-        assertEquals(events.size(), 4, "Incorrect number of events. Expected 4, actual " + events.size());
+        assertThat(4).describedAs("Incorrect number of events. Expected 4, actual " + events.size()).isEqualTo(events.size());
     }
 
     @Test
@@ -83,7 +83,7 @@ public class AppenderRefLevelTest {
         logger3.warn("warn Message");
         logger3.traceExit();
         final List<LogEvent> events = app1.getEvents();
-        assertEquals(4, events.size(), "Incorrect number of events. Expected 4, actual " + events.size());
+        assertThat(events.size()).describedAs("Incorrect number of events. Expected 4, actual " + events.size()).isEqualTo(4);
     }
 }
 

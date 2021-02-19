@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
-
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -47,11 +47,11 @@ public class JsonRoutingAppenderTest {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
         final List<LogEvent> list = loggerContextRule.getListAppender("List").getEvents();
-        assertNotNull("No events generated", list);
-        assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
+        assertThat(list).describedAs("No events generated").isNotNull();
+        assertThat(list.size() == 1).describedAs("Incorrect number of events. Expected 1, got " + list.size()).isTrue();
         msg = new StructuredDataMessage("Test", "This is a test", "Unknown");
         EventLogger.logEvent(msg);
         final File file = new File(LOG_FILENAME);
-        assertTrue("File was not created", file.exists());
+        assertThat(file.exists()).describedAs("File was not created").isTrue();
     }
 }

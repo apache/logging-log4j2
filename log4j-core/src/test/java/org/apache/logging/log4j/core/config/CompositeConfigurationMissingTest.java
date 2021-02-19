@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class CompositeConfigurationMissingTest {
 
@@ -36,12 +37,12 @@ public class CompositeConfigurationMissingTest {
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 
         final AbstractConfiguration config = (AbstractConfiguration) ctx.getConfiguration();
-        assertNotNull(config, "No configuration returned");
+        assertThat(config).describedAs("No configuration returned").isNotNull();
         //Test for Root log level override
-        assertEquals(Level.ERROR, config.getRootLogger().getLevel(), "Expected Root logger log level to be ERROR");
+        assertThat(config.getRootLogger().getLevel()).describedAs("Expected Root logger log level to be ERROR").isEqualTo(Level.ERROR);
 
         //Test for no cat2 level override
         final LoggerConfig cat2 = config.getLogger("cat2");
-        assertEquals(Level.DEBUG, cat2.getLevel(), "Expected cat2 log level to be INFO");
+        assertThat(cat2.getLevel()).describedAs("Expected cat2 log level to be INFO").isEqualTo(Level.DEBUG);
     }
 }

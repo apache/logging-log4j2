@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -26,12 +32,6 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("functional")
 public class ContextDataProviderTest {
@@ -46,7 +46,7 @@ public class ContextDataProviderTest {
         LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
         logger = loggerContext.getLogger(ContextDataProviderTest.class.getName());
         appender = loggerContext.getConfiguration().getAppender("List");
-        assertNotNull(appender, "No List appender");
+        assertThat(appender).describedAs("No List appender").isNotNull();
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ContextDataProviderTest {
         ThreadContext.put("loginId", "jdoe");
         logger.debug("This is a test");
         List<String> messages = appender.getMessages();
-        assertEquals(1, messages.size(), "Incorrect number of messages");
+        assertThat(messages.size()).describedAs("Incorrect number of messages").isEqualTo(1);
         assertTrue(messages.get(0).contains("testKey=testValue"), "Context data missing");
     }
 

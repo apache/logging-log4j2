@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -25,11 +30,6 @@ import org.apache.logging.log4j.test.appender.FailOnceAppender;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @LoggerContextSource("log4j-failover.xml")
 public class FailoverAppenderTest {
@@ -55,13 +55,13 @@ public class FailoverAppenderTest {
     public void testFailover() {
         logger.error("This is a test");
         List<LogEvent> events = app.getEvents();
-        assertNotNull(events);
-        assertEquals(events.size(), 1, "Incorrect number of events. Should be 1 is " + events.size());
+        assertThat(events).isNotNull();
+        assertThat(1).describedAs("Incorrect number of events. Should be 1 is " + events.size()).isEqualTo(events.size());
         app.clear();
         logger.error("This is a test");
         events = app.getEvents();
-        assertNotNull(events);
-        assertEquals(events.size(), 1, "Incorrect number of events. Should be 1 is " + events.size());
+        assertThat(events).isNotNull();
+        assertThat(1).describedAs("Incorrect number of events. Should be 1 is " + events.size()).isEqualTo(events.size());
     }
 
     @Test
@@ -69,15 +69,15 @@ public class FailoverAppenderTest {
         onceLogger.error("Fail once");
         onceLogger.error("Fail again");
         List<LogEvent> events = app.getEvents();
-        assertNotNull(events);
-        assertEquals(events.size(), 2, "Incorrect number of events. Should be 2 is " + events.size());
+        assertThat(events).isNotNull();
+        assertThat(2).describedAs("Incorrect number of events. Should be 2 is " + events.size()).isEqualTo(events.size());
         app.clear();
         Thread.sleep(1100);
         onceLogger.error("Fail after recovery interval");
         onceLogger.error("Second log message");
         events = app.getEvents();
-        assertEquals(events.size(), 0, "Did not recover");
+        assertThat(0).describedAs("Did not recover").isEqualTo(events.size());
         events = foApp.drainEvents();
-        assertEquals(events.size(), 2, "Incorrect number of events in primary appender");
+        assertThat(2).describedAs("Incorrect number of events in primary appender").isEqualTo(events.size());
     }
 }

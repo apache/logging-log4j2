@@ -18,10 +18,10 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -31,10 +31,10 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.assertj.core.api.HamcrestCondition;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
@@ -76,10 +76,10 @@ public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
                 logger.debug("This is test message number " + i);
             }
             Thread.sleep(50);
-            assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+            assertThat(dir.exists() && dir.listFiles().length > 0).describedAs("Directory not created").isTrue();
             final File[] files = dir.listFiles();
-            assertNotNull(files);
-            assertThat(files, hasItemInArray(that(hasName(that(endsWith(".gz"))))));
+            assertThat(files).isNotNull();
+            assertThat(files).is(new HamcrestCondition<>(hasItemInArray(that(hasName(that(endsWith(".gz")))))));
 
             int temporaryFilesCreated = 0;
             int compressedFiles = 0;
@@ -95,9 +95,8 @@ public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
                     compressedFiles++;
                 }
             }
-            assertTrue("No temporary file created during compression", temporaryFilesCreated > 0);
-            assertTrue("Temporarys file created not equals to compressed files",
-                    compressedFiles == temporaryFilesCreated);
+            assertThat(temporaryFilesCreated > 0).describedAs("No temporary file created during compression").isTrue();
+            assertThat(compressedFiles == temporaryFilesCreated).describedAs("Temporarys file created not equals to compressed files").isTrue();
         }
     }
 }

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
 import java.io.OutputStreamWriter;
@@ -23,7 +26,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Method;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -33,9 +35,6 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 
 /**
  * Tests {@link WriterAppender}.
@@ -61,7 +60,7 @@ public class WriterAppenderTest {
         final Logger logger = LogManager.getLogger(name);
         logger.error(TEST_MSG);
         final String actual = out.toString();
-        assertThat(actual, containsString(TEST_MSG));
+        assertThat(actual).contains(TEST_MSG);
     }
 
     private void test(final Writer writer) {
@@ -70,7 +69,7 @@ public class WriterAppenderTest {
         final Logger logger = LogManager.getLogger(name);
         logger.error(TEST_MSG);
         final String actual = writer.toString();
-        assertThat(actual, containsString(TEST_MSG));
+        assertThat(actual).contains(TEST_MSG);
     }
 
     private void addAppender(final Writer writer, final String writerName) {

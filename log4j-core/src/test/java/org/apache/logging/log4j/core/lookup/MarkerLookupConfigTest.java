@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,13 +31,6 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link MarkerLookup} with a configuration file.
@@ -58,21 +58,21 @@ public class MarkerLookupConfigTest {
         logger.info(PERFORMANCE, PERFORMANCE_LOG);
         {
             final String log = FileUtils.readFileToString(new File("target/logs/sql.log"), StandardCharsets.UTF_8);
-            assertTrue(log.contains(SQL_LOG));
-            assertFalse(log.contains(PAYLOAD_LOG));
-            assertFalse(log.contains(PERFORMANCE_LOG));
+            assertThat(log.contains(SQL_LOG)).isTrue();
+            assertThat(log.contains(PAYLOAD_LOG)).isFalse();
+            assertThat(log.contains(PERFORMANCE_LOG)).isFalse();
         }
         {
             final String log = FileUtils.readFileToString(new File("target/logs/payload.log"), StandardCharsets.UTF_8);
-            assertFalse(log.contains(SQL_LOG));
-            assertTrue(log.contains(PAYLOAD_LOG));
-            assertFalse(log.contains(PERFORMANCE_LOG));
+            assertThat(log.contains(SQL_LOG)).isFalse();
+            assertThat(log.contains(PAYLOAD_LOG)).isTrue();
+            assertThat(log.contains(PERFORMANCE_LOG)).isFalse();
         }
         {
             final String log = FileUtils.readFileToString(new File("target/logs/performance.log"), StandardCharsets.UTF_8);
-            assertFalse(log.contains(SQL_LOG));
-            assertFalse(log.contains(PAYLOAD_LOG));
-            assertTrue(log.contains(PERFORMANCE_LOG));
+            assertThat(log.contains(SQL_LOG)).isFalse();
+            assertThat(log.contains(PAYLOAD_LOG)).isFalse();
+            assertThat(log.contains(PERFORMANCE_LOG)).isTrue();
         }
     }
 }

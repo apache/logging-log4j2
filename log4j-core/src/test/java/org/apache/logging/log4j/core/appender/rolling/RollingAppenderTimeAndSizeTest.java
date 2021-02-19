@@ -16,24 +16,25 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.Random;
-
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.assertj.core.api.HamcrestCondition;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 /**
  *
@@ -60,7 +61,7 @@ public class RollingAppenderTimeAndSizeTest {
     public void testAppender() throws Exception {
         Random rand = new Random();
         final File logFile = new File("target/rolling3/rollingtest.log");
-        assertTrue("target/rolling3/rollingtest.log does not exist", logFile.exists());
+        assertThat(logFile.exists()).describedAs("target/rolling3/rollingtest.log does not exist").isTrue();
         FileTime time = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
         for (int j = 0; j < 100; ++j) {
             int count = rand.nextInt(50);
@@ -71,11 +72,11 @@ public class RollingAppenderTimeAndSizeTest {
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertThat(dir.exists() && dir.listFiles().length > 0).describedAs("Directory not created").isTrue();
         final File[] files = dir.listFiles();
         Arrays.sort(files);
-        assertNotNull(files);
-        assertThat(files, hasItemInArray(that(hasName(that(endsWith(".log"))))));
+        assertThat(files).isNotNull();
+        assertThat(files).is(new HamcrestCondition<>(hasItemInArray(that(hasName(that(endsWith(".log")))))));
         int found = 0;
         int fileCounter = 0;
         String previous = "";
@@ -89,10 +90,9 @@ public class RollingAppenderTimeAndSizeTest {
             final String[] fileParts = actual.split("_|\\.");
             fileCounter = previous.equals(fileParts[1]) ? ++fileCounter : 1;
             previous = fileParts[1];
-            assertEquals("Incorrect file name. Expected counter value of " + fileCounter + " in " + actual,
-                    Integer.toString(fileCounter), fileParts[2]);
+            assertThat(fileParts[2]).describedAs("Incorrect file name. Expected counter value of " + fileCounter + " in " + actual).isEqualTo(Integer.toString(fileCounter));
         }
         FileTime endTime = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
-        assertNotEquals("Creation times are equal", time, endTime);
+        assertThat(endTime).describedAs("Creation times are equal").isNotEqualTo(time);
     }
 }

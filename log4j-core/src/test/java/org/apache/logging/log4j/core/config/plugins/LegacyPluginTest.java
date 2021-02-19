@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Map;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -23,30 +28,23 @@ import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.*;
-
 @LoggerContextSource("legacy-plugins.xml")
 public class LegacyPluginTest {
 
     @Test
     public void testLegacy(final Configuration configuration) throws Exception {
-        assertThat(configuration, instanceOf(XmlConfiguration.class));
+        assertThat(configuration).isInstanceOf(XmlConfiguration.class);
         for (Map.Entry<String, Appender> entry : configuration.getAppenders().entrySet()) {
             if (entry.getKey().equalsIgnoreCase("console")) {
                 Layout layout = entry.getValue().getLayout();
-                assertNotNull("No layout for Console Appender");
+                assertThat("No layout for Console Appender").isNotNull();
                 String name = layout.getClass().getSimpleName();
-                assertEquals("LogstashLayout", name, "Incorrect Layout class. Expected LogstashLayout, Actual " + name);
+                assertThat(name).describedAs("Incorrect Layout class. Expected LogstashLayout, Actual " + name).isEqualTo("LogstashLayout");
             } else if (entry.getKey().equalsIgnoreCase("customConsole")) {
                 Layout layout = entry.getValue().getLayout();
-                assertNotNull("No layout for CustomConsole Appender");
+                assertThat("No layout for CustomConsole Appender").isNotNull();
                 String name = layout.getClass().getSimpleName();
-                assertEquals("CustomConsoleLayout",
-                        name, "Incorrect Layout class. Expected CustomConsoleLayout, Actual " + name);
+                assertThat(name).describedAs("Incorrect Layout class. Expected CustomConsoleLayout, Actual " + name).isEqualTo("CustomConsoleLayout");
             }
         }
     }

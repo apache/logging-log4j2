@@ -17,16 +17,16 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test for <code>BurstFilter</code>.
@@ -41,7 +41,7 @@ public class BurstFilterTest {
     public BurstFilterTest(final LoggerContext context, @Named("ListAppender") final ListAppender app) {
         this.app = app;
         this.filter = (BurstFilter) app.getFilter();
-        assertNotNull(filter);
+        assertThat(filter).isNotNull();
         this.logger = context.getLogger(getClass());
     }
 
@@ -61,7 +61,7 @@ public class BurstFilterTest {
             assertTrue(filter.getAvailable() < 100, "Incorrect number of available slots");
         }
         List<String> msgs = app.getMessages();
-        assertEquals(100, msgs.size(), "Incorrect message count. Should be 100, actual " + msgs.size());
+        assertThat(msgs.size()).describedAs("Incorrect message count. Should be 100, actual " + msgs.size()).isEqualTo(100);
         app.clear();
 
         assertTrue(filter.getAvailable() < 100, "Incorrect number of available slots");
@@ -82,7 +82,7 @@ public class BurstFilterTest {
         for (int i = 0; i < 110; i++) {
             logger.info("Waited 1.5 seconds and trying to log again, should see more than 0 and less than 100" + (i + 1));
         }
-        assertEquals(0, filter.getAvailable(), "");
+        assertThat(filter.getAvailable()).describedAs("").isEqualTo(0);
         app.clear();
 
 
@@ -102,7 +102,7 @@ public class BurstFilterTest {
         }
 
         msgs = app.getMessages();
-        assertEquals(110, msgs.size(), "Incorrect message count. Should be 110, actual " + msgs.size());
+        assertThat(msgs.size()).describedAs("Incorrect message count. Should be 110, actual " + msgs.size()).isEqualTo(110);
         app.clear();
 
         // now log 100 errors, they should all get through because the filter level is set at info
@@ -111,7 +111,7 @@ public class BurstFilterTest {
         }
 
         msgs = app.getMessages();
-        assertEquals(110, msgs.size(), "Incorrect message count. Should be 110, actual " + msgs.size());
+        assertThat(msgs.size()).describedAs("Incorrect message count. Should be 110, actual " + msgs.size()).isEqualTo(110);
         app.clear();
 
         // now log 100 fatals, they should all get through because the filter level is set at info
@@ -120,7 +120,7 @@ public class BurstFilterTest {
         }
 
         msgs = app.getMessages();
-        assertEquals(110, msgs.size(), "Incorrect message count. Should be 110, actual " + msgs.size());
+        assertThat(msgs.size()).describedAs("Incorrect message count. Should be 110, actual " + msgs.size()).isEqualTo(110);
         app.clear();
 
         // wait and make sure we can log messages again despite the fact we just logged a bunch of warns, errors, fatals
@@ -130,7 +130,7 @@ public class BurstFilterTest {
             logger.debug("Waited 3+ seconds, should see 100 logs #" + (i + 1));
         }
         msgs = app.getMessages();
-        assertEquals(100, msgs.size(), "Incorrect message count. Should be 100, actual " + msgs.size());
+        assertThat(msgs.size()).describedAs("Incorrect message count. Should be 100, actual " + msgs.size()).isEqualTo(100);
         app.clear();
 
     }

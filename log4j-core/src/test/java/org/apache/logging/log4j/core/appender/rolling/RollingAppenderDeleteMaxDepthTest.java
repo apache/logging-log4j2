@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -29,7 +30,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
@@ -65,21 +65,20 @@ public class RollingAppenderDeleteMaxDepthTest {
         Thread.sleep(100); // Allow time for rollover to complete
 
         final File dir = new File(DIR);
-        assertTrue("Dir " + DIR + " should exist", dir.exists());
-        assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
+        assertThat(dir.exists()).describedAs("Dir " + DIR + " should exist").isTrue();
+        assertThat(dir.listFiles().length > 0).describedAs("Dir " + DIR + " should contain files").isTrue();
 
         final File[] files = dir.listFiles();
         final List<String> expected = Arrays.asList("1", "2", "test-1.log", "test-2.log", "test-3.log");
-        assertEquals(Arrays.toString(files), expected.size(), files.length);
+        assertThat(files.length).describedAs(Arrays.toString(files)).isEqualTo(expected.size());
         for (final File file : files) {
-            assertTrue("test-4.log should have been deleted",
-                    expected.contains(file.getName()));
+            assertThat(expected.contains(file.getName())).describedAs("test-4.log should have been deleted").isTrue();
         }
 
-        assertTrue(p1 + " should not have been deleted", Files.exists(p1));
-        assertTrue(p2 + " should not have been deleted", Files.exists(p2));
-        assertTrue(p3 + " should not have been deleted", Files.exists(p3));
-        assertTrue(p4 + " should not have been deleted", Files.exists(p4));
+        assertThat(Files.exists(p1)).describedAs(p1 + " should not have been deleted").isTrue();
+        assertThat(Files.exists(p2)).describedAs(p2 + " should not have been deleted").isTrue();
+        assertThat(Files.exists(p3)).describedAs(p3 + " should not have been deleted").isTrue();
+        assertThat(Files.exists(p4)).describedAs(p4 + " should not have been deleted").isTrue();
     }
 
     private Path writeTextTo(final String location) throws IOException {

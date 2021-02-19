@@ -16,7 +16,17 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
@@ -32,16 +42,6 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.InflaterInputStream;
-
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
 public class GelfLayoutTest {
@@ -218,12 +218,12 @@ public class GelfLayoutTest {
         assertJsonEquals(expected, uncompressedString);
         assertJsonEquals(expected, uncompressedString2);
         if (includeNullDelimiter) {
-            assertEquals(uncompressedString.indexOf('\0'), uncompressedString.length() - 1);
-            assertEquals(uncompressedString2.indexOf('\0'), uncompressedString2.length() - 1);
+            assertThat(uncompressedString.length() - 1).isEqualTo(uncompressedString.indexOf('\0'));
+            assertThat(uncompressedString2.length() - 1).isEqualTo(uncompressedString2.indexOf('\0'));
         }
         if (includeNewLineDelimiter) {
-            assertEquals(uncompressedString.indexOf('\n'), uncompressedString.length() - 1);
-            assertEquals(uncompressedString2.indexOf('\n'), uncompressedString2.length() - 1);
+            assertThat(uncompressedString.length() - 1).isEqualTo(uncompressedString.indexOf('\n'));
+            assertThat(uncompressedString2.length() - 1).isEqualTo(uncompressedString2.indexOf('\n'));
         }
     }
 
@@ -269,13 +269,13 @@ public class GelfLayoutTest {
 
     @Test
     public void testFormatTimestamp() {
-        assertEquals("0", GelfLayout.formatTimestamp(0L).toString());
-        assertEquals("1.000", GelfLayout.formatTimestamp(1000L).toString());
-        assertEquals("1.001", GelfLayout.formatTimestamp(1001L).toString());
-        assertEquals("1.010", GelfLayout.formatTimestamp(1010L).toString());
-        assertEquals("1.100", GelfLayout.formatTimestamp(1100L).toString());
-        assertEquals("1458741206.653", GelfLayout.formatTimestamp(1458741206653L).toString());
-        assertEquals("9223372036854775.807", GelfLayout.formatTimestamp(Long.MAX_VALUE).toString());
+        assertThat(GelfLayout.formatTimestamp(0L).toString()).isEqualTo("0");
+        assertThat(GelfLayout.formatTimestamp(1000L).toString()).isEqualTo("1.000");
+        assertThat(GelfLayout.formatTimestamp(1001L).toString()).isEqualTo("1.001");
+        assertThat(GelfLayout.formatTimestamp(1010L).toString()).isEqualTo("1.010");
+        assertThat(GelfLayout.formatTimestamp(1100L).toString()).isEqualTo("1.100");
+        assertThat(GelfLayout.formatTimestamp(1458741206653L).toString()).isEqualTo("1458741206.653");
+        assertThat(GelfLayout.formatTimestamp(Long.MAX_VALUE).toString()).isEqualTo("9223372036854775.807");
     }
 
     private void testRequiresLocation(String messagePattern, Boolean requiresLocation) {
@@ -283,7 +283,7 @@ public class GelfLayoutTest {
             .setMessagePattern(messagePattern)
             .build();
 
-        assertEquals(layout.requiresLocation(), requiresLocation);
+        assertThat(requiresLocation).isEqualTo(layout.requiresLocation());
     }
 
     @Test

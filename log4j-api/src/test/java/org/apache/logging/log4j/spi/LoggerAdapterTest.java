@@ -16,20 +16,20 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.TestLogger;
-import org.apache.logging.log4j.TestLoggerContext;
-import org.apache.logging.log4j.TestLoggerContextFactory;
-import org.apache.logging.log4j.simple.SimpleLoggerContext;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.TestLogger;
+import org.apache.logging.log4j.TestLoggerContext;
+import org.apache.logging.log4j.TestLoggerContextFactory;
+import org.apache.logging.log4j.simple.SimpleLoggerContext;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Pavel.Sivolobtchik@uxpsystems.com on 2016-10-19.
@@ -137,12 +137,12 @@ public class LoggerAdapterTest {
             LoggerContext lc = adapter.getContext(Integer.toString(i));
             lc.getLogger(Integer.toString(i));
         }
-        assertEquals(5, adapter.registry.size(), "Expected 5 LoggerContexts");
+        assertThat(adapter.registry.size()).describedAs("Expected 5 LoggerContexts").isEqualTo(5);
         Set<LoggerContext> contexts = new HashSet<>(adapter.registry.keySet());
         for (LoggerContext context : contexts) {
             ((TestLoggerContext2) context).shutdown();
         }
-        assertEquals(0, adapter.registry.size(), "Expected 0 LoggerContexts");
+        assertThat(adapter.registry.size()).describedAs("Expected 0 LoggerContexts").isEqualTo(0);
     }
 
 
@@ -179,8 +179,8 @@ public class LoggerAdapterTest {
             //maps for the same context should be the same instance
             final Map<String, Logger> resultMap1 = instances[i].getResultMap();
             final Map<String, Logger> resultMap2 = instances[i + 1].getResultMap();
-            assertSame(resultMap1, resultMap2, "not the same map for instances" + i + " and " + (i + 1) + ":");
-            assertEquals(2, resultMap1.size());
+            assertThat(resultMap2).describedAs("not the same map for instances" + i + " and " + (i + 1) + ":").isSameAs(resultMap1);
+            assertThat(resultMap1.size()).isEqualTo(2);
         }
     }
 }

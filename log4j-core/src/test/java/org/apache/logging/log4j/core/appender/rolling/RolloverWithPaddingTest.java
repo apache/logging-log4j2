@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
@@ -52,12 +52,12 @@ public class RolloverWithPaddingTest {
     Thread.sleep(100); // Allow time for rollover to complete
 
     final File dir = new File(DIR);
-    assertTrue("Dir " + DIR + " should exist", dir.exists());
-    assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length == 6);
+    assertThat(dir.exists()).describedAs("Dir " + DIR + " should exist").isTrue();
+    assertThat(dir.listFiles().length == 6).describedAs("Dir " + DIR + " should contain files").isTrue();
 
     final File[] files = dir.listFiles();
     final List<String> expected = Arrays.asList("rollingtest.log", "test-001.log", "test-002.log", "test-003.log", "test-004.log", "test-005.log");
-    assertEquals("Unexpected number of files", expected.size(), files.length);
+    assertThat(files.length).describedAs("Unexpected number of files").isEqualTo(expected.size());
     for (final File file : files) {
       if (!expected.contains(file.getName())) {
         fail("unexpected file" + file);

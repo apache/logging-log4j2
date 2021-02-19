@@ -17,12 +17,12 @@
 
 package org.apache.logging.log4j.core.util;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the FileUtils class.
@@ -36,7 +36,7 @@ public class FileUtilsTest {
         final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
         final URI uri = new URI(config);
         final File file = FileUtils.fileFromUri(uri);
-        assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
+        assertThat(file.getName()).isEqualTo(LOG4J_CONFIG_WITH_PLUS);
         assertTrue(file.exists(), "file exists");
     }
 
@@ -45,7 +45,7 @@ public class FileUtilsTest {
         final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
         final URI uri = new File(config).toURI();
         final File file = FileUtils.fileFromUri(uri);
-        assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
+        assertThat(file.getName()).isEqualTo(LOG4J_CONFIG_WITH_PLUS);
         assertTrue(file.exists(), "file exists");
     }
 
@@ -54,7 +54,7 @@ public class FileUtilsTest {
         final String config = "target/test-classes/s p a c e s/log4j+config+with+plus+characters.xml";
         final URI uri = new File(config).toURI();
         final File file = FileUtils.fileFromUri(uri);
-        assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
+        assertThat(file.getName()).isEqualTo(LOG4J_CONFIG_WITH_PLUS);
         assertTrue(file.exists(), "file exists");
     }
 
@@ -62,10 +62,10 @@ public class FileUtilsTest {
     public void testAbsoluteFileFromJBossVFSUri() throws Exception {
         final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
         final String uriStr = new File(config).toURI().toString().replaceAll("^file:", "vfsfile:");
-        assertTrue(uriStr.startsWith("vfsfile:"));
+        assertThat(uriStr.startsWith("vfsfile:")).isTrue();
         final URI uri = URI.create(uriStr);
         final File file = FileUtils.fileFromUri(uri);
-        assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
+        assertThat(file.getName()).isEqualTo(LOG4J_CONFIG_WITH_PLUS);
         assertTrue(file.exists(), "file exists");
     }
 
@@ -74,7 +74,7 @@ public class FileUtilsTest {
         final String config = "target/test-classes/s%20p%20a%20c%20e%20s/log4j%2Bconfig%2Bwith%2Bplus%2Bcharacters.xml";
         final URI uri = new URI(config);
         final File file = FileUtils.fileFromUri(uri);
-        assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
+        assertThat(file.getName()).isEqualTo(LOG4J_CONFIG_WITH_PLUS);
         assertTrue(file.exists(), "file exists");
     }
 

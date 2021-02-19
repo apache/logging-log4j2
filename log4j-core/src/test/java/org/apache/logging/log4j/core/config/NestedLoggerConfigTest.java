@@ -16,7 +16,18 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+
 import com.google.common.collect.ImmutableList;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -29,17 +40,6 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 
 /**
  * Tests for LoggerConfig hierarchies.
@@ -62,7 +62,7 @@ public class NestedLoggerConfigTest {
     public void testInheritParentDefaultLevel() throws IOException {
         Configuration configuration = loadConfiguration(prefix + "default-level.xml");
         try {
-            assertEquals(Level.ERROR, configuration.getLoggerConfig("com.foo").getLevel());
+            assertThat(configuration.getLoggerConfig("com.foo").getLevel()).isEqualTo(Level.ERROR);
         } finally {
             configuration.stop();
         }
@@ -72,7 +72,7 @@ public class NestedLoggerConfigTest {
     public void testInheritParentLevel() throws IOException {
         Configuration configuration = loadConfiguration(prefix + "inherit-level.xml");
         try {
-            assertEquals(Level.TRACE, configuration.getLoggerConfig("com.foo").getLevel());
+            assertThat(configuration.getLoggerConfig("com.foo").getLevel()).isEqualTo(Level.TRACE);
         } finally {
             configuration.stop();
         }

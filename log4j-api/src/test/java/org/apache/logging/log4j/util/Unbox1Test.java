@@ -17,12 +17,13 @@
 
 package org.apache.logging.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the Unbox class.
@@ -36,7 +37,7 @@ public class Unbox1Test {
 
     @Test
     public void testBoxClaimsItHas32Slots() {
-        assertEquals(32, Unbox.getRingbufferSize());
+        assertThat(Unbox.getRingbufferSize()).isEqualTo(32);
     }
 
     @Test
@@ -54,80 +55,80 @@ public class Unbox1Test {
             probe[i++] = Unbox.box(Short.MAX_VALUE);
         }
         for (int i = 0; i < probe.length - MAX; i++) {
-            assertSame(probe[i], probe[i + MAX], "probe[" + i +"], probe[" + (i + MAX) +"]");
+            assertThat(probe[i + MAX]).describedAs("probe[" + i +"], probe[" + (i + MAX) +"]").isSameAs(probe[i]);
             for (int j = 1; j < MAX - 1; j++) {
-                assertNotSame(probe[i], probe[i + j], "probe[" + i +"], probe[" + (i + j) +"]");
+                assertThat(probe[i + j]).describedAs("probe[" + i +"], probe[" + (i + j) +"]").isNotSameAs(probe[i]);
             }
         }
     }
 
     @Test
     public void testBoxBoolean() {
-        assertEquals("true", Unbox.box(true).toString());
-        assertEquals("false", Unbox.box(false).toString());
+        assertThat(Unbox.box(true).toString()).isEqualTo("true");
+        assertThat(Unbox.box(false).toString()).isEqualTo("false");
     }
 
     @Test
     public void testBoxByte() {
-        assertEquals("0", Unbox.box((byte) 0).toString());
-        assertEquals("1", Unbox.box((byte) 1).toString());
-        assertEquals("127", Unbox.box((byte) 127).toString());
-        assertEquals("-1", Unbox.box((byte) -1).toString());
-        assertEquals("-128", Unbox.box((byte) -128).toString());
+        assertThat(Unbox.box((byte) 0).toString()).isEqualTo("0");
+        assertThat(Unbox.box((byte) 1).toString()).isEqualTo("1");
+        assertThat(Unbox.box((byte) 127).toString()).isEqualTo("127");
+        assertThat(Unbox.box((byte) -1).toString()).isEqualTo("-1");
+        assertThat(Unbox.box((byte) -128).toString()).isEqualTo("-128");
     }
 
     @Test
     public void testBoxChar() {
-        assertEquals("a", Unbox.box('a').toString());
-        assertEquals("b", Unbox.box('b').toString());
-        assertEquals("字", Unbox.box('字').toString());
+        assertThat(Unbox.box('a').toString()).isEqualTo("a");
+        assertThat(Unbox.box('b').toString()).isEqualTo("b");
+        assertThat(Unbox.box('字').toString()).isEqualTo("字");
     }
 
     @Test
     public void testBoxDouble() {
-        assertEquals("3.14", Unbox.box(3.14).toString());
-        assertEquals(new Double(Double.MAX_VALUE).toString(), Unbox.box(Double.MAX_VALUE).toString());
-        assertEquals(new Double(Double.MIN_VALUE).toString(), Unbox.box(Double.MIN_VALUE).toString());
+        assertThat(Unbox.box(3.14).toString()).isEqualTo("3.14");
+        assertThat(Unbox.box(Double.MAX_VALUE).toString()).isEqualTo(new Double(Double.MAX_VALUE).toString());
+        assertThat(Unbox.box(Double.MIN_VALUE).toString()).isEqualTo(new Double(Double.MIN_VALUE).toString());
     }
 
     @Test
     public void testBoxFloat() {
-        assertEquals("3.14", Unbox.box(3.14F).toString());
-        assertEquals(new Float(Float.MAX_VALUE).toString(), Unbox.box(Float.MAX_VALUE).toString());
-        assertEquals(new Float(Float.MIN_VALUE).toString(), Unbox.box(Float.MIN_VALUE).toString());
+        assertThat(Unbox.box(3.14F).toString()).isEqualTo("3.14");
+        assertThat(Unbox.box(Float.MAX_VALUE).toString()).isEqualTo(new Float(Float.MAX_VALUE).toString());
+        assertThat(Unbox.box(Float.MIN_VALUE).toString()).isEqualTo(new Float(Float.MIN_VALUE).toString());
     }
 
     @Test
     public void testBoxInt() {
-        assertEquals("0", Unbox.box(0).toString());
-        assertEquals("1", Unbox.box(1).toString());
-        assertEquals("127", Unbox.box(127).toString());
-        assertEquals("-1", Unbox.box(-1).toString());
-        assertEquals("-128", Unbox.box(-128).toString());
-        assertEquals(new Integer(Integer.MAX_VALUE).toString(), Unbox.box(Integer.MAX_VALUE).toString());
-        assertEquals(new Integer(Integer.MIN_VALUE).toString(), Unbox.box(Integer.MIN_VALUE).toString());
+        assertThat(Unbox.box(0).toString()).isEqualTo("0");
+        assertThat(Unbox.box(1).toString()).isEqualTo("1");
+        assertThat(Unbox.box(127).toString()).isEqualTo("127");
+        assertThat(Unbox.box(-1).toString()).isEqualTo("-1");
+        assertThat(Unbox.box(-128).toString()).isEqualTo("-128");
+        assertThat(Unbox.box(Integer.MAX_VALUE).toString()).isEqualTo(new Integer(Integer.MAX_VALUE).toString());
+        assertThat(Unbox.box(Integer.MIN_VALUE).toString()).isEqualTo(new Integer(Integer.MIN_VALUE).toString());
     }
 
     @Test
     public void testBoxLong() {
-        assertEquals("0", Unbox.box(0L).toString());
-        assertEquals("1", Unbox.box(1L).toString());
-        assertEquals("127", Unbox.box(127L).toString());
-        assertEquals("-1", Unbox.box(-1L).toString());
-        assertEquals("-128", Unbox.box(-128L).toString());
-        assertEquals(new Long(Long.MAX_VALUE).toString(), Unbox.box(Long.MAX_VALUE).toString());
-        assertEquals(new Long(Long.MIN_VALUE).toString(), Unbox.box(Long.MIN_VALUE).toString());
+        assertThat(Unbox.box(0L).toString()).isEqualTo("0");
+        assertThat(Unbox.box(1L).toString()).isEqualTo("1");
+        assertThat(Unbox.box(127L).toString()).isEqualTo("127");
+        assertThat(Unbox.box(-1L).toString()).isEqualTo("-1");
+        assertThat(Unbox.box(-128L).toString()).isEqualTo("-128");
+        assertThat(Unbox.box(Long.MAX_VALUE).toString()).isEqualTo(new Long(Long.MAX_VALUE).toString());
+        assertThat(Unbox.box(Long.MIN_VALUE).toString()).isEqualTo(new Long(Long.MIN_VALUE).toString());
     }
 
     @Test
     public void testBoxShort() {
-        assertEquals("0", Unbox.box((short) 0).toString());
-        assertEquals("1", Unbox.box((short) 1).toString());
-        assertEquals("127", Unbox.box((short) 127).toString());
-        assertEquals("-1", Unbox.box((short) -1).toString());
-        assertEquals("-128", Unbox.box((short) -128).toString());
-        assertEquals(new Short(Short.MAX_VALUE).toString(), Unbox.box(Short.MAX_VALUE).toString());
-        assertEquals(new Short(Short.MIN_VALUE).toString(), Unbox.box(Short.MIN_VALUE).toString());
+        assertThat(Unbox.box((short) 0).toString()).isEqualTo("0");
+        assertThat(Unbox.box((short) 1).toString()).isEqualTo("1");
+        assertThat(Unbox.box((short) 127).toString()).isEqualTo("127");
+        assertThat(Unbox.box((short) -1).toString()).isEqualTo("-1");
+        assertThat(Unbox.box((short) -128).toString()).isEqualTo("-128");
+        assertThat(Unbox.box(Short.MAX_VALUE).toString()).isEqualTo(new Short(Short.MAX_VALUE).toString());
+        assertThat(Unbox.box(Short.MIN_VALUE).toString()).isEqualTo(new Short(Short.MIN_VALUE).toString());
     }
 
     @Test
@@ -142,8 +143,7 @@ public class Unbox1Test {
         t2.join();
         for (int i = 0; i < probe.length - 16; i++) {
             for (int j = 1; j < 16; j++) {
-                assertNotSame(
-                        probe[i], probe[i + j], "probe[" + i +"]=" + probe[i] + ", probe[" + (i + j) +"]=" + probe[i + j]);
+                assertThat(probe[i + j]).describedAs("probe[" + i +"]=" + probe[i] + ", probe[" + (i + j) +"]=" + probe[i + j]).isNotSameAs(probe[i]);
             }
         }
     }

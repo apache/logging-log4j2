@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
@@ -28,20 +39,9 @@ import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.assertj.core.api.HamcrestCondition;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @CleanUpFiles("target/test.log")
 public class CustomConfigurationTest {
@@ -59,10 +59,10 @@ public class CustomConfigurationTest {
     public void testConfig(final LoggerContext ctx) throws IOException {
         // don't bother using "error" since that's the default; try another level
         final Configuration config = ctx.getConfiguration();
-        assertThat(config, instanceOf(XmlConfiguration.class));
+        assertThat(config).isInstanceOf(XmlConfiguration.class);
         for (final StatusListener listener : StatusLogger.getLogger().getListeners()) {
             if (listener instanceof StatusConsoleListener) {
-                assertSame(listener.getStatusLevel(), Level.INFO);
+                assertThat(Level.INFO).isSameAs(listener.getStatusLevel());
                 break;
             }
         }
@@ -93,7 +93,7 @@ public class CustomConfigurationTest {
         ctx.updateLoggers();
         final Logger logger = ctx.getLogger(CustomConfigurationTest.class);
         logger.info("This is a test");
-        assertTrue(Files.exists(LOG_FILE));
-        assertThat(Files.size(LOG_FILE), greaterThan(0L));
+        assertThat(Files.exists(LOG_FILE)).isTrue();
+        assertThat(Files.size(LOG_FILE)).is(new HamcrestCondition<>(greaterThan(0L)));
     }
 }

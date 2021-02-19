@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.junit.jupiter.api.AfterAll;
@@ -24,8 +27,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link ThreadContext}.
@@ -50,9 +51,8 @@ public class ThreadContextInheritanceTest {
     public void testPush() {
         ThreadContext.push("Hello");
         ThreadContext.push("{} is {}", ThreadContextInheritanceTest.class.getSimpleName(), "running");
-        assertEquals(
-                ThreadContext.pop(), "ThreadContextInheritanceTest is running", "Incorrect parameterized stack value");
-        assertEquals(ThreadContext.pop(), "Hello", "Incorrect simple stack value");
+        assertThat("ThreadContextInheritanceTest is running").describedAs("Incorrect parameterized stack value").isEqualTo(ThreadContext.pop());
+        assertThat("Hello").describedAs("Incorrect simple stack value").isEqualTo(ThreadContext.pop());
     }
 
     @Test
@@ -67,13 +67,13 @@ public class ThreadContextInheritanceTest {
             thread.start();
             thread.join();
             String str = sb.toString();
-            assertEquals("Hello", str, "Unexpected ThreadContext value. Expected Hello. Actual " + str);
+            assertThat(str).describedAs("Unexpected ThreadContext value. Expected Hello. Actual " + str).isEqualTo("Hello");
             sb = new StringBuilder();
             thread = new TestThread(sb);
             thread.start();
             thread.join();
             str = sb.toString();
-            assertEquals("Hello", str, "Unexpected ThreadContext value. Expected Hello. Actual " + str);
+            assertThat(str).describedAs("Unexpected ThreadContext value. Expected Hello. Actual " + str).isEqualTo("Hello");
         } finally {
             System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
         }
@@ -123,24 +123,24 @@ public class ThreadContextInheritanceTest {
     @Test
     public void testRemove() {
         ThreadContext.clearMap();
-        assertNull(ThreadContext.get("testKey"));
+        assertThat(ThreadContext.get("testKey")).isNull();
         ThreadContext.put("testKey", "testValue");
-        assertEquals("testValue", ThreadContext.get("testKey"));
+        assertThat(ThreadContext.get("testKey")).isEqualTo("testValue");
 
         ThreadContext.remove("testKey");
-        assertNull(ThreadContext.get("testKey"));
-        assertTrue(ThreadContext.isEmpty());
+        assertThat(ThreadContext.get("testKey")).isNull();
+        assertThat(ThreadContext.isEmpty()).isTrue();
     }
 
     @Test
     public void testContainsKey() {
         ThreadContext.clearMap();
-        assertFalse(ThreadContext.containsKey("testKey"));
+        assertThat(ThreadContext.containsKey("testKey")).isFalse();
         ThreadContext.put("testKey", "testValue");
-        assertTrue(ThreadContext.containsKey("testKey"));
+        assertThat(ThreadContext.containsKey("testKey")).isTrue();
 
         ThreadContext.remove("testKey");
-        assertFalse(ThreadContext.containsKey("testKey"));
+        assertThat(ThreadContext.containsKey("testKey")).isFalse();
     }
 
     private static class TestThread extends Thread {

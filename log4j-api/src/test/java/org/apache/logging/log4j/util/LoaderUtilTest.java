@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ResourceLock(Resources.SYSTEM_PROPERTIES)
 public class LoaderUtilTest {
@@ -50,10 +50,10 @@ public class LoaderUtilTest {
         };
         thread.setContextClassLoader(loader);
         try {
-            assertEquals(0, LoaderUtil.findUrlResources("Log4j-charsets.properties").size());
+            assertThat(LoaderUtil.findUrlResources("Log4j-charsets.properties").size()).isEqualTo(0);
 
             LoaderUtil.forceTcclOnly = false;
-            assertEquals(1, LoaderUtil.findUrlResources("Log4j-charsets.properties").size());
+            assertThat(LoaderUtil.findUrlResources("Log4j-charsets.properties").size()).isEqualTo(1);
         } finally {
             thread.setContextClassLoader(tccl);
         }

@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.Layouts;
@@ -59,24 +59,24 @@ public class XmlCompactFileAppenderTest {
         } finally {
             file.delete();
         }
-        assertNotNull("line1", line1);
+        assertThat(line1).describedAs("line1").isNotNull();
         final String msg1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + ']', line1.contains(msg1));
+        assertThat(line1.contains(msg1)).describedAs("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + ']').isTrue();
 
         final String msg2 = "<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">";
-        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg2 + ']', line1.contains(msg2));
+        assertThat(line1.contains(msg2)).describedAs("line1 incorrect: [" + line1 + "], does not contain: [" + msg2 + ']').isTrue();
 
         final String msg3 = "<Event ";
-        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg3 + ']', line1.contains(msg3));
+        assertThat(line1.contains(msg3)).describedAs("line1 incorrect: [" + line1 + "], does not contain: [" + msg3 + ']').isTrue();
 
         final String msg4 = logMsg;
-        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg4 + ']', line1.contains(msg4));
+        assertThat(line1.contains(msg4)).describedAs("line1 incorrect: [" + line1 + "], does not contain: [" + msg4 + ']').isTrue();
 
         final String location = "testFlushAtEndOfBatch";
-        assertTrue("no location", !line1.contains(location));
+        assertThat(!line1.contains(location)).describedAs("no location").isTrue();
 
-        assertTrue(line1.indexOf('\r') == -1);
-        assertTrue(line1.indexOf('\n') == -1);
+        assertThat(line1.indexOf('\r') == -1).isTrue();
+        assertThat(line1.indexOf('\n') == -1).isTrue();
     }
 
 }

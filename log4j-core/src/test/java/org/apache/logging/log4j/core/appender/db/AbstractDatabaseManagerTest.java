@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +31,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.Test;
 
@@ -233,45 +233,45 @@ public class AbstractDatabaseManagerTest {
     public void testStartupShutdown01() throws Exception {
         setUp("testName01", 0);
 
-        assertEquals("The name is not correct.", "testName01", manager.getName());
-        assertFalse("The manager should not have started.", manager.isRunning());
+        assertThat(manager.getName()).describedAs("The name is not correct.").isEqualTo("testName01");
+        assertThat(manager.isRunning()).describedAs("The manager should not have started.").isFalse();
 
         manager.startup();
         then(manager).should().startupInternal();
-        assertTrue("The manager should be running now.", manager.isRunning());
+        assertThat(manager.isRunning()).describedAs("The manager should be running now.").isTrue();
 
         manager.shutdown();
         then(manager).should().shutdownInternal();
-        assertFalse("The manager should not be running anymore.", manager.isRunning());
+        assertThat(manager.isRunning()).describedAs("The manager should not be running anymore.").isFalse();
     }
 
     @Test
     public void testStartupShutdown02() throws Exception {
         setUp("anotherName02", 0);
 
-        assertEquals("The name is not correct.", "anotherName02", manager.getName());
-        assertFalse("The manager should not have started.", manager.isRunning());
+        assertThat(manager.getName()).describedAs("The name is not correct.").isEqualTo("anotherName02");
+        assertThat(manager.isRunning()).describedAs("The manager should not have started.").isFalse();
 
         manager.startup();
         then(manager).should().startupInternal();
-        assertTrue("The manager should be running now.", manager.isRunning());
+        assertThat(manager.isRunning()).describedAs("The manager should be running now.").isTrue();
 
         manager.releaseSub(-1, null);
         then(manager).should().shutdownInternal();
-        assertFalse("The manager should not be running anymore.", manager.isRunning());
+        assertThat(manager.isRunning()).describedAs("The manager should not be running anymore.").isFalse();
     }
 
     @Test
     public void testToString01() {
         setUp("someName01", 0);
 
-        assertEquals("The string is not correct.", "someName01", manager.toString());
+        assertThat(manager.toString()).describedAs("The string is not correct.").isEqualTo("someName01");
     }
 
     @Test
     public void testToString02() {
         setUp("bufferSize=12, anotherKey02=coolValue02", 12);
 
-        assertEquals("The string is not correct.", "bufferSize=12, anotherKey02=coolValue02", manager.toString());
+        assertThat(manager.toString()).describedAs("The string is not correct.").isEqualTo("bufferSize=12, anotherKey02=coolValue02");
     }
 }

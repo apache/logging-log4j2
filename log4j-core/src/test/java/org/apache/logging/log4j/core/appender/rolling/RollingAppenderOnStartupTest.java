@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -31,7 +34,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.AfterClass;
@@ -41,8 +43,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -95,11 +95,11 @@ public class RollingAppenderOnStartupTest {
                 }
                 try (Stream<String> stream = Files.lines(path)) {
                     List<String> lines = stream.collect(Collectors.toList());
-                    assertTrue("No header present for " + path.toFile().getName(), lines.get(0).startsWith("<!DOCTYPE HTML"));
+                    assertThat(lines.get(0).startsWith("<!DOCTYPE HTML")).describedAs("No header present for " + path.toFile().getName()).isTrue();
                 }
                 Files.delete(path);
             }
-            assertTrue("File did not roll", rolled);
+            assertThat(rolled).describedAs("File did not roll").isTrue();
         }
         Files.delete(Paths.get("target/onStartup"));
     }

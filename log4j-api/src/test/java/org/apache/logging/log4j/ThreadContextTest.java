@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
 public class ThreadContextTest {
@@ -36,8 +36,8 @@ public class ThreadContextTest {
     public void testPush() {
         ThreadContext.push("Hello");
         ThreadContext.push("{} is {}", ThreadContextTest.class.getSimpleName(), "running");
-        assertEquals(ThreadContext.pop(), "ThreadContextTest is running", "Incorrect parameterized stack value");
-        assertEquals(ThreadContext.pop(), "Hello", "Incorrect simple stack value");
+        assertThat("ThreadContextTest is running").describedAs("Incorrect parameterized stack value").isEqualTo(ThreadContext.pop());
+        assertThat("Hello").describedAs("Incorrect simple stack value").isEqualTo(ThreadContext.pop());
     }
 
     @Test
@@ -48,13 +48,13 @@ public class ThreadContextTest {
         thread.start();
         thread.join();
         String str = sb.toString();
-        assertEquals("null", str, "Unexpected ThreadContext value. Expected null. Actual " + str);
+        assertThat(str).describedAs("Unexpected ThreadContext value. Expected null. Actual " + str).isEqualTo("null");
         sb = new StringBuilder();
         thread = new TestThread(sb);
         thread.start();
         thread.join();
         str = sb.toString();
-        assertEquals("null", str, "Unexpected ThreadContext value. Expected null. Actual " + str);
+        assertThat(str).describedAs("Unexpected ThreadContext value. Expected null. Actual " + str).isEqualTo("null");
     }
 
     @Test
@@ -101,65 +101,65 @@ public class ThreadContextTest {
     @Test
     public void testPutIfNotNull() {
         ThreadContext.clearMap();
-        assertNull(ThreadContext.get("testKey"));
+        assertThat(ThreadContext.get("testKey")).isNull();
         ThreadContext.put("testKey", "testValue");
-        assertEquals("testValue", ThreadContext.get("testKey"));
-        assertEquals("testValue", ThreadContext.get("testKey"), "Incorrect value in test key");
+        assertThat(ThreadContext.get("testKey")).isEqualTo("testValue");
+        assertThat(ThreadContext.get("testKey")).describedAs("Incorrect value in test key").isEqualTo("testValue");
         ThreadContext.putIfNull("testKey", "new Value");
-        assertEquals("testValue", ThreadContext.get("testKey"), "Incorrect value in test key");
+        assertThat(ThreadContext.get("testKey")).describedAs("Incorrect value in test key").isEqualTo("testValue");
         ThreadContext.clearMap();
     }
 
     @Test
     public void testPutAll() {
-        assertTrue(ThreadContext.isEmpty());
-        assertFalse(ThreadContext.containsKey("key"));
+        assertThat(ThreadContext.isEmpty()).isTrue();
+        assertThat(ThreadContext.containsKey("key")).isFalse();
         final int mapSize = 10;
         final Map<String, String> newMap = new HashMap<>(mapSize);
         for (int i = 1; i <= mapSize; i++) {
             newMap.put("key" + i, "value" + i);
         }
         ThreadContext.putAll(newMap);
-        assertFalse(ThreadContext.isEmpty());
+        assertThat(ThreadContext.isEmpty()).isFalse();
         for (int i = 1; i <= mapSize; i++) {
-            assertTrue(ThreadContext.containsKey("key" + i));
-            assertEquals("value" + i, ThreadContext.get("key" + i));
+            assertThat(ThreadContext.containsKey("key" + i)).isTrue();
+            assertThat(ThreadContext.get("key" + i)).isEqualTo("value" + i);
         }
     }
 
     @Test
     public void testRemove() {
-        assertNull(ThreadContext.get("testKey"));
+        assertThat(ThreadContext.get("testKey")).isNull();
         ThreadContext.put("testKey", "testValue");
-        assertEquals("testValue", ThreadContext.get("testKey"));
+        assertThat(ThreadContext.get("testKey")).isEqualTo("testValue");
 
         ThreadContext.remove("testKey");
-        assertNull(ThreadContext.get("testKey"));
-        assertTrue(ThreadContext.isEmpty());
+        assertThat(ThreadContext.get("testKey")).isNull();
+        assertThat(ThreadContext.isEmpty()).isTrue();
     }
 
     @Test
     public void testRemoveAll() {
         ThreadContext.put("testKey1", "testValue1");
         ThreadContext.put("testKey2", "testValue2");
-        assertEquals("testValue1", ThreadContext.get("testKey1"));
-        assertEquals("testValue2", ThreadContext.get("testKey2"));
-        assertFalse(ThreadContext.isEmpty());
+        assertThat(ThreadContext.get("testKey1")).isEqualTo("testValue1");
+        assertThat(ThreadContext.get("testKey2")).isEqualTo("testValue2");
+        assertThat(ThreadContext.isEmpty()).isFalse();
 
         ThreadContext.removeAll(Arrays.asList("testKey1", "testKey2"));
-        assertNull(ThreadContext.get("testKey1"));
-        assertNull(ThreadContext.get("testKey2"));
-        assertTrue(ThreadContext.isEmpty());
+        assertThat(ThreadContext.get("testKey1")).isNull();
+        assertThat(ThreadContext.get("testKey2")).isNull();
+        assertThat(ThreadContext.isEmpty()).isTrue();
     }
 
     @Test
     public void testContainsKey() {
-        assertFalse(ThreadContext.containsKey("testKey"));
+        assertThat(ThreadContext.containsKey("testKey")).isFalse();
         ThreadContext.put("testKey", "testValue");
-        assertTrue(ThreadContext.containsKey("testKey"));
+        assertThat(ThreadContext.containsKey("testKey")).isTrue();
 
         ThreadContext.remove("testKey");
-        assertFalse(ThreadContext.containsKey("testKey"));
+        assertThat(ThreadContext.containsKey("testKey")).isFalse();
     }
 
     private static class TestThread extends Thread {

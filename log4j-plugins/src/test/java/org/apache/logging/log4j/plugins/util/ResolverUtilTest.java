@@ -17,22 +17,22 @@
 
 package org.apache.logging.log4j.plugins.util;
 
-import org.apache.logging.log4j.junit.CleanFolders;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import javax.tools.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.nio.file.*;
 import java.util.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
+import javax.tools.*;
+import org.apache.logging.log4j.junit.CleanFolders;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 /**
  * Tests the ResolverUtil class.
@@ -48,7 +48,7 @@ public class ResolverUtilTest {
     public void testExtractPathFromJarUrl() throws Exception {
         final URL url = new URL("jar:file:/C:/Users/me/.m2/repository/junit/junit/4.11/junit-4.11.jar!/org/junit/Test.class");
         final String expected = "/C:/Users/me/.m2/repository/junit/junit/4.11/junit-4.11.jar";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
@@ -59,13 +59,13 @@ public class ResolverUtilTest {
     private void testExtractPathFromJarUrlNotDecodedIfFileExists(final String existingFile)
             throws MalformedURLException, UnsupportedEncodingException, URISyntaxException {
         URL url = ResolverUtilTest.class.getResource(existingFile);
-        assertNotNull("No url returned for " + existingFile, url);
+        assertThat(url).describedAs("No url returned for " + existingFile).isNotNull();
         if (!url.getProtocol().equals("jar")) {
             // create fake jar: URL that resolves to existing file
             url = new URL("jar:" + url.toExternalForm() + "!/some/entry");
         }
         final String actual = new ResolverUtil().extractPath(url);
-        assertTrue("should not be decoded: " + actual, actual.endsWith(existingFile));
+        assertThat(actual.endsWith(existingFile)).describedAs("should not be decoded: " + actual).isTrue();
     }
 
     @Test
@@ -78,66 +78,66 @@ public class ResolverUtilTest {
     public void testExtractPathFromJarUrlDecodedIfFileDoesNotExist() throws Exception {
         final URL url = new URL("jar:file:/path+with+plus/file+does+not+exist.jar!/some/file");
         final String expected = "/path with plus/file does not exist.jar";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
     public void testExtractPathFromFileUrl() throws Exception {
         final URL url = new URL("file:/C:/Users/me/workspace/log4j2/log4j-core/target/test-classes/log4j2-config.xml");
         final String expected = "/C:/Users/me/workspace/log4j2/log4j-core/target/test-classes/log4j2-config.xml";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
     public void testExtractPathFromFileUrlNotDecodedIfFileExists() throws Exception {
         final String existingFile = "/log4j+config+with+plus+characters.xml";
         final URL url = ResolverUtilTest.class.getResource(existingFile);
-        assertTrue("should be file url but was " + url, "file".equals(url.getProtocol()));
+        assertThat("file".equals(url.getProtocol())).describedAs("should be file url but was " + url).isTrue();
 
         final String actual = new ResolverUtil().extractPath(url);
-        assertTrue("should not be decoded: " + actual, actual.endsWith(existingFile));
+        assertThat(actual.endsWith(existingFile)).describedAs("should not be decoded: " + actual).isTrue();
     }
 
     @Test
     public void testExtractPathFromFileUrlDecodedIfFileDoesNotExist() throws Exception {
         final URL url = new URL("file:///path+with+plus/file+does+not+exist.xml");
         final String expected = "/path with plus/file does not exist.xml";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
     public void testExtractPathFromHttpUrl() throws Exception {
         final URL url = new URL("http://java.sun.com/index.html#chapter1");
         final String expected = "/index.html";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
     public void testExtractPathFromHttpUrlWithPlusCharacters() throws Exception {
         final URL url = new URL("http://www.server.com/path+with+plus/file+name+with+plus.jar!/org/junit/Test.class");
         final String expected = "/path with plus/file name with plus.jar";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
     public void testExtractPathFromHttpsComplexUrl() throws Exception {
         final URL url = new URL("https://issues.apache.org/jira/browse/LOG4J2-445?focusedCommentId=13862479&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-13862479");
         final String expected = "/jira/browse/LOG4J2-445";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
     public void testExtractPathFromFtpUrl() throws Exception {
         final URL url = new URL("ftp://user001:secretpassword@private.ftp-servers.example.com/mydirectory/myfile.txt");
         final String expected = "/mydirectory/myfile.txt";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
     public void testExtractPathFromFtpUrlWithPlusCharacters() throws Exception {
         final URL url = new URL("ftp://user001:secretpassword@private.ftp-servers.example.com/my+directory/my+file.txt");
         final String expected = "/my directory/my file.txt";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
@@ -146,9 +146,8 @@ public class ResolverUtilTest {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(cl);
             resolverUtil.findInPackage(new PluginRegistry.PluginTest(), "customplugin1");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin1.FixedString1"),
-                    resolverUtil.getClasses().iterator().next());
+            assertThat(resolverUtil.getClasses().size()).describedAs("Class not found in packages").isEqualTo(1);
+            assertThat(resolverUtil.getClasses().iterator().next()).describedAs("Unexpected class resolved").isEqualTo(cl.loadClass("customplugin1.FixedString1"));
         }
     }
 
@@ -158,9 +157,8 @@ public class ResolverUtilTest {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(cl);
             resolverUtil.findInPackage(new PluginRegistry.PluginTest(), "customplugin2");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin2.FixedString2"),
-                    resolverUtil.getClasses().iterator().next());
+            assertThat(resolverUtil.getClasses().size()).describedAs("Class not found in packages").isEqualTo(1);
+            assertThat(resolverUtil.getClasses().iterator().next()).describedAs("Unexpected class resolved").isEqualTo(cl.loadClass("customplugin2.FixedString2"));
         }
     }
 
@@ -184,7 +182,7 @@ public class ResolverUtilTest {
         final File f = new File(workDir, "customplugin" + suffix + "/FixedString" + suffix + ".java");
         final File parent = f.getParentFile();
         if (!parent.exists()) {
-          assertTrue("Create customplugin" + suffix + " folder KO", f.getParentFile().mkdirs());
+          assertThat(f.getParentFile().mkdirs()).describedAs("Create customplugin" + suffix + " folder KO").isTrue();
         }
   
         final String content = new String(Files.readAllBytes(orig.toPath()))
@@ -233,7 +231,7 @@ public class ResolverUtilTest {
                 }
             }
         }
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).describedAs(errors.toString()).isTrue();
     }
 
 }

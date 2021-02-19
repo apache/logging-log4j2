@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 public class EnvironmentLookupTest {
 
@@ -26,8 +27,8 @@ public class EnvironmentLookupTest {
     public void testLookup() {
         final StrLookup lookup = new EnvironmentLookup();
         String value = lookup.lookup("PATH");
-        assertNotNull(value);
+        assertThat(value).isNotNull();
         value = lookup.lookup("BadKey");
-        assertNull(value);
+        assertThat(value).isNull();
     }
 }

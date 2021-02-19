@@ -16,6 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.apache.logging.log4j.util.Unbox.box;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
@@ -32,19 +45,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFileAttributes;
-import java.nio.file.attribute.PosixFilePermissions;
-import java.util.stream.Stream;
-
-import static org.apache.logging.log4j.util.Unbox.box;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests {@link FileAppender}.
@@ -84,10 +84,10 @@ public class FileAppenderPermissionsTest {
         try {
             appender.start();
             assertTrue(appender.isStarted(), "Appender did not start");
-            assertNotEquals(createOnDemand, Files.exists(path));
+            assertThat(Files.exists(path)).isNotEqualTo(createOnDemand);
             long curLen = file.length();
             long prevLen = curLen;
-            assertEquals(curLen, 0, "File length: " + curLen);
+            assertThat(0).describedAs("File length: " + curLen).isEqualTo(curLen);
             for (int i = 0; i < 100; ++i) {
                 final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger") //
                         .setLoggerFqcn(FileAppenderPermissionsTest.class.getName()).setLevel(Level.INFO) //
@@ -104,7 +104,7 @@ public class FileAppenderPermissionsTest {
                 }
                 prevLen = curLen;
             }
-            assertEquals(filePermissions, PosixFilePermissions.toString(Files.getPosixFilePermissions(path)));
+            assertThat(PosixFilePermissions.toString(Files.getPosixFilePermissions(path))).isEqualTo(filePermissions);
         } finally {
             appender.stop();
         }
@@ -118,9 +118,9 @@ public class FileAppenderPermissionsTest {
         final File file = new File(DIR, "AppenderTest-" + (1000 + fileIndex) + ".log");
         final Path path = file.toPath();
         final String user = findAUser();
-        assertNotNull(user);
+        assertThat(user).isNotNull();
         final String group = findAGroup(user);
-        assertNotNull(group);
+        assertThat(group).isNotNull();
 
         final Layout<String> layout = PatternLayout.newBuilder().setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .build();
@@ -143,7 +143,7 @@ public class FileAppenderPermissionsTest {
             assertTrue(appender.isStarted(), "Appender did not start");
             long curLen = file.length();
             long prevLen = curLen;
-            assertEquals(curLen, 0, file + " File length: " + curLen);
+            assertThat(0).describedAs(file + " File length: " + curLen).isEqualTo(curLen);
             for (int i = 0; i < 100; ++i) {
                 final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger") //
                         .setLoggerFqcn(FileAppenderPermissionsTest.class.getName()).setLevel(Level.INFO) //
@@ -160,9 +160,9 @@ public class FileAppenderPermissionsTest {
                 }
                 prevLen = curLen;
             }
-            assertEquals(filePermissions, PosixFilePermissions.toString(Files.getPosixFilePermissions(path)));
-            assertEquals(user, Files.getOwner(path).getName());
-            assertEquals(group, Files.readAttributes(path, PosixFileAttributes.class).group().getName());
+            assertThat(PosixFilePermissions.toString(Files.getPosixFilePermissions(path))).isEqualTo(filePermissions);
+            assertThat(Files.getOwner(path).getName()).isEqualTo(user);
+            assertThat(Files.readAttributes(path, PosixFileAttributes.class).group().getName()).isEqualTo(group);
         } finally {
             appender.stop();
         }
@@ -178,7 +178,7 @@ public class FileAppenderPermissionsTest {
         }
         final String permissions = PosixFilePermissions.toString(
                 Files.getPosixFilePermissions(Paths.get("target/permissions1/AppenderTest-1.log")));
-        assertEquals("rw-------", permissions);
+        assertThat(permissions).isEqualTo("rw-------");
     }
 
     public static String findAGroup(final String user) throws IOException {

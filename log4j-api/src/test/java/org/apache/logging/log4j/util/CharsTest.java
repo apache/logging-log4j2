@@ -16,21 +16,21 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.stream.IntStream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class CharsTest {
     @ParameterizedTest
     @ValueSource(ints = {-1, 16, 400, -1, 16, 400})
     public void invalidDigitReturnsNullCharacter(int invalidDigit) {
         assertAll(
-                () -> assertEquals('\0', Chars.getUpperCaseHex(invalidDigit)),
-                () -> assertEquals('\0', Chars.getLowerCaseHex(invalidDigit))
+                () -> assertThat(Chars.getUpperCaseHex(invalidDigit)).isEqualTo('\0'),
+                () -> assertThat(Chars.getLowerCaseHex(invalidDigit)).isEqualTo('\0')
         );
     }
 
@@ -39,8 +39,8 @@ public class CharsTest {
         final char[] expectedLower = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
         final char[] expectedUpper = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
         assertAll(IntStream.range(0, 16).mapToObj(i -> () -> assertAll(
-                () -> assertEquals(expectedLower[i], Chars.getLowerCaseHex(i), String.format("Expected %x", i)),
-                () -> assertEquals(expectedUpper[i], Chars.getUpperCaseHex(i), String.format("Expected %X", i))
+                () -> assertThat(Chars.getLowerCaseHex(i)).describedAs(String.format("Expected %x", i)).isEqualTo(expectedLower[i]),
+                () -> assertThat(Chars.getUpperCaseHex(i)).describedAs(String.format("Expected %X", i)).isEqualTo(expectedUpper[i])
         )));
     }
 }

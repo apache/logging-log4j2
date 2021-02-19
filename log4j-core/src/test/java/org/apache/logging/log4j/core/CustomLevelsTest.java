@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
 
@@ -45,26 +46,26 @@ public class CustomLevelsTest {
 
     @Test
     public void testCustomLevelInts() {
-        assertEquals(350, diagLevel.intLevel());
-        assertEquals(450, noticeLevel.intLevel());
-        assertEquals(550, verboseLevel.intLevel());
+        assertThat(diagLevel.intLevel()).isEqualTo(350);
+        assertThat(noticeLevel.intLevel()).isEqualTo(450);
+        assertThat(verboseLevel.intLevel()).isEqualTo(550);
     }
 
     @Test
     public void testCustomLevelPresence() {
-        assertNotNull(diagLevel);
-        assertNotNull(noticeLevel);
-        assertNotNull(verboseLevel);
+        assertThat(diagLevel).isNotNull();
+        assertThat(noticeLevel).isNotNull();
+        assertThat(verboseLevel).isNotNull();
     }
 
     @Test
     public void testLog() {
-        assertThat(listAppender.getEvents(), hasSize(0));
+        assertThat(listAppender.getEvents()).hasSize(0);
         logger.debug("Hello, {}", "World");
-        assertThat(listAppender.getEvents(), hasSize(1));
+        assertThat(listAppender.getEvents()).hasSize(1);
         logger.log(diagLevel, "Hello DIAG");
-        assertThat(listAppender.getEvents(), hasSize(2));
-        assertEquals(listAppender.getEvents().get(1).getLevel(), diagLevel);
+        assertThat(listAppender.getEvents()).hasSize(2);
+        assertThat(diagLevel).isEqualTo(listAppender.getEvents().get(1).getLevel());
 
     }
 }

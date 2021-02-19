@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -23,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.Charset;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.util.Closer;
@@ -63,16 +63,16 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
-        assertTrue("Directory not created: " + dir, dir.exists() );
-        assertTrue("Directory empty: " + dir, dir.listFiles().length > 0);
+        assertThat(dir.exists()).describedAs("Directory not created: " + dir).isTrue();
+        assertThat(dir.listFiles().length > 0).describedAs("Directory empty: " + dir).isTrue();
         final File[] files = dir.listFiles();
-        assertNotNull(files);
+        assertThat(files).isNotNull();
         for (final File file : files) {
             assertHeader(file);
             assertFooter(file);
         }
         final File logFile = new File(LOGFILE);
-        assertTrue("Expected logfile to exist: " + LOGFILE, logFile.exists());
+        assertThat(logFile.exists()).describedAs("Expected logfile to exist: " + LOGFILE).isTrue();
         assertHeader(logFile);
     }
 
@@ -82,14 +82,14 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
         final String withoutTimestamp = header.substring(0, 435);
         final String contents = new String(slurp(file), Charset.defaultCharset());
         final String contentsInitialChunk = contents.substring(0, 435);
-        assertEquals(file.getName(), withoutTimestamp, contentsInitialChunk);
+        assertThat(contentsInitialChunk).describedAs(file.getName()).isEqualTo(withoutTimestamp);
     }
 
     private void assertFooter(final File file) throws Exception {
         final HtmlLayout layout = HtmlLayout.createDefaultLayout();
         final String footer = new String(layout.getFooter(), Charset.defaultCharset());
         final String contents = new String(slurp(file), Charset.defaultCharset());
-        assertTrue(file.getName(), contents.endsWith(footer));
+        assertThat(contents.endsWith(footer)).describedAs(file.getName()).isTrue();
     }
 
     private byte[] slurp(final File file) throws Exception {

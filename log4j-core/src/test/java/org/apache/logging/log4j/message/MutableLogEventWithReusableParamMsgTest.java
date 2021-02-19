@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.IsSame.sameInstance;
+
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsSame.sameInstance;
 
 /**
  * LOG4J2-1409
@@ -56,6 +56,6 @@ public class MutableLogEventWithReusableParamMsgTest {
         Message mementoMessage = evt.memento();
         Message mementoMessageSecondInvocation = evt.memento();
         // MutableLogEvent.memento should be cached
-        assertThat(mementoMessage, sameInstance(mementoMessageSecondInvocation));
+        assertThat(mementoMessage).isSameAs(mementoMessageSecondInvocation);
     }
 }

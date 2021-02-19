@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests ReusableSimpleMessage.
@@ -29,67 +30,67 @@ public class ReusableSimpleMessageTest {
     public void testSet_InitializesFormattedMessage() throws Exception {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
-        assertEquals("abc", msg.getFormattedMessage());
+        assertThat(msg.getFormattedMessage()).isEqualTo("abc");
     }
 
     @Test
     public void testGetFormattedMessage_InitiallyStringNull() throws Exception {
-        assertEquals("null", new ReusableSimpleMessage().getFormattedMessage());
+        assertThat(new ReusableSimpleMessage().getFormattedMessage()).isEqualTo("null");
     }
 
     @Test
     public void testGetFormattedMessage_ReturnsLatestSetString() throws Exception {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
-        assertEquals("abc", msg.getFormattedMessage());
+        assertThat(msg.getFormattedMessage()).isEqualTo("abc");
         msg.set("def");
-        assertEquals("def", msg.getFormattedMessage());
+        assertThat(msg.getFormattedMessage()).isEqualTo("def");
         msg.set("xyz");
-        assertEquals("xyz", msg.getFormattedMessage());
+        assertThat(msg.getFormattedMessage()).isEqualTo("xyz");
     }
 
     @Test
     public void testGetFormat_InitiallyStringNull() throws Exception {
-        assertNull(new ReusableSimpleMessage().getFormat());
+        assertThat(new ReusableSimpleMessage().getFormat()).isNull();
     }
 
     @Test
     public void testGetFormat_ReturnsLatestSetString() throws Exception {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
-        assertEquals("abc", msg.getFormat());
+        assertThat(msg.getFormat()).isEqualTo("abc");
         msg.set("def");
-        assertEquals("def", msg.getFormat());
+        assertThat(msg.getFormat()).isEqualTo("def");
         msg.set("xyz");
-        assertEquals("xyz", msg.getFormat());
+        assertThat(msg.getFormat()).isEqualTo("xyz");
     }
 
     @Test
     public void testGetParameters_InitiallyReturnsEmptyArray() throws Exception {
-        assertArrayEquals(new Object[0], new ReusableSimpleMessage().getParameters());
+        assertThat(new ReusableSimpleMessage().getParameters()).isEqualTo(new Object[0]);
     }
 
     @Test
     public void testGetParameters_ReturnsEmptyArrayAfterMessageSet() throws Exception {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
-        assertArrayEquals(new Object[0], msg.getParameters());
+        assertThat(msg.getParameters()).isEqualTo(new Object[0]);
         msg.set("def");
-        assertArrayEquals(new Object[0], msg.getParameters());
+        assertThat(msg.getParameters()).isEqualTo(new Object[0]);
     }
 
     @Test
     public void testGetThrowable_InitiallyReturnsNull() throws Exception {
-        assertNull(new ReusableSimpleMessage().getThrowable());
+        assertThat(new ReusableSimpleMessage().getThrowable()).isNull();
     }
 
     @Test
     public void testGetThrowable_ReturnsNullAfterMessageSet() throws Exception {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
-        assertNull(msg.getThrowable());
+        assertThat(msg.getThrowable()).isNull();
         msg.set("def");
-        assertNull(msg.getThrowable());
+        assertThat(msg.getThrowable()).isNull();
     }
 
     @Test
@@ -97,7 +98,7 @@ public class ReusableSimpleMessageTest {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         final StringBuilder sb = new StringBuilder();
         msg.formatTo(sb);
-        assertEquals("null", sb.toString());
+        assertThat(sb.toString()).isEqualTo("null");
     }
 
     @Test
@@ -105,18 +106,18 @@ public class ReusableSimpleMessageTest {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         final StringBuilder sb = new StringBuilder();
         msg.formatTo(sb);
-        assertEquals("null", sb.toString());
+        assertThat(sb.toString()).isEqualTo("null");
         sb.setLength(0);
         msg.set("abc");
         msg.formatTo(sb);
-        assertEquals("abc", sb.toString());
+        assertThat(sb.toString()).isEqualTo("abc");
         sb.setLength(0);
         msg.set("def");
         msg.formatTo(sb);
-        assertEquals("def", sb.toString());
+        assertThat(sb.toString()).isEqualTo("def");
         sb.setLength(0);
         msg.set("xyz");
         msg.formatTo(sb);
-        assertEquals("xyz", sb.toString());
+        assertThat(sb.toString()).isEqualTo("xyz");
     }
 }

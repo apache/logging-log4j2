@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -23,9 +27,6 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 public class RollingFileManagerTest {
 
@@ -73,14 +74,14 @@ public class RollingFileManagerTest {
                     .setPolicy(new SizeBasedTriggeringPolicy(100))
                     .build();
 
-            Assert.assertNotNull(appender);
+            assertThat(appender).isNotNull();
             final String testContent = "Test";
             try(final RollingFileManager manager = appender.getManager()) {
-                Assert.assertEquals(file.getAbsolutePath(), manager.getFileName());
+                assertThat(manager.getFileName()).isEqualTo(file.getAbsolutePath());
                 manager.writeToDestination(testContent.getBytes(StandardCharsets.US_ASCII), 0, testContent.length());
             }
             try (final Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.US_ASCII)) {
-                Assert.assertEquals(testContent, IOUtils.toString(reader));
+                assertThat(IOUtils.toString(reader)).isEqualTo(testContent);
             }
         }
     }

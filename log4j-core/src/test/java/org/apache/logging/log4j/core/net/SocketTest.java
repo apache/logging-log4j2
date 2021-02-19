@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Callable;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
@@ -29,8 +31,6 @@ import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Disabled("Currently needs better port choosing support")
 @LoggerContextSource("log4j-socket.xml")
@@ -41,7 +41,7 @@ public class SocketTest {
     public void testConnect(final LoggerContext context) {
         System.err.println("Initializing logger");
         Logger logger = assertDoesNotThrow(() -> context.getLogger(getClass().getName()));
-        assertThrows(AppenderLoggingException.class, () -> logger.error("Log #1"));
+        assertThatThrownBy(() -> logger.error("Log #1")).isInstanceOf(AppenderLoggingException.class);
     }
 
     private static class TestSocketServer implements Callable<InputStream> {

@@ -17,6 +17,9 @@
 
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -24,8 +27,6 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CronTriggeringPolicyTest {
 
@@ -62,7 +63,7 @@ public class CronTriggeringPolicyTest {
             .setConfiguration(configuration)
             .build();
         // @formatter:on
-        assertNotNull(raf);
+        assertThat(raf).isNotNull();
     }
 
     /**

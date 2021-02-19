@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ResourceLock("log4j2.MarkerManager")
 public class MarkerTest {
@@ -33,7 +34,7 @@ public class MarkerTest {
     @Test
     public void testGetMarker() {
         final Marker expected = MarkerManager.getMarker("A");
-        assertNull(expected.getParents());
+        assertThat(expected.getParents()).isNull();
     }
 
     @Test
@@ -44,16 +45,16 @@ public class MarkerTest {
         final Marker p2 = MarkerManager.getMarker("P2");
         expected.addParents(p1);
         expected.addParents(p2);
-        assertEquals(2, expected.getParents().length);
+        assertThat(expected.getParents().length).isEqualTo(2);
     }
 
     @Test
     public void testHasParents() {
         final Marker parent = MarkerManager.getMarker("PARENT");
         final Marker existing = MarkerManager.getMarker("EXISTING");
-        assertFalse(existing.hasParents());
+        assertThat(existing.hasParents()).isFalse();
         existing.setParents(parent);
-        assertTrue(existing.hasParents());
+        assertThat(existing.hasParents()).isTrue();
     }
     
     @Test
@@ -96,9 +97,9 @@ public class MarkerTest {
         test1.addParents(parent);
         final Marker[] parents = test1.getParents();
         test1.addParents(existing);
-        assertEquals(parents.length, test1.getParents().length, "duplicate add allowed");
+        assertThat(test1.getParents().length).describedAs("duplicate add allowed").isEqualTo(parents.length);
         test1.addParents(existing, MarkerManager.getMarker("EXTRA"));
-        assertEquals(parents.length + 1, test1.getParents().length, "incorrect add");
+        assertThat(test1.getParents().length).describedAs("incorrect add").isEqualTo(parents.length + 1);
         assertTrue(test1.isInstanceOf(parent), "TEST1 is not an instance of PARENT");
         assertTrue(test1.isInstanceOf(existing), "TEST1 is not an instance of EXISTING");
     }

@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the StringBuilders class.
@@ -54,16 +55,16 @@ public class StringBuildersTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append(jsonValueNotEscaped);
-        assertEquals(jsonValueNotEscaped, sb.toString());
+        assertThat(sb.toString()).isEqualTo(jsonValueNotEscaped);
         StringBuilders.escapeJson(sb, 0);
-        assertEquals(jsonValueEscaped, sb.toString());
+        assertThat(sb.toString()).isEqualTo(jsonValueEscaped);
 
         sb = new StringBuilder();
         String jsonValuePartiallyEscaped = "{\"field\n1\":\\\"value_1\\\"}";
         sb.append(jsonValueNotEscaped);
-        assertEquals(jsonValueNotEscaped, sb.toString());
+        assertThat(sb.toString()).isEqualTo(jsonValueNotEscaped);
         StringBuilders.escapeJson(sb, 10);
-        assertEquals(jsonValuePartiallyEscaped, sb.toString());
+        assertThat(sb.toString()).isEqualTo(jsonValuePartiallyEscaped);
     }
 
     @Test
@@ -73,9 +74,9 @@ public class StringBuildersTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append(jsonValueNotEscaped);
-        assertEquals(jsonValueNotEscaped, sb.toString());
+        assertThat(sb.toString()).isEqualTo(jsonValueNotEscaped);
         StringBuilders.escapeJson(sb, 0);
-        assertEquals(jsonValueEscaped, sb.toString());
+        assertThat(sb.toString()).isEqualTo(jsonValueEscaped);
     }
 
     @Test
@@ -85,8 +86,8 @@ public class StringBuildersTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append(xmlValueNotEscaped);
-        assertEquals(xmlValueNotEscaped, sb.toString());
+        assertThat(sb.toString()).isEqualTo(xmlValueNotEscaped);
         StringBuilders.escapeXml(sb, 0);
-        assertEquals(xmlValueEscaped, sb.toString());
+        assertThat(sb.toString()).isEqualTo(xmlValueEscaped);
     }
 }

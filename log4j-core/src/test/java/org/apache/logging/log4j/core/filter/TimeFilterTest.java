@@ -16,25 +16,24 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.TimeZone;
-
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.time.ClockFactoryTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class TimeFilterTest {
     private static long CLOCKTIME = System.currentTimeMillis();
@@ -62,22 +61,19 @@ public class TimeFilterTest {
         final TimeFilter filter = new TimeFilter(LocalTime.of(2,0), LocalTime.of(3,0),
                 ZoneId.of("America/Los_Angeles"), null, null, LocalDate.of(2020, 3, 8));
         filter.start();
-        assertTrue(filter.isStarted());
+        assertThat(filter.isStarted()).isTrue();
         ZonedDateTime date = ZonedDateTime.of(2020, 3, 8, 2, 6, 30, 0, ZoneId.of("America/Los_Angeles"));
         CLOCKTIME = date.toInstant().toEpochMilli();
         LogEvent event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
         date = date.plusDays(1).withHour(2);
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
         date = date.withHour(4);
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.DENY, filter.filter(event),
-                "Time " + CLOCKTIME + " is within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is within range: " + filter.toString()).isSameAs(Filter.Result.DENY);
     }
 
 
@@ -86,27 +82,23 @@ public class TimeFilterTest {
         final TimeFilter filter = new TimeFilter(LocalTime.of(1,0), LocalTime.of(2,0),
                 ZoneId.of("America/Los_Angeles"), null, null, LocalDate.of(2020, 11, 1));
         filter.start();
-        assertTrue(filter.isStarted());
+        assertThat(filter.isStarted()).isTrue();
         ZonedDateTime date = ZonedDateTime.of(2020, 11, 1, 1, 6, 30, 0, ZoneId.of("America/Los_Angeles")).withEarlierOffsetAtOverlap();
         CLOCKTIME = date.toInstant().toEpochMilli();
         LogEvent event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
         date = ZonedDateTime.of(2020, 11, 1, 1, 6, 30, 0, ZoneId.of("America/Los_Angeles")).withLaterOffsetAtOverlap();
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.DENY, filter.filter(event),
-                "Time " + CLOCKTIME + " is within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is within range: " + filter.toString()).isSameAs(Filter.Result.DENY);
         date = date.plusDays(1).withHour(1).withMinute(30);
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
         date = date.withHour(4);
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.DENY, filter.filter(event),
-                "Time " + CLOCKTIME + " is within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is within range: " + filter.toString()).isSameAs(Filter.Result.DENY);
     }
 
 
@@ -115,27 +107,23 @@ public class TimeFilterTest {
         final TimeFilter filter = new TimeFilter(LocalTime.of(23,0), LocalTime.of(1,0),
                 ZoneId.of("America/Los_Angeles"), null, null, LocalDate.of(2020, 3, 10));
         filter.start();
-        assertTrue(filter.isStarted());
+        assertThat(filter.isStarted()).isTrue();
         ZonedDateTime date = ZonedDateTime.of(2020, 3, 10, 23, 30, 30, 0, ZoneId.of("America/Los_Angeles")).withEarlierOffsetAtOverlap();
         CLOCKTIME = date.toInstant().toEpochMilli();
         LogEvent event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
         date = date.plusHours(1);
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
         date = date.plusHours(1);
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.DENY, filter.filter(event),
-                "Time " + CLOCKTIME + " is within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is within range: " + filter.toString()).isSameAs(Filter.Result.DENY);
         date = date.plusDays(1).withHour(0);
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
     }
 
     @Test
@@ -143,27 +131,23 @@ public class TimeFilterTest {
         final TimeFilter filter = new TimeFilter(LocalTime.of(23,0), LocalTime.of(2,0),
                 ZoneId.of("America/Los_Angeles"), null, null, LocalDate.of(2020, 3, 7));
         filter.start();
-        assertTrue(filter.isStarted());
+        assertThat(filter.isStarted()).isTrue();
         ZonedDateTime date = ZonedDateTime.of(2020, 3, 7, 23, 30, 30, 0, ZoneId.of("America/Los_Angeles")).withEarlierOffsetAtOverlap();
         CLOCKTIME = date.toInstant().toEpochMilli();
         LogEvent event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
         date = date.plusHours(1);
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
         date = date.plusHours(2);
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.DENY, filter.filter(event),
-                "Time " + CLOCKTIME + " is within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is within range: " + filter.toString()).isSameAs(Filter.Result.DENY);
         date = date.plusDays(1).withHour(0);
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
     }
 
 
@@ -172,27 +156,23 @@ public class TimeFilterTest {
         final TimeFilter filter = new TimeFilter(LocalTime.of(23,0), LocalTime.of(2,0),
                 ZoneId.of("America/Los_Angeles"), null, null, LocalDate.of(2020, 10, 31));
         filter.start();
-        assertTrue(filter.isStarted());
+        assertThat(filter.isStarted()).isTrue();
         ZonedDateTime date = ZonedDateTime.of(2020, 10, 31, 23, 30, 30, 0, ZoneId.of("America/Los_Angeles")).withEarlierOffsetAtOverlap();
         CLOCKTIME = date.toInstant().toEpochMilli();
         LogEvent event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
         date = date.plusHours(1);
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
         date = date.plusHours(2);
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.DENY, filter.filter(event),
-                "Time " + CLOCKTIME + " is within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is within range: " + filter.toString()).isSameAs(Filter.Result.DENY);
         date = date.plusDays(1).withHour(0);
         CLOCKTIME = date.toInstant().toEpochMilli();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
     }
 
     @Test
@@ -200,28 +180,25 @@ public class TimeFilterTest {
         // https://garygregory.wordpress.com/2013/06/18/what-are-the-java-timezone-ids/
         final TimeFilter filter = TimeFilter.createFilter("02:00:00", "03:00:00", "America/Los_Angeles", null, null);
         filter.start();
-        assertTrue(filter.isStarted());
+        assertThat(filter.isStarted()).isTrue();
         final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
         cal.set(Calendar.HOUR_OF_DAY, 2);
         CLOCKTIME = cal.getTimeInMillis();
         LogEvent event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
         //assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null));
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
 
         cal.add(Calendar.DATE, 1);
         cal.set(Calendar.HOUR_OF_DAY, 2);
         CLOCKTIME = cal.getTimeInMillis();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event),
-                "Time " + CLOCKTIME + " is not within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is not within range: " + filter.toString()).isSameAs(Filter.Result.NEUTRAL);
         //assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null));
 
         cal.set(Calendar.HOUR_OF_DAY, 4);
         CLOCKTIME = cal.getTimeInMillis();
         event = Log4jLogEvent.newBuilder().setTimeMillis(CLOCKTIME).build();
         //assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null));
-        assertSame(Filter.Result.DENY, filter.filter(event),
-                "Time " + CLOCKTIME + " is within range: " + filter.toString());
+        assertThat(filter.filter(event)).describedAs("Time " + CLOCKTIME + " is within range: " + filter.toString()).isSameAs(Filter.Result.DENY);
     }
 }

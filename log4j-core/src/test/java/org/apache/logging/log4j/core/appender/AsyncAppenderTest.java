@@ -17,6 +17,11 @@
 
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
@@ -26,11 +31,6 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AsyncAppenderTest {
 
@@ -45,11 +45,11 @@ class AsyncAppenderTest {
         } finally {
             appender.clear();
         }
-        assertNotNull(messages);
-        assertEquals(2, messages.size());
+        assertThat(messages).isNotNull();
+        assertThat(messages.size()).isEqualTo(2);
         final String messagePrefix = AsyncAppenderTest.class.getName() + " rewriteTest ";
-        assertEquals(messagePrefix + "This is a test", messages.get(0));
-        assertEquals(messagePrefix + "Hello world!", messages.get(1));
+        assertThat(messages.get(0)).isEqualTo(messagePrefix + "This is a test");
+        assertThat(messages.get(1)).isEqualTo(messagePrefix + "Hello world!");
     }
 
     static void exceptionTest(final LoggerContext context) throws InterruptedException {
@@ -64,9 +64,9 @@ class AsyncAppenderTest {
         } finally {
             appender.clear();
         }
-        assertNotNull(messages);
-        assertEquals(1, messages.size());
-        assertTrue(messages.get(0).contains(parent.getClass().getName()));
+        assertThat(messages).isNotNull();
+        assertThat(messages.size()).isEqualTo(1);
+        assertThat(messages.get(0).contains(parent.getClass().getName())).isTrue();
     }
 
     @Test
@@ -126,9 +126,9 @@ class AsyncAppenderTest {
         } finally {
             appender.clear();
         }
-        assertNotNull(messages);
-        assertEquals(2, messages.size());
-        assertEquals("?  This is a test", messages.get(0));
-        assertEquals("?  Hello world!", messages.get(1));
+        assertThat(messages).isNotNull();
+        assertThat(messages.size()).isEqualTo(2);
+        assertThat(messages.get(0)).isEqualTo("?  This is a test");
+        assertThat(messages.get(1)).isEqualTo("?  Hello world!");
     }
 }

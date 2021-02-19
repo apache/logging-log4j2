@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.util.Collection;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Collection;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -27,8 +29,6 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class StructuredDataFilterTest {
 
     @Test
@@ -36,42 +36,42 @@ public class StructuredDataFilterTest {
         final KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("id.name", "AccountTransfer"),
                                                     new KeyValuePair("ToAccount", "123456")};
         StructuredDataFilter filter = StructuredDataFilter.createFilter(pairs, "and", null, null);
-        assertNotNull(filter);
+        assertThat(filter).isNotNull();
         filter.start();
         StructuredDataMessage msg = new StructuredDataMessage("AccountTransfer@18060", "Transfer Successful", "Audit");
         msg.put("ToAccount", "123456");
         msg.put("FromAccount", "211000");
         msg.put("Amount", "1000.00");
-        assertTrue(filter.isStarted());
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, msg, null));
+        assertThat(filter.isStarted()).isTrue();
+        assertThat(filter.filter(null, Level.DEBUG, null, msg, null)).isSameAs(Filter.Result.NEUTRAL);
         msg.put("ToAccount", "111111");
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, msg, null));
+        assertThat(filter.filter(null, Level.ERROR, null, msg, null)).isSameAs(Filter.Result.DENY);
         filter = StructuredDataFilter.createFilter(pairs, "or", null, null);
-        assertNotNull(filter);
+        assertThat(filter).isNotNull();
         filter.start();
         msg = new StructuredDataMessage("AccountTransfer@18060", "Transfer Successful", "Audit");
         msg.put("ToAccount", "123456");
         msg.put("FromAccount", "211000");
         msg.put("Amount", "1000.00");
-        assertTrue(filter.isStarted());
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, msg, null));
+        assertThat(filter.isStarted()).isTrue();
+        assertThat(filter.filter(null, Level.DEBUG, null, msg, null)).isSameAs(Filter.Result.NEUTRAL);
         msg.put("ToAccount", "111111");
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, msg, null));
+        assertThat(filter.filter(null, Level.ERROR, null, msg, null)).isSameAs(Filter.Result.NEUTRAL);
     }
 
     @Test
     @LoggerContextSource("log4j2-sdfilter.xml")
     public void testConfig(final Configuration config) {
         final Filter filter = config.getFilter();
-        assertNotNull(filter, "No StructuredDataFilter");
+        assertThat(filter).describedAs("No StructuredDataFilter").isNotNull();
         assertTrue(filter instanceof  StructuredDataFilter, "Not a StructuredDataFilter");
         final StructuredDataFilter sdFilter = (StructuredDataFilter) filter;
         assertFalse(sdFilter.isAnd(), "Should not be And filter");
         final IndexedReadOnlyStringMap map = sdFilter.getStringMap();
-        assertNotNull(map, "No Map");
+        assertThat(map).describedAs("No Map").isNotNull();
         assertFalse(map.isEmpty(), "No elements in Map");
-        assertEquals(1, map.size(), "Incorrect number of elements in Map");
+        assertThat(map.size()).describedAs("Incorrect number of elements in Map").isEqualTo(1);
         assertTrue(map.containsKey("eventId"), "Map does not contain key eventId");
-        assertEquals(2, map.<Collection<?>>getValue("eventId").size(), "List does not contain 2 elements");
+        assertThat(map.<Collection<?>>getValue("eventId").size()).describedAs("List does not contain 2 elements").isEqualTo(2);
     }
 }

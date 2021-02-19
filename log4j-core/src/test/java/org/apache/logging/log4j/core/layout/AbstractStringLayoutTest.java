@@ -15,12 +15,12 @@ package org.apache.logging.log4j.core.layout;/*
  * limitations under the license.
  */
 
-import java.nio.charset.Charset;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.charset.Charset;
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests AbstractStringLayout.
@@ -48,17 +48,17 @@ public class AbstractStringLayoutTest {
     public void testGetStringBuilderCapacityRestrictedToMax() throws Exception {
         final StringBuilder sb = ConcreteStringLayout.getStringBuilder();
         final int initialCapacity = sb.capacity();
-        assertEquals(ConcreteStringLayout.DEFAULT_STRING_BUILDER_SIZE, sb.capacity(), "initial capacity");
+        assertThat(sb.capacity()).describedAs("initial capacity").isEqualTo(ConcreteStringLayout.DEFAULT_STRING_BUILDER_SIZE);
 
         final int SMALL = 100;
         final String smallMessage = new String(new char[SMALL]);
         sb.append(smallMessage);
-        assertEquals(initialCapacity, sb.capacity(), "capacity not grown");
-        assertEquals(SMALL, sb.length(), "length=msg length");
+        assertThat(sb.capacity()).describedAs("capacity not grown").isEqualTo(initialCapacity);
+        assertThat(sb.length()).describedAs("length=msg length").isEqualTo(SMALL);
 
         final StringBuilder sb2 = ConcreteStringLayout.getStringBuilder();
-        assertEquals(sb2.capacity(), initialCapacity, "capacity unchanged");
-        assertEquals(0, sb2.length(), "empty, ready for use");
+        assertThat(initialCapacity).describedAs("capacity unchanged").isEqualTo(sb2.capacity());
+        assertThat(sb2.length()).describedAs("empty, ready for use").isEqualTo(0);
 
         final int LARGE = ConcreteStringLayout.MAX_STRING_BUILDER_SIZE * 2;
         final String largeMessage = new String(new char[LARGE]);
@@ -66,15 +66,14 @@ public class AbstractStringLayoutTest {
         assertTrue(sb2.capacity() >= LARGE, "capacity grown to fit msg length");
         assertTrue(sb2.capacity() >= ConcreteStringLayout.MAX_STRING_BUILDER_SIZE,
                 "capacity is now greater than max length");
-        assertEquals(LARGE, sb2.length(), "length=msg length");
+        assertThat(sb2.length()).describedAs("length=msg length").isEqualTo(LARGE);
         sb2.setLength(0); // set 0 before next getStringBuilder() call
-        assertEquals(0, sb2.length(), "empty, cleared");
+        assertThat(sb2.length()).describedAs("empty, cleared").isEqualTo(0);
         assertTrue(sb2.capacity() >= ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, "capacity remains very large");
 
         final StringBuilder sb3 = ConcreteStringLayout.getStringBuilder();
-        assertEquals(ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, sb3.capacity(),
-                "capacity, trimmed to MAX_STRING_BUILDER_SIZE");
-        assertEquals(0, sb3.length(), "empty, ready for use");
+        assertThat(sb3.capacity()).describedAs("capacity, trimmed to MAX_STRING_BUILDER_SIZE").isEqualTo(ConcreteStringLayout.MAX_STRING_BUILDER_SIZE);
+        assertThat(sb3.length()).describedAs("empty, ready for use").isEqualTo(0);
     }
 
 }

@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.file.Path;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.pattern.NotANumber;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test getEligibleFiles method.
@@ -35,7 +35,7 @@ public class EligibleFilesTest {
         final TestRolloverStrategy strategy = new TestRolloverStrategy();
         final Map<Integer, Path> files = strategy.findFilesInPath(path);
         assertTrue(files.size() > 0, "No files found");
-        assertEquals(30, files.size(), "Incorrect number of files found. Should be 30, was " + files.size());
+        assertThat(files.size()).describedAs("Incorrect number of files found. Should be 30, was " + files.size()).isEqualTo(30);
     }
 
     private static class TestRolloverStrategy extends AbstractRolloverStrategy {

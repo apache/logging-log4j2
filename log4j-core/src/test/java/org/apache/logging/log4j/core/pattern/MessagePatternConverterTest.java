@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -30,8 +33,6 @@ import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class MessagePatternConverterTest {
 
     @Test
@@ -44,14 +45,14 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals("Hello!", sb.toString(), "Unexpected result");
+        assertThat(sb.toString()).describedAs("Unexpected result").isEqualTo("Hello!");
         event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(null).build();
         sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals(0, sb.length(), "Incorrect length: " + sb);
+        assertThat(sb.length()).describedAs("Incorrect length: " + sb).isEqualTo(0);
         msg = new SimpleMessage(null);
         event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
@@ -59,7 +60,7 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals(4, sb.length(), "Incorrect length: " + sb);
+        assertThat(sb.length()).describedAs("Incorrect length: " + sb).isEqualTo(4);
     }
 
     @Test
@@ -72,7 +73,7 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals("${date:now:buhu}", sb.toString(), "Unexpected result");
+        assertThat(sb.toString()).describedAs("Unexpected result").isEqualTo("${date:now:buhu}");
     }
 
     @Test
@@ -93,7 +94,7 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals("bar", sb.toString(), "Unexpected result");
+        assertThat(sb.toString()).describedAs("Unexpected result").isEqualTo("bar");
     }
 
     @Test
@@ -110,7 +111,7 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals("${foo}", sb.toString(), "Expected the raw pattern string without lookup");
+        assertThat(sb.toString()).describedAs("Expected the raw pattern string without lookup").isEqualTo("${foo}");
     }
 
     @Test
@@ -124,14 +125,14 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals("Hello!", sb.toString(), "Unexpected result");
+        assertThat(sb.toString()).describedAs("Unexpected result").isEqualTo("Hello!");
         event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(null).build();
         sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals(0, sb.length(), "Incorrect length: " + sb);
+        assertThat(sb.length()).describedAs("Incorrect length: " + sb).isEqualTo(0);
         msg = new SimpleMessage(null);
         event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
@@ -139,7 +140,7 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals(4, sb.length(), "Incorrect length: " + sb);
+        assertThat(sb.length()).describedAs("Incorrect length: " + sb).isEqualTo(4);
     }
 
     @Test
@@ -153,7 +154,7 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals("{\"key\":\"val\"}", sb.toString(), "Unexpected result");
+        assertThat(sb.toString()).describedAs("Unexpected result").isEqualTo("{\"key\":\"val\"}");
     }
 
     @Test
@@ -167,7 +168,7 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals("<Map>\n  <Entry key=\"key\">val</Entry>\n</Map>", sb.toString(), "Unexpected result");
+        assertThat(sb.toString()).describedAs("Unexpected result").isEqualTo("<Map>\n  <Entry key=\"key\">val</Entry>\n</Map>");
     }
 
     @Test
@@ -181,7 +182,7 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals("key=\"val\"", sb.toString(), "Unexpected result");
+        assertThat(sb.toString()).describedAs("Unexpected result").isEqualTo("key=\"val\"");
     }
 
     @Test
@@ -195,6 +196,6 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals("type [id key=\"val\"] message", sb.toString(), "Unexpected result");
+        assertThat(sb.toString()).describedAs("Unexpected result").isEqualTo("type [id key=\"val\"] message");
     }
 }

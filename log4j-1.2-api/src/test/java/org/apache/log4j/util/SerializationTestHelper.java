@@ -17,8 +17,9 @@
 
 package org.apache.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,7 +28,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import org.apache.commons.io.FileUtils;
 
 
@@ -117,7 +117,7 @@ public class SerializationTestHelper {
             final int bytesRead = expected.length;
 
             if (bytesRead < endCompare) {
-                assertEquals(bytesRead, actual.length);
+                assertThat(actual.length).isEqualTo(bytesRead);
             }
 
             int endScan = actual.length;
@@ -131,8 +131,7 @@ public class SerializationTestHelper {
                     skipIndex++;
                 } else {
                     if (expected[i] != actual[i]) {
-                        assertEquals(
-                            "Difference at offset " + i, expected[i], actual[i]);
+                        assertThat(actual[i]).describedAs("Difference at offset " + i).isEqualTo(expected[i]);
                     }
                 }
             }

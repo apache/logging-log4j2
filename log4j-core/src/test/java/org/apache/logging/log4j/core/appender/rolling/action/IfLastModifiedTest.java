@@ -17,11 +17,11 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.nio.file.attribute.FileTime;
-
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.nio.file.attribute.FileTime;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the FileAgeFilter class.
@@ -31,7 +31,7 @@ public class IfLastModifiedTest {
     @Test
     public void testGetDurationReturnsConstructorValue() {
         final IfLastModified filter = IfLastModified.createAgeCondition(Duration.parse("P7D"));
-        assertEquals(0, filter.getAge().compareTo(Duration.parse("P7D")));
+        assertThat(filter.getAge().compareTo(Duration.parse("P7D"))).isEqualTo(0);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class IfLastModifiedTest {
         final DummyFileAttributes attrs = new DummyFileAttributes();
         final long age = 33 * 1000;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - age);
-        assertTrue(filter.accept(null, null, attrs));
+        assertThat(filter.accept(null, null, attrs)).isTrue();
     }
 
     @Test
@@ -49,7 +49,7 @@ public class IfLastModifiedTest {
         final DummyFileAttributes attrs = new DummyFileAttributes();
         final long age = 33 * 1000 + 5;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - age);
-        assertTrue(filter.accept(null, null, attrs));
+        assertThat(filter.accept(null, null, attrs)).isTrue();
     }
 
     @Test
@@ -58,7 +58,7 @@ public class IfLastModifiedTest {
         final DummyFileAttributes attrs = new DummyFileAttributes();
         final long age = 33 * 1000 - 5;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - age);
-        assertFalse(filter.accept(null, null, attrs));
+        assertThat(filter.accept(null, null, attrs)).isFalse();
     }
 
     @Test
@@ -69,21 +69,21 @@ public class IfLastModifiedTest {
         final long oldEnough = 33 * 1000 + 5;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - oldEnough);
 
-        assertTrue(filter.accept(null, null, attrs));
-        assertEquals(1, counter.getAcceptCount());
-        assertTrue(filter.accept(null, null, attrs));
-        assertEquals(2, counter.getAcceptCount());
-        assertTrue(filter.accept(null, null, attrs));
-        assertEquals(3, counter.getAcceptCount());
+        assertThat(filter.accept(null, null, attrs)).isTrue();
+        assertThat(counter.getAcceptCount()).isEqualTo(1);
+        assertThat(filter.accept(null, null, attrs)).isTrue();
+        assertThat(counter.getAcceptCount()).isEqualTo(2);
+        assertThat(filter.accept(null, null, attrs)).isTrue();
+        assertThat(counter.getAcceptCount()).isEqualTo(3);
         
         final long tooYoung = 33 * 1000 - 5;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - tooYoung);
-        assertFalse(filter.accept(null, null, attrs));
-        assertEquals(3, counter.getAcceptCount()); // no increase
-        assertFalse(filter.accept(null, null, attrs));
-        assertEquals(3, counter.getAcceptCount());
-        assertFalse(filter.accept(null, null, attrs));
-        assertEquals(3, counter.getAcceptCount());
+        assertThat(filter.accept(null, null, attrs)).isFalse();
+        assertThat(counter.getAcceptCount()).isEqualTo(3); // no increase
+        assertThat(filter.accept(null, null, attrs)).isFalse();
+        assertThat(counter.getAcceptCount()).isEqualTo(3);
+        assertThat(filter.accept(null, null, attrs)).isFalse();
+        assertThat(counter.getAcceptCount()).isEqualTo(3);
     }
 
     @Test
@@ -92,6 +92,6 @@ public class IfLastModifiedTest {
         final IfLastModified filter = IfLastModified.createAgeCondition(Duration.parse("PT33S"), counter, counter,
                 counter);
         filter.beforeFileTreeWalk();
-        assertEquals(3, counter.getBeforeFileTreeWalkCount());
+        assertThat(counter.getBeforeFileTreeWalkCount()).isEqualTo(3);
     }
 }

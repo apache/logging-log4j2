@@ -17,9 +17,11 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the Duration class.
@@ -28,121 +30,121 @@ public class DurationTest {
 
     @Test
     public void testParseFailsIfNullText() {
-        assertThrows(NullPointerException.class, () -> Duration.parse(null));
+        assertThatThrownBy(() -> Duration.parse(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testParseFailsIfInvalidPattern() {
-        assertThrows(IllegalArgumentException.class, () -> Duration.parse("abc"));
+        assertThatThrownBy(() -> Duration.parse("abc")).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void testParseFailsIfSectionsOutOfOrder() {
-        assertThrows(IllegalArgumentException.class, () -> Duration.parse("P4DT2M1S3H"));
+        assertThatThrownBy(() -> Duration.parse("P4DT2M1S3H")).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void testParseFailsIfTButMissingTime() {
-        assertThrows(IllegalArgumentException.class, () -> Duration.parse("P1dT"));
+        assertThatThrownBy(() -> Duration.parse("P1dT")).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void testParseIsCaseInsensitive() {
-        assertEquals("P4DT3H2M1S", Duration.parse("p4dt3h2m1s").toString());
+        assertThat(Duration.parse("p4dt3h2m1s").toString()).isEqualTo("P4DT3H2M1S");
     }
 
     @Test
     public void testParseAllowsOverflows() {
-        assertEquals(1000 * 70, Duration.parse("PT70S").toMillis());
-        assertEquals(1000 * 70 * 60, Duration.parse("PT70M").toMillis());
-        assertEquals(1000 * 25 * 60 * 60, Duration.parse("PT25H").toMillis());
+        assertThat(Duration.parse("PT70S").toMillis()).isEqualTo(1000 * 70);
+        assertThat(Duration.parse("PT70M").toMillis()).isEqualTo(1000 * 70 * 60);
+        assertThat(Duration.parse("PT25H").toMillis()).isEqualTo(1000 * 25 * 60 * 60);
     }
 
     @Test
     public void testToMillis() {
-        assertEquals(0, Duration.ZERO.toMillis());
-        assertEquals(1000, Duration.parse("PT1S").toMillis());
-        assertEquals(1000 * 2 * 60, Duration.parse("PT2M").toMillis());
-        assertEquals(1000 * 3 * 60 * 60, Duration.parse("PT3H").toMillis());
-        assertEquals(1000 * 4 * 24 * 60 * 60, Duration.parse("P4D").toMillis());
+        assertThat(Duration.ZERO.toMillis()).isEqualTo(0);
+        assertThat(Duration.parse("PT1S").toMillis()).isEqualTo(1000);
+        assertThat(Duration.parse("PT2M").toMillis()).isEqualTo(1000 * 2 * 60);
+        assertThat(Duration.parse("PT3H").toMillis()).isEqualTo(1000 * 3 * 60 * 60);
+        assertThat(Duration.parse("P4D").toMillis()).isEqualTo(1000 * 4 * 24 * 60 * 60);
         final long expected = (1000 * 4 * 24 * 60 * 60) + (1000 * 3 * 60 * 60) + (1000 * 2 * 60) + 1000;
-        assertEquals(expected, Duration.parse("P4DT3H2M1S").toMillis());
+        assertThat(Duration.parse("P4DT3H2M1S").toMillis()).isEqualTo(expected);
     }
 
     @Test
     public void testToString() {
-        assertEquals("PT0S", Duration.ZERO.toString());
-        assertEquals("PT1S", Duration.parse("PT1S").toString());
-        assertEquals("PT2M1S", Duration.parse("PT2M1S").toString());
-        assertEquals("PT3H2M1S", Duration.parse("PT3H2M1S").toString());
-        assertEquals("P4DT3H2M1S", Duration.parse("P4DT3H2M1S").toString());
+        assertThat(Duration.ZERO.toString()).isEqualTo("PT0S");
+        assertThat(Duration.parse("PT1S").toString()).isEqualTo("PT1S");
+        assertThat(Duration.parse("PT2M1S").toString()).isEqualTo("PT2M1S");
+        assertThat(Duration.parse("PT3H2M1S").toString()).isEqualTo("PT3H2M1S");
+        assertThat(Duration.parse("P4DT3H2M1S").toString()).isEqualTo("P4DT3H2M1S");
     }
 
     @Test
     public void testPrefixPNotRequired() {
-        assertEquals("PT1S", Duration.parse("T1S").toString());
-        assertEquals("PT2M1S", Duration.parse("T2M1S").toString());
-        assertEquals("PT3H2M1S", Duration.parse("T3H2M1S").toString());
-        assertEquals("P4DT3H2M1S", Duration.parse("4DT3H2M1S").toString());
+        assertThat(Duration.parse("T1S").toString()).isEqualTo("PT1S");
+        assertThat(Duration.parse("T2M1S").toString()).isEqualTo("PT2M1S");
+        assertThat(Duration.parse("T3H2M1S").toString()).isEqualTo("PT3H2M1S");
+        assertThat(Duration.parse("4DT3H2M1S").toString()).isEqualTo("P4DT3H2M1S");
     }
 
     @Test
     public void testInfixTNotRequired() {
-        assertEquals("PT1S", Duration.parse("P1S").toString());
-        assertEquals("PT2M1S", Duration.parse("P2M1S").toString());
-        assertEquals("PT3H2M1S", Duration.parse("P3H2M1S").toString());
-        assertEquals("P4DT3H2M1S", Duration.parse("P4D3H2M1S").toString());
+        assertThat(Duration.parse("P1S").toString()).isEqualTo("PT1S");
+        assertThat(Duration.parse("P2M1S").toString()).isEqualTo("PT2M1S");
+        assertThat(Duration.parse("P3H2M1S").toString()).isEqualTo("PT3H2M1S");
+        assertThat(Duration.parse("P4D3H2M1S").toString()).isEqualTo("P4DT3H2M1S");
     }
 
     @Test
     public void testPrefixPAndInfixTNotRequired() {
-        assertEquals("PT1S", Duration.parse("1S").toString());
-        assertEquals("PT2M1S", Duration.parse("2M1S").toString());
-        assertEquals("PT3H2M1S", Duration.parse("3H2M1S").toString());
-        assertEquals("P4DT3H2M1S", Duration.parse("4D3H2M1S").toString());
+        assertThat(Duration.parse("1S").toString()).isEqualTo("PT1S");
+        assertThat(Duration.parse("2M1S").toString()).isEqualTo("PT2M1S");
+        assertThat(Duration.parse("3H2M1S").toString()).isEqualTo("PT3H2M1S");
+        assertThat(Duration.parse("4D3H2M1S").toString()).isEqualTo("P4DT3H2M1S");
     }
 
     @Test
     public void testCompareTo() {
-        assertEquals(-1, Duration.parse("PT1S").compareTo(Duration.parse("PT2S")));
-        assertEquals(-1, Duration.parse("PT1M").compareTo(Duration.parse("PT2M")));
-        assertEquals(-1, Duration.parse("PT1H").compareTo(Duration.parse("PT2H")));
-        assertEquals(-1, Duration.parse("P1D").compareTo(Duration.parse("P2D")));
+        assertThat(Duration.parse("PT1S").compareTo(Duration.parse("PT2S"))).isEqualTo(-1);
+        assertThat(Duration.parse("PT1M").compareTo(Duration.parse("PT2M"))).isEqualTo(-1);
+        assertThat(Duration.parse("PT1H").compareTo(Duration.parse("PT2H"))).isEqualTo(-1);
+        assertThat(Duration.parse("P1D").compareTo(Duration.parse("P2D"))).isEqualTo(-1);
 
-        assertEquals(0, Duration.parse("PT1S").compareTo(Duration.parse("PT1S")));
-        assertEquals(0, Duration.parse("PT1M").compareTo(Duration.parse("PT1M")));
-        assertEquals(0, Duration.parse("PT1H").compareTo(Duration.parse("PT1H")));
-        assertEquals(0, Duration.parse("P1D").compareTo(Duration.parse("P1D")));
+        assertThat(Duration.parse("PT1S").compareTo(Duration.parse("PT1S"))).isEqualTo(0);
+        assertThat(Duration.parse("PT1M").compareTo(Duration.parse("PT1M"))).isEqualTo(0);
+        assertThat(Duration.parse("PT1H").compareTo(Duration.parse("PT1H"))).isEqualTo(0);
+        assertThat(Duration.parse("P1D").compareTo(Duration.parse("P1D"))).isEqualTo(0);
 
-        assertEquals(1, Duration.parse("PT2S").compareTo(Duration.parse("PT1S")));
-        assertEquals(1, Duration.parse("PT2M").compareTo(Duration.parse("PT1M")));
-        assertEquals(1, Duration.parse("PT2H").compareTo(Duration.parse("PT1H")));
-        assertEquals(1, Duration.parse("P2D").compareTo(Duration.parse("P1D")));
+        assertThat(Duration.parse("PT2S").compareTo(Duration.parse("PT1S"))).isEqualTo(1);
+        assertThat(Duration.parse("PT2M").compareTo(Duration.parse("PT1M"))).isEqualTo(1);
+        assertThat(Duration.parse("PT2H").compareTo(Duration.parse("PT1H"))).isEqualTo(1);
+        assertThat(Duration.parse("P2D").compareTo(Duration.parse("P1D"))).isEqualTo(1);
 
-        assertEquals(0, Duration.parse("PT1M").compareTo(Duration.parse("PT60S")));
-        assertEquals(0, Duration.parse("PT1H").compareTo(Duration.parse("PT60M")));
-        assertEquals(0, Duration.parse("PT1H").compareTo(Duration.parse("PT3600S")));
-        assertEquals(0, Duration.parse("P1D").compareTo(Duration.parse("PT24H")));
-        assertEquals(0, Duration.parse("P1D").compareTo(Duration.parse("PT1440M")));
+        assertThat(Duration.parse("PT1M").compareTo(Duration.parse("PT60S"))).isEqualTo(0);
+        assertThat(Duration.parse("PT1H").compareTo(Duration.parse("PT60M"))).isEqualTo(0);
+        assertThat(Duration.parse("PT1H").compareTo(Duration.parse("PT3600S"))).isEqualTo(0);
+        assertThat(Duration.parse("P1D").compareTo(Duration.parse("PT24H"))).isEqualTo(0);
+        assertThat(Duration.parse("P1D").compareTo(Duration.parse("PT1440M"))).isEqualTo(0);
     }
 
     @Test
     public void testEquals() {
-        assertNotEquals(Duration.parse("PT1S"),(Duration.parse("PT2S")));
-        assertNotEquals(Duration.parse("PT1M"),(Duration.parse("PT2M")));
-        assertNotEquals(Duration.parse("PT1H"),(Duration.parse("PT2H")));
-        assertNotEquals(Duration.parse("P1D"),(Duration.parse("P2D")));
+        assertThat((Duration.parse("PT2S"))).isNotEqualTo(Duration.parse("PT1S"));
+        assertThat((Duration.parse("PT2M"))).isNotEqualTo(Duration.parse("PT1M"));
+        assertThat((Duration.parse("PT2H"))).isNotEqualTo(Duration.parse("PT1H"));
+        assertThat((Duration.parse("P2D"))).isNotEqualTo(Duration.parse("P1D"));
 
-        assertEquals( Duration.parse("PT1S"),(Duration.parse("PT1S")));
-        assertEquals( Duration.parse("PT1M"),(Duration.parse("PT1M")));
-        assertEquals( Duration.parse("PT1H"),(Duration.parse("PT1H")));
-        assertEquals( Duration.parse("P1D"),(Duration.parse("P1D")));
+        assertThat((Duration.parse("PT1S"))).isEqualTo(Duration.parse("PT1S"));
+        assertThat((Duration.parse("PT1M"))).isEqualTo(Duration.parse("PT1M"));
+        assertThat((Duration.parse("PT1H"))).isEqualTo(Duration.parse("PT1H"));
+        assertThat((Duration.parse("P1D"))).isEqualTo(Duration.parse("P1D"));
 
-        assertEquals( Duration.parse("PT1M"),(Duration.parse("PT60S")));
-        assertEquals( Duration.parse("PT1H"),(Duration.parse("PT60M")));
-        assertEquals( Duration.parse("PT1H"),(Duration.parse("PT3600S")));
-        assertEquals( Duration.parse("P1D"),(Duration.parse("PT24H")));
-        assertEquals(Duration.parse("P1D"), (Duration.parse("PT1440M")));
+        assertThat((Duration.parse("PT60S"))).isEqualTo(Duration.parse("PT1M"));
+        assertThat((Duration.parse("PT60M"))).isEqualTo(Duration.parse("PT1H"));
+        assertThat((Duration.parse("PT3600S"))).isEqualTo(Duration.parse("PT1H"));
+        assertThat((Duration.parse("PT24H"))).isEqualTo(Duration.parse("P1D"));
+        assertThat((Duration.parse("PT1440M"))).isEqualTo(Duration.parse("P1D"));
     }
 
 }

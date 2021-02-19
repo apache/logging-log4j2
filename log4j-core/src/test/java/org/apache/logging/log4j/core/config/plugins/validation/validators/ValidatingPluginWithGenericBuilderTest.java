@@ -16,16 +16,17 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
-import org.apache.logging.log4j.plugins.Node;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.validation.ValidatingPluginWithGenericBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidatingPluginWithGenericBuilderTest {
 
@@ -38,7 +39,7 @@ public class ValidatingPluginWithGenericBuilderTest {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<ValidatingPluginWithGenericBuilder>) manager.getPluginType("ValidatingPluginWithGenericBuilder");
-        assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
+        assertThat(plugin).describedAs("Rebuild this module to make sure annotation processing kicks in.").isNotNull();
         node = new Node(null, "Validator", plugin);
     }
 
@@ -48,7 +49,7 @@ public class ValidatingPluginWithGenericBuilderTest {
             .setConfiguration(new NullConfiguration())
             .setConfigurationNode(node)
             .build();
-        assertNull(validatingPlugin);
+        assertThat(validatingPlugin).isNull();
     }
 
     @Test
@@ -58,7 +59,7 @@ public class ValidatingPluginWithGenericBuilderTest {
             .setConfiguration(new NullConfiguration())
             .setConfigurationNode(node)
             .build();
-        assertNotNull(validatingPlugin);
-        assertEquals("foo", validatingPlugin.getName());
+        assertThat(validatingPlugin).isNotNull();
+        assertThat(validatingPlugin.getName()).isEqualTo("foo");
     }
 }

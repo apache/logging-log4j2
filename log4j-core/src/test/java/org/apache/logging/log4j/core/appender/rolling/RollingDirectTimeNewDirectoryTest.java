@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Iterator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Logger;
@@ -23,13 +30,6 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Iterator;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class RollingDirectTimeNewDirectoryTest {
 
@@ -61,23 +61,21 @@ public class RollingDirectTimeNewDirectoryTest {
 
         File logDir = new File(DIR);
         File[] logFolders = logDir.listFiles();
-        assertNotNull(logFolders);
+        assertThat(logFolders).isNotNull();
         Arrays.sort(logFolders);
 
         try {
 
             final int minExpectedLogFolderCount = 2;
-            assertTrue(
-                    "was expecting at least " + minExpectedLogFolderCount + " folders, " +
-                            "found " + logFolders.length,
-                    logFolders.length >= minExpectedLogFolderCount);
+            assertThat(logFolders.length >= minExpectedLogFolderCount).describedAs("was expecting at least " + minExpectedLogFolderCount + " folders, " +
+                            "found " + logFolders.length).isTrue();
 
             for (File logFolder : logFolders) {
                 File[] logFiles = logFolder.listFiles();
                 if (logFiles != null) {
                     Arrays.sort(logFiles);
                 }
-                assertTrue("empty folder: " + logFolder, logFiles != null && logFiles.length > 0);
+                assertThat(logFiles != null && logFiles.length > 0).describedAs("empty folder: " + logFolder).isTrue();
             }
 
         } catch (AssertionError error) {

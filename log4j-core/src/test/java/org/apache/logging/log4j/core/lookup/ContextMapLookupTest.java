@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.io.File;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
+import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -28,8 +30,6 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-
-import static org.junit.Assert.*;
 
 public class ContextMapLookupTest {
 
@@ -63,9 +63,9 @@ public class ContextMapLookupTest {
         ThreadContext.put(TESTKEY, TESTVAL);
         final StrLookup lookup = new ContextMapLookup();
         String value = lookup.lookup(TESTKEY);
-        assertEquals(TESTVAL, value);
+        assertThat(value).isEqualTo(TESTVAL);
         value = lookup.lookup("BadKey");
-        assertNull(value);
+        assertThat(value).isNull();
     }
 
     /**
@@ -79,6 +79,6 @@ public class ContextMapLookupTest {
         final Logger logger = LogManager.getLogger();
         logger.info("Hello from testFileLog!");
         final File logFile = new File("target", this.getClass().getName() + ".testFileLog.log");
-        assertTrue(logFile.exists());
+        assertThat(logFile.exists()).isTrue();
     }
 }

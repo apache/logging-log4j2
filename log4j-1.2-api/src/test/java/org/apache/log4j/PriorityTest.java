@@ -17,11 +17,11 @@
 
 package org.apache.log4j;
 
-import java.util.Locale;
-
-import org.junit.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
+
+import java.util.Locale;
+import org.junit.Test;
 
 /**
  * Tests of Priority.
@@ -34,7 +34,7 @@ public class PriorityTest {
      */
     @Test
     public void testOffInt() {
-        assertEquals(Integer.MAX_VALUE, Priority.OFF_INT);
+        assertThat(Priority.OFF_INT).isEqualTo(Integer.MAX_VALUE);
     }
 
     /**
@@ -42,7 +42,7 @@ public class PriorityTest {
      */
     @Test
     public void testFatalInt() {
-        assertEquals(50000, Priority.FATAL_INT);
+        assertThat(Priority.FATAL_INT).isEqualTo(50000);
     }
 
     /**
@@ -50,7 +50,7 @@ public class PriorityTest {
      */
     @Test
     public void testErrorInt() {
-        assertEquals(40000, Priority.ERROR_INT);
+        assertThat(Priority.ERROR_INT).isEqualTo(40000);
     }
 
     /**
@@ -58,7 +58,7 @@ public class PriorityTest {
      */
     @Test
     public void testWarnInt() {
-        assertEquals(30000, Priority.WARN_INT);
+        assertThat(Priority.WARN_INT).isEqualTo(30000);
     }
 
     /**
@@ -66,7 +66,7 @@ public class PriorityTest {
      */
     @Test
     public void testInfoInt() {
-        assertEquals(20000, Priority.INFO_INT);
+        assertThat(Priority.INFO_INT).isEqualTo(20000);
     }
 
     /**
@@ -74,7 +74,7 @@ public class PriorityTest {
      */
     @Test
     public void testDebugInt() {
-        assertEquals(10000, Priority.DEBUG_INT);
+        assertThat(Priority.DEBUG_INT).isEqualTo(10000);
     }
 
     /**
@@ -82,7 +82,7 @@ public class PriorityTest {
      */
     @Test
     public void testAllInt() {
-        assertEquals(Integer.MIN_VALUE, Priority.ALL_INT);
+        assertThat(Priority.ALL_INT).isEqualTo(Integer.MIN_VALUE);
     }
 
     /**
@@ -91,7 +91,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testFatal() {
-        assertTrue(Priority.FATAL instanceof Level);
+        assertThat(Priority.FATAL instanceof Level).isTrue();
     }
 
     /**
@@ -100,7 +100,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testERROR() {
-        assertTrue(Priority.ERROR instanceof Level);
+        assertThat(Priority.ERROR instanceof Level).isTrue();
     }
 
     /**
@@ -109,7 +109,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testWARN() {
-        assertTrue(Priority.WARN instanceof Level);
+        assertThat(Priority.WARN instanceof Level).isTrue();
     }
 
     /**
@@ -118,7 +118,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testINFO() {
-        assertTrue(Priority.INFO instanceof Level);
+        assertThat(Priority.INFO instanceof Level).isTrue();
     }
 
     /**
@@ -127,7 +127,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testDEBUG() {
-        assertTrue(Priority.DEBUG instanceof Level);
+        assertThat(Priority.DEBUG instanceof Level).isTrue();
     }
 
     /**
@@ -136,7 +136,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testEqualsNull() {
-        assertFalse(Priority.DEBUG.equals(null));
+        assertThat(Priority.DEBUG.equals(null)).isFalse();
     }
 
     /**
@@ -148,7 +148,7 @@ public class PriorityTest {
         //
         //   this behavior violates the equals contract.
         //
-        assertTrue(Priority.DEBUG.equals(Level.DEBUG));
+        assertThat(Priority.DEBUG.equals(Level.DEBUG)).isTrue();
     }
 
     /**
@@ -158,7 +158,7 @@ public class PriorityTest {
     @SuppressWarnings("deprecation")
     public void testGetAllPossiblePriorities() {
         final Priority[] priorities = Priority.getAllPossiblePriorities();
-        assertEquals(5, priorities.length);
+        assertThat(priorities.length).isEqualTo(5);
     }
 
     /**
@@ -167,7 +167,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testToPriorityString() {
-        assertTrue(Priority.toPriority("DEBUG") == Level.DEBUG);
+        assertThat(Priority.toPriority("DEBUG") == Level.DEBUG).isTrue();
     }
 
     /**
@@ -176,7 +176,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testToPriorityInt() {
-        assertTrue(Priority.toPriority(Priority.DEBUG_INT) == Level.DEBUG);
+        assertThat(Priority.toPriority(Priority.DEBUG_INT) == Level.DEBUG).isTrue();
     }
 
     /**
@@ -185,7 +185,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testToPriorityStringPriority() {
-        assertTrue(Priority.toPriority("foo", Priority.DEBUG) == Priority.DEBUG);
+        assertThat(Priority.toPriority("foo", Priority.DEBUG) == Priority.DEBUG).isTrue();
     }
 
     /**
@@ -194,7 +194,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testToPriorityIntPriority() {
-        assertTrue(Priority.toPriority(17, Priority.DEBUG) == Priority.DEBUG);
+        assertThat(Priority.toPriority(17, Priority.DEBUG) == Priority.DEBUG).isTrue();
     }
 
     /**
@@ -204,7 +204,7 @@ public class PriorityTest {
     @SuppressWarnings("deprecation")
     public void testDotlessLowerI() {
         final Priority level = Priority.toPriority("\u0131nfo");
-        assertEquals("INFO", level.toString());
+        assertThat(level.toString()).isEqualTo("INFO");
     }
 
     /**
@@ -219,7 +219,7 @@ public class PriorityTest {
         Locale.setDefault(turkey);
         final Priority level = Priority.toPriority("info");
         Locale.setDefault(defaultLocale);
-        assertEquals("INFO", level.toString());
+        assertThat(level.toString()).isEqualTo("INFO");
   }
 
 }

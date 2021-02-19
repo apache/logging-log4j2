@@ -18,12 +18,12 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,7 +35,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
@@ -44,6 +43,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.assertj.core.api.HamcrestCondition;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -110,15 +110,15 @@ public class RollingAppenderSizeTest {
         final RollingFileAppender rfAppender = loggerContextRule.getRequiredAppender("RollingFile",
                 RollingFileAppender.class);
         final RollingFileManager manager = rfAppender.getManager();
-        Assert.assertNotNull(manager);
-        Assert.assertEquals(createOnDemand, manager.isCreateOnDemand());
+        assertThat(manager).isNotNull();
+        assertThat(manager.isCreateOnDemand()).isEqualTo(createOnDemand);
     }
 
     @Test
     public void testAppender() throws Exception {
         final Path path = Paths.get(DIR, "rollingtest.log");
         if (Files.exists(path) && createOnDemand) {
-            Assert.fail(String.format("Unexpected file: %s (%s bytes)", path, Files.getAttribute(path, "size")));
+            fail(String.format("Unexpected file: %s (%s bytes)", path, Files.getAttribute(path, "size")));
         }
         for (int i = 0; i < 500; ++i) {
             logger.debug("This is test message number " + i);
@@ -130,10 +130,10 @@ public class RollingAppenderSizeTest {
         }
 
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertThat(dir.exists() && dir.listFiles().length > 0).describedAs("Directory not created").isTrue();
         final File[] files = dir.listFiles();
-        assertNotNull(files);
-        assertThat(files, hasItemInArray(that(hasName(that(endsWith(fileExtension))))));
+        assertThat(files).isNotNull();
+        assertThat(files).is(new HamcrestCondition<>(hasItemInArray(that(hasName(that(endsWith(fileExtension)))))));
 
         final FileExtension ext = FileExtension.lookup(fileExtension);
         if (ext == null || FileExtension.ZIP == ext || FileExtension.PACK200 == ext) {
@@ -154,7 +154,7 @@ public class RollingAppenderSizeTest {
                         fail("Error creating input stream from " + file.toString() + ": " + ce.getMessage());
                     }
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    assertNotNull("No input stream for " + file.getName(), in);
+                    assertThat(in).describedAs("No input stream for " + file.getName()).isNotNull();
                     try {
                         IOUtils.copy(in, baos);
                     } catch (final Exception ex) {
@@ -164,8 +164,8 @@ public class RollingAppenderSizeTest {
                     final String text = new String(baos.toByteArray(), Charset.defaultCharset());
                     final String[] lines = text.split("[\\r\\n]+");
                     for (final String line : lines) {
-                        assertTrue(line.contains(
-                                "DEBUG o.a.l.l.c.a.r.RollingAppenderSizeTest [main] This is test message number"));
+                        assertThat(line.contains(
+                                "DEBUG o.a.l.l.c.a.r.RollingAppenderSizeTest [main] This is test message number")).isTrue();
                     }
                 } finally {
                     Closer.close(in);

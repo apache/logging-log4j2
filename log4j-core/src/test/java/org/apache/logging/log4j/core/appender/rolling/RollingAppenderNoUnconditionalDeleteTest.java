@@ -16,13 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Before;
@@ -30,8 +32,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -77,15 +77,15 @@ public class RollingAppenderNoUnconditionalDeleteTest {
         }
         Thread.sleep(100); // Allow time for rollover to complete
 
-        assertTrue("Dir " + directory + " should exist", directory.exists());
-        assertTrue("Dir " + directory + " should contain files", directory.listFiles().length > 0);
+        assertThat(directory.exists()).describedAs("Dir " + directory + " should exist").isTrue();
+        assertThat(directory.listFiles().length > 0).describedAs("Dir " + directory + " should contain files").isTrue();
 
         int total = 0;
         for (final File file : directory.listFiles()) {
             final List<String> lines = Files.readAllLines(file.toPath(), Charset.defaultCharset());
             total += lines.size();
         }
-        assertEquals("rolled over lines", LINECOUNT - 1, total);
+        assertThat(total).describedAs("rolled over lines").isEqualTo(LINECOUNT - 1);
     }
 
     private void deleteDir() {

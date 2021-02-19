@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
-
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -65,15 +65,15 @@ public class PropertiesRoutingAppenderTest {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
         final List<LogEvent> list = app.getEvents();
-        assertNotNull("No events generated", list);
-        assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
+        assertThat(list).describedAs("No events generated").isNotNull();
+        assertThat(list.size() == 1).describedAs("Incorrect number of events. Expected 1, got " + list.size()).isTrue();
         msg = new StructuredDataMessage("Test", "This is a test", "Alert");
         EventLogger.logEvent(msg);
         File file = new File(ALERT_LOG_FILE);
-        assertTrue("Alert file was not created", file.exists());
+        assertThat(file.exists()).describedAs("Alert file was not created").isTrue();
         msg = new StructuredDataMessage("Test", "This is a test", "Activity");
         EventLogger.logEvent(msg);
         file = new File(ACTIVITY_LOG_FILE);
-        assertTrue("Activity file was not created", file.exists());
+        assertThat(file.exists()).describedAs("Activity file was not created").isTrue();
     }
 }

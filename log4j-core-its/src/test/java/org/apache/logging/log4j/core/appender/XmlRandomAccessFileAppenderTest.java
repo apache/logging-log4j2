@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.Layouts;
@@ -68,23 +68,23 @@ public class XmlRandomAccessFileAppenderTest {
         } finally {
             file.delete();
         }
-        assertNotNull("line1", line1);
+        assertThat(line1).describedAs("line1").isNotNull();
         final String msg1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + ']', line1.equals(msg1));
+        assertThat(line1.equals(msg1)).describedAs("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + ']').isTrue();
 
-        assertNotNull("line2", line2);
+        assertThat(line2).describedAs("line2").isNotNull();
         final String msg2 = "<log4j:events xmlns:log4j=\"http://logging.apache.org/log4j/\">";
-        assertTrue("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + ']', line2.equals(msg2));
+        assertThat(line2.equals(msg2)).describedAs("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + ']').isTrue();
 
-        assertNotNull("line3", line3);
+        assertThat(line3).describedAs("line3").isNotNull();
         final String msg3 = "<log4j:event ";
-        assertTrue("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + ']', line3.contains(msg3));
+        assertThat(line3.contains(msg3)).describedAs("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + ']').isTrue();
 
-        assertNotNull("line4", line4);
+        assertThat(line4).describedAs("line4").isNotNull();
         final String msg4 = logMsg;
-        assertTrue("line4 incorrect: [" + line4 + "], does not contain: [" + msg4 + ']', line4.contains(msg4));
+        assertThat(line4.contains(msg4)).describedAs("line4 incorrect: [" + line4 + "], does not contain: [" + msg4 + ']').isTrue();
 
         final String location = "testFlushAtEndOfBatch";
-        assertTrue("no location", !line1.contains(location));
+        assertThat(!line1.contains(location)).describedAs("no location").isTrue();
     }
 }

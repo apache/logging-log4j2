@@ -25,12 +25,14 @@ import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.net.URL;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.config.Property;
@@ -49,9 +51,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-
-import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 @Ignore("Fails often on Windows")
 
@@ -281,9 +280,9 @@ public class HttpAppenderTest {
             .withHeader("Content-Type", containing("application/json"))
             .withRequestBody(containing("\"message\" : \"" + LOG_MESSAGE + "\"")));
 
-        assertNotNull(error);
-        assertEquals(Level.ERROR, error.getLevel());
-        assertEquals("Unable to send HTTP in appender [Http]", error.getMessage().toString());
+        assertThat(error).isNotNull();
+        assertThat(error.getLevel()).isEqualTo(Level.ERROR);
+        assertThat(error.getMessage().toString()).isEqualTo("Unable to send HTTP in appender [Http]");
     }
 
     @Test(expected = AppenderLoggingException.class)

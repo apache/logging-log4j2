@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.junit;
 
-import java.util.concurrent.TimeUnit;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
@@ -34,8 +36,6 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-
-import static org.junit.Assert.*;
 
 /**
  * JUnit {@link TestRule} for constructing a new LoggerContext using a specified configuration file. If the system
@@ -255,7 +255,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
      */
     public Appender getRequiredAppender(final String name) {
         final Appender appender = getAppender(name);
-        assertNotNull("Appender named " + name + " was null.", appender);
+        assertThat(appender).describedAs("Appender named " + name + " was null.").isNotNull();
         return appender;
     }
 
@@ -274,7 +274,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
      */
     public <T extends Appender> T getRequiredAppender(final String name, final Class<T> cls) {
         final T appender = getAppender(name, cls);
-        assertNotNull("Appender named " + name + " was null in logger context " + loggerContext, appender);
+        assertThat(appender).describedAs("Appender named " + name + " was null in logger context " + loggerContext).isNotNull();
         return appender;
     }
 

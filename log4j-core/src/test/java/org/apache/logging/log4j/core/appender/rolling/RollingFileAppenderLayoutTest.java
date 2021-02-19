@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.junit.Assert;
@@ -26,14 +28,14 @@ public class RollingFileAppenderLayoutTest {
     @Test
     public void testDefaultLayout() throws Exception {
         // @formatter:off
-        Assert.assertNotNull(RollingFileAppender.newBuilder()
+        assertThat(RollingFileAppender.newBuilder()
                 .setName(RollingFileAppenderLayoutTest.class.getName())
                 .setConfiguration(new DefaultConfiguration())
                 .setFileName("log.txt")
                 .setFilePattern("FilePattern")
                 .setPolicy(OnStartupTriggeringPolicy.createPolicy(1))
                 .setCreateOnDemand(true) // no need to clutter up test folder with another file
-                .build().getLayout());
+                .build().getLayout()).isNotNull();
         // @formatter:on
     }
 }

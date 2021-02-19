@@ -16,6 +16,15 @@
  */
 package org.apache.log4j.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -29,15 +38,6 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.junit.Test;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test configuration from XML.
@@ -58,9 +58,9 @@ public class AsyncAppenderTest {
                 messageAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
             }
         }
-        assertNotNull("No Message Appender", messageAppender);
+        assertThat(messageAppender).describedAs("No Message Appender").isNotNull();
         List<String> messages = messageAppender.getMessages();
-        assertTrue("No messages", messages != null && messages.size() > 0);
+        assertThat(messages != null && messages.size() > 0).describedAs("No messages").isTrue();
     }
 
     @Test
@@ -77,9 +77,9 @@ public class AsyncAppenderTest {
                 messageAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
             }
         }
-        assertNotNull("No Message Appender", messageAppender);
+        assertThat(messageAppender).describedAs("No Message Appender").isNotNull();
         List<String> messages = messageAppender.getMessages();
-        assertTrue("No messages", messages != null && messages.size() > 0);
+        assertThat(messages != null && messages.size() > 0).describedAs("No messages").isTrue();
     }
 
 
@@ -95,7 +95,7 @@ public class AsyncAppenderTest {
         } else {
             configuration = new PropertiesConfigurationFactory().getConfiguration(context, source);
         }
-        assertNotNull("No configuration created", configuration);
+        assertThat(configuration).describedAs("No configuration created").isNotNull();
         Configurator.reconfigure(configuration);
         return context;
     }

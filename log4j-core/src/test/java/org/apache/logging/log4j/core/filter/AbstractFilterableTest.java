@@ -17,12 +17,13 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class AbstractFilterableTest {
 
@@ -38,7 +39,7 @@ public class AbstractFilterableTest {
         final Filter filter = ThresholdFilter.createFilter(Level.ERROR, null, null);
 
         filterable.addFilter(filter);
-        assertSame(filter, filterable.getFilter());
+        assertThat(filterable.getFilter()).isSameAs(filter);
     }
 
     @Test
@@ -46,12 +47,12 @@ public class AbstractFilterableTest {
         final Filter filter = ThresholdFilter.createFilter(Level.ERROR, null, null);
 
         filterable.addFilter(filter);
-        assertSame(filter, filterable.getFilter());
+        assertThat(filterable.getFilter()).isSameAs(filter);
         // adding a second filter converts the filter
         // into a CompositeFilter.class
         filterable.addFilter(filter);
-        assertTrue(filterable.getFilter() instanceof CompositeFilter);
-        assertEquals(2, ((CompositeFilter) filterable.getFilter()).getFiltersArray().length);
+        assertThat(filterable.getFilter() instanceof CompositeFilter).isTrue();
+        assertThat(((CompositeFilter) filterable.getFilter()).getFiltersArray().length).isEqualTo(2);
     }
 
     @Test
@@ -59,12 +60,12 @@ public class AbstractFilterableTest {
         final Filter filter = new EqualFilter("test");
 
         filterable.addFilter(filter);
-        assertSame(filter, filterable.getFilter());
+        assertThat(filterable.getFilter()).isSameAs(filter);
         // adding a second filter converts the filter
         // into a CompositeFilter.class
         filterable.addFilter(filter);
-        assertTrue(filterable.getFilter() instanceof CompositeFilter);
-        assertEquals(2, ((CompositeFilter) filterable.getFilter()).getFiltersArray().length);
+        assertThat(filterable.getFilter() instanceof CompositeFilter).isTrue();
+        assertThat(((CompositeFilter) filterable.getFilter()).getFiltersArray().length).isEqualTo(2);
     }
 
     @Test
@@ -74,7 +75,7 @@ public class AbstractFilterableTest {
         final Filter compositeFilter = CompositeFilter.createFilters(new Filter[] {filter1, filter2});
 
         filterable.addFilter(compositeFilter);
-        assertSame(compositeFilter, filterable.getFilter());
+        assertThat(filterable.getFilter()).isSameAs(compositeFilter);
     }
 
     @Test
@@ -85,12 +86,12 @@ public class AbstractFilterableTest {
         final Filter compositeFilter = CompositeFilter.createFilters(new Filter[]{filter1, filter2, filter3});
 
         filterable.addFilter(compositeFilter);
-        assertSame(compositeFilter, filterable.getFilter());
+        assertThat(filterable.getFilter()).isSameAs(compositeFilter);
         // adding a second filter converts the filter
         // into a CompositeFilter.class
         filterable.addFilter(compositeFilter);
-        assertTrue(filterable.getFilter() instanceof CompositeFilter);
-        assertEquals(6, ((CompositeFilter) filterable.getFilter()).getFiltersArray().length);
+        assertThat(filterable.getFilter() instanceof CompositeFilter).isTrue();
+        assertThat(((CompositeFilter) filterable.getFilter()).getFiltersArray().length).isEqualTo(6);
     }
 
     @Test
@@ -101,12 +102,12 @@ public class AbstractFilterableTest {
         final Filter compositeFilter = CompositeFilter.createFilters(new Filter[]{filter1, filter2});
 
         filterable.addFilter(notInCompositeFilterFilter);
-        assertSame(notInCompositeFilterFilter, filterable.getFilter());
+        assertThat(filterable.getFilter()).isSameAs(notInCompositeFilterFilter);
         // adding a second filter converts the filter
         // into a CompositeFilter.class
         filterable.addFilter(compositeFilter);
-        assertTrue(filterable.getFilter() instanceof CompositeFilter);
-        assertEquals(2, ((CompositeFilter) filterable.getFilter()).getFiltersArray().length);
+        assertThat(filterable.getFilter() instanceof CompositeFilter).isTrue();
+        assertThat(((CompositeFilter) filterable.getFilter()).getFiltersArray().length).isEqualTo(2);
     }
 
     @Test
@@ -117,12 +118,12 @@ public class AbstractFilterableTest {
         final Filter compositeFilter = CompositeFilter.createFilters(new Filter[]{filter1, filter2});
 
         filterable.addFilter(compositeFilter);
-        assertSame(compositeFilter, filterable.getFilter());
+        assertThat(filterable.getFilter()).isSameAs(compositeFilter);
         // adding a second filter converts the filter
         // into a CompositeFilter.class
         filterable.addFilter(notInCompositeFilterFilter);
-        assertTrue(filterable.getFilter() instanceof CompositeFilter);
-        assertEquals(3, ((CompositeFilter) filterable.getFilter()).getFiltersArray().length);
+        assertThat(filterable.getFilter() instanceof CompositeFilter).isTrue();
+        assertThat(((CompositeFilter) filterable.getFilter()).getFiltersArray().length).isEqualTo(3);
     }
 
     @Test
@@ -131,7 +132,7 @@ public class AbstractFilterableTest {
 
         filterable.addFilter(filter);
         filterable.removeFilter(filter);
-        assertNull(filterable.getFilter());
+        assertThat(filterable.getFilter()).isNull();
     }
 
     @Test
@@ -141,7 +142,7 @@ public class AbstractFilterableTest {
 
         filterable.addFilter(filterOriginal);
         filterable.removeFilter(filterCopy);
-        assertNull(filterable.getFilter());
+        assertThat(filterable.getFilter()).isNull();
     }
 
     @Test
@@ -152,9 +153,9 @@ public class AbstractFilterableTest {
         filterable.addFilter(filterOriginal);
         filterable.addFilter(filterOriginal);
         filterable.removeFilter(filterCopy);
-        assertSame(filterOriginal, filterable.getFilter());
+        assertThat(filterable.getFilter()).isSameAs(filterOriginal);
         filterable.removeFilter(filterCopy);
-        assertNull(filterable.getFilter());
+        assertThat(filterable.getFilter()).isNull();
     }
 
     @Test
@@ -166,12 +167,12 @@ public class AbstractFilterableTest {
         filterable.addFilter(filterOriginal);
         filterable.addFilter(filterCopy);
         filterable.removeFilter(filterCopy);
-        assertTrue(filterable.getFilter() instanceof CompositeFilter);
-        assertEquals(2, ((CompositeFilter) filterable.getFilter()).getFiltersArray().length);
+        assertThat(filterable.getFilter() instanceof CompositeFilter).isTrue();
+        assertThat(((CompositeFilter) filterable.getFilter()).getFiltersArray().length).isEqualTo(2);
         filterable.removeFilter(filterCopy);
-        assertEquals(filterOriginal, filterable.getFilter());
+        assertThat(filterable.getFilter()).isEqualTo(filterOriginal);
         filterable.removeFilter(filterOriginal);
-        assertNull(filterable.getFilter());
+        assertThat(filterable.getFilter()).isNull();
     }
 
     @Test
@@ -180,7 +181,7 @@ public class AbstractFilterableTest {
 
         filterable.addFilter(filter);
         filterable.removeFilter(null);
-        assertSame(filter, filterable.getFilter());
+        assertThat(filterable.getFilter()).isSameAs(filter);
     }
 
 
@@ -191,7 +192,7 @@ public class AbstractFilterableTest {
 
         filterable.addFilter(filter);
         filterable.removeFilter(newFilter);
-        assertSame(filter, filterable.getFilter());
+        assertThat(filterable.getFilter()).isSameAs(filter);
     }
 
     @Test
@@ -204,9 +205,9 @@ public class AbstractFilterableTest {
 
         // should remove internal filter of compositeFilter
         filterable.removeFilter(filter1);
-        assertFalse(filterable.getFilter() instanceof CompositeFilter);
+        assertThat(filterable.getFilter() instanceof CompositeFilter).isFalse();
 
-        assertEquals(filter2, filterable.getFilter());
+        assertThat(filterable.getFilter()).isEqualTo(filter2);
     }
 
     @Test
@@ -222,8 +223,8 @@ public class AbstractFilterableTest {
 
         // should not remove internal filter of compositeFilter
         filterable.removeFilter(anotherFilter);
-        assertTrue(filterable.getFilter() instanceof CompositeFilter);
-        assertEquals(2, ((CompositeFilter) filterable.getFilter()).getFiltersArray().length);
+        assertThat(filterable.getFilter() instanceof CompositeFilter).isTrue();
+        assertThat(((CompositeFilter) filterable.getFilter()).getFiltersArray().length).isEqualTo(2);
     }
 
     @Test
@@ -234,7 +235,7 @@ public class AbstractFilterableTest {
 
         filterable.addFilter(compositeFilter);
         filterable.removeFilter(compositeFilter);
-        assertNull(filterable.getFilter());
+        assertThat(filterable.getFilter()).isNull();
     }
 
     @Test
@@ -246,11 +247,11 @@ public class AbstractFilterableTest {
 
         filterable.addFilter(compositeFilter);
         filterable.addFilter(anotherFilter);
-        assertEquals(3, ((CompositeFilter) filterable.getFilter()).getFiltersArray().length);
+        assertThat(((CompositeFilter) filterable.getFilter()).getFiltersArray().length).isEqualTo(3);
         filterable.removeFilter(filter1);
-        assertEquals(2, ((CompositeFilter) filterable.getFilter()).getFiltersArray().length);
+        assertThat(((CompositeFilter) filterable.getFilter()).getFiltersArray().length).isEqualTo(2);
         filterable.removeFilter(filter2);
-        assertSame(anotherFilter, filterable.getFilter());
+        assertThat(filterable.getFilter()).isSameAs(anotherFilter);
     }
 
     private static class MockedAbstractFilterable extends AbstractFilterable {}

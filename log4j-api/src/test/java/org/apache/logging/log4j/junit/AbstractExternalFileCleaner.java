@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.junit;
 
+import static org.assertj.core.api.Assertions.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -27,7 +29,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.junit.Assert;
 import org.junit.rules.ExternalResource;
 
@@ -132,7 +133,7 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
 				sb.append(failure.getKey()).append(" failed with ").append(failure.getValue());
 				first = false;
 			}
-			Assert.fail(sb.toString());
+			fail(sb.toString());
 		}
 	}
 

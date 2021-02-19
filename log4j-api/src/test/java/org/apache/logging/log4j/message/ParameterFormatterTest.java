@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests ParameterFormatter.
@@ -30,16 +30,16 @@ public class ParameterFormatterTest {
 
     @Test
     public void testCountArgumentPlaceholders() throws Exception {
-        assertEquals(0, ParameterFormatter.countArgumentPlaceholders(""));
-        assertEquals(0, ParameterFormatter.countArgumentPlaceholders("aaa"));
-        assertEquals(0, ParameterFormatter.countArgumentPlaceholders("\\{}"));
-        assertEquals(1, ParameterFormatter.countArgumentPlaceholders("{}"));
-        assertEquals(1, ParameterFormatter.countArgumentPlaceholders("{}\\{}"));
-        assertEquals(2, ParameterFormatter.countArgumentPlaceholders("{}{}"));
-        assertEquals(3, ParameterFormatter.countArgumentPlaceholders("{}{}{}"));
-        assertEquals(4, ParameterFormatter.countArgumentPlaceholders("{}{}{}aa{}"));
-        assertEquals(4, ParameterFormatter.countArgumentPlaceholders("{}{}{}a{]b{}"));
-        assertEquals(5, ParameterFormatter.countArgumentPlaceholders("{}{}{}a{}b{}"));
+        assertThat(ParameterFormatter.countArgumentPlaceholders("")).isEqualTo(0);
+        assertThat(ParameterFormatter.countArgumentPlaceholders("aaa")).isEqualTo(0);
+        assertThat(ParameterFormatter.countArgumentPlaceholders("\\{}")).isEqualTo(0);
+        assertThat(ParameterFormatter.countArgumentPlaceholders("{}")).isEqualTo(1);
+        assertThat(ParameterFormatter.countArgumentPlaceholders("{}\\{}")).isEqualTo(1);
+        assertThat(ParameterFormatter.countArgumentPlaceholders("{}{}")).isEqualTo(2);
+        assertThat(ParameterFormatter.countArgumentPlaceholders("{}{}{}")).isEqualTo(3);
+        assertThat(ParameterFormatter.countArgumentPlaceholders("{}{}{}aa{}")).isEqualTo(4);
+        assertThat(ParameterFormatter.countArgumentPlaceholders("{}{}{}a{]b{}")).isEqualTo(4);
+        assertThat(ParameterFormatter.countArgumentPlaceholders("{}{}{}a{}b{}")).isEqualTo(5);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class ParameterFormatterTest {
         final String testMsg = "Test message {}{} {}";
         final String[] args = { "a", "b", "c" };
         final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message ab c", result);
+        assertThat(result).isEqualTo("Test message ab c");
     }
 
     @Test
@@ -55,7 +55,7 @@ public class ParameterFormatterTest {
         final String testMsg = "Test message {} {} {} {} {} {}";
         final String[] args = { "a", null, "c", null, null, null };
         final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message a null c null null null", result);
+        assertThat(result).isEqualTo("Test message a null c null null null");
     }
 
     @Test
@@ -63,7 +63,7 @@ public class ParameterFormatterTest {
         final String testMsg = "Test message {}{} {}";
         final String[] args = { "a", "b", "c", "unnecessary", "superfluous" };
         final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message ab c", result);
+        assertThat(result).isEqualTo("Test message ab c");
     }
 
     @Test
@@ -71,7 +71,7 @@ public class ParameterFormatterTest {
         final String testMsg = "Test message \\{}{} {}";
         final String[] args = { "a", "b", "c" };
         final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message {}a b", result);
+        assertThat(result).isEqualTo("Test message {}a b");
     }
 
     @Test
@@ -79,7 +79,7 @@ public class ParameterFormatterTest {
         final String testMsg = "Test message {}{} {}\\";
         final String[] args = { "a", "b", "c" };
         final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message ab c\\", result);
+        assertThat(result).isEqualTo("Test message ab c\\");
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ParameterFormatterTest {
         final String testMsg = "Test message {}{} {}\\\\";
         final String[] args = { "a", "b", "c" };
         final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message ab c\\\\", result);
+        assertThat(result).isEqualTo("Test message ab c\\\\");
     }
 
     @Test
@@ -95,7 +95,7 @@ public class ParameterFormatterTest {
         final String testMsg = "Test message \\\\{}{} {}";
         final String[] args = { "a", "b", "c" };
         final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message \\ab c", result);
+        assertThat(result).isEqualTo("Test message \\ab c");
     }
 
     @Test
@@ -105,7 +105,7 @@ public class ParameterFormatterTest {
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 3);
         final String result = sb.toString();
-        assertEquals("Test message ab c", result);
+        assertThat(result).isEqualTo("Test message ab c");
     }
 
     @Test
@@ -115,7 +115,7 @@ public class ParameterFormatterTest {
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 6);
         final String result = sb.toString();
-        assertEquals("Test message a null c null null null", result);
+        assertThat(result).isEqualTo("Test message a null c null null null");
     }
 
     @Test
@@ -125,7 +125,7 @@ public class ParameterFormatterTest {
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 5);
         final String result = sb.toString();
-        assertEquals("Test message ab c", result);
+        assertThat(result).isEqualTo("Test message ab c");
     }
 
     @Test
@@ -135,7 +135,7 @@ public class ParameterFormatterTest {
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 3);
         final String result = sb.toString();
-        assertEquals("Test message {}a b", result);
+        assertThat(result).isEqualTo("Test message {}a b");
     }
 
     @Test
@@ -145,7 +145,7 @@ public class ParameterFormatterTest {
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 3);
         final String result = sb.toString();
-        assertEquals("Test message ab c\\", result);
+        assertThat(result).isEqualTo("Test message ab c\\");
     }
 
     @Test
@@ -155,7 +155,7 @@ public class ParameterFormatterTest {
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 3);
         final String result = sb.toString();
-        assertEquals("Test message ab c\\\\", result);
+        assertThat(result).isEqualTo("Test message ab c\\\\");
     }
 
     @Test
@@ -165,7 +165,7 @@ public class ParameterFormatterTest {
         final StringBuilder sb = new StringBuilder();
         ParameterFormatter.formatMessage(sb, testMsg, args, 3);
         final String result = sb.toString();
-        assertEquals("Test message \\ab c", result);
+        assertThat(result).isEqualTo("Test message \\ab c");
     }
 
     @Test
@@ -176,7 +176,7 @@ public class ParameterFormatterTest {
         list.add(2);
         final String actual = ParameterFormatter.deepToString(list);
         final String expected = "[1, [..." + ParameterFormatter.identityToString(list) + "...], 2]";
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -187,6 +187,6 @@ public class ParameterFormatterTest {
         list.add(2);
         final String actual = ParameterFormatter.identityToString(list);
         final String expected = list.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(list));
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 }

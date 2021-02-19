@@ -17,19 +17,19 @@
 
 package org.apache.logging.log4j.plugins.util;
 
-import org.apache.logging.log4j.junit.CleanFolders;
-import org.apache.logging.log4j.junit.URLStreamHandlerFactoryRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
-
-import static org.junit.Assert.assertEquals;
+import org.apache.logging.log4j.junit.CleanFolders;
+import org.apache.logging.log4j.junit.URLStreamHandlerFactoryRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 /**
  * Tests the ResolverUtil class for custom protocol like bundleresource, vfs, vfszip.
@@ -112,7 +112,7 @@ public class ResolverUtilCustomProtocolTest {
         final URL url = new URL(
                 "vfs:/C:/jboss/jboss-eap-6.4/standalone/deployments/com.xxx.yyy.application-ear.ear/lib/com.xxx.yyy.logging.jar/com/xxx/yyy/logging/config/");
         final String expected = "/C:/jboss/jboss-eap-6.4/standalone/deployments/com.xxx.yyy.application-ear.ear/lib/com.xxx.yyy.logging.jar/com/xxx/yyy/logging/config/";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
@@ -120,7 +120,7 @@ public class ResolverUtilCustomProtocolTest {
         final URL url = new URL(
                 "vfs:/C:/jboss/jboss-eap-6.4/standalone/deployments/test-log4j2-web-standalone.war/WEB-INF/classes/org/hypik/test/jboss/eap7/logging/config/");
         final String expected = "/C:/jboss/jboss-eap-6.4/standalone/deployments/test-log4j2-web-standalone.war/WEB-INF/classes/org/hypik/test/jboss/eap7/logging/config/";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class ResolverUtilCustomProtocolTest {
         final URL url = new URL(
                 "vfs:/content/mycustomweb.war/WEB-INF/classes/org/hypik/test/jboss/log4j2/logging/pluginweb/");
         final String expected = "/content/mycustomweb.war/WEB-INF/classes/org/hypik/test/jboss/log4j2/logging/pluginweb/";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
@@ -136,7 +136,7 @@ public class ResolverUtilCustomProtocolTest {
         final URL url = new URL(
                 "vfszip:/home2/jboss-5.0.1.CR2/jboss-as/server/ais/ais-deploy/myear.ear/mywar.war/WEB-INF/some.xsd");
         final String expected = "/home2/jboss-5.0.1.CR2/jboss-as/server/ais/ais-deploy/myear.ear/mywar.war/WEB-INF/some.xsd";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
@@ -144,35 +144,35 @@ public class ResolverUtilCustomProtocolTest {
         final URL url = new URL(
                 "vfs:/content/test-log4k2-ear.ear/lib/test-log4j2-jar-plugins.jar/org/hypik/test/jboss/log4j2/pluginjar/");
         final String expected = "/content/test-log4k2-ear.ear/lib/test-log4j2-jar-plugins.jar/org/hypik/test/jboss/log4j2/pluginjar/";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
     public void testExtractPathFromVfszipUrlWithPlusCharacters() throws Exception {
         final URL url = new URL("vfszip:/path+with+plus/file+name+with+plus.xml");
         final String expected = "/path+with+plus/file+name+with+plus.xml";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
     public void testExtractPathFromVfsUrlWithPlusCharacters() throws Exception {
         final URL url = new URL("vfs:/path+with+plus/file+name+with+plus.xml");
         final String expected = "/path+with+plus/file+name+with+plus.xml";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
     public void testExtractPathFromResourceBundleUrl() throws Exception {
         final URL url = new URL("bundleresource:/some/path/some/file.properties");
         final String expected = "/some/path/some/file.properties";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
     public void testExtractPathFromResourceBundleUrlWithPlusCharacters() throws Exception {
         final URL url = new URL("bundleresource:/some+path/some+file.properties");
         final String expected = "/some+path/some+file.properties";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
@@ -182,9 +182,8 @@ public class ResolverUtilCustomProtocolTest {
             resolverUtil
                     .setClassLoader(new SingleURLClassLoader(new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil3/customplugin3/"), cl));
             resolverUtil.findInPackage(new PluginRegistry.PluginTest(), "customplugin3");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin3.FixedString3"),
-                    resolverUtil.getClasses().iterator().next());
+            assertThat(resolverUtil.getClasses().size()).describedAs("Class not found in packages").isEqualTo(1);
+            assertThat(resolverUtil.getClasses().iterator().next()).describedAs("Unexpected class resolved").isEqualTo(cl.loadClass("customplugin3.FixedString3"));
         }
     }
 
@@ -195,9 +194,8 @@ public class ResolverUtilCustomProtocolTest {
             resolverUtil.setClassLoader(new SingleURLClassLoader(
                     new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil4/customplugin4.jar/customplugin4/"), cl));
             resolverUtil.findInPackage(new PluginRegistry.PluginTest(), "customplugin4");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin4.FixedString4"),
-                    resolverUtil.getClasses().iterator().next());
+            assertThat(resolverUtil.getClasses().size()).describedAs("Class not found in packages").isEqualTo(1);
+            assertThat(resolverUtil.getClasses().iterator().next()).describedAs("Unexpected class resolved").isEqualTo(cl.loadClass("customplugin4.FixedString4"));
         }
     }
 

@@ -17,9 +17,10 @@
 
 package org.apache.logging.log4j.core.time.internal;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the DummyNanoClock.
@@ -28,12 +29,12 @@ public class DummyNanoClockTest {
 
     @Test
     public void testReturnsZeroByDefault() {
-        assertEquals(0, new DummyNanoClock().nanoTime());
+        assertThat(new DummyNanoClock().nanoTime()).isEqualTo(0);
     }
 
     @Test
     public void testReturnsConstructorValue() {
-        assertEquals(123, new DummyNanoClock(123).nanoTime());
+        assertThat(new DummyNanoClock(123).nanoTime()).isEqualTo(123);
     }
 
 }

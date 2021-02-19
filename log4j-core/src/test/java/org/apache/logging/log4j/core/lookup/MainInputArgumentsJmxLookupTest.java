@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link JmxRuntimeInputArgumentsLookup} from the command line, not a JUnit test.
@@ -36,15 +37,15 @@ public class MainInputArgumentsJmxLookupTest {
     @Test
     public void testMap() {
         final JmxRuntimeInputArgumentsLookup lookup = JmxRuntimeInputArgumentsLookup.JMX_SINGLETON;
-        assertNull(lookup.lookup(null));
-        assertNull(lookup.lookup("X"));
-        assertNull(lookup.lookup("foo.txt"));
+        assertThat(lookup.lookup(null)).isNull();
+        assertThat(lookup.lookup("X")).isNull();
+        assertThat(lookup.lookup("foo.txt")).isNull();
     }
 
     public void callFromMain() {
         final JmxRuntimeInputArgumentsLookup lookup = JmxRuntimeInputArgumentsLookup.JMX_SINGLETON;
-        assertNull(lookup.lookup(null));
-        assertNull(lookup.lookup("X"));
+        assertThat(lookup.lookup(null)).isNull();
+        assertThat(lookup.lookup("X")).isNull();
         // Eclipse adds -Dfile.encoding=Cp1252
         // assertEquals("--file", lookup.lookup("0"));
         // assertEquals("foo.txt", lookup.lookup("1"));

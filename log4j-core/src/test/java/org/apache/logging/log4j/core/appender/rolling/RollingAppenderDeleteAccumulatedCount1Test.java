@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,7 +31,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
@@ -70,8 +70,8 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
         Thread.sleep(100); // Allow time for rollover to complete
 
         final File dir = new File(DIR);
-        assertTrue("Dir " + DIR + " should exist", dir.exists());
-        assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
+        assertThat(dir.exists()).describedAs("Dir " + DIR + " should exist").isTrue();
+        assertThat(dir.listFiles().length > 0).describedAs("Dir " + DIR + " should contain files").isTrue();
 
         final File[] files = dir.listFiles();
         for (final File file : files) {
@@ -79,7 +79,7 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
                     + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(file.lastModified()));
         }
         final List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
-        assertEquals(Arrays.toString(files), expected.size() + 6, files.length);
+        assertThat(files.length).describedAs(Arrays.toString(files)).isEqualTo(expected.size() + 6);
         for (final File file : files) {
             if (!expected.contains(file.getName()) && !file.getName().startsWith("test-")) {
                 fail("unexpected file" + file);

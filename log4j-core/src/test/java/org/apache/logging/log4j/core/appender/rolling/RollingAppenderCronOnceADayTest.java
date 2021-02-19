@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -29,7 +30,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Calendar;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.util.CronExpression;
@@ -85,15 +85,15 @@ public class RollingAppenderCronOnceADayTest {
         // TODO Is there a better way to test than putting the thread to sleep all over the place?
         final Logger logger = loggerContextRule.getLogger();
         final File file = new File(FILE);
-        assertTrue("Log file does not exist", file.exists());
+        assertThat(file.exists()).describedAs("Log file does not exist").isTrue();
         logger.debug("This is test message number 1, waiting for rolling");
 
         final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getLoggerContext().getConfiguration().getAppender("RollingFile");
         final TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
-        assertNotNull("No triggering policy", policy);
-        assertTrue("Incorrect policy type", policy instanceof CronTriggeringPolicy);
+        assertThat(policy).describedAs("No triggering policy").isNotNull();
+        assertThat(policy instanceof CronTriggeringPolicy).describedAs("Incorrect policy type").isTrue();
         final CronExpression expression = ((CronTriggeringPolicy) policy).getCronExpression();
-        assertEquals("Incorrect cron expresion", cronExpression, expression.getCronExpression());
+        assertThat(expression.getCronExpression()).describedAs("Incorrect cron expresion").isEqualTo(cronExpression);
         logger.debug("Cron expression will be {}", expression.getCronExpression());
 
         // force a reconfiguration
@@ -103,7 +103,7 @@ public class RollingAppenderCronOnceADayTest {
 
         Thread.sleep(remainingTime);
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertThat(dir.exists() && dir.listFiles().length > 0).describedAs("Directory not created").isTrue();
 
         for (int i = 1; i < 5; i++) {
           logger.debug("Adding some more event {}", i);
@@ -118,8 +118,8 @@ public class RollingAppenderCronOnceADayTest {
           }
         }
 
-        assertNotEquals("No compressed files found", 0, count);
-        assertEquals("Multiple files found" , 1, count);
+        assertThat(count).describedAs("No compressed files found").isNotEqualTo(0);
+        assertThat(count).describedAs("Multiple files found").isEqualTo(1);
     }
 
 }

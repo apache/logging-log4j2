@@ -16,16 +16,17 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PriorityTest {
 
     @Test
     public void testP1() {
         final int p = Priority.getPriority(Facility.AUTH, Level.INFO);
-        assertEquals(38, p, "Expected priority value is 38, got " + p);
+        assertThat(p).describedAs("Expected priority value is 38, got " + p).isEqualTo(38);
     }
 }

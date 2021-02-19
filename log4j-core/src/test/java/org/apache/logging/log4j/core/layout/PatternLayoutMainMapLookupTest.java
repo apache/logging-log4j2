@@ -17,6 +17,11 @@
 
 package org.apache.logging.log4j.core.layout;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
@@ -27,11 +32,6 @@ import org.apache.logging.log4j.junit.ReconfigurationPolicy;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Tests LOG4j2-962.
@@ -47,7 +47,7 @@ public class PatternLayoutMainMapLookupTest {
     @Test
     public void testFileName(@Named("File") final FileAppender fileApp) {
         final String name = fileApp.getFileName();
-        assertEquals("target/value0.log", name);
+        assertThat(name).isEqualTo("target/value0.log");
     }
 
     @Test
@@ -55,13 +55,13 @@ public class PatternLayoutMainMapLookupTest {
         final Logger logger = context.getLogger(getClass());
         logger.info("Hello World");
         final List<String> initialMessages = listApp.getMessages();
-        assertFalse(initialMessages.isEmpty());
+        assertThat(initialMessages.isEmpty()).isFalse();
         final String messagesStr = initialMessages.toString();
-        assertEquals("Header: value0", initialMessages.get(0), messagesStr);
+        assertThat(initialMessages.get(0)).describedAs(messagesStr).isEqualTo("Header: value0");
         listApp.stop();
         final List<String> finalMessages = listApp.getMessages();
-        assertEquals(3, finalMessages.size());
-        assertEquals("Footer: value1", finalMessages.get(2));
+        assertThat(finalMessages.size()).isEqualTo(3);
+        assertThat(finalMessages.get(2)).isEqualTo("Footer: value1");
         listApp.clear();
     }
 

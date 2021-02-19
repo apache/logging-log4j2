@@ -17,9 +17,10 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the IfAccumulatedFileCount class.
@@ -28,8 +29,8 @@ public class IfAccumulatedFileCountTest {
 
     @Test
     public void testGetThresholdCount() {
-        assertEquals(123, IfAccumulatedFileCount.createFileCountCondition(123).getThresholdCount());
-        assertEquals(456, IfAccumulatedFileCount.createFileCountCondition(456).getThresholdCount());
+        assertThat(IfAccumulatedFileCount.createFileCountCondition(123).getThresholdCount()).isEqualTo(123);
+        assertThat(IfAccumulatedFileCount.createFileCountCondition(456).getThresholdCount()).isEqualTo(456);
     }
 
     @Test
@@ -38,12 +39,12 @@ public class IfAccumulatedFileCountTest {
         for (final int count : counts) {
             final IfAccumulatedFileCount condition = IfAccumulatedFileCount.createFileCountCondition(count);
             for (int i = 0; i < count; i++) {
-                assertFalse(condition.accept(null, null, null));
+                assertThat(condition.accept(null, null, null)).isFalse();
                 // exact match: does not accept
             }
             // accept when threshold is exceeded
-            assertTrue(condition.accept(null, null, null));
-            assertTrue(condition.accept(null, null, null));
+            assertThat(condition.accept(null, null, null)).isTrue();
+            assertThat(condition.accept(null, null, null)).isTrue();
         }
     }
 
@@ -55,10 +56,10 @@ public class IfAccumulatedFileCountTest {
         for (int i = 1; i < 10; i++) {
             if (i <= 3) {
                 assertFalse(condition.accept(null, null, null), "i=" + i);
-                assertEquals(0, counter.getAcceptCount());
+                assertThat(counter.getAcceptCount()).isEqualTo(0);
             } else {
-                assertTrue(condition.accept(null, null, null));
-                assertEquals(i - 3, counter.getAcceptCount());
+                assertThat(condition.accept(null, null, null)).isTrue();
+                assertThat(counter.getAcceptCount()).isEqualTo(i - 3);
             }
         }
     }
@@ -69,7 +70,7 @@ public class IfAccumulatedFileCountTest {
         final IfAccumulatedFileCount filter = IfAccumulatedFileCount.createFileCountCondition(30, counter, counter,
                 counter);
         filter.beforeFileTreeWalk();
-        assertEquals(3, counter.getBeforeFileTreeWalkCount());
+        assertThat(counter.getBeforeFileTreeWalkCount()).isEqualTo(3);
     }
 
 }

@@ -17,9 +17,10 @@
 
 package org.apache.logging.log4j.core.util;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * This class is borrowed from <a href="https://github.com/FasterXML/jackson-core">Jackson</a>.
@@ -33,12 +34,12 @@ public class JsonUtilsTest {
         final StringBuilder builder = new StringBuilder();
         builder.append("foobar");
         JsonUtils.quoteAsString(builder, output);
-        assertEquals("foobar", output.toString());
+        assertThat(output.toString()).isEqualTo("foobar");
         builder.setLength(0);
         output.setLength(0);
         builder.append("\"x\"");
         JsonUtils.quoteAsString(builder, output);
-        assertEquals("\\\"x\\\"", output.toString());
+        assertThat(output.toString()).isEqualTo("\\\"x\\\"");
     }
 
     // For [JACKSON-853]
@@ -54,8 +55,8 @@ public class JsonUtilsTest {
         }
         final String exp = sb2.toString();
         JsonUtils.quoteAsString(input, output);
-        assertEquals(2*input.length(), output.length());
-        assertEquals(exp, output.toString());
+        assertThat(output.length()).isEqualTo(2*input.length());
+        assertThat(output.toString()).isEqualTo(exp);
 
     }
 
@@ -68,7 +69,7 @@ public class JsonUtilsTest {
         builder.append(input);
         final StringBuilder output = new StringBuilder();
         JsonUtils.quoteAsString(builder, output);
-        assertEquals("\\u0000\\u0001\\u0002\\u0003\\u0004", output.toString());
+        assertThat(output.toString()).isEqualTo("\\u0000\\u0001\\u0002\\u0003\\u0004");
     }
 
 }

@@ -17,6 +17,18 @@
 
 package org.apache.logging.log4j.core.config;
 
+import static org.apache.logging.log4j.util.Unbox.box;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -29,17 +41,6 @@ import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import static org.apache.logging.log4j.util.Unbox.box;
-import static org.junit.jupiter.api.Assertions.*;
 
 @CleanUpFiles({
         "target/test-xml.log",
@@ -62,23 +63,23 @@ class ConfigurationFactoryTest {
         final Configuration configuration = context.getConfiguration();
         final Map<String, Appender> appenders = configuration.getAppenders();
         // these used to be separate tests
-        assertAll(() -> assertNotNull(appenders),
-                () -> assertEquals(3, appenders.size()),
-                () -> assertNotNull(configuration.getLoggerContext()),
-                () -> assertEquals(configuration.getRootLogger(), configuration.getLoggerConfig(Strings.EMPTY)),
-                () -> assertThrows(NullPointerException.class, () -> configuration.getLoggerConfig(null)));
+        assertAll(() -> assertThat(appenders).isNotNull(),
+                () -> assertThat(appenders.size()).isEqualTo(3),
+                () -> assertThat(configuration.getLoggerContext()).isNotNull(),
+                () -> assertThat(configuration.getLoggerConfig(Strings.EMPTY)).isEqualTo(configuration.getRootLogger()),
+                () -> assertThatThrownBy(() -> configuration.getLoggerConfig(null)).isInstanceOf(NullPointerException.class));
 
         final Logger logger = context.getLogger(LOGGER_NAME);
-        assertEquals(Level.DEBUG, logger.getLevel());
+        assertThat(logger.getLevel()).isEqualTo(Level.DEBUG);
 
-        assertEquals(1, logger.filterCount());
+        assertThat(logger.filterCount()).isEqualTo(1);
         final Iterator<Filter> filterIterator = logger.getFilters();
-        assertTrue(filterIterator.hasNext());
-        assertTrue(filterIterator.next() instanceof ThreadContextMapFilter);
+        assertThat(filterIterator.hasNext()).isTrue();
+        assertThat(filterIterator.next() instanceof ThreadContextMapFilter).isTrue();
 
         final Appender appender = appenders.get(APPENDER_NAME);
-        assertTrue(appender instanceof ConsoleAppender);
-        assertEquals(APPENDER_NAME, appender.getName());
+        assertThat(appender instanceof ConsoleAppender).isTrue();
+        assertThat(appender.getName()).isEqualTo(APPENDER_NAME);
     }
 
     static void checkFileLogger(final LoggerContext context, final Path logFile) throws IOException {
@@ -86,8 +87,8 @@ class ConfigurationFactoryTest {
         final Logger logger = context.getLogger(FILE_LOGGER_NAME);
         logger.debug("Greetings from ConfigurationFactoryTest in thread#{}", box(currentThreadId));
         final List<String> lines = Files.readAllLines(logFile);
-        assertEquals(1, lines.size());
-        assertTrue(lines.get(0).endsWith(Long.toString(currentThreadId)));
+        assertThat(lines.size()).isEqualTo(1);
+        assertThat(lines.get(0).endsWith(Long.toString(currentThreadId))).isTrue();
     }
 
     @Test

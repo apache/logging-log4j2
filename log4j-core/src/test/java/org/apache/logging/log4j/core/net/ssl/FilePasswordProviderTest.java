@@ -15,14 +15,15 @@ package org.apache.logging.log4j.core.net.ssl;/*
  * limitations under the license.
  */
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class FilePasswordProviderTest {
 
@@ -34,16 +35,16 @@ public class FilePasswordProviderTest {
 
         char[] actual = new FilePasswordProvider(path.toString()).getPassword();
         Files.delete(path);
-        assertArrayEquals(PASSWORD.toCharArray(), actual);
+        assertThat(actual).isEqualTo(PASSWORD.toCharArray());
     }
 
     @Test
     public void testConstructorDisallowsNull() throws Exception {
-        assertThrows(NullPointerException.class, () -> new FilePasswordProvider(null));
+        assertThatThrownBy(() -> new FilePasswordProvider(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testConstructorFailsIfFileDoesNotExist() throws Exception {
-        assertThrows(NoSuchFileException.class, () -> new FilePasswordProvider("nosuchfile"));
+        assertThatThrownBy(() -> new FilePasswordProvider("nosuchfile")).isInstanceOf(NoSuchFileException.class);
     }
 }

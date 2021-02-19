@@ -15,13 +15,13 @@ package org.apache.logging.log4j.core.layout;/*
  * limitations under the license.
  */
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@code TextEncoderHelper} class.
@@ -35,11 +35,11 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(17, 17);
         helper.encode(text, destination);
 
-        assertEquals(0, destination.drainPoints.size(), "drained");
-        assertEquals(text.length(), destination.buffer.position(), "destination.buf.pos");
+        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(0);
+        assertThat(destination.buffer.position()).describedAs("destination.buf.pos").isEqualTo(text.length());
 
         for (int i = 0; i < text.length(); i++) {
-            assertEquals((byte) text.charAt(i), destination.buffer.get(i), "char at " + i);
+            assertThat(destination.buffer.get(i)).describedAs("char at " + i).isEqualTo((byte) text.charAt(i));
         }
     }
 
@@ -50,19 +50,18 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(14, 15);
         helper.encode(text, destination);
 
-        assertEquals(1, destination.drainPoints.size(), "drained");
-        assertEquals(0, destination.drainPoints.get(0).position, "drained[0].from");
-        assertEquals(destination.buffer.capacity(), destination.drainPoints.get(0).limit, "drained[0].to");
-        assertEquals(destination.buffer.capacity(), destination.drainPoints.get(0).length(), "drained[0].length");
-        assertEquals(text.length() - destination.buffer.capacity(),
-                destination.buffer.position(), "destination.buf.pos");
+        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(1);
+        assertThat(destination.drainPoints.get(0).position).describedAs("drained[0].from").isEqualTo(0);
+        assertThat(destination.drainPoints.get(0).limit).describedAs("drained[0].to").isEqualTo(destination.buffer.capacity());
+        assertThat(destination.drainPoints.get(0).length()).describedAs("drained[0].length").isEqualTo(destination.buffer.capacity());
+        assertThat(destination.buffer.position()).describedAs("destination.buf.pos").isEqualTo(text.length() - destination.buffer.capacity());
 
         for (int i = 0; i < destination.buffer.capacity(); i++) {
-            assertEquals((byte) text.charAt(i), destination.drained.get(i), "char at " + i);
+            assertThat(destination.drained.get(i)).describedAs("char at " + i).isEqualTo((byte) text.charAt(i));
         }
         for (int i = destination.buffer.capacity(); i < text.length(); i++) {
             final int bufIx = i - destination.buffer.capacity();
-            assertEquals((byte) text.charAt(i), destination.buffer.get(bufIx), "char at " + i);
+            assertThat(destination.buffer.get(bufIx)).describedAs("char at " + i).isEqualTo((byte) text.charAt(i));
         }
     }
 
@@ -73,25 +72,24 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(4, 20);
         helper.encode(text, destination);
 
-        assertEquals(3, destination.drainPoints.size(), "drained");
-        assertEquals(0, destination.drainPoints.get(0).position, "drained[0].from");
-        assertEquals(destination.buffer.capacity(), destination.drainPoints.get(0).limit, "drained[0].to");
-        assertEquals(destination.buffer.capacity(), destination.drainPoints.get(0).length(), "drained[0].length");
-        assertEquals(0, destination.drainPoints.get(1).position, "drained[1].from");
-        assertEquals(destination.buffer.capacity(), destination.drainPoints.get(1).limit, "drained[1].to");
-        assertEquals(destination.buffer.capacity(), destination.drainPoints.get(1).length(), "drained[1].length");
-        assertEquals(0, destination.drainPoints.get(2).position, "drained[2].from");
-        assertEquals(destination.buffer.capacity(), destination.drainPoints.get(2).limit, "drained[2].to");
-        assertEquals(destination.buffer.capacity(), destination.drainPoints.get(2).length(), "drained[2].length");
-        assertEquals(text.length() - 3 * destination.buffer.capacity(),
-                destination.buffer.position(), "destination.buf.pos");
+        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(3);
+        assertThat(destination.drainPoints.get(0).position).describedAs("drained[0].from").isEqualTo(0);
+        assertThat(destination.drainPoints.get(0).limit).describedAs("drained[0].to").isEqualTo(destination.buffer.capacity());
+        assertThat(destination.drainPoints.get(0).length()).describedAs("drained[0].length").isEqualTo(destination.buffer.capacity());
+        assertThat(destination.drainPoints.get(1).position).describedAs("drained[1].from").isEqualTo(0);
+        assertThat(destination.drainPoints.get(1).limit).describedAs("drained[1].to").isEqualTo(destination.buffer.capacity());
+        assertThat(destination.drainPoints.get(1).length()).describedAs("drained[1].length").isEqualTo(destination.buffer.capacity());
+        assertThat(destination.drainPoints.get(2).position).describedAs("drained[2].from").isEqualTo(0);
+        assertThat(destination.drainPoints.get(2).limit).describedAs("drained[2].to").isEqualTo(destination.buffer.capacity());
+        assertThat(destination.drainPoints.get(2).length()).describedAs("drained[2].length").isEqualTo(destination.buffer.capacity());
+        assertThat(destination.buffer.position()).describedAs("destination.buf.pos").isEqualTo(text.length() - 3 * destination.buffer.capacity());
 
         for (int i = 0; i < 3 * destination.buffer.capacity(); i++) {
-            assertEquals((byte) text.charAt(i), destination.drained.get(i), "char at " + i);
+            assertThat(destination.drained.get(i)).describedAs("char at " + i).isEqualTo((byte) text.charAt(i));
         }
         for (int i = 3 * destination.buffer.capacity(); i < text.length(); i++) {
             final int bufIx = i - 3 * destination.buffer.capacity();
-            assertEquals((byte) text.charAt(i), destination.buffer.get(bufIx), "char at " + i);
+            assertThat(destination.buffer.get(bufIx)).describedAs("char at " + i).isEqualTo((byte) text.charAt(i));
         }
     }
 
@@ -102,11 +100,11 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(17, 17);
         helper.encode(text, destination);
 
-        assertEquals(0, destination.drainPoints.size(), "drained");
-        assertEquals(text.length(), destination.buffer.position(), "destination.buf.pos");
+        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(0);
+        assertThat(destination.buffer.position()).describedAs("destination.buf.pos").isEqualTo(text.length());
 
         for (int i = 0; i < text.length(); i++) {
-            assertEquals((byte) text.charAt(i), destination.buffer.get(i), "char at " + i);
+            assertThat(destination.buffer.get(i)).describedAs("char at " + i).isEqualTo((byte) text.charAt(i));
         }
     }
 
@@ -118,12 +116,12 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(50, 50);
         helper.encode(text, destination);
 
-        assertEquals(0, destination.drainPoints.size(), "drained");
+        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(0);
         destination.drain(destination.getByteBuffer());
 
         final byte[] utf8 = text.toString().getBytes(StandardCharsets.UTF_8);
         for (int i = 0; i < utf8.length; i++) {
-            assertEquals(utf8[i], destination.drained.get(i), "byte at " + i);
+            assertThat(destination.drained.get(i)).describedAs("byte at " + i).isEqualTo(utf8[i]);
         }
     }
 
@@ -136,12 +134,12 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(50, 50);
         helper.encode(text, destination);
 
-        assertEquals(0, destination.drainPoints.size(), "drained");
+        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(0);
         destination.drain(destination.getByteBuffer());
 
         final byte[] bytes = text.toString().getBytes(SHIFT_JIS);
         for (int i = 0; i < bytes.length; i++) {
-            assertEquals(bytes[i], destination.drained.get(i), "byte at " + i);
+            assertThat(destination.drained.get(i)).describedAs("byte at " + i).isEqualTo(bytes[i]);
         }
     }
 
@@ -152,14 +150,14 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 17);
         helper.encode(text, destination);
 
-        assertEquals(4, destination.drainPoints.size(), "drained");
-        assertEquals(3, destination.buffer.position(), "destination.buf.pos");
+        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(4);
+        assertThat(destination.buffer.position()).describedAs("destination.buf.pos").isEqualTo(3);
 
         for (int i = 0; i < text.length() - 3; i++) {
-            assertEquals((byte) text.charAt(i), destination.drained.get(i), "char at " + i);
+            assertThat(destination.drained.get(i)).describedAs("char at " + i).isEqualTo((byte) text.charAt(i));
         }
         for (int i = 0; i < 3; i++) {
-            assertEquals((byte) text.charAt(12 + i), destination.buffer.get(i), "char at " + (12 + i));
+            assertThat(destination.buffer.get(i)).describedAs("char at " + (12 + i)).isEqualTo((byte) text.charAt(12 + i));
         }
     }
 
@@ -171,12 +169,12 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 50);
         helper.encode(text, destination);
 
-        assertEquals(7, destination.drainPoints.size(), "drained");
+        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(7);
         destination.drain(destination.getByteBuffer());
 
         final byte[] utf8 = text.toString().getBytes(StandardCharsets.UTF_8);
         for (int i = 0; i < utf8.length; i++) {
-            assertEquals(utf8[i], destination.drained.get(i), "byte at " + i);
+            assertThat(destination.drained.get(i)).describedAs("byte at " + i).isEqualTo(utf8[i]);
         }
     }
 
@@ -188,12 +186,12 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 50);
         helper.encode(text, destination);
 
-        assertEquals(15, destination.drainPoints.size(), "drained");
+        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(15);
         destination.drain(destination.getByteBuffer());
 
         final byte[] utf8 = text.toString().getBytes(StandardCharsets.UTF_8);
         for (int i = 0; i < utf8.length; i++) {
-            assertEquals(utf8[i], destination.drained.get(i), "byte at " + i);
+            assertThat(destination.drained.get(i)).describedAs("byte at " + i).isEqualTo(utf8[i]);
         }
     }
 
@@ -210,7 +208,7 @@ public class StringBuilderEncoderTest {
 
         final byte[] bytes = text.toString().getBytes(SHIFT_JIS);
         for (int i = 0; i < bytes.length; i++) {
-            assertEquals(bytes[i], destination.drained.get(i), "byte at " + i);
+            assertThat(destination.drained.get(i)).describedAs("byte at " + i).isEqualTo(bytes[i]);
         }
     }
 
@@ -227,7 +225,7 @@ public class StringBuilderEncoderTest {
 
         final byte[] bytes = text.toString().getBytes(SHIFT_JIS);
         for (int i = 0; i < bytes.length; i++) {
-            assertEquals(bytes[i], destination.drained.get(i), "byte at " + i);
+            assertThat(destination.drained.get(i)).describedAs("byte at " + i).isEqualTo(bytes[i]);
         }
     }
 
@@ -236,11 +234,11 @@ public class StringBuilderEncoderTest {
         final CharBuffer buff = CharBuffer.wrap(new char[16]);
         final StringBuilder text = createText(15);
         final int length = TextEncoderHelper.copy(text, 0, buff);
-        assertEquals(text.length(), length, "everything fits");
+        assertThat(length).describedAs("everything fits").isEqualTo(text.length());
         for (int i = 0; i < length; i++) {
-            assertEquals(text.charAt(i), buff.get(i), "char at " + i);
+            assertThat(buff.get(i)).describedAs("char at " + i).isEqualTo(text.charAt(i));
         }
-        assertEquals(text.length(), buff.position(), "position moved by length");
+        assertThat(buff.position()).describedAs("position moved by length").isEqualTo(text.length());
     }
 
     @Test
@@ -248,27 +246,27 @@ public class StringBuilderEncoderTest {
         final CharBuffer buff = CharBuffer.wrap(new char[3]);
         final StringBuilder text = createText(15);
         final int length = TextEncoderHelper.copy(text, 0, buff);
-        assertEquals(buff.capacity(), length, "partial copy");
+        assertThat(length).describedAs("partial copy").isEqualTo(buff.capacity());
         for (int i = 0; i < length; i++) {
-            assertEquals(text.charAt(i), buff.get(i), "char at " + i);
+            assertThat(buff.get(i)).describedAs("char at " + i).isEqualTo(text.charAt(i));
         }
-        assertEquals(0, buff.remaining(), "no space remaining");
-        assertEquals(buff.capacity(), buff.position(), "position at end");
+        assertThat(buff.remaining()).describedAs("no space remaining").isEqualTo(0);
+        assertThat(buff.position()).describedAs("position at end").isEqualTo(buff.capacity());
     }
 
     @Test
     public void testCopyDoesNotWriteBeyondStringText() throws Exception {
         final CharBuffer buff = CharBuffer.wrap(new char[5]);
-        assertEquals(0, buff.position(), "initial buffer position");
+        assertThat(buff.position()).describedAs("initial buffer position").isEqualTo(0);
         final StringBuilder text = createText(2);
         final int length = TextEncoderHelper.copy(text, 0, buff);
-        assertEquals(text.length(), length, "full copy");
+        assertThat(length).describedAs("full copy").isEqualTo(text.length());
         for (int i = 0; i < length; i++) {
-            assertEquals(text.charAt(i), buff.get(i), "char at " + i);
+            assertThat(buff.get(i)).describedAs("char at " + i).isEqualTo(text.charAt(i));
         }
-        assertEquals(text.length(), buff.position(), "resulting buffer position");
+        assertThat(buff.position()).describedAs("resulting buffer position").isEqualTo(text.length());
         for (int i = length; i < buff.capacity(); i++) {
-            assertEquals(0, buff.get(i), "unset char at " + i);
+            assertThat(buff.get(i)).describedAs("unset char at " + i).isEqualTo(0);
         }
     }
 
@@ -279,11 +277,11 @@ public class StringBuilderEncoderTest {
         buff.position(START_POSITION); // set start position
         final StringBuilder text = createText(15);
         final int length = TextEncoderHelper.copy(text, 0, buff);
-        assertEquals(buff.capacity() - START_POSITION, length, "partial copy");
+        assertThat(length).describedAs("partial copy").isEqualTo(buff.capacity() - START_POSITION);
         for (int i = 0; i < length; i++) {
-            assertEquals(text.charAt(i), buff.get(START_POSITION + i), "char at " + i);
+            assertThat(buff.get(START_POSITION + i)).describedAs("char at " + i).isEqualTo(text.charAt(i));
         }
-        assertEquals(buff.capacity(), buff.position(), "buffer position at end");
+        assertThat(buff.position()).describedAs("buffer position at end").isEqualTo(buff.capacity());
     }
 
     @Test

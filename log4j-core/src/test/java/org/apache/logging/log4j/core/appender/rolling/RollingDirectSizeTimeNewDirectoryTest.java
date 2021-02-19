@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Iterator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Logger;
@@ -23,12 +29,6 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Iterator;
-
-import static org.junit.Assert.*;
 
 public class RollingDirectSizeTimeNewDirectoryTest {
 
@@ -59,32 +59,26 @@ public class RollingDirectSizeTimeNewDirectoryTest {
 
         final File logDir = new File(DIR);
         final File[] logFolders = logDir.listFiles();
-        assertNotNull(logFolders);
+        assertThat(logFolders).isNotNull();
         Arrays.sort(logFolders);
 
         try {
 
             final int minExpectedLogFolderCount = 2;
-            assertTrue(
-                    "was expecting at least " + minExpectedLogFolderCount + " folders, " +
-                            "found " + logFolders.length,
-                    logFolders.length >= minExpectedLogFolderCount);
+            assertThat(logFolders.length >= minExpectedLogFolderCount).describedAs("was expecting at least " + minExpectedLogFolderCount + " folders, " +
+                            "found " + logFolders.length).isTrue();
 
             for (int logFolderIndex = 0; logFolderIndex < logFolders.length; ++logFolderIndex) {
 
                 File logFolder = logFolders[logFolderIndex];
                 File[] logFiles = logFolder.listFiles();
-                assertTrue(
-                        "no files found in folder: " + logFolder,
-                        logFiles != null && logFiles.length > 0);
+                assertThat(logFiles != null && logFiles.length > 0).describedAs("no files found in folder: " + logFolder).isTrue();
 
                 final int minExpectedLogFileCount = 2;
                 if (logFolderIndex > 0
                         && logFolderIndex < logFolders.length - 1) {
-                    assertTrue(
-                            "was expecting at least " + minExpectedLogFileCount + " files, " +
-                                    "found " + logFiles.length + ": " + Arrays.toString(logFiles),
-                            logFiles.length >= minExpectedLogFileCount);
+                    assertThat(logFiles.length >= minExpectedLogFileCount).describedAs("was expecting at least " + minExpectedLogFileCount + " files, " +
+                                    "found " + logFiles.length + ": " + Arrays.toString(logFiles)).isTrue();
                 }
             }
 

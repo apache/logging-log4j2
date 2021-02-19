@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,7 +27,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.util.Base64;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -46,8 +49,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class Log4jLogEventTest {
 
@@ -81,15 +82,15 @@ public class Log4jLogEventTest {
     @Test
     public void testToImmutableSame() {
         final LogEvent logEvent = new Log4jLogEvent();
-        assertSame(logEvent, logEvent.toImmutable());
+        assertThat(logEvent.toImmutable()).isSameAs(logEvent);
     }
 
     @Test
     public void testToImmutableNotSame() {
         final LogEvent logEvent = new Log4jLogEvent.Builder().setMessage(new ReusableObjectMessage()).build();
         final LogEvent immutable = logEvent.toImmutable();
-        assertSame(logEvent, immutable);
-        assertFalse(immutable.getMessage() instanceof ReusableMessage);
+        assertThat(immutable).isSameAs(logEvent);
+        assertThat(immutable.getMessage() instanceof ReusableMessage).isFalse();
     }
 
     @Test
@@ -104,19 +105,19 @@ public class Log4jLogEventTest {
         final byte[] binary = serialize(evt);
         final Log4jLogEvent evt2 = deserialize(binary);
 
-        assertEquals(evt.getTimeMillis(), evt2.getTimeMillis());
-        assertEquals(evt.getLoggerFqcn(), evt2.getLoggerFqcn());
-        assertEquals(evt.getLevel(), evt2.getLevel());
-        assertEquals(evt.getLoggerName(), evt2.getLoggerName());
-        assertEquals(evt.getMarker(), evt2.getMarker());
-        assertEquals(evt.getContextData(), evt2.getContextData());
-        assertEquals(evt.getContextStack(), evt2.getContextStack());
-        assertEquals(evt.getMessage(), evt2.getMessage());
-        assertEquals(evt.getSource(), evt2.getSource());
-        assertEquals(evt.getThreadName(), evt2.getThreadName());
-        assertEquals(evt.getThrown(), evt2.getThrown());
-        assertEquals(evt.isEndOfBatch(), evt2.isEndOfBatch());
-        assertEquals(evt.isIncludeLocation(), evt2.isIncludeLocation());
+        assertThat(evt2.getTimeMillis()).isEqualTo(evt.getTimeMillis());
+        assertThat(evt2.getLoggerFqcn()).isEqualTo(evt.getLoggerFqcn());
+        assertThat(evt2.getLevel()).isEqualTo(evt.getLevel());
+        assertThat(evt2.getLoggerName()).isEqualTo(evt.getLoggerName());
+        assertThat(evt2.getMarker()).isEqualTo(evt.getMarker());
+        assertThat(evt2.getContextData()).isEqualTo(evt.getContextData());
+        assertThat(evt2.getContextStack()).isEqualTo(evt.getContextStack());
+        assertThat(evt2.getMessage()).isEqualTo(evt.getMessage());
+        assertThat(evt2.getSource()).isEqualTo(evt.getSource());
+        assertThat(evt2.getThreadName()).isEqualTo(evt.getThreadName());
+        assertThat(evt2.getThrown()).isEqualTo(evt.getThrown());
+        assertThat(evt2.isEndOfBatch()).isEqualTo(evt.isEndOfBatch());
+        assertThat(evt2.isIncludeLocation()).isEqualTo(evt.isIncludeLocation());
     }
 
     @Test
@@ -133,21 +134,21 @@ public class Log4jLogEventTest {
         final byte[] binary = serialize(evt);
         final Log4jLogEvent evt2 = deserialize(binary);
 
-        assertEquals(evt.getTimeMillis(), evt2.getTimeMillis());
-        assertEquals(evt.getLoggerFqcn(), evt2.getLoggerFqcn());
-        assertEquals(evt.getLevel(), evt2.getLevel());
-        assertEquals(evt.getLoggerName(), evt2.getLoggerName());
-        assertEquals(evt.getMarker(), evt2.getMarker());
-        assertEquals(evt.getContextData(), evt2.getContextData());
-        assertEquals(evt.getContextStack(), evt2.getContextStack());
-        assertEquals(evt.getMessage(), evt2.getMessage());
-        assertEquals(evt.getSource(), evt2.getSource());
-        assertEquals(evt.getThreadName(), evt2.getThreadName());
-        assertNull(evt2.getThrown());
-        assertNotNull(evt2.getThrownProxy());
-        assertEquals(evt.getThrownProxy(), evt2.getThrownProxy());
-        assertEquals(evt.isEndOfBatch(), evt2.isEndOfBatch());
-        assertEquals(evt.isIncludeLocation(), evt2.isIncludeLocation());
+        assertThat(evt2.getTimeMillis()).isEqualTo(evt.getTimeMillis());
+        assertThat(evt2.getLoggerFqcn()).isEqualTo(evt.getLoggerFqcn());
+        assertThat(evt2.getLevel()).isEqualTo(evt.getLevel());
+        assertThat(evt2.getLoggerName()).isEqualTo(evt.getLoggerName());
+        assertThat(evt2.getMarker()).isEqualTo(evt.getMarker());
+        assertThat(evt2.getContextData()).isEqualTo(evt.getContextData());
+        assertThat(evt2.getContextStack()).isEqualTo(evt.getContextStack());
+        assertThat(evt2.getMessage()).isEqualTo(evt.getMessage());
+        assertThat(evt2.getSource()).isEqualTo(evt.getSource());
+        assertThat(evt2.getThreadName()).isEqualTo(evt.getThreadName());
+        assertThat(evt2.getThrown()).isNull();
+        assertThat(evt2.getThrownProxy()).isNotNull();
+        assertThat(evt2.getThrownProxy()).isEqualTo(evt.getThrownProxy());
+        assertThat(evt2.isEndOfBatch()).isEqualTo(evt.isEndOfBatch());
+        assertThat(evt2.isIncludeLocation()).isEqualTo(evt.isIncludeLocation());
     }
 
     private byte[] serialize(final Log4jLogEvent event) throws IOException {
@@ -197,34 +198,34 @@ public class Log4jLogEventTest {
         final byte[] binaryDecoded = decoder.decode(base64);
         final Log4jLogEvent evt2 = deserialize(binaryDecoded);
 
-        assertEquals(loggerFQN, evt2.getLoggerFqcn());
-        assertEquals(level, evt2.getLevel());
-        assertEquals(loggerName, evt2.getLoggerName());
-        assertEquals(marker, evt2.getMarker());
-        assertEquals(msg, evt2.getMessage());
-        assertEquals(threadName, evt2.getThreadName());
-        assertNull(evt2.getThrown());
-        assertEquals(this.getClass().getName() + "$DeletedException", evt2.getThrownProxy().getName());
-        assertEquals(errorMessage, evt2.getThrownProxy().getMessage());
+        assertThat(evt2.getLoggerFqcn()).isEqualTo(loggerFQN);
+        assertThat(evt2.getLevel()).isEqualTo(level);
+        assertThat(evt2.getLoggerName()).isEqualTo(loggerName);
+        assertThat(evt2.getMarker()).isEqualTo(marker);
+        assertThat(evt2.getMessage()).isEqualTo(msg);
+        assertThat(evt2.getThreadName()).isEqualTo(threadName);
+        assertThat(evt2.getThrown()).isNull();
+        assertThat(evt2.getThrownProxy().getName()).isEqualTo(this.getClass().getName() + "$DeletedException");
+        assertThat(evt2.getThrownProxy().getMessage()).isEqualTo(errorMessage);
     }
 
     @Test
     public void testNullLevelReplacedWithOFF() throws Exception {
         final Level NULL_LEVEL = null;
         final Log4jLogEvent evt = Log4jLogEvent.newBuilder().setLevel(NULL_LEVEL).build();
-        assertEquals(Level.OFF, evt.getLevel());
+        assertThat(evt.getLevel()).isEqualTo(Level.OFF);
     }
 
     @Test
     public void testTimestampGeneratedByClock() {
         final LogEvent evt = Log4jLogEvent.newBuilder().build();
-        assertEquals(FixedTimeClock.FIXED_TIME, evt.getTimeMillis());
+        assertThat(evt.getTimeMillis()).isEqualTo(FixedTimeClock.FIXED_TIME);
     }
 
     @Test
     public void testInitiallyDummyNanoClock() {
-        assertTrue(Log4jLogEvent.getNanoClock() instanceof DummyNanoClock);
-        assertEquals(0, Log4jLogEvent.getNanoClock().nanoTime(), "initial dummy nanotime");
+        assertThat(Log4jLogEvent.getNanoClock() instanceof DummyNanoClock).isTrue();
+        assertThat(Log4jLogEvent.getNanoClock().nanoTime()).describedAs("initial dummy nanotime").isEqualTo(0);
     }
 
     @Test
@@ -236,11 +237,11 @@ public class Log4jLogEventTest {
     }
 
     private void verifyNanoTimeWithAllConstructors(final long expected) {
-        assertEquals(expected, Log4jLogEvent.getNanoClock().nanoTime());
+        assertThat(Log4jLogEvent.getNanoClock().nanoTime()).isEqualTo(expected);
 
-        assertEquals(expected, new Log4jLogEvent().getNanoTime(), "No-arg constructor");
-        assertEquals(expected, new Log4jLogEvent("l", null, "a", null, null, null, null)
-                .getNanoTime(), "7-arg constructor");
+        assertThat(new Log4jLogEvent().getNanoTime()).describedAs("No-arg constructor").isEqualTo(expected);
+        assertThat(new Log4jLogEvent("l", null, "a", null, null, null, null)
+                .getNanoTime()).describedAs("7-arg constructor").isEqualTo(expected);
     }
 
     @Test
@@ -272,24 +273,24 @@ public class Log4jLogEventTest {
                 .setTimeMillis(987654321L)
                 .build();
 
-        assertEquals(contextData, event.getContextData());
-        assertSame(contextStack, event.getContextStack());
-        assertTrue(event.isEndOfBatch());
-        assertTrue(event.isIncludeLocation());
-        assertSame(Level.FATAL, event.getLevel());
-        assertSame(fqcn, event.getLoggerFqcn());
-        assertSame(name, event.getLoggerName());
-        assertSame(marker, event.getMarker());
-        assertSame(message, event.getMessage());
-        assertEquals(1234567890L, event.getNanoTime());
-        assertSame(stackTraceElement, event.getSource());
-        assertSame(threadName, event.getThreadName());
-        assertSame(exception, event.getThrown());
-        assertEquals(987654321L, event.getTimeMillis());
+        assertThat(event.getContextData()).isEqualTo(contextData);
+        assertThat(event.getContextStack()).isSameAs(contextStack);
+        assertThat(event.isEndOfBatch()).isTrue();
+        assertThat(event.isIncludeLocation()).isTrue();
+        assertThat(event.getLevel()).isSameAs(Level.FATAL);
+        assertThat(event.getLoggerFqcn()).isSameAs(fqcn);
+        assertThat(event.getLoggerName()).isSameAs(name);
+        assertThat(event.getMarker()).isSameAs(marker);
+        assertThat(event.getMessage()).isSameAs(message);
+        assertThat(event.getNanoTime()).isEqualTo(1234567890L);
+        assertThat(event.getSource()).isSameAs(stackTraceElement);
+        assertThat(event.getThreadName()).isSameAs(threadName);
+        assertThat(event.getThrown()).isSameAs(exception);
+        assertThat(event.getTimeMillis()).isEqualTo(987654321L);
 
         final LogEvent event2 = new Log4jLogEvent.Builder(event).build();
-        assertEquals(event2, event, "copy constructor builder");
-        assertEquals(event2.hashCode(), event.hashCode(), "same hashCode");
+        assertThat(event).describedAs("copy constructor builder").isEqualTo(event2);
+        assertThat(event.hashCode()).describedAs("same hashCode").isEqualTo(event2.hashCode());
     }
 
     @Test
@@ -321,24 +322,24 @@ public class Log4jLogEventTest {
                 .setTimeMillis(987654321L)
                 .build();
 
-        assertSame(contextData, event.getContextData());
-        assertSame(contextStack, event.getContextStack());
-        assertTrue(event.isEndOfBatch());
-        assertTrue(event.isIncludeLocation());
-        assertSame(Level.FATAL, event.getLevel());
-        assertSame(fqcn, event.getLoggerFqcn());
-        assertSame(name, event.getLoggerName());
-        assertSame(marker, event.getMarker());
-        assertSame(message, event.getMessage());
-        assertEquals(1234567890L, event.getNanoTime());
-        assertSame(stackTraceElement, event.getSource());
-        assertSame(threadName, event.getThreadName());
-        assertSame(exception, event.getThrown());
-        assertEquals(987654321L, event.getTimeMillis());
+        assertThat(event.getContextData()).isSameAs(contextData);
+        assertThat(event.getContextStack()).isSameAs(contextStack);
+        assertThat(event.isEndOfBatch()).isTrue();
+        assertThat(event.isIncludeLocation()).isTrue();
+        assertThat(event.getLevel()).isSameAs(Level.FATAL);
+        assertThat(event.getLoggerFqcn()).isSameAs(fqcn);
+        assertThat(event.getLoggerName()).isSameAs(name);
+        assertThat(event.getMarker()).isSameAs(marker);
+        assertThat(event.getMessage()).isSameAs(message);
+        assertThat(event.getNanoTime()).isEqualTo(1234567890L);
+        assertThat(event.getSource()).isSameAs(stackTraceElement);
+        assertThat(event.getThreadName()).isSameAs(threadName);
+        assertThat(event.getThrown()).isSameAs(exception);
+        assertThat(event.getTimeMillis()).isEqualTo(987654321L);
 
         final LogEvent event2 = new Log4jLogEvent.Builder(event).build();
-        assertEquals(event2, event, "copy constructor builder");
-        assertEquals(event2.hashCode(), event.hashCode(), "same hashCode");
+        assertThat(event).describedAs("copy constructor builder").isEqualTo(event2);
+        assertThat(event.hashCode()).describedAs("same hashCode").isEqualTo(event2.hashCode());
     }
 
     @Test
@@ -369,43 +370,43 @@ public class Log4jLogEventTest {
         event.setThrown(exception);
         event.setTimeMillis(987654321L);
 
-        assertSame(contextData, event.getContextData());
-        assertSame(contextStack, event.getContextStack());
-        assertTrue(event.isEndOfBatch());
-        assertTrue(event.isIncludeLocation());
-        assertSame(Level.FATAL, event.getLevel());
-        assertSame(fqcn, event.getLoggerFqcn());
-        assertSame(name, event.getLoggerName());
-        assertSame(marker, event.getMarker());
-        assertSame(message, event.getMessage());
-        assertEquals(1234567890L, event.getNanoTime());
+        assertThat(event.getContextData()).isSameAs(contextData);
+        assertThat(event.getContextStack()).isSameAs(contextStack);
+        assertThat(event.isEndOfBatch()).isTrue();
+        assertThat(event.isIncludeLocation()).isTrue();
+        assertThat(event.getLevel()).isSameAs(Level.FATAL);
+        assertThat(event.getLoggerFqcn()).isSameAs(fqcn);
+        assertThat(event.getLoggerName()).isSameAs(name);
+        assertThat(event.getMarker()).isSameAs(marker);
+        assertThat(event.getMessage()).isSameAs(message);
+        assertThat(event.getNanoTime()).isEqualTo(1234567890L);
         //assertSame(stackTraceElement, event.getSource()); // don't invoke
-        assertSame(threadName, event.getThreadName());
-        assertSame(exception, event.getThrown());
-        assertEquals(987654321L, event.getTimeMillis());
+        assertThat(event.getThreadName()).isSameAs(threadName);
+        assertThat(event.getThrown()).isSameAs(exception);
+        assertThat(event.getTimeMillis()).isEqualTo(987654321L);
 
         final LogEvent e2 = new Log4jLogEvent.Builder(event).build();
-        assertEquals(contextData, e2.getContextData());
-        assertSame(contextStack, e2.getContextStack());
-        assertTrue(e2.isEndOfBatch());
-        assertTrue(e2.isIncludeLocation());
-        assertSame(Level.FATAL, e2.getLevel());
-        assertSame(fqcn, e2.getLoggerFqcn());
-        assertSame(name, e2.getLoggerName());
-        assertSame(marker, e2.getMarker());
-        assertSame(message, e2.getMessage());
-        assertEquals(1234567890L, e2.getNanoTime());
+        assertThat(e2.getContextData()).isEqualTo(contextData);
+        assertThat(e2.getContextStack()).isSameAs(contextStack);
+        assertThat(e2.isEndOfBatch()).isTrue();
+        assertThat(e2.isIncludeLocation()).isTrue();
+        assertThat(e2.getLevel()).isSameAs(Level.FATAL);
+        assertThat(e2.getLoggerFqcn()).isSameAs(fqcn);
+        assertThat(e2.getLoggerName()).isSameAs(name);
+        assertThat(e2.getMarker()).isSameAs(marker);
+        assertThat(e2.getMessage()).isSameAs(message);
+        assertThat(e2.getNanoTime()).isEqualTo(1234567890L);
         //assertSame(stackTraceElement, e2.getSource()); // don't invoke
-        assertSame(threadName, e2.getThreadName());
-        assertSame(exception, e2.getThrown());
-        assertEquals(987654321L, e2.getTimeMillis());
+        assertThat(e2.getThreadName()).isSameAs(threadName);
+        assertThat(e2.getThrown()).isSameAs(exception);
+        assertThat(e2.getTimeMillis()).isEqualTo(987654321L);
 
         // use reflection to get value of source field in log event copy:
         // invoking the getSource() method would initialize the field
         final Field fieldSource = Log4jLogEvent.class.getDeclaredField("source");
         fieldSource.setAccessible(true);
         final Object value = fieldSource.get(e2);
-        assertNull(value, "source in copy");
+        assertThat(value).describedAs("source in copy").isNull();
     }
 
     @SuppressWarnings("deprecation")
@@ -439,39 +440,39 @@ public class Log4jLogEventTest {
                 .setTimeMillis(987654321L)
                 .build();
 
-        assertEquals(contextData, event.getContextData());
-        assertSame(contextStack, event.getContextStack());
-        assertTrue(event.isEndOfBatch());
-        assertTrue(event.isIncludeLocation());
-        assertSame(Level.FATAL, event.getLevel());
-        assertSame(fqcn, event.getLoggerFqcn());
-        assertSame(name, event.getLoggerName());
-        assertSame(marker, event.getMarker());
-        assertSame(message, event.getMessage());
-        assertEquals(1234567890L, event.getNanoTime());
-        assertSame(stackTraceElement, event.getSource());
-        assertSame(threadName, event.getThreadName());
-        assertSame(exception, event.getThrown());
-        assertEquals(987654321L, event.getTimeMillis());
+        assertThat(event.getContextData()).isEqualTo(contextData);
+        assertThat(event.getContextStack()).isSameAs(contextStack);
+        assertThat(event.isEndOfBatch()).isTrue();
+        assertThat(event.isIncludeLocation()).isTrue();
+        assertThat(event.getLevel()).isSameAs(Level.FATAL);
+        assertThat(event.getLoggerFqcn()).isSameAs(fqcn);
+        assertThat(event.getLoggerName()).isSameAs(name);
+        assertThat(event.getMarker()).isSameAs(marker);
+        assertThat(event.getMessage()).isSameAs(message);
+        assertThat(event.getNanoTime()).isEqualTo(1234567890L);
+        assertThat(event.getSource()).isSameAs(stackTraceElement);
+        assertThat(event.getThreadName()).isSameAs(threadName);
+        assertThat(event.getThrown()).isSameAs(exception);
+        assertThat(event.getTimeMillis()).isEqualTo(987654321L);
 
         final LogEvent event2 = builder(event).build();
-        assertEquals(event2, event, "copy constructor builder");
-        assertEquals(event2.hashCode(), event.hashCode(), "same hashCode");
+        assertThat(event).describedAs("copy constructor builder").isEqualTo(event2);
+        assertThat(event.hashCode()).describedAs("same hashCode").isEqualTo(event2.hashCode());
 
-        assertEquals(contextData, event2.getContextData());
-        assertSame(contextStack, event2.getContextStack());
-        assertTrue(event2.isEndOfBatch());
-        assertTrue(event2.isIncludeLocation());
-        assertSame(Level.FATAL, event2.getLevel());
-        assertSame(fqcn, event2.getLoggerFqcn());
-        assertSame(name, event2.getLoggerName());
-        assertSame(marker, event2.getMarker());
-        assertSame(message, event2.getMessage());
-        assertEquals(1234567890L, event2.getNanoTime());
-        assertSame(stackTraceElement, event2.getSource());
-        assertSame(threadName, event2.getThreadName());
-        assertSame(exception, event2.getThrown());
-        assertEquals(987654321L, event2.getTimeMillis());
+        assertThat(event2.getContextData()).isEqualTo(contextData);
+        assertThat(event2.getContextStack()).isSameAs(contextStack);
+        assertThat(event2.isEndOfBatch()).isTrue();
+        assertThat(event2.isIncludeLocation()).isTrue();
+        assertThat(event2.getLevel()).isSameAs(Level.FATAL);
+        assertThat(event2.getLoggerFqcn()).isSameAs(fqcn);
+        assertThat(event2.getLoggerName()).isSameAs(name);
+        assertThat(event2.getMarker()).isSameAs(marker);
+        assertThat(event2.getMessage()).isSameAs(message);
+        assertThat(event2.getNanoTime()).isEqualTo(1234567890L);
+        assertThat(event2.getSource()).isSameAs(stackTraceElement);
+        assertThat(event2.getThreadName()).isSameAs(threadName);
+        assertThat(event2.getThrown()).isSameAs(exception);
+        assertThat(event2.getTimeMillis()).isEqualTo(987654321L);
 
         final StringMap differentMap = ContextDataFactory.emptyFrozenContextData();
         different("different contextMap", builder(event).setContextData(differentMap), event);
@@ -492,13 +493,13 @@ public class Log4jLogEventTest {
         different("null fqcn", builder(event).setLoggerFqcn(null), event);
 
         different("different name", builder(event).setLoggerName("different"), event);
-        assertThrows(NullPointerException.class, () -> different("null name", builder(event).setLoggerName(null), event));
+        assertThatThrownBy(() -> different("null name", builder(event).setLoggerName(null), event)).isInstanceOf(NullPointerException.class);
 
         different("different marker", builder(event).setMarker(MarkerManager.getMarker("different")), event);
         different("null marker", builder(event).setMarker(null), event);
 
         different("different message", builder(event).setMessage(new ObjectMessage("different")), event);
-        assertThrows(NullPointerException.class, () -> different("null message", builder(event).setMessage(null), event));
+        assertThatThrownBy(() -> different("null message", builder(event).setMessage(null), event)).isInstanceOf(NullPointerException.class);
 
         different("different nanoTime", builder(event).setNanoTime(135), event);
         different("different milliTime", builder(event).setTimeMillis(137), event);
@@ -520,13 +521,13 @@ public class Log4jLogEventTest {
 
     private void different(final String reason, final Log4jLogEvent.Builder builder, final LogEvent event) {
         final LogEvent other = builder.build();
-        assertNotEquals(other, event, reason);
-        assertNotEquals(other.hashCode(), event.hashCode(), reason + " hashCode");
+        assertThat(event).describedAs(reason).isNotEqualTo(other);
+        assertThat(event.hashCode()).describedAs(reason + " hashCode").isNotEqualTo(other.hashCode());
     }
 
     @Test
     public void testToString() {
         // Throws an NPE in 2.6.2
-        assertNotNull(new Log4jLogEvent().toString());
+        assertThat(new Log4jLogEvent().toString()).isNotNull();
     }
 }

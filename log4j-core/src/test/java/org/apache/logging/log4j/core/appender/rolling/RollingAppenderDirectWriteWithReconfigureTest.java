@@ -9,15 +9,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URI;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -69,9 +68,9 @@ public class RollingAppenderDirectWriteWithReconfigureTest {
             }
         }
 
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertThat(dir.exists() && dir.listFiles().length > 0).describedAs("Directory not created").isTrue();
         final File[] files = dir.listFiles();
-        assertNotNull(files);
-        assertThat(dir.listFiles().length, is(equalTo(2)));
+        assertThat(files).isNotNull();
+        assertThat(dir.listFiles().length).isEqualTo(2);
     }
 }

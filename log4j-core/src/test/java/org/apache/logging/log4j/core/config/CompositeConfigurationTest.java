@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.*;
+
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -32,8 +35,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-
-import static org.junit.Assert.*;
 
 public class CompositeConfigurationTest {
 /*
@@ -92,32 +93,27 @@ public class CompositeConfigurationTest {
             public void evaluate() throws Throwable {
                 final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
                 Map<String, Appender> appendersMap = config.getLogger("cat1").getAppenders();
-                assertEquals("Expected 2 Appender references for cat1 but got " + appendersMap.size(), 2,
-                        appendersMap.size());
-                assertTrue(appendersMap.get("STDOUT") instanceof ConsoleAppender);
+                assertThat(appendersMap.size()).describedAs("Expected 2 Appender references for cat1 but got " + appendersMap.size()).isEqualTo(2);
+                assertThat(appendersMap.get("STDOUT") instanceof ConsoleAppender).isTrue();
 
                 Filter loggerFilter = config.getLogger("cat1").getFilter();
-                assertTrue(loggerFilter instanceof RegexFilter);
-                assertEquals(loggerFilter.getOnMatch(), Filter.Result.DENY);
+                assertThat(loggerFilter instanceof RegexFilter).isTrue();
+                assertThat(Filter.Result.DENY).isEqualTo(loggerFilter.getOnMatch());
 
                 appendersMap = config.getLogger("cat2").getAppenders();
-                assertEquals("Expected 1 Appender reference for cat2 but got " + appendersMap.size(), 1,
-                        appendersMap.size());
-                assertTrue(appendersMap.get("File") instanceof FileAppender);
+                assertThat(appendersMap.size()).describedAs("Expected 1 Appender reference for cat2 but got " + appendersMap.size()).isEqualTo(1);
+                assertThat(appendersMap.get("File") instanceof FileAppender).isTrue();
 
                 appendersMap = config.getLogger("cat3").getAppenders();
-                assertEquals("Expected 1 Appender reference for cat3 but got " + appendersMap.size(), 1,
-                        appendersMap.size());
-                assertTrue(appendersMap.get("File") instanceof FileAppender);
+                assertThat(appendersMap.size()).describedAs("Expected 1 Appender reference for cat3 but got " + appendersMap.size()).isEqualTo(1);
+                assertThat(appendersMap.get("File") instanceof FileAppender).isTrue();
 
                 appendersMap = config.getRootLogger().getAppenders();
-                assertEquals("Expected 2 Appender references for the root logger but got " + appendersMap.size(), 2,
-                        appendersMap.size());
-                assertTrue(appendersMap.get("File") instanceof FileAppender);
-                assertTrue(appendersMap.get("STDOUT") instanceof ConsoleAppender);
+                assertThat(appendersMap.size()).describedAs("Expected 2 Appender references for the root logger but got " + appendersMap.size()).isEqualTo(2);
+                assertThat(appendersMap.get("File") instanceof FileAppender).isTrue();
+                assertThat(appendersMap.get("STDOUT") instanceof ConsoleAppender).isTrue();
 
-                assertEquals("Expected COMPOSITE_SOURCE for composite configuration but got " + config.getConfigurationSource(),
-                        config.getConfigurationSource(), ConfigurationSource.COMPOSITE_SOURCE);
+                assertThat(ConfigurationSource.COMPOSITE_SOURCE).describedAs("Expected COMPOSITE_SOURCE for composite configuration but got " + config.getConfigurationSource()).isEqualTo(config.getConfigurationSource());
             }
         };
         runTest(lcr, test);
@@ -131,7 +127,7 @@ public class CompositeConfigurationTest {
             public void evaluate() throws Throwable {
                 try {
                     final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
-                    Assert.assertNotNull(config);
+                    assertThat(config).isNotNull();
                 } catch (final NullPointerException e) {
                     fail("Should not throw NullPointerException when there are different nodes.");
                 }
@@ -148,20 +144,20 @@ public class CompositeConfigurationTest {
             public void evaluate() throws Throwable {
                 final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
                 //Test for Root log level override
-                assertEquals("Expected Root logger log level to be WARN", Level.WARN, config.getRootLogger().getLevel());
+                assertThat(config.getRootLogger().getLevel()).describedAs("Expected Root logger log level to be WARN").isEqualTo(Level.WARN);
 
                 //Test for cat2 level override
                 final LoggerConfig cat2 = config.getLogger("cat2");
-                assertEquals("Expected cat2 log level to be INFO", Level.INFO, cat2.getLevel());
+                assertThat(cat2.getLevel()).describedAs("Expected cat2 log level to be INFO").isEqualTo(Level.INFO);
 
                 //Test for cat2 additivity override
-                assertTrue("Expected cat2 additivity to be true", cat2.isAdditive());
+                assertThat(cat2.isAdditive()).describedAs("Expected cat2 additivity to be true").isTrue();
 
                 //Regression
                 //Check level on cat3 (not present in root config)
-                assertEquals("Expected cat3 log level to be ERROR", Level.ERROR, config.getLogger("cat3").getLevel());
+                assertThat(config.getLogger("cat3").getLevel()).describedAs("Expected cat3 log level to be ERROR").isEqualTo(Level.ERROR);
                 //Check level on cat1 (not present in overridden config)
-                assertEquals("Expected cat1 log level to be DEBUG", Level.DEBUG, config.getLogger("cat1").getLevel());
+                assertThat(config.getLogger("cat1").getLevel()).describedAs("Expected cat1 log level to be DEBUG").isEqualTo(Level.DEBUG);
             }
         };
         runTest(lcr, test);
@@ -174,13 +170,13 @@ public class CompositeConfigurationTest {
             @Override
             public void evaluate() throws Throwable {
                 final AbstractConfiguration config =  (AbstractConfiguration) lcr.getConfiguration();
-                assertNotNull("No configuration returned", config);
+                assertThat(config).describedAs("No configuration returned").isNotNull();
                 //Test for Root log level override
-                assertEquals("Expected Root logger log level to be ERROR", Level.ERROR, config.getRootLogger().getLevel());
+                assertThat(config.getRootLogger().getLevel()).describedAs("Expected Root logger log level to be ERROR").isEqualTo(Level.ERROR);
 
                 //Test for no cat2 level override
                 final LoggerConfig cat2 = config.getLogger("cat2");
-                assertEquals("Expected cat2 log level to be INFO", Level.DEBUG, cat2.getLevel());
+                assertThat(cat2.getLevel()).describedAs("Expected cat2 log level to be INFO").isEqualTo(Level.DEBUG);
             }
         };
         runTest(lcr, test);
@@ -197,8 +193,7 @@ public class CompositeConfigurationTest {
 
                 final List<AppenderRef> appenderRefList = config.getLogger("cat1").getAppenderRefs();
                 final AppenderRef appenderRef = getAppenderRef(appenderRefList, "STDOUT");
-                assertTrue("Expected cat1 STDOUT appenderRef to have a regex filter",
-                        appenderRef.getFilter() != null && appenderRef.getFilter() instanceof RegexFilter);
+                assertThat(appenderRef.getFilter() != null && appenderRef.getFilter() instanceof RegexFilter).describedAs("Expected cat1 STDOUT appenderRef to have a regex filter").isTrue();
             }
         };
         runTest(lcr, test);

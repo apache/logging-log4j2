@@ -17,16 +17,16 @@
 
 package org.apache.logging.log4j.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Locale;
 import org.apache.logging.log4j.junit.Mutable;
 import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import java.util.Locale;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class MessageFormatMessageTest {
@@ -42,12 +42,12 @@ public class MessageFormatMessageTest {
         MessageFormatMessage msg = new MessageFormatMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
         String expected = "Test message {0}";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
         final Object[] array = null;
         msg = new MessageFormatMessage(testMsg, array, null);
         result = msg.getFormattedMessage();
         expected = "Test message null";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class MessageFormatMessageTest {
         final MessageFormatMessage msg = new MessageFormatMessage(testMsg, "Apache");
         final String result = msg.getFormattedMessage();
         final String expected = "Test message Apache";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class MessageFormatMessageTest {
         final MessageFormatMessage msg = new MessageFormatMessage(Locale.US, testMsg, 1234567890);
         final String result = msg.getFormattedMessage();
         final String expected = "Test message $1,234,567,890.00";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -74,7 +74,7 @@ public class MessageFormatMessageTest {
         final MessageFormatMessage msg = new MessageFormatMessage(Locale.FRANCE, testMsg, 1234567890);
         final String result = msg.getFormattedMessage();
         final String expected = "Test message 1 234 567 890,00" + SPACE + "€";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -83,9 +83,9 @@ public class MessageFormatMessageTest {
         final MessageFormatMessage msg = new MessageFormatMessage(testMsg, "Apache", new NullPointerException("Null"));
         final String result = msg.getFormattedMessage();
         final String expected = "Test message Apache";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
         final Throwable t = msg.getThrowable();
-        assertNotNull(t, "No Throwable");
+        assertThat(t).describedAs("No Throwable").isNotNull();
     }
 
     @Test
@@ -97,7 +97,7 @@ public class MessageFormatMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Test message XYZ", actual, "Expected most recent param value");
+        assertThat(actual).describedAs("Expected most recent param value").isEqualTo("Test message XYZ");
     }
 
     @Test
@@ -110,6 +110,6 @@ public class MessageFormatMessageTest {
         msg.getFormattedMessage();
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Test message abc", actual, "Should use initial param value");
+        assertThat(actual).describedAs("Should use initial param value").isEqualTo("Test message abc");
     }
 }

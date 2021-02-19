@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import java.lang.reflect.Field;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.lang.reflect.Field;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ClassLoaderContextSelectorTest {
 
@@ -36,9 +36,9 @@ public class ClassLoaderContextSelectorTest {
         loader1 = new TestClassLoader();
         loader2 = new TestClassLoader();
         loader3 = new TestClassLoader();
-        assertNotSame(loader1, loader2);
-        assertNotSame(loader1, loader3);
-        assertNotSame(loader2, loader3);
+        assertThat(loader2).isNotSameAs(loader1);
+        assertThat(loader3).isNotSameAs(loader1);
+        assertThat(loader3).isNotSameAs(loader2);
     }
 
     @Test
@@ -46,17 +46,17 @@ public class ClassLoaderContextSelectorTest {
         final Class<?> logging1 = loader1.loadClass(PKG + ".a.Logging1");
         final Field field1 = logging1.getDeclaredField("logger");
         final Logger logger1 = (Logger) ReflectionUtil.getStaticFieldValue(field1);
-        assertNotNull(logger1);
+        assertThat(logger1).isNotNull();
         final Class<?> logging2 = loader2.loadClass(PKG + ".b.Logging2");
         final Field field2 = logging2.getDeclaredField("logger");
         final Logger logger2 = (Logger) ReflectionUtil.getStaticFieldValue(field2);
-        assertNotNull(logger2);
+        assertThat(logger2).isNotNull();
         final Class<?> logging3 = loader3.loadClass(PKG + ".c.Logging3");
         final Field field3 = logging3.getDeclaredField("logger");
         final Logger logger3 = (Logger) ReflectionUtil.getStaticFieldValue(field3);
-        assertNotNull(logger3);
-        assertNotSame(logger1.getContext(), logger2.getContext());
-        assertNotSame(logger1.getContext(), logger3.getContext());
-        assertNotSame(logger2.getContext(), logger3.getContext());
+        assertThat(logger3).isNotNull();
+        assertThat(logger2.getContext()).isNotSameAs(logger1.getContext());
+        assertThat(logger3.getContext()).isNotSameAs(logger1.getContext());
+        assertThat(logger3.getContext()).isNotSameAs(logger2.getContext());
     }
 }

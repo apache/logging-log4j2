@@ -16,17 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ScriptAppenderSelectorTest {
 
@@ -43,17 +41,17 @@ public class ScriptAppenderSelectorTest {
     }
 
     static void verify(final Configuration config) {
-        assertNull(config.getAppender("List1"), "List1 appender should not be initialized");
-        assertNull(config.getAppender("List2"), "List2 appender should not be initialized");
+        assertThat(config.<Appender>getAppender("List1")).describedAs("List1 appender should not be initialized").isNull();
+        assertThat(config.<Appender>getAppender("List2")).describedAs("List2 appender should not be initialized").isNull();
         final ListAppender listAppender = config.getAppender("SelectIt");
-        assertNotNull(listAppender);
+        assertThat(listAppender).isNotNull();
         final ExtendedLogger logger = config.getLoggerContext().getLogger(ScriptAppenderSelectorTest.class);
         logger.error("Hello");
-        assertThat(listAppender.getEvents(), hasSize(1));
+        assertThat(listAppender.getEvents()).hasSize(1);
         logger.error("World");
-        assertThat(listAppender.getEvents(), hasSize(2));
+        assertThat(listAppender.getEvents()).hasSize(2);
         logger.error(MarkerManager.getMarker("HEXDUMP"), "DEADBEEF");
-        assertThat(listAppender.getEvents(), hasSize(3));
+        assertThat(listAppender.getEvents()).hasSize(3);
     }
 
 }

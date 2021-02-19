@@ -17,21 +17,21 @@
 
 package org.apache.logging.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.FilePermission;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.Permission;
 import java.util.PropertyPermission;
-
 import org.apache.logging.log4j.junit.SecurityManagerTestRule;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test related to https://issues.apache.org/jira/browse/LOG4J2-2274.
@@ -51,7 +51,7 @@ public class PropertyFilePropertySourceSecurityManagerIT {
 
     @BeforeClass
     public static void beforeClass() {
-        assertTrue(TEST_FIXTURE_PATH, Files.exists(Paths.get(TEST_FIXTURE_PATH)));
+        assertThat(Files.exists(Paths.get(TEST_FIXTURE_PATH))).describedAs(TEST_FIXTURE_PATH).isTrue();
     }
     
     @Rule
@@ -84,6 +84,6 @@ public class PropertyFilePropertySourceSecurityManagerIT {
     @Test
     public void test() {
         final PropertiesUtil propertiesUtil = new PropertiesUtil(TEST_FIXTURE_PATH);
-        assertNull(propertiesUtil.getStringProperty("a.1"));
+        assertThat(propertiesUtil.getStringProperty("a.1")).isNull();
     }
 }

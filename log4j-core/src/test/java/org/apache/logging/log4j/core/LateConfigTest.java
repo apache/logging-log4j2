@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.io.File;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -27,8 +29,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("functional")
 public class LateConfigTest {
@@ -50,17 +50,17 @@ public class LateConfigTest {
     @Test
     public void testReconfiguration() throws Exception {
         final Configuration cfg = context.getConfiguration();
-        assertNotNull(cfg, "No configuration");
+        assertThat(cfg).describedAs("No configuration").isNotNull();
         assertTrue(cfg instanceof DefaultConfiguration, "Not set to default configuration");
         final File file = new File(CONFIG);
         final LoggerContext loggerContext = LoggerContext.getContext(null, false, file.toURI());
-        assertNotNull(loggerContext, "No Logger Context");
+        assertThat(loggerContext).describedAs("No Logger Context").isNotNull();
         final Configuration newConfig = loggerContext.getConfiguration();
-        assertNotSame(cfg, newConfig, "Configuration not reset");
+        assertThat(newConfig).describedAs("Configuration not reset").isNotSameAs(cfg);
         assertTrue(newConfig instanceof XmlConfiguration, "Reconfiguration failed");
         context = LoggerContext.getContext(false);
         final Configuration sameConfig = context.getConfiguration();
-        assertSame(newConfig, sameConfig, "Configuration should not have been reset");
+        assertThat(sameConfig).describedAs("Configuration should not have been reset").isSameAs(newConfig);
     }
 }
 

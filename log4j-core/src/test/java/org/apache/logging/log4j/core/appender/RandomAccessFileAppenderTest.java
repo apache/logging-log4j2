@@ -16,25 +16,25 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.assertj.core.api.HamcrestCondition;
 import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.hamcrest.CoreMatchers.*;
-
-import static org.junit.Assert.*;
 
 /**
  * Simple tests for both the RandomAccessFileAppender and RollingRandomAccessFileAppender.
@@ -83,11 +83,11 @@ public class RandomAccessFileAppenderTest {
         try (final BufferedReader reader = new BufferedReader(new FileReader(this.logFile))) {
             line = reader.readLine();
         }
-        assertNotNull(line);
-        assertThat(line, containsString(message));
+        assertThat(line).isNotNull();
+        assertThat(line).contains(message);
         final Matcher<String> containsLocationInformation = containsString("testRandomAccessConfiguration");
         final Matcher<String> containsLocationInformationIfEnabled = this.locationEnabled ?
                 containsLocationInformation : not(containsLocationInformation);
-        assertThat(line, containsLocationInformationIfEnabled);
+        assertThat(line).is(new HamcrestCondition<>(containsLocationInformationIfEnabled));
     }
 }

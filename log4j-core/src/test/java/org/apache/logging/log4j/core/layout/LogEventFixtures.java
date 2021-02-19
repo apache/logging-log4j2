@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -81,29 +81,29 @@ public class LogEventFixtures {
 
     public static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource,
             final boolean includeContext, final boolean includeStacktrace) {
-        assertEquals(expected.getClass(), actual.getClass());
-        assertEquals(includeContext ? expected.getContextData() : ContextDataFactory.createContextData(), actual.getContextData());
-        assertEquals(expected.getContextStack(), actual.getContextStack());
-        assertEquals(expected.getLevel(), actual.getLevel());
-        assertEquals(expected.getLoggerName(), actual.getLoggerName());
-        assertEquals(expected.getLoggerFqcn(), actual.getLoggerFqcn());
-        assertEquals(expected.getMarker(), actual.getMarker());
-        assertEquals(expected.getMessage(), actual.getMessage());
-        assertEquals(expected.getTimeMillis(), actual.getTimeMillis());
-        assertEquals(includeSource ? expected.getSource() : null, actual.getSource());
-        assertEquals(expected.getThreadName(), actual.getThreadName());
-        assertNotNull("original should have an exception", expected.getThrown());
-        assertNull("exception should not be serialized", actual.getThrown());
+        assertThat(actual.getClass()).isEqualTo(expected.getClass());
+        assertThat(actual.getContextData()).isEqualTo(includeContext ? expected.getContextData() : ContextDataFactory.createContextData());
+        assertThat(actual.getContextStack()).isEqualTo(expected.getContextStack());
+        assertThat(actual.getLevel()).isEqualTo(expected.getLevel());
+        assertThat(actual.getLoggerName()).isEqualTo(expected.getLoggerName());
+        assertThat(actual.getLoggerFqcn()).isEqualTo(expected.getLoggerFqcn());
+        assertThat(actual.getMarker()).isEqualTo(expected.getMarker());
+        assertThat(actual.getMessage()).isEqualTo(expected.getMessage());
+        assertThat(actual.getTimeMillis()).isEqualTo(expected.getTimeMillis());
+        assertThat(actual.getSource()).isEqualTo(includeSource ? expected.getSource() : null);
+        assertThat(actual.getThreadName()).isEqualTo(expected.getThreadName());
+        assertThat(expected.getThrown()).describedAs("original should have an exception").isNotNull();
+        assertThat(actual.getThrown()).describedAs("exception should not be serialized").isNull();
         if (includeStacktrace) { // TODO should compare the rest of the ThrowableProxy
-            assertEquals(expected.getThrownProxy(), actual.getThrownProxy());
+            assertThat(actual.getThrownProxy()).isEqualTo(expected.getThrownProxy());
         }
-        assertEquals(expected.isEndOfBatch(), actual.isEndOfBatch());
-        assertEquals(expected.isIncludeLocation(), actual.isIncludeLocation());
+        assertThat(actual.isEndOfBatch()).isEqualTo(expected.isEndOfBatch());
+        assertThat(actual.isIncludeLocation()).isEqualTo(expected.isIncludeLocation());
 
         // original: non-null thrown & null thrownProxy
         // deserialized: null thrown & non-null thrownProxy
-        assertNotEquals(expected.hashCode(), actual.hashCode());
-        assertNotEquals(expected, actual);
+        assertThat(actual.hashCode()).isNotEqualTo(expected.hashCode());
+        assertThat(actual).isNotEqualTo(expected);
     }
 
 }

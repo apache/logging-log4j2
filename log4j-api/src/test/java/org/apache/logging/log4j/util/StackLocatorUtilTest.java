@@ -16,20 +16,20 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.apache.logging.log4j.junit.ClassMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
+import static org.junit.Assume.assumeThat;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.Stack;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.ParentRunner;
-
-import static org.apache.logging.log4j.junit.ClassMatchers.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeThat;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class StackLocatorUtilTest {
@@ -48,8 +48,8 @@ public class StackLocatorUtilTest {
             final Class<?> actual = StackLocatorUtil.getCallerClass(i);
             final Class<?> fallbackActual = Class.forName(
                 StackLocatorUtil.getStackTraceElement(i).getClassName());
-            assertSame(expected, actual);
-            assertSame(expected, fallbackActual);
+            assertThat(actual).isSameAs(expected);
+            assertThat(fallbackActual).isSameAs(expected);
         }
     }
 
@@ -57,14 +57,14 @@ public class StackLocatorUtilTest {
     public void testGetCallerClass() throws Exception {
         final Class<?> expected = StackLocatorUtilTest.class;
         final Class<?> actual = StackLocatorUtil.getCallerClass(1);
-        assertSame(expected, actual);
+        assertThat(actual).isSameAs(expected);
     }
 
     @Test
     public void testGetCallerClassNameViaStackTrace() throws Exception {
         final Class<?> expected = StackLocatorUtilTest.class;
         final Class<?> actual = Class.forName(new Throwable().getStackTrace()[0].getClassName());
-        assertSame(expected, actual);
+        assertThat(actual).isSameAs(expected);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class StackLocatorUtilTest {
             reversed.pop();
         }
         reversed.pop(); // ReflectionUtil
-        assertSame(StackLocatorUtilTest.class, reversed.pop());
+        assertThat(reversed.pop()).isSameAs(StackLocatorUtilTest.class);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class StackLocatorUtilTest {
         final Class<?> actual = StackLocatorUtil.getCallerClass("org.junit.runners.ParentRunner");
         // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
         // update this test accordingly
-        assertSame(expected, actual);
+        assertThat(actual).isSameAs(expected);
     }
 
     @Test
@@ -97,15 +97,15 @@ public class StackLocatorUtilTest {
         final Class<?> actual = StackLocatorUtil.getCallerClass(ParentRunner.class);
         // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
         // update this test accordingly
-        assertSame(expected, actual);
+        assertThat(actual).isSameAs(expected);
     }
 
     @Test
     public void testLocateClass() {
         final ClassLocator locator = new ClassLocator();
         final Class<?> clazz = locator.locateClass();
-        assertNotNull("Could not locate class", clazz);
-        assertEquals("Incorrect class", this.getClass(), clazz);
+        assertThat(clazz).describedAs("Could not locate class").isNotNull();
+        assertThat(clazz).describedAs("Incorrect class").isEqualTo(this.getClass());
     }
 
 }

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,14 +26,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -41,8 +42,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PluginManagerPackagesTest {
     private static Configuration config;
@@ -81,8 +80,8 @@ public class PluginManagerPackagesTest {
         logger.info("this message is ignored");
 
         final List<String> messages = listAppender.getMessages();
-        assertEquals(1, messages.size(), messages.toString());
-        assertEquals("abc123XYZ", messages.get(0));
+        assertThat(messages.size()).describedAs(messages.toString()).isEqualTo(1);
+        assertThat(messages.get(0)).isEqualTo("abc123XYZ");
     }
 
     static void compile(final File f) throws IOException {

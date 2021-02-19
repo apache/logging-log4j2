@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
+import java.util.List;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerContextSelectorTest {
@@ -35,7 +35,7 @@ public class AsyncLoggerContextSelectorTest {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
         final LoggerContext context = selector.getContext(FQCN, null, false);
 
-        assertTrue(context instanceof AsyncLoggerContext);
+        assertThat(context instanceof AsyncLoggerContext).isTrue();
     }
 
     @Test
@@ -43,7 +43,7 @@ public class AsyncLoggerContextSelectorTest {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
         final LoggerContext context = selector.getContext(FQCN, null, false, null);
 
-        assertTrue(context instanceof AsyncLoggerContext);
+        assertThat(context instanceof AsyncLoggerContext).isTrue();
     }
 
     @Test
@@ -52,8 +52,8 @@ public class AsyncLoggerContextSelectorTest {
         selector.getContext(FQCN, null, false);
 
         final List<LoggerContext> list = selector.getLoggerContexts();
-        assertEquals(1, list.size());
-        assertTrue(list.get(0) instanceof AsyncLoggerContext);
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0) instanceof AsyncLoggerContext).isTrue();
     }
 
     @Test
@@ -62,7 +62,7 @@ public class AsyncLoggerContextSelectorTest {
         final LoggerContext context = selector.getContext(FQCN, null, false);
         final int hash = getClass().getClassLoader().hashCode();
         final String expectedContextName = "AsyncContext@" + Integer.toHexString(hash);
-        assertEquals(expectedContextName, context.getName());
+        assertThat(context.getName()).isEqualTo(expectedContextName);
     }
 
 }

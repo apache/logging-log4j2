@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NoSqlAppenderTest {
@@ -33,17 +34,15 @@ public class NoSqlAppenderTest {
     public void testNoProvider() {
         final NoSqlAppender appender = NoSqlAppender.newBuilder().setName("myName01").build();
 
-        assertNull("The appender should be null.", appender);
+        assertThat(appender).describedAs("The appender should be null.").isNull();
     }
 
     @Test
     public void testProvider() {
         final NoSqlAppender appender = NoSqlAppender.newBuilder().setName("myName01").setProvider(provider).build();
 
-        assertNotNull("The appender should not be null.", appender);
-        assertEquals("The toString value is not correct.",
-                "myName01{ manager=noSqlManager{ description=myName01, bufferSize=0, provider=" + provider + " } }",
-                appender.toString());
+        assertThat(appender).describedAs("The appender should not be null.").isNotNull();
+        assertThat(appender.toString()).describedAs("The toString value is not correct.").isEqualTo("myName01{ manager=noSqlManager{ description=myName01, bufferSize=0, provider=" + provider + " } }");
 
         appender.stop();
     }
@@ -53,11 +52,9 @@ public class NoSqlAppenderTest {
         final NoSqlAppender appender = NoSqlAppender.newBuilder().setName("anotherName02").setProvider(provider)
                 .setBufferSize(25).build();
 
-        assertNotNull("The appender should not be null.", appender);
-        assertEquals("The toString value is not correct.",
-                "anotherName02{ manager=noSqlManager{ description=anotherName02, bufferSize=25, provider=" + provider
-                        + " } }",
-                appender.toString());
+        assertThat(appender).describedAs("The appender should not be null.").isNotNull();
+        assertThat(appender.toString()).describedAs("The toString value is not correct.").isEqualTo("anotherName02{ manager=noSqlManager{ description=anotherName02, bufferSize=25, provider=" + provider
+                        + " } }");
 
         appender.stop();
     }

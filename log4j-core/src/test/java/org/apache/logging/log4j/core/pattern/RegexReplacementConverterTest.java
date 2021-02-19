@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -24,8 +27,6 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class RegexReplacementConverterTest {
 
@@ -44,9 +45,9 @@ public class RegexReplacementConverterTest {
         };
         final RegexReplacementConverter converter = RegexReplacementConverter.newInstance(ctx.getConfiguration(),
             options);
-        assertNotNull(converter);
+        assertThat(converter).isNotNull();
         converter.format(event, sb);
-        assertEquals("org/apache/logging/log4j/core/pattern/RegexReplacementConverterTest This is a test" +
-            Strings.LINE_SEPARATOR, sb.toString());
+        assertThat(sb.toString()).isEqualTo("org/apache/logging/log4j/core/pattern/RegexReplacementConverterTest This is a test" +
+            Strings.LINE_SEPARATOR);
     }
 }

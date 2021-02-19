@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -23,9 +26,6 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 
 public class XmlConfigurationPropsTest {
 
@@ -46,7 +46,7 @@ public class XmlConfigurationPropsTest {
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
-        assertThat(config, instanceOf(XmlConfiguration.class));
+        assertThat(config).isInstanceOf(XmlConfiguration.class);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class XmlConfigurationPropsTest {
             final LoggerContext ctx = LoggerContext.getContext();
             ctx.reconfigure();
             final Configuration config = ctx.getConfiguration();
-            assertThat(config, instanceOf(XmlConfiguration.class));
+            assertThat(config).isInstanceOf(XmlConfiguration.class);
         } finally {
             System.clearProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL);
         }
@@ -71,7 +71,7 @@ public class XmlConfigurationPropsTest {
             final LoggerContext ctx = LoggerContext.getContext();
             ctx.reconfigure();
             final Configuration config = ctx.getConfiguration();
-            assertThat(config, instanceOf(XmlConfiguration.class));
+            assertThat(config).isInstanceOf(XmlConfiguration.class);
         } finally {
             System.clearProperty("log4j.level");
         }
@@ -86,7 +86,7 @@ public class XmlConfigurationPropsTest {
             final LoggerContext ctx = LoggerContext.getContext();
             ctx.reconfigure();
             final Configuration config = ctx.getConfiguration();
-            assertThat(config, instanceOf(XmlConfiguration.class));
+            assertThat(config).isInstanceOf(XmlConfiguration.class);
         } finally {
             System.clearProperty("log4j.level");
             System.clearProperty("log.level");

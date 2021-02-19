@@ -17,6 +17,10 @@
 
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.rolling.CompositeTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
@@ -26,9 +30,6 @@ import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Tests related to <a href="https://issues.apache.org/jira/browse/LOG4J2-1100">LOG4J2-1100</a>.
@@ -64,11 +65,11 @@ class MultipleTriggeringPolicyTest {
 
     void assertBothTriggeringPoliciesConfigured(final Configuration configuration) {
         final RollingFileAppender appender = configuration.getAppender("File");
-        assertNotNull(appender);
+        assertThat(appender).isNotNull();
         final CompositeTriggeringPolicy compositeTriggeringPolicy = appender.getTriggeringPolicy();
-        assertNotNull(compositeTriggeringPolicy);
+        assertThat(compositeTriggeringPolicy).isNotNull();
         final TriggeringPolicy[] triggeringPolicies = compositeTriggeringPolicy.getTriggeringPolicies();
-        assertEquals(2, triggeringPolicies.length);
+        assertThat(triggeringPolicies.length).isEqualTo(2);
         final SizeBasedTriggeringPolicy sizeBasedTriggeringPolicy;
         final TimeBasedTriggeringPolicy timeBasedTriggeringPolicy;
         if (triggeringPolicies[0] instanceof SizeBasedTriggeringPolicy) {
@@ -78,7 +79,7 @@ class MultipleTriggeringPolicyTest {
             sizeBasedTriggeringPolicy = (SizeBasedTriggeringPolicy) triggeringPolicies[1];
             timeBasedTriggeringPolicy = (TimeBasedTriggeringPolicy) triggeringPolicies[0];
         }
-        assertEquals(7, timeBasedTriggeringPolicy.getInterval());
-        assertEquals(100 * 1024 * 1024, sizeBasedTriggeringPolicy.getMaxFileSize());
+        assertThat(timeBasedTriggeringPolicy.getInterval()).isEqualTo(7);
+        assertThat(sizeBasedTriggeringPolicy.getMaxFileSize()).isEqualTo(100 * 1024 * 1024);
     }
 }

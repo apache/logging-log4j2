@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
@@ -50,19 +50,19 @@ public class RollingAppenderDeleteScriptTest {
         Thread.sleep(100); // Allow time for rollover to complete
 
         final File dir = new File(DIR);
-        assertTrue("Dir " + DIR + " should exist", dir.exists());
-        assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
+        assertThat(dir.exists()).describedAs("Dir " + DIR + " should exist").isTrue();
+        assertThat(dir.listFiles().length > 0).describedAs("Dir " + DIR + " should contain files").isTrue();
 
         final File[] files = dir.listFiles();
         for (final File file : files) {
             System.out.println(file);
         }
         for (final File file : files) {
-            assertTrue(file.getName() + " starts with 'test-'", file.getName().startsWith("test-"));
-            assertTrue(file.getName() + " ends with '.log'", file.getName().endsWith(".log"));
+            assertThat(file.getName().startsWith("test-")).describedAs(file.getName() + " starts with 'test-'").isTrue();
+            assertThat(file.getName().endsWith(".log")).describedAs(file.getName() + " ends with '.log'").isTrue();
             final String strIndex = file.getName().substring(5, file.getName().indexOf('.'));
             final int index = Integer.parseInt(strIndex);
-            assertTrue(file + " should have odd index", index % 2 == 1);
+            assertThat(index % 2 == 1).describedAs(file + " should have odd index").isTrue();
         }
     }
 }

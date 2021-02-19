@@ -16,14 +16,14 @@
  */
 package org.apache.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
+import java.util.List;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Test logging with MDC values.
@@ -43,12 +43,12 @@ public class LogWithMDCTest {
             final Logger logger = Logger.getLogger("org.apache.test.logging");
             logger.debug("This is a test");
             final ListAppender listApp = (ListAppender) CTX.getAppender("List");
-            assertNotNull(listApp);
+            assertThat(listApp).isNotNull();
             final List<String> msgs = listApp.getMessages();
-            assertNotNull("No messages received", msgs);
-            assertTrue(msgs.size() == 1);
-            assertTrue("Key1 is missing", msgs.get(0).contains("Key1=John"));
-            assertTrue("Key2 is missing", msgs.get(0).contains("Key2=Smith"));
+            assertThat(msgs).describedAs("No messages received").isNotNull();
+            assertThat(msgs.size() == 1).isTrue();
+            assertThat(msgs.get(0).contains("Key1=John")).describedAs("Key1 is missing").isTrue();
+            assertThat(msgs.get(0).contains("Key2=Smith")).describedAs("Key2 is missing").isTrue();
         } finally {
             MDC.remove("Key1");
             MDC.remove("Key2");

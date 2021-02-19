@@ -16,14 +16,9 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.CoreLoggerContexts;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,9 +27,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.CoreLoggerContexts;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Test for LOG4J2-2368.
@@ -79,10 +79,10 @@ public class NestedLoggingFromThrowableMessageTest {
         Set<String> lines1 = readUniqueLines(file1);
         Set<String> lines2 = readUniqueLines(file2);
 
-        assertEquals("Expected the same data from both appenders", lines1, lines2);
-        assertEquals(2, lines1.size());
-        assertTrue(lines1.contains("INFO NestedLoggingFromThrowableMessageTest Logging in getMessage "));
-        assertTrue(lines1.contains("ERROR NestedLoggingFromThrowableMessageTest Test message"));
+        assertThat(lines2).describedAs("Expected the same data from both appenders").isEqualTo(lines1);
+        assertThat(lines1.size()).isEqualTo(2);
+        assertThat(lines1.contains("INFO NestedLoggingFromThrowableMessageTest Logging in getMessage ")).isTrue();
+        assertThat(lines1.contains("ERROR NestedLoggingFromThrowableMessageTest Test message")).isTrue();
     }
 
     private static Set<String> readUniqueLines(File input) throws IOException {
@@ -91,7 +91,7 @@ public class NestedLoggingFromThrowableMessageTest {
         try {
             String line;
             while ((line = reader.readLine()) != null) {
-                assertTrue("Read duplicate line: " + line, lines.add(line));
+                assertThat(lines.add(line)).describedAs("Read duplicate line: " + line).isTrue();
             }
         } finally {
             reader.close();

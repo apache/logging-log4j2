@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-
 import javax.net.ssl.SSLServerSocketFactory;
-
 import org.apache.logging.log4j.core.appender.SocketAppenderTest.TcpSocketTestServer;
 import org.apache.logging.log4j.core.net.Rfc1349TrafficClass;
 import org.apache.logging.log4j.core.net.SocketOptions;
@@ -94,38 +94,37 @@ public class SecureSocketAppenderSocketOptionsTest {
 
     @Test
     public void testSocketOptions() throws IOException {
-        Assert.assertNotNull(loggerContextRule);
-        Assert.assertNotNull(loggerContextRule.getConfiguration());
+        assertThat(loggerContextRule).isNotNull();
+        assertThat(loggerContextRule.getConfiguration()).isNotNull();
         final SocketAppender appender = loggerContextRule.getAppender("socket", SocketAppender.class);
-        Assert.assertNotNull(appender);
+        assertThat(appender).isNotNull();
         final TcpSocketManager manager = (TcpSocketManager) appender.getManager();
-        Assert.assertNotNull(manager);
+        assertThat(manager).isNotNull();
         final OutputStream outputStream = manager.getOutputStream();
-        Assert.assertFalse(outputStream instanceof NullOutputStream);
+        assertThat(outputStream instanceof NullOutputStream).isFalse();
         final SocketOptions socketOptions = manager.getSocketOptions();
-        Assert.assertNotNull(socketOptions);
+        assertThat(socketOptions).isNotNull();
         final Socket socket = manager.getSocket();
-        Assert.assertNotNull(socket);
+        assertThat(socket).isNotNull();
         // Test config request
-        Assert.assertEquals(false, socketOptions.isKeepAlive());
-        Assert.assertEquals(null, socketOptions.isOobInline());
-        Assert.assertEquals(false, socketOptions.isReuseAddress());
-        Assert.assertEquals(false, socketOptions.isTcpNoDelay());
-        Assert.assertEquals(Rfc1349TrafficClass.IPTOS_LOWCOST.value(),
-                socketOptions.getActualTrafficClass().intValue());
-        Assert.assertEquals(10000, socketOptions.getReceiveBufferSize().intValue());
-        Assert.assertEquals(8000, socketOptions.getSendBufferSize().intValue());
-        Assert.assertEquals(12345, socketOptions.getSoLinger().intValue());
-        Assert.assertEquals(54321, socketOptions.getSoTimeout().intValue());
+        assertThat(socketOptions.isKeepAlive()).isEqualTo(false);
+        assertThat(socketOptions.isOobInline()).isEqualTo(null);
+        assertThat(socketOptions.isReuseAddress()).isEqualTo(false);
+        assertThat(socketOptions.isTcpNoDelay()).isEqualTo(false);
+        assertThat(socketOptions.getActualTrafficClass().intValue()).isEqualTo(Rfc1349TrafficClass.IPTOS_LOWCOST.value());
+        assertThat(socketOptions.getReceiveBufferSize().intValue()).isEqualTo(10000);
+        assertThat(socketOptions.getSendBufferSize().intValue()).isEqualTo(8000);
+        assertThat(socketOptions.getSoLinger().intValue()).isEqualTo(12345);
+        assertThat(socketOptions.getSoTimeout().intValue()).isEqualTo(54321);
         // Test live socket
-        Assert.assertEquals(false, socket.getKeepAlive());
-        Assert.assertEquals(false, socket.getReuseAddress());
-        Assert.assertEquals(false, socket.getTcpNoDelay());
+        assertThat(socket.getKeepAlive()).isEqualTo(false);
+        assertThat(socket.getReuseAddress()).isEqualTo(false);
+        assertThat(socket.getTcpNoDelay()).isEqualTo(false);
         // Assert.assertEquals(10000, socket.getReceiveBufferSize());
         // This settings changes while we are running, so we cannot assert it.
         // Assert.assertEquals(8000, socket.getSendBufferSize());
-        Assert.assertEquals(12345, socket.getSoLinger());
-        Assert.assertEquals(54321, socket.getSoTimeout());
+        assertThat(socket.getSoLinger()).isEqualTo(12345);
+        assertThat(socket.getSoTimeout()).isEqualTo(54321);
     }
 
     @Test
@@ -135,6 +134,6 @@ public class SecureSocketAppenderSocketOptionsTest {
         final SocketAppender appender = loggerContextRule.getAppender("socket", SocketAppender.class);
         final TcpSocketManager manager = (TcpSocketManager) appender.getManager();
         final Socket socket = manager.getSocket();
-        Assert.assertEquals(Rfc1349TrafficClass.IPTOS_LOWCOST.value(), socket.getTrafficClass());
+        assertThat(socket.getTrafficClass()).isEqualTo(Rfc1349TrafficClass.IPTOS_LOWCOST.value());
     }
 }

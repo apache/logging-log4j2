@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the SimpleMessage class.
@@ -28,13 +29,13 @@ public class SimpleMessageTest {
     public void formatTo_usesCachedMessageString() throws Exception {
         final StringBuilder charSequence = new StringBuilder("initial value");
         final SimpleMessage message = new SimpleMessage(charSequence);
-        assertEquals("initial value", message.getFormattedMessage());
+        assertThat(message.getFormattedMessage()).isEqualTo("initial value");
 
         charSequence.setLength(0);
         charSequence.append("different value");
 
         final StringBuilder result = new StringBuilder();
         message.formatTo(result);
-        assertEquals("initial value", result.toString());
+        assertThat(result.toString()).isEqualTo("initial value");
     }
 }

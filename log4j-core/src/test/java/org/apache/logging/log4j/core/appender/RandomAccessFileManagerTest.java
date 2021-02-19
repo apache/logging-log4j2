@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-
 import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the RandomAccessFileManager class.
@@ -52,7 +52,7 @@ public class RandomAccessFileManagerTest {
                 final byte[] data = new byte[size];
                 manager.write(data); // no buffer overflow exception
                 // all data is written if exceeds buffer size
-                assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3, raf.length());
+                assertThat(raf.length()).isEqualTo(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3);
             }
         }
     }
@@ -74,8 +74,8 @@ public class RandomAccessFileManagerTest {
                 final byte[] data = new byte[size];
                 manager.write(data); // no exception
                 // all data is written if exceeds buffer size
-                assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1, raf.length());
-                assertEquals(size, raf.length()); // all data written to file now
+                assertThat(raf.length()).isEqualTo(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1);
+                assertThat(raf.length()).isEqualTo(size); // all data written to file now
             }
         }
     }
@@ -86,11 +86,11 @@ public class RandomAccessFileManagerTest {
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.getInstance();
             final int bufferSize = 4 * 1024;
-            assertNotEquals(bufferSize, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
+            assertThat(RandomAccessFileManager.DEFAULT_BUFFER_SIZE).isNotEqualTo(bufferSize);
             try (final RandomAccessFileManager manager = new RandomAccessFileManager(
                     null, raf, file.getName(), os, bufferSize, null, null, true)) {
                 // check the resulting buffer size is what was requested
-                assertEquals(bufferSize, manager.getBufferSize());
+                assertThat(manager.getBufferSize()).isEqualTo(bufferSize);
             }
         }
     }
@@ -107,8 +107,8 @@ public class RandomAccessFileManagerTest {
                 final byte[] data = new byte[size];
                 manager.write(data); // no exception
                 // all data is written if exceeds buffer size
-                assertEquals(bufferSize * 3 + 1, raf.length());
-                assertEquals(size, raf.length()); // all data written to file now
+                assertThat(raf.length()).isEqualTo(bufferSize * 3 + 1);
+                assertThat(raf.length()).isEqualTo(size); // all data written to file now
             }
         }
     }
@@ -117,7 +117,7 @@ public class RandomAccessFileManagerTest {
     public void testAppendDoesNotOverwriteExistingFile() throws IOException {
         final boolean isAppend = true;
         final File file = new File(tempDir, "testAppendDoesNotOverwriteExistingFile.bin");
-        assertEquals(0, file.length());
+        assertThat(file.length()).isEqualTo(0);
 
         final byte[] bytes = new byte[4 * 1024];
 
@@ -126,7 +126,7 @@ public class RandomAccessFileManagerTest {
             fos.write(bytes, 0, bytes.length);
             fos.flush();
         }
-        assertEquals(bytes.length, file.length(), "all flushed to disk");
+        assertThat(file.length()).describedAs("all flushed to disk").isEqualTo(bytes.length);
 
         try (final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
                 file.getAbsolutePath(), isAppend, true,
@@ -134,7 +134,7 @@ public class RandomAccessFileManagerTest {
             manager.write(bytes, 0, bytes.length, true);
         }
         final int expected = bytes.length * 2;
-        assertEquals(expected, file.length(), "appended, not overwritten");
+        assertThat(file.length()).describedAs("appended, not overwritten").isEqualTo(expected);
     }
 
 }

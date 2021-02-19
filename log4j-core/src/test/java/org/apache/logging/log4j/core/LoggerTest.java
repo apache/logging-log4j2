@@ -16,6 +16,18 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.File;
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
@@ -39,18 +51,6 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-import java.io.File;
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
-
 @LoggerContextSource(value = LoggerTest.CONFIG, reconfigure = ReconfigurationPolicy.AFTER_EACH)
 public class LoggerTest {
 
@@ -72,7 +72,7 @@ public class LoggerTest {
     }
 
     private void assertEventCount(final List<LogEvent> events, final int expected) {
-        assertEquals(expected, events.size(), "Incorrect number of events.");
+        assertThat(events.size()).describedAs("Incorrect number of events.").isEqualTo(expected);
     }
 
     @Test
@@ -83,12 +83,10 @@ public class LoggerTest {
         logger.atWarn().withThrowable(new Throwable("This is a test")).log((Message) new SimpleMessage("Log4j rocks!"));
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 3);
-        assertEquals(
-                "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:80)", events.get(0).getSource().toString(),
-                "Incorrect location");
-        assertEquals(Level.DEBUG, events.get(0).getLevel(), "Incorrect Level");
-        MatcherAssert.assertThat("Incorrect message", events.get(1).getMessage().getFormattedMessage(), equalTo("Hello John"));
-        assertNotNull(events.get(2).getThrown(), "Missing Throwable");
+        assertThat(events.get(0).getSource().toString()).describedAs("Incorrect location").isEqualTo("org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:80)");
+        assertThat(events.get(0).getLevel()).describedAs("Incorrect Level").isEqualTo(Level.DEBUG);
+        assertThat(events.get(1).getMessage().getFormattedMessage()).describedAs("Incorrect message").isEqualTo("Hello John");
+        assertThat(events.get(2).getThrown()).describedAs("Missing Throwable").isNotNull();
     }
 
     @Test
@@ -259,7 +257,7 @@ public class LoggerTest {
         testLogger.debug("%,d", Integer.MAX_VALUE);
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 1);
-        assertEquals(String.format("%,d", Integer.MAX_VALUE), events.get(0).getMessage().getFormattedMessage());
+        assertThat(events.get(0).getMessage().getFormattedMessage()).isEqualTo(String.format("%,d", Integer.MAX_VALUE));
     }
 
     @Test
@@ -268,27 +266,27 @@ public class LoggerTest {
         testLogger.debug("%,d", Integer.MAX_VALUE);
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 1);
-        assertEquals(String.format("%,d", Integer.MAX_VALUE), events.get(0).getMessage().getFormattedMessage());
+        assertThat(events.get(0).getMessage().getFormattedMessage()).isEqualTo(String.format("%,d", Integer.MAX_VALUE));
     }
 
     private static Logger testMessageFactoryMismatch(final String name,
                                                      final MessageFactory messageFactory1,
             final MessageFactory messageFactory2) {
         final Logger testLogger1 = (Logger) LogManager.getLogger(name, messageFactory1);
-        assertNotNull(testLogger1);
+        assertThat(testLogger1).isNotNull();
         checkMessageFactory(messageFactory1, testLogger1);
         final Logger testLogger2 = (Logger) LogManager.getLogger(name, messageFactory2);
-        assertNotNull(testLogger2);
+        assertThat(testLogger2).isNotNull();
         checkMessageFactory(messageFactory2, testLogger2);
         return testLogger1;
     }
 
     private static void checkMessageFactory(final MessageFactory messageFactory, final Logger testLogger) {
         if (messageFactory == null) {
-            assertEquals(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS, testLogger.getMessageFactory().getClass());
+            assertThat(testLogger.getMessageFactory().getClass()).isEqualTo(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS);
         } else {
             MessageFactory actual = testLogger.getMessageFactory();
-            assertEquals(messageFactory, actual);
+            assertThat(actual).isEqualTo(messageFactory);
         }
     }
 
@@ -311,7 +309,7 @@ public class LoggerTest {
         final org.apache.logging.log4j.Logger testLogger = context.getLogger("org.apache.logging.log4j.hosttest");
         testLogger.debug("This is a test", new Throwable("Testing"));
         final List<String> msgs = host.getMessages();
-        assertEquals(1, msgs.size(), "Incorrect number of messages. Expected 1, actual " + msgs.size());
+        assertThat(msgs.size()).describedAs("Incorrect number of messages. Expected 1, actual " + msgs.size()).isEqualTo(1);
         final String expected = "java.lang.Throwable: Testing";
         assertTrue(msgs.get(0).contains(expected), "Incorrect message data");
     }
@@ -322,7 +320,7 @@ public class LoggerTest {
         final org.apache.logging.log4j.Logger testLogger = context.getLogger("org.apache.logging.log4j.nothrown");
         testLogger.debug("This is a test", new Throwable("Testing"));
         final List<String> msgs = noThrown.getMessages();
-        assertEquals(1, msgs.size(), "Incorrect number of messages. Expected 1, actual " + msgs.size());
+        assertThat(msgs.size()).describedAs("Incorrect number of messages. Expected 1, actual " + msgs.size()).isEqualTo(1);
         final String suppressed = "java.lang.Throwable: Testing";
         assertFalse(msgs.get(0).contains(suppressed), "Incorrect message data");
     }
@@ -373,8 +371,8 @@ public class LoggerTest {
             Thread.sleep(50);
         }
         final Configuration newConfig = context.getConfiguration();
-        assertNotNull(newConfig, "No configuration");
-        assertNotSame(newConfig, oldConfig, "Reconfiguration failed");
+        assertThat(newConfig).describedAs("No configuration").isNotNull();
+        assertThat(oldConfig).describedAs("Reconfiguration failed").isNotSameAs(newConfig);
     }
 
     @Test
@@ -389,26 +387,26 @@ public class LoggerTest {
     public void testLevelInheritance(final LoggerContext context) throws Exception {
         final Configuration config = context.getConfiguration();
         final LoggerConfig loggerConfig = config.getLoggerConfig("org.apache.logging.log4j.core.LoggerTest");
-        assertNotNull(loggerConfig);
-        assertEquals(loggerConfig.getName(), "org.apache.logging.log4j.core.LoggerTest");
-        assertEquals(loggerConfig.getLevel(), Level.DEBUG);
+        assertThat(loggerConfig).isNotNull();
+        assertThat("org.apache.logging.log4j.core.LoggerTest").isEqualTo(loggerConfig.getName());
+        assertThat(Level.DEBUG).isEqualTo(loggerConfig.getLevel());
         final Logger localLogger = context.getLogger("org.apache.logging.log4j.core.LoggerTest");
-        assertSame(localLogger.getLevel(), Level.DEBUG, "Incorrect level - expected DEBUG, actual " + localLogger.getLevel());
+        assertThat(Level.DEBUG).describedAs("Incorrect level - expected DEBUG, actual " + localLogger.getLevel()).isSameAs(localLogger.getLevel());
     }
 
     @Test
     public void paramWithExceptionTest() throws Exception {
         logger.error("Throwing with parameters {}", "TestParam", new NullPointerException("Test Exception"));
         final List<LogEvent> events = app.getEvents();
-        assertNotNull(events, "Log event list not returned");
-        assertEquals(1, events.size(), "Incorrect number of log events");
+        assertThat(events).describedAs("Log event list not returned").isNotNull();
+        assertThat(events.size()).describedAs("Incorrect number of log events").isEqualTo(1);
         final LogEvent event = events.get(0);
         final Throwable thrown = event.getThrown();
-        assertNotNull(thrown, "No throwable present in log event");
+        assertThat(thrown).describedAs("No throwable present in log event").isNotNull();
         final Message msg = event.getMessage();
-        assertEquals("Throwing with parameters {}", msg.getFormat());
-        assertEquals("Throwing with parameters TestParam", msg.getFormattedMessage());
-        assertArrayEquals(new Object[] { "TestParam", thrown }, msg.getParameters());
+        assertThat(msg.getFormat()).isEqualTo("Throwing with parameters {}");
+        assertThat(msg.getFormattedMessage()).isEqualTo("Throwing with parameters TestParam");
+        assertThat(msg.getParameters()).isEqualTo(new Object[] { "TestParam", thrown });
     }
 }
 

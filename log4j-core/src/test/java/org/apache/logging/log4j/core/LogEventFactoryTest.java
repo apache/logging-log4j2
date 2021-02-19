@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Field;
 import java.util.List;
-
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -82,10 +82,10 @@ public class LogEventFactoryTest {
         final org.apache.logging.log4j.Logger logger = context.getLogger("org.apache.test.LogEventFactory");
         logger.error("error message");
         final List<LogEvent> events = app.getEvents();
-        assertNotNull("No events", events);
-        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
+        assertThat(events).describedAs("No events").isNotNull();
+        assertThat(events.size()).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).isEqualTo(1);
         final LogEvent event = events.get(0);
-        assertEquals("TestLogEventFactory wasn't used", "Test", event.getLoggerName());
+        assertThat(event.getLoggerName()).describedAs("TestLogEventFactory wasn't used").isEqualTo("Test");
     }
 
     public static class TestLogEventFactory implements LogEventFactory {

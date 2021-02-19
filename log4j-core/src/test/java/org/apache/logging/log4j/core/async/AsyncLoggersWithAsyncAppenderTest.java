@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -25,8 +27,6 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggersWithAsyncAppenderTest {
@@ -42,13 +42,13 @@ public class AsyncLoggersWithAsyncAppenderTest {
         logger.warn("Hello {}!", "world");
         Thread.sleep(100);
         final List<String> list = context.getListAppender("List").getMessages();
-        assertNotNull("No events generated", list);
-        assertEquals("Incorrect number of events ", 2, list.size());
+        assertThat(list).describedAs("No events generated").isNotNull();
+        assertThat(list.size()).describedAs("Incorrect number of events ").isEqualTo(2);
         String msg = list.get(0);
         String expected = getClass().getName() + " This {} a test - [is] - This is a test";
-        assertEquals(expected, msg);
+        assertThat(msg).isEqualTo(expected);
         msg = list.get(1);
         expected = getClass().getName() + " Hello {}! - [world] - Hello world!";
-        assertEquals(expected, msg);
+        assertThat(msg).isEqualTo(expected);
     }
 }

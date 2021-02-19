@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.impl.Log4jLogEventTest;
@@ -102,9 +102,9 @@ public class JsonCompleteFileAppenderTest {
         };
         for (int i = 0; i < expected.length; i++) {
             String line = lines.get(i);
-            assertTrue("line " + i + " incorrect: [" + line + "], does not contain: [" + expected[i] + ']', line.contains(expected[i]));
+            assertThat(line.contains(expected[i])).describedAs("line " + i + " incorrect: [" + line + "], does not contain: [" + expected[i] + ']').isTrue();
         }
         final String location = "testFlushAtEndOfBatch";
-        assertTrue("no location", !lines.get(0).contains(location));
+        assertThat(!lines.get(0).contains(location)).describedAs("no location").isTrue();
     }
 }

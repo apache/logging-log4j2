@@ -17,11 +17,13 @@
 
 package org.apache.logging.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the LambdaUtil class.
@@ -32,40 +34,40 @@ public class LambdaUtilTest {
     public void testGetSupplierResultOfSupplier() {
         final String expected = "result";
         final Object actual = LambdaUtil.get((Supplier<String>) () -> expected);
-        assertSame(expected, actual);
+        assertThat(actual).isSameAs(expected);
     }
 
     @Test
     public void testGetMessageSupplierResultOfSupplier() {
         final Message expected = new SimpleMessage("hi");
         final Message actual = LambdaUtil.get(() -> expected);
-        assertSame(expected, actual);
+        assertThat(actual).isSameAs(expected);
     }
 
     @Test
     public void testGetSupplierReturnsNullIfSupplierNull() {
         final Object actual = LambdaUtil.get((Supplier<?>) null);
-        assertNull(actual);
+        assertThat(actual).isNull();
     }
 
     @Test
     public void testGetMessageSupplierReturnsNullIfSupplierNull() {
         final Object actual = LambdaUtil.get((MessageSupplier) null);
-        assertNull(actual);
+        assertThat(actual).isNull();
     }
 
     @Test
     public void testGetSupplierExceptionIfSupplierThrowsException() {
-        assertThrows(RuntimeException.class, () -> LambdaUtil.get((Supplier<String>) () -> {
+        assertThatThrownBy(() -> LambdaUtil.get((Supplier<String>) () -> {
             throw new RuntimeException();
-        }));
+        })).isInstanceOf(RuntimeException.class);
     }
 
     @Test
     public void testGetMessageSupplierExceptionIfSupplierThrowsException() {
-        assertThrows(RuntimeException.class, () -> LambdaUtil.get(() -> {
+        assertThatThrownBy(() -> LambdaUtil.get(() -> {
             throw new RuntimeException();
-        }));
+        })).isInstanceOf(RuntimeException.class);
     }
 
     @Test
@@ -77,24 +79,24 @@ public class LambdaUtilTest {
 
         final Supplier<?>[] functions = { function1, function2 };
         final Object[] actual = LambdaUtil.getAll(functions);
-        assertEquals(actual.length, functions.length);
-        assertSame(expected1, actual[0]);
-        assertSame(expected2, actual[1]);
+        assertThat(functions.length).isEqualTo(actual.length);
+        assertThat(actual[0]).isSameAs(expected1);
+        assertThat(actual[1]).isSameAs(expected2);
     }
 
     @Test
     public void testGetAllReturnsNullArrayIfSupplierArrayNull() {
         final Object[] actual = LambdaUtil.getAll((Supplier<?>[]) null);
-        assertNull(actual);
+        assertThat(actual).isNull();
     }
 
     @Test
     public void testGetAllReturnsNullElementsIfSupplierArrayContainsNulls() {
         final Supplier<?>[] functions = new Supplier<?>[3];
         final Object[] actual = LambdaUtil.getAll(functions);
-        assertEquals(actual.length, functions.length);
+        assertThat(functions.length).isEqualTo(actual.length);
         for (final Object object : actual) {
-            assertNull(object);
+            assertThat(object).isNull();
         }
     }
 
@@ -106,6 +108,6 @@ public class LambdaUtilTest {
         };
 
         final Supplier<?>[] functions = { function1, function2 };
-        assertThrows(RuntimeException.class, () -> LambdaUtil.getAll(functions));
+        assertThatThrownBy(() -> LambdaUtil.getAll(functions)).isInstanceOf(RuntimeException.class);
     }
 }

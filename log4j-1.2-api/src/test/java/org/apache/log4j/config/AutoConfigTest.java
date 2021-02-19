@@ -16,6 +16,13 @@
  */
 package org.apache.log4j.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -27,13 +34,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test configuration from XML.
@@ -61,12 +61,12 @@ public class AutoConfigTest {
                 eventAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
             }
         }
-        assertNotNull("No Event Appender", eventAppender);
-        assertNotNull("No Message Appender", messageAppender);
+        assertThat(eventAppender).describedAs("No Event Appender").isNotNull();
+        assertThat(messageAppender).describedAs("No Message Appender").isNotNull();
         List<LoggingEvent> events = eventAppender.getEvents();
-        assertTrue("No events", events != null && events.size() > 0);
+        assertThat(events != null && events.size() > 0).describedAs("No events").isTrue();
         List<String> messages = messageAppender.getMessages();
-        assertTrue("No messages", messages != null && messages.size() > 0);
+        assertThat(messages != null && messages.size() > 0).describedAs("No messages").isTrue();
     }
 
 }

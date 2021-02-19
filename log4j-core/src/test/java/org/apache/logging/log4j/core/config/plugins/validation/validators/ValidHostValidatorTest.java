@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.junit.StatusLoggerLevel;
@@ -25,8 +28,6 @@ import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.validation.HostAndPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @StatusLoggerLevel("FATAL")
 public class ValidHostValidatorTest {
@@ -40,13 +41,13 @@ public class ValidHostValidatorTest {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<HostAndPort>) manager.getPluginType("HostAndPort");
-        assertNotNull(plugin, "Rebuild this module to ensure annotation processing has been done.");
+        assertThat(plugin).describedAs("Rebuild this module to ensure annotation processing has been done.").isNotNull();
         node = new Node(null, "HostAndPort", plugin);
     }
 
     @Test
     public void testNullHost() throws Exception {
-        assertNull(buildPlugin());
+        assertThat(buildPlugin()).isNull();
     }
 
     @Test
@@ -54,7 +55,7 @@ public class ValidHostValidatorTest {
         node.getAttributes().put("host", "256.256.256.256");
         node.getAttributes().put("port", "1");
         final HostAndPort plugin = buildPlugin();
-        assertNull(plugin, "Expected null, but got: " + plugin);
+        assertThat(plugin).describedAs("Expected null, but got: " + plugin).isNull();
     }
 
     @Test
@@ -62,8 +63,8 @@ public class ValidHostValidatorTest {
         node.getAttributes().put("host", "localhost");
         node.getAttributes().put("port", "1");
         final HostAndPort hostAndPort = buildPlugin();
-        assertNotNull(hostAndPort);
-        assertTrue(hostAndPort.isValid());
+        assertThat(hostAndPort).isNotNull();
+        assertThat(hostAndPort.isValid()).isTrue();
     }
 
     private HostAndPort buildPlugin() {

@@ -17,18 +17,18 @@
 
 package org.apache.logging.log4j.util;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceAccessMode;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 public class PropertiesUtilTest {
 
@@ -45,13 +45,13 @@ public class PropertiesUtilTest {
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "b."));
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "c.1"));
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "dd"));
-        assertEquals(0, properties.size());
+        assertThat(properties.size()).isEqualTo(0);
     }
 
     @Test
     public void testPartitionOnCommonPrefix() {
         final Map<String, Properties> parts = PropertiesUtil.partitionOnCommonPrefixes(properties);
-        assertEquals(4, parts.size());
+        assertThat(parts.size()).isEqualTo(4);
         assertHasAllProperties(parts.get("a"));
         assertHasAllProperties(parts.get("b"));
         assertHasAllProperties(PropertiesUtil.partitionOnCommonPrefixes(parts.get("c")).get("1"));
@@ -59,10 +59,10 @@ public class PropertiesUtilTest {
     }
 
     private static void assertHasAllProperties(final Properties properties) {
-        assertNotNull(properties);
-        assertEquals("1", properties.getProperty("1"));
-        assertEquals("2", properties.getProperty("2"));
-        assertEquals("3", properties.getProperty("3"));
+        assertThat(properties).isNotNull();
+        assertThat(properties.getProperty("1")).isEqualTo("1");
+        assertThat(properties.getProperty("2")).isEqualTo("2");
+        assertThat(properties.getProperty("3")).isEqualTo("3");
     }
 
 
@@ -73,9 +73,9 @@ public class PropertiesUtilTest {
         p.setProperty("e.2", "wrong-charset-name");
         final PropertiesUtil pu = new PropertiesUtil(p);
 
-        assertEquals(Charset.defaultCharset(), pu.getCharsetProperty("e.0"));
-        assertEquals(StandardCharsets.US_ASCII, pu.getCharsetProperty("e.1"));
-        assertEquals(Charset.defaultCharset(), pu.getCharsetProperty("e.2"));
+        assertThat(pu.getCharsetProperty("e.0")).isEqualTo(Charset.defaultCharset());
+        assertThat(pu.getCharsetProperty("e.1")).isEqualTo(StandardCharsets.US_ASCII);
+        assertThat(pu.getCharsetProperty("e.2")).isEqualTo(Charset.defaultCharset());
     }
     
     @Test
@@ -83,7 +83,7 @@ public class PropertiesUtilTest {
     public void testGetMappedProperty_sun_stdout_encoding() {
         final PropertiesUtil pu = new PropertiesUtil(System.getProperties());
         Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
-        assertEquals(expected, pu.getCharsetProperty("sun.stdout.encoding"));
+        assertThat(pu.getCharsetProperty("sun.stdout.encoding")).isEqualTo(expected);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class PropertiesUtilTest {
     public void testGetMappedProperty_sun_stderr_encoding() {
         final PropertiesUtil pu = new PropertiesUtil(System.getProperties());
         Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
-        assertEquals(expected, pu.getCharsetProperty("sun.err.encoding"));
+        assertThat(pu.getCharsetProperty("sun.err.encoding")).isEqualTo(expected);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class PropertiesUtilTest {
         System.getProperties().put(key2, "value-2");
         try {
             final PropertiesUtil util = new PropertiesUtil(new Properties());
-            assertNull(util.getStringProperty("1"));
+            assertThat(util.getStringProperty("1")).isNull();
         } finally {
             System.getProperties().remove(key1);
             System.getProperties().remove(key2);
@@ -116,7 +116,7 @@ public class PropertiesUtilTest {
         final Properties props = new Properties();
         final PropertiesUtil util = new PropertiesUtil(props);
         String value = System.getProperty("Application");
-        assertNotNull(value, "System property was not published");
-        assertEquals("Log4j", value);
+        assertThat(value).describedAs("System property was not published").isNotNull();
+        assertThat(value).isEqualTo("Log4j");
     }
 }

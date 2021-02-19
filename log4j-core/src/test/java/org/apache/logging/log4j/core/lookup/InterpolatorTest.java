@@ -16,19 +16,19 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.junit.JndiRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -65,26 +65,26 @@ public class InterpolatorTest {
         final StrLookup lookup = new Interpolator(new MapLookup(map));
         ThreadContext.put(TESTKEY, TESTVAL);
         String value = lookup.lookup(TESTKEY);
-        assertEquals(TESTVAL, value);
+        assertThat(value).isEqualTo(TESTVAL);
         value = lookup.lookup("ctx:" + TESTKEY);
-        assertEquals(TESTVAL, value);
+        assertThat(value).isEqualTo(TESTVAL);
         value = lookup.lookup("sys:" + TESTKEY);
-        assertEquals(TESTVAL, value);
+        assertThat(value).isEqualTo(TESTVAL);
         value = lookup.lookup("SYS:" + TESTKEY2);
-        assertEquals(TESTVAL, value);
+        assertThat(value).isEqualTo(TESTVAL);
         value = lookup.lookup("BadKey");
-        assertNull(value);
+        assertThat(value).isNull();
         ThreadContext.clearMap();
         value = lookup.lookup("ctx:" + TESTKEY);
-        assertEquals(TESTVAL, value);
+        assertThat(value).isEqualTo(TESTVAL);
         value = lookup.lookup("jndi:" + TEST_CONTEXT_RESOURCE_NAME);
-        assertEquals(TEST_CONTEXT_NAME, value);
+        assertThat(value).isEqualTo(TEST_CONTEXT_NAME);
     }
 
     private void assertLookupNotEmpty(final StrLookup lookup, final String key) {
         final String value = lookup.lookup(key);
-        assertNotNull(value);
-        assertFalse(value.isEmpty());
+        assertThat(value).isNotNull();
+        assertThat(value.isEmpty()).isFalse();
         System.out.println(key + " = " + value);
     }
 
@@ -92,16 +92,16 @@ public class InterpolatorTest {
     public void testLookupWithDefaultInterpolator() {
         final StrLookup lookup = new Interpolator();
         String value = lookup.lookup("sys:" + TESTKEY);
-        assertEquals(TESTVAL, value);
+        assertThat(value).isEqualTo(TESTVAL);
         value = lookup.lookup("env:PATH");
-        assertNotNull(value);
+        assertThat(value).isNotNull();
         value = lookup.lookup("jndi:" + TEST_CONTEXT_RESOURCE_NAME);
-        assertEquals(TEST_CONTEXT_NAME, value);
+        assertThat(value).isEqualTo(TEST_CONTEXT_NAME);
         value = lookup.lookup("date:yyyy-MM-dd");
-        assertNotNull("No Date", value);
+        assertThat(value).describedAs("No Date").isNotNull();
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         final String today = format.format(new Date());
-        assertEquals(value, today);
+        assertThat(today).isEqualTo(value);
         assertLookupNotEmpty(lookup, "java:version");
         assertLookupNotEmpty(lookup, "java:runtime");
         assertLookupNotEmpty(lookup, "java:vm");

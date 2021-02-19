@@ -17,8 +17,10 @@
 
 package org.apache.logging.log4j.core.appender;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -26,8 +28,6 @@ import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * OutputStreamManager Tests.
@@ -44,11 +44,9 @@ public class OutputStreamManagerTest {
         if (data.getMessage().getFormattedMessage().contains("WindowsAnsiOutputStream")) {
             data = statusData.get(1);
         }
-        assertEquals(Level.ERROR, data.getLevel());
-        assertEquals("Could not create plugin of type class org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender for element RollingRandomAccessFile",
-                data.getMessage().getFormattedMessage());
-        assertEquals("org.apache.logging.log4j.core.config.ConfigurationException: Configuration has multiple incompatible Appenders pointing to the same resource 'target/multiIncompatibleAppender.log'",
-                data.getThrowable().toString());
+        assertThat(data.getLevel()).isEqualTo(Level.ERROR);
+        assertThat(data.getMessage().getFormattedMessage()).isEqualTo("Could not create plugin of type class org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender for element RollingRandomAccessFile");
+        assertThat(data.getThrowable().toString()).isEqualTo("org.apache.logging.log4j.core.config.ConfigurationException: Configuration has multiple incompatible Appenders pointing to the same resource 'target/multiIncompatibleAppender.log'");
     }
 
 }

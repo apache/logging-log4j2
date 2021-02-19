@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @since 2.4
@@ -31,12 +32,12 @@ public class ObjectArrayMessageTest {
 
     @Test
     public void testGetParameters() {
-        assertArrayEquals(ARRAY, OBJECT_ARRAY_MESSAGE.getParameters());
+        assertThat(OBJECT_ARRAY_MESSAGE.getParameters()).isEqualTo(ARRAY);
     }
 
     @Test
     public void testGetThrowable() {
-        assertNull(OBJECT_ARRAY_MESSAGE.getThrowable());
+        assertThat(OBJECT_ARRAY_MESSAGE.getThrowable()).isNull();
     }
 
 }

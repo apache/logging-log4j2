@@ -16,22 +16,21 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("functional")
 public class EventParameterMemoryLeakTest {
@@ -67,11 +66,11 @@ public class EventParameterMemoryLeakTest {
         final String line5 = reader.readLine();
         reader.close();
         file.delete();
-        assertThat(line1, containsString("Message with parameter paramValue"));
-        assertThat(line2, containsString("paramValue"));
-        assertThat(line3, containsString("paramValue"));
-        assertThat(line4, containsString("paramValue"));
-        assertNull(line5, "Expected only three lines");
+        assertThat(line1).contains("Message with parameter paramValue");
+        assertThat(line2).contains("paramValue");
+        assertThat(line3).contains("paramValue");
+        assertThat(line4).contains("paramValue");
+        assertThat(line5).describedAs("Expected only three lines").isNull();
         GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
         gcHelper.run();
         try {

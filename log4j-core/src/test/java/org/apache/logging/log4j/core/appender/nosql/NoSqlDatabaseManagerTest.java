@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -31,7 +32,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -91,7 +91,7 @@ public class NoSqlDatabaseManagerTest {
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
             provider)) {
 
-            assertNotNull("The manager should not be null.", manager);
+            assertThat(manager).describedAs("The manager should not be null.").isNotNull();
 
             manager.connectAndStart();
             then(provider).should().getConnection();
@@ -151,33 +151,32 @@ public class NoSqlDatabaseManagerTest {
             then(connection).should().insertObject(captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
-            assertNotNull("The inserted value should not be null.", inserted);
+            assertThat(inserted).describedAs("The inserted value should not be null.").isNotNull();
             final Map<String, Object> object = inserted.unwrap();
-            assertNotNull("The unwrapped object should not be null.", object);
+            assertThat(object).describedAs("The unwrapped object should not be null.").isNotNull();
 
-            assertEquals("The level is not correct.", Level.WARN, object.get("level"));
-            assertEquals("The logger is not correct.", "com.foo.NoSQLDbTest.testWriteInternal01",
-                object.get("loggerName"));
-            assertEquals("The message is not correct.", "My formatted message 01.", object.get("message"));
-            assertEquals("The thread is not correct.", "MyThread-A", object.get("threadName"));
-            assertEquals("The millis is not correct.", 1234567890123L, object.get("millis"));
-            assertEquals("The date is not correct.", 1234567890123L, ((Date) object.get("date")).getTime());
+            assertThat(object.get("level")).describedAs("The level is not correct.").isEqualTo(Level.WARN);
+            assertThat(object.get("loggerName")).describedAs("The logger is not correct.").isEqualTo("com.foo.NoSQLDbTest.testWriteInternal01");
+            assertThat(object.get("message")).describedAs("The message is not correct.").isEqualTo("My formatted message 01.");
+            assertThat(object.get("threadName")).describedAs("The thread is not correct.").isEqualTo("MyThread-A");
+            assertThat(object.get("millis")).describedAs("The millis is not correct.").isEqualTo(1234567890123L);
+            assertThat(((Date) object.get("date")).getTime()).describedAs("The date is not correct.").isEqualTo(1234567890123L);
 
-            assertTrue("The source should be a map.", object.get("source") instanceof Map);
+            assertThat(object.get("source") instanceof Map).describedAs("The source should be a map.").isTrue();
             @SuppressWarnings("unchecked")
             final Map<String, Object> source = (Map<String, Object>) object.get("source");
-            assertEquals("The class is not correct.", "com.foo.Bar", source.get("className"));
-            assertEquals("The method is not correct.", "testMethod01", source.get("methodName"));
-            assertEquals("The file name is not correct.", "Bar.java", source.get("fileName"));
-            assertEquals("The line number is not correct.", 15, source.get("lineNumber"));
+            assertThat(source.get("className")).describedAs("The class is not correct.").isEqualTo("com.foo.Bar");
+            assertThat(source.get("methodName")).describedAs("The method is not correct.").isEqualTo("testMethod01");
+            assertThat(source.get("fileName")).describedAs("The file name is not correct.").isEqualTo("Bar.java");
+            assertThat(source.get("lineNumber")).describedAs("The line number is not correct.").isEqualTo(15);
 
-            assertNull("The marker should be null.", object.get("marker"));
+            assertThat(object.get("marker")).describedAs("The marker should be null.").isNull();
 
-            assertNull("The thrown should be null.", object.get("thrown"));
+            assertThat(object.get("thrown")).describedAs("The thrown should be null.").isNull();
 
-            assertTrue("The context map should be empty.", ((Map<?, ?>) object.get("contextMap")).isEmpty());
+            assertThat(((Map<?, ?>) object.get("contextMap")).isEmpty()).describedAs("The context map should be empty.").isTrue();
 
-            assertTrue("The context stack should be null.", ((Collection<?>) object.get("contextStack")).isEmpty());
+            assertThat(((Collection<?>) object.get("contextStack")).isEmpty()).describedAs("The context stack should be null.").isTrue();
 
         }
     }
@@ -223,60 +222,56 @@ public class NoSqlDatabaseManagerTest {
             then(connection).should().insertObject(captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
-            assertNotNull("The inserted value should not be null.", inserted);
+            assertThat(inserted).describedAs("The inserted value should not be null.").isNotNull();
             final Map<String, Object> object = inserted.unwrap();
-            assertNotNull("The unwrapped object should not be null.", object);
+            assertThat(object).describedAs("The unwrapped object should not be null.").isNotNull();
 
-            assertEquals("The level is not correct.", Level.DEBUG, object.get("level"));
-            assertEquals("The logger is not correct.", "com.foo.NoSQLDbTest.testWriteInternal02",
-                object.get("loggerName"));
-            assertEquals("The message is not correct.", "Another cool message 02.", object.get("message"));
-            assertEquals("The thread is not correct.", "AnotherThread-B", object.get("threadName"));
-            assertEquals("The millis is not correct.", 987654321564L, object.get("millis"));
-            assertEquals("The date is not correct.", 987654321564L, ((Date) object.get("date")).getTime());
+            assertThat(object.get("level")).describedAs("The level is not correct.").isEqualTo(Level.DEBUG);
+            assertThat(object.get("loggerName")).describedAs("The logger is not correct.").isEqualTo("com.foo.NoSQLDbTest.testWriteInternal02");
+            assertThat(object.get("message")).describedAs("The message is not correct.").isEqualTo("Another cool message 02.");
+            assertThat(object.get("threadName")).describedAs("The thread is not correct.").isEqualTo("AnotherThread-B");
+            assertThat(object.get("millis")).describedAs("The millis is not correct.").isEqualTo(987654321564L);
+            assertThat(((Date) object.get("date")).getTime()).describedAs("The date is not correct.").isEqualTo(987654321564L);
 
-            assertTrue("The source should be a map.", object.get("source") instanceof Map);
+            assertThat(object.get("source") instanceof Map).describedAs("The source should be a map.").isTrue();
             @SuppressWarnings("unchecked")
             final Map<String, Object> source = (Map<String, Object>) object.get("source");
-            assertEquals("The class is not correct.", "com.bar.Foo", source.get("className"));
-            assertEquals("The method is not correct.", "anotherMethod03", source.get("methodName"));
-            assertEquals("The file name is not correct.", "Foo.java", source.get("fileName"));
-            assertEquals("The line number is not correct.", 9, source.get("lineNumber"));
+            assertThat(source.get("className")).describedAs("The class is not correct.").isEqualTo("com.bar.Foo");
+            assertThat(source.get("methodName")).describedAs("The method is not correct.").isEqualTo("anotherMethod03");
+            assertThat(source.get("fileName")).describedAs("The file name is not correct.").isEqualTo("Foo.java");
+            assertThat(source.get("lineNumber")).describedAs("The line number is not correct.").isEqualTo(9);
 
-            assertTrue("The marker should be a map.", object.get("marker") instanceof Map);
+            assertThat(object.get("marker") instanceof Map).describedAs("The marker should be a map.").isTrue();
             @SuppressWarnings("unchecked")
             final Map<String, Object> marker = (Map<String, Object>) object.get("marker");
-            assertEquals("The marker name is not correct.", "LoneMarker", marker.get("name"));
-            assertNull("The marker parent should be null.", marker.get("parent"));
+            assertThat(marker.get("name")).describedAs("The marker name is not correct.").isEqualTo("LoneMarker");
+            assertThat(marker.get("parent")).describedAs("The marker parent should be null.").isNull();
 
-            assertTrue("The thrown should be a map.", object.get("thrown") instanceof Map);
+            assertThat(object.get("thrown") instanceof Map).describedAs("The thrown should be a map.").isTrue();
             @SuppressWarnings("unchecked")
             final Map<String, Object> thrown = (Map<String, Object>) object.get("thrown");
-            assertEquals("The thrown type is not correct.", "java.lang.RuntimeException", thrown.get("type"));
-            assertEquals("The thrown message is not correct.", "This is something cool!", thrown.get("message"));
-            assertTrue("The thrown stack trace should be a list.", thrown.get("stackTrace") instanceof List);
+            assertThat(thrown.get("type")).describedAs("The thrown type is not correct.").isEqualTo("java.lang.RuntimeException");
+            assertThat(thrown.get("message")).describedAs("The thrown message is not correct.").isEqualTo("This is something cool!");
+            assertThat(thrown.get("stackTrace") instanceof List).describedAs("The thrown stack trace should be a list.").isTrue();
             @SuppressWarnings("unchecked")
             final List<Map<String, Object>> stackTrace = (List<Map<String, Object>>) thrown.get("stackTrace");
-            assertEquals("The thrown stack trace length is not correct.", exception.getStackTrace().length,
-                stackTrace.size());
+            assertThat(stackTrace.size()).describedAs("The thrown stack trace length is not correct.").isEqualTo(exception.getStackTrace().length);
             for (int i = 0; i < exception.getStackTrace().length; i++) {
                 final StackTraceElement e1 = exception.getStackTrace()[i];
                 final Map<String, Object> e2 = stackTrace.get(i);
 
-                assertEquals("Element class name [" + i + "] is not correct.", e1.getClassName(), e2.get("className"));
-                assertEquals("Element method name [" + i + "] is not correct.", e1.getMethodName(),
-                    e2.get("methodName"));
-                assertEquals("Element file name [" + i + "] is not correct.", e1.getFileName(), e2.get("fileName"));
-                assertEquals("Element line number [" + i + "] is not correct.", e1.getLineNumber(),
-                    e2.get("lineNumber"));
+                assertThat(e2.get("className")).describedAs("Element class name [" + i + "] is not correct.").isEqualTo(e1.getClassName());
+                assertThat(e2.get("methodName")).describedAs("Element method name [" + i + "] is not correct.").isEqualTo(e1.getMethodName());
+                assertThat(e2.get("fileName")).describedAs("Element file name [" + i + "] is not correct.").isEqualTo(e1.getFileName());
+                assertThat(e2.get("lineNumber")).describedAs("Element line number [" + i + "] is not correct.").isEqualTo(e1.getLineNumber());
             }
-            assertNull("The thrown should have no cause.", thrown.get("cause"));
+            assertThat(thrown.get("cause")).describedAs("The thrown should have no cause.").isNull();
 
-            assertTrue("The context map should be a map.", object.get("contextMap") instanceof Map);
-            assertEquals("The context map is not correct.", context, object.get("contextMap"));
+            assertThat(object.get("contextMap") instanceof Map).describedAs("The context map should be a map.").isTrue();
+            assertThat(object.get("contextMap")).describedAs("The context map is not correct.").isEqualTo(context);
 
-            assertTrue("The context stack should be list.", object.get("contextStack") instanceof List);
-            assertEquals("The context stack is not correct.", stack.asList(), object.get("contextStack"));
+            assertThat(object.get("contextStack") instanceof List).describedAs("The context stack should be list.").isTrue();
+            assertThat(object.get("contextStack")).describedAs("The context stack is not correct.").isEqualTo(stack.asList());
         }
     }
 
@@ -324,107 +319,100 @@ public class NoSqlDatabaseManagerTest {
             then(connection).should().insertObject(captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
-            assertNotNull("The inserted value should not be null.", inserted);
+            assertThat(inserted).describedAs("The inserted value should not be null.").isNotNull();
             final Map<String, Object> object = inserted.unwrap();
-            assertNotNull("The unwrapped object should not be null.", object);
+            assertThat(object).describedAs("The unwrapped object should not be null.").isNotNull();
 
-            assertEquals("The level is not correct.", Level.DEBUG, object.get("level"));
-            assertEquals("The logger is not correct.", "com.foo.NoSQLDbTest.testWriteInternal02",
-                object.get("loggerName"));
-            assertEquals("The message is not correct.", "Another cool message 02.", object.get("message"));
-            assertEquals("The thread is not correct.", "AnotherThread-B", object.get("threadName"));
-            assertEquals("The millis is not correct.", 987654321564L, object.get("millis"));
-            assertEquals("The date is not correct.", 987654321564L, ((Date) object.get("date")).getTime());
+            assertThat(object.get("level")).describedAs("The level is not correct.").isEqualTo(Level.DEBUG);
+            assertThat(object.get("loggerName")).describedAs("The logger is not correct.").isEqualTo("com.foo.NoSQLDbTest.testWriteInternal02");
+            assertThat(object.get("message")).describedAs("The message is not correct.").isEqualTo("Another cool message 02.");
+            assertThat(object.get("threadName")).describedAs("The thread is not correct.").isEqualTo("AnotherThread-B");
+            assertThat(object.get("millis")).describedAs("The millis is not correct.").isEqualTo(987654321564L);
+            assertThat(((Date) object.get("date")).getTime()).describedAs("The date is not correct.").isEqualTo(987654321564L);
 
-            assertTrue("The source should be a map.", object.get("source") instanceof Map);
+            assertThat(object.get("source") instanceof Map).describedAs("The source should be a map.").isTrue();
             @SuppressWarnings("unchecked")
             final Map<String, Object> source = (Map<String, Object>) object.get("source");
-            assertEquals("The class is not correct.", "com.bar.Foo", source.get("className"));
-            assertEquals("The method is not correct.", "anotherMethod03", source.get("methodName"));
-            assertEquals("The file name is not correct.", "Foo.java", source.get("fileName"));
-            assertEquals("The line number is not correct.", 9, source.get("lineNumber"));
+            assertThat(source.get("className")).describedAs("The class is not correct.").isEqualTo("com.bar.Foo");
+            assertThat(source.get("methodName")).describedAs("The method is not correct.").isEqualTo("anotherMethod03");
+            assertThat(source.get("fileName")).describedAs("The file name is not correct.").isEqualTo("Foo.java");
+            assertThat(source.get("lineNumber")).describedAs("The line number is not correct.").isEqualTo(9);
 
-            assertTrue("The marker should be a map.", object.get("marker") instanceof Map);
+            assertThat(object.get("marker") instanceof Map).describedAs("The marker should be a map.").isTrue();
             @SuppressWarnings("unchecked")
             final Map<String, Object> marker = (Map<String, Object>) object.get("marker");
-            assertEquals("The marker name is not correct.", "AnotherMarker", marker.get("name"));
+            assertThat(marker.get("name")).describedAs("The marker name is not correct.").isEqualTo("AnotherMarker");
 
-            assertTrue("The marker parents should be a list.", marker.get("parents") instanceof List);
+            assertThat(marker.get("parents") instanceof List).describedAs("The marker parents should be a list.").isTrue();
             @SuppressWarnings("unchecked")
             final List<Object> markerParents = (List<Object>) marker.get("parents");
-            assertEquals("The marker parents should contain two parents", 2, markerParents.size());
+            assertThat(markerParents.size()).describedAs("The marker parents should contain two parents").isEqualTo(2);
 
-            assertTrue("The marker parents[0] should be a map.", markerParents.get(0) instanceof Map);
+            assertThat(markerParents.get(0) instanceof Map).describedAs("The marker parents[0] should be a map.").isTrue();
             @SuppressWarnings("unchecked")
             final Map<String, Object> parent1 = (Map<String, Object>) markerParents.get(0);
-            assertEquals("The first marker parent name is not correct.", "Parent1", parent1.get("name"));
+            assertThat(parent1.get("name")).describedAs("The first marker parent name is not correct.").isEqualTo("Parent1");
 
-            assertTrue("The marker parents[1] should be a map.", markerParents.get(1) instanceof Map);
+            assertThat(markerParents.get(1) instanceof Map).describedAs("The marker parents[1] should be a map.").isTrue();
             @SuppressWarnings("unchecked")
             final Map<String, Object> parent2 = (Map<String, Object>) markerParents.get(1);
-            assertEquals("The second marker parent name is not correct.", "Parent2", parent2.get("name"));
-            assertNull("The second marker should have no parent.", parent2.get("parent"));
+            assertThat(parent2.get("name")).describedAs("The second marker parent name is not correct.").isEqualTo("Parent2");
+            assertThat(parent2.get("parent")).describedAs("The second marker should have no parent.").isNull();
 
-            assertTrue("The parent1 parents should be a list.", parent1.get("parents") instanceof List);
+            assertThat(parent1.get("parents") instanceof List).describedAs("The parent1 parents should be a list.").isTrue();
             @SuppressWarnings("unchecked")
             final List<Object> parent1Parents = (List<Object>) parent1.get("parents");
-            assertEquals("The parent1 parents should have only one parent", 1, parent1Parents.size());
+            assertThat(parent1Parents.size()).describedAs("The parent1 parents should have only one parent").isEqualTo(1);
 
-            assertTrue("The parent1Parents[0] should be a map.", parent1Parents.get(0) instanceof Map);
+            assertThat(parent1Parents.get(0) instanceof Map).describedAs("The parent1Parents[0] should be a map.").isTrue();
             @SuppressWarnings("unchecked")
             final Map<String, Object> parent1parent = (Map<String, Object>) parent1Parents.get(0);
-            assertEquals("The first parent1 parent name is not correct.", "GrandParent1", parent1parent.get("name"));
-            assertNull("The parent1parent marker should have no parent.", parent1parent.get("parent"));
+            assertThat(parent1parent.get("name")).describedAs("The first parent1 parent name is not correct.").isEqualTo("GrandParent1");
+            assertThat(parent1parent.get("parent")).describedAs("The parent1parent marker should have no parent.").isNull();
 
-            assertTrue("The thrown should be a map.", object.get("thrown") instanceof Map);
+            assertThat(object.get("thrown") instanceof Map).describedAs("The thrown should be a map.").isTrue();
             @SuppressWarnings("unchecked")
             final Map<String, Object> thrown = (Map<String, Object>) object.get("thrown");
-            assertEquals("The thrown type is not correct.", "java.lang.IllegalStateException", thrown.get("type"));
-            assertEquals("The thrown message is not correct.", "This is the result.", thrown.get("message"));
-            assertTrue("The thrown stack trace should be a list.", thrown.get("stackTrace") instanceof List);
+            assertThat(thrown.get("type")).describedAs("The thrown type is not correct.").isEqualTo("java.lang.IllegalStateException");
+            assertThat(thrown.get("message")).describedAs("The thrown message is not correct.").isEqualTo("This is the result.");
+            assertThat(thrown.get("stackTrace") instanceof List).describedAs("The thrown stack trace should be a list.").isTrue();
             @SuppressWarnings("unchecked")
             final List<Map<String, Object>> stackTrace = (List<Map<String, Object>>) thrown.get("stackTrace");
-            assertEquals("The thrown stack trace length is not correct.", exception2.getStackTrace().length,
-                stackTrace.size());
+            assertThat(stackTrace.size()).describedAs("The thrown stack trace length is not correct.").isEqualTo(exception2.getStackTrace().length);
             for (int i = 0; i < exception2.getStackTrace().length; i++) {
                 final StackTraceElement e1 = exception2.getStackTrace()[i];
                 final Map<String, Object> e2 = stackTrace.get(i);
 
-                assertEquals("Element class name [" + i + "] is not correct.", e1.getClassName(), e2.get("className"));
-                assertEquals("Element method name [" + i + "] is not correct.", e1.getMethodName(),
-                    e2.get("methodName"));
-                assertEquals("Element file name [" + i + "] is not correct.", e1.getFileName(), e2.get("fileName"));
-                assertEquals("Element line number [" + i + "] is not correct.", e1.getLineNumber(),
-                    e2.get("lineNumber"));
+                assertThat(e2.get("className")).describedAs("Element class name [" + i + "] is not correct.").isEqualTo(e1.getClassName());
+                assertThat(e2.get("methodName")).describedAs("Element method name [" + i + "] is not correct.").isEqualTo(e1.getMethodName());
+                assertThat(e2.get("fileName")).describedAs("Element file name [" + i + "] is not correct.").isEqualTo(e1.getFileName());
+                assertThat(e2.get("lineNumber")).describedAs("Element line number [" + i + "] is not correct.").isEqualTo(e1.getLineNumber());
             }
-            assertTrue("The thrown cause should be a map.", thrown.get("cause") instanceof Map);
+            assertThat(thrown.get("cause") instanceof Map).describedAs("The thrown cause should be a map.").isTrue();
             @SuppressWarnings("unchecked")
             final Map<String, Object> cause = (Map<String, Object>) thrown.get("cause");
-            assertEquals("The cause type is not correct.", "java.io.IOException", cause.get("type"));
-            assertEquals("The cause message is not correct.", "This is the cause.", cause.get("message"));
-            assertTrue("The cause stack trace should be a list.", cause.get("stackTrace") instanceof List);
+            assertThat(cause.get("type")).describedAs("The cause type is not correct.").isEqualTo("java.io.IOException");
+            assertThat(cause.get("message")).describedAs("The cause message is not correct.").isEqualTo("This is the cause.");
+            assertThat(cause.get("stackTrace") instanceof List).describedAs("The cause stack trace should be a list.").isTrue();
             @SuppressWarnings("unchecked")
             final List<Map<String, Object>> causeStackTrace = (List<Map<String, Object>>) cause.get("stackTrace");
-            assertEquals("The cause stack trace length is not correct.", exception1.getStackTrace().length,
-                causeStackTrace.size());
+            assertThat(causeStackTrace.size()).describedAs("The cause stack trace length is not correct.").isEqualTo(exception1.getStackTrace().length);
             for (int i = 0; i < exception1.getStackTrace().length; i++) {
                 final StackTraceElement e1 = exception1.getStackTrace()[i];
                 final Map<String, Object> e2 = causeStackTrace.get(i);
 
-                assertEquals("Element class name [" + i + "] is not correct.", e1.getClassName(), e2.get("className"));
-                assertEquals("Element method name [" + i + "] is not correct.", e1.getMethodName(),
-                    e2.get("methodName"));
-                assertEquals("Element file name [" + i + "] is not correct.", e1.getFileName(), e2.get("fileName"));
-                assertEquals("Element line number [" + i + "] is not correct.", e1.getLineNumber(),
-                    e2.get("lineNumber"));
+                assertThat(e2.get("className")).describedAs("Element class name [" + i + "] is not correct.").isEqualTo(e1.getClassName());
+                assertThat(e2.get("methodName")).describedAs("Element method name [" + i + "] is not correct.").isEqualTo(e1.getMethodName());
+                assertThat(e2.get("fileName")).describedAs("Element file name [" + i + "] is not correct.").isEqualTo(e1.getFileName());
+                assertThat(e2.get("lineNumber")).describedAs("Element line number [" + i + "] is not correct.").isEqualTo(e1.getLineNumber());
             }
-            assertNull("The cause should have no cause.", cause.get("cause"));
+            assertThat(cause.get("cause")).describedAs("The cause should have no cause.").isNull();
 
-            assertTrue("The context map should be a map.", object.get("contextMap") instanceof Map);
-            assertEquals("The context map is not correct.", context, object.get("contextMap"));
+            assertThat(object.get("contextMap") instanceof Map).describedAs("The context map should be a map.").isTrue();
+            assertThat(object.get("contextMap")).describedAs("The context map is not correct.").isEqualTo(context);
 
-            assertTrue("The context stack should be list.", object.get("contextStack") instanceof List);
-            assertEquals("The context stack is not correct.", stack.asList(), object.get("contextStack"));
+            assertThat(object.get("contextStack") instanceof List).describedAs("The context stack should be list.").isTrue();
+            assertThat(object.get("contextStack")).describedAs("The context stack is not correct.").isEqualTo(stack.asList());
         }
     }
 }

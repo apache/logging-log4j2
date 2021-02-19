@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -64,9 +64,9 @@ public class RollingAppenderUncompressedTest {
             logger.debug("This is test message number " + i);
         }
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertThat(dir.exists() && dir.listFiles().length > 0).describedAs("Directory not created").isTrue();
         final File[] files = dir.listFiles();
-        assertNotNull(files);
+        assertThat(files).isNotNull();
         boolean found = false;
         for (final File file : files) {
             final String name = file.getName();
@@ -75,7 +75,7 @@ public class RollingAppenderUncompressedTest {
                 break;
             }
         }
-        assertTrue("No archived files found", found);
+        assertThat(found).describedAs("No archived files found").isTrue();
     }
 
 }

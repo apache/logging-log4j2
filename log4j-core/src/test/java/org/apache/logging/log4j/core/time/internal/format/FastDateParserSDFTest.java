@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.time.internal.format;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -29,7 +30,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
 import org.apache.logging.log4j.core.time.internal.format.DateParser;
 import org.apache.logging.log4j.core.time.internal.format.FastDateParser;
 import org.junit.Test;
@@ -188,9 +188,9 @@ public class FastDateParserSDFTest {
             fdfE = e.getClass();
         }
         if (valid) {
-            assertEquals(locale.toString()+" "+formattedDate +"\n",expectedTime, actualTime);            
+            assertThat(actualTime).describedAs(locale.toString()+" "+formattedDate +"\n").isEqualTo(expectedTime);            
         } else {
-            assertEquals(locale.toString()+" "+formattedDate + " expected same Exception ", sdfE, fdfE);            
+            assertThat(fdfE).describedAs(locale.toString()+" "+formattedDate + " expected same Exception ").isEqualTo(sdfE);            
         }
     }
     private void checkParsePosition(final String formattedDate) {
@@ -202,7 +202,7 @@ public class FastDateParserSDFTest {
         final Date expectedTime = sdf.parse(formattedDate, sdfP);
         final int sdferrorIndex = sdfP.getErrorIndex();
         if (valid) {
-            assertEquals("Expected SDF error index -1 ", -1, sdferrorIndex);
+            assertThat(sdferrorIndex).describedAs("Expected SDF error index -1 ").isEqualTo(-1);
             final int endIndex = sdfP.getIndex();
             final int length = formattedDate.length();
             if (endIndex != length) {
@@ -220,15 +220,14 @@ public class FastDateParserSDFTest {
         final Date actualTime = fdf.parse(formattedDate, fdfP);
         final int fdferrorIndex = fdfP.getErrorIndex();
         if (valid) {
-            assertEquals("Expected FDF error index -1 ", -1, fdferrorIndex);
+            assertThat(fdferrorIndex).describedAs("Expected FDF error index -1 ").isEqualTo(-1);
             final int endIndex = fdfP.getIndex();
             final int length = formattedDate.length();
-            assertEquals("Expected FDF to parse full string " + fdfP, length, endIndex);
-            assertEquals(locale.toString()+" "+formattedDate +"\n", expectedTime, actualTime);
+            assertThat(endIndex).describedAs("Expected FDF to parse full string " + fdfP).isEqualTo(length);
+            assertThat(actualTime).describedAs(locale.toString()+" "+formattedDate +"\n").isEqualTo(expectedTime);
         } else {
-            assertNotEquals("Test data error: expected FDF parse to fail, but got " + actualTime, -1, fdferrorIndex);
-            assertTrue("FDF error index ("+ fdferrorIndex + ") should approxiamate SDF index (" + sdferrorIndex + ")",
-                    sdferrorIndex - fdferrorIndex <= 4);
+            assertThat(fdferrorIndex).describedAs("Test data error: expected FDF parse to fail, but got " + actualTime).isNotEqualTo(-1);
+            assertThat(sdferrorIndex - fdferrorIndex <= 4).describedAs("FDF error index ("+ fdferrorIndex + ") should approxiamate SDF index (" + sdferrorIndex + ")").isTrue();
         }        
     }
 }

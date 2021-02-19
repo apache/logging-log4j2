@@ -16,6 +16,9 @@ package org.apache.logging.log4j.core.filter;
  * limitations under the license.
  */
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -23,8 +26,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the AbstractFilter test.
@@ -45,16 +46,16 @@ public class AbstractFilterTest {
         final Logger logger = null;
         final Level level = null;
         final Marker marker = null;
-        assertEquals(expected, filter.filter(logger, level, marker, "", 1));
-        assertEquals(expected, filter.filter(logger, level, marker, "", 1, 2));
-        assertEquals(expected, filter.filter(logger, level, marker, "", 1, 2, 3));
-        assertEquals(expected, filter.filter(logger, level, marker, "", 1, 2, 3, 4));
-        assertEquals(expected, filter.filter(logger, level, marker, "", 1, 2, 3, 4, 5));
-        assertEquals(expected, filter.filter(logger, level, marker, "", 1, 2, 3, 4, 5, 6));
-        assertEquals(expected, filter.filter(logger, level, marker, "", 1, 2, 3, 4, 5, 6, 7));
-        assertEquals(expected, filter.filter(logger, level, marker, "", 1, 2, 3, 4, 5, 6, 7, 8));
-        assertEquals(expected, filter.filter(logger, level, marker, "", 1, 2, 3, 4, 5, 6, 7, 8, 9));
-        assertEquals(expected, filter.filter(logger, level, marker, "", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+        assertThat(filter.filter(logger, level, marker, "", 1)).isEqualTo(expected);
+        assertThat(filter.filter(logger, level, marker, "", 1, 2)).isEqualTo(expected);
+        assertThat(filter.filter(logger, level, marker, "", 1, 2, 3)).isEqualTo(expected);
+        assertThat(filter.filter(logger, level, marker, "", 1, 2, 3, 4)).isEqualTo(expected);
+        assertThat(filter.filter(logger, level, marker, "", 1, 2, 3, 4, 5)).isEqualTo(expected);
+        assertThat(filter.filter(logger, level, marker, "", 1, 2, 3, 4, 5, 6)).isEqualTo(expected);
+        assertThat(filter.filter(logger, level, marker, "", 1, 2, 3, 4, 5, 6, 7)).isEqualTo(expected);
+        assertThat(filter.filter(logger, level, marker, "", 1, 2, 3, 4, 5, 6, 7, 8)).isEqualTo(expected);
+        assertThat(filter.filter(logger, level, marker, "", 1, 2, 3, 4, 5, 6, 7, 8, 9)).isEqualTo(expected);
+        assertThat(filter.filter(logger, level, marker, "", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)).isEqualTo(expected);
     }
 
     /**

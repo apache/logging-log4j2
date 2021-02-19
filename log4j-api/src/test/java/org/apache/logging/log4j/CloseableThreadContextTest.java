@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link CloseableThreadContext}.
@@ -49,8 +49,8 @@ public class CloseableThreadContextTest {
     @Test
     public void shouldAddAnEntryToTheMap() {
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value)) {
-            assertNotNull(ignored);
-            assertEquals(value, ThreadContext.get(key));
+            assertThat(ignored).isNotNull();
+            assertThat(ThreadContext.get(key)).isEqualTo(value);
         }
     }
 
@@ -59,9 +59,9 @@ public class CloseableThreadContextTest {
         final String key2 = "key2";
         final String value2 = "value2";
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value).put(key2, value2)) {
-            assertNotNull(ignored);
-            assertEquals(value, ThreadContext.get(key));
-            assertEquals(value2, ThreadContext.get(key2));
+            assertThat(ignored).isNotNull();
+            assertThat(ThreadContext.get(key)).isEqualTo(value);
+            assertThat(ThreadContext.get(key2)).isEqualTo(value2);
         }
     }
 
@@ -71,15 +71,15 @@ public class CloseableThreadContextTest {
         final String innerValue = "innerValue";
         ThreadContext.put(key, oldValue);
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value)) {
-            assertNotNull(ignored);
-            assertEquals(value, ThreadContext.get(key));
+            assertThat(ignored).isNotNull();
+            assertThat(ThreadContext.get(key)).isEqualTo(value);
             try (final CloseableThreadContext.Instance ignored2 = CloseableThreadContext.put(key, innerValue)) {
-                assertNotNull(ignored2);
-                assertEquals(innerValue, ThreadContext.get(key));
+                assertThat(ignored2).isNotNull();
+                assertThat(ThreadContext.get(key)).isEqualTo(innerValue);
             }
-            assertEquals(value, ThreadContext.get(key));
+            assertThat(ThreadContext.get(key)).isEqualTo(value);
         }
-        assertEquals(oldValue, ThreadContext.get(key));
+        assertThat(ThreadContext.get(key)).isEqualTo(oldValue);
     }
 
     @Test
@@ -87,10 +87,10 @@ public class CloseableThreadContextTest {
         final String oldValue = "oldValue";
         ThreadContext.put(key, oldValue);
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value)) {
-            assertNotNull(ignored);
-            assertEquals(value, ThreadContext.get(key));
+            assertThat(ignored).isNotNull();
+            assertThat(ThreadContext.get(key)).isEqualTo(value);
         }
-        assertEquals(oldValue, ThreadContext.get(key));
+        assertThat(ThreadContext.get(key)).isEqualTo(oldValue);
     }
 
     @Test
@@ -99,20 +99,20 @@ public class CloseableThreadContextTest {
         final String secondValue = "innerValue";
         ThreadContext.put(key, oldValue);
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value).put(key, secondValue)) {
-            assertNotNull(ignored);
-            assertEquals(secondValue, ThreadContext.get(key));
+            assertThat(ignored).isNotNull();
+            assertThat(ThreadContext.get(key)).isEqualTo(secondValue);
         }
-        assertEquals(oldValue, ThreadContext.get(key));
+        assertThat(ThreadContext.get(key)).isEqualTo(oldValue);
     }
 
     @Test
     public void shouldPushAndPopAnEntryToTheStack() {
         final String message = "message";
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.push(message)) {
-            assertNotNull(ignored);
-            assertEquals(message, ThreadContext.peek());
+            assertThat(ignored).isNotNull();
+            assertThat(ThreadContext.peek()).isEqualTo(message);
         }
-        assertEquals("", ThreadContext.peek());
+        assertThat(ThreadContext.peek()).isEqualTo("");
     }
 
     @Test
@@ -120,10 +120,10 @@ public class CloseableThreadContextTest {
         final String message1 = "message1";
         final String message2 = "message2";
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.push(message1).push(message2)) {
-            assertNotNull(ignored);
-            assertEquals(message2, ThreadContext.peek());
+            assertThat(ignored).isNotNull();
+            assertThat(ThreadContext.peek()).isEqualTo(message2);
         }
-        assertEquals("", ThreadContext.peek());
+        assertThat(ThreadContext.peek()).isEqualTo("");
     }
 
     @Test
@@ -133,31 +133,31 @@ public class CloseableThreadContextTest {
         final String formattedMessage = parameterizedMessage.replace("{}", parameterizedMessageParameter);
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.push(parameterizedMessage,
                 parameterizedMessageParameter)) {
-            assertNotNull(ignored);
-            assertEquals(formattedMessage, ThreadContext.peek());
+            assertThat(ignored).isNotNull();
+            assertThat(ThreadContext.peek()).isEqualTo(formattedMessage);
         }
-        assertEquals("", ThreadContext.peek());
+        assertThat(ThreadContext.peek()).isEqualTo("");
     }
 
     @Test
     public void shouldRemoveAnEntryFromTheMapWhenAutoClosed() {
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value)) {
-            assertNotNull(ignored);
-            assertEquals(value, ThreadContext.get(key));
+            assertThat(ignored).isNotNull();
+            assertThat(ThreadContext.get(key)).isEqualTo(value);
         }
-        assertFalse(ThreadContext.containsKey(key));
+        assertThat(ThreadContext.containsKey(key)).isFalse();
     }
 
     @Test
     public void shouldAddEntriesToBothStackAndMap() {
         final String stackValue = "something";
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value).push(stackValue)) {
-            assertNotNull(ignored);
-            assertEquals(value, ThreadContext.get(key));
-            assertEquals(stackValue, ThreadContext.peek());
+            assertThat(ignored).isNotNull();
+            assertThat(ThreadContext.get(key)).isEqualTo(value);
+            assertThat(ThreadContext.peek()).isEqualTo(stackValue);
         }
-        assertFalse(ThreadContext.containsKey(key));
-        assertEquals("", ThreadContext.peek());
+        assertThat(ThreadContext.containsKey(key)).isFalse();
+        assertThat(ThreadContext.peek()).isEqualTo("");
     }
 
     @Test
@@ -165,25 +165,25 @@ public class CloseableThreadContextTest {
         final String stackValue = "something";
         // Create a ctc and close it
         final CloseableThreadContext.Instance ctc = CloseableThreadContext.push(stackValue).put(key, value);
-        assertNotNull(ctc);
-        assertEquals(value, ThreadContext.get(key));
-        assertEquals(stackValue, ThreadContext.peek());
+        assertThat(ctc).isNotNull();
+        assertThat(ThreadContext.get(key)).isEqualTo(value);
+        assertThat(ThreadContext.peek()).isEqualTo(stackValue);
         ctc.close();
 
-        assertFalse(ThreadContext.containsKey(key));
-        assertEquals("", ThreadContext.peek());
+        assertThat(ThreadContext.containsKey(key)).isFalse();
+        assertThat(ThreadContext.peek()).isEqualTo("");
 
         final String anotherKey = "key2";
         final String anotherValue = "value2";
         final String anotherStackValue = "something else";
         // Use it again
         ctc.push(anotherStackValue).put(anotherKey, anotherValue);
-        assertEquals(anotherValue, ThreadContext.get(anotherKey));
-        assertEquals(anotherStackValue, ThreadContext.peek());
+        assertThat(ThreadContext.get(anotherKey)).isEqualTo(anotherValue);
+        assertThat(ThreadContext.peek()).isEqualTo(anotherStackValue);
         ctc.close();
 
-        assertFalse(ThreadContext.containsKey(anotherKey));
-        assertEquals("", ThreadContext.peek());
+        assertThat(ThreadContext.containsKey(anotherKey)).isFalse();
+        assertThat(ThreadContext.peek()).isEqualTo("");
     }
 
     @Test
@@ -197,15 +197,15 @@ public class CloseableThreadContextTest {
         final String newMapValue = "temp map value";
         final String newStackValue = "temp stack to keep";
         final CloseableThreadContext.Instance ctc = CloseableThreadContext.push(newStackValue).put(key, newMapValue);
-        assertNotNull(ctc);
+        assertThat(ctc).isNotNull();
 
         ctc.close();
-        assertEquals(originalMapValue, ThreadContext.get(key));
-        assertEquals(originalStackValue, ThreadContext.peek());
+        assertThat(ThreadContext.get(key)).isEqualTo(originalMapValue);
+        assertThat(ThreadContext.peek()).isEqualTo(originalStackValue);
 
         ctc.close();
-        assertEquals(originalMapValue, ThreadContext.get(key));
-        assertEquals(originalStackValue, ThreadContext.peek());
+        assertThat(ThreadContext.get(key)).isEqualTo(originalMapValue);
+        assertThat(ThreadContext.peek()).isEqualTo(originalStackValue);
     }
 
     @Test
@@ -218,10 +218,10 @@ public class CloseableThreadContextTest {
         valuesToPut.put(key, value);
 
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.putAll(valuesToPut)) {
-            assertNotNull(ignored);
-            assertEquals(value, ThreadContext.get(key));
+            assertThat(ignored).isNotNull();
+            assertThat(ThreadContext.get(key)).isEqualTo(value);
         }
-        assertEquals(oldValue, ThreadContext.get(key));
+        assertThat(ThreadContext.get(key)).isEqualTo(oldValue);
 
     }
 
@@ -233,10 +233,10 @@ public class CloseableThreadContextTest {
         ThreadContext.pop();
 
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.pushAll(messages)) {
-            assertNotNull(ignored);
-            assertEquals(key, ThreadContext.peek());
+            assertThat(ignored).isNotNull();
+            assertThat(ThreadContext.peek()).isEqualTo(key);
         }
-        assertEquals("", ThreadContext.peek());
+        assertThat(ThreadContext.peek()).isEqualTo("");
 
     }
 

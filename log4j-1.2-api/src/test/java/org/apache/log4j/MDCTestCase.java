@@ -16,6 +16,8 @@
  */
 package org.apache.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,8 +38,8 @@ public class MDCTestCase {
     @Test
     public void testPut() throws Exception {
         MDC.put("key", "some value");
-        Assert.assertEquals("some value", MDC.get("key"));
-        Assert.assertEquals(1, MDC.getContext().size());
+        assertThat(MDC.get("key")).isEqualTo("some value");
+        assertThat(MDC.getContext().size()).isEqualTo(1);
     }
 
     @Test

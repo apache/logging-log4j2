@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.File;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -34,16 +45,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
-
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Performs reconfiguration whilst logging.
@@ -89,7 +90,7 @@ public class ReconfigurationDeadlockTest {
             final Future<?> workerFuture = workerFutures.get(workerIndex);
             try {
                 Object workerResult = workerFuture.get(30, TimeUnit.SECONDS);
-                Assertions.assertNull(workerResult);
+                assertThat(workerResult).isNull();
             } catch (final Throwable failure) {
                 final String message = String.format(
                         "check for worker %02d/%02d has failed",

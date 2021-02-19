@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -24,8 +27,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class MarkerFilterTest {
 
@@ -38,24 +39,24 @@ public class MarkerFilterTest {
         final Marker stranger = MarkerManager.getMarker("Stranger");
         MarkerFilter filter = MarkerFilter.createFilter("Parent", null, null);
         filter.start();
-        assertTrue(filter.isStarted());
-        assertSame(Filter.Result.DENY, filter.filter(null, null, stranger, (Object) null, (Throwable) null));
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, child, (Object) null, (Throwable) null));
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, grandChild, (Object) null, (Throwable) null));
+        assertThat(filter.isStarted()).isTrue();
+        assertThat(filter.filter(null, null, stranger, (Object) null, (Throwable) null)).isSameAs(Filter.Result.DENY);
+        assertThat(filter.filter(null, null, child, (Object) null, (Throwable) null)).isSameAs(Filter.Result.NEUTRAL);
+        assertThat(filter.filter(null, null, grandChild, (Object) null, (Throwable) null)).isSameAs(Filter.Result.NEUTRAL);
         filter.stop();
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setMarker(grandChild) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event));
+        assertThat(filter.filter(event)).isSameAs(Filter.Result.NEUTRAL);
         filter = MarkerFilter.createFilter("Child", null, null);
         filter.start();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event));
+        assertThat(filter.filter(event)).isSameAs(Filter.Result.NEUTRAL);
         event = Log4jLogEvent.newBuilder() //
                 .setMarker(sibling) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
-        assertSame(Filter.Result.DENY, filter.filter(event));
+        assertThat(filter.filter(event)).isSameAs(Filter.Result.DENY);
         filter.stop();
     }
 }

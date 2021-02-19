@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -25,8 +28,6 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class NoMarkerFilterTest {
 
     @Test
@@ -34,22 +35,22 @@ public class NoMarkerFilterTest {
         final Marker sampleMarker = MarkerManager.getMarker("SampleMarker");
         NoMarkerFilter filter = NoMarkerFilter.newBuilder().build();
         filter.start();
-        assertTrue(filter.isStarted());
-        assertSame(Filter.Result.DENY, filter.filter(null, null, sampleMarker, (Object) null, (Throwable) null));
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, null, (Object) null, (Throwable) null));
+        assertThat(filter.isStarted()).isTrue();
+        assertThat(filter.filter(null, null, sampleMarker, (Object) null, (Throwable) null)).isSameAs(Filter.Result.DENY);
+        assertThat(filter.filter(null, null, null, (Object) null, (Throwable) null)).isSameAs(Filter.Result.NEUTRAL);
         filter.stop();
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event));
+        assertThat(filter.filter(event)).isSameAs(Filter.Result.NEUTRAL);
 
         filter.start();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event));
+        assertThat(filter.filter(event)).isSameAs(Filter.Result.NEUTRAL);
         event = Log4jLogEvent.newBuilder() //
                 .setMarker(sampleMarker) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
-        assertSame(Filter.Result.DENY, filter.filter(event));
+        assertThat(filter.filter(event)).isSameAs(Filter.Result.DENY);
         filter.stop();
     }
 

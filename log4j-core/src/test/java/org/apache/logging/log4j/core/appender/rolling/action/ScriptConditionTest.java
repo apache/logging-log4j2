@@ -17,18 +17,19 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.script.Script;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.script.Script;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the ScriptCondition class.
@@ -37,24 +38,23 @@ public class ScriptConditionTest {
 
     @Test
     public void testConstructorDisallowsNullScript() {
-        assertThrows(NullPointerException.class, () -> new ScriptCondition(null, new DefaultConfiguration()));
+        assertThatThrownBy(() -> new ScriptCondition(null, new DefaultConfiguration())).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testConstructorDisallowsNullConfig() {
-        assertThrows(NullPointerException.class,
-                () -> new ScriptCondition(new Script("test", "js", "print('hi')"), null));
+        assertThatThrownBy(() -> new ScriptCondition(new Script("test", "js", "print('hi')"), null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testCreateConditionReturnsNullForNullScript() {
-        assertNull(ScriptCondition.createCondition(null, new DefaultConfiguration()));
+        assertThat(ScriptCondition.createCondition(null, new DefaultConfiguration())).isNull();
     }
 
     @Test
     public void testCreateConditionDisallowsNullConfig() {
-        assertThrows(NullPointerException.class, () -> ScriptCondition.createCondition(
-                new Script("test", "js", "print('hi')"), null));
+        assertThatThrownBy(() -> ScriptCondition.createCondition(
+                new Script("test", "js", "print('hi')"), null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class ScriptConditionTest {
         final List<PathWithAttributes> pathList = new ArrayList<>();
         final Path base = Paths.get("baseDirectory");
         final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
-        assertSame(result, pathList);
+        assertThat(pathList).isSameAs(result);
     }
 
     @Test
@@ -86,10 +86,10 @@ public class ScriptConditionTest {
         final ScriptCondition condition = new ScriptCondition(script, config);
         final Path base = Paths.get("baseDirectory");
         final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
-        assertSame(result, pathList);
-        assertEquals(2, result.size());
-        assertEquals(Paths.get("/path/1"), result.get(0).getPath());
-        assertEquals(Paths.get("/path/3"), result.get(1).getPath());
+        assertThat(pathList).isSameAs(result);
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.get(0).getPath()).isEqualTo(Paths.get("/path/1"));
+        assertThat(result.get(1).getPath()).isEqualTo(Paths.get("/path/3"));
     }
 
     @Test
@@ -127,8 +127,8 @@ public class ScriptConditionTest {
         final ScriptCondition condition = new ScriptCondition(script, config);
         final Path base = Paths.get("/path");
         final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
-        assertEquals(1, result.size());
-        assertEquals(Paths.get("/path/2/abc/bbb.txt"), result.get(0).getPath());
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getPath()).isEqualTo(Paths.get("/path/2/abc/bbb.txt"));
     }
 
 }

@@ -16,15 +16,16 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 public class ProcessIdUtilTest {
 
     @Test
     public void processIdTest() {
         String processId = ProcessIdUtil.getProcessId();
-        assertNotEquals(processId, ProcessIdUtil.DEFAULT_PROCESSID, "ProcessId is default");
+        assertThat(ProcessIdUtil.DEFAULT_PROCESSID).describedAs("ProcessId is default").isNotEqualTo(processId);
     }
 }

@@ -16,25 +16,25 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.SystemNanoClock;
+import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerTestNanoTime {
@@ -60,7 +60,7 @@ public class AsyncLoggerTestNanoTime {
         final AsyncLogger log = (AsyncLogger) LogManager.getLogger("com.foo.Bar");
         final long before = System.nanoTime();
         log.info("Use actual System.nanoTime()");
-        assertTrue("using SystemNanoClock", log.getNanoClock() instanceof SystemNanoClock);
+        assertThat(log.getNanoClock() instanceof SystemNanoClock).describedAs("using SystemNanoClock").isTrue();
 
         final long DUMMYNANOTIME = -53;
         log.getContext().getConfiguration().setNanoClock(new DummyNanoClock(DUMMYNANOTIME));
@@ -70,7 +70,7 @@ public class AsyncLoggerTestNanoTime {
         log.updateConfiguration(log.getContext().getConfiguration());
 
         log.info("Use dummy nano clock");
-        assertTrue("using SystemNanoClock", log.getNanoClock() instanceof DummyNanoClock);
+        assertThat(log.getNanoClock() instanceof DummyNanoClock).describedAs("using SystemNanoClock").isTrue();
 
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
@@ -82,18 +82,18 @@ public class AsyncLoggerTestNanoTime {
         reader.close();
         file.delete();
 
-        assertNotNull("line1", line1);
-        assertNotNull("line2", line2);
+        assertThat(line1).describedAs("line1").isNotNull();
+        assertThat(line2).describedAs("line2").isNotNull();
         final String[] line1Parts = line1.split(" AND ");
-        assertEquals("Use actual System.nanoTime()", line1Parts[2]);
-        assertEquals(line1Parts[0], line1Parts[1]);
+        assertThat(line1Parts[2]).isEqualTo("Use actual System.nanoTime()");
+        assertThat(line1Parts[1]).isEqualTo(line1Parts[0]);
         final long loggedNanoTime = Long.parseLong(line1Parts[0]);
-        assertTrue("used system nano time", loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1));
+        assertThat(loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1)).describedAs("used system nano time").isTrue();
 
         final String[] line2Parts = line2.split(" AND ");
-        assertEquals("Use dummy nano clock", line2Parts[2]);
-        assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[0]);
-        assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[1]);
+        assertThat(line2Parts[2]).isEqualTo("Use dummy nano clock");
+        assertThat(line2Parts[0]).isEqualTo(String.valueOf(DUMMYNANOTIME));
+        assertThat(line2Parts[1]).isEqualTo(String.valueOf(DUMMYNANOTIME));
     }
 
 }

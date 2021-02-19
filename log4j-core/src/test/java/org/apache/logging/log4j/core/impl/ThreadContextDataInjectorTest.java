@@ -1,28 +1,10 @@
 package org.apache.logging.log4j.core.impl;
 
-import java.util.Collection;
-import java.util.concurrent.ExecutionException;
-
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.ThreadContextTest;
-import org.apache.logging.log4j.core.ContextDataInjector;
-import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.SortedArrayStringMap;
-import org.apache.logging.log4j.util.StringMap;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
-
 import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.apache.logging.log4j.ThreadContext.getThreadContextMap;
 import static org.apache.logging.log4j.core.impl.ContextDataInjectorFactory.createInjector;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
@@ -30,6 +12,24 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+
+import java.util.Collection;
+import java.util.concurrent.ExecutionException;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.ThreadContextTest;
+import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
+import org.apache.logging.log4j.util.StringMap;
+import org.assertj.core.api.HamcrestCondition;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class ThreadContextDataInjectorTest {
@@ -63,30 +63,28 @@ public class ThreadContextDataInjectorTest {
 
     private void testContextDataInjector() {
         ReadOnlyThreadContextMap readOnlythreadContextMap = getThreadContextMap();
-        assertThat("thread context map class name",
-                   (readOnlythreadContextMap == null) ? null : readOnlythreadContextMap.getClass().getName(),
-                   is(equalTo(readOnlythreadContextMapClassName)));
+        assertThat((readOnlythreadContextMap == null) ? null : readOnlythreadContextMap.getClass().getName()).describedAs("thread context map class name").isEqualTo(readOnlythreadContextMapClassName);
 
         ContextDataInjector contextDataInjector = createInjector();
         StringMap stringMap = contextDataInjector.injectContextData(null, new SortedArrayStringMap());
 
-        assertThat("thread context map", ThreadContext.getContext(), allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));
-        assertThat("context map", stringMap.toMap(), allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));
+        assertThat(ThreadContext.getContext()).describedAs("thread context map").is(new HamcrestCondition<>(allOf(hasEntry("foo", "bar"), not(hasKey("baz")))));
+        assertThat(stringMap.toMap()).describedAs("context map").is(new HamcrestCondition<>(allOf(hasEntry("foo", "bar"), not(hasKey("baz")))));
 
         if (!stringMap.isFrozen()) {
             stringMap.clear();
-            assertThat("thread context map", ThreadContext.getContext(), allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));
-            assertThat("context map", stringMap.toMap().entrySet(), is(empty()));
+            assertThat(ThreadContext.getContext()).describedAs("thread context map").is(new HamcrestCondition<>(allOf(hasEntry("foo", "bar"), not(hasKey("baz")))));
+            assertThat(stringMap.toMap().entrySet()).describedAs("context map").isEmpty();
         }
 
         ThreadContext.put("foo", "bum");
         ThreadContext.put("baz", "bam");
 
-        assertThat("thread context map", ThreadContext.getContext(), allOf(hasEntry("foo", "bum"), hasEntry("baz", "bam")));
+        assertThat(ThreadContext.getContext()).describedAs("thread context map").is(new HamcrestCondition<>(allOf(hasEntry("foo", "bum"), hasEntry("baz", "bam"))));
         if (stringMap.isFrozen()) {
-            assertThat("context map", stringMap.toMap(), allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));
+            assertThat(stringMap.toMap()).describedAs("context map").is(new HamcrestCondition<>(allOf(hasEntry("foo", "bar"), not(hasKey("baz")))));
         } else {
-            assertThat("context map", stringMap.toMap().entrySet(), is(empty()));
+            assertThat(stringMap.toMap().entrySet()).describedAs("context map").isEmpty();
         }
     }
 

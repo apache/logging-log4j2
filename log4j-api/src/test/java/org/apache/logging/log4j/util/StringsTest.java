@@ -17,33 +17,33 @@
 
 package org.apache.logging.log4j.util;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class StringsTest {
 
     @Test
     public void testIsEmpty() {
-        assertTrue(Strings.isEmpty(null));
-        assertTrue(Strings.isEmpty(""));
-        assertFalse(Strings.isEmpty(" "));
-        assertFalse(Strings.isEmpty("a"));
+        assertThat(Strings.isEmpty(null)).isTrue();
+        assertThat(Strings.isEmpty("")).isTrue();
+        assertThat(Strings.isEmpty(" ")).isFalse();
+        assertThat(Strings.isEmpty("a")).isFalse();
     }
 
     @Test
     public void testIsBlank() {
-        assertTrue(Strings.isBlank(null));
-        assertTrue(Strings.isBlank(""));
-        assertTrue(Strings.isBlank(" "));
-        assertTrue(Strings.isBlank("\n"));
-        assertTrue(Strings.isBlank("\r"));
-        assertTrue(Strings.isBlank("\t"));
-        assertFalse(Strings.isEmpty("a"));
+        assertThat(Strings.isBlank(null)).isTrue();
+        assertThat(Strings.isBlank("")).isTrue();
+        assertThat(Strings.isBlank(" ")).isTrue();
+        assertThat(Strings.isBlank("\n")).isTrue();
+        assertThat(Strings.isBlank("\r")).isTrue();
+        assertThat(Strings.isBlank("\t")).isTrue();
+        assertThat(Strings.isEmpty("a")).isFalse();
     }
 
     /**
@@ -51,29 +51,29 @@ public class StringsTest {
      */
     @Test
     public void testEMPTY() {
-        assertEquals("", Strings.EMPTY);
-        assertEquals(0, Strings.EMPTY.length());
+        assertThat(Strings.EMPTY).isEqualTo("");
+        assertThat(Strings.EMPTY.length()).isEqualTo(0);
     }
 
     @Test
     public void testJoin() {
-        assertNull(Strings.join((Iterable<?>) null, '.'));
-        assertNull(Strings.join((Iterator<?>) null, '.'));
-        assertEquals("", Strings.join((Collections.emptyList()), '.'));
+        assertThat(Strings.join((Iterable<?>) null, '.')).isNull();
+        assertThat(Strings.join((Iterator<?>) null, '.')).isNull();
+        assertThat(Strings.join((Collections.emptyList()), '.')).isEqualTo("");
 
-        assertEquals("a", Strings.join(Collections.singletonList("a"), '.'));
-        assertEquals("a.b", Strings.join(Arrays.asList("a", "b"), '.'));
-        assertEquals("a.b.c", Strings.join(Arrays.asList("a", "b", "c"), '.'));
+        assertThat(Strings.join(Collections.singletonList("a"), '.')).isEqualTo("a");
+        assertThat(Strings.join(Arrays.asList("a", "b"), '.')).isEqualTo("a.b");
+        assertThat(Strings.join(Arrays.asList("a", "b", "c"), '.')).isEqualTo("a.b.c");
 
-        assertEquals("", Strings.join(Collections.singletonList((String) null), ':'));
-        assertEquals(":", Strings.join(Arrays.asList(null, null), ':'));
-        assertEquals("a:", Strings.join(Arrays.asList("a", null), ':'));
-        assertEquals(":b", Strings.join(Arrays.asList(null, "b"), ':'));
+        assertThat(Strings.join(Collections.singletonList((String) null), ':')).isEqualTo("");
+        assertThat(Strings.join(Arrays.asList(null, null), ':')).isEqualTo(":");
+        assertThat(Strings.join(Arrays.asList("a", null), ':')).isEqualTo("a:");
+        assertThat(Strings.join(Arrays.asList(null, "b"), ':')).isEqualTo(":b");
     }
 
     @Test
     public void testQuote() {
-        assertEquals("'Q'", Strings.quote("Q"));
+        assertThat(Strings.quote("Q")).isEqualTo("'Q'");
     }
 
 }

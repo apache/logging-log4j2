@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.time.internal.format;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -31,7 +33,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.logging.log4j.core.time.internal.format.DateParser;
@@ -114,7 +115,7 @@ public class FastDateParserTest {
 
         i= 0;
         for(final DateParser parser:parsers) {
-            assertEquals(i++, map.get(parser).intValue());
+            assertThat(map.get(parser).intValue()).isEqualTo(i++);
         }
     }
 
@@ -126,20 +127,20 @@ public class FastDateParserTest {
 
         final DateParser fdf = getInstance(yMdHmsSZ, NEW_YORK, Locale.US);
 
-        assertEquals(cal.getTime(), fdf.parse("2003-07-10T15:33:20.000 -0500"));
-        assertEquals(cal.getTime(), fdf.parse("2003-07-10T15:33:20.000 GMT-05:00"));
-        assertEquals(cal.getTime(), fdf.parse("2003-07-10T16:33:20.000 Eastern Daylight Time"));
-        assertEquals(cal.getTime(), fdf.parse("2003-07-10T16:33:20.000 EDT"));
+        assertThat(fdf.parse("2003-07-10T15:33:20.000 -0500")).isEqualTo(cal.getTime());
+        assertThat(fdf.parse("2003-07-10T15:33:20.000 GMT-05:00")).isEqualTo(cal.getTime());
+        assertThat(fdf.parse("2003-07-10T16:33:20.000 Eastern Daylight Time")).isEqualTo(cal.getTime());
+        assertThat(fdf.parse("2003-07-10T16:33:20.000 EDT")).isEqualTo(cal.getTime());
 
         cal.setTimeZone(TimeZone.getTimeZone("GMT-3"));
         cal.set(2003, Calendar.FEBRUARY, 10, 9, 0, 0);
 
-        assertEquals(cal.getTime(), fdf.parse("2003-02-10T09:00:00.000 -0300"));
+        assertThat(fdf.parse("2003-02-10T09:00:00.000 -0300")).isEqualTo(cal.getTime());
 
         cal.setTimeZone(TimeZone.getTimeZone("GMT+5"));
         cal.set(2003, Calendar.FEBRUARY, 10, 15, 5, 6);
 
-        assertEquals(cal.getTime(), fdf.parse("2003-02-10T15:05:06.000 +0500"));
+        assertThat(fdf.parse("2003-02-10T15:05:06.000 +0500")).isEqualTo(cal.getTime());
     }
 
     @Test
@@ -152,17 +153,17 @@ public class FastDateParserTest {
 
         DateParser fdf = getInstance("yyyy GGGG MMMM dddd aaaa EEEE HHHH mmmm ssss SSSS ZZZZ", NEW_YORK, Locale.US);
 
-        assertEquals(cal.getTime(), fdf.parse("2003 AD February 0010 PM Monday 0015 0033 0020 0989 GMT-05:00"));
+        assertThat(fdf.parse("2003 AD February 0010 PM Monday 0015 0033 0020 0989 GMT-05:00")).isEqualTo(cal.getTime());
         cal.set(Calendar.ERA, GregorianCalendar.BC);
 
         final Date parse = fdf.parse("2003 BC February 0010 PM Saturday 0015 0033 0020 0989 GMT-05:00");
-                assertEquals(cal.getTime(), parse);
+                assertThat(parse).isEqualTo(cal.getTime());
 
         fdf = getInstance("y G M d a E H m s S Z", NEW_YORK, Locale.US);
-        assertEquals(cal.getTime(), fdf.parse("03 BC 2 10 PM Sat 15 33 20 989 -0500"));
+        assertThat(fdf.parse("03 BC 2 10 PM Sat 15 33 20 989 -0500")).isEqualTo(cal.getTime());
 
         cal.set(Calendar.ERA, GregorianCalendar.AD);
-        assertEquals(cal.getTime(), fdf.parse("03 AD 2 10 PM Saturday 15 33 20 989 -0500"));
+        assertThat(fdf.parse("03 AD 2 10 PM Saturday 15 33 20 989 -0500")).isEqualTo(cal.getTime());
     }
 
     @Test
@@ -176,28 +177,28 @@ public class FastDateParserTest {
         final DateParser H = getInstance("yyyy-MM-dd HH:mm:ss", NEW_YORK, Locale.US);
 
         cal.set(2010, Calendar.AUGUST, 1, 0, 33, 20);
-        assertEquals(cal.getTime(), h.parse("2010-08-01 12 AM 33:20"));
-        assertEquals(cal.getTime(), K.parse("2010-08-01 0 AM 33:20"));
-        assertEquals(cal.getTime(), k.parse("2010-08-01 00:33:20"));
-        assertEquals(cal.getTime(), H.parse("2010-08-01 00:33:20"));
+        assertThat(h.parse("2010-08-01 12 AM 33:20")).isEqualTo(cal.getTime());
+        assertThat(K.parse("2010-08-01 0 AM 33:20")).isEqualTo(cal.getTime());
+        assertThat(k.parse("2010-08-01 00:33:20")).isEqualTo(cal.getTime());
+        assertThat(H.parse("2010-08-01 00:33:20")).isEqualTo(cal.getTime());
 
         cal.set(2010, Calendar.AUGUST, 1, 3, 33, 20);
-        assertEquals(cal.getTime(), h.parse("2010-08-01 3 AM 33:20"));
-        assertEquals(cal.getTime(), K.parse("2010-08-01 3 AM 33:20"));
-        assertEquals(cal.getTime(), k.parse("2010-08-01 03:33:20"));
-        assertEquals(cal.getTime(), H.parse("2010-08-01 03:33:20"));
+        assertThat(h.parse("2010-08-01 3 AM 33:20")).isEqualTo(cal.getTime());
+        assertThat(K.parse("2010-08-01 3 AM 33:20")).isEqualTo(cal.getTime());
+        assertThat(k.parse("2010-08-01 03:33:20")).isEqualTo(cal.getTime());
+        assertThat(H.parse("2010-08-01 03:33:20")).isEqualTo(cal.getTime());
 
         cal.set(2010, Calendar.AUGUST, 1, 15, 33, 20);
-        assertEquals(cal.getTime(), h.parse("2010-08-01 3 PM 33:20"));
-        assertEquals(cal.getTime(), K.parse("2010-08-01 3 PM 33:20"));
-        assertEquals(cal.getTime(), k.parse("2010-08-01 15:33:20"));
-        assertEquals(cal.getTime(), H.parse("2010-08-01 15:33:20"));
+        assertThat(h.parse("2010-08-01 3 PM 33:20")).isEqualTo(cal.getTime());
+        assertThat(K.parse("2010-08-01 3 PM 33:20")).isEqualTo(cal.getTime());
+        assertThat(k.parse("2010-08-01 15:33:20")).isEqualTo(cal.getTime());
+        assertThat(H.parse("2010-08-01 15:33:20")).isEqualTo(cal.getTime());
 
         cal.set(2010, Calendar.AUGUST, 1, 12, 33, 20);
-        assertEquals(cal.getTime(), h.parse("2010-08-01 12 PM 33:20"));
-        assertEquals(cal.getTime(), K.parse("2010-08-01 0 PM 33:20"));
-        assertEquals(cal.getTime(), k.parse("2010-08-01 12:33:20"));
-        assertEquals(cal.getTime(), H.parse("2010-08-01 12:33:20"));
+        assertThat(h.parse("2010-08-01 12 PM 33:20")).isEqualTo(cal.getTime());
+        assertThat(K.parse("2010-08-01 0 PM 33:20")).isEqualTo(cal.getTime());
+        assertThat(k.parse("2010-08-01 12:33:20")).isEqualTo(cal.getTime());
+        assertThat(H.parse("2010-08-01 12:33:20")).isEqualTo(cal.getTime());
     }
 
     private Calendar getEraStart(int year, final TimeZone zone, final Locale locale) {
@@ -230,7 +231,7 @@ public class FastDateParserTest {
         final String fmt = sdf.format(in);
         try {
             final Date out = fdp.parse(fmt);
-            assertEquals(locale.toString()+" "+in+" "+ format+ " "+tz.getID(), in, out);
+            assertThat(out).describedAs(locale.toString()+" "+in+" "+ format+ " "+tz.getID()).isEqualTo(in);
         } catch (final ParseException pe) {
             if (year >= 1868 || !locale.getCountry().equals("JP")) {// LANG-978
                 throw pe;
@@ -277,7 +278,7 @@ public class FastDateParserTest {
                 final Date expected= cal.getTime();
 
                 final Date actual = fdp.parse("2000/02/10 "+tz.getDisplayName(locale));
-                Assert.assertEquals("tz:"+tz.getID()+" locale:"+locale.getDisplayName(), expected, actual);
+                assertThat(actual).describedAs("tz:"+tz.getID()+" locale:"+locale.getDisplayName()).isEqualTo(expected);
             }
         }
     }
@@ -343,7 +344,7 @@ public class FastDateParserTest {
             try {
                 checkParse(locale, cal, sdf, fdf);
             } catch(final ParseException ex) {
-                Assert.fail("Locale "+locale+ " failed with "+format+" era "+(eraBC?"BC":"AD")+"\n" + trimMessage(ex.toString()));
+                fail("Locale "+locale+ " failed with "+format+" era "+(eraBC?"BC":"AD")+"\n" + trimMessage(ex.toString()));
             }
         }
     }
@@ -365,7 +366,7 @@ public class FastDateParserTest {
             try {
                 checkParse(locale, cal, sdf, fdf);
             } catch(final ParseException ex) {
-                Assert.fail("Locale "+locale+ " failed with "+LONG_FORMAT+"\n" + trimMessage(ex.toString()));
+                fail("Locale "+locale+ " failed with "+LONG_FORMAT+"\n" + trimMessage(ex.toString()));
             }
         }
     }
@@ -391,7 +392,7 @@ public class FastDateParserTest {
     private void checkParse(final Locale locale, final SimpleDateFormat sdf, final DateParser fdf, final String formattedDate) throws ParseException {
         final Date expectedTime = sdf.parse(formattedDate);
         final Date actualTime = fdf.parse(formattedDate);
-        assertEquals(locale.toString()+" "+formattedDate +"\n",expectedTime, actualTime);
+        assertThat(actualTime).describedAs(locale.toString()+" "+formattedDate +"\n").isEqualTo(expectedTime);
     }
 
     @Test
@@ -402,7 +403,7 @@ public class FastDateParserTest {
         cal.set(Calendar.MILLISECOND, 989);
 
         final DateParser fdf = getInstance("yyyyMMddHHmmssSSS", NEW_YORK, Locale.US);
-        assertEquals(cal.getTime(), fdf.parse("20030210153320989"));
+        assertThat(fdf.parse("20030210153320989")).isEqualTo(cal.getTime());
     }
 
     @Test
@@ -413,7 +414,7 @@ public class FastDateParserTest {
         cal.set(Calendar.MILLISECOND, 989);
 
         final DateParser fdf = getInstance("''yyyyMMdd'A''B'HHmmssSSS''", NEW_YORK, Locale.US);
-        assertEquals(cal.getTime(), fdf.parse("'20030210A'B153320989'"));
+        assertThat(fdf.parse("'20030210A'B153320989'")).isEqualTo(cal.getTime());
     }
 
     @Test
@@ -457,7 +458,7 @@ public class FastDateParserTest {
             sdf.setTimeZone(NEW_YORK);
             dsdf = sdf.parse(date);
             if (shouldFail) {
-                Assert.fail("Expected SDF failure, but got " + dsdf + " for ["+format+","+date+"]");
+                fail("Expected SDF failure, but got " + dsdf + " for ["+format+","+date+"]");
             }
         } catch (final Exception e) {
             s = e;
@@ -470,7 +471,7 @@ public class FastDateParserTest {
             final DateParser fdp = getInstance(format, NEW_YORK, Locale.US);
             dfdp = fdp.parse(date);
             if (shouldFail) {
-                Assert.fail("Expected FDF failure, but got " + dfdp + " for ["+format+","+date+"]");
+                fail("Expected FDF failure, but got " + dfdp + " for ["+format+","+date+"]");
             }
         } catch (final Exception e) {
             f = e;
@@ -479,8 +480,8 @@ public class FastDateParserTest {
             }
         }
         // SDF and FDF should produce equivalent results
-        assertTrue("Should both or neither throw Exceptions", (f==null)==(s==null));
-        assertEquals("Parsed dates should be equal", dsdf, dfdp);
+        assertThat((f==null)==(s==null)).describedAs("Should both or neither throw Exceptions").isTrue();
+        assertThat(dfdp).describedAs("Parsed dates should be equal").isEqualTo(dsdf);
     }
 
     @Test
@@ -490,7 +491,7 @@ public class FastDateParserTest {
         cal.set(2003, Calendar.FEBRUARY, 10);
 
         final DateParser fdf = getInstance("W w F D y", NEW_YORK, Locale.US);
-        assertEquals(cal.getTime(), fdf.parse("3 7 2 41 03"));
+        assertThat(fdf.parse("3 7 2 41 03")).isEqualTo(cal.getTime());
     }
 
     /**
@@ -504,10 +505,10 @@ public class FastDateParserTest {
         cal.clear();
 
         cal.set(2004, Calendar.FEBRUARY, 3);
-        assertEquals(cal.getTime(), fdf.parse("2/3/04"));
+        assertThat(fdf.parse("2/3/04")).isEqualTo(cal.getTime());
 
         fdf = getDateInstance(FastDateFormat.SHORT, SWEDEN);
-        assertEquals(cal.getTime(), fdf.parse("2004-02-03"));
+        assertThat(fdf.parse("2004-02-03")).isEqualTo(cal.getTime());
     }
 
     /**
@@ -521,13 +522,13 @@ public class FastDateParserTest {
         cal.clear();
 
         cal.set(1, Calendar.JANUARY, 1);
-        assertEquals(cal.getTime(), parser.parse("0001/01/01"));
+        assertThat(parser.parse("0001/01/01")).isEqualTo(cal.getTime());
         cal.set(10, Calendar.JANUARY, 1);
-        assertEquals(cal.getTime(), parser.parse("0010/01/01"));
+        assertThat(parser.parse("0010/01/01")).isEqualTo(cal.getTime());
         cal.set(100, Calendar.JANUARY, 1);
-        assertEquals(cal.getTime(), parser.parse("0100/01/01"));
+        assertThat(parser.parse("0100/01/01")).isEqualTo(cal.getTime());
         cal.set(999, Calendar.JANUARY, 1);
-        assertEquals(cal.getTime(), parser.parse("0999/01/01"));
+        assertThat(parser.parse("0999/01/01")).isEqualTo(cal.getTime());
     }
 
     @Test
@@ -537,7 +538,7 @@ public class FastDateParserTest {
         cal.clear();
 
         cal.set(1000, Calendar.JANUARY, 1);
-        assertEquals(cal.getTime(), parser.parse("01.01.1000"));
+        assertThat(parser.parse("01.01.1000")).isEqualTo(cal.getTime());
     }
 
     @Test
@@ -549,7 +550,7 @@ public class FastDateParserTest {
         final Date date = parser.parse("2004/11/31");
 
         parser = SerializationUtils.deserialize(SerializationUtils.serialize((Serializable) parser));
-        assertEquals(date, parser.parse("2004/11/31"));
+        assertThat(parser.parse("2004/11/31")).isEqualTo(date);
     }
 
     @Test
@@ -560,7 +561,7 @@ public class FastDateParserTest {
         cal.clear();
         cal.set(2009, Calendar.OCTOBER, 16, 8, 42, 16);
 
-        assertEquals(cal.getTime(), parser.parse("2009-10-16T16:42:16.000Z"));
+        assertThat(parser.parse("2009-10-16T16:42:16.000Z")).isEqualTo(cal.getTime());
     }
 
     @Test
@@ -568,34 +569,34 @@ public class FastDateParserTest {
         final DateParser parser1= getInstance(YMD_SLASH);
         final DateParser parser2= getInstance(YMD_SLASH);
 
-        assertEquals(parser1, parser2);
-        assertEquals(parser1.hashCode(), parser2.hashCode());
+        assertThat(parser2).isEqualTo(parser1);
+        assertThat(parser2.hashCode()).isEqualTo(parser1.hashCode());
 
-        assertFalse(parser1.equals(new Object()));
+        assertThat(parser1.equals(new Object())).isFalse();
     }
 
     @Test
     public void testToStringContainsName() {
         final DateParser parser= getInstance(YMD_SLASH);
-        assertTrue(parser.toString().startsWith("FastDate"));
+        assertThat(parser.toString().startsWith("FastDate")).isTrue();
     }
 
     @Test
     public void testPatternMatches() {
         final DateParser parser= getInstance(yMdHmsSZ);
-        assertEquals(yMdHmsSZ, parser.getPattern());
+        assertThat(parser.getPattern()).isEqualTo(yMdHmsSZ);
     }
 
     @Test
     public void testLocaleMatches() {
         final DateParser parser= getInstance(yMdHmsSZ, SWEDEN);
-        assertEquals(SWEDEN, parser.getLocale());
+        assertThat(parser.getLocale()).isEqualTo(SWEDEN);
     }
 
     @Test
     public void testTimeZoneMatches() {
         final DateParser parser= getInstance(yMdHmsSZ, REYKJAVIK);
-        assertEquals(REYKJAVIK, parser.getTimeZone());
+        assertThat(parser.getTimeZone()).isEqualTo(REYKJAVIK);
     }
     
     @Test
@@ -605,9 +606,9 @@ public class FastDateParserTest {
         expected.set(2014, Calendar.MAY, 14);
 
         final DateParser fdp = getInstance("ddMMMyyyy", NEW_YORK, Locale.US);        
-        assertEquals(expected.getTime(), fdp.parse("14may2014"));
-        assertEquals(expected.getTime(), fdp.parse("14MAY2014"));
-        assertEquals(expected.getTime(), fdp.parse("14May2014"));
+        assertThat(fdp.parse("14may2014")).isEqualTo(expected.getTime());
+        assertThat(fdp.parse("14MAY2014")).isEqualTo(expected.getTime());
+        assertThat(fdp.parse("14May2014")).isEqualTo(expected.getTime());
     }
     
     @Test(expected = IllegalArgumentException.class)
@@ -658,13 +659,13 @@ public class FastDateParserTest {
             final String message = trial.zone.getDisplayName()+";";
             
             DateParser parser = getInstance(formatStub+"X", trial.zone);
-            assertEquals(message+trial.one, cal.getTime().getTime(), parser.parse(dateStub+trial.one).getTime()-trial.offset);
+            assertThat(parser.parse(dateStub+trial.one).getTime()-trial.offset).describedAs(message+trial.one).isEqualTo(cal.getTime().getTime());
 
             parser = getInstance(formatStub+"XX", trial.zone);
-            assertEquals(message+trial.two, cal.getTime(), parser.parse(dateStub+trial.two));
+            assertThat(parser.parse(dateStub+trial.two)).describedAs(message+trial.two).isEqualTo(cal.getTime());
 
             parser = getInstance(formatStub+"XXX", trial.zone);
-            assertEquals(message+trial.three, cal.getTime(), parser.parse(dateStub+trial.three));
+            assertThat(parser.parse(dateStub+trial.three)).describedAs(message+trial.three).isEqualTo(cal.getTime());
         }
     }
 
@@ -675,7 +676,7 @@ public class FastDateParserTest {
 
         try {
             fdp.parse("2015");
-            Assert.fail("expected parse exception");
+            fail("expected parse exception");
         } catch (final ParseException pe) {
             // expected parse exception
         }
@@ -686,7 +687,7 @@ public class FastDateParserTest {
         cal.clear();
         cal.set(2015, 3, 29);
         Date expected = cal.getTime();
-        Assert.assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
 
         final SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd", Locale.KOREA);
         df.setTimeZone(kst);
@@ -694,7 +695,7 @@ public class FastDateParserTest {
 
         // Thu Mar 16 00:00:00 KST 81724
         actual = fdp.parse("20150429113100");
-        Assert.assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -705,7 +706,7 @@ public class FastDateParserTest {
         final Calendar cal = Calendar.getInstance();
         cal.clear();
         cal.set(2015, Calendar.JULY, 4);
-        Assert.assertEquals(cal.getTime(), date);
+        assertThat(date).isEqualTo(cal.getTime());
     }
 
     @Test
@@ -714,12 +715,12 @@ public class FastDateParserTest {
         final Calendar calendar = Calendar.getInstance();
 
         calendar.setTime(parser.parse("1"));
-        Assert.assertEquals(Calendar.MONDAY, calendar.get(Calendar.DAY_OF_WEEK));
+        assertThat(calendar.get(Calendar.DAY_OF_WEEK)).isEqualTo(Calendar.MONDAY);
 
         calendar.setTime(parser.parse("6"));
-        Assert.assertEquals(Calendar.SATURDAY, calendar.get(Calendar.DAY_OF_WEEK));
+        assertThat(calendar.get(Calendar.DAY_OF_WEEK)).isEqualTo(Calendar.SATURDAY);
 
         calendar.setTime(parser.parse("7"));
-        Assert.assertEquals(Calendar.SUNDAY, calendar.get(Calendar.DAY_OF_WEEK));
+        assertThat(calendar.get(Calendar.DAY_OF_WEEK)).isEqualTo(Calendar.SUNDAY);
     }
 }

@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -29,8 +31,6 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ExtendedThrowablePatternConverterTest {
 
@@ -151,7 +151,7 @@ public class ExtendedThrowablePatternConverterTest {
         String result = sb.toString();
         result = result.replaceAll(" ~?\\[.*\\]", Strings.EMPTY);
         final String expected = sw.toString(); //.replaceAll("\r", Strings.EMPTY);
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
     
     @Test
@@ -160,11 +160,11 @@ public class ExtendedThrowablePatternConverterTest {
                 new String[] { "full", "filters(org.junit,org.eclipse)", "separator(|)" });
         final ThrowableFormatOptions options = exConverter.getOptions();
         final List<String> ignorePackages = options.getIgnorePackages();
-        assertNotNull(ignorePackages);
+        assertThat(ignorePackages).isNotNull();
         final String ignorePackagesString = ignorePackages.toString();
         assertTrue(ignorePackages.contains("org.junit"), ignorePackagesString);
         assertTrue(ignorePackages.contains("org.eclipse"), ignorePackagesString);
-        assertEquals("|", options.getSeparator());
+        assertThat(options.getSeparator()).isEqualTo("|");
     }
 
 }

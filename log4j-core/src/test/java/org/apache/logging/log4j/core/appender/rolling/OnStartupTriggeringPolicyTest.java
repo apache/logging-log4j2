@@ -16,12 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -35,9 +32,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Tests {@link OnStartupTriggeringPolicy}.
@@ -63,8 +63,8 @@ public class OnStartupTriggeringPolicyTest {
             copied = Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
         }
         final long size = Files.size(target);
-        assertTrue(size > 0);
-        assertEquals(copied, size);
+        assertThat(size > 0).isTrue();
+        assertThat(size).isEqualTo(copied);
 
         final FileTime fileTime = FileTime.fromMillis(timeStamp);
         final BasicFileAttributeView attrs = Files.getFileAttributeView(target, BasicFileAttributeView.class);
@@ -83,9 +83,9 @@ public class OnStartupTriggeringPolicyTest {
                 files = contents.map(Path::toString).collect(Collectors.joining(", ", "[", "]"));
             }
             assertTrue(Files.exists(target), target.toString() + ", files = " + files);
-            assertEquals(0, Files.size(target), target.toString());
+            assertThat(Files.size(target)).describedAs(target.toString()).isEqualTo(0);
             assertTrue(Files.exists(rolled), "Missing: " + rolled.toString() + ", files on disk = " + files);
-            assertEquals(size, Files.size(rolled), rolled.toString());
+            assertThat(Files.size(rolled)).describedAs(rolled.toString()).isEqualTo(size);
         }
     }
 

@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -30,8 +33,6 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -98,9 +99,9 @@ public class LogEventTest {
         final ObjectInputStream ois = new FilteredObjectInputStream(bais);
         
         final LogEvent actual = (LogEvent) ois.readObject();
-        assertNotEquals(copy, actual, "Different event: nanoTime");
-        assertNotEquals(copy.getNanoTime(), actual.getNanoTime(), "Different nanoTime");
-        assertEquals(0, actual.getNanoTime(), "deserialized nanoTime is zero");
+        assertThat(actual).describedAs("Different event: nanoTime").isNotEqualTo(copy);
+        assertThat(actual.getNanoTime()).describedAs("Different nanoTime").isNotEqualTo(copy.getNanoTime());
+        assertThat(actual.getNanoTime()).describedAs("deserialized nanoTime is zero").isEqualTo(0);
     }
 
     @Test
@@ -125,7 +126,7 @@ public class LogEventTest {
         final ObjectInputStream ois = new FilteredObjectInputStream(bais);
         
         final LogEvent actual = (LogEvent) ois.readObject();
-        assertEquals(event2, actual, "both zero nanoTime");
+        assertThat(actual).describedAs("both zero nanoTime").isEqualTo(event2);
     }
 
     @Test
@@ -149,15 +150,15 @@ public class LogEventTest {
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")) //
                 .build();
-        assertNotEquals(event1, event2, "Events should not be equal");
-        assertEquals(event2, event3, "Events should be equal");
+        assertThat(event2).describedAs("Events should not be equal").isNotEqualTo(event1);
+        assertThat(event3).describedAs("Events should be equal").isEqualTo(event2);
     }
 
     @Test
     public void testLocation() {
         final StackTraceElement ste = TESTER.getEventSource(this.getClass().getName());
-        assertNotNull(ste, "No StackTraceElement");
-        assertEquals(this.getClass().getName(), ste.getClassName(), "Incorrect event");
+        assertThat(ste).describedAs("No StackTraceElement").isNotNull();
+        assertThat(ste.getClassName()).describedAs("Incorrect event").isEqualTo(this.getClass().getName());
     }
 
     private static class TestClass {

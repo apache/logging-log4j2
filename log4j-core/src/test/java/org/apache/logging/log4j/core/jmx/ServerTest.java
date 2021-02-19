@@ -17,11 +17,11 @@
 
 package org.apache.logging.log4j.core.jmx;
 
-import javax.management.ObjectName;
-
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import javax.management.ObjectName;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for the Server class.
@@ -32,7 +32,7 @@ public class ServerTest {
     public void testEscapeQuotesButDoesNotEscapeEquals() throws Exception {
         final String ctx = "WebAppClassLoader=1320771902@4eb9613e"; // LOG4J2-492
         final String ctxName = Server.escape(ctx);
-        assertEquals("\"WebAppClassLoader=1320771902@4eb9613e\"", ctxName);
+        assertThat(ctxName).isEqualTo("\"WebAppClassLoader=1320771902@4eb9613e\"");
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
         // no MalformedObjectNameException = success
     }
@@ -41,7 +41,7 @@ public class ServerTest {
     public void testEscapeQuotesButDoesNotEscapeComma() throws Exception {
         final String ctx = "a,b,c";
         final String ctxName = Server.escape(ctx);
-        assertEquals("\"a,b,c\"", ctxName);
+        assertThat(ctxName).isEqualTo("\"a,b,c\"");
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
         // no MalformedObjectNameException = success
     }
@@ -50,7 +50,7 @@ public class ServerTest {
     public void testEscapeQuotesButDoesNotEscapeColon() throws Exception {
         final String ctx = "a:b:c";
         final String ctxName = Server.escape(ctx);
-        assertEquals("\"a:b:c\"", ctxName);
+        assertThat(ctxName).isEqualTo("\"a:b:c\"");
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
         // no MalformedObjectNameException = success
     }
@@ -59,7 +59,7 @@ public class ServerTest {
     public void testEscapeQuotesAndEscapesQuestion() throws Exception {
         final String ctx = "a?c";
         final String ctxName = Server.escape(ctx);
-        assertEquals("\"a\\?c\"", ctxName);
+        assertThat(ctxName).isEqualTo("\"a\\?c\"");
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
         // no MalformedObjectNameException = success
     }
@@ -68,7 +68,7 @@ public class ServerTest {
     public void testEscapeQuotesAndEscapesStar() throws Exception {
         final String ctx = "a*c";
         final String ctxName = Server.escape(ctx);
-        assertEquals("\"a\\*c\"", ctxName);
+        assertThat(ctxName).isEqualTo("\"a\\*c\"");
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
         // no MalformedObjectNameException = success
     }
@@ -77,7 +77,7 @@ public class ServerTest {
     public void testEscapeQuotesAndEscapesBackslash() throws Exception {
         final String ctx = "a\\c";
         final String ctxName = Server.escape(ctx);
-        assertEquals("\"a\\\\c\"", ctxName);
+        assertThat(ctxName).isEqualTo("\"a\\\\c\"");
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
         // no MalformedObjectNameException = success
     }
@@ -86,7 +86,7 @@ public class ServerTest {
     public void testEscapeQuotesAndEscapesQuote() throws Exception {
         final String ctx = "a\"c";
         final String ctxName = Server.escape(ctx);
-        assertEquals("\"a\\\"c\"", ctxName);
+        assertThat(ctxName).isEqualTo("\"a\\\"c\"");
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
         // no MalformedObjectNameException = success
     }
@@ -95,7 +95,7 @@ public class ServerTest {
     public void testEscapeIgnoresSpaces() throws Exception {
         final String ctx = "a c";
         final String ctxName = Server.escape(ctx);
-        assertEquals("a c", ctxName);
+        assertThat(ctxName).isEqualTo("a c");
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
         // no MalformedObjectNameException = success
     }
@@ -104,7 +104,7 @@ public class ServerTest {
     public void testEscapeEscapesLineFeed() throws Exception {
         final String ctx = "a\rc";
         final String ctxName = Server.escape(ctx);
-        assertEquals("ac", ctxName);
+        assertThat(ctxName).isEqualTo("ac");
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
         // no MalformedObjectNameException = success
     }
@@ -113,7 +113,7 @@ public class ServerTest {
     public void testEscapeEscapesCarriageReturn() throws Exception {
         final String ctx = "a\nc";
         final String ctxName = Server.escape(ctx);
-        assertEquals("\"a\\nc\"", ctxName);
+        assertThat(ctxName).isEqualTo("\"a\\nc\"");
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
         // no MalformedObjectNameException = success
     }

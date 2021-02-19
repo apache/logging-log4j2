@@ -14,6 +14,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -22,7 +23,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -73,9 +73,9 @@ public class RollingAppenderSizeCompressPermissionsTest {
             System.err.println("Could not stop cleanly " + loggerContextRule + " for " + this);
         }
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists());
+        assertThat(dir.exists()).describedAs("Directory not created").isTrue();
         final File[] files = dir.listFiles();
-        assertNotNull(files);
+        assertThat(files).isNotNull();
         int gzippedFiles1 = 0;
         int gzippedFiles2 = 0;
         for (final File file : files) {
@@ -83,25 +83,21 @@ public class RollingAppenderSizeCompressPermissionsTest {
             if (ext != null) {
                 if (file.getName().startsWith("test1")) {
                     gzippedFiles1++;
-                    assertEquals("rw-------",
-                            PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
+                    assertThat(PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath()))).isEqualTo("rw-------");
                 } else {
                     gzippedFiles2++;
-                    assertEquals("r--r--r--",
-                            PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
+                    assertThat(PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath()))).isEqualTo("r--r--r--");
                 }
             } else {
                 if (file.getName().startsWith("test1")) {
-                    assertEquals("rw-------",
-                            PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
+                    assertThat(PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath()))).isEqualTo("rw-------");
                 } else {
-                    assertEquals("rwx------",
-                            PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
+                    assertThat(PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath()))).isEqualTo("rwx------");
                 }
             }
         }
-        assertTrue("Files not rolled : " + files.length, files.length > 2);
-        assertTrue("Files 1 gzipped not rolled : " + gzippedFiles1, gzippedFiles1 > 0);
-        assertTrue("Files 2 gzipped not rolled : " + gzippedFiles2, gzippedFiles2 > 0);
+        assertThat(files.length > 2).describedAs("Files not rolled : " + files.length).isTrue();
+        assertThat(gzippedFiles1 > 0).describedAs("Files 1 gzipped not rolled : " + gzippedFiles1).isTrue();
+        assertThat(gzippedFiles2 > 0).describedAs("Files 2 gzipped not rolled : " + gzippedFiles2).isTrue();
     }
 }

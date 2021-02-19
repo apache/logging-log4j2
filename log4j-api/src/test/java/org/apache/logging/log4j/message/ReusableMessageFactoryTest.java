@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the ReusableMessageFactory class.
@@ -30,7 +31,7 @@ public class ReusableMessageFactoryTest {
         final ReusableMessageFactory factory = new ReusableMessageFactory();
         final Message message1 = factory.newMessage("text, p0={} p1={} p2={} p3={}", 1, 2, 3, 4);
         final Message message2 = factory.newMessage("text, p0={} p1={} p2={} p3={}", 9, 8, 7, 6);
-        assertNotSame(message1, message2);
+        assertThat(message2).isNotSameAs(message1);
         ReusableMessageFactory.release(message1);
         ReusableMessageFactory.release(message2);
     }
@@ -42,24 +43,24 @@ public class ReusableMessageFactoryTest {
 
         ReusableMessageFactory.release(message1);
         final Message message2 = factory.newMessage("text, p0={} p1={} p2={} p3={}", 9, 8, 7, 6);
-        assertSame(message1, message2);
+        assertThat(message2).isSameAs(message1);
 
         ReusableMessageFactory.release(message2);
         final Message message3 = factory.newMessage("text, AAA={} BBB={} p2={} p3={}", 9, 8, 7, 6);
-        assertSame(message2, message3);
+        assertThat(message3).isSameAs(message2);
         ReusableMessageFactory.release(message3);
     }
 
     private void assertReusableParameterizeMessage(final Message message, final String txt, final Object[] params) {
-        assertTrue(message instanceof ReusableParameterizedMessage);
+        assertThat(message instanceof ReusableParameterizedMessage).isTrue();
         final ReusableParameterizedMessage msg = (ReusableParameterizedMessage) message;
         assertTrue(msg.reserved, "reserved");
 
-        assertEquals(txt, msg.getFormat());
-        assertEquals(msg.getParameterCount(), params.length, "count");
+        assertThat(msg.getFormat()).isEqualTo(txt);
+        assertThat(params.length).describedAs("count").isEqualTo(msg.getParameterCount());
         final Object[] messageParams = msg.getParameters();
         for (int i = 0; i < params.length; i++) {
-            assertEquals(messageParams[i], params[i]);
+            assertThat(params[i]).isEqualTo(messageParams[i]);
         }
     }
 
@@ -82,7 +83,7 @@ public class ReusableMessageFactoryTest {
                 new Integer(3), //
                 new Integer(4), //
         });
-        assertSame(message1, message2);
+        assertThat(message2).isSameAs(message1);
         ReusableMessageFactory.release(message2);
     }
 
@@ -107,9 +108,9 @@ public class ReusableMessageFactoryTest {
         t2.start();
         t1.join();
         t2.join();
-        assertNotNull(message1[0]);
-        assertNotNull(message2[0]);
-        assertNotSame(message1[0], message2[0]);
+        assertThat(message1[0]).isNotNull();
+        assertThat(message2[0]).isNotNull();
+        assertThat(message2[0]).isNotSameAs(message1[0]);
         assertReusableParameterizeMessage(message1[0], "text, p0={} p1={} p2={} p3={}", new Object[]{
                 new Integer(1), //
                 new Integer(2), //

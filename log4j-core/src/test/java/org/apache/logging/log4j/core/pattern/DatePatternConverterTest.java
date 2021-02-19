@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -27,7 +28,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
-
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
@@ -127,7 +127,7 @@ public class DatePatternConverterTest {
         converter.format(date(2001, 1, 1), sb);
 
         final String expected = "2001-02-01 14:15:16,123";
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -137,7 +137,7 @@ public class DatePatternConverterTest {
         converter.format(date(2001, 1, 1), sb);
 
         final String expected = "2001-02-01T14:15:16,123";
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -148,7 +148,7 @@ public class DatePatternConverterTest {
         converter.format(date(2001, 1, 1), sb);
 
         final String expected = "20010201T141516.123";
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -159,7 +159,7 @@ public class DatePatternConverterTest {
         converter.format(date(2001, 1, 1), sb);
 
         final String expected = "2001-02-01T14:15:16.123";
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -175,7 +175,7 @@ public class DatePatternConverterTest {
         converter.format(instant, sb);
 
         final String expected = "2019-12-24T22:05:34.559001";
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -186,7 +186,7 @@ public class DatePatternConverterTest {
         converter.format(date(2001, 1, 1), sb);
 
         final String expected = "2001/02/01 14-15-16.123";
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -197,7 +197,7 @@ public class DatePatternConverterTest {
         converter.format(event, sb);
 
         final String expected = "2011-12-30 10:56:35,987";
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -208,7 +208,7 @@ public class DatePatternConverterTest {
         converter.format(event, sb);
 
         final String expected = "2011-12-30T10:56:35,987";
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
     
     @Test
@@ -226,7 +226,7 @@ public class DatePatternConverterTest {
         final long adjusted = event.getTimeMillis() + tz.getDSTSavings();
         final String expected = sdf.format(new Date(adjusted));
         // final String expected = "2011-12-30T18:56:35,987"; // in CET (Central Eastern Time: Amsterdam)
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -240,7 +240,7 @@ public class DatePatternConverterTest {
         final SimpleDateFormat sdf = new SimpleDateFormat(converter.getPattern());
         final String format = sdf.format(new Date(event.getTimeMillis()));
         final String expected = format.endsWith("Z") ? format.substring(0, format.length() - 1) + "+00:00" : format;
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -254,7 +254,7 @@ public class DatePatternConverterTest {
         final SimpleDateFormat sdf = new SimpleDateFormat(converter.getPattern());
         final String format = sdf.format(new Date(event.getTimeMillis()));
         final String expected = format.endsWith("Z") ? format.substring(0, format.length() - 1) + "+0000" : format;
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -270,7 +270,7 @@ public class DatePatternConverterTest {
         final long adjusted = event.getTimeMillis() + tz.getDSTSavings();
         final String expected = sdf.format(new Date(adjusted));
         // final String expected = "2011-12-30T09:56:35,987";
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -287,7 +287,7 @@ public class DatePatternConverterTest {
         final long adjusted = event.getTimeMillis() + tz.getDSTSavings();
         final String expected = sdf.format(new Date(adjusted));
         // final String expected = "2011-12-30T17:56:35,987"; // in UTC
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -297,7 +297,7 @@ public class DatePatternConverterTest {
         converter.format("nondate", sb);
 
         final String expected = ""; // only process dates
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -307,7 +307,7 @@ public class DatePatternConverterTest {
         converter.format(sb, date(2001, 1, 1), date(2002, 2, 2), date(2003, 3, 3));
 
         final String expected = "2001-02-01 14:15:16,123"; // only process first date
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -317,45 +317,45 @@ public class DatePatternConverterTest {
         converter.format(sb, date(2001, 1, 1), date(2002, 2, 2), date(2003, 3, 3));
 
         final String expected = "2001-02-01T14:15:16,123"; // only process first date
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
     public void testGetPatternReturnsDefaultForEmptyOptionsArray() {
-        assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(new String[0]).getPattern());
+        assertThat(DatePatternConverter.newInstance(new String[0]).getPattern()).isEqualTo(DEFAULT_PATTERN);
     }
 
     @Test
     public void testGetPatternReturnsDefaultForInvalidPattern() {
         final String[] invalid = {"ABC I am not a valid date pattern"};
-        assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(invalid).getPattern());
+        assertThat(DatePatternConverter.newInstance(invalid).getPattern()).isEqualTo(DEFAULT_PATTERN);
     }
 
     @Test
     public void testGetPatternReturnsDefaultForNullOptions() {
-        assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(null).getPattern());
+        assertThat(DatePatternConverter.newInstance(null).getPattern()).isEqualTo(DEFAULT_PATTERN);
     }
 
     @Test
     public void testGetPatternReturnsDefaultForSingleNullElementOptionsArray() {
-        assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(new String[1]).getPattern());
+        assertThat(DatePatternConverter.newInstance(new String[1]).getPattern()).isEqualTo(DEFAULT_PATTERN);
     }
 
     @Test
     public void testGetPatternReturnsDefaultForTwoNullElementsOptionsArray() {
-        assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(new String[2]).getPattern());
+        assertThat(DatePatternConverter.newInstance(new String[2]).getPattern()).isEqualTo(DEFAULT_PATTERN);
     }
 
     @Test
     public void testGetPatternReturnsNullForUnix() {
         final String[] options = {"UNIX"};
-        assertNull(DatePatternConverter.newInstance(options).getPattern());
+        assertThat(DatePatternConverter.newInstance(options).getPattern()).isNull();
     }
 
     @Test
     public void testGetPatternReturnsNullForUnixMillis() {
         final String[] options = {"UNIX_MILLIS"};
-        assertNull(DatePatternConverter.newInstance(options).getPattern());
+        assertThat(DatePatternConverter.newInstance(options).getPattern()).isNull();
     }
 
     @Test
@@ -402,8 +402,7 @@ public class DatePatternConverterTest {
             }
             final String expected = milliBuilder.append(tz).toString();
 
-            assertEquals("format = " + format + ", pattern = " + pattern + ", precisePattern = " + precisePattern,
-                    expected, preciseBuilder.toString());
+            assertThat(preciseBuilder.toString()).describedAs("format = " + format + ", pattern = " + pattern + ", precisePattern = " + precisePattern).isEqualTo(expected);
             // System.out.println(preciseOptions[0] + ": " + precise);
         }
     }
@@ -449,9 +448,7 @@ public class DatePatternConverterTest {
                     milliBuilder.setLength(milliBuilder.length() - truncateLen); // truncate millis
                     final String expected = milliBuilder.append("987123456".substring(0, i)).append(tz).toString();
 
-                    assertEquals(
-                            "format = " + format + ", pattern = " + pattern + ", precisePattern = " + precisePattern,
-                            expected, preciseBuilder.toString());
+                    assertThat(preciseBuilder.toString()).describedAs("format = " + format + ", pattern = " + pattern + ", precisePattern = " + precisePattern).isEqualTo(expected);
                     // System.out.println(preciseOptions[0] + ": " + precise);
                 }
             }
@@ -463,7 +460,7 @@ public class DatePatternConverterTest {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
             final String[] options = {format.name()};
             final DatePatternConverter converter = DatePatternConverter.newInstance(options);
-            assertEquals(format.getPattern(), converter.getPattern());
+            assertThat(converter.getPattern()).isEqualTo(format.getPattern());
         }
     }
 
@@ -472,7 +469,7 @@ public class DatePatternConverterTest {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
             final String[] options = {format.name(), "PST"}; // Pacific Standard Time=UTC-8:00
             final DatePatternConverter converter = DatePatternConverter.newInstance(options);
-            assertEquals(format.getPattern(), converter.getPattern());
+            assertThat(converter.getPattern()).isEqualTo(format.getPattern());
         }
     }
 

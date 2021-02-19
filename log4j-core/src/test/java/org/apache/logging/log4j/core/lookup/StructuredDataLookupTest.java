@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class StructuredDataLookupTest {
 
@@ -36,8 +37,8 @@ public class StructuredDataLookupTest {
         final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.DEBUG).setMessage(msg).build();
         final StrLookup lookup = new StructuredDataLookup();
         String value = lookup.lookup(event, TESTKEY);
-        assertEquals(TESTVAL, value);
+        assertThat(value).isEqualTo(TESTVAL);
         value = lookup.lookup("BadKey");
-        assertNull(value);
+        assertThat(value).isNull();
     }
 }

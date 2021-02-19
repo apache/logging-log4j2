@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.layout;
 
 import static org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,7 +31,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.AbstractLogEvent;
@@ -106,7 +106,7 @@ public class HtmlLayoutTest {
     @Test
     public void testDefaultContentType() {
         final HtmlLayout layout = HtmlLayout.createDefaultLayout();
-        assertEquals("text/html; charset=UTF-8", layout.getContentType());
+        assertThat(layout.getContentType()).isEqualTo("text/html; charset=UTF-8");
     }
 
     @Test
@@ -114,7 +114,7 @@ public class HtmlLayoutTest {
         final HtmlLayout layout = HtmlLayout.newBuilder()
             .setContentType("text/html; charset=UTF-16")
             .build();
-        assertEquals("text/html; charset=UTF-16", layout.getContentType());
+        assertThat(layout.getContentType()).isEqualTo("text/html; charset=UTF-16");
         // TODO: make sure this following bit works as well
 //        assertEquals(Charset.forName("UTF-16"), layout.getCharset());
     }
@@ -122,7 +122,7 @@ public class HtmlLayoutTest {
     @Test
     public void testDefaultCharset() {
         final HtmlLayout layout = HtmlLayout.createDefaultLayout();
-        assertEquals(StandardCharsets.UTF_8, layout.getCharset());
+        assertThat(layout.getCharset()).isEqualTo(StandardCharsets.UTF_8);
     }
 
     /**
@@ -181,13 +181,13 @@ public class HtmlLayoutTest {
         final String html = sb.toString();
         assertTrue(list.size() > 85, "Incorrect number of lines. Require at least 85 " + list.size());
         final String string = list.get(3);
-        assertEquals("<meta charset=\"UTF-8\"/>", string, "Incorrect header: " + string);
-        assertEquals("<title>Log4j Log Messages</title>", list.get(4), "Incorrect title");
-        assertEquals("</body></html>", list.get(list.size() - 1), "Incorrect footer");
+        assertThat(string).describedAs("Incorrect header: " + string).isEqualTo("<meta charset=\"UTF-8\"/>");
+        assertThat(list.get(4)).describedAs("Incorrect title").isEqualTo("<title>Log4j Log Messages</title>");
+        assertThat(list.get(list.size() - 1)).describedAs("Incorrect footer").isEqualTo("</body></html>");
         if (includeLocation) {
-            assertEquals(list.get(50), multiLine, "Incorrect multiline");
+            assertThat(multiLine).describedAs("Incorrect multiline").isEqualTo(list.get(50));
             assertTrue(html.contains("HtmlLayoutTest.java:"), "Missing location");
-            assertEquals(list.get(71), body, "Incorrect body");
+            assertThat(body).describedAs("Incorrect body").isEqualTo(list.get(71));
         } else {
             assertFalse(html.contains("<td>HtmlLayoutTest.java:"), "Location should not be in the output table");
         }
@@ -204,7 +204,7 @@ public class HtmlLayoutTest {
         String actual = getDateLine(layout.toSerializable(event));
 
         long jvmStratTime = ManagementFactory.getRuntimeMXBean().getStartTime();
-        assertEquals("<td>" + (event.getTimeMillis() - jvmStratTime) + "</td>", actual, "Incorrect date:" + actual);
+        assertThat(actual).describedAs("Incorrect date:" + actual).isEqualTo("<td>" + (event.getTimeMillis() - jvmStratTime) + "</td>");
     }
 
     @Test
@@ -215,7 +215,7 @@ public class HtmlLayoutTest {
         String actual = getDateLine(layout.toSerializable(event));
 
         long jvmStratTime = ManagementFactory.getRuntimeMXBean().getStartTime();
-        assertEquals("<td>" + (event.getTimeMillis() - jvmStratTime) + "</td>", actual, "Incorrect date:" + actual);
+        assertThat(actual).describedAs("Incorrect date:" + actual).isEqualTo("<td>" + (event.getTimeMillis() - jvmStratTime) + "</td>");
     }
 
     @Test
@@ -225,7 +225,7 @@ public class HtmlLayoutTest {
         MyLogEvent event = new MyLogEvent();
         String actual = getDateLine(layout.toSerializable(event));
 
-        assertEquals("<td>" + event.getInstant().getEpochSecond() + "</td>", actual, "Incorrect date:" + actual);
+        assertThat(actual).describedAs("Incorrect date:" + actual).isEqualTo("<td>" + event.getInstant().getEpochSecond() + "</td>");
     }
 
     @Test
@@ -235,7 +235,7 @@ public class HtmlLayoutTest {
         MyLogEvent event = new MyLogEvent();
         String actual = getDateLine(layout.toSerializable(event));
 
-        assertEquals("<td>" + event.getTimeMillis() + "</td>", actual, "Incorrect date:" + actual);
+        assertThat(actual).describedAs("Incorrect date:" + actual).isEqualTo("<td>" + event.getTimeMillis() + "</td>");
     }
 
     @Test
@@ -273,7 +273,6 @@ public class HtmlLayoutTest {
             DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'));
         String expected = zonedDateTime.format(dateTimeFormatter);
 
-        assertEquals("<td>" + expected + "</td>", actual,
-            MessageFormat.format("Incorrect date={0}, format={1}, timezone={2}", actual, format.name(), timezone));
+        assertThat(actual).describedAs(MessageFormat.format("Incorrect date={0}, format={1}, timezone={2}", actual, format.name(), timezone)).isEqualTo("<td>" + expected + "</td>");
     }
 }

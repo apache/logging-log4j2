@@ -17,12 +17,13 @@
 
 package org.apache.logging.log4j.junit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 import java.util.Hashtable;
-
 import org.junit.Assert;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -79,10 +80,8 @@ public class URLStreamHandlerFactoryRule implements TestRule {
                         break;
                     }
                 }
-                Assert.assertNotNull("java.net URL does not declare a java.net.URLStreamHandlerFactory field",
-                        factoryField);
-                Assert.assertEquals("java.net.URL declares multiple java.net.URLStreamHandlerFactory fields.", 1,
-                        matches); // FIXME There is a break in the loop so always 0 or 1
+                assertThat(factoryField).describedAs("java.net URL does not declare a java.net.URLStreamHandlerFactory field").isNotNull();
+                assertThat(matches).describedAs("java.net.URL declares multiple java.net.URLStreamHandlerFactory fields.").isEqualTo(1); // FIXME There is a break in the loop so always 0 or 1
                 URL.setURLStreamHandlerFactory(newURLStreamHandlerFactory);
                 try {
                     base.evaluate();

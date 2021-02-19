@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -26,14 +32,8 @@ import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.assertj.core.api.HamcrestCondition;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("log4j-rewrite.xml")
 public class RewriteAppenderTest {
@@ -52,16 +52,16 @@ public class RewriteAppenderTest {
         msg.put("Key2", "Value2");
         EventLogger.logEvent(msg);
         final List<LogEvent> list = app.getEvents();
-        assertThat(list, hasSize(1));
+        assertThat(list).hasSize(1);
         final LogEvent event = list.get(0);
         final Message m = event.getMessage();
-        assertThat(m, instanceOf(StructuredDataMessage.class));
+        assertThat(m).isInstanceOf(StructuredDataMessage.class);
         final StructuredDataMessage message = (StructuredDataMessage) m;
         final Map<String, String> map = message.getData();
-        assertNotNull(map, "No Map");
-        assertThat(map, MapMatchers.hasSize(3));
+        assertThat(map).describedAs("No Map").isNotNull();
+        assertThat(map).is(new HamcrestCondition<>(MapMatchers.hasSize(3)));
         final String value = map.get("Key1");
-        assertEquals("Apache", value);
+        assertThat(value).isEqualTo("Apache");
     }
 
 
@@ -70,10 +70,10 @@ public class RewriteAppenderTest {
         final Logger logger = context.getLogger(RewriteAppenderTest.class);
         logger.debug("Test properties rewrite");
         final List<String> list = app2.getMessages();
-        assertThat(list, hasSize(1));
-        assertThat(list.get(0), not(containsString("{user.dir}")));
-        assertNotNull(list, "No events generated");
-        assertEquals(list.size(), 1, "Incorrect number of events. Expected 1, got " + list.size());
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).doesNotContain("{user.dir}");
+        assertThat(list).describedAs("No events generated").isNotNull();
+        assertThat(1).describedAs("Incorrect number of events. Expected 1, got " + list.size()).isEqualTo(list.size());
         assertFalse(list.get(0).contains("{user."), "Did not resolve user name");
     }
 
@@ -90,6 +90,6 @@ public class RewriteAppenderTest {
         msg.put("Key2", "Value2");
         logger.trace(msg);
 
-        assertThat(app.getEvents(), empty());
+        assertThat(app.getEvents()).isEmpty();
     }
 }

@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.util.Timer;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.util.Timer;
 
 public class ThreadContextUtilityClass {
 
@@ -43,7 +44,7 @@ public class ThreadContextUtilityClass {
         timer.start();
         for (int i = 0; i < loopCount; ++i) {
             final Map<String, String> map = ThreadContext.getImmutableContext();
-            assertNotNull(map);
+            assertThat(map).isNotNull();
         }
         timer.stop();
         complete.stop();
@@ -54,35 +55,35 @@ public class ThreadContextUtilityClass {
 
     public static void testGetContextReturnsEmptyMapIfEmpty() {
         ThreadContext.clearMap();
-        assertTrue(ThreadContext.getContext().isEmpty());
+        assertThat(ThreadContext.getContext().isEmpty()).isTrue();
     }
 
 
     public static void testGetContextReturnsMutableCopy() {
         ThreadContext.clearMap();
         final Map<String, String> map1 = ThreadContext.getContext();
-        assertTrue(map1.isEmpty());
+        assertThat(map1.isEmpty()).isTrue();
         map1.put("K", "val"); // no error
-        assertEquals("val", map1.get("K"));
+        assertThat(map1.get("K")).isEqualTo("val");
 
         // adding to copy does not affect thread context map
-        assertTrue(ThreadContext.getContext().isEmpty());
+        assertThat(ThreadContext.getContext().isEmpty()).isTrue();
 
         ThreadContext.put("key", "val2");
         final Map<String, String> map2 = ThreadContext.getContext();
-        assertEquals(1, map2.size());
-        assertEquals("val2", map2.get("key"));
+        assertThat(map2.size()).isEqualTo(1);
+        assertThat(map2.get("key")).isEqualTo("val2");
         map2.put("K", "val"); // no error
-        assertEquals("val", map2.get("K"));
+        assertThat(map2.get("K")).isEqualTo("val");
 
         // first copy is not affected
-        assertNotSame(map1, map2);
-        assertEquals(1, map1.size());
+        assertThat(map2).isNotSameAs(map1);
+        assertThat(map1.size()).isEqualTo(1);
     }
 
     public static void testGetImmutableContextReturnsEmptyMapIfEmpty() {
         ThreadContext.clearMap();
-        assertTrue(ThreadContext.getImmutableContext().isEmpty());
+        assertThat(ThreadContext.getImmutableContext().isEmpty()).isTrue();
     }
 
 
@@ -90,25 +91,25 @@ public class ThreadContextUtilityClass {
         ThreadContext.clearMap();
         ThreadContext.put("key", "val");
         final Map<String, String> immutable = ThreadContext.getImmutableContext();
-        assertThrows(UnsupportedOperationException.class, () -> immutable.put("otherkey", "otherval"));
+        assertThatThrownBy(() -> immutable.put("otherkey", "otherval")).isInstanceOf(UnsupportedOperationException.class);
     }
 
     public static void testGetImmutableContextReturnsImmutableMapIfEmpty() {
         ThreadContext.clearMap();
         final Map<String, String> immutable = ThreadContext.getImmutableContext();
-        assertThrows(UnsupportedOperationException.class, () -> immutable.put("otherkey", "otherval"));
+        assertThatThrownBy(() -> immutable.put("otherkey", "otherval")).isInstanceOf(UnsupportedOperationException.class);
     }
 
     public static void testGetImmutableStackReturnsEmptyStackIfEmpty() {
         ThreadContext.clearStack();
-        assertTrue(ThreadContext.getImmutableStack().asList().isEmpty());
+        assertThat(ThreadContext.getImmutableStack().asList().isEmpty()).isTrue();
     }
 
 
     public static void testPut() {
         ThreadContext.clearMap();
-        assertNull(ThreadContext.get("testKey"));
+        assertThat(ThreadContext.get("testKey")).isNull();
         ThreadContext.put("testKey", "testValue");
-        assertEquals("testValue", ThreadContext.get("testKey"));
+        assertThat(ThreadContext.get("testKey")).isEqualTo("testValue");
     }
 }

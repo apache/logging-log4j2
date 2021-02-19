@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.plugins.Node;
@@ -24,8 +27,6 @@ import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.validation.HostAndPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidPortValidatorTest {
     private PluginType<HostAndPort> plugin;
@@ -37,7 +38,7 @@ public class ValidPortValidatorTest {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<HostAndPort>) manager.getPluginType("HostAndPort");
-        assertNotNull(plugin, "Rebuild this module to ensure annotation processing has been done.");
+        assertThat(plugin).describedAs("Rebuild this module to ensure annotation processing has been done.").isNotNull();
         node = new Node(null, "HostAndPort", plugin);
         node.getAttributes().put("host", "localhost");
     }
@@ -45,19 +46,19 @@ public class ValidPortValidatorTest {
     @Test
     public void testNegativePort() throws Exception {
         node.getAttributes().put("port", "-1");
-        assertNull(buildPlugin());
+        assertThat(buildPlugin()).isNull();
     }
 
     @Test
     public void testValidPort() throws Exception {
         node.getAttributes().put("port", "10");
-        assertNotNull(buildPlugin());
+        assertThat(buildPlugin()).isNotNull();
     }
 
     @Test
     public void testInvalidPort() throws Exception {
         node.getAttributes().put("port", "1234567890");
-        assertNull(buildPlugin());
+        assertThat(buildPlugin()).isNull();
     }
 
     private HostAndPort buildPlugin() {

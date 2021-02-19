@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
@@ -49,7 +49,7 @@ public class RollingAppenderDeleteScriptFri13thTest {
             final String day = i < 10 ? "0" + i : "" + i;
             new File(dir, "test-201511" + day + "-0.log").createNewFile();
         }
-        assertEquals("Dir " + DIR + " filecount", 30, dir.listFiles().length);
+        assertThat(dir.listFiles().length).describedAs("Dir " + DIR + " filecount").isEqualTo(30);
 
         final Logger logger = loggerContextRule.getLogger();
         // Trigger the rollover
@@ -64,10 +64,10 @@ public class RollingAppenderDeleteScriptFri13thTest {
             System.out.println(file);
         }
         for (final File file : files) {
-            assertTrue(file.getName() + " starts with 'test-'", file.getName().startsWith("test-"));
-            assertTrue(file.getName() + " ends with '.log'", file.getName().endsWith(".log"));
+            assertThat(file.getName().startsWith("test-")).describedAs(file.getName() + " starts with 'test-'").isTrue();
+            assertThat(file.getName().endsWith(".log")).describedAs(file.getName() + " ends with '.log'").isTrue();
             final String strDate = file.getName().substring(5, 13);
-            assertFalse(file + " is not Fri 13th", strDate.endsWith("20151113"));
+            assertThat(strDate.endsWith("20151113")).describedAs(file + " is not Fri 13th").isFalse();
         }
     }
 }

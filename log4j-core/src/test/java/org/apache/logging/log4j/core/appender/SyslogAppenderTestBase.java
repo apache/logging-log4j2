@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -38,8 +41,6 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-
-import static org.junit.Assert.*;
 
 public abstract class SyslogAppenderTestBase {
     protected static final String line1 =
@@ -107,23 +108,20 @@ public abstract class SyslogAppenderTestBase {
     }
 
     protected void checkTheNumberOfSentAndReceivedMessages() throws InterruptedException {
-        assertEquals("The number of received messages should be equal with the number of sent messages",
-                sentMessages.size(), getReceivedMessages(DEFAULT_TIMEOUT_IN_MS).size());
+        assertThat(getReceivedMessages(DEFAULT_TIMEOUT_IN_MS).size()).describedAs("The number of received messages should be equal with the number of sent messages").isEqualTo(sentMessages.size());
     }
 
     protected void checkTheEqualityOfSentAndReceivedMessages(final Level expectedLevel) throws InterruptedException {
         final List<String> receivedMessages = getReceivedMessages(DEFAULT_TIMEOUT_IN_MS);
 
-        assertNotNull("No messages received", receivedMessages);
+        assertThat(receivedMessages).describedAs("No messages received").isNotNull();
         for (int i = 0; i < receivedMessages.size(); i++) {
             final String receivedMessage = receivedMessages.get(i);
             final String sentMessage = sentMessages.get(i);
             final String suffix = includeNewLine ? "\n" : Strings.EMPTY;
-            assertTrue("Incorrect message received: " + receivedMessage,
-                    receivedMessage.endsWith(sentMessage + suffix) || receivedMessage.contains(sentMessage));
+            assertThat(receivedMessage.endsWith(sentMessage + suffix) || receivedMessage.contains(sentMessage)).describedAs("Incorrect message received: " + receivedMessage).isTrue();
             final int expectedPriority = Priority.getPriority(getExpectedFacility(), expectedLevel);
-            assertTrue("Expected facility " + expectedPriority + " in message " + receivedMessage,
-                    receivedMessage.startsWith("<" + expectedPriority + ">"));
+            assertThat(receivedMessage.startsWith("<" + expectedPriority + ">")).describedAs("Expected facility " + expectedPriority + " in message " + receivedMessage).isTrue();
         }
     }
 
@@ -160,15 +158,15 @@ public abstract class SyslogAppenderTestBase {
         } else if (layout instanceof Rfc5424Layout) {
             validate((Rfc5424Layout) layout);
         } else {
-            Assert.fail("Unexpected layout: " + layout);
+            fail("Unexpected layout: " + layout);
         }
     }
 
     protected void validate(final Rfc5424Layout layout) {
-        Assert.assertEquals(getExpectedFacility(), layout.getFacility());
+        assertThat(layout.getFacility()).isEqualTo(getExpectedFacility());
     }
 
     protected void validate(final SyslogLayout layout) {
-        Assert.assertEquals(getExpectedFacility(), layout.getFacility());
+        assertThat(layout.getFacility()).isEqualTo(getExpectedFacility());
     }
 }

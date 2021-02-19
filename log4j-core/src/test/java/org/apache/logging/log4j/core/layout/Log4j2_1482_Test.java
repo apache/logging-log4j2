@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.layout;
 
+import static org.assertj.core.api.Assertions.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -25,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -58,8 +59,7 @@ public abstract class Log4j2_1482_Test {
 				final File[] files = folder.toFile().listFiles();
 				Arrays.sort(files);
 				System.out.println("Run " + runNumber + ": " + Arrays.toString(files));
-				Assert.fail(
-						String.format("Run %,d, line %,d of %,d: \"%s\" in %s", runNumber, i++, size, string, lines));
+				fail(String.format("Run %,d, line %,d of %,d: \"%s\" in %s", runNumber, i++, size, string, lines));
 			}
 		}
 	}

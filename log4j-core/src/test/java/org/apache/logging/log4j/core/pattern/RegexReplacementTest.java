@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
@@ -24,10 +28,6 @@ import org.apache.logging.log4j.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("log4j-replace.xml")
 @UsingThreadContextMap
@@ -51,25 +51,25 @@ public class RegexReplacementTest {
     public void testReplacement() {
         logger.error(this.getClass().getName());
         List<String> msgs = app.getMessages();
-        assertNotNull(msgs);
-        assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
+        assertThat(msgs).isNotNull();
+        assertThat(msgs.size()).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).isEqualTo(1);
         assertTrue(
                 msgs.get(0).endsWith(EXPECTED), "Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0));
         app.clear();
         ThreadContext.put("MyKey", "Apache");
         logger.error("This is a test for ${ctx:MyKey}");
         msgs = app.getMessages();
-        assertNotNull(msgs);
-        assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
-        assertEquals("LoggerTest This is a test for Apache" + Strings.LINE_SEPARATOR, msgs.get(0));
+        assertThat(msgs).isNotNull();
+        assertThat(msgs.size()).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).isEqualTo(1);
+        assertThat(msgs.get(0)).isEqualTo("LoggerTest This is a test for Apache" + Strings.LINE_SEPARATOR);
     }
 
     @Test
     public void testConverter() {
         logger2.error(this.getClass().getName());
         final List<String> msgs = app2.getMessages();
-        assertNotNull(msgs);
-        assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
+        assertThat(msgs).isNotNull();
+        assertThat(msgs.size()).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).isEqualTo(1);
         assertTrue(
                 msgs.get(0).endsWith(EXPECTED), "Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0));
     }

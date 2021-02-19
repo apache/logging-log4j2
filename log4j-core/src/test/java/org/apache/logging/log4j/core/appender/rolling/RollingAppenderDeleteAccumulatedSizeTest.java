@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
@@ -53,21 +53,21 @@ public class RollingAppenderDeleteAccumulatedSizeTest {
         Thread.sleep(100); // Allow time for rollover to complete
 
         final File dir = new File(DIR);
-        assertTrue("Dir " + DIR + " should exist", dir.exists());
-        assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
+        assertThat(dir.exists()).describedAs("Dir " + DIR + " should exist").isTrue();
+        assertThat(dir.listFiles().length > 0).describedAs("Dir " + DIR + " should contain files").isTrue();
 
         final File[] files = dir.listFiles();
         for (final File file : files) {
             System.out.println(file + " (" + file.length() + "B) "
                     + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(file.lastModified()));
         }
-        assertEquals(Arrays.toString(files), 4, files.length);
+        assertThat(files.length).describedAs(Arrays.toString(files)).isEqualTo(4);
         long total = 0;
         for (final File file : files) {
             // sometimes test-6.log remains
-            assertTrue("unexpected file " + file, file.getName().startsWith("test-"));
+            assertThat(file.getName().startsWith("test-")).describedAs("unexpected file " + file).isTrue();
             total += file.length();
         }
-        assertTrue("accumulatedSize=" + total, total <= 500);
+        assertThat(total <= 500).describedAs("accumulatedSize=" + total).isTrue();
     }
 }

@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j;
 
-import java.io.Serializable;
+import static org.apache.logging.log4j.SerializableMatchers.serializesRoundTrip;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.Serializable;
+import org.assertj.core.api.HamcrestCondition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.apache.logging.log4j.SerializableMatchers.serializesRoundTrip;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Subclasses tests {@link Serializable} objects.
@@ -40,11 +40,11 @@ public abstract class AbstractSerializationTest {
 
     @Test
     public void testSerializationRoundtripEquals() {
-        assertThat(serializable, serializesRoundTrip(serializable));
+        assertThat(serializable).is(new HamcrestCondition<>(serializesRoundTrip(serializable)));
     }
 
     @Test
     public void testSerializationRoundtripNoException() {
-        assertThat(serializable, serializesRoundTrip());
+        assertThat(serializable).is(new HamcrestCondition<>(serializesRoundTrip()));
     }
 }

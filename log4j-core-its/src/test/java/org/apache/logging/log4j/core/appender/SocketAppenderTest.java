@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +37,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
@@ -55,9 +57,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  *
@@ -137,7 +136,7 @@ public class SocketAppenderTest {
                 .build();
         // @formatter:on
         appender.start();
-        Assert.assertEquals(bufferSize, appender.getManager().getByteBuffer().capacity());
+        assertThat(appender.getManager().getByteBuffer().capacity()).isEqualTo(bufferSize);
 
         // set appender on root and set level to debug
         logger.addAppender(appender);
@@ -159,17 +158,17 @@ public class SocketAppenderTest {
         }
         Thread.sleep(250);
         LogEvent event = tcpTestServer.getQueue().poll(3, TimeUnit.SECONDS);
-        assertNotNull("No event retrieved", event);
-        assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a test message"));
-        assertTrue("Message not delivered via TCP", tcpTestServer.getCount() > 0);
-        assertEquals(expectedUuidStr, event.getContextData().getValue(tcKey));
+        assertThat(event).describedAs("No event retrieved").isNotNull();
+        assertThat(event.getMessage().getFormattedMessage().equals("This is a test message")).describedAs("Incorrect event").isTrue();
+        assertThat(tcpTestServer.getCount() > 0).describedAs("Message not delivered via TCP").isTrue();
+        assertThat(event.getContextData().<String>getValue(tcKey)).isEqualTo(expectedUuidStr);
         event = tcpTestServer.getQueue().poll(3, TimeUnit.SECONDS);
-        assertNotNull("No event retrieved", event);
-        assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("Throwing an exception"));
-        assertTrue("Message not delivered via TCP", tcpTestServer.getCount() > 1);
-        assertEquals(expectedUuidStr, event.getContextStack().pop());
-        assertNotNull(event.getThrownProxy());
-        assertEquals(expectedExMsg, event.getThrownProxy().getMessage());
+        assertThat(event).describedAs("No event retrieved").isNotNull();
+        assertThat(event.getMessage().getFormattedMessage().equals("Throwing an exception")).describedAs("Incorrect event").isTrue();
+        assertThat(tcpTestServer.getCount() > 1).describedAs("Message not delivered via TCP").isTrue();
+        assertThat(event.getContextStack().pop()).isEqualTo(expectedUuidStr);
+        assertThat(event.getThrownProxy()).isNotNull();
+        assertThat(event.getThrownProxy().getMessage()).isEqualTo(expectedExMsg);
     }
 
     @Test
@@ -183,7 +182,7 @@ public class SocketAppenderTest {
                 .setLayout(JsonLayout.newBuilder().setProperties(true).build())
                 .build();
         // @formatter:on
-        assertNotNull(appender);
+        assertThat(appender).isNotNull();
         appender.stop();
     }
 
@@ -213,9 +212,9 @@ public class SocketAppenderTest {
         logger.setLevel(Level.DEBUG);
         logger.debug("This is a udp message");
         final LogEvent event = udpServer.getQueue().poll(3, TimeUnit.SECONDS);
-        assertNotNull("No event retrieved", event);
-        assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a udp message"));
-        assertTrue("Message not delivered via UDP", udpServer.getCount() > 0);
+        assertThat(event).describedAs("No event retrieved").isNotNull();
+        assertThat(event.getMessage().getFormattedMessage().equals("This is a udp message")).describedAs("Incorrect event").isTrue();
+        assertThat(udpServer.getCount() > 0).describedAs("Message not delivered via UDP").isTrue();
     }
 
     @Test
@@ -244,7 +243,7 @@ public class SocketAppenderTest {
             logger.debug("This message is written because a deadlock never.");
 
             final LogEvent event = tcpSocketServer.getQueue().poll(3, TimeUnit.SECONDS);
-            assertNotNull("No event retrieved", event);
+            assertThat(event).describedAs("No event retrieved").isNotNull();
         } finally {
             tcpSocketServer.shutdown();
         }

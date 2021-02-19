@@ -16,20 +16,20 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
-
-import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.junit.Named;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-test2.xml")
 public class HostNameTest {
@@ -47,19 +47,17 @@ public class HostNameTest {
         final org.apache.logging.log4j.Logger testLogger = context.getLogger("org.apache.logging.log4j.hosttest");
         testLogger.debug("Hello, {}", "World");
         final List<String> msgs = host.getMessages();
-        assertThat(msgs, hasSize(1));
+        assertThat(msgs).hasSize(1);
         String expected = NetUtils.getLocalHostname() + Strings.LINE_SEPARATOR;
-        assertThat(msgs.get(0), endsWith(expected));
-        assertNotNull(hostFile.getFileName(), "No Host FileAppender file name");
+        assertThat(msgs.get(0)).endsWith(expected);
+        assertThat(hostFile.getFileName()).describedAs("No Host FileAppender file name").isNotNull();
         expected = "target/" + NetUtils.getLocalHostname() + ".log";
         String name = hostFile.getFileName();
-        assertEquals(name,
-            expected, "Incorrect HostFile FileAppender file name - expected " + expected + " actual - " + name);
+        assertThat(expected).describedAs("Incorrect HostFile FileAppender file name - expected " + expected + " actual - " + name).isEqualTo(name);
         name = hostFile.getFilePattern();
-        assertNotNull(name, "No file pattern");
+        assertThat(name).describedAs("No file pattern").isNotNull();
         expected = "target/" + NetUtils.getLocalHostname() + "-%d{MM-dd-yyyy}-%i.log";
-        assertEquals(name,
-            expected, "Incorrect HostFile FileAppender file pattern - expected " + expected + " actual - " + name);
+        assertThat(expected).describedAs("Incorrect HostFile FileAppender file pattern - expected " + expected + " actual - " + name).isEqualTo(name);
 
     }
 }

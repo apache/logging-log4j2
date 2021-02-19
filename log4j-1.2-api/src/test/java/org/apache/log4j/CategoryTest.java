@@ -17,13 +17,13 @@
 
 package org.apache.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.List;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -78,23 +78,23 @@ public class CategoryTest {
         category.info("Hello, World");
         final List<LogEvent> list = appender.getEvents();
         int events = list.size();
-        assertTrue("Number of events should be 1, was " + events, events == 1);
+        assertThat(events == 1).describedAs("Number of events should be 1, was " + events).isTrue();
         LogEvent event = list.get(0);
         Message msg = event.getMessage();
-        assertNotNull("No message", msg);
-        assertTrue("Incorrect Message type", msg instanceof ObjectMessage);
+        assertThat(msg).describedAs("No message").isNotNull();
+        assertThat(msg instanceof ObjectMessage).describedAs("Incorrect Message type").isTrue();
         Object[] objects = msg.getParameters();
-        assertTrue("Incorrect Object type", objects[0] instanceof String);
+        assertThat(objects[0] instanceof String).describedAs("Incorrect Object type").isTrue();
         appender.clear();
         category.log(Priority.INFO, "Hello, World");
         events = list.size();
-        assertTrue("Number of events should be 1, was " + events, events == 1);
+        assertThat(events == 1).describedAs("Number of events should be 1, was " + events).isTrue();
         event = list.get(0);
         msg = event.getMessage();
-        assertNotNull("No message", msg);
-        assertTrue("Incorrect Message type", msg instanceof ObjectMessage);
+        assertThat(msg).describedAs("No message").isNotNull();
+        assertThat(msg instanceof ObjectMessage).describedAs("Incorrect Message type").isTrue();
         objects = msg.getParameters();
-        assertTrue("Incorrect Object type", objects[0] instanceof String);
+        assertThat(objects[0] instanceof String).describedAs("Incorrect Object type").isTrue();
         appender.clear();
     }
 
@@ -106,7 +106,7 @@ public class CategoryTest {
     @Test
     public void testGetChainedPriorityReturnType() throws Exception {
         final Method method = Category.class.getMethod("getChainedPriority", (Class[]) null);
-        assertTrue(method.getReturnType() == Priority.class);
+        assertThat(method.getReturnType() == Priority.class).isTrue();
     }
 
     /**
@@ -118,7 +118,7 @@ public class CategoryTest {
         logger.setLevel(Level.ERROR);
         final Priority debug = Level.DEBUG;
         logger.l7dlog(debug, "Hello, World", null);
-        assertTrue(appender.getEvents().size() == 0);
+        assertThat(appender.getEvents().size() == 0).isTrue();
     }
 
     /**
@@ -130,7 +130,7 @@ public class CategoryTest {
         logger.setLevel(Level.ERROR);
         final Priority debug = Level.DEBUG;
         logger.l7dlog(debug, "Hello, World", new Object[0], null);
-        assertTrue(appender.getEvents().size() == 0);
+        assertThat(appender.getEvents().size() == 0).isTrue();
     }
 
     /**
@@ -143,13 +143,13 @@ public class CategoryTest {
         // Logger will be the one created above
         final Logger logger = Logger.getLogger("existingLogger");
         final Logger l2 = LogManager.getLogger("existingLogger");
-        assertEquals(logger, l2);
+        assertThat(l2).isEqualTo(logger);
         logger.setLevel(Level.ERROR);
         final Priority debug = Level.DEBUG;
         // the next line will throw an exception if the LogManager loggers
         // aren't supported by 1.2 Logger/Category
         logger.l7dlog(debug, "Hello, World", new Object[0], null);
-        assertTrue(appender.getEvents().size() == 0);
+        assertThat(appender.getEvents().size() == 0).isTrue();
     }
 
     /**
@@ -175,12 +175,12 @@ public class CategoryTest {
         ((org.apache.logging.log4j.core.Logger) category.getLogger()).addAppender(appender);
         category.error("Test Message");
         final List<String> msgs = appender.getMessages();
-        assertTrue("Incorrect number of messages. Expected 1 got " + msgs.size(), msgs.size() == 1);
+        assertThat(msgs.size() == 1).describedAs("Incorrect number of messages. Expected 1 got " + msgs.size()).isTrue();
         final String msg = msgs.get(0);
         appender.clear();
         final String threadName = Thread.currentThread().getName();
         final String expected = "ERROR o.a.l.CategoryTest [" + threadName + "] Test Message" + Strings.LINE_SEPARATOR;
-        assertTrue("Incorrect message " + Strings.dquote(msg) + " expected " + Strings.dquote(expected), msg.endsWith(expected));
+        assertThat(msg.endsWith(expected)).describedAs("Incorrect message " + Strings.dquote(msg) + " expected " + Strings.dquote(expected)).isTrue();
     }
 
     /**

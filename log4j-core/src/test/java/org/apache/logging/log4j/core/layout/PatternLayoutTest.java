@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -36,8 +38,6 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
 public class PatternLayoutTest {
@@ -93,7 +93,7 @@ public class PatternLayoutTest {
 
     private void assertToByteArray(final String expectedStr, final PatternLayout layout, final LogEvent event) {
         final byte[] result = layout.toByteArray(event);
-        assertEquals(expectedStr, new String(result));
+        assertThat(new String(result)).isEqualTo(expectedStr);
     }
 
     private void assertEncode(final String expectedStr, final PatternLayout layout, final LogEvent event) {
@@ -101,8 +101,8 @@ public class PatternLayoutTest {
         layout.encode(event, destination);
         final ByteBuffer byteBuffer = destination.getByteBuffer();
         byteBuffer.flip(); // set limit to position, position back to zero
-        assertEquals(expectedStr, new String(byteBuffer.array(), byteBuffer.arrayOffset() + byteBuffer.position(),
-                byteBuffer.remaining()));
+        assertThat(new String(byteBuffer.array(), byteBuffer.arrayOffset() + byteBuffer.position(),
+                byteBuffer.remaining())).isEqualTo(expectedStr);
     }
 
     @Test
@@ -136,7 +136,7 @@ public class PatternLayoutTest {
         final PatternLayout layout = PatternLayout.newBuilder().setConfiguration(ctx.getConfiguration())
                 .setHeader("Header: " + pattern).setFooter("Footer: " + pattern).build();
         final byte[] header = layout.getHeader();
-        assertNotNull(header, "No header");
+        assertThat(header).describedAs("No header").isNotNull();
         final String headerStr = new String(header);
         assertTrue(headerStr.contains("Header: "), headerStr);
         assertTrue(headerStr.contains("Java version "), headerStr);
@@ -146,7 +146,7 @@ public class PatternLayoutTest {
         assertFalse(headerStr.contains("%d{UNIX}"), headerStr);
         //
         final byte[] footer = layout.getFooter();
-        assertNotNull(footer, "No footer");
+        assertThat(footer).describedAs("No footer").isNotNull();
         final String footerStr = new String(footer);
         assertTrue(footerStr.contains("Footer: "), footerStr);
         assertTrue(footerStr.contains("Java version "), footerStr);
@@ -165,12 +165,12 @@ public class PatternLayoutTest {
         final PatternLayout layout = PatternLayout.newBuilder().setConfiguration(ctx.getConfiguration())
                 .setHeader("${main:0}").setFooter("${main:2}").build();
         final byte[] header = layout.getHeader();
-        assertNotNull(header, "No header");
+        assertThat(header).describedAs("No header").isNotNull();
         final String headerStr = new String(header);
         assertTrue(headerStr.contains("value0"), headerStr);
         //
         final byte[] footer = layout.getFooter();
-        assertNotNull(footer, "No footer");
+        assertThat(footer).describedAs("No footer").isNotNull();
         final String footerStr = new String(footer);
         assertTrue(footerStr.contains("value2"), footerStr);
     }
@@ -183,9 +183,8 @@ public class PatternLayoutTest {
         ThreadContext.put("header", "Hello world Header");
         ThreadContext.put("footer", "Hello world Footer");
         final byte[] header = layout.getHeader();
-        assertNotNull(header, "No header");
-        assertEquals("Hello world Header", new String(header),
-                "expected \"Hello world Header\", actual " + Strings.dquote(new String(header)));
+        assertThat(header).describedAs("No header").isNotNull();
+        assertThat(new String(header)).describedAs("expected \"Hello world Header\", actual " + Strings.dquote(new String(header))).isEqualTo("Hello world Header");
     }
 
     private void testMdcPattern(final String patternStr, final String expectedStr, final boolean useThreadContext)
@@ -316,14 +315,14 @@ public class PatternLayoutTest {
             .setMarker(MarkerManager.getMarker("TestMarker"))
             .setMessage(new SimpleMessage("Hello, world!")).build();
         final byte[] result1 = layout.toByteArray(event1);
-        assertEquals("[org.apache.logging.log4j.core.layout.PatternLayoutTest][TestMarker]", new String(result1));
+        assertThat(new String(result1)).isEqualTo("[org.apache.logging.log4j.core.layout.PatternLayoutTest][TestMarker]");
         // empty marker
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
             .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
             .setLevel(Level.INFO)
             .setMessage(new SimpleMessage("Hello, world!")).build();
         final byte[] result2 = layout.toByteArray(event2);
-        assertEquals("[org.apache.logging.log4j.core.layout.PatternLayoutTest][Hello, world!]", new String(result2));
+        assertThat(new String(result2)).isEqualTo("[org.apache.logging.log4j.core.layout.PatternLayoutTest][Hello, world!]");
     }
 
     @Test
@@ -351,14 +350,14 @@ public class PatternLayoutTest {
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world 1!")).build();
         final byte[] result1 = layout.toByteArray(event1);
-        assertEquals(event1.getTimeMillis() / 1000 + " Hello, world 1!", new String(result1));
+        assertThat(new String(result1)).isEqualTo(event1.getTimeMillis() / 1000 + " Hello, world 1!");
         // System.out.println("event1=" + event1.getTimeMillis() / 1000);
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world 2!")).build();
         final byte[] result2 = layout.toByteArray(event2);
-        assertEquals(event2.getTimeMillis() / 1000 + " Hello, world 2!", new String(result2));
+        assertThat(new String(result2)).isEqualTo(event2.getTimeMillis() / 1000 + " Hello, world 2!");
         // System.out.println("event2=" + event2.getTimeMillis() / 1000);
     }
 
@@ -371,14 +370,14 @@ public class PatternLayoutTest {
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world 1!")).build();
         final byte[] result1 = layout.toByteArray(event1);
-        assertEquals(event1.getTimeMillis() + " Hello, world 1!", new String(result1));
+        assertThat(new String(result1)).isEqualTo(event1.getTimeMillis() + " Hello, world 1!");
         // System.out.println("event1=" + event1.getMillis());
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world 2!")).build();
         final byte[] result2 = layout.toByteArray(event2);
-        assertEquals(event2.getTimeMillis() + " Hello, world 2!", new String(result2));
+        assertThat(new String(result2)).isEqualTo(event2.getTimeMillis() + " Hello, world 2!");
         // System.out.println("event2=" + event2.getMillis());
     }
 
@@ -391,14 +390,14 @@ public class PatternLayoutTest {
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world 1!")).build();
         final byte[] result1 = layout.toByteArray(event1);
-        assertEquals(event1.getTimeMillis() + " Hello, world 1!", new String(result1));
+        assertThat(new String(result1)).isEqualTo(event1.getTimeMillis() + " Hello, world 1!");
         // System.out.println("event1=" + event1.getTimeMillis());
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world 2!")).build();
         final byte[] result2 = layout.toByteArray(event2);
-        assertEquals(event2.getTimeMillis() + " Hello, world 2!", new String(result2));
+        assertThat(new String(result2)).isEqualTo(event2.getTimeMillis() + " Hello, world 2!");
         // System.out.println("event2=" + event2.getTimeMillis());
     }
 
@@ -406,14 +405,14 @@ public class PatternLayoutTest {
     public void testUsePlatformDefaultIfNoCharset() throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().setPattern("%m")
                 .setConfiguration(ctx.getConfiguration()).build();
-        assertEquals(Charset.defaultCharset(), layout.getCharset());
+        assertThat(layout.getCharset()).isEqualTo(Charset.defaultCharset());
     }
 
     @Test
     public void testUseSpecifiedCharsetIfExists() throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().setPattern("%m")
                 .setConfiguration(ctx.getConfiguration()).setCharset(StandardCharsets.UTF_8).build();
-        assertEquals(StandardCharsets.UTF_8, layout.getCharset());
+        assertThat(layout.getCharset()).isEqualTo(StandardCharsets.UTF_8);
     }
 
     @Test
@@ -426,7 +425,7 @@ public class PatternLayoutTest {
                     .setLevel(Level.INFO)
                     .setMessage(new SimpleMessage("Hello, world 1!")).build();
             final String result1 = layout.toSerializable(event1);
-            assertEquals(this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1) + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1) + " Hello, world 1!");
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder().setPattern("%c{2} %m")
@@ -438,7 +437,7 @@ public class PatternLayoutTest {
             final String result1 = layout.toSerializable(event1);
             String name = this.getClass().getName().substring(0, this.getClass().getName().lastIndexOf("."));
             name = name.substring(0, name.lastIndexOf("."));
-            assertEquals(this.getClass().getName().substring(name.length() + 1) + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(this.getClass().getName().substring(name.length() + 1) + " Hello, world 1!");
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder().setPattern("%c{20} %m")
@@ -448,7 +447,7 @@ public class PatternLayoutTest {
                     .setLevel(Level.INFO)
                     .setMessage(new SimpleMessage("Hello, world 1!")).build();
             final String result1 = layout.toSerializable(event1);
-            assertEquals(this.getClass().getName() + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(this.getClass().getName() + " Hello, world 1!");
         }
     }
 
@@ -464,7 +463,7 @@ public class PatternLayoutTest {
                     .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByRetainingPartsFromEnd", this.getClass().getCanonicalName() + ".java", 440))
                     .build();
             final String result1 = layout.toSerializable(event1);
-            assertEquals(this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1) + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1) + " Hello, world 1!");
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder().setPattern("%C{2} %m")
@@ -478,7 +477,7 @@ public class PatternLayoutTest {
             final String result1 = layout.toSerializable(event1);
             String name = this.getClass().getName().substring(0, this.getClass().getName().lastIndexOf("."));
             name = name.substring(0, name.lastIndexOf("."));
-            assertEquals(this.getClass().getName().substring(name.length() + 1) + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(this.getClass().getName().substring(name.length() + 1) + " Hello, world 1!");
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder().setPattern("%C{20} %m")
@@ -490,7 +489,7 @@ public class PatternLayoutTest {
                     .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByRetainingPartsFromEnd", this.getClass().getCanonicalName() + ".java", 440))
                     .build();
             final String result1 = layout.toSerializable(event1);
-            assertEquals(this.getClass().getName() + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(this.getClass().getName() + " Hello, world 1!");
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder().setPattern("%class{1} %m")
@@ -502,7 +501,7 @@ public class PatternLayoutTest {
                     .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByRetainingPartsFromEnd", this.getClass().getCanonicalName() + ".java", 440))
                     .build();
             final String result1 = layout.toSerializable(event1);
-            assertEquals(this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1) + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1) + " Hello, world 1!");
         }
     }
 
@@ -517,7 +516,7 @@ public class PatternLayoutTest {
                     .setMessage(new SimpleMessage("Hello, world 1!")).build();
             final String result1 = layout.toSerializable(event1);
             final String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
-            assertEquals(name + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(name + " Hello, world 1!");
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder().setPattern("%c{-3} %m")
@@ -530,7 +529,7 @@ public class PatternLayoutTest {
             String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
             name = name.substring(name.indexOf(".") + 1);
             name = name.substring(name.indexOf(".") + 1);
-            assertEquals(name + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(name + " Hello, world 1!");
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder().setPattern("%logger{-3} %m")
@@ -543,7 +542,7 @@ public class PatternLayoutTest {
             String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
             name = name.substring(name.indexOf(".") + 1);
             name = name.substring(name.indexOf(".") + 1);
-            assertEquals(name + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(name + " Hello, world 1!");
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder().setPattern("%c{-20} %m")
@@ -553,7 +552,7 @@ public class PatternLayoutTest {
                     .setLevel(Level.INFO)
                     .setMessage(new SimpleMessage("Hello, world 1!")).build();
             final String result1 = layout.toSerializable(event1);
-            assertEquals(this.getClass().getName() + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(this.getClass().getName() + " Hello, world 1!");
         }
 
     }
@@ -571,7 +570,7 @@ public class PatternLayoutTest {
                     .build();
             final String result1 = layout.toSerializable(event1);
             final String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
-            assertEquals(name + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(name + " Hello, world 1!");
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder().setPattern("%C{-3} %m")
@@ -586,7 +585,7 @@ public class PatternLayoutTest {
             String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
             name = name.substring(name.indexOf(".") + 1);
             name = name.substring(name.indexOf(".") + 1);
-            assertEquals(name + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(name + " Hello, world 1!");
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder().setPattern("%class{-3} %m")
@@ -601,7 +600,7 @@ public class PatternLayoutTest {
             String name = this.getClass().getName().substring(this.getClass().getName().indexOf(".") + 1);
             name = name.substring(name.indexOf(".") + 1);
             name = name.substring(name.indexOf(".") + 1);
-            assertEquals(name + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(name + " Hello, world 1!");
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder().setPattern("%C{-20} %m")
@@ -613,7 +612,7 @@ public class PatternLayoutTest {
                     .setSource(new StackTraceElement(this.getClass().getName(), "testCallersFqcnTruncationByDroppingPartsFromFront", this.getClass().getCanonicalName() + ".java", 546))
                     .build();
             final String result1 = layout.toSerializable(event1);
-            assertEquals(this.getClass().getName() + " Hello, world 1!", new String(result1));
+            assertThat(new String(result1)).isEqualTo(this.getClass().getName() + " Hello, world 1!");
         }
 
     }

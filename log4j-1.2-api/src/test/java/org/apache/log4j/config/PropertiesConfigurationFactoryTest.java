@@ -16,16 +16,16 @@
  */
 package org.apache.log4j.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.File;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test configuration from Properties.
@@ -42,11 +42,11 @@ public class PropertiesConfigurationFactoryTest {
         Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");
-        assertTrue("File A1 was not created", file.exists());
-        assertTrue("File A1 is empty", file.length() > 0);
+        assertThat(file.exists()).describedAs("File A1 was not created").isTrue();
+        assertThat(file.length() > 0).describedAs("File A1 is empty").isTrue();
         file = new File("target/temp.A2");
-        assertTrue("File A2 was not created", file.exists());
-        assertTrue("File A2 is empty", file.length() > 0);
+        assertThat(file.exists()).describedAs("File A2 was not created").isTrue();
+        assertThat(file.length() > 0).describedAs("File A2 is empty").isTrue();
     }
 
 }

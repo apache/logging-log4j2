@@ -15,15 +15,15 @@ package org.apache.logging.log4j.core.config;/*
  * limitations under the license.
  */
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.HashSet;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashSet;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for LoggerConfig.
@@ -38,7 +38,7 @@ public class LoggerConfigTest {
     @SuppressWarnings({"deprecation"})
     @Test
     public void testPropertiesWithoutSubstitution() {
-        assertNull(createForProperties(null).getPropertyList(), "null propertiesList");
+        assertThat(createForProperties(null).getPropertyList()).describedAs("null propertiesList").isNull();
 
         final Property[] all = new Property[] {
                 Property.createProperty("key1", "value1"),
@@ -46,8 +46,7 @@ public class LoggerConfigTest {
         };
         final LoggerConfig loggerConfig = createForProperties(all);
         final List<Property> list = loggerConfig.getPropertyList();
-        assertEquals(new HashSet<>(list),
-        		     new HashSet<>(loggerConfig.getPropertyList()), "map and list contents equal");
+        assertThat(new HashSet<>(loggerConfig.getPropertyList())).describedAs("map and list contents equal").isEqualTo(new HashSet<>(list));
 
         final Object[] actualList = new Object[1];
         loggerConfig.setLogEventFactory((loggerName, marker, fqcn, level, data, properties, t) -> {
@@ -55,7 +54,7 @@ public class LoggerConfigTest {
             return new Builder().setTimeMillis(System.currentTimeMillis()).build();
         });
         loggerConfig.log("name", "fqcn", null, Level.INFO, new SimpleMessage("msg"), null);
-        assertSame(list, actualList[0], "propertiesList passed in as is if no substitutions required");
+        assertThat(actualList[0]).describedAs("propertiesList passed in as is if no substitutions required").isSameAs(list);
     }
 
     @Test
@@ -66,8 +65,7 @@ public class LoggerConfigTest {
         };
         final LoggerConfig loggerConfig = createForProperties(all);
         final List<Property> list = loggerConfig.getPropertyList();
-        assertEquals(new HashSet<>(list),
-        		     new HashSet<>(loggerConfig.getPropertyList()), "map and list contents equal");
+        assertThat(new HashSet<>(loggerConfig.getPropertyList())).describedAs("map and list contents equal").isEqualTo(new HashSet<>(list));
 
         final Object[] actualListHolder = new Object[1];
         loggerConfig.setLogEventFactory((loggerName, marker, fqcn, level, data, properties, t) -> {
@@ -75,15 +73,15 @@ public class LoggerConfigTest {
             return new Builder().setTimeMillis(System.currentTimeMillis()).build();
         });
         loggerConfig.log("name", "fqcn", null, Level.INFO, new SimpleMessage("msg"), null);
-        assertNotSame(list, actualListHolder[0], "propertiesList with substitutions");
+        assertThat(actualListHolder[0]).describedAs("propertiesList with substitutions").isNotSameAs(list);
 
         @SuppressWarnings("unchecked")
 		final List<Property> actualList = (List<Property>) actualListHolder[0];
 
         for (int i = 0; i < list.size(); i++) {
-            assertEquals(list.get(i).getName(), actualList.get(i).getName(), "name[" + i + "]");
+            assertThat(actualList.get(i).getName()).describedAs("name[" + i + "]").isEqualTo(list.get(i).getName());
             final String value = list.get(i).getValue().replace("${sys:user.name}", System.getProperty("user.name"));
-            assertEquals(value, actualList.get(i).getValue(), "value[" + i + "]");
+            assertThat(actualList.get(i).getValue()).describedAs("value[" + i + "]").isEqualTo(value);
         }
     }
 }

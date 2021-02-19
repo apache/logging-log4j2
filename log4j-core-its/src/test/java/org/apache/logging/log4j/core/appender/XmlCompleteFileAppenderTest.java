@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +27,6 @@ import java.io.FileReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
@@ -89,28 +89,28 @@ public class XmlCompleteFileAppenderTest {
         } finally {
             logFile.delete();
         }
-        assertNotNull("line1", line1);
+        assertThat(line1).describedAs("line1").isNotNull();
         final String msg1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + ']', line1.equals(msg1));
+        assertThat(line1.equals(msg1)).describedAs("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + ']').isTrue();
 
-        assertNotNull("line2", line2);
+        assertThat(line2).describedAs("line2").isNotNull();
         final String msg2 = "<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">";
-        assertTrue("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + ']', line2.equals(msg2));
+        assertThat(line2.equals(msg2)).describedAs("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + ']').isTrue();
 
-        assertNotNull("line3", line3);
+        assertThat(line3).describedAs("line3").isNotNull();
         final String msg3 = "<Event ";
-        assertTrue("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + ']', line3.contains(msg3));
+        assertThat(line3.contains(msg3)).describedAs("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + ']').isTrue();
 
-        assertNotNull("line4", line4);
+        assertThat(line4).describedAs("line4").isNotNull();
         final String msg4 = "<Instant epochSecond=";
-        assertTrue("line4 incorrect: [" + line4 + "], does not contain: [" + msg4 + ']', line4.contains(msg4));
+        assertThat(line4.contains(msg4)).describedAs("line4 incorrect: [" + line4 + "], does not contain: [" + msg4 + ']').isTrue();
 
-        assertNotNull("line5", line5);
+        assertThat(line5).describedAs("line5").isNotNull();
         final String msg5 = logMsg;
-        assertTrue("line5 incorrect: [" + line5 + "], does not contain: [" + msg5 + ']', line5.contains(msg5));
+        assertThat(line5.contains(msg5)).describedAs("line5 incorrect: [" + line5 + "], does not contain: [" + msg5 + ']').isTrue();
 
         final String location = "testFlushAtEndOfBatch";
-        assertTrue("no location", !line1.contains(location));
+        assertThat(!line1.contains(location)).describedAs("no location").isTrue();
     }
 
     /**
@@ -159,14 +159,14 @@ public class XmlCompleteFileAppenderTest {
         };
         List<String> lines1 = Files.readAllLines(logFile.toPath(), Charset.forName("UTF-8"));
 
-        assertEquals("number of lines", indentations.length, lines1.size());
+        assertThat(lines1.size()).describedAs("number of lines").isEqualTo(indentations.length);
         for (int i = 0; i < indentations.length; i++) {
             String line = lines1.get(i);
             if (line.trim().isEmpty()) {
-                assertEquals(-1, indentations[i]);
+                assertThat(indentations[i]).isEqualTo(-1);
             } else {
                 String padding = "        ".substring(0, indentations[i]);
-                assertTrue("Expected " + indentations[i] + " leading spaces but got: " + line, line.startsWith(padding));
+                assertThat(line.startsWith(padding)).describedAs("Expected " + indentations[i] + " leading spaces but got: " + line).isTrue();
             }
         }
     }

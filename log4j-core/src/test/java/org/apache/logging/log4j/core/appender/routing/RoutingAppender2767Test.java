@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,15 +35,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -62,9 +62,9 @@ public class RoutingAppender2767Test {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
         File file = new File(ACTIVITY_LOG_FILE);
-        assertTrue("Activity file was not created", file.exists());
+        assertThat(file.exists()).describedAs("Activity file was not created").isTrue();
         List<String> lines = Files.lines(file.toPath()).collect(Collectors.toList());
-        assertEquals("Incorrect number of lines", 1, lines.size());
-        assertTrue("Incorrect content", lines.get(0).contains("This is a test"));
+        assertThat(lines.size()).describedAs("Incorrect number of lines").isEqualTo(1);
+        assertThat(lines.get(0).contains("This is a test")).describedAs("Incorrect content").isTrue();
     }
 }

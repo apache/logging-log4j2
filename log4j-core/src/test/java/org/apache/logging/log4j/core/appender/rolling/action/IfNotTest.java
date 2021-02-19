@@ -17,9 +17,11 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the Not composite condition.
@@ -28,17 +30,16 @@ public class IfNotTest {
 
     @Test
     public void test() {
-        assertTrue(new FixedCondition(true).accept(null, null, null));
-        assertFalse(IfNot.createNotCondition(new FixedCondition(true)).accept(null, null, null));
+        assertThat(new FixedCondition(true).accept(null, null, null)).isTrue();
+        assertThat(IfNot.createNotCondition(new FixedCondition(true)).accept(null, null, null)).isFalse();
 
-        assertFalse(new FixedCondition(false).accept(null, null, null));
-        assertTrue(IfNot.createNotCondition(new FixedCondition(false)).accept(null, null, null));
+        assertThat(new FixedCondition(false).accept(null, null, null)).isFalse();
+        assertThat(IfNot.createNotCondition(new FixedCondition(false)).accept(null, null, null)).isTrue();
     }
 
     @Test
     public void testEmptyIsFalse() {
-        assertThrows(NullPointerException.class,
-                () -> IfNot.createNotCondition(null).accept(null, null, null));
+        assertThatThrownBy(() -> IfNot.createNotCondition(null).accept(null, null, null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -46,7 +47,7 @@ public class IfNotTest {
         final CountingCondition counter = new CountingCondition(true);
         final IfNot not = IfNot.createNotCondition(counter);
         not.beforeFileTreeWalk();
-        assertEquals(1, counter.getBeforeFileTreeWalkCount());
+        assertThat(counter.getBeforeFileTreeWalkCount()).isEqualTo(1);
     }
 
 }

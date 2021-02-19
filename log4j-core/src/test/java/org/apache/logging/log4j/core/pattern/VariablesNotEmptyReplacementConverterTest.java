@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -23,8 +26,6 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class VariablesNotEmptyReplacementConverterTest {
 
@@ -69,8 +70,8 @@ public class VariablesNotEmptyReplacementConverterTest {
         final String[] options = new String[] { "[" + tag + "]" };
         final VariablesNotEmptyReplacementConverter converter = VariablesNotEmptyReplacementConverter
                 .newInstance(ctx.getConfiguration(), options);
-        assertNotNull(converter);
+        assertThat(converter).isNotNull();
         converter.format(event, sb);
-        assertEquals(expectedValue, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expectedValue);
     }
 }

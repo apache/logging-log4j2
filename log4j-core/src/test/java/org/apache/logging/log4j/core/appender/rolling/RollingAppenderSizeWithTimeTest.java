@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,7 +28,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -31,10 +35,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * LOG4J2-2602.
@@ -73,9 +73,9 @@ public class RollingAppenderSizeWithTimeTest {
             System.err.println("Could not stop cleanly " + loggerContextRule + " for " + this);
         }
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists());
+        assertThat(dir.exists()).describedAs("Directory not created").isTrue();
         final File[] files = dir.listFiles();
-        assertNotNull(files);
+        assertThat(files).isNotNull();
         for (final File file : files) {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try (FileInputStream fis = new FileInputStream(file)) {
@@ -92,7 +92,7 @@ public class RollingAppenderSizeWithTimeTest {
                 messages.remove(line);
             }
         }
-        assertTrue("Log messages lost : " + messages.size(), messages.isEmpty());
-        assertTrue("Files not rolled : " + files.length, files.length > 2);
+        assertThat(messages.isEmpty()).describedAs("Log messages lost : " + messages.size()).isTrue();
+        assertThat(files.length > 2).describedAs("Files not rolled : " + files.length).isTrue();
     }
 }

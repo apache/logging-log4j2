@@ -16,24 +16,26 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.assertj.core.api.HamcrestCondition;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -64,10 +66,10 @@ public class RollingAppenderDirectWriteTest {
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertThat(dir.exists() && dir.listFiles().length > 0).describedAs("Directory not created").isTrue();
         final File[] files = dir.listFiles();
-        assertNotNull(files);
-        assertThat(files, hasItemInArray(that(hasName(that(endsWith(".gz"))))));
+        assertThat(files).isNotNull();
+        assertThat(files).is(new HamcrestCondition<>(hasItemInArray(that(hasName(that(endsWith(".gz")))))));
         int found = 0;
         for (File file: files) {
             String actual = file.getName();
@@ -79,15 +81,14 @@ public class RollingAppenderDirectWriteTest {
             }
             String line;
             while ((line = reader.readLine()) != null) {
-                assertNotNull("No log event in file " + actual, line);
+                assertThat(line).describedAs("No log event in file " + actual).isNotNull();
                 String[] parts = line.split((" "));
                 String expected = "test1-" + parts[0];
-                assertTrue("Incorrect file name. Expected file prefix: " + expected + " Actual: " + actual,
-                    actual.startsWith(expected));
+                assertThat(actual.startsWith(expected)).describedAs("Incorrect file name. Expected file prefix: " + expected + " Actual: " + actual).isTrue();
                 ++found;
             }
             reader.close();
         }
-        assertEquals("Incorrect number of events read. Expected " + count + ", Actual " + found, count, found);
+        assertThat(found).describedAs("Incorrect number of events read. Expected " + count + ", Actual " + found).isEqualTo(count);
     }
 }

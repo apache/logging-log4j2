@@ -17,12 +17,17 @@
 
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.NullOutputStream;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.beforeNow;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasLength;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.isEmpty;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.lastModified;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,18 +41,13 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
 import java.util.concurrent.locks.LockSupport;
-
-import static org.apache.logging.log4j.hamcrest.FileMatchers.beforeNow;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasLength;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.isEmpty;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.lastModified;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.NullOutputStream;
+import org.apache.logging.log4j.util.Strings;
+import org.assertj.core.api.HamcrestCondition;
+import org.junit.Test;
 
 /**
  * Tests the RollingRandomAccessFileManager class.
@@ -80,7 +80,7 @@ public class RollingRandomAccessFileManagerTest {
             manager.write(data, 0, data.length, flushNow); // no buffer overflow exception
 
             // buffer is full but not flushed yet
-            assertEquals(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3, raf.length());
+            assertThat(raf.length()).isEqualTo(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3);
         }
     }
 
@@ -108,10 +108,10 @@ public class RollingRandomAccessFileManagerTest {
             final int size = RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
             final byte[] data = new byte[size];
             manager.write(data, 0, data.length, flushNow); // no exception
-            assertEquals(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1, raf.length());
+            assertThat(raf.length()).isEqualTo(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1);
 
             manager.flush();
-            assertEquals(size, raf.length()); // all data written to file now
+            assertThat(raf.length()).isEqualTo(size); // all data written to file now
         }
     }
 
@@ -127,14 +127,14 @@ public class RollingRandomAccessFileManagerTest {
             final long time = System.currentTimeMillis();
             final TriggeringPolicy triggerPolicy = new SizeBasedTriggeringPolicy(triggerSize);
             final int bufferSize = 4 * 1024;
-            assertNotEquals(bufferSize, RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
+            assertThat(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE).isNotEqualTo(bufferSize);
             final RolloverStrategy rolloverStrategy = null;
             final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(null, raf,
                     file.getName(), Strings.EMPTY, os, append, flushNow, bufferSize, triggerSize, time, triggerPolicy,
                     rolloverStrategy, null, null, null, null, null, true);
 
             // check the resulting buffer size is what was requested
-            assertEquals(bufferSize, manager.getBufferSize());
+            assertThat(manager.getBufferSize()).isEqualTo(bufferSize);
         }
     }
 
@@ -143,7 +143,7 @@ public class RollingRandomAccessFileManagerTest {
         final boolean isAppend = true;
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
-        assertThat(file, isEmpty());
+        assertThat(file).is(new HamcrestCondition<>(isEmpty()));
 
         final byte[] bytes = new byte[4 * 1024];
 
@@ -156,7 +156,7 @@ public class RollingRandomAccessFileManagerTest {
         } finally {
             Closer.closeSilently(fos);
         }
-        assertThat("all flushed to disk", file, hasLength(bytes.length));
+        assertThat(file).describedAs("all flushed to disk").is(new HamcrestCondition<>(hasLength(bytes.length)));
 
         final boolean immediateFlush = true;
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
@@ -166,7 +166,7 @@ public class RollingRandomAccessFileManagerTest {
                 null, null, null, null, null, null, null);
         manager.write(bytes, 0, bytes.length, immediateFlush);
         final int expected = bytes.length * 2;
-        assertThat("appended, not overwritten", file, hasLength(expected));
+        assertThat(file).describedAs("appended, not overwritten").is(new HamcrestCondition<>(hasLength(expected)));
     }
 
     @Test
@@ -179,15 +179,15 @@ public class RollingRandomAccessFileManagerTest {
         final boolean isAppend = false;
         final long expectedMin = System.currentTimeMillis();
         final long expectedMax = expectedMin + 500;
-        assertThat(file, lastModified(lessThanOrEqualTo(expectedMin)));
+        assertThat(file).is(new HamcrestCondition<>(lastModified(lessThanOrEqualTo(expectedMin))));
 
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
                 //
                 file.getAbsolutePath(), Strings.EMPTY, isAppend, true,
                 RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
                 null, null, null, null, null, null, null);
-        assertTrue(manager.getFileTime() < expectedMax);
-        assertTrue(manager.getFileTime() >= expectedMin);
+        assertThat(manager.getFileTime() < expectedMax).isTrue();
+        assertThat(manager.getFileTime() >= expectedMin).isTrue();
     }
 
     @Test
@@ -197,14 +197,14 @@ public class RollingRandomAccessFileManagerTest {
         LockSupport.parkNanos(1000000); // 1 millisec
 
         final boolean isAppend = true;
-        assertThat(file, lastModified(beforeNow()));
+        assertThat(file).is(new HamcrestCondition<>(lastModified(beforeNow())));
 
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
                 //
                 file.getAbsolutePath(), Strings.EMPTY, isAppend, true,
                 RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
                 null, null, null, null, null, null, null);
-        assertThat(file, lastModified(equalTo(manager.getFileTime())));
+        assertThat(file).is(new HamcrestCondition<>(lastModified(equalTo(manager.getFileTime()))));
     }
 
     @Test
@@ -249,7 +249,7 @@ public class RollingRandomAccessFileManagerTest {
                         null,
                         null,
                         null);
-        assertNotNull(manager);
+        assertThat(manager).isNotNull();
         manager.initialize();
 
         // Trigger a rollover.
@@ -262,7 +262,7 @@ public class RollingRandomAccessFileManagerTest {
                         PosixFileAttributeView.class)
                 .readAttributes()
                 .permissions();
-        assertEquals(filePermissions, actualFilePermissions);
+        assertThat(actualFilePermissions).isEqualTo(filePermissions);
 
     }
 

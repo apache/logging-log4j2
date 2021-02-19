@@ -15,23 +15,23 @@ package org.apache.logging.log4j.core.net.ssl;/*
  * limitations under the license.
  */
 
-import java.util.Arrays;
-
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Arrays;
+import org.junit.jupiter.api.Test;
 
 public class MemoryPasswordProviderTest {
     @Test
     public void testConstructorAllowsNull() {
-        assertNull(new MemoryPasswordProvider(null).getPassword());
+        assertThat(new MemoryPasswordProvider(null).getPassword()).isNull();
     }
 
     @Test
     public void testConstructorDoesNotModifyOriginalParameterArray() {
         char[] initial = "123".toCharArray();
         new MemoryPasswordProvider(initial);
-        assertArrayEquals("123".toCharArray(), initial);
+        assertThat(initial).isEqualTo("123".toCharArray());
     }
 
     @Test
@@ -39,11 +39,11 @@ public class MemoryPasswordProviderTest {
         char[] initial = "123".toCharArray();
         MemoryPasswordProvider provider = new MemoryPasswordProvider(initial);
         char[] actual = provider.getPassword();
-        assertArrayEquals("123".toCharArray(), actual);
-        assertNotSame(initial, actual);
+        assertThat(actual).isEqualTo("123".toCharArray());
+        assertThat(actual).isNotSameAs(initial);
 
         Arrays.fill(initial, 'a');
-        assertArrayEquals("123".toCharArray(), provider.getPassword());
-        assertNotSame(provider.getPassword(), provider.getPassword());
+        assertThat(provider.getPassword()).isEqualTo("123".toCharArray());
+        assertThat(provider.getPassword()).isNotSameAs(provider.getPassword());
     }
 }

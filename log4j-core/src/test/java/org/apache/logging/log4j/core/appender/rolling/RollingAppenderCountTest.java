@@ -16,14 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.nio.file.DirectoryStream;
@@ -32,8 +26,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
-
-import static org.junit.Assert.assertEquals;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Validate rolling with a file pattern that contains leading zeros for the increment.
@@ -81,7 +81,7 @@ public class RollingAppenderCountTest {
     @AfterClass
     public static void afterClass() throws Exception {
         int count = Objects.requireNonNull(new File(DIR).listFiles()).length;
-        assertEquals("Expected 16 files, got " + count, 17, count);
+        assertThat(count).describedAs("Expected 16 files, got " + count).isEqualTo(17);
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {
                 Files.delete(path);

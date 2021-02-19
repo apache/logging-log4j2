@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
@@ -26,8 +28,6 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class StyleConverterTest {
 
@@ -47,14 +47,14 @@ public class StyleConverterTest {
         logger.error(this.getClass().getName());
 
         final List<String> msgs = app.getMessages();
-        assertNotNull(msgs);
-        assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
+        assertThat(msgs).isNotNull();
+        assertThat(msgs.size()).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).isEqualTo(1);
         assertTrue(msgs.get(0).endsWith(EXPECTED),
                 "Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0));
     }
 
     @Test
     public void testNull() {
-        assertNull(StyleConverter.newInstance(null, null));
+        assertThat(StyleConverter.newInstance(null, null)).isNull();
     }
 }

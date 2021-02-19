@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -26,8 +28,6 @@ import org.apache.logging.log4j.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @UsingThreadContextMap
 @Tag("groovy")
@@ -43,8 +43,8 @@ public abstract class AbstractScriptFilterTest {
         ThreadContext.clearMap();
         try {
             final List<String> messages = app.getMessages();
-            assertNotNull(messages, "No Messages");
-            assertEquals(messages.size(), 2, "Incorrect number of messages. Expected 2, Actual " + messages.size());
+            assertThat(messages).describedAs("No Messages").isNotNull();
+            assertThat(2).describedAs("Incorrect number of messages. Expected 2, Actual " + messages.size()).isEqualTo(messages.size());
         } finally {
             app.clear();
         }
@@ -60,8 +60,8 @@ public abstract class AbstractScriptFilterTest {
         ThreadContext.clearMap();
         final List<String> messages = app.getMessages();
         try {
-            assertNotNull(messages, "No Messages");
-            assertEquals(messages.size(), 2, "Incorrect number of messages. Expected 2, Actual " + messages.size());
+            assertThat(messages).describedAs("No Messages").isNotNull();
+            assertThat(2).describedAs("Incorrect number of messages. Expected 2, Actual " + messages.size()).isEqualTo(messages.size());
         } finally {
             app.clear();
         }

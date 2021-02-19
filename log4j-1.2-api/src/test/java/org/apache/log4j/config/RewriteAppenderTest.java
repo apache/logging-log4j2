@@ -16,6 +16,13 @@
  */
 package org.apache.log4j.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Map;
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -29,13 +36,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test RewriteAppender
@@ -67,11 +67,11 @@ public class RewriteAppenderTest {
                 eventAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
             }
         }
-        assertNotNull("No Event Appender", eventAppender);
+        assertThat(eventAppender).describedAs("No Event Appender").isNotNull();
         List<LoggingEvent> events = eventAppender.getEvents();
-        assertTrue("No events", events != null && events.size() > 0);
-        assertNotNull("No properties in the event", events.get(0).getProperties());
-        assertTrue("Key was not inserted", events.get(0).getProperties().containsKey("key2"));
-        assertEquals("Key value is incorrect", "Log4j", events.get(0).getProperties().get("key2"));
+        assertThat(events != null && events.size() > 0).describedAs("No events").isTrue();
+        assertThat(events.get(0).getProperties()).describedAs("No properties in the event").isNotNull();
+        assertThat(events.get(0).getProperties().containsKey("key2")).describedAs("Key was not inserted").isTrue();
+        assertThat(events.get(0).getProperties().get("key2")).describedAs("Key value is incorrect").isEqualTo("Log4j");
     }
 }

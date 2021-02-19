@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.Named;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.ExtendedLevels;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.test.ExtendedLevels;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-customLevel.xml")
 public class ExtendedLevelTest {
@@ -46,17 +46,17 @@ public class ExtendedLevelTest {
         logger.log(ExtendedLevels.DETAIL, "Detail message");
         logger.log(Level.DEBUG, "Debug message");
         List<LogEvent> events = list1.getEvents();
-        assertNotNull(events, "No events");
-        assertThat(events, hasSize(1));
+        assertThat(events).describedAs("No events").isNotNull();
+        assertThat(events).hasSize(1);
         LogEvent event = events.get(0);
-        assertEquals("DETAIL", event.getLevel().name(), "Expected level DETAIL, got" + event.getLevel());
+        assertThat(event.getLevel().name()).describedAs("Expected level DETAIL, got" + event.getLevel()).isEqualTo("DETAIL");
         logger = context.getLogger("org.apache.logging.log4j.test2");
         logger.log(ExtendedLevels.NOTE, "Note message");
         logger.log(Level.INFO, "Info message");
         events = list2.getEvents();
-        assertNotNull(events, "No events");
-        assertThat(events, hasSize(1));
+        assertThat(events).describedAs("No events").isNotNull();
+        assertThat(events).hasSize(1);
         event = events.get(0);
-        assertEquals("NOTE", event.getLevel().name(), "Expected level NOTE, got" + event.getLevel());
+        assertThat(event.getLevel().name()).describedAs("Expected level NOTE, got" + event.getLevel()).isEqualTo("NOTE");
     }
 }

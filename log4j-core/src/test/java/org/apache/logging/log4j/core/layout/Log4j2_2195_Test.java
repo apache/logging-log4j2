@@ -17,9 +17,11 @@
 
 package org.apache.logging.log4j.core.layout;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.Serializable;
 import java.util.List;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
@@ -28,8 +30,6 @@ import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @LoggerContextSource("LOG4J-2195/log4j2.xml")
 public class Log4j2_2195_Test {
 
@@ -37,20 +37,20 @@ public class Log4j2_2195_Test {
     public void test(final LoggerContext context, @Named("ListAppender") final ListAppender listAppender) {
         listAppender.clear();
         context.getLogger(getClass()).info("This is a test.", new Exception("Test exception!"));
-        assertNotNull(listAppender);
+        assertThat(listAppender).isNotNull();
         List<String> events = listAppender.getMessages();
-        assertNotNull(events);
-        assertEquals(1, events.size());
+        assertThat(events).isNotNull();
+        assertThat(events.size()).isEqualTo(1);
         String logEvent = events.get(0);
-        assertNotNull(logEvent);
+        assertThat(logEvent).isNotNull();
         assertFalse(logEvent.contains("org.junit"), "\"org.junit\" should not be here");
         assertFalse(logEvent.contains("org.eclipse"), "\"org.eclipse\" should not be here");
         //
         Layout<? extends Serializable> layout = listAppender.getLayout();
         PatternLayout pLayout = (PatternLayout) layout;
-        assertNotNull(pLayout);
+        assertThat(pLayout).isNotNull();
         Serializer eventSerializer = pLayout.getEventSerializer();
-        assertNotNull(eventSerializer);
+        assertThat(eventSerializer).isNotNull();
         //
         assertTrue(logEvent.contains("|"), "Missing \"|\"");
     }

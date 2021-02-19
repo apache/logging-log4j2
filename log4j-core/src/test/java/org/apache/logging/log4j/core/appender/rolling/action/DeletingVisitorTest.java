@@ -17,6 +17,10 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.NoSuchFileException;
@@ -27,10 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@code DeletingVisitor} class.
@@ -62,7 +63,7 @@ public class DeletingVisitorTest {
 
         final Path any = Paths.get("/a/b/c/any");
         visitor.visitFile(any, null);
-        assertTrue(visitor.deleted.contains(any));
+        assertThat(visitor.deleted.contains(any)).isTrue();
     }
 
     @Test
@@ -73,7 +74,7 @@ public class DeletingVisitorTest {
 
         final Path any = Paths.get("/a/b/c/any");
         visitor.visitFile(any, null);
-        assertFalse(visitor.deleted.contains(any));
+        assertThat(visitor.deleted.contains(any)).isFalse();
     }
 
     @Test
@@ -86,7 +87,7 @@ public class DeletingVisitorTest {
 
         final Path any = Paths.get("/a/b/c/any");
         visitor.visitFile(any, null);
-        assertFalse(visitor.deleted.contains(any));
+        assertThat(visitor.deleted.contains(any)).isFalse();
     }
 
     @Test
@@ -98,7 +99,7 @@ public class DeletingVisitorTest {
 
         final Path any = Paths.get("/a/b/c/any");
         visitor.visitFile(any, null);
-        assertTrue(visitor.deleted.contains(any));
+        assertThat(visitor.deleted.contains(any)).isTrue();
     }
 
     @Test
@@ -110,7 +111,7 @@ public class DeletingVisitorTest {
 
         final Path any = Paths.get("/a/b/c/any");
         visitor.visitFile(any, null);
-        assertFalse(visitor.deleted.contains(any));
+        assertThat(visitor.deleted.contains(any)).isFalse();
     }
 
     @Test
@@ -121,7 +122,7 @@ public class DeletingVisitorTest {
             @Override
             public boolean accept(final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
                 final Path expected = Paths.get("relative");
-                assertEquals(expected, relativePath);
+                assertThat(relativePath).isEqualTo(expected);
                 return true;
             }
 
@@ -140,9 +141,7 @@ public class DeletingVisitorTest {
     public void testNoSuchFileFailure() throws IOException {
         final DeletingVisitorHelper visitor =
                 new DeletingVisitorHelper(Paths.get("/a/b/c"), Collections.emptyList(), true);
-        assertEquals(
-                FileVisitResult.CONTINUE,
-                visitor.visitFileFailed(Paths.get("doesNotExist"), new NoSuchFileException("doesNotExist")));
+        assertThat(visitor.visitFileFailed(Paths.get("doesNotExist"), new NoSuchFileException("doesNotExist"))).isEqualTo(FileVisitResult.CONTINUE);
     }
 
     @Test
@@ -152,9 +151,9 @@ public class DeletingVisitorTest {
         IOException exception = new IOException();
         try {
             visitor.visitFileFailed(Paths.get("doesNotExist"), exception);
-            fail();
+            fail("fail");
         } catch (IOException e) {
-            assertSame(exception, e);
+            assertThat(e).isSameAs(exception);
         }
     }
 }

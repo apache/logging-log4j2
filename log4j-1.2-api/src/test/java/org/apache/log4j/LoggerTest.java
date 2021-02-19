@@ -17,10 +17,12 @@
 
 package org.apache.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -33,8 +35,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Used for internal unit testing the Logger class.
@@ -56,13 +56,13 @@ public class LoggerTest {
     @BeforeClass
     public static void setUpClass() {
         rbUS = ResourceBundle.getBundle("L7D", new Locale("en", "US"));
-        assertNotNull(rbUS);
+        assertThat(rbUS).isNotNull();
 
         rbFR = ResourceBundle.getBundle("L7D", new Locale("fr", "FR"));
-        assertNotNull("Got a null resource bundle.", rbFR);
+        assertThat(rbFR).describedAs("Got a null resource bundle.").isNotNull();
 
         rbCH = ResourceBundle.getBundle("L7D", new Locale("fr", "CH"));
-        assertNotNull("Got a null resource bundle.", rbCH);
+        assertThat(rbCH).describedAs("Got a null resource bundle.").isNotNull();
 
         ConfigurationFactory.setConfigurationFactory(configurationFactory);
     }
@@ -124,15 +124,15 @@ public class LoggerTest {
         try {
             ((org.apache.logging.log4j.core.Logger) loggerA.getLogger()).addAppender(coutingAppender);
 
-            assertEquals(0, coutingAppender.counter);
+            assertThat(coutingAppender.counter).isEqualTo(0);
             loggerAB.debug(MSG);
-            assertEquals(1, coutingAppender.counter);
+            assertThat(coutingAppender.counter).isEqualTo(1);
             loggerAB.info(MSG);
-            assertEquals(2, coutingAppender.counter);
+            assertThat(coutingAppender.counter).isEqualTo(2);
             loggerAB.warn(MSG);
-            assertEquals(3, coutingAppender.counter);
+            assertThat(coutingAppender.counter).isEqualTo(3);
             loggerAB.error(MSG);
-            assertEquals(4, coutingAppender.counter);
+            assertThat(coutingAppender.counter).isEqualTo(4);
             coutingAppender.stop();
         } finally {
             ((org.apache.logging.log4j.core.Logger) loggerA.getLogger()).removeAppender(coutingAppender);
@@ -158,20 +158,20 @@ public class LoggerTest {
             ((org.apache.logging.log4j.core.Logger) a.getLogger()).addAppender(ca1);
             ((org.apache.logging.log4j.core.Logger) abc.getLogger()).addAppender(ca2);
 
-            assertEquals(ca1.counter, 0);
-            assertEquals(ca2.counter, 0);
+            assertThat(0).isEqualTo(ca1.counter);
+            assertThat(0).isEqualTo(ca2.counter);
 
             ab.debug(MSG);
-            assertEquals(ca1.counter, 1);
-            assertEquals(ca2.counter, 0);
+            assertThat(1).isEqualTo(ca1.counter);
+            assertThat(0).isEqualTo(ca2.counter);
 
             abc.debug(MSG);
-            assertEquals(ca1.counter, 2);
-            assertEquals(ca2.counter, 1);
+            assertThat(2).isEqualTo(ca1.counter);
+            assertThat(1).isEqualTo(ca2.counter);
 
             x.debug(MSG);
-            assertEquals(ca1.counter, 2);
-            assertEquals(ca2.counter, 1);
+            assertThat(2).isEqualTo(ca1.counter);
+            assertThat(1).isEqualTo(ca2.counter);
             ca1.stop();
             ca2.stop();
         } finally {
@@ -201,26 +201,26 @@ public class LoggerTest {
             ((org.apache.logging.log4j.core.Logger) a.getLogger()).addAppender(caA);
             ((org.apache.logging.log4j.core.Logger) abc.getLogger()).addAppender(caABC);
 
-            assertEquals(caRoot.counter, 0);
-            assertEquals(caA.counter, 0);
-            assertEquals(caABC.counter, 0);
+            assertThat(0).isEqualTo(caRoot.counter);
+            assertThat(0).isEqualTo(caA.counter);
+            assertThat(0).isEqualTo(caABC.counter);
 
             ab.setAdditivity(false);
 
             a.debug(MSG);
-            assertEquals(caRoot.counter, 1);
-            assertEquals(caA.counter, 1);
-            assertEquals(caABC.counter, 0);
+            assertThat(1).isEqualTo(caRoot.counter);
+            assertThat(1).isEqualTo(caA.counter);
+            assertThat(0).isEqualTo(caABC.counter);
 
             ab.debug(MSG);
-            assertEquals(caRoot.counter, 1);
-            assertEquals(caA.counter, 1);
-            assertEquals(caABC.counter, 0);
+            assertThat(1).isEqualTo(caRoot.counter);
+            assertThat(1).isEqualTo(caA.counter);
+            assertThat(0).isEqualTo(caABC.counter);
 
             abc.debug(MSG);
-            assertEquals(caRoot.counter, 1);
-            assertEquals(caA.counter, 1);
-            assertEquals(caABC.counter, 1);
+            assertThat(1).isEqualTo(caRoot.counter);
+            assertThat(1).isEqualTo(caA.counter);
+            assertThat(1).isEqualTo(caABC.counter);
             caRoot.stop();
             caA.stop();
             caABC.stop();
@@ -299,18 +299,18 @@ public class LoggerTest {
         final Logger root = Logger.getRootLogger();
         root.setResourceBundle(rbUS);
         ResourceBundle t = root.getResourceBundle();
-        assertSame(t, rbUS);
+        assertThat(rbUS).isSameAs(t);
 
         final Logger x = Logger.getLogger("x");
         final Logger x_y = Logger.getLogger("x.y");
         final Logger x_y_z = Logger.getLogger("x.y.z");
 
         t = x.getResourceBundle();
-        assertSame(t, rbUS);
+        assertThat(rbUS).isSameAs(t);
         t = x_y.getResourceBundle();
-        assertSame(t, rbUS);
+        assertThat(rbUS).isSameAs(t);
         t = x_y_z.getResourceBundle();
-        assertSame(t, rbUS);
+        assertThat(rbUS).isSameAs(t);
     }
 
     @Test
@@ -318,7 +318,7 @@ public class LoggerTest {
         final Logger root = Logger.getRootLogger();
         root.setResourceBundle(rbUS);
         ResourceBundle t = root.getResourceBundle();
-        assertTrue(t == rbUS);
+        assertThat(t == rbUS).isTrue();
 
         final Logger x = Logger.getLogger("x");
         final Logger x_y = Logger.getLogger("x.y");
@@ -326,11 +326,11 @@ public class LoggerTest {
 
         x_y.setResourceBundle(rbFR);
         t = x.getResourceBundle();
-        assertSame(t, rbUS);
+        assertThat(rbUS).isSameAs(t);
         t = x_y.getResourceBundle();
-        assertSame(t, rbFR);
+        assertThat(rbFR).isSameAs(t);
         t = x_y_z.getResourceBundle();
-        assertSame(t, rbFR);
+        assertThat(rbFR).isSameAs(t);
     }
 
     @Test
@@ -338,7 +338,7 @@ public class LoggerTest {
         final Logger root = Logger.getRootLogger();
         root.setResourceBundle(rbUS);
         ResourceBundle t = root.getResourceBundle();
-        assertTrue(t == rbUS);
+        assertThat(t == rbUS).isTrue();
 
         final Logger x = Logger.getLogger("x");
         final Logger x_y = Logger.getLogger("x.y");
@@ -347,11 +347,11 @@ public class LoggerTest {
         x_y.setResourceBundle(rbFR);
         x_y_z.setResourceBundle(rbCH);
         t = x.getResourceBundle();
-        assertSame(t, rbUS);
+        assertThat(rbUS).isSameAs(t);
         t = x_y.getResourceBundle();
-        assertSame(t, rbFR);
+        assertThat(rbFR).isSameAs(t);
         t = x_y_z.getResourceBundle();
-        assertSame(t, rbCH);
+        assertThat(rbCH).isSameAs(t);
     }
 
     @Test
@@ -362,13 +362,13 @@ public class LoggerTest {
 
         Logger t;
         t = LogManager.exists("xx");
-        assertNull(t);
+        assertThat(t).isNull();
         t = LogManager.exists("a");
-        assertSame(a, t);
+        assertThat(t).isSameAs(a);
         t = LogManager.exists("a.b");
-        assertSame(a_b, t);
+        assertThat(t).isSameAs(a_b);
         t = LogManager.exists("a.b.c");
-        assertSame(a_b_c, t);
+        assertThat(t).isSameAs(a_b_c);
     }
     /* Don't support hierarchy
     public void testHierarchy1() {
@@ -401,10 +401,10 @@ public class LoggerTest {
         root.trace("Discarded Message");
 
         final List<LogEvent> msgs = appender.getEvents();
-        assertEquals(1, msgs.size());
+        assertThat(msgs.size()).isEqualTo(1);
         final LogEvent event = msgs.get(0);
-        assertEquals(org.apache.logging.log4j.Level.TRACE, event.getLevel());
-        assertEquals("Message 1", event.getMessage().getFormat());
+        assertThat(event.getLevel()).isEqualTo(org.apache.logging.log4j.Level.TRACE);
+        assertThat(event.getMessage().getFormat()).isEqualTo("Message 1");
         appender.stop();
         ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(appender);
     }
@@ -430,10 +430,10 @@ public class LoggerTest {
             root.trace("Discarded Message", ex);
 
             final List<LogEvent> msgs = appender.getEvents();
-            assertEquals(1, msgs.size());
+            assertThat(msgs.size()).isEqualTo(1);
             final LogEvent event = msgs.get(0);
-            assertEquals(org.apache.logging.log4j.Level.TRACE, event.getLevel());
-            assertEquals("Message 1", event.getMessage().getFormattedMessage());
+            assertThat(event.getLevel()).isEqualTo(org.apache.logging.log4j.Level.TRACE);
+            assertThat(event.getMessage().getFormattedMessage()).isEqualTo("Message 1");
             appender.stop();
         } finally {
             ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(appender);
@@ -455,8 +455,8 @@ public class LoggerTest {
             final Logger tracer = Logger.getLogger("com.example.Tracer");
             tracer.setLevel(Level.TRACE);
 
-            assertTrue(tracer.isTraceEnabled());
-            assertFalse(root.isTraceEnabled());
+            assertThat(tracer.isTraceEnabled()).isTrue();
+            assertThat(root.isTraceEnabled()).isFalse();
             appender.stop();
         } finally {
             ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(appender);
@@ -478,9 +478,9 @@ public class LoggerTest {
             root.log(Priority.INFO, "Test msg2", null);
             root.log(Priority.INFO, "Test msg3");
             final List<String> msgs = appender.getMessages();
-            assertTrue("Incorrect number of messages", msgs.size() == 3);
+            assertThat(msgs.size() == 3).describedAs("Incorrect number of messages").isTrue();
             final String msg = msgs.get(0);
-            assertTrue("Message contains incorrect class name: " + msg, msg.contains(LoggerTest.class.getName()));
+            assertThat(msg.contains(LoggerTest.class.getName())).describedAs("Message contains incorrect class name: " + msg).isTrue();
             appender.stop();
         } finally {
             ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(appender);

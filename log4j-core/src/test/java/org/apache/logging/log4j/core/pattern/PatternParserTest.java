@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Calendar;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
@@ -36,8 +38,6 @@ import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PatternParserTest {
 
@@ -71,8 +71,7 @@ public class PatternParserTest {
 
     private void validateConverter(final List<PatternFormatter> formatter, final int index, final String name) {
         final PatternConverter pc = formatter.get(index).getConverter();
-        assertEquals(
-                pc.getName(), name, "Incorrect converter " + pc.getName() + " at index " + index + " expected " + name);
+        assertThat(name).describedAs("Incorrect converter " + pc.getName() + " at index " + index + " expected " + name).isEqualTo(pc.getName());
     }
 
     /**
@@ -81,8 +80,8 @@ public class PatternParserTest {
     @Test
     public void defaultPattern() {
         final List<PatternFormatter> formatters = parser.parse(msgPattern);
-        assertNotNull(formatters);
-        assertEquals(formatters.size(), 2);
+        assertThat(formatters).isNotNull();
+        assertThat(2).isEqualTo(formatters.size());
         validateConverter(formatters, 0, "Message");
         validateConverter(formatters, 1, "Line Sep");
     }
@@ -93,7 +92,7 @@ public class PatternParserTest {
     @Test
     public void testCustomPattern() {
         final List<PatternFormatter> formatters = parser.parse(customPattern);
-        assertNotNull(formatters);
+        assertThat(formatters).isNotNull();
         final StringMap mdc = ContextDataFactory.createContextData();
         mdc.putValue("loginId", "Fred");
         final Throwable t = new Throwable();
@@ -120,7 +119,7 @@ public class PatternParserTest {
     @Test
     public void testPatternTruncateFromBeginning() {
         final List<PatternFormatter> formatters = parser.parse(patternTruncateFromBeginning);
-        assertNotNull(formatters);
+        assertThat(formatters).isNotNull();
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("org.apache.logging.log4j.PatternParserTest") //
                 .setLoggerFqcn(Logger.class.getName()) //
@@ -141,7 +140,7 @@ public class PatternParserTest {
     @Test
     public void testPatternTruncateFromEnd() {
         final List<PatternFormatter> formatters = parser.parse(patternTruncateFromEnd);
-        assertNotNull(formatters);
+        assertThat(formatters).isNotNull();
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("org.apache.logging.log4j.PatternParserTest") //
                 .setLoggerFqcn(Logger.class.getName()) //
@@ -167,7 +166,7 @@ public class PatternParserTest {
         final long timestamp = cal.getTimeInMillis();
 
         final List<PatternFormatter> formatters = parser.parse(badPattern);
-        assertNotNull(formatters);
+        assertThat(formatters).isNotNull();
         final Throwable t = new Throwable();
         final StackTraceElement[] elements = t.getStackTrace();
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -202,7 +201,7 @@ public class PatternParserTest {
 
     private void testNestedPatternHighlight(final Level level, final String expectedStart) {
         final List<PatternFormatter> formatters = parser.parse(nestedPatternHighlight);
-        assertNotNull(formatters);
+        assertThat(formatters).isNotNull();
         final Throwable t = new Throwable();
         t.getStackTrace();
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -294,9 +293,9 @@ public class PatternParserTest {
 
     private void testFirstConverter(final String pattern, final Class<?> checkClass) {
         final List<PatternFormatter> formatters = parser.parse(pattern);
-        assertNotNull(formatters);
+        assertThat(formatters).isNotNull();
         final String msg = formatters.toString();
-        assertEquals(1, formatters.size(), msg);
+        assertThat(formatters.size()).describedAs(msg).isEqualTo(1);
         assertTrue(checkClass.isInstance(formatters.get(0).getConverter()), msg);
     }
 
@@ -308,38 +307,38 @@ public class PatternParserTest {
     @Test
     public void testNanoPatternShortChangesConfigurationNanoClock() {
         final Configuration config = new NullConfiguration();
-        assertTrue(config.getNanoClock() instanceof DummyNanoClock);
+        assertThat(config.getNanoClock() instanceof DummyNanoClock).isTrue();
 
         final PatternParser pp = new PatternParser(config, KEY, null);
-        assertTrue(config.getNanoClock() instanceof DummyNanoClock);
+        assertThat(config.getNanoClock() instanceof DummyNanoClock).isTrue();
 
         pp.parse("%m");
-        assertTrue(config.getNanoClock() instanceof DummyNanoClock);
+        assertThat(config.getNanoClock() instanceof DummyNanoClock).isTrue();
 
         pp.parse("%nano"); // this changes the config clock
-        assertTrue(config.getNanoClock() instanceof SystemNanoClock);
+        assertThat(config.getNanoClock() instanceof SystemNanoClock).isTrue();
     }
 
     @Test
     public void testNanoPatternLongChangesNanoClockFactoryMode() {
         final Configuration config = new NullConfiguration();
-        assertTrue(config.getNanoClock() instanceof DummyNanoClock);
+        assertThat(config.getNanoClock() instanceof DummyNanoClock).isTrue();
 
         final PatternParser pp = new PatternParser(config, KEY, null);
-        assertTrue(config.getNanoClock() instanceof DummyNanoClock);
+        assertThat(config.getNanoClock() instanceof DummyNanoClock).isTrue();
 
         pp.parse("%m");
-        assertTrue(config.getNanoClock() instanceof DummyNanoClock);
+        assertThat(config.getNanoClock() instanceof DummyNanoClock).isTrue();
 
         pp.parse("%N");
-        assertTrue(config.getNanoClock() instanceof SystemNanoClock);
+        assertThat(config.getNanoClock() instanceof SystemNanoClock).isTrue();
     }
 
     @Test
     public void testDeeplyNestedPattern() {
         final List<PatternFormatter> formatters = parser.parse(deeplyNestedPattern);
-        assertNotNull(formatters);
-        assertEquals(1, formatters.size());
+        assertThat(formatters).isNotNull();
+        assertThat(formatters.size()).isEqualTo(1);
 
         final StringMap mdc = ContextDataFactory.createContextData();
         mdc.putValue("var", "1234");
@@ -348,7 +347,7 @@ public class PatternParserTest {
         final StringBuilder buf = new StringBuilder();
         formatters.get(0).format(event, buf);
         final String expected = " 123 ";
-        assertEquals(expected, buf.toString());
+        assertThat(buf.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -359,8 +358,8 @@ public class PatternParserTest {
     @Test
     public void testClosingBracketButWrongPlace() {
         final List<PatternFormatter> formatters = parser.parse("}%d{");
-        assertNotNull(formatters);
-        assertEquals(2, formatters.size());
+        assertThat(formatters).isNotNull();
+        assertThat(formatters.size()).isEqualTo(2);
 
         validateConverter(formatters, 0, "Literal");
         validateConverter(formatters, 1, "Date");
@@ -370,43 +369,43 @@ public class PatternParserTest {
     public void testExceptionWithFilters() {
         final List<PatternFormatter> formatters = parser
                 .parse("%d{DEFAULT} - %msg - %xEx{full}{filters(org.junit,org.eclipse)}%n");
-        assertNotNull(formatters);
-        assertEquals(6, formatters.size());
+        assertThat(formatters).isNotNull();
+        assertThat(formatters.size()).isEqualTo(6);
         final PatternFormatter patternFormatter = formatters.get(4);
         final LogEventPatternConverter converter = patternFormatter.getConverter();
-        assertEquals(ExtendedThrowablePatternConverter.class, converter.getClass());
+        assertThat(converter.getClass()).isEqualTo(ExtendedThrowablePatternConverter.class);
         final ExtendedThrowablePatternConverter exConverter = (ExtendedThrowablePatternConverter) converter;
         final ThrowableFormatOptions options = exConverter.getOptions();
-        assertTrue(options.getIgnorePackages().contains("org.junit"));
-        assertTrue(options.getIgnorePackages().contains("org.eclipse"));
-        assertEquals(System.lineSeparator(), options.getSeparator());
+        assertThat(options.getIgnorePackages().contains("org.junit")).isTrue();
+        assertThat(options.getIgnorePackages().contains("org.eclipse")).isTrue();
+        assertThat(options.getSeparator()).isEqualTo(System.lineSeparator());
     }
 
     @Test
     public void testExceptionWithFiltersAndSeparator() {
         final List<PatternFormatter> formatters = parser
                 .parse("%d{DEFAULT} - %msg - %xEx{full}{filters(org.junit,org.eclipse)}{separator(|)}%n");
-        assertNotNull(formatters);
-        assertEquals(6, formatters.size());
+        assertThat(formatters).isNotNull();
+        assertThat(formatters.size()).isEqualTo(6);
         final PatternFormatter patternFormatter = formatters.get(4);
         final LogEventPatternConverter converter = patternFormatter.getConverter();
-        assertEquals(ExtendedThrowablePatternConverter.class, converter.getClass());
+        assertThat(converter.getClass()).isEqualTo(ExtendedThrowablePatternConverter.class);
         final ExtendedThrowablePatternConverter exConverter = (ExtendedThrowablePatternConverter) converter;
         final ThrowableFormatOptions options = exConverter.getOptions();
         final List<String> ignorePackages = options.getIgnorePackages();
-        assertNotNull(ignorePackages);
+        assertThat(ignorePackages).isNotNull();
         final String ignorePackagesString = ignorePackages.toString();
         assertTrue(ignorePackages.contains("org.junit"), ignorePackagesString);
         assertTrue(ignorePackages.contains("org.eclipse"), ignorePackagesString);
-        assertEquals("|", options.getSeparator());
+        assertThat(options.getSeparator()).isEqualTo("|");
     }
 
     // LOG4J2-2564: Multiple newInstance methods.
     @Test
     public void testMapPatternConverter() {
         final List<PatternFormatter> formatters = parser.parse("%K");
-        assertNotNull(formatters);
-        assertEquals(formatters.size(), 1);
+        assertThat(formatters).isNotNull();
+        assertThat(1).isEqualTo(formatters.size());
         PatternFormatter formatter = formatters.get(0);
         assertTrue(formatter.getConverter() instanceof MapPatternConverter, "Expected a MapPatternConverter");
     }

@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests the DefaultAsyncQueueFullPolicy class.
@@ -40,14 +41,14 @@ public class DefaultAsyncQueueFullPolicyTest {
     @Test
     public void testGetRouteEnqueuesIfQueueFullAndCalledFromDifferentThread() throws Exception {
         final DefaultAsyncQueueFullPolicy router = new DefaultAsyncQueueFullPolicy();
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.ALL));
-        assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), Level.OFF));
+        assertThat(router.getRoute(otherThreadId(), Level.ALL)).isEqualTo(EventRoute.ENQUEUE);
+        assertThat(router.getRoute(otherThreadId(), Level.OFF)).isEqualTo(EventRoute.ENQUEUE);
     }
 
     @Test
     public void testGetRouteSynchronousIfQueueFullAndCalledFromSameThread() throws Exception {
         final DefaultAsyncQueueFullPolicy router = new DefaultAsyncQueueFullPolicy();
-        assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), Level.ALL));
-        assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), Level.OFF));
+        assertThat(router.getRoute(currentThreadId(), Level.ALL)).isEqualTo(EventRoute.SYNCHRONOUS);
+        assertThat(router.getRoute(currentThreadId(), Level.OFF)).isEqualTo(EventRoute.SYNCHRONOUS);
     }
 }

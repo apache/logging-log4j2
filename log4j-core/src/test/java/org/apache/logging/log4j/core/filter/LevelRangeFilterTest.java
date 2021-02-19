@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -23,35 +26,33 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class LevelRangeFilterTest {
 
     @Test
     public void testLevels() {
         final LevelRangeFilter filter = LevelRangeFilter.createFilter(Level.ERROR, Level.INFO, null, null);
         filter.start();
-        assertTrue(filter.isStarted());
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null));
+        assertThat(filter.isStarted()).isTrue();
+        assertThat(filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null)).isSameAs(Filter.Result.DENY);
+        assertThat(filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null)).isSameAs(Filter.Result.NEUTRAL);
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Test")) //
                 .build();
-        assertSame(Filter.Result.DENY, filter.filter(event));
+        assertThat(filter.filter(event)).isSameAs(Filter.Result.DENY);
         event = Log4jLogEvent.newBuilder() //
                 .setLevel(Level.ERROR) //
                 .setMessage(new SimpleMessage("Test")) //
                 .build();
-        assertSame(Filter.Result.NEUTRAL, filter.filter(event));
+        assertThat(filter.filter(event)).isSameAs(Filter.Result.NEUTRAL);
     }
 
     @Test
     public void testMinimumOnlyLevel() {
         final LevelRangeFilter filter = LevelRangeFilter.createFilter(Level.ERROR, null, null, null);
         filter.start();
-        assertTrue(filter.isStarted());
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null));
+        assertThat(filter.isStarted()).isTrue();
+        assertThat(filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null)).isSameAs(Filter.Result.NEUTRAL);
     }
     
 }

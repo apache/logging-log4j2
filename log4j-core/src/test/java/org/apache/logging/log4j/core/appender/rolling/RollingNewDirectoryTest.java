@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import java.io.File;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests
@@ -56,7 +56,7 @@ public class RollingNewDirectoryTest {
             Thread.sleep(300);
         }
         final File dir = new File(DIR);
-        assertNotNull("No directory created", dir);
-        assertTrue("Child irectories not created", dir.exists() && dir.listFiles().length > 2);
+        assertThat(dir).describedAs("No directory created").isNotNull();
+        assertThat(dir.exists() && dir.listFiles().length > 2).describedAs("Child irectories not created").isTrue();
     }
 }

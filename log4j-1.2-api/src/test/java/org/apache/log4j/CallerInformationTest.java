@@ -16,10 +16,10 @@
  */
 package org.apache.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
-
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.ClassRule;
@@ -41,9 +41,9 @@ public class CallerInformationTest {
         logger.warn("Verifying the caller class is still correct.");
         logger.error("Hopefully nobody breaks me!");
         final List<String> messages = app.getMessages();
-        assertEquals("Incorrect number of messages.", 3, messages.size());
+        assertThat(messages.size()).describedAs("Incorrect number of messages.").isEqualTo(3);
         for (final String message : messages) {
-            assertEquals("Incorrect caller class name.", this.getClass().getName(), message);
+            assertThat(message).describedAs("Incorrect caller class name.").isEqualTo(this.getClass().getName());
         }
     }
 
@@ -57,9 +57,9 @@ public class CallerInformationTest {
         logger.warn("brains~~~");
         logger.info("Itchy. Tasty.");
         final List<String> messages = app.getMessages();
-        assertEquals("Incorrect number of messages.", 5, messages.size());
+        assertThat(messages.size()).describedAs("Incorrect number of messages.").isEqualTo(5);
         for (final String message : messages) {
-            assertEquals("Incorrect caller method name.", "testMethodLogger", message);
+            assertThat(message).describedAs("Incorrect caller method name.").isEqualTo("testMethodLogger");
         }
     }
 }

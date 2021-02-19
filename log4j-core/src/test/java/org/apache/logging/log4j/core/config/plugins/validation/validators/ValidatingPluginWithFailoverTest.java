@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.emptyCollectionOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.FailoverAppender;
@@ -32,14 +39,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyCollectionOf;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 public class ValidatingPluginWithFailoverTest {
 
     private PluginType<FailoverAppender> plugin;
@@ -51,7 +50,7 @@ public class ValidatingPluginWithFailoverTest {
         final PluginManager manager = new PluginManager(Core.CATEGORY_NAME);
         manager.collectPlugins();
         plugin = (PluginType<FailoverAppender>) manager.getPluginType("failover");
-        assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
+        assertThat(plugin).describedAs("Rebuild this module to make sure annotation processing kicks in.").isNotNull();
 
         AppenderRef appenderRef = AppenderRef.createAppenderRef("List", Level.ALL, null);
         node = new Node(null, "failover", plugin);
@@ -78,9 +77,9 @@ public class ValidatingPluginWithFailoverTest {
 
         final FailoverAppender failoverAppender = (FailoverAppender) builder.build();
 
-        assertThat(listener.logs, emptyCollectionOf(StatusData.class));
-        assertNotNull(failoverAppender);
-        assertEquals("Failover", failoverAppender.getName());
+        assertThat(listener.logs).isEmpty();
+        assertThat(failoverAppender).isNotNull();
+        assertThat(failoverAppender.getName()).isEqualTo("Failover");
     }
 
     private static class StoringStatusListener implements StatusListener {

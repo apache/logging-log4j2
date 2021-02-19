@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.Calendar;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Calendar;
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class DateLookupTest {
 
@@ -32,8 +32,8 @@ public class DateLookupTest {
         final StrLookup lookup = new DateLookup();
         final LogEvent event = new MyLogEvent();
         final String value = lookup.lookup(event, "MM/dd/yyyy");
-        assertNotNull(value);
-        assertEquals("12/30/2011", value);
+        assertThat(value).isNotNull();
+        assertThat(value).isEqualTo("12/30/2011");
     }
 
     private static class MyLogEvent extends AbstractLogEvent {

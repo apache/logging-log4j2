@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the ContextDataFactory class.
@@ -28,14 +29,14 @@ public class ContextDataFactoryPropertySetTest {
     @Test
     public void noArgReturnsSpecifiedImplIfPropertySpecified() throws Exception {
         System.setProperty("log4j2.ContextData", FactoryTestStringMap.class.getName());
-        assertTrue(ContextDataFactory.createContextData() instanceof FactoryTestStringMap);
+        assertThat(ContextDataFactory.createContextData() instanceof FactoryTestStringMap).isTrue();
         System.clearProperty("log4j2.ContextData");
     }
 
     @Test
     public void intArgReturnsSpecifiedImplIfPropertySpecified() throws Exception {
         System.setProperty("log4j2.ContextData", FactoryTestStringMap.class.getName());
-        assertTrue(ContextDataFactory.createContextData(2) instanceof FactoryTestStringMap);
+        assertThat(ContextDataFactory.createContextData(2) instanceof FactoryTestStringMap).isTrue();
         System.clearProperty("log4j2.ContextData");
     }
 
@@ -43,7 +44,7 @@ public class ContextDataFactoryPropertySetTest {
     public void intArgSetsCapacityIfPropertySpecified() throws Exception {
         System.setProperty("log4j2.ContextData", FactoryTestStringMap.class.getName());
         final FactoryTestStringMap actual = (FactoryTestStringMap) ContextDataFactory.createContextData(2);
-        assertEquals(2, actual.initialCapacity);
+        assertThat(actual.initialCapacity).isEqualTo(2);
         System.clearProperty("log4j2.ContextData");
     }
 }

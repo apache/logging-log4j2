@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.test.appender.FailOnceAppender;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the AppenderControlArraySet class..
@@ -33,8 +33,8 @@ public class AppenderControlArraySetTest {
 
     @Test
     public void testInitiallyEmpty() throws Exception {
-        assertTrue(new AppenderControlArraySet().isEmpty());
-        assertEquals(0, new AppenderControlArraySet().get().length);
+        assertThat(new AppenderControlArraySet().isEmpty()).isTrue();
+        assertThat(new AppenderControlArraySet().get().length).isEqualTo(0);
     }
 
     private AppenderControl createControl(final String name) {
@@ -45,17 +45,17 @@ public class AppenderControlArraySetTest {
     @Test
     public void testAddMakesNonEmpty() throws Exception {
         final AppenderControlArraySet set = new AppenderControlArraySet();
-        assertTrue(set.isEmpty());
+        assertThat(set.isEmpty()).isTrue();
         set.add(createControl("A"));
-        assertFalse(set.isEmpty());
+        assertThat(set.isEmpty()).isFalse();
     }
 
     @Test
     public void testAddReturnsTrueIfSuccessfullyAdded() throws Exception {
         final AppenderControlArraySet set = new AppenderControlArraySet();
-        assertTrue(set.add(createControl("A")));
-        assertTrue(set.add(createControl("B")));
-        assertTrue(set.add(createControl("C")));
+        assertThat(set.add(createControl("A"))).isTrue();
+        assertThat(set.add(createControl("B"))).isTrue();
+        assertThat(set.add(createControl("C"))).isTrue();
     }
 
     @Test
@@ -66,20 +66,20 @@ public class AppenderControlArraySetTest {
         for (final AppenderControl ctl : controls) {
             set.add(ctl);
         }
-        assertEquals(2, set.get().length);
-        assertSame(controls[0], set.get()[0]);
-        assertSame(controls[1], set.get()[1]);
+        assertThat(set.get().length).isEqualTo(2);
+        assertThat(set.get()[0]).isSameAs(controls[0]);
+        assertThat(set.get()[1]).isSameAs(controls[1]);
     }
 
     @Test
     public void testAddReturnsFalseIfAlreadyInSet() throws Exception {
         final AppenderControlArraySet set = new AppenderControlArraySet();
-        assertTrue(set.add(createControl("A")));
-        assertTrue(set.add(createControl("B")));
-        assertFalse(set.add(createControl("B")));
-        assertFalse(set.add(createControl("B")));
-        assertFalse(set.add(createControl("A")));
-        assertEquals(2, set.get().length);
+        assertThat(set.add(createControl("A"))).isTrue();
+        assertThat(set.add(createControl("B"))).isTrue();
+        assertThat(set.add(createControl("B"))).isFalse();
+        assertThat(set.add(createControl("B"))).isFalse();
+        assertThat(set.add(createControl("A"))).isFalse();
+        assertThat(set.get().length).isEqualTo(2);
     }
 
     @Test
@@ -89,28 +89,28 @@ public class AppenderControlArraySetTest {
         set.add(createControl("B"));
         set.add(createControl("C"));
         set.add(createControl("D"));
-        assertEquals(4, set.get().length);
+        assertThat(set.get().length).isEqualTo(4);
 
         set.remove("B");
-        assertEquals(3, set.get().length);
+        assertThat(set.get().length).isEqualTo(3);
         final AppenderControl[] three = set.get();
-        assertEquals("A", three[0].getAppenderName());
-        assertEquals("C", three[1].getAppenderName());
-        assertEquals("D", three[2].getAppenderName());
+        assertThat(three[0].getAppenderName()).isEqualTo("A");
+        assertThat(three[1].getAppenderName()).isEqualTo("C");
+        assertThat(three[2].getAppenderName()).isEqualTo("D");
 
         set.remove("C");
-        assertEquals(2, set.get().length);
+        assertThat(set.get().length).isEqualTo(2);
         final AppenderControl[] two = set.get();
-        assertEquals("A", two[0].getAppenderName());
-        assertEquals("D", two[1].getAppenderName());
+        assertThat(two[0].getAppenderName()).isEqualTo("A");
+        assertThat(two[1].getAppenderName()).isEqualTo("D");
 
         set.remove("A");
-        assertEquals(1, set.get().length);
+        assertThat(set.get().length).isEqualTo(1);
         final AppenderControl[] one = set.get();
-        assertEquals("D", one[0].getAppenderName());
+        assertThat(one[0].getAppenderName()).isEqualTo("D");
 
         set.remove("D");
-        assertTrue(set.isEmpty());
+        assertThat(set.isEmpty()).isTrue();
     }
 
     @Test
@@ -121,13 +121,13 @@ public class AppenderControlArraySetTest {
         for (final AppenderControl ctl : controls) {
             set.add(ctl);
         }
-        assertEquals(controls.length, set.get().length);
+        assertThat(set.get().length).isEqualTo(controls.length);
 
         final AppenderControl b = set.remove("B");
-        assertSame(controls[1], b);
+        assertThat(b).isSameAs(controls[1]);
 
         final AppenderControl c = set.remove("C");
-        assertSame(controls[2], c);
+        assertThat(c).isSameAs(controls[2]);
     }
 
     @Test
@@ -142,7 +142,7 @@ public class AppenderControlArraySetTest {
         for (final AppenderControl ctl : controls) {
             expected.put(ctl.getAppenderName(), ctl.getAppender());
         }
-        assertEquals(expected, set.asMap());
+        assertThat(set.asMap()).isEqualTo(expected);
     }
 
     @Test
@@ -151,10 +151,10 @@ public class AppenderControlArraySetTest {
         set.add(createControl("A"));
         set.add(createControl("B"));
         set.add(createControl("C"));
-        assertFalse(set.isEmpty());
+        assertThat(set.isEmpty()).isFalse();
 
         set.clear();
-        assertTrue(set.isEmpty());
+        assertThat(set.isEmpty()).isTrue();
     }
 
     @Test
@@ -165,16 +165,16 @@ public class AppenderControlArraySetTest {
         for (final AppenderControl ctl : controls) {
             set.add(ctl);
         }
-        assertEquals(3, set.get().length);
+        assertThat(set.get().length).isEqualTo(3);
         final AppenderControl[] previous = set.clear();
-        assertArrayEquals(previous, controls);
+        assertThat(controls).isEqualTo(previous);
     }
 
     @Test
     public void testIsEmptyMeansZeroLengthArray() throws Exception {
         final AppenderControlArraySet set = new AppenderControlArraySet();
-        assertTrue(set.isEmpty());
-        assertEquals(0, set.get().length);
+        assertThat(set.isEmpty()).isTrue();
+        assertThat(set.get().length).isEqualTo(0);
     }
 
     @Test
@@ -185,7 +185,7 @@ public class AppenderControlArraySetTest {
         for (final AppenderControl ctl : controls) {
             set.add(ctl);
         }
-        assertEquals(3, set.get().length);
-        assertArrayEquals(controls, set.get());
+        assertThat(set.get().length).isEqualTo(3);
+        assertThat(set.get()).isEqualTo(controls);
     }
 }

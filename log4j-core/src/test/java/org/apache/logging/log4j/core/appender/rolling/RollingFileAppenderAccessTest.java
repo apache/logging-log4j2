@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.io.IOException;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -50,8 +51,8 @@ public class RollingFileAppenderAccessTest {
             final RollingFileManager manager = appender.getManager();
             // Since the RolloverStrategy and TriggeringPolicy are immutable, we could also use generics to type their
             // access.
-            Assert.assertNotNull(manager.getRolloverStrategy());
-            Assert.assertNotNull(manager.getTriggeringPolicy());
+            assertThat(manager.getRolloverStrategy()).isNotNull();
+            assertThat(manager.<TriggeringPolicy>getTriggeringPolicy()).isNotNull();
         }
     }
 
@@ -78,8 +79,8 @@ public class RollingFileAppenderAccessTest {
             final RollingFileManager manager = appender.getManager();
             // Since the RolloverStrategy and TriggeringPolicy are immutable, we could also use generics to type their
             // access.
-            Assert.assertNotNull(manager.getRolloverStrategy());
-            Assert.assertNotNull(manager.getTriggeringPolicy());
+            assertThat(manager.getRolloverStrategy()).isNotNull();
+            assertThat(manager.<TriggeringPolicy>getTriggeringPolicy()).isNotNull();
         }
     }
 }

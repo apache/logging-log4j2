@@ -17,14 +17,15 @@
 
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ReliabilityStrategyTest {
 
@@ -41,11 +42,11 @@ class ReliabilityStrategyTest {
     @Test
     @LoggerContextSource("ReliabilityStrategyTest.xml")
     void beforeStopAppendersCalledBeforeAsyncAppendersStopped(@Named final AsyncAppender async, final Configuration config) {
-        assertTrue(async.isStarted());
+        assertThat(async.isStarted()).isTrue();
         final MockReliabilityStrategy reliabilityStrategy =
                 (MockReliabilityStrategy) config.getRootLogger().getReliabilityStrategy();
         config.stop();
-        assertTrue(async.isStopped());
+        assertThat(async.isStopped()).isTrue();
         reliabilityStrategy.rethrowAssertionErrors();
     }
 }

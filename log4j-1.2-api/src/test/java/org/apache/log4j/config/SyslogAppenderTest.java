@@ -16,6 +16,13 @@
  */
 package org.apache.log4j.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServer;
@@ -24,13 +31,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
 
 
 /**
@@ -70,8 +70,8 @@ public class SyslogAppenderTest {
                 break;
             }
         }
-        assertNotNull("No messages received", messages);
-        assertEquals("Sent message not detected", 1, messages.size());
+        assertThat(messages).describedAs("No messages received").isNotNull();
+        assertThat(messages.size()).describedAs("Sent message not detected").isEqualTo(1);
     }
 
 

@@ -16,6 +16,16 @@
  */
 package org.apache.log4j.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -23,22 +33,12 @@ import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.junit.Test;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test configuration from XML.
@@ -51,11 +51,11 @@ public class XmlConfigurationTest {
         Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");
-        assertTrue("File A1 was not created", file.exists());
-        assertTrue("File A1 is empty", file.length() > 0);
+        assertThat(file.exists()).describedAs("File A1 was not created").isTrue();
+        assertThat(file.length() > 0).describedAs("File A1 is empty").isTrue();
         file = new File("target/temp.A2");
-        assertTrue("File A2 was not created", file.exists());
-        assertTrue("File A2 is empty", file.length() > 0);
+        assertThat(file.exists()).describedAs("File A2 was not created").isTrue();
+        assertThat(file.length() > 0).describedAs("File A2 is empty").isTrue();
     }
 
     @Test
@@ -74,12 +74,12 @@ public class XmlConfigurationTest {
                 eventAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
             }
         }
-        assertNotNull("No Event Appender", eventAppender);
-        assertNotNull("No Message Appender", messageAppender);
+        assertThat(eventAppender).describedAs("No Event Appender").isNotNull();
+        assertThat(messageAppender).describedAs("No Message Appender").isNotNull();
         List<LoggingEvent> events = eventAppender.getEvents();
-        assertTrue("No events", events != null && events.size() > 0);
+        assertThat(events != null && events.size() > 0).describedAs("No events").isTrue();
         List<String> messages = messageAppender.getMessages();
-        assertTrue("No messages", messages != null && messages.size() > 0);
+        assertThat(messages != null && messages.size() > 0).describedAs("No messages").isTrue();
     }
 
     private LoggerContext configure(String configLocation) throws Exception {
@@ -89,7 +89,7 @@ public class XmlConfigurationTest {
         LoggerContextFactory factory = org.apache.logging.log4j.LogManager.getFactory();
         LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
         Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
-        assertNotNull("No configuration created", configuration);
+        assertThat(configuration).describedAs("No configuration created").isNotNull();
         Configurator.reconfigure(configuration);
         return context;
     }

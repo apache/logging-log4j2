@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
@@ -26,14 +29,11 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.condition.OS;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test the WatchManager
@@ -69,7 +69,7 @@ public class WatchManagerTest {
             Files.copy(source, Paths.get(targetFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
             Thread.sleep(1000);
             final File f = queue.poll(1, TimeUnit.SECONDS);
-            assertNotNull(f, "File change not detected");
+            assertThat(f).describedAs("File change not detected").isNotNull();
         } finally {
             watchManager.stop();
             scheduler.stop();
@@ -102,7 +102,7 @@ public class WatchManagerTest {
             watchManager.start();
             Thread.sleep(1000);
             final File f = queue.poll(1, TimeUnit.SECONDS);
-            assertNull(f, "File change detected");
+            assertThat(f).describedAs("File change detected").isNull();
         } finally {
             watchManager.stop();
             scheduler.stop();
@@ -135,7 +135,7 @@ public class WatchManagerTest {
             watchManager.start();
             Thread.sleep(1000);
             final File f = queue.poll(1, TimeUnit.SECONDS);
-            assertNull(f, "File change detected");
+            assertThat(f).describedAs("File change detected").isNull();
         } finally {
             watchManager.stop();
             scheduler.stop();

@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.config.builder;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,10 +42,6 @@ import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Constants;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ConfigurationAssemblerTest {
 
@@ -78,34 +77,34 @@ public class ConfigurationAssemblerTest {
     }
 
     private void validate(final Configuration config) {
-        assertNotNull(config);
-        assertNotNull(config.getName());
-        assertFalse(config.getName().isEmpty());
-        assertNotNull(config, "No configuration created");
-        assertEquals(config.getState(), LifeCycle.State.STARTED, "Incorrect State: " + config.getState());
+        assertThat(config).isNotNull();
+        assertThat(config.getName()).isNotNull();
+        assertThat(config.getName().isEmpty()).isFalse();
+        assertThat(config).describedAs("No configuration created").isNotNull();
+        assertThat(LifeCycle.State.STARTED).describedAs("Incorrect State: " + config.getState()).isEqualTo(config.getState());
         final Map<String, Appender> appenders = config.getAppenders();
-        assertNotNull(appenders);
-        assertEquals(appenders.size(), 1, "Incorrect number of Appenders: " + appenders.size());
+        assertThat(appenders).isNotNull();
+        assertThat(1).describedAs("Incorrect number of Appenders: " + appenders.size()).isEqualTo(appenders.size());
         final ConsoleAppender consoleAppender = (ConsoleAppender)appenders.get("Stdout");
         final PatternLayout gelfLayout = (PatternLayout)consoleAppender.getLayout();
         final Map<String, LoggerConfig> loggers = config.getLoggers();
-        assertNotNull(loggers);
-        assertEquals(loggers.size(), 2, "Incorrect number of LoggerConfigs: " + loggers.size());
+        assertThat(loggers).isNotNull();
+        assertThat(2).describedAs("Incorrect number of LoggerConfigs: " + loggers.size()).isEqualTo(loggers.size());
         final LoggerConfig rootLoggerConfig = loggers.get("");
-        assertEquals(Level.ERROR, rootLoggerConfig.getLevel());
-        assertFalse(rootLoggerConfig.isIncludeLocation());
+        assertThat(rootLoggerConfig.getLevel()).isEqualTo(Level.ERROR);
+        assertThat(rootLoggerConfig.isIncludeLocation()).isFalse();
         final LoggerConfig loggerConfig = loggers.get("org.apache.logging.log4j");
-        assertEquals(Level.DEBUG, loggerConfig.getLevel());
-        assertTrue(loggerConfig.isIncludeLocation());
+        assertThat(loggerConfig.getLevel()).isEqualTo(Level.DEBUG);
+        assertThat(loggerConfig.isIncludeLocation()).isTrue();
         final Filter filter = config.getFilter();
-        assertNotNull(filter, "No Filter");
-        assertThat(filter, instanceOf(ThresholdFilter.class));
+        assertThat(filter).describedAs("No Filter").isNotNull();
+        assertThat(filter).isInstanceOf(ThresholdFilter.class);
         final List<CustomLevelConfig> customLevels = config.getCustomLevels();
-        assertNotNull(filter, "No CustomLevels");
-        assertEquals(1, customLevels.size());
+        assertThat(filter).describedAs("No CustomLevels").isNotNull();
+        assertThat(customLevels.size()).isEqualTo(1);
         final CustomLevelConfig customLevel = customLevels.get(0);
-        assertEquals("Panic", customLevel.getLevelName());
-        assertEquals(17, customLevel.getIntLevel());
+        assertThat(customLevel.getLevelName()).isEqualTo("Panic");
+        assertThat(customLevel.getIntLevel()).isEqualTo(17);
         final Logger logger = LogManager.getLogger(getClass());
         logger.info("Welcome to Log4j!");
     }

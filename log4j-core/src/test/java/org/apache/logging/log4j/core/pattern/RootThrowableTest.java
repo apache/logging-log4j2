@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("log4j-rootthrowablefilter.xml")
 public class RootThrowableTest {
@@ -37,8 +37,8 @@ public class RootThrowableTest {
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         logger.error("Exception", parent);
         final List<String> msgs = app.getMessages();
-        assertNotNull(msgs);
-        assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
+        assertThat(msgs).isNotNull();
+        assertThat(msgs.size()).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).isEqualTo(1);
         assertTrue(msgs.get(0).contains("suppressed"), "No suppressed lines");
         app.clear();
     }

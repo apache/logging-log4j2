@@ -15,15 +15,15 @@ package org.apache.logging.log4j.core.config;/*
  * limitations under the license.
  */
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for LOG4J2-1313
@@ -38,8 +38,8 @@ public class PropertyTest {
         logger.info("msg");
 
         final List<String> messages = app.getMessages();
-        assertNotNull(messages, "No Messages");
-        assertEquals(1, messages.size(), "message count" + messages);
+        assertThat(messages).describedAs("No Messages").isNotNull();
+        assertThat(messages.size()).describedAs("message count" + messages).isEqualTo(1);
 
         //<Property name="emptyElementKey" />
         //<Property name="emptyAttributeKey" value="" />
@@ -55,13 +55,13 @@ public class PropertyTest {
                 ",3=attributeValue" + // ${sys:attributeKey}
                 ",4=attributeValue2" + // ${sys:attributeWithEmptyElementKey}
                 ",5=elementValue3,m=msg"; // ${sys:bothElementAndAttributeKey}
-        assertEquals(expect, messages.get(0));
+        assertThat(messages.get(0)).isEqualTo(expect);
         app.clear();
     }
 
     @Test
     public void testNullValueIsConvertedToEmptyString() { // LOG4J2-1313 <Property name="x" /> support
-        assertEquals("", Property.createProperty("name", null).getValue());
+        assertThat(Property.createProperty("name", null).getValue()).isEqualTo("");
     }
 
     @Test

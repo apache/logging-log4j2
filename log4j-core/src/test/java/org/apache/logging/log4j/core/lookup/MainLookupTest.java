@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests MainLookup.
@@ -39,18 +39,18 @@ public class MainLookupTest {
         StrSubstitutor substitutor = new StrSubstitutor(lookup);
         String replacedValue = substitutor.replace(null, str);
         String[] values = replacedValue.split(" ");
-        assertEquals("value", values[0], "Item 0 is incorrect ");
-        assertEquals("1", values[1], "Item 1 is incorrect ");
-        assertEquals("--file", values[2], "Item 2 is incorrect");
-        assertEquals("foo.txt", values[3], "Item 3 is incorrect");
-        assertEquals("--verbose", values[4], "Item 4 is incorrect");
-        assertEquals("-x", values[5], "Item 5 is incorrect");
-        assertEquals("bar", values[6], "Iten 6 is incorrect");
-        assertEquals("foo.txt", values[7], "Item 7 is incorrect");
-        assertEquals("--verbose", values[8], "Item 8 is incorrect");
-        assertEquals("-x", values[9], "Item 9 is incorrect");
-        assertEquals("bar", values[10], "Item 10 is incorrect");
-        assertEquals("default_bar_value", values[11], "Item 11 is incorrect");
-        assertEquals("true", values[12], "Item 12 is incorrect");
+        assertThat(values[0]).describedAs("Item 0 is incorrect ").isEqualTo("value");
+        assertThat(values[1]).describedAs("Item 1 is incorrect ").isEqualTo("1");
+        assertThat(values[2]).describedAs("Item 2 is incorrect").isEqualTo("--file");
+        assertThat(values[3]).describedAs("Item 3 is incorrect").isEqualTo("foo.txt");
+        assertThat(values[4]).describedAs("Item 4 is incorrect").isEqualTo("--verbose");
+        assertThat(values[5]).describedAs("Item 5 is incorrect").isEqualTo("-x");
+        assertThat(values[6]).describedAs("Iten 6 is incorrect").isEqualTo("bar");
+        assertThat(values[7]).describedAs("Item 7 is incorrect").isEqualTo("foo.txt");
+        assertThat(values[8]).describedAs("Item 8 is incorrect").isEqualTo("--verbose");
+        assertThat(values[9]).describedAs("Item 9 is incorrect").isEqualTo("-x");
+        assertThat(values[10]).describedAs("Item 10 is incorrect").isEqualTo("bar");
+        assertThat(values[11]).describedAs("Item 11 is incorrect").isEqualTo("default_bar_value");
+        assertThat(values[12]).describedAs("Item 12 is incorrect").isEqualTo("true");
     }
 }

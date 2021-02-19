@@ -16,13 +16,18 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.time.ClockFactoryTest;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
@@ -31,11 +36,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Confirms that if you log a {@link TimestampMessage} then there are no unnecessary calls to {@link Clock}.
@@ -67,10 +67,10 @@ public class TimestampMessageTest {
         final Logger log = context.getLogger("TimestampMessageTest");
         log.info((Message) new TimeMsg("Message with embedded timestamp", 123456789000L));
         final List<String> msgs = app.getMessages();
-        assertNotNull(msgs);
-        assertEquals(1, msgs.size());
+        assertThat(msgs).isNotNull();
+        assertThat(msgs.size()).isEqualTo(1);
         final String NL = System.lineSeparator();
-        assertEquals("123456789000 Message with embedded timestamp" + NL, msgs.get(0));
+        assertThat(msgs.get(0)).isEqualTo("123456789000 Message with embedded timestamp" + NL);
     }
 
     public static class PoisonClock implements Clock {
