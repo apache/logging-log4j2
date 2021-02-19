@@ -80,7 +80,7 @@ public class SimplePerfTest {
         }
         timer.stop();
         System.out.println(timer.toString());
-        assertThat(maxTime > timer.getElapsedNanoTime()).describedAs("Timer exceeded max time of " + maxTime).isTrue();
+        assertThat(maxTime).describedAs("Timer exceeded max time of " + maxTime).isGreaterThan(timer.getElapsedNanoTime());
     }
 
     @Test
@@ -93,7 +93,7 @@ public class SimplePerfTest {
         }
         timer.stop();
         System.out.println(timer.toString());
-        assertThat(maxTime > timer.getElapsedNanoTime()).describedAs("Timer exceeded max time of " + maxTime).isTrue();
+        assertThat(maxTime).describedAs("Timer exceeded max time of " + maxTime).isGreaterThan(timer.getElapsedNanoTime());
     }
 
     @Test
@@ -107,7 +107,7 @@ public class SimplePerfTest {
         }
         timer.stop();
         System.out.println(timer.toString());
-        assertThat(maxTime > timer.getElapsedNanoTime()).describedAs("Timer exceeded max time of " + maxTime).isTrue();
+        assertThat(maxTime).describedAs("Timer exceeded max time of " + maxTime).isGreaterThan(timer.getElapsedNanoTime());
     }
     /*
     @Test

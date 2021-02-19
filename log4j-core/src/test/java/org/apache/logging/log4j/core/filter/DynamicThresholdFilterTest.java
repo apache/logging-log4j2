@@ -86,6 +86,6 @@ public class DynamicThresholdFilterTest {
         assertThat(key).describedAs("Incorrect key value").isEqualTo("loginId");
         final Map<String, Level> map = dynamic.getLevelMap();
         assertThat(map).describedAs("Map is null").isNotNull();
-        assertThat(map.size()).describedAs("Incorrect number of map elements").isEqualTo(1);
+        assertThat(map).describedAs("Incorrect number of map elements").hasSize(1);
     }
 }

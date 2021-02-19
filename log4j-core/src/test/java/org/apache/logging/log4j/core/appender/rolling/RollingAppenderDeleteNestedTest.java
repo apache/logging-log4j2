@@ -70,7 +70,7 @@ public class RollingAppenderDeleteNestedTest {
 
         final File dir = new File(DIR);
         assertThat(dir.exists()).describedAs("Dir " + DIR + " should exist").isTrue();
-        assertThat(dir.listFiles().length > 0).describedAs("Dir " + DIR + " should contain files").isTrue();
+        assertThat(dir.listFiles()).describedAs("Dir " + DIR + " should contain files").hasSizeGreaterThan(0);
 
         final File[] files = dir.listFiles();
         for (final File file : files) {
@@ -79,7 +79,7 @@ public class RollingAppenderDeleteNestedTest {
         }
         
         final List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
-        assertThat(files.length).describedAs(Arrays.toString(files)).isEqualTo(expected.size() + 3);
+        assertThat(files).describedAs(Arrays.toString(files)).hasSize(expected.size() + 3);
         for (final File file : files) {
             if (!expected.contains(file.getName()) && !file.getName().startsWith("test-")) {
                 fail("unexpected file" + file);

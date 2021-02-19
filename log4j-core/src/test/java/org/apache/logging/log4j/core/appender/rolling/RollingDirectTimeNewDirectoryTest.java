@@ -67,15 +67,16 @@ public class RollingDirectTimeNewDirectoryTest {
         try {
 
             final int minExpectedLogFolderCount = 2;
-            assertThat(logFolders.length >= minExpectedLogFolderCount).describedAs("was expecting at least " + minExpectedLogFolderCount + " folders, " +
-                            "found " + logFolders.length).isTrue();
+            assertThat(logFolders).describedAs("was expecting at least " + minExpectedLogFolderCount + " folders, " +
+                            "found " + logFolders.length).hasSizeGreaterThanOrEqualTo(minExpectedLogFolderCount);
 
             for (File logFolder : logFolders) {
                 File[] logFiles = logFolder.listFiles();
                 if (logFiles != null) {
                     Arrays.sort(logFiles);
                 }
-                assertThat(logFiles != null && logFiles.length > 0).describedAs("empty folder: " + logFolder).isTrue();
+                assertThat(logFiles != null).describedAs("empty folder: " + logFolder).isTrue();
+assertThat(logFiles).describedAs("empty folder: " + logFolder).hasSizeGreaterThan(0);
             }
 
         } catch (AssertionError error) {

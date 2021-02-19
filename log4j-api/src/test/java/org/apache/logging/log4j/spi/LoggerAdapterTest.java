@@ -137,12 +137,12 @@ public class LoggerAdapterTest {
             LoggerContext lc = adapter.getContext(Integer.toString(i));
             lc.getLogger(Integer.toString(i));
         }
-        assertThat(adapter.registry.size()).describedAs("Expected 5 LoggerContexts").isEqualTo(5);
+        assertThat(adapter.registry).describedAs("Expected 5 LoggerContexts").hasSize(5);
         Set<LoggerContext> contexts = new HashSet<>(adapter.registry.keySet());
         for (LoggerContext context : contexts) {
             ((TestLoggerContext2) context).shutdown();
         }
-        assertThat(adapter.registry.size()).describedAs("Expected 0 LoggerContexts").isEqualTo(0);
+        assertThat(adapter.registry).describedAs("Expected 0 LoggerContexts").hasSize(0);
     }
 
 
@@ -180,7 +180,7 @@ public class LoggerAdapterTest {
             final Map<String, Logger> resultMap1 = instances[i].getResultMap();
             final Map<String, Logger> resultMap2 = instances[i + 1].getResultMap();
             assertThat(resultMap2).describedAs("not the same map for instances" + i + " and " + (i + 1) + ":").isSameAs(resultMap1);
-            assertThat(resultMap1.size()).isEqualTo(2);
+            assertThat(resultMap1).hasSize(2);
         }
     }
 }

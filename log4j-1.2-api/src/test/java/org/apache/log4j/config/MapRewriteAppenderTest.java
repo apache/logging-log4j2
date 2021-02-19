@@ -71,7 +71,8 @@ public class MapRewriteAppenderTest {
         }
         assertThat(eventAppender).describedAs("No Event Appender").isNotNull();
         List<LoggingEvent> events = eventAppender.getEvents();
-        assertThat(events != null && events.size() > 0).describedAs("No events").isTrue();
+        assertThat(events != null).describedAs("No events").isTrue();
+assertThat(events).describedAs("No events").hasSizeGreaterThan(0);
         assertThat(events.get(0).getProperties()).describedAs("No properties in the event").isNotNull();
         assertThat(events.get(0).getProperties().containsKey("hello")).describedAs("Key was not inserted").isTrue();
         assertThat(events.get(0).getProperties().get("hello")).describedAs("Key value is incorrect").isEqualTo("world");

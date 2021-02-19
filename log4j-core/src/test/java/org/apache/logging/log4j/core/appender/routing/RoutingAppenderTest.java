@@ -65,7 +65,7 @@ public class RoutingAppenderTest {
         EventLogger.logEvent(msg);
         final List<LogEvent> list = app.getEvents();
         assertThat(list).describedAs("No events generated").isNotNull();
-        assertThat(list.size() == 1).describedAs("Incorrect number of events. Expected 1, got " + list.size()).isTrue();
+        assertThat(list).describedAs("Incorrect number of events. Expected 1, got " + list.size()).hasSize(1);
         msg = new StructuredDataMessage("Test", "This is a test", "Alert");
         EventLogger.logEvent(msg);
         File file = new File(ALERT_LOG_FILE);

@@ -88,7 +88,7 @@ public class AsyncLoggerTestNanoTime {
         assertThat(line1Parts[2]).isEqualTo("Use actual System.nanoTime()");
         assertThat(line1Parts[1]).isEqualTo(line1Parts[0]);
         final long loggedNanoTime = Long.parseLong(line1Parts[0]);
-        assertThat(loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1)).describedAs("used system nano time").isTrue();
+        assertThat(loggedNanoTime - before).describedAs("used system nano time").isLessThan(TimeUnit.SECONDS.toNanos(1));
 
         final String[] line2Parts = line2.split(" AND ");
         assertThat(line2Parts[2]).isEqualTo("Use dummy nano clock");

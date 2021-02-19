@@ -63,7 +63,7 @@ public class LoggerTest {
         logger.atDebug().withLocation().log("Hello");
         logger.atError().withMarker(marker).log("Hello {}", "John");
         logger.atWarn().withThrowable(new Throwable("This is a test")).log((Message) new SimpleMessage("Log4j rocks!"));
-        assertThat(results.size()).isEqualTo(3);
+        assertThat(results).hasSize(3);
         assertThat(results.get(0)).describedAs("Incorrect message 1").isEqualTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:64) Hello");
         assertThat(results.get(1)).describedAs("Incorrect message 2").isEqualTo("test ERROR Hello John");
         assertThat(results.get(2)).describedAs("Incorrect message 3").startsWith(" WARN Log4j rocks! java.lang.Throwable: This is a test");
@@ -74,7 +74,7 @@ public class LoggerTest {
     public void basicFlow() {
         logger.traceEntry();
         logger.traceExit();
-        assertThat(results.size()).isEqualTo(2);
+        assertThat(results).hasSize(2);
         assertThat(results.get(0)).describedAs("Incorrect Entry").isEqualTo("ENTER[ FLOW ] TRACE Enter");
         assertThat(results.get(1)).describedAs("incorrect Exit").isEqualTo("EXIT[ FLOW ] TRACE Exit");
 
@@ -87,7 +87,7 @@ public class LoggerTest {
         logger.traceEntry(new JsonMessage(props));
         final Response response = new Response(-1, "Generic error");
         logger.traceExit(new JsonMessage(response),  response);
-        assertThat(results.size()).isEqualTo(2);
+        assertThat(results).hasSize(2);
         assertThat(results.get(0)).describedAs("Incorrect Entry").startsWith("ENTER[ FLOW ] TRACE Enter");
         assertThat(results.get(0)).describedAs("Missing entry data").contains("\"foo\":\"bar\"");
         assertThat(results.get(1)).describedAs("incorrect Exit").startsWith("EXIT[ FLOW ] TRACE Exit");
@@ -98,7 +98,7 @@ public class LoggerTest {
     public void flowTracingString_ObjectArray1() {
         logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit("doFoo(a=1, b=2): {}", 3);
-        assertThat(results.size()).isEqualTo(2);
+        assertThat(results).hasSize(2);
         assertThat(results.get(0)).describedAs("Incorrect Entry").startsWith("ENTER[ FLOW ] TRACE Enter");
         assertThat(results.get(0)).describedAs("Missing entry data").contains("doFoo(a=1, b=2)");
         assertThat(results.get(1)).describedAs("Incorrect Exit").startsWith("EXIT[ FLOW ] TRACE Exit");
@@ -109,7 +109,7 @@ public class LoggerTest {
     public void flowTracingExitValueOnly() {
         logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(3);
-        assertThat(results.size()).isEqualTo(2);
+        assertThat(results).hasSize(2);
         assertThat(results.get(0)).describedAs("Incorrect Entry").startsWith("ENTER[ FLOW ] TRACE Enter");
         assertThat(results.get(0)).describedAs("Missing entry data").contains("doFoo(a=1, b=2)");
         assertThat(results.get(1)).describedAs("Incorrect Exit").startsWith("EXIT[ FLOW ] TRACE Exit");
@@ -120,7 +120,7 @@ public class LoggerTest {
     public void flowTracingString_ObjectArray2() {
         final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(msg, 3);
-        assertThat(results.size()).isEqualTo(2);
+        assertThat(results).hasSize(2);
         assertThat(results.get(0)).describedAs("Incorrect Entry").startsWith("ENTER[ FLOW ] TRACE Enter");
         assertThat(results.get(0)).describedAs("Missing entry data").contains("doFoo(a=1, b=2)");
         assertThat(results.get(1)).describedAs("Incorrect Exit").startsWith("EXIT[ FLOW ] TRACE Exit");
@@ -131,7 +131,7 @@ public class LoggerTest {
     public void flowTracingVoidReturn() {
         final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(msg);
-        assertThat(results.size()).isEqualTo(2);
+        assertThat(results).hasSize(2);
         assertThat(results.get(0)).describedAs("Incorrect Entry").startsWith("ENTER[ FLOW ] TRACE Enter");
         assertThat(results.get(0)).describedAs("Missing entry data").contains("doFoo(a=1, b=2)");
         assertThat(results.get(1)).describedAs("Incorrect Exit").startsWith("EXIT[ FLOW ] TRACE Exit");
@@ -142,7 +142,7 @@ public class LoggerTest {
     public void flowTracingNoExitArgs() {
         logger.traceEntry();
         logger.traceExit();
-        assertThat(results.size()).isEqualTo(2);
+        assertThat(results).hasSize(2);
         assertThat(results.get(0)).describedAs("Incorrect Entry").startsWith("ENTER[ FLOW ] TRACE Enter");
         assertThat(results.get(1)).describedAs("Incorrect Exit").startsWith("EXIT[ FLOW ] TRACE Exit");
     }
@@ -151,7 +151,7 @@ public class LoggerTest {
     public void flowTracingNoArgs() {
         final EntryMessage message = logger.traceEntry();
         logger.traceExit(message);
-        assertThat(results.size()).isEqualTo(2);
+        assertThat(results).hasSize(2);
         assertThat(results.get(0)).describedAs("Incorrect Entry").startsWith("ENTER[ FLOW ] TRACE Enter");
         assertThat(results.get(1)).describedAs("Incorrect Exit").startsWith("EXIT[ FLOW ] TRACE Exit");
     }
@@ -170,7 +170,7 @@ public class LoggerTest {
             }
         });
         logger.traceExit(msg, 3);
-        assertThat(results.size()).isEqualTo(2);
+        assertThat(results).hasSize(2);
         assertThat(results.get(0)).describedAs("Incorrect Entry").startsWith("ENTER[ FLOW ] TRACE Enter");
         assertThat(results.get(0)).describedAs("Missing entry data").contains("doFoo(a=1, b=2)");
         assertThat(results.get(1)).describedAs("Incorrect Exit").startsWith("EXIT[ FLOW ] TRACE Exit");
@@ -191,7 +191,7 @@ public class LoggerTest {
             }
         });
         logger.traceExit(msg, 3);
-        assertThat(results.size()).isEqualTo(2);
+        assertThat(results).hasSize(2);
         assertThat(results.get(0)).describedAs("Incorrect Entry").startsWith("ENTER[ FLOW ] TRACE Enter");
         assertThat(results.get(0)).describedAs("Missing entry data").contains("doFoo(a=1, b=2)");
         assertThat(results.get(1)).describedAs("Incorrect Exit").startsWith("EXIT[ FLOW ] TRACE Exit");
@@ -204,7 +204,7 @@ public class LoggerTest {
             throw new NullPointerException();
         } catch (final Exception e) {
             logger.catching(e);
-            assertThat(results.size()).isEqualTo(1);
+            assertThat(results).hasSize(1);
             assertThat(results.get(0)).describedAs("Incorrect Catching").startsWith("CATCHING[ EXCEPTION ] ERROR Catching java.lang.NullPointerException");
         }
     }
@@ -212,28 +212,28 @@ public class LoggerTest {
     @Test
     public void debug() {
         logger.debug("Debug message");
-        assertThat(results.size()).isEqualTo(1);
+        assertThat(results).hasSize(1);
         assertTrue(results.get(0).startsWith(" DEBUG Debug message"), "Incorrect message");
     }
 
     @Test
     public void debugObject() {
         logger.debug(new Date());
-        assertThat(results.size()).isEqualTo(1);
+        assertThat(results).hasSize(1);
         assertTrue(results.get(0).length() > 7, "Invalid length");
     }
 
     @Test
     public void debugWithParms() {
         logger.debug("Hello, {}", "World");
-        assertThat(results.size()).isEqualTo(1);
+        assertThat(results).hasSize(1);
         assertTrue(results.get(0).startsWith(" DEBUG Hello, World"), "Incorrect substitution");
     }
 
     @Test
     public void debugWithParmsAndThrowable() {
         logger.debug("Hello, {}", "World", new RuntimeException("Test Exception"));
-        assertThat(results.size()).isEqualTo(1);
+        assertThat(results).hasSize(1);
         assertTrue(
                 results.get(0).startsWith(" DEBUG Hello, World java.lang.RuntimeException: Test Exception"),
                 "Unexpected results: " + results.get(0));
@@ -250,7 +250,7 @@ public class LoggerTest {
         assertMessageFactoryInstanceOf(testLogger.getMessageFactory(), StringFormatterMessageFactory.class);
         assertEqualMessageFactory(StringFormatterMessageFactory.INSTANCE, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
-        assertThat(testLogger.getEntries().size()).isEqualTo(1);
+        assertThat(testLogger.getEntries()).hasSize(1);
         assertThat(testLogger.getEntries().get(0)).isEqualTo(String.format(" DEBUG %,d", Integer.MAX_VALUE));
     }
 
@@ -263,7 +263,7 @@ public class LoggerTest {
         assertMessageFactoryInstanceOf(testLogger.getMessageFactory(), StringFormatterMessageFactory.class);
         assertEqualMessageFactory(StringFormatterMessageFactory.INSTANCE, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
-        assertThat(testLogger.getEntries().size()).isEqualTo(1);
+        assertThat(testLogger.getEntries()).hasSize(1);
         assertThat(testLogger.getEntries().get(0)).isEqualTo(String.format(" DEBUG %,d", Integer.MAX_VALUE));
     }
 
@@ -280,7 +280,7 @@ public class LoggerTest {
         assertMessageFactoryInstanceOf(testLogger.getMessageFactory(), StringFormatterMessageFactory.class);
         assertEqualMessageFactory(StringFormatterMessageFactory.INSTANCE, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
-        assertThat(testLogger.getEntries().size()).isEqualTo(1);
+        assertThat(testLogger.getEntries()).hasSize(1);
         assertThat(testLogger.getEntries().get(0)).isEqualTo(String.format(" DEBUG %,d", Integer.MAX_VALUE));
     }
 
@@ -292,7 +292,7 @@ public class LoggerTest {
         assertMessageFactoryInstanceOf(testLogger.getMessageFactory(), StringFormatterMessageFactory.class);
         assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
-        assertThat(testLogger.getEntries().size()).isEqualTo(1);
+        assertThat(testLogger.getEntries()).hasSize(1);
         assertThat(testLogger.getEntries().get(0)).isEqualTo(String.format(" DEBUG %,d", Integer.MAX_VALUE));
     }
 
@@ -306,7 +306,7 @@ public class LoggerTest {
         assertThat(testLogger).isNotNull();
         assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
-        assertThat(testLogger.getEntries().size()).isEqualTo(1);
+        assertThat(testLogger.getEntries()).hasSize(1);
         assertThat(testLogger.getEntries().get(0)).isEqualTo(" DEBUG " + Integer.MAX_VALUE);
     }
 
@@ -319,7 +319,7 @@ public class LoggerTest {
         assertThat(testLogger).isNotNull();
         assertEqualMessageFactory(StringFormatterMessageFactory.INSTANCE, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
-        assertThat(testLogger.getEntries().size()).isEqualTo(1);
+        assertThat(testLogger.getEntries()).hasSize(1);
         assertThat(testLogger.getEntries().get(0)).isEqualTo(String.format(" DEBUG %,d", Integer.MAX_VALUE));
     }
 
@@ -333,7 +333,7 @@ public class LoggerTest {
         assertThat(testLogger).isNotNull();
         assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
-        assertThat(testLogger.getEntries().size()).isEqualTo(1);
+        assertThat(testLogger.getEntries()).hasSize(1);
         assertThat(testLogger.getEntries().get(0)).isEqualTo(" DEBUG " + Integer.MAX_VALUE);
     }
 
@@ -352,7 +352,7 @@ public class LoggerTest {
         assertThat(testLogger).isNotNull();
         assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
-        assertThat(testLogger.getEntries().size()).isEqualTo(1);
+        assertThat(testLogger.getEntries()).hasSize(1);
         assertThat(testLogger.getEntries().get(0)).isEqualTo(String.format(" DEBUG %,d", Integer.MAX_VALUE));
     }
 
@@ -370,7 +370,7 @@ public class LoggerTest {
         //This test context always creates new loggers, other test context impls I tried fail other tests.
         //assertEquals(messageFactory, testLogger2.getMessageFactory());
         testLogger.debug("%,d", Integer.MAX_VALUE);
-        assertThat(testLogger.getEntries().size()).isEqualTo(1);
+        assertThat(testLogger.getEntries()).hasSize(1);
         assertThat(testLogger.getEntries().get(0)).isEqualTo(String.format(" DEBUG %,d", Integer.MAX_VALUE));
     }
 
@@ -382,7 +382,7 @@ public class LoggerTest {
         assertThat(testLogger).isNotNull();
         assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{}", Integer.MAX_VALUE);
-        assertThat(testLogger.getEntries().size()).isEqualTo(1);
+        assertThat(testLogger.getEntries()).hasSize(1);
         assertThat(testLogger.getEntries().get(0)).isEqualTo(" DEBUG " + Integer.MAX_VALUE);
     }
 
@@ -394,7 +394,7 @@ public class LoggerTest {
         assertThat(testLogger).isNotNull();
         assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("{} %,d {foo}", Integer.MAX_VALUE);
-        assertThat(testLogger.getEntries().size()).isEqualTo(1);
+        assertThat(testLogger.getEntries()).hasSize(1);
         assertThat(testLogger.getEntries().get(0)).isEqualTo(" DEBUG {} %,d {foo}");
     }
 
@@ -406,7 +406,7 @@ public class LoggerTest {
         assertThat(testLogger).isNotNull();
         assertEqualMessageFactory(messageFactory, testLogger);
         testLogger.debug("%,d", Integer.MAX_VALUE);
-        assertThat(testLogger.getEntries().size()).isEqualTo(1);
+        assertThat(testLogger.getEntries()).hasSize(1);
         assertThat(testLogger.getEntries().get(0)).isEqualTo(String.format(" DEBUG %,d", Integer.MAX_VALUE));
     }
 
@@ -552,7 +552,7 @@ public class LoggerTest {
         assertThat(testYear).describedAs("Incorrect test year: " + testYear).isEqualTo("2010");
         ThreadContext.clearMap();
         logger.debug("Debug message");
-        assertThat(results.size()).isEqualTo(2);
+        assertThat(results).hasSize(2);
         System.out.println("Log line 1: " + results.get(0));
         System.out.println("log line 2: " + results.get(1));
         assertTrue(
@@ -565,7 +565,7 @@ public class LoggerTest {
     public void printf() {
         logger.printf(Level.DEBUG, "Debug message %d", 1);
         logger.printf(Level.DEBUG, MarkerManager.getMarker("Test"), "Debug message %d", 2);
-        assertThat(results.size()).isEqualTo(2);
+        assertThat(results).hasSize(2);
         assertThat(results.get(0)).describedAs("Incorrect message").startsWith(" DEBUG Debug message 1");
         assertThat(results.get(1)).describedAs("Incorrect message").startsWith("Test DEBUG Debug message 2");
     }
@@ -586,14 +586,14 @@ public class LoggerTest {
         msg.put("Amount", "200.00");
         logger.info(MarkerManager.getMarker("EVENT"), msg);
         ThreadContext.clearMap();
-        assertThat(results.size()).isEqualTo(1);
+        assertThat(results).hasSize(1);
         assertThat(results.get(0)).describedAs("Incorrect structured data: ").startsWith("EVENT INFO Transfer [Audit@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete");
     }
 
     @Test
     public void throwing() {
         logger.throwing(new IllegalArgumentException("Test Exception"));
-        assertThat(results.size()).isEqualTo(1);
+        assertThat(results).hasSize(1);
         assertThat(results.get(0)).describedAs("Incorrect Throwing").startsWith("THROWING[ EXCEPTION ] ERROR Throwing java.lang.IllegalArgumentException: Test Exception");
     }
 

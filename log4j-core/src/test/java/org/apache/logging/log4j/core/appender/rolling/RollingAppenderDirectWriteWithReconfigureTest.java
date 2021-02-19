@@ -68,9 +68,10 @@ public class RollingAppenderDirectWriteWithReconfigureTest {
             }
         }
 
-        assertThat(dir.exists() && dir.listFiles().length > 0).describedAs("Directory not created").isTrue();
+        assertThat(dir.exists()).describedAs("Directory not created").isTrue();
+assertThat(dir.listFiles()).describedAs("Directory not created").hasSizeGreaterThan(0);
         final File[] files = dir.listFiles();
         assertThat(files).isNotNull();
-        assertThat(dir.listFiles().length).isEqualTo(2);
+        assertThat(dir.listFiles()).hasSize(2);
     }
 }

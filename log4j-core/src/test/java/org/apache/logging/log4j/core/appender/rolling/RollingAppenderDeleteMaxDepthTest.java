@@ -66,11 +66,11 @@ public class RollingAppenderDeleteMaxDepthTest {
 
         final File dir = new File(DIR);
         assertThat(dir.exists()).describedAs("Dir " + DIR + " should exist").isTrue();
-        assertThat(dir.listFiles().length > 0).describedAs("Dir " + DIR + " should contain files").isTrue();
+        assertThat(dir.listFiles()).describedAs("Dir " + DIR + " should contain files").hasSizeGreaterThan(0);
 
         final File[] files = dir.listFiles();
         final List<String> expected = Arrays.asList("1", "2", "test-1.log", "test-2.log", "test-3.log");
-        assertThat(files.length).describedAs(Arrays.toString(files)).isEqualTo(expected.size());
+        assertThat(files).describedAs(Arrays.toString(files)).hasSameSizeAs(expected);
         for (final File file : files) {
             assertThat(expected.contains(file.getName())).describedAs("test-4.log should have been deleted").isTrue();
         }

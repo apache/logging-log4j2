@@ -75,8 +75,8 @@ public class XmlCompactFileAppenderTest {
         final String location = "testFlushAtEndOfBatch";
         assertThat(!line1.contains(location)).describedAs("no location").isTrue();
 
-        assertThat(line1.indexOf('\r') == -1).isTrue();
-        assertThat(line1.indexOf('\n') == -1).isTrue();
+        assertThat(line1.indexOf('\r')).isEqualTo(-1);
+        assertThat(line1.indexOf('\n')).isEqualTo(-1);
     }
 
 }

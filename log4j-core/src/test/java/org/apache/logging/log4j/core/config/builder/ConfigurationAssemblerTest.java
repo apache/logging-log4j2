@@ -84,12 +84,12 @@ public class ConfigurationAssemblerTest {
         assertThat(LifeCycle.State.STARTED).describedAs("Incorrect State: " + config.getState()).isEqualTo(config.getState());
         final Map<String, Appender> appenders = config.getAppenders();
         assertThat(appenders).isNotNull();
-        assertThat(1).describedAs("Incorrect number of Appenders: " + appenders.size()).isEqualTo(appenders.size());
+        assertThat(appenders).describedAs("Incorrect number of Appenders: " + appenders.size()).hasSize(1);
         final ConsoleAppender consoleAppender = (ConsoleAppender)appenders.get("Stdout");
         final PatternLayout gelfLayout = (PatternLayout)consoleAppender.getLayout();
         final Map<String, LoggerConfig> loggers = config.getLoggers();
         assertThat(loggers).isNotNull();
-        assertThat(2).describedAs("Incorrect number of LoggerConfigs: " + loggers.size()).isEqualTo(loggers.size());
+        assertThat(loggers).describedAs("Incorrect number of LoggerConfigs: " + loggers.size()).hasSize(2);
         final LoggerConfig rootLoggerConfig = loggers.get("");
         assertThat(rootLoggerConfig.getLevel()).isEqualTo(Level.ERROR);
         assertThat(rootLoggerConfig.isIncludeLocation()).isFalse();
@@ -101,7 +101,7 @@ public class ConfigurationAssemblerTest {
         assertThat(filter).isInstanceOf(ThresholdFilter.class);
         final List<CustomLevelConfig> customLevels = config.getCustomLevels();
         assertThat(filter).describedAs("No CustomLevels").isNotNull();
-        assertThat(customLevels.size()).isEqualTo(1);
+        assertThat(customLevels).hasSize(1);
         final CustomLevelConfig customLevel = customLevels.get(0);
         assertThat(customLevel.getLevelName()).isEqualTo("Panic");
         assertThat(customLevel.getIntLevel()).isEqualTo(17);

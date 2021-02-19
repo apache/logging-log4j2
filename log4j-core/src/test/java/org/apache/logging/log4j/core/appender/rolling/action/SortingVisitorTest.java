@@ -68,7 +68,7 @@ public class SortingVisitorTest {
 
         final List<PathWithAttributes> found = visitor.getSortedPaths();
         assertThat(found).isNotNull();
-        assertThat(found.size()).describedAs("file count").isEqualTo(3);
+        assertThat(found).describedAs("file count").hasSize(3);
         assertThat(found.get(0).getPath()).describedAs("1st: most recent; sorted=" + found).isEqualTo(ccc);
         assertThat(found.get(1).getPath()).describedAs("2nd; sorted=" + found).isEqualTo(bbb);
         assertThat(found.get(2).getPath()).describedAs("3rd: oldest; sorted=" + found).isEqualTo(aaa);
@@ -82,7 +82,7 @@ public class SortingVisitorTest {
 
         final List<PathWithAttributes> found = visitor.getSortedPaths();
         assertThat(found).isNotNull();
-        assertThat(found.size()).describedAs("file count").isEqualTo(3);
+        assertThat(found).describedAs("file count").hasSize(3);
         assertThat(found.get(0).getPath()).describedAs("1st: oldest first; sorted=" + found).isEqualTo(aaa);
         assertThat(found.get(1).getPath()).describedAs("2nd; sorted=" + found).isEqualTo(bbb);
         assertThat(found.get(2).getPath()).describedAs("3rd: most recent sorted; list=" + found).isEqualTo(ccc);

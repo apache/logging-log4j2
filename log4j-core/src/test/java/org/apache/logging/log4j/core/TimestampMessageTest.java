@@ -68,7 +68,7 @@ public class TimestampMessageTest {
         log.info((Message) new TimeMsg("Message with embedded timestamp", 123456789000L));
         final List<String> msgs = app.getMessages();
         assertThat(msgs).isNotNull();
-        assertThat(msgs.size()).isEqualTo(1);
+        assertThat(msgs).hasSize(1);
         final String NL = System.lineSeparator();
         assertThat(msgs.get(0)).isEqualTo("123456789000 Message with embedded timestamp" + NL);
     }

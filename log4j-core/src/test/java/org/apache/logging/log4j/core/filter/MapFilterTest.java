@@ -79,7 +79,7 @@ public class MapFilterTest {
         assertFalse(map.isEmpty(), "No elements in Map");
         assertThat(map.size()).describedAs("Incorrect number of elements in Map").isEqualTo(1);
         assertTrue(map.containsKey("eventId"), "Map does not contain key eventId");
-        assertThat(map.<Collection<?>>getValue("eventId").size()).describedAs("List does not contain 2 elements").isEqualTo(2);
+        assertThat(map.<Collection<?>>getValue("eventId")).describedAs("List does not contain 2 elements").hasSize(2);
         final Logger logger = LogManager.getLogger(MapFilterTest.class);
         final Map<String, String> eventMap = new HashMap<>();
         eventMap.put("eventId", "Login");

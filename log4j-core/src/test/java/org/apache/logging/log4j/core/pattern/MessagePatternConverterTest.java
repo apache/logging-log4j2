@@ -52,7 +52,7 @@ public class MessagePatternConverterTest {
                 .setMessage(null).build();
         sb = new StringBuilder();
         converter.format(event, sb);
-        assertThat(sb.length()).describedAs("Incorrect length: " + sb).isEqualTo(0);
+        assertThat(sb).describedAs("Incorrect length: " + sb).hasSize(0);
         msg = new SimpleMessage(null);
         event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
@@ -60,7 +60,7 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         sb = new StringBuilder();
         converter.format(event, sb);
-        assertThat(sb.length()).describedAs("Incorrect length: " + sb).isEqualTo(4);
+        assertThat(sb).describedAs("Incorrect length: " + sb).hasSize(4);
     }
 
     @Test
@@ -132,7 +132,7 @@ public class MessagePatternConverterTest {
                 .setMessage(null).build();
         sb = new StringBuilder();
         converter.format(event, sb);
-        assertThat(sb.length()).describedAs("Incorrect length: " + sb).isEqualTo(0);
+        assertThat(sb).describedAs("Incorrect length: " + sb).hasSize(0);
         msg = new SimpleMessage(null);
         event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
@@ -140,7 +140,7 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         sb = new StringBuilder();
         converter.format(event, sb);
-        assertThat(sb.length()).describedAs("Incorrect length: " + sb).isEqualTo(4);
+        assertThat(sb).describedAs("Incorrect length: " + sb).hasSize(4);
     }
 
     @Test

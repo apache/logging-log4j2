@@ -76,20 +76,20 @@ public class SocketAppenderSocketOptionsTest {
         final Socket socket = manager.getSocket();
         assertThat(socket).isNotNull();
         // Test config request
-        assertThat(socketOptions.isKeepAlive()).isEqualTo(false);
-        assertThat(socketOptions.isOobInline()).isEqualTo(false);
-        assertThat(socketOptions.isReuseAddress()).isEqualTo(false);
-        assertThat(socketOptions.isTcpNoDelay()).isEqualTo(false);
+        assertThat(socketOptions.isKeepAlive()).isFalse();
+        assertThat(socketOptions.isOobInline()).isFalse();
+        assertThat(socketOptions.isReuseAddress()).isFalse();
+        assertThat(socketOptions.isTcpNoDelay()).isFalse();
         assertThat(socketOptions.getActualTrafficClass().intValue()).isEqualTo(Rfc1349TrafficClass.IPTOS_LOWCOST.value());
         assertThat(socketOptions.getReceiveBufferSize().intValue()).isEqualTo(10000);
         assertThat(socketOptions.getSendBufferSize().intValue()).isEqualTo(8000);
         assertThat(socketOptions.getSoLinger().intValue()).isEqualTo(12345);
         assertThat(socketOptions.getSoTimeout().intValue()).isEqualTo(54321);
         // Test live socket
-        assertThat(socket.getKeepAlive()).isEqualTo(false);
-        assertThat(socket.getOOBInline()).isEqualTo(false);
-        assertThat(socket.getReuseAddress()).isEqualTo(false);
-        assertThat(socket.getTcpNoDelay()).isEqualTo(false);
+        assertThat(socket.getKeepAlive()).isFalse();
+        assertThat(socket.getOOBInline()).isFalse();
+        assertThat(socket.getReuseAddress()).isFalse();
+        assertThat(socket.getTcpNoDelay()).isFalse();
         // Assert.assertEquals(10000, socket.getReceiveBufferSize());
         // This settings changes while we are running, so we cannot assert it.
         // Assert.assertEquals(8000, socket.getSendBufferSize());

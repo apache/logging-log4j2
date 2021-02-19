@@ -40,7 +40,7 @@ public class Log4j2_2195_Test {
         assertThat(listAppender).isNotNull();
         List<String> events = listAppender.getMessages();
         assertThat(events).isNotNull();
-        assertThat(events.size()).isEqualTo(1);
+        assertThat(events).hasSize(1);
         String logEvent = events.get(0);
         assertThat(logEvent).isNotNull();
         assertFalse(logEvent.contains("org.junit"), "\"org.junit\" should not be here");

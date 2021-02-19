@@ -49,7 +49,7 @@ public class RollingAppenderDeleteScriptFri13thTest {
             final String day = i < 10 ? "0" + i : "" + i;
             new File(dir, "test-201511" + day + "-0.log").createNewFile();
         }
-        assertThat(dir.listFiles().length).describedAs("Dir " + DIR + " filecount").isEqualTo(30);
+        assertThat(dir.listFiles()).describedAs("Dir " + DIR + " filecount").hasSize(30);
 
         final Logger logger = loggerContextRule.getLogger();
         // Trigger the rollover

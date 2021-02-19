@@ -56,12 +56,12 @@ public class FailoverAppenderTest {
         logger.error("This is a test");
         List<LogEvent> events = app.getEvents();
         assertThat(events).isNotNull();
-        assertThat(1).describedAs("Incorrect number of events. Should be 1 is " + events.size()).isEqualTo(events.size());
+        assertThat(events).describedAs("Incorrect number of events. Should be 1 is " + events.size()).hasSize(1);
         app.clear();
         logger.error("This is a test");
         events = app.getEvents();
         assertThat(events).isNotNull();
-        assertThat(1).describedAs("Incorrect number of events. Should be 1 is " + events.size()).isEqualTo(events.size());
+        assertThat(events).describedAs("Incorrect number of events. Should be 1 is " + events.size()).hasSize(1);
     }
 
     @Test
@@ -70,14 +70,14 @@ public class FailoverAppenderTest {
         onceLogger.error("Fail again");
         List<LogEvent> events = app.getEvents();
         assertThat(events).isNotNull();
-        assertThat(2).describedAs("Incorrect number of events. Should be 2 is " + events.size()).isEqualTo(events.size());
+        assertThat(events).describedAs("Incorrect number of events. Should be 2 is " + events.size()).hasSize(2);
         app.clear();
         Thread.sleep(1100);
         onceLogger.error("Fail after recovery interval");
         onceLogger.error("Second log message");
         events = app.getEvents();
-        assertThat(0).describedAs("Did not recover").isEqualTo(events.size());
+        assertThat(events).describedAs("Did not recover").hasSize(0);
         events = foApp.drainEvents();
-        assertThat(2).describedAs("Incorrect number of events in primary appender").isEqualTo(events.size());
+        assertThat(events).describedAs("Incorrect number of events in primary appender").hasSize(2);
     }
 }

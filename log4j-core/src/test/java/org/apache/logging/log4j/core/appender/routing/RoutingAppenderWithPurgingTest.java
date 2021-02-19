@@ -82,7 +82,7 @@ public class RoutingAppenderWithPurgingTest {
         EventLogger.logEvent(msg);
         final List<LogEvent> list = app.getEvents();
         assertThat(list).describedAs("No events generated").isNotNull();
-        assertThat(list.size() == 1).describedAs("Incorrect number of events. Expected 1, got " + list.size()).isTrue();
+        assertThat(list).describedAs("Incorrect number of events. Expected 1, got " + list.size()).hasSize(1);
         msg = new StructuredDataMessage("2", "This is a test 2", "Service");
         EventLogger.logEvent(msg);
         msg = new StructuredDataMessage("3", "This is a test 3", "Service");
@@ -97,34 +97,34 @@ public class RoutingAppenderWithPurgingTest {
 
         assertThat(((ListAppender) loggerContextRule.getAppender("ReferencedList")).getEvents().isEmpty()).isFalse();
 
-        assertThat(routingAppenderIdle.getAppenders().size()).describedAs("Incorrect number of appenders with IdlePurgePolicy.").isEqualTo(2);
-        assertThat(routingAppenderIdleWithHangingAppender.getAppenders().size()).describedAs("Incorrect number of appenders with IdlePurgePolicy with HangingAppender.").isEqualTo(2);
-        assertThat(routingAppenderManual.getAppenders().size()).describedAs("Incorrect number of appenders manual purge.").isEqualTo(2);
+        assertThat(routingAppenderIdle.getAppenders()).describedAs("Incorrect number of appenders with IdlePurgePolicy.").hasSize(2);
+        assertThat(routingAppenderIdleWithHangingAppender.getAppenders()).describedAs("Incorrect number of appenders with IdlePurgePolicy with HangingAppender.").hasSize(2);
+        assertThat(routingAppenderManual.getAppenders()).describedAs("Incorrect number of appenders manual purge.").hasSize(2);
 
         Thread.sleep(3000);
         EventLogger.logEvent(msg);
 
-        assertThat(routingAppenderIdle.getAppenders().size()).describedAs("Incorrect number of appenders with IdlePurgePolicy.").isEqualTo(1);
-        assertThat(routingAppenderManual.getAppenders().size()).describedAs("Incorrect number of appenders with manual purge.").isEqualTo(2);
+        assertThat(routingAppenderIdle.getAppenders()).describedAs("Incorrect number of appenders with IdlePurgePolicy.").hasSize(1);
+        assertThat(routingAppenderManual.getAppenders()).describedAs("Incorrect number of appenders with manual purge.").hasSize(2);
 
         routingAppenderManual.deleteAppender("1");
         routingAppenderManual.deleteAppender("2");
         routingAppenderManual.deleteAppender("3");
 
-        assertThat(routingAppenderIdle.getAppenders().size()).describedAs("Incorrect number of appenders with IdlePurgePolicy.").isEqualTo(1);
-        assertThat(routingAppenderManual.getAppenders().size()).describedAs("Incorrect number of appenders with manual purge.").isEqualTo(0);
+        assertThat(routingAppenderIdle.getAppenders()).describedAs("Incorrect number of appenders with IdlePurgePolicy.").hasSize(1);
+        assertThat(routingAppenderManual.getAppenders()).describedAs("Incorrect number of appenders with manual purge.").hasSize(0);
 
         assertThat(loggerContextRule.getAppender("ReferencedList").isStopped()).describedAs("Reference based routes should not be stoppable").isFalse();
 
         msg = new StructuredDataMessage("5", "This is a test 5", "Service");
         EventLogger.logEvent(msg);
 
-        assertThat(routingAppenderManual.getAppenders().size()).describedAs("Incorrect number of appenders with manual purge.").isEqualTo(1);
+        assertThat(routingAppenderManual.getAppenders()).describedAs("Incorrect number of appenders with manual purge.").hasSize(1);
 
         routingAppenderManual.deleteAppender("5");
         routingAppenderManual.deleteAppender("5");
 
-        assertThat(routingAppenderManual.getAppenders().size()).describedAs("Incorrect number of appenders with manual purge.").isEqualTo(0);
+        assertThat(routingAppenderManual.getAppenders()).describedAs("Incorrect number of appenders with manual purge.").hasSize(0);
     }
 
 

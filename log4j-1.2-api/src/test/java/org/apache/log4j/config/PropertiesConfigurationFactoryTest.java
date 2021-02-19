@@ -43,10 +43,10 @@ public class PropertiesConfigurationFactoryTest {
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");
         assertThat(file.exists()).describedAs("File A1 was not created").isTrue();
-        assertThat(file.length() > 0).describedAs("File A1 is empty").isTrue();
+        assertThat(file.length()).describedAs("File A1 is empty").isGreaterThan(0);
         file = new File("target/temp.A2");
         assertThat(file.exists()).describedAs("File A2 was not created").isTrue();
-        assertThat(file.length() > 0).describedAs("File A2 is empty").isTrue();
+        assertThat(file.length()).describedAs("File A2 is empty").isGreaterThan(0);
     }
 
 }

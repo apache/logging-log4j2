@@ -78,7 +78,7 @@ public class CategoryTest {
         category.info("Hello, World");
         final List<LogEvent> list = appender.getEvents();
         int events = list.size();
-        assertThat(events == 1).describedAs("Number of events should be 1, was " + events).isTrue();
+        assertThat(events).describedAs("Number of events should be 1, was " + events).isEqualTo(1);
         LogEvent event = list.get(0);
         Message msg = event.getMessage();
         assertThat(msg).describedAs("No message").isNotNull();
@@ -88,7 +88,7 @@ public class CategoryTest {
         appender.clear();
         category.log(Priority.INFO, "Hello, World");
         events = list.size();
-        assertThat(events == 1).describedAs("Number of events should be 1, was " + events).isTrue();
+        assertThat(events).describedAs("Number of events should be 1, was " + events).isEqualTo(1);
         event = list.get(0);
         msg = event.getMessage();
         assertThat(msg).describedAs("No message").isNotNull();
@@ -118,7 +118,7 @@ public class CategoryTest {
         logger.setLevel(Level.ERROR);
         final Priority debug = Level.DEBUG;
         logger.l7dlog(debug, "Hello, World", null);
-        assertThat(appender.getEvents().size() == 0).isTrue();
+        assertThat(appender.getEvents()).hasSize(0);
     }
 
     /**
@@ -130,7 +130,7 @@ public class CategoryTest {
         logger.setLevel(Level.ERROR);
         final Priority debug = Level.DEBUG;
         logger.l7dlog(debug, "Hello, World", new Object[0], null);
-        assertThat(appender.getEvents().size() == 0).isTrue();
+        assertThat(appender.getEvents()).hasSize(0);
     }
 
     /**
@@ -149,7 +149,7 @@ public class CategoryTest {
         // the next line will throw an exception if the LogManager loggers
         // aren't supported by 1.2 Logger/Category
         logger.l7dlog(debug, "Hello, World", new Object[0], null);
-        assertThat(appender.getEvents().size() == 0).isTrue();
+        assertThat(appender.getEvents()).hasSize(0);
     }
 
     /**
@@ -175,7 +175,7 @@ public class CategoryTest {
         ((org.apache.logging.log4j.core.Logger) category.getLogger()).addAppender(appender);
         category.error("Test Message");
         final List<String> msgs = appender.getMessages();
-        assertThat(msgs.size() == 1).describedAs("Incorrect number of messages. Expected 1 got " + msgs.size()).isTrue();
+        assertThat(msgs).describedAs("Incorrect number of messages. Expected 1 got " + msgs.size()).hasSize(1);
         final String msg = msgs.get(0);
         appender.clear();
         final String threadName = Thread.currentThread().getName();

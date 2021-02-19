@@ -159,7 +159,7 @@ public class XmlCompleteFileAppenderTest {
         };
         List<String> lines1 = Files.readAllLines(logFile.toPath(), Charset.forName("UTF-8"));
 
-        assertThat(lines1.size()).describedAs("number of lines").isEqualTo(indentations.length);
+        assertThat(lines1).describedAs("number of lines").hasSameSizeAs(indentations);
         for (int i = 0; i < indentations.length; i++) {
             String line = lines1.get(i);
             if (line.trim().isEmpty()) {

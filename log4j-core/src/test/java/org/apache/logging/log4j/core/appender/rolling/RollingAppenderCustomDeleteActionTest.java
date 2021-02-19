@@ -54,7 +54,7 @@ public class RollingAppenderCustomDeleteActionTest {
 
         final File dir = new File(DIR);
         assertThat(dir.exists()).describedAs("Dir " + DIR + " should exist").isTrue();
-        assertThat(dir.listFiles().length > 0).describedAs("Dir " + DIR + " should contain files").isTrue();
+        assertThat(dir.listFiles()).describedAs("Dir " + DIR + " should contain files").hasSizeGreaterThan(0);
 
         final int MAX_TRIES = 20;
         for (int i = 0; i < MAX_TRIES; i++) {

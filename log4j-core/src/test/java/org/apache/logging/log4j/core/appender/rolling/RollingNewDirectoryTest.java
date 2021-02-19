@@ -57,6 +57,7 @@ public class RollingNewDirectoryTest {
         }
         final File dir = new File(DIR);
         assertThat(dir).describedAs("No directory created").isNotNull();
-        assertThat(dir.exists() && dir.listFiles().length > 2).describedAs("Child irectories not created").isTrue();
+        assertThat(dir.exists()).describedAs("Child irectories not created").isTrue();
+assertThat(dir.listFiles()).describedAs("Child irectories not created").hasSizeGreaterThan(2);
     }
 }

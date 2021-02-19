@@ -103,7 +103,8 @@ public class RollingAppenderCronOnceADayTest {
 
         Thread.sleep(remainingTime);
         final File dir = new File(DIR);
-        assertThat(dir.exists() && dir.listFiles().length > 0).describedAs("Directory not created").isTrue();
+        assertThat(dir.exists()).describedAs("Directory not created").isTrue();
+assertThat(dir.listFiles()).describedAs("Directory not created").hasSizeGreaterThan(0);
 
         for (int i = 1; i < 5; i++) {
           logger.debug("Adding some more event {}", i);

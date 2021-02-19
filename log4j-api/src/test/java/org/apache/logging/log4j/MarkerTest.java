@@ -45,7 +45,7 @@ public class MarkerTest {
         final Marker p2 = MarkerManager.getMarker("P2");
         expected.addParents(p1);
         expected.addParents(p2);
-        assertThat(expected.getParents().length).isEqualTo(2);
+        assertThat(expected.getParents()).hasSize(2);
     }
 
     @Test
@@ -97,9 +97,9 @@ public class MarkerTest {
         test1.addParents(parent);
         final Marker[] parents = test1.getParents();
         test1.addParents(existing);
-        assertThat(test1.getParents().length).describedAs("duplicate add allowed").isEqualTo(parents.length);
+        assertThat(test1.getParents()).describedAs("duplicate add allowed").hasSameSizeAs(parents);
         test1.addParents(existing, MarkerManager.getMarker("EXTRA"));
-        assertThat(test1.getParents().length).describedAs("incorrect add").isEqualTo(parents.length + 1);
+        assertThat(test1.getParents()).describedAs("incorrect add").hasSize(parents.length + 1);
         assertTrue(test1.isInstanceOf(parent), "TEST1 is not an instance of PARENT");
         assertTrue(test1.isInstanceOf(existing), "TEST1 is not an instance of EXISTING");
     }

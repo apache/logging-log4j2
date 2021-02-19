@@ -133,8 +133,8 @@ public class RollingAppenderTempCompressedFilePatternTest {
                 }
             }
             assertThat(messages.isEmpty()).describedAs("Log messages lost : " + messages.size()).isTrue();
-            assertThat(files.length > 2).describedAs("Files not rolled : " + files.length).isTrue();
-            assertThat(gzippedFiles > 0).describedAs("Files gzipped not rolled : " + gzippedFiles).isTrue();
+            assertThat(files).describedAs("Files not rolled : " + files.length).hasSizeGreaterThan(2);
+            assertThat(gzippedFiles).describedAs("Files gzipped not rolled : " + gzippedFiles).isGreaterThan(0);
 
             int temporaryFilesCreated = 0;
             key = watcher.take();
@@ -146,9 +146,9 @@ public class RollingAppenderTempCompressedFilePatternTest {
                     temporaryFilesCreated++;
                 }
             }
-            assertThat(temporaryFilesCreated > 0).describedAs("No temporary file created during compression").isTrue();
-            assertThat(gzippedFiles == temporaryFilesCreated).describedAs("Temporarys file created not equals to compressed files " + temporaryFilesCreated + "/"
-                    + gzippedFiles).isTrue();
+            assertThat(temporaryFilesCreated).describedAs("No temporary file created during compression").isGreaterThan(0);
+            assertThat(gzippedFiles).describedAs("Temporarys file created not equals to compressed files " + temporaryFilesCreated + "/"
+                    + gzippedFiles).isEqualTo(temporaryFilesCreated);
         }
     }
 }

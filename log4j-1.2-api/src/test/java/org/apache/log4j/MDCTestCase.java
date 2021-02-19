@@ -39,7 +39,7 @@ public class MDCTestCase {
     public void testPut() throws Exception {
         MDC.put("key", "some value");
         assertThat(MDC.get("key")).isEqualTo("some value");
-        assertThat(MDC.getContext().size()).isEqualTo(1);
+        assertThat(MDC.getContext()).hasSize(1);
     }
 
     @Test

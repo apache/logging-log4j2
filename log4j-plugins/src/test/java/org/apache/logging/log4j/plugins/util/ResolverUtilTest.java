@@ -146,7 +146,7 @@ public class ResolverUtilTest {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(cl);
             resolverUtil.findInPackage(new PluginRegistry.PluginTest(), "customplugin1");
-            assertThat(resolverUtil.getClasses().size()).describedAs("Class not found in packages").isEqualTo(1);
+            assertThat(resolverUtil.getClasses()).describedAs("Class not found in packages").hasSize(1);
             assertThat(resolverUtil.getClasses().iterator().next()).describedAs("Unexpected class resolved").isEqualTo(cl.loadClass("customplugin1.FixedString1"));
         }
     }
@@ -157,7 +157,7 @@ public class ResolverUtilTest {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(cl);
             resolverUtil.findInPackage(new PluginRegistry.PluginTest(), "customplugin2");
-            assertThat(resolverUtil.getClasses().size()).describedAs("Class not found in packages").isEqualTo(1);
+            assertThat(resolverUtil.getClasses()).describedAs("Class not found in packages").hasSize(1);
             assertThat(resolverUtil.getClasses().iterator().next()).describedAs("Unexpected class resolved").isEqualTo(cl.loadClass("customplugin2.FixedString2"));
         }
     }

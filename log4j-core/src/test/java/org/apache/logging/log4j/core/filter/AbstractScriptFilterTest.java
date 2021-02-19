@@ -44,7 +44,7 @@ public abstract class AbstractScriptFilterTest {
         try {
             final List<String> messages = app.getMessages();
             assertThat(messages).describedAs("No Messages").isNotNull();
-            assertThat(2).describedAs("Incorrect number of messages. Expected 2, Actual " + messages.size()).isEqualTo(messages.size());
+            assertThat(messages).describedAs("Incorrect number of messages. Expected 2, Actual " + messages.size()).hasSize(2);
         } finally {
             app.clear();
         }
@@ -61,7 +61,7 @@ public abstract class AbstractScriptFilterTest {
         final List<String> messages = app.getMessages();
         try {
             assertThat(messages).describedAs("No Messages").isNotNull();
-            assertThat(2).describedAs("Incorrect number of messages. Expected 2, Actual " + messages.size()).isEqualTo(messages.size());
+            assertThat(messages).describedAs("Incorrect number of messages. Expected 2, Actual " + messages.size()).hasSize(2);
         } finally {
             app.clear();
         }

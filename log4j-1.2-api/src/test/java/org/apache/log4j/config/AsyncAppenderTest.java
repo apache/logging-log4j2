@@ -60,7 +60,8 @@ public class AsyncAppenderTest {
         }
         assertThat(messageAppender).describedAs("No Message Appender").isNotNull();
         List<String> messages = messageAppender.getMessages();
-        assertThat(messages != null && messages.size() > 0).describedAs("No messages").isTrue();
+        assertThat(messages != null).describedAs("No messages").isTrue();
+assertThat(messages).describedAs("No messages").hasSizeGreaterThan(0);
     }
 
     @Test
@@ -79,7 +80,8 @@ public class AsyncAppenderTest {
         }
         assertThat(messageAppender).describedAs("No Message Appender").isNotNull();
         List<String> messages = messageAppender.getMessages();
-        assertThat(messages != null && messages.size() > 0).describedAs("No messages").isTrue();
+        assertThat(messages != null).describedAs("No messages").isTrue();
+assertThat(messages).describedAs("No messages").hasSizeGreaterThan(0);
     }
 
 

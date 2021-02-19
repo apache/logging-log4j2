@@ -93,7 +93,7 @@ public class CompositeConfigurationTest {
             public void evaluate() throws Throwable {
                 final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
                 Map<String, Appender> appendersMap = config.getLogger("cat1").getAppenders();
-                assertThat(appendersMap.size()).describedAs("Expected 2 Appender references for cat1 but got " + appendersMap.size()).isEqualTo(2);
+                assertThat(appendersMap).describedAs("Expected 2 Appender references for cat1 but got " + appendersMap.size()).hasSize(2);
                 assertThat(appendersMap.get("STDOUT") instanceof ConsoleAppender).isTrue();
 
                 Filter loggerFilter = config.getLogger("cat1").getFilter();
@@ -101,15 +101,15 @@ public class CompositeConfigurationTest {
                 assertThat(Filter.Result.DENY).isEqualTo(loggerFilter.getOnMatch());
 
                 appendersMap = config.getLogger("cat2").getAppenders();
-                assertThat(appendersMap.size()).describedAs("Expected 1 Appender reference for cat2 but got " + appendersMap.size()).isEqualTo(1);
+                assertThat(appendersMap).describedAs("Expected 1 Appender reference for cat2 but got " + appendersMap.size()).hasSize(1);
                 assertThat(appendersMap.get("File") instanceof FileAppender).isTrue();
 
                 appendersMap = config.getLogger("cat3").getAppenders();
-                assertThat(appendersMap.size()).describedAs("Expected 1 Appender reference for cat3 but got " + appendersMap.size()).isEqualTo(1);
+                assertThat(appendersMap).describedAs("Expected 1 Appender reference for cat3 but got " + appendersMap.size()).hasSize(1);
                 assertThat(appendersMap.get("File") instanceof FileAppender).isTrue();
 
                 appendersMap = config.getRootLogger().getAppenders();
-                assertThat(appendersMap.size()).describedAs("Expected 2 Appender references for the root logger but got " + appendersMap.size()).isEqualTo(2);
+                assertThat(appendersMap).describedAs("Expected 2 Appender references for the root logger but got " + appendersMap.size()).hasSize(2);
                 assertThat(appendersMap.get("File") instanceof FileAppender).isTrue();
                 assertThat(appendersMap.get("STDOUT") instanceof ConsoleAppender).isTrue();
 
@@ -193,7 +193,8 @@ public class CompositeConfigurationTest {
 
                 final List<AppenderRef> appenderRefList = config.getLogger("cat1").getAppenderRefs();
                 final AppenderRef appenderRef = getAppenderRef(appenderRefList, "STDOUT");
-                assertThat(appenderRef.getFilter() != null && appenderRef.getFilter() instanceof RegexFilter).describedAs("Expected cat1 STDOUT appenderRef to have a regex filter").isTrue();
+                assertThat(appenderRef.getFilter() != null).describedAs("Expected cat1 STDOUT appenderRef to have a regex filter").isTrue();
+assertThat(appenderRef.getFilter() instanceof RegexFilter).describedAs("Expected cat1 STDOUT appenderRef to have a regex filter").isTrue();
             }
         };
         runTest(lcr, test);

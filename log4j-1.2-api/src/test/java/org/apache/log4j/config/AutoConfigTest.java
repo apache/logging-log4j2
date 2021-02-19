@@ -64,9 +64,11 @@ public class AutoConfigTest {
         assertThat(eventAppender).describedAs("No Event Appender").isNotNull();
         assertThat(messageAppender).describedAs("No Message Appender").isNotNull();
         List<LoggingEvent> events = eventAppender.getEvents();
-        assertThat(events != null && events.size() > 0).describedAs("No events").isTrue();
+        assertThat(events != null).describedAs("No events").isTrue();
+assertThat(events).describedAs("No events").hasSizeGreaterThan(0);
         List<String> messages = messageAppender.getMessages();
-        assertThat(messages != null && messages.size() > 0).describedAs("No messages").isTrue();
+        assertThat(messages != null).describedAs("No messages").isTrue();
+assertThat(messages).describedAs("No messages").hasSizeGreaterThan(0);
     }
 
 }

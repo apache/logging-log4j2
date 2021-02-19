@@ -205,7 +205,7 @@ public class Log4j1ConfigurationFactoryTest {
 		assertThat(triggeringPolicy instanceof CompositeTriggeringPolicy).describedAs(triggeringPolicy.getClass().getName()).isTrue();
 		final CompositeTriggeringPolicy ctp = (CompositeTriggeringPolicy) triggeringPolicy;
 		final TriggeringPolicy[] triggeringPolicies = ctp.getTriggeringPolicies();
-		assertThat(triggeringPolicies.length).isEqualTo(1);
+		assertThat(triggeringPolicies).hasSize(1);
 		final TriggeringPolicy tp = triggeringPolicies[0];
 		assertThat(tp instanceof SizeBasedTriggeringPolicy).describedAs(tp.getClass().getName()).isTrue();
 		final SizeBasedTriggeringPolicy sbtp = (SizeBasedTriggeringPolicy) tp;
@@ -232,7 +232,7 @@ public class Log4j1ConfigurationFactoryTest {
 		assertThat(triggeringPolicy instanceof CompositeTriggeringPolicy).describedAs(triggeringPolicy.getClass().getName()).isTrue();
 		final CompositeTriggeringPolicy ctp = (CompositeTriggeringPolicy) triggeringPolicy;
 		final TriggeringPolicy[] triggeringPolicies = ctp.getTriggeringPolicies();
-		assertThat(triggeringPolicies.length).isEqualTo(1);
+		assertThat(triggeringPolicies).hasSize(1);
 		final TriggeringPolicy tp = triggeringPolicies[0];
 		assertThat(tp instanceof TimeBasedTriggeringPolicy).describedAs(tp.getClass().getName()).isTrue();
 		final TimeBasedTriggeringPolicy tbtp = (TimeBasedTriggeringPolicy) tp;

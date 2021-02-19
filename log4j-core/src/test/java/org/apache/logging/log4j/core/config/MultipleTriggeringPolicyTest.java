@@ -69,7 +69,7 @@ class MultipleTriggeringPolicyTest {
         final CompositeTriggeringPolicy compositeTriggeringPolicy = appender.getTriggeringPolicy();
         assertThat(compositeTriggeringPolicy).isNotNull();
         final TriggeringPolicy[] triggeringPolicies = compositeTriggeringPolicy.getTriggeringPolicies();
-        assertThat(triggeringPolicies.length).isEqualTo(2);
+        assertThat(triggeringPolicies).hasSize(2);
         final SizeBasedTriggeringPolicy sizeBasedTriggeringPolicy;
         final TimeBasedTriggeringPolicy timeBasedTriggeringPolicy;
         if (triggeringPolicies[0] instanceof SizeBasedTriggeringPolicy) {

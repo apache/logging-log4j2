@@ -41,7 +41,7 @@ public class CallerInformationTest {
         logger.warn("Verifying the caller class is still correct.");
         logger.error("Hopefully nobody breaks me!");
         final List<String> messages = app.getMessages();
-        assertThat(messages.size()).describedAs("Incorrect number of messages.").isEqualTo(3);
+        assertThat(messages).describedAs("Incorrect number of messages.").hasSize(3);
         for (final String message : messages) {
             assertThat(message).describedAs("Incorrect caller class name.").isEqualTo(this.getClass().getName());
         }
@@ -57,7 +57,7 @@ public class CallerInformationTest {
         logger.warn("brains~~~");
         logger.info("Itchy. Tasty.");
         final List<String> messages = app.getMessages();
-        assertThat(messages.size()).describedAs("Incorrect number of messages.").isEqualTo(5);
+        assertThat(messages).describedAs("Incorrect number of messages.").hasSize(5);
         for (final String message : messages) {
             assertThat(message).describedAs("Incorrect caller method name.").isEqualTo("testMethodLogger");
         }

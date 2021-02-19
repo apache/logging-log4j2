@@ -92,6 +92,6 @@ public class RollingAppenderSizeNoCompressTest {
             }
         }
         assertThat(messages.isEmpty()).describedAs("Log messages lost : " + messages.size()).isTrue();
-        assertThat(files.length > 2).describedAs("Files not rolled : " + files.length).isTrue();
+        assertThat(files).describedAs("Files not rolled : " + files.length).hasSizeGreaterThan(2);
     }
 }

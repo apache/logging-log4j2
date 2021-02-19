@@ -73,7 +73,7 @@ public class RewriteAppenderTest {
         assertThat(list).hasSize(1);
         assertThat(list.get(0)).doesNotContain("{user.dir}");
         assertThat(list).describedAs("No events generated").isNotNull();
-        assertThat(1).describedAs("Incorrect number of events. Expected 1, got " + list.size()).isEqualTo(list.size());
+        assertThat(list).describedAs("Incorrect number of events. Expected 1, got " + list.size()).hasSize(1);
         assertFalse(list.get(0).contains("{user."), "Did not resolve user name");
     }
 

@@ -47,7 +47,7 @@ public class LogWithRouteTest {
             assertThat(listApp).isNotNull();
             final List<String> msgs = listApp.getMessages();
             assertThat(msgs).describedAs("No messages received").isNotNull();
-            assertThat(msgs.size() == 1).isTrue();
+            assertThat(msgs).hasSize(1);
             assertThat(msgs.get(0).contains("Type=Service")).describedAs("Type is missing").isTrue();
             assertThat(msgs.get(0).contains("Name=John Smith")).describedAs("Name is missing").isTrue();
         } finally {

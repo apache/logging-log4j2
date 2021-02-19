@@ -52,7 +52,7 @@ public class AsyncLoggerContextSelectorTest {
         selector.getContext(FQCN, null, false);
 
         final List<LoggerContext> list = selector.getLoggerContexts();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
         assertThat(list.get(0) instanceof AsyncLoggerContext).isTrue();
     }
 

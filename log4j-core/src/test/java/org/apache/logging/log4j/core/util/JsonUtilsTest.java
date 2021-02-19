@@ -55,7 +55,7 @@ public class JsonUtilsTest {
         }
         final String exp = sb2.toString();
         JsonUtils.quoteAsString(input, output);
-        assertThat(output.length()).isEqualTo(2*input.length());
+        assertThat(output).hasSize(2*input.length());
         assertThat(output.toString()).isEqualTo(exp);
 
     }

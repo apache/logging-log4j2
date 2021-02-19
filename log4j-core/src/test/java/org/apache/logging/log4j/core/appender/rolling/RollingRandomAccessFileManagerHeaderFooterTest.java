@@ -64,7 +64,7 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
         Thread.sleep(50);
         final File dir = new File(DIR);
         assertThat(dir.exists()).describedAs("Directory not created: " + dir).isTrue();
-        assertThat(dir.listFiles().length > 0).describedAs("Directory empty: " + dir).isTrue();
+        assertThat(dir.listFiles()).describedAs("Directory empty: " + dir).hasSizeGreaterThan(0);
         final File[] files = dir.listFiles();
         assertThat(files).isNotNull();
         for (final File file : files) {

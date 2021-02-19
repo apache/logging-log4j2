@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -160,12 +161,12 @@ public class SocketAppenderTest {
         LogEvent event = tcpTestServer.getQueue().poll(3, TimeUnit.SECONDS);
         assertThat(event).describedAs("No event retrieved").isNotNull();
         assertThat(event.getMessage().getFormattedMessage().equals("This is a test message")).describedAs("Incorrect event").isTrue();
-        assertThat(tcpTestServer.getCount() > 0).describedAs("Message not delivered via TCP").isTrue();
+        assertThat(tcpTestServer.getCount()).describedAs("Message not delivered via TCP").isGreaterThan(0);
         assertThat(event.getContextData().<String>getValue(tcKey)).isEqualTo(expectedUuidStr);
         event = tcpTestServer.getQueue().poll(3, TimeUnit.SECONDS);
         assertThat(event).describedAs("No event retrieved").isNotNull();
         assertThat(event.getMessage().getFormattedMessage().equals("Throwing an exception")).describedAs("Incorrect event").isTrue();
-        assertThat(tcpTestServer.getCount() > 1).describedAs("Message not delivered via TCP").isTrue();
+        assertThat(tcpTestServer.getCount()).describedAs("Message not delivered via TCP").isGreaterThan(1);
         assertThat(event.getContextStack().pop()).isEqualTo(expectedUuidStr);
         assertThat(event.getThrownProxy()).isNotNull();
         assertThat(event.getThrownProxy().getMessage()).isEqualTo(expectedExMsg);
@@ -214,7 +215,7 @@ public class SocketAppenderTest {
         final LogEvent event = udpServer.getQueue().poll(3, TimeUnit.SECONDS);
         assertThat(event).describedAs("No event retrieved").isNotNull();
         assertThat(event.getMessage().getFormattedMessage().equals("This is a udp message")).describedAs("Incorrect event").isTrue();
-        assertThat(udpServer.getCount() > 0).describedAs("Message not delivered via UDP").isTrue();
+        assertThat(udpServer.getCount()).describedAs("Message not delivered via UDP").isGreaterThan(0);
     }
 
     @Test
@@ -268,14 +269,7 @@ public class SocketAppenderTest {
         logger.setAdditive(false);
         logger.setLevel(Level.DEBUG);
 
-        try {
-            logger.debug("This message is written because a deadlock never.");
-            fail("No Exception was thrown");
-        } catch (final Exception ex) {
-            // TODO: move exception to @Test(expect = Exception.class)
-            // Failure is expected.
-            // ex.printStackTrace();
-        }
+                    assertThatThrownBy(() -> logger.debug("This message is written because a deadlock never.")).describedAs("No Exception was thrown").isInstanceOf(Exception.class);
     }
 
     public static class UdpSocketTestServer extends Thread {

@@ -52,11 +52,11 @@ public class RolloverWithDeletedOldFileTest {
 
     final File dir = new File(DIR);
     assertThat(dir.exists()).describedAs("Dir " + DIR + " should exist").isTrue();
-    assertThat(dir.listFiles().length == 6).describedAs("Dir " + DIR + " should contain files").isTrue();
+    assertThat(dir.listFiles()).describedAs("Dir " + DIR + " should contain files").hasSize(6);
 
     File[] files = dir.listFiles();
     final List<String> expected = Arrays.asList("rollingtest.log", "test-001.log", "test-002.log", "test-003.log", "test-004.log", "test-005.log");
-    assertThat(files.length).describedAs("Unexpected number of files").isEqualTo(expected.size());
+    assertThat(files).describedAs("Unexpected number of files").hasSameSizeAs(expected);
     File fileToRemove = null;
     for (final File file : files) {
       if (!expected.contains(file.getName())) {
@@ -73,7 +73,7 @@ public class RolloverWithDeletedOldFileTest {
     }
     Thread.sleep(100); // Allow time for rollover to complete again
     files = dir.listFiles();
-    assertThat(files.length).describedAs("Unexpected number of files").isEqualTo(expected.size());
+    assertThat(files).describedAs("Unexpected number of files").hasSameSizeAs(expected);
     for (final File file : files) {
       if (!expected.contains(file.getName())) {
         fail("unexpected file" + file);

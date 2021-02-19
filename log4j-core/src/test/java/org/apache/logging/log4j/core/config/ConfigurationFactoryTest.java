@@ -64,7 +64,7 @@ class ConfigurationFactoryTest {
         final Map<String, Appender> appenders = configuration.getAppenders();
         // these used to be separate tests
         assertAll(() -> assertThat(appenders).isNotNull(),
-                () -> assertThat(appenders.size()).isEqualTo(3),
+                () -> assertThat(appenders).hasSize(3),
                 () -> assertThat(configuration.getLoggerContext()).isNotNull(),
                 () -> assertThat(configuration.getLoggerConfig(Strings.EMPTY)).isEqualTo(configuration.getRootLogger()),
                 () -> assertThatThrownBy(() -> configuration.getLoggerConfig(null)).isInstanceOf(NullPointerException.class));
@@ -87,7 +87,7 @@ class ConfigurationFactoryTest {
         final Logger logger = context.getLogger(FILE_LOGGER_NAME);
         logger.debug("Greetings from ConfigurationFactoryTest in thread#{}", box(currentThreadId));
         final List<String> lines = Files.readAllLines(logFile);
-        assertThat(lines.size()).isEqualTo(1);
+        assertThat(lines).hasSize(1);
         assertThat(lines.get(0).endsWith(Long.toString(currentThreadId))).isTrue();
     }
 

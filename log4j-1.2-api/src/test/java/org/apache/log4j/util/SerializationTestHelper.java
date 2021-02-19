@@ -117,7 +117,7 @@ public class SerializationTestHelper {
             final int bytesRead = expected.length;
 
             if (bytesRead < endCompare) {
-                assertThat(actual.length).isEqualTo(bytesRead);
+                assertThat(actual).hasSize(bytesRead);
             }
 
             int endScan = actual.length;

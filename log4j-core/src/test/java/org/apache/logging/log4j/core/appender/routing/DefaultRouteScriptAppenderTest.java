@@ -90,11 +90,11 @@ public class DefaultRouteScriptAppenderTest {
         final Logger logger = loggerContextRule.getLogger(DefaultRouteScriptAppenderTest.class);
         logger.error("Hello");
         final ListAppender listAppender = getListAppender();
-        assertThat(listAppender.getEvents().size()).describedAs("Incorrect number of events").isEqualTo(1);
+        assertThat(listAppender.getEvents()).describedAs("Incorrect number of events").hasSize(1);
         logger.error("World");
-        assertThat(listAppender.getEvents().size()).describedAs("Incorrect number of events").isEqualTo(2);
+        assertThat(listAppender.getEvents()).describedAs("Incorrect number of events").hasSize(2);
         logger.error(marker, "DEADBEEF");
-        assertThat(listAppender.getEvents().size()).describedAs("Incorrect number of events").isEqualTo(3);
+        assertThat(listAppender.getEvents()).describedAs("Incorrect number of events").hasSize(3);
     }
 
     @Test(expected = AssertionError.class)

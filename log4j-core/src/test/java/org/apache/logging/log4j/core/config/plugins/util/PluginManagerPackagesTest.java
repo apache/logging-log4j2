@@ -80,7 +80,7 @@ public class PluginManagerPackagesTest {
         logger.info("this message is ignored");
 
         final List<String> messages = listAppender.getMessages();
-        assertThat(messages.size()).describedAs(messages.toString()).isEqualTo(1);
+        assertThat(messages).describedAs(messages.toString()).hasSize(1);
         assertThat(messages.get(0)).isEqualTo("abc123XYZ");
     }
 

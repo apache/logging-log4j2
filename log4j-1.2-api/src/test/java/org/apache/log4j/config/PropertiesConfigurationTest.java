@@ -49,10 +49,10 @@ public class PropertiesConfigurationTest {
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");
         assertThat(file.exists()).describedAs("File A1 was not created").isTrue();
-        assertThat(file.length() > 0).describedAs("File A1 is empty").isTrue();
+        assertThat(file.length()).describedAs("File A1 is empty").isGreaterThan(0);
         file = new File("target/temp.A2");
         assertThat(file.exists()).describedAs("File A2 was not created").isTrue();
-        assertThat(file.length() > 0).describedAs("File A2 is empty").isTrue();
+        assertThat(file.length()).describedAs("File A2 is empty").isGreaterThan(0);
     }
 
     @Test
@@ -74,9 +74,11 @@ public class PropertiesConfigurationTest {
         assertThat(eventAppender).describedAs("No Event Appender").isNotNull();
         assertThat(messageAppender).describedAs("No Message Appender").isNotNull();
         List<LoggingEvent> events = eventAppender.getEvents();
-        assertThat(events != null && events.size() > 0).describedAs("No events").isTrue();
+        assertThat(events != null).describedAs("No events").isTrue();
+assertThat(events).describedAs("No events").hasSizeGreaterThan(0);
         List<String> messages = messageAppender.getMessages();
-        assertThat(messages != null && messages.size() > 0).describedAs("No messages").isTrue();
+        assertThat(messages != null).describedAs("No messages").isTrue();
+assertThat(messages).describedAs("No messages").hasSizeGreaterThan(0);
     }
 
     private LoggerContext configure(String configLocation) throws Exception {

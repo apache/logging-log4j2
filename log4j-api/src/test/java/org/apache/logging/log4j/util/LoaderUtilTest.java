@@ -50,10 +50,10 @@ public class LoaderUtilTest {
         };
         thread.setContextClassLoader(loader);
         try {
-            assertThat(LoaderUtil.findUrlResources("Log4j-charsets.properties").size()).isEqualTo(0);
+            assertThat(LoaderUtil.findUrlResources("Log4j-charsets.properties")).hasSize(0);
 
             LoaderUtil.forceTcclOnly = false;
-            assertThat(LoaderUtil.findUrlResources("Log4j-charsets.properties").size()).isEqualTo(1);
+            assertThat(LoaderUtil.findUrlResources("Log4j-charsets.properties")).hasSize(1);
         } finally {
             thread.setContextClassLoader(tccl);
         }

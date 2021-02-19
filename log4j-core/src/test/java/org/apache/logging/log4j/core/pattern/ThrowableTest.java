@@ -49,7 +49,7 @@ public class ThrowableTest {
         logger.error("Exception", parent);
         final List<String> msgs = app.getMessages();
         assertThat(msgs).isNotNull();
-        assertThat(msgs.size()).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).isEqualTo(1);
+        assertThat(msgs).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).hasSize(1);
         assertFalse(msgs.get(0).contains("suppressed"), "No suppressed lines");
     }
 }

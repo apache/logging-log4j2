@@ -39,7 +39,7 @@ public class PropertyTest {
 
         final List<String> messages = app.getMessages();
         assertThat(messages).describedAs("No Messages").isNotNull();
-        assertThat(messages.size()).describedAs("message count" + messages).isEqualTo(1);
+        assertThat(messages).describedAs("message count" + messages).hasSize(1);
 
         //<Property name="emptyElementKey" />
         //<Property name="emptyAttributeKey" value="" />
@@ -61,7 +61,7 @@ public class PropertyTest {
 
     @Test
     public void testNullValueIsConvertedToEmptyString() { // LOG4J2-1313 <Property name="x" /> support
-        assertThat(Property.createProperty("name", null).getValue()).isEqualTo("");
+        assertThat(Property.createProperty("name", null).getValue()).isEmpty();
     }
 
     @Test

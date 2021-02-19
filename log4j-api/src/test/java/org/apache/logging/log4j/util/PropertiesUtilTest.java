@@ -45,13 +45,13 @@ public class PropertiesUtilTest {
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "b."));
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "c.1"));
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "dd"));
-        assertThat(properties.size()).isEqualTo(0);
+        assertThat(properties).hasSize(0);
     }
 
     @Test
     public void testPartitionOnCommonPrefix() {
         final Map<String, Properties> parts = PropertiesUtil.partitionOnCommonPrefixes(properties);
-        assertThat(parts.size()).isEqualTo(4);
+        assertThat(parts).hasSize(4);
         assertHasAllProperties(parts.get("a"));
         assertHasAllProperties(parts.get("b"));
         assertHasAllProperties(PropertiesUtil.partitionOnCommonPrefixes(parts.get("c")).get("1"));

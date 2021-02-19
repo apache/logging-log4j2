@@ -71,7 +71,7 @@ public class SyslogAppenderTest {
             }
         }
         assertThat(messages).describedAs("No messages received").isNotNull();
-        assertThat(messages.size()).describedAs("Sent message not detected").isEqualTo(1);
+        assertThat(messages).describedAs("Sent message not detected").hasSize(1);
     }
 
 

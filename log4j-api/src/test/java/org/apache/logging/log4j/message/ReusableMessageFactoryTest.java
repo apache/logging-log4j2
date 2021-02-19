@@ -57,7 +57,7 @@ public class ReusableMessageFactoryTest {
         assertTrue(msg.reserved, "reserved");
 
         assertThat(msg.getFormat()).isEqualTo(txt);
-        assertThat(params.length).describedAs("count").isEqualTo(msg.getParameterCount());
+        assertThat(params).describedAs("count").hasSize(msg.getParameterCount());
         final Object[] messageParams = msg.getParameters();
         for (int i = 0; i < params.length; i++) {
             assertThat(params[i]).isEqualTo(messageParams[i]);

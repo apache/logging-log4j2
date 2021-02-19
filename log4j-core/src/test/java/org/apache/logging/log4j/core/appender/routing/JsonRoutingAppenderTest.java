@@ -48,7 +48,7 @@ public class JsonRoutingAppenderTest {
         EventLogger.logEvent(msg);
         final List<LogEvent> list = loggerContextRule.getListAppender("List").getEvents();
         assertThat(list).describedAs("No events generated").isNotNull();
-        assertThat(list.size() == 1).describedAs("Incorrect number of events. Expected 1, got " + list.size()).isTrue();
+        assertThat(list).describedAs("Incorrect number of events. Expected 1, got " + list.size()).hasSize(1);
         msg = new StructuredDataMessage("Test", "This is a test", "Unknown");
         EventLogger.logEvent(msg);
         final File file = new File(LOG_FILENAME);

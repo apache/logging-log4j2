@@ -46,7 +46,7 @@ class AsyncAppenderTest {
             appender.clear();
         }
         assertThat(messages).isNotNull();
-        assertThat(messages.size()).isEqualTo(2);
+        assertThat(messages).hasSize(2);
         final String messagePrefix = AsyncAppenderTest.class.getName() + " rewriteTest ";
         assertThat(messages.get(0)).isEqualTo(messagePrefix + "This is a test");
         assertThat(messages.get(1)).isEqualTo(messagePrefix + "Hello world!");
@@ -65,7 +65,7 @@ class AsyncAppenderTest {
             appender.clear();
         }
         assertThat(messages).isNotNull();
-        assertThat(messages.size()).isEqualTo(1);
+        assertThat(messages).hasSize(1);
         assertThat(messages.get(0).contains(parent.getClass().getName())).isTrue();
     }
 
@@ -127,7 +127,7 @@ class AsyncAppenderTest {
             appender.clear();
         }
         assertThat(messages).isNotNull();
-        assertThat(messages.size()).isEqualTo(2);
+        assertThat(messages).hasSize(2);
         assertThat(messages.get(0)).isEqualTo("?  This is a test");
         assertThat(messages.get(1)).isEqualTo("?  Hello world!");
     }

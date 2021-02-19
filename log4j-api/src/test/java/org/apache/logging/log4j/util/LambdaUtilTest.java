@@ -79,7 +79,7 @@ public class LambdaUtilTest {
 
         final Supplier<?>[] functions = { function1, function2 };
         final Object[] actual = LambdaUtil.getAll(functions);
-        assertThat(functions.length).isEqualTo(actual.length);
+        assertThat(functions).hasSameSizeAs(actual);
         assertThat(actual[0]).isSameAs(expected1);
         assertThat(actual[1]).isSameAs(expected2);
     }
@@ -94,7 +94,7 @@ public class LambdaUtilTest {
     public void testGetAllReturnsNullElementsIfSupplierArrayContainsNulls() {
         final Supplier<?>[] functions = new Supplier<?>[3];
         final Object[] actual = LambdaUtil.getAll(functions);
-        assertThat(functions.length).isEqualTo(actual.length);
+        assertThat(functions).hasSameSizeAs(actual);
         for (final Object object : actual) {
             assertThat(object).isNull();
         }

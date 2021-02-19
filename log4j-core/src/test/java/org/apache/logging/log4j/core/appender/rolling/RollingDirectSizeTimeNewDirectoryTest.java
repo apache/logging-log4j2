@@ -65,20 +65,21 @@ public class RollingDirectSizeTimeNewDirectoryTest {
         try {
 
             final int minExpectedLogFolderCount = 2;
-            assertThat(logFolders.length >= minExpectedLogFolderCount).describedAs("was expecting at least " + minExpectedLogFolderCount + " folders, " +
-                            "found " + logFolders.length).isTrue();
+            assertThat(logFolders).describedAs("was expecting at least " + minExpectedLogFolderCount + " folders, " +
+                            "found " + logFolders.length).hasSizeGreaterThanOrEqualTo(minExpectedLogFolderCount);
 
             for (int logFolderIndex = 0; logFolderIndex < logFolders.length; ++logFolderIndex) {
 
                 File logFolder = logFolders[logFolderIndex];
                 File[] logFiles = logFolder.listFiles();
-                assertThat(logFiles != null && logFiles.length > 0).describedAs("no files found in folder: " + logFolder).isTrue();
+                assertThat(logFiles != null).describedAs("no files found in folder: " + logFolder).isTrue();
+assertThat(logFiles).describedAs("no files found in folder: " + logFolder).hasSizeGreaterThan(0);
 
                 final int minExpectedLogFileCount = 2;
                 if (logFolderIndex > 0
                         && logFolderIndex < logFolders.length - 1) {
-                    assertThat(logFiles.length >= minExpectedLogFileCount).describedAs("was expecting at least " + minExpectedLogFileCount + " files, " +
-                                    "found " + logFiles.length + ": " + Arrays.toString(logFiles)).isTrue();
+                    assertThat(logFiles).describedAs("was expecting at least " + minExpectedLogFileCount + " files, " +
+                                    "found " + logFiles.length + ": " + Arrays.toString(logFiles)).hasSizeGreaterThanOrEqualTo(minExpectedLogFileCount);
                 }
             }
 

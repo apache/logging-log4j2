@@ -55,9 +55,9 @@ public class AppenderRefLevelTest {
         logger1.warn("warn Message");
         logger1.traceExit();
         List<LogEvent> events = app1.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 6, actual " + events.size()).isEqualTo(6);
+        assertThat(events).describedAs("Incorrect number of events. Expected 6, actual " + events.size()).hasSize(6);
         events = app2.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).isEqualTo(1);
+        assertThat(events).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).hasSize(1);
     }
 
     @Test
@@ -69,9 +69,9 @@ public class AppenderRefLevelTest {
         logger2.warn("warn Message");
         logger2.traceExit();
         List<LogEvent> events = app1.getEvents();
-        assertThat(2).describedAs("Incorrect number of events. Expected 2, actual " + events.size()).isEqualTo(events.size());
+        assertThat(events).describedAs("Incorrect number of events. Expected 2, actual " + events.size()).hasSize(2);
         events = app2.getEvents();
-        assertThat(4).describedAs("Incorrect number of events. Expected 4, actual " + events.size()).isEqualTo(events.size());
+        assertThat(events).describedAs("Incorrect number of events. Expected 4, actual " + events.size()).hasSize(4);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class AppenderRefLevelTest {
         logger3.warn("warn Message");
         logger3.traceExit();
         final List<LogEvent> events = app1.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 4, actual " + events.size()).isEqualTo(4);
+        assertThat(events).describedAs("Incorrect number of events. Expected 4, actual " + events.size()).hasSize(4);
     }
 }
 

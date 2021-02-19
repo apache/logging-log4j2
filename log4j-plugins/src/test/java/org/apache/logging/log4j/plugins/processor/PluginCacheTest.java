@@ -37,15 +37,15 @@ public class PluginCacheTest {
         PluginCache cacheA = new PluginCache();
         createCategory(cacheA, "one", Arrays.asList("bravo", "alpha", "charlie"));
         createCategory(cacheA, "two", Arrays.asList("alpha", "charlie", "bravo"));
-        assertThat(2).isEqualTo(cacheA.getAllCategories().size());
-        assertThat(3).isEqualTo(cacheA.getAllCategories().get("one").size());
-        assertThat(3).isEqualTo(cacheA.getAllCategories().get("two").size());
+        assertThat(cacheA.getAllCategories()).hasSize(2);
+        assertThat(cacheA.getAllCategories().get("one")).hasSize(3);
+        assertThat(cacheA.getAllCategories().get("two")).hasSize(3);
         PluginCache cacheB = new PluginCache();
         createCategory(cacheB, "two", Arrays.asList("bravo", "alpha", "charlie"));
         createCategory(cacheB, "one", Arrays.asList("alpha", "charlie", "bravo"));
-        assertThat(2).isEqualTo(cacheB.getAllCategories().size());
-        assertThat(3).isEqualTo(cacheB.getAllCategories().get("one").size());
-        assertThat(3).isEqualTo(cacheB.getAllCategories().get("two").size());
+        assertThat(cacheB.getAllCategories()).hasSize(2);
+        assertThat(cacheB.getAllCategories().get("one")).hasSize(3);
+        assertThat(cacheB.getAllCategories().get("two")).hasSize(3);
         assertThat(Objects.toString(cacheB.getAllCategories())).isEqualTo(Objects.toString(cacheA.getAllCategories()));
     }
 

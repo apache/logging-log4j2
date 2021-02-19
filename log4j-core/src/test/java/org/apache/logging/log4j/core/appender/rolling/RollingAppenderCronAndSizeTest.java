@@ -70,7 +70,8 @@ public class RollingAppenderCronAndSizeTest {
 		}
 		Thread.sleep(50);
 		final File dir = new File(DIR);
-		assertThat(dir.exists() && dir.listFiles().length > 0).describedAs("Directory not created").isTrue();
+		assertThat(dir.exists()).describedAs("Directory not created").isTrue();
+assertThat(dir.listFiles()).describedAs("Directory not created").hasSizeGreaterThan(0);
 		final File[] files = dir.listFiles();
 		Arrays.sort(files);
 		assertThat(files).isNotNull();

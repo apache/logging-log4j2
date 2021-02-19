@@ -77,7 +77,7 @@ public class RoutingAppenderWithJndiTest {
         msg = new StructuredDataMessage("Test", "This is a message from Application1", "Context");
         EventLogger.logEvent(msg);
         assertThat(listAppender1.getEvents()).describedAs("No events generated").isNotNull();
-        assertThat(listAppender1.getEvents().size() == 1).describedAs("Incorrect number of events. Expected 1, got " + listAppender1.getEvents().size()).isTrue();
+        assertThat(listAppender1.getEvents()).describedAs("Incorrect number of events. Expected 1, got " + listAppender1.getEvents().size()).hasSize(1);
 
         // now set jndi resource to Application2
         context.rebind(JNDI_CONTEXT_NAME, "Application2");
@@ -85,14 +85,14 @@ public class RoutingAppenderWithJndiTest {
         msg = new StructuredDataMessage("Test", "This is a message from Application2", "Context");
         EventLogger.logEvent(msg);
         assertThat(listAppender2.getEvents()).describedAs("No events generated").isNotNull();
-        assertThat(listAppender2.getEvents().size() == 1).describedAs("Incorrect number of events. Expected 1, got " + listAppender2.getEvents().size()).isTrue();
-        assertThat(listAppender1.getEvents().size() == 1).describedAs("Incorrect number of events. Expected 1, got " + listAppender1.getEvents().size()).isTrue();
+        assertThat(listAppender2.getEvents()).describedAs("Incorrect number of events. Expected 1, got " + listAppender2.getEvents().size()).hasSize(1);
+        assertThat(listAppender1.getEvents()).describedAs("Incorrect number of events. Expected 1, got " + listAppender1.getEvents().size()).hasSize(1);
 
         msg = new StructuredDataMessage("Test", "This is another message from Application2", "Context");
         EventLogger.logEvent(msg);
         assertThat(listAppender2.getEvents()).describedAs("No events generated").isNotNull();
-        assertThat(listAppender2.getEvents().size() == 2).describedAs("Incorrect number of events. Expected 2, got " + listAppender2.getEvents().size()).isTrue();
-        assertThat(listAppender1.getEvents().size() == 1).describedAs("Incorrect number of events. Expected 1, got " + listAppender1.getEvents().size()).isTrue();
+        assertThat(listAppender2.getEvents()).describedAs("Incorrect number of events. Expected 2, got " + listAppender2.getEvents().size()).hasSize(2);
+        assertThat(listAppender1.getEvents()).describedAs("Incorrect number of events. Expected 1, got " + listAppender1.getEvents().size()).hasSize(1);
 
         // now set jndi resource to Application3.
         // The context name, 'Application3', will be used as log file name by the default route.

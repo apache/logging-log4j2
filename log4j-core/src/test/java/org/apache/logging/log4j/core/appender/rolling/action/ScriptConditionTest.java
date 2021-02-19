@@ -87,7 +87,7 @@ public class ScriptConditionTest {
         final Path base = Paths.get("baseDirectory");
         final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
         assertThat(pathList).isSameAs(result);
-        assertThat(result.size()).isEqualTo(2);
+        assertThat(result).hasSize(2);
         assertThat(result.get(0).getPath()).isEqualTo(Paths.get("/path/1"));
         assertThat(result.get(1).getPath()).isEqualTo(Paths.get("/path/3"));
     }
@@ -127,7 +127,7 @@ public class ScriptConditionTest {
         final ScriptCondition condition = new ScriptCondition(script, config);
         final Path base = Paths.get("/path");
         final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
-        assertThat(result.size()).isEqualTo(1);
+        assertThat(result).hasSize(1);
         assertThat(result.get(0).getPath()).isEqualTo(Paths.get("/path/2/abc/bbb.txt"));
     }
 

@@ -255,7 +255,7 @@ public class NoSqlDatabaseManagerTest {
             assertThat(thrown.get("stackTrace") instanceof List).describedAs("The thrown stack trace should be a list.").isTrue();
             @SuppressWarnings("unchecked")
             final List<Map<String, Object>> stackTrace = (List<Map<String, Object>>) thrown.get("stackTrace");
-            assertThat(stackTrace.size()).describedAs("The thrown stack trace length is not correct.").isEqualTo(exception.getStackTrace().length);
+            assertThat(stackTrace).describedAs("The thrown stack trace length is not correct.").hasSameSizeAs(exception.getStackTrace());
             for (int i = 0; i < exception.getStackTrace().length; i++) {
                 final StackTraceElement e1 = exception.getStackTrace()[i];
                 final Map<String, Object> e2 = stackTrace.get(i);
@@ -346,7 +346,7 @@ public class NoSqlDatabaseManagerTest {
             assertThat(marker.get("parents") instanceof List).describedAs("The marker parents should be a list.").isTrue();
             @SuppressWarnings("unchecked")
             final List<Object> markerParents = (List<Object>) marker.get("parents");
-            assertThat(markerParents.size()).describedAs("The marker parents should contain two parents").isEqualTo(2);
+            assertThat(markerParents).describedAs("The marker parents should contain two parents").hasSize(2);
 
             assertThat(markerParents.get(0) instanceof Map).describedAs("The marker parents[0] should be a map.").isTrue();
             @SuppressWarnings("unchecked")
@@ -362,7 +362,7 @@ public class NoSqlDatabaseManagerTest {
             assertThat(parent1.get("parents") instanceof List).describedAs("The parent1 parents should be a list.").isTrue();
             @SuppressWarnings("unchecked")
             final List<Object> parent1Parents = (List<Object>) parent1.get("parents");
-            assertThat(parent1Parents.size()).describedAs("The parent1 parents should have only one parent").isEqualTo(1);
+            assertThat(parent1Parents).describedAs("The parent1 parents should have only one parent").hasSize(1);
 
             assertThat(parent1Parents.get(0) instanceof Map).describedAs("The parent1Parents[0] should be a map.").isTrue();
             @SuppressWarnings("unchecked")
@@ -378,7 +378,7 @@ public class NoSqlDatabaseManagerTest {
             assertThat(thrown.get("stackTrace") instanceof List).describedAs("The thrown stack trace should be a list.").isTrue();
             @SuppressWarnings("unchecked")
             final List<Map<String, Object>> stackTrace = (List<Map<String, Object>>) thrown.get("stackTrace");
-            assertThat(stackTrace.size()).describedAs("The thrown stack trace length is not correct.").isEqualTo(exception2.getStackTrace().length);
+            assertThat(stackTrace).describedAs("The thrown stack trace length is not correct.").hasSameSizeAs(exception2.getStackTrace());
             for (int i = 0; i < exception2.getStackTrace().length; i++) {
                 final StackTraceElement e1 = exception2.getStackTrace()[i];
                 final Map<String, Object> e2 = stackTrace.get(i);
@@ -396,7 +396,7 @@ public class NoSqlDatabaseManagerTest {
             assertThat(cause.get("stackTrace") instanceof List).describedAs("The cause stack trace should be a list.").isTrue();
             @SuppressWarnings("unchecked")
             final List<Map<String, Object>> causeStackTrace = (List<Map<String, Object>>) cause.get("stackTrace");
-            assertThat(causeStackTrace.size()).describedAs("The cause stack trace length is not correct.").isEqualTo(exception1.getStackTrace().length);
+            assertThat(causeStackTrace).describedAs("The cause stack trace length is not correct.").hasSameSizeAs(exception1.getStackTrace());
             for (int i = 0; i < exception1.getStackTrace().length; i++) {
                 final StackTraceElement e1 = exception1.getStackTrace()[i];
                 final Map<String, Object> e2 = causeStackTrace.get(i);

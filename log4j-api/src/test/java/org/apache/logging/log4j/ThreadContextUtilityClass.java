@@ -71,14 +71,14 @@ public class ThreadContextUtilityClass {
 
         ThreadContext.put("key", "val2");
         final Map<String, String> map2 = ThreadContext.getContext();
-        assertThat(map2.size()).isEqualTo(1);
+        assertThat(map2).hasSize(1);
         assertThat(map2.get("key")).isEqualTo("val2");
         map2.put("K", "val"); // no error
         assertThat(map2.get("K")).isEqualTo("val");
 
         // first copy is not affected
         assertThat(map2).isNotSameAs(map1);
-        assertThat(map1.size()).isEqualTo(1);
+        assertThat(map1).hasSize(1);
     }
 
     public static void testGetImmutableContextReturnsEmptyMapIfEmpty() {

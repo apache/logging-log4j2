@@ -35,7 +35,7 @@ public class EligibleFilesTest {
         final TestRolloverStrategy strategy = new TestRolloverStrategy();
         final Map<Integer, Path> files = strategy.findFilesInPath(path);
         assertTrue(files.size() > 0, "No files found");
-        assertThat(files.size()).describedAs("Incorrect number of files found. Should be 30, was " + files.size()).isEqualTo(30);
+        assertThat(files).describedAs("Incorrect number of files found. Should be 30, was " + files.size()).hasSize(30);
     }
 
     private static class TestRolloverStrategy extends AbstractRolloverStrategy {

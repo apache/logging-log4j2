@@ -46,7 +46,7 @@ public class LogWithMDCTest {
             assertThat(listApp).isNotNull();
             final List<String> msgs = listApp.getMessages();
             assertThat(msgs).describedAs("No messages received").isNotNull();
-            assertThat(msgs.size() == 1).isTrue();
+            assertThat(msgs).hasSize(1);
             assertThat(msgs.get(0).contains("Key1=John")).describedAs("Key1 is missing").isTrue();
             assertThat(msgs.get(0).contains("Key2=Smith")).describedAs("Key2 is missing").isTrue();
         } finally {

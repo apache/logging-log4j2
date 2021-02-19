@@ -61,7 +61,7 @@ public class BurstFilterTest {
             assertTrue(filter.getAvailable() < 100, "Incorrect number of available slots");
         }
         List<String> msgs = app.getMessages();
-        assertThat(msgs.size()).describedAs("Incorrect message count. Should be 100, actual " + msgs.size()).isEqualTo(100);
+        assertThat(msgs).describedAs("Incorrect message count. Should be 100, actual " + msgs.size()).hasSize(100);
         app.clear();
 
         assertTrue(filter.getAvailable() < 100, "Incorrect number of available slots");
@@ -102,7 +102,7 @@ public class BurstFilterTest {
         }
 
         msgs = app.getMessages();
-        assertThat(msgs.size()).describedAs("Incorrect message count. Should be 110, actual " + msgs.size()).isEqualTo(110);
+        assertThat(msgs).describedAs("Incorrect message count. Should be 110, actual " + msgs.size()).hasSize(110);
         app.clear();
 
         // now log 100 errors, they should all get through because the filter level is set at info
@@ -111,7 +111,7 @@ public class BurstFilterTest {
         }
 
         msgs = app.getMessages();
-        assertThat(msgs.size()).describedAs("Incorrect message count. Should be 110, actual " + msgs.size()).isEqualTo(110);
+        assertThat(msgs).describedAs("Incorrect message count. Should be 110, actual " + msgs.size()).hasSize(110);
         app.clear();
 
         // now log 100 fatals, they should all get through because the filter level is set at info
@@ -120,7 +120,7 @@ public class BurstFilterTest {
         }
 
         msgs = app.getMessages();
-        assertThat(msgs.size()).describedAs("Incorrect message count. Should be 110, actual " + msgs.size()).isEqualTo(110);
+        assertThat(msgs).describedAs("Incorrect message count. Should be 110, actual " + msgs.size()).hasSize(110);
         app.clear();
 
         // wait and make sure we can log messages again despite the fact we just logged a bunch of warns, errors, fatals
@@ -130,7 +130,7 @@ public class BurstFilterTest {
             logger.debug("Waited 3+ seconds, should see 100 logs #" + (i + 1));
         }
         msgs = app.getMessages();
-        assertThat(msgs.size()).describedAs("Incorrect message count. Should be 100, actual " + msgs.size()).isEqualTo(100);
+        assertThat(msgs).describedAs("Incorrect message count. Should be 100, actual " + msgs.size()).hasSize(100);
         app.clear();
 
     }

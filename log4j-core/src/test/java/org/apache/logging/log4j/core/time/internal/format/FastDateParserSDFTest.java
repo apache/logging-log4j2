@@ -227,7 +227,7 @@ public class FastDateParserSDFTest {
             assertThat(actualTime).describedAs(locale.toString()+" "+formattedDate +"\n").isEqualTo(expectedTime);
         } else {
             assertThat(fdferrorIndex).describedAs("Test data error: expected FDF parse to fail, but got " + actualTime).isNotEqualTo(-1);
-            assertThat(sdferrorIndex - fdferrorIndex <= 4).describedAs("FDF error index ("+ fdferrorIndex + ") should approxiamate SDF index (" + sdferrorIndex + ")").isTrue();
+            assertThat(sdferrorIndex - fdferrorIndex).describedAs("FDF error index ("+ fdferrorIndex + ") should approxiamate SDF index (" + sdferrorIndex + ")").isLessThanOrEqualTo(4);
         }        
     }
 }

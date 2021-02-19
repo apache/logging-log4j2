@@ -64,7 +64,7 @@ public class RoutingAppender2767Test {
         File file = new File(ACTIVITY_LOG_FILE);
         assertThat(file.exists()).describedAs("Activity file was not created").isTrue();
         List<String> lines = Files.lines(file.toPath()).collect(Collectors.toList());
-        assertThat(lines.size()).describedAs("Incorrect number of lines").isEqualTo(1);
+        assertThat(lines).describedAs("Incorrect number of lines").hasSize(1);
         assertThat(lines.get(0).contains("This is a test")).describedAs("Incorrect content").isTrue();
     }
 }

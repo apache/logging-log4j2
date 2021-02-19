@@ -35,7 +35,7 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(17, 17);
         helper.encode(text, destination);
 
-        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(0);
+        assertThat(destination.drainPoints).describedAs("drained").hasSize(0);
         assertThat(destination.buffer.position()).describedAs("destination.buf.pos").isEqualTo(text.length());
 
         for (int i = 0; i < text.length(); i++) {
@@ -50,7 +50,7 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(14, 15);
         helper.encode(text, destination);
 
-        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(1);
+        assertThat(destination.drainPoints).describedAs("drained").hasSize(1);
         assertThat(destination.drainPoints.get(0).position).describedAs("drained[0].from").isEqualTo(0);
         assertThat(destination.drainPoints.get(0).limit).describedAs("drained[0].to").isEqualTo(destination.buffer.capacity());
         assertThat(destination.drainPoints.get(0).length()).describedAs("drained[0].length").isEqualTo(destination.buffer.capacity());
@@ -72,7 +72,7 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(4, 20);
         helper.encode(text, destination);
 
-        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(3);
+        assertThat(destination.drainPoints).describedAs("drained").hasSize(3);
         assertThat(destination.drainPoints.get(0).position).describedAs("drained[0].from").isEqualTo(0);
         assertThat(destination.drainPoints.get(0).limit).describedAs("drained[0].to").isEqualTo(destination.buffer.capacity());
         assertThat(destination.drainPoints.get(0).length()).describedAs("drained[0].length").isEqualTo(destination.buffer.capacity());
@@ -100,7 +100,7 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(17, 17);
         helper.encode(text, destination);
 
-        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(0);
+        assertThat(destination.drainPoints).describedAs("drained").hasSize(0);
         assertThat(destination.buffer.position()).describedAs("destination.buf.pos").isEqualTo(text.length());
 
         for (int i = 0; i < text.length(); i++) {
@@ -116,7 +116,7 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(50, 50);
         helper.encode(text, destination);
 
-        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(0);
+        assertThat(destination.drainPoints).describedAs("drained").hasSize(0);
         destination.drain(destination.getByteBuffer());
 
         final byte[] utf8 = text.toString().getBytes(StandardCharsets.UTF_8);
@@ -134,7 +134,7 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(50, 50);
         helper.encode(text, destination);
 
-        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(0);
+        assertThat(destination.drainPoints).describedAs("drained").hasSize(0);
         destination.drain(destination.getByteBuffer());
 
         final byte[] bytes = text.toString().getBytes(SHIFT_JIS);
@@ -150,7 +150,7 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 17);
         helper.encode(text, destination);
 
-        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(4);
+        assertThat(destination.drainPoints).describedAs("drained").hasSize(4);
         assertThat(destination.buffer.position()).describedAs("destination.buf.pos").isEqualTo(3);
 
         for (int i = 0; i < text.length() - 3; i++) {
@@ -169,7 +169,7 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 50);
         helper.encode(text, destination);
 
-        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(7);
+        assertThat(destination.drainPoints).describedAs("drained").hasSize(7);
         destination.drain(destination.getByteBuffer());
 
         final byte[] utf8 = text.toString().getBytes(StandardCharsets.UTF_8);
@@ -186,7 +186,7 @@ public class StringBuilderEncoderTest {
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 50);
         helper.encode(text, destination);
 
-        assertThat(destination.drainPoints.size()).describedAs("drained").isEqualTo(15);
+        assertThat(destination.drainPoints).describedAs("drained").hasSize(15);
         destination.drain(destination.getByteBuffer());
 
         final byte[] utf8 = text.toString().getBytes(StandardCharsets.UTF_8);

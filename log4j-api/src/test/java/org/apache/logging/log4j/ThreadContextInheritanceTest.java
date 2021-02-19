@@ -51,8 +51,8 @@ public class ThreadContextInheritanceTest {
     public void testPush() {
         ThreadContext.push("Hello");
         ThreadContext.push("{} is {}", ThreadContextInheritanceTest.class.getSimpleName(), "running");
-        assertThat("ThreadContextInheritanceTest is running").describedAs("Incorrect parameterized stack value").isEqualTo(ThreadContext.pop());
-        assertThat("Hello").describedAs("Incorrect simple stack value").isEqualTo(ThreadContext.pop());
+        assertThat(ThreadContext.pop()).describedAs("Incorrect parameterized stack value").isEqualTo("ThreadContextInheritanceTest is running");
+        assertThat(ThreadContext.pop()).describedAs("Incorrect simple stack value").isEqualTo("Hello");
     }
 
     @Test

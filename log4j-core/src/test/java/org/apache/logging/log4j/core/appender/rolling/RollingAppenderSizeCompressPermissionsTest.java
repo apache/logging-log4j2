@@ -96,8 +96,8 @@ public class RollingAppenderSizeCompressPermissionsTest {
                 }
             }
         }
-        assertThat(files.length > 2).describedAs("Files not rolled : " + files.length).isTrue();
-        assertThat(gzippedFiles1 > 0).describedAs("Files 1 gzipped not rolled : " + gzippedFiles1).isTrue();
-        assertThat(gzippedFiles2 > 0).describedAs("Files 2 gzipped not rolled : " + gzippedFiles2).isTrue();
+        assertThat(files).describedAs("Files not rolled : " + files.length).hasSizeGreaterThan(2);
+        assertThat(gzippedFiles1).describedAs("Files 1 gzipped not rolled : " + gzippedFiles1).isGreaterThan(0);
+        assertThat(gzippedFiles2).describedAs("Files 2 gzipped not rolled : " + gzippedFiles2).isGreaterThan(0);
     }
 }

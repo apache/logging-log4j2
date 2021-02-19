@@ -158,7 +158,7 @@ public class PriorityTest {
     @SuppressWarnings("deprecation")
     public void testGetAllPossiblePriorities() {
         final Priority[] priorities = Priority.getAllPossiblePriorities();
-        assertThat(priorities.length).isEqualTo(5);
+        assertThat(priorities).hasSize(5);
     }
 
     /**

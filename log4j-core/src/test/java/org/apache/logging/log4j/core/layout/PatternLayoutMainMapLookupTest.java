@@ -60,7 +60,7 @@ public class PatternLayoutMainMapLookupTest {
         assertThat(initialMessages.get(0)).describedAs(messagesStr).isEqualTo("Header: value0");
         listApp.stop();
         final List<String> finalMessages = listApp.getMessages();
-        assertThat(finalMessages.size()).isEqualTo(3);
+        assertThat(finalMessages).hasSize(3);
         assertThat(finalMessages.get(2)).isEqualTo("Footer: value1");
         listApp.clear();
     }

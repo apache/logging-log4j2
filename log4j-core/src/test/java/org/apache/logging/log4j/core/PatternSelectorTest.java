@@ -38,7 +38,7 @@ public class PatternSelectorTest {
         logger.traceExit();
         final List<String> messages = app.getMessages();
         assertThat(messages).describedAs("No Messages").isNotNull();
-        assertThat(messages.size()).describedAs("Incorrect number of messages. Expected 3, Actual " + messages.size() + ": " + messages).isEqualTo(3);
+        assertThat(messages).describedAs("Incorrect number of messages. Expected 3, Actual " + messages.size() + ": " + messages).hasSize(3);
         final String expect = String.format("[TRACE] TestMarkerPatternSelector ====== "
                 + "o.a.l.l.c.PatternSelectorTest.testMarkerPatternSelector:36 Enter ======%n");
         assertThat(messages.get(0)).isEqualTo(expect);
@@ -56,7 +56,7 @@ public class PatternSelectorTest {
         logger.traceExit();
         final List<String> messages = app.getMessages();
         assertThat(messages).describedAs("No Messages").isNotNull();
-        assertThat(messages.size()).describedAs("Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages).isEqualTo(4);
+        assertThat(messages).describedAs("Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages).hasSize(4);
         String expect = "[TRACE] TestScriptPatternSelector ====== " +
                 "o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector:54 Enter ======" + Strings.LINE_SEPARATOR;
         assertThat(messages.get(0)).isEqualTo(expect);
@@ -77,7 +77,7 @@ public class PatternSelectorTest {
         logger.traceExit();
         final List<String> messages = app.getMessages();
         assertThat(messages).describedAs("No Messages").isNotNull();
-        assertThat(messages.size()).describedAs("Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages).isEqualTo(4);
+        assertThat(messages).describedAs("Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages).hasSize(4);
         String expect = "[TRACE] TestJavaScriptPatternSelector ====== " +
                 "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector:76 Enter ======" + Strings.LINE_SEPARATOR;
         assertThat(messages.get(0)).isEqualTo(expect);

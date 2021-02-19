@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.time.internal.format;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -480,7 +481,7 @@ public class FastDateParserTest {
             }
         }
         // SDF and FDF should produce equivalent results
-        assertThat((f==null)==(s==null)).describedAs("Should both or neither throw Exceptions").isTrue();
+        assertThat((f==null)).describedAs("Should both or neither throw Exceptions").isEqualTo((s==null));
         assertThat(dfdp).describedAs("Parsed dates should be equal").isEqualTo(dsdf);
     }
 
@@ -674,12 +675,7 @@ public class FastDateParserTest {
         final TimeZone kst = TimeZone.getTimeZone("Asia/Seoul");
         final DateParser fdp = getInstance("yyyyMMdd", kst, Locale.KOREA);
 
-        try {
-            fdp.parse("2015");
-            fail("expected parse exception");
-        } catch (final ParseException pe) {
-            // expected parse exception
-        }
+                    assertThatThrownBy(() -> fdp.parse("2015")).describedAs("expected parse exception").isInstanceOf(ParseException.class);
 
         // Wed Apr 29 00:00:00 KST 2015
         Date actual = fdp.parse("20150429");

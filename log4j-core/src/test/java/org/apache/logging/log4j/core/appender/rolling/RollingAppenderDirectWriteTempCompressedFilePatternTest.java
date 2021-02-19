@@ -76,7 +76,8 @@ public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
                 logger.debug("This is test message number " + i);
             }
             Thread.sleep(50);
-            assertThat(dir.exists() && dir.listFiles().length > 0).describedAs("Directory not created").isTrue();
+            assertThat(dir.exists()).describedAs("Directory not created").isTrue();
+assertThat(dir.listFiles()).describedAs("Directory not created").hasSizeGreaterThan(0);
             final File[] files = dir.listFiles();
             assertThat(files).isNotNull();
             assertThat(files).is(new HamcrestCondition<>(hasItemInArray(that(hasName(that(endsWith(".gz")))))));
@@ -95,8 +96,8 @@ public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
                     compressedFiles++;
                 }
             }
-            assertThat(temporaryFilesCreated > 0).describedAs("No temporary file created during compression").isTrue();
-            assertThat(compressedFiles == temporaryFilesCreated).describedAs("Temporarys file created not equals to compressed files").isTrue();
+            assertThat(temporaryFilesCreated).describedAs("No temporary file created during compression").isGreaterThan(0);
+            assertThat(compressedFiles).describedAs("Temporarys file created not equals to compressed files").isEqualTo(temporaryFilesCreated);
         }
     }
 }

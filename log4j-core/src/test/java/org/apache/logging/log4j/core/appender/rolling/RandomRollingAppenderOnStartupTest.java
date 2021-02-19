@@ -87,7 +87,7 @@ public class RandomRollingAppenderOnStartupTest {
                     size = Files.size(path);
                 } else {
                     final long fileSize = Files.size(path);
-                    assertThat(size == fileSize).describedAs("Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize).isTrue();
+                    assertThat(size).describedAs("Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize).isEqualTo(fileSize);
                 }
                 Files.delete(path);
             }

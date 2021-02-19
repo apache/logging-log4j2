@@ -39,7 +39,7 @@ public class HighlightConverterTest {
                 new SimpleMessage("message in a bottle")).build();
         final StringBuilder buffer = new StringBuilder();
         converter.format(event, buffer);
-        assertThat(buffer.toString()).isEqualTo("");
+        assertThat(buffer.toString()).isEmpty();
     }
 
     @Test
@@ -115,7 +115,7 @@ public class HighlightConverterTest {
                 new SimpleMessage("message in a bottle")).build();
         final StringBuilder buffer = new StringBuilder();
         converter.format(event, buffer);
-        assertThat(buffer.toString()).isEqualTo("");
+        assertThat(buffer.toString()).isEmpty();
     }
 
     @Test

@@ -182,7 +182,7 @@ public class ResolverUtilCustomProtocolTest {
             resolverUtil
                     .setClassLoader(new SingleURLClassLoader(new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil3/customplugin3/"), cl));
             resolverUtil.findInPackage(new PluginRegistry.PluginTest(), "customplugin3");
-            assertThat(resolverUtil.getClasses().size()).describedAs("Class not found in packages").isEqualTo(1);
+            assertThat(resolverUtil.getClasses()).describedAs("Class not found in packages").hasSize(1);
             assertThat(resolverUtil.getClasses().iterator().next()).describedAs("Unexpected class resolved").isEqualTo(cl.loadClass("customplugin3.FixedString3"));
         }
     }
@@ -194,7 +194,7 @@ public class ResolverUtilCustomProtocolTest {
             resolverUtil.setClassLoader(new SingleURLClassLoader(
                     new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil4/customplugin4.jar/customplugin4/"), cl));
             resolverUtil.findInPackage(new PluginRegistry.PluginTest(), "customplugin4");
-            assertThat(resolverUtil.getClasses().size()).describedAs("Class not found in packages").isEqualTo(1);
+            assertThat(resolverUtil.getClasses()).describedAs("Class not found in packages").hasSize(1);
             assertThat(resolverUtil.getClasses().iterator().next()).describedAs("Unexpected class resolved").isEqualTo(cl.loadClass("customplugin4.FixedString4"));
         }
     }

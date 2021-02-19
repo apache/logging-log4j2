@@ -78,7 +78,7 @@ public class RollingAppenderNoUnconditionalDeleteTest {
         Thread.sleep(100); // Allow time for rollover to complete
 
         assertThat(directory.exists()).describedAs("Dir " + directory + " should exist").isTrue();
-        assertThat(directory.listFiles().length > 0).describedAs("Dir " + directory + " should contain files").isTrue();
+        assertThat(directory.listFiles()).describedAs("Dir " + directory + " should contain files").hasSizeGreaterThan(0);
 
         int total = 0;
         for (final File file : directory.listFiles()) {

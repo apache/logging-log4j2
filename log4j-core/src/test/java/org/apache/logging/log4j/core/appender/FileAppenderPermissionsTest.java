@@ -87,7 +87,7 @@ public class FileAppenderPermissionsTest {
             assertThat(Files.exists(path)).isNotEqualTo(createOnDemand);
             long curLen = file.length();
             long prevLen = curLen;
-            assertThat(0).describedAs("File length: " + curLen).isEqualTo(curLen);
+            assertThat(curLen).describedAs("File length: " + curLen).isEqualTo(0);
             for (int i = 0; i < 100; ++i) {
                 final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger") //
                         .setLoggerFqcn(FileAppenderPermissionsTest.class.getName()).setLevel(Level.INFO) //
@@ -143,7 +143,7 @@ public class FileAppenderPermissionsTest {
             assertTrue(appender.isStarted(), "Appender did not start");
             long curLen = file.length();
             long prevLen = curLen;
-            assertThat(0).describedAs(file + " File length: " + curLen).isEqualTo(curLen);
+            assertThat(curLen).describedAs(file + " File length: " + curLen).isEqualTo(0);
             for (int i = 0; i < 100; ++i) {
                 final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger") //
                         .setLoggerFqcn(FileAppenderPermissionsTest.class.getName()).setLevel(Level.INFO) //

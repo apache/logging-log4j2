@@ -158,20 +158,20 @@ public class LoggerTest {
             ((org.apache.logging.log4j.core.Logger) a.getLogger()).addAppender(ca1);
             ((org.apache.logging.log4j.core.Logger) abc.getLogger()).addAppender(ca2);
 
-            assertThat(0).isEqualTo(ca1.counter);
-            assertThat(0).isEqualTo(ca2.counter);
+            assertThat(ca1.counter).isEqualTo(0);
+            assertThat(ca2.counter).isEqualTo(0);
 
             ab.debug(MSG);
-            assertThat(1).isEqualTo(ca1.counter);
-            assertThat(0).isEqualTo(ca2.counter);
+            assertThat(ca1.counter).isEqualTo(1);
+            assertThat(ca2.counter).isEqualTo(0);
 
             abc.debug(MSG);
-            assertThat(2).isEqualTo(ca1.counter);
-            assertThat(1).isEqualTo(ca2.counter);
+            assertThat(ca1.counter).isEqualTo(2);
+            assertThat(ca2.counter).isEqualTo(1);
 
             x.debug(MSG);
-            assertThat(2).isEqualTo(ca1.counter);
-            assertThat(1).isEqualTo(ca2.counter);
+            assertThat(ca1.counter).isEqualTo(2);
+            assertThat(ca2.counter).isEqualTo(1);
             ca1.stop();
             ca2.stop();
         } finally {
@@ -201,26 +201,26 @@ public class LoggerTest {
             ((org.apache.logging.log4j.core.Logger) a.getLogger()).addAppender(caA);
             ((org.apache.logging.log4j.core.Logger) abc.getLogger()).addAppender(caABC);
 
-            assertThat(0).isEqualTo(caRoot.counter);
-            assertThat(0).isEqualTo(caA.counter);
-            assertThat(0).isEqualTo(caABC.counter);
+            assertThat(caRoot.counter).isEqualTo(0);
+            assertThat(caA.counter).isEqualTo(0);
+            assertThat(caABC.counter).isEqualTo(0);
 
             ab.setAdditivity(false);
 
             a.debug(MSG);
-            assertThat(1).isEqualTo(caRoot.counter);
-            assertThat(1).isEqualTo(caA.counter);
-            assertThat(0).isEqualTo(caABC.counter);
+            assertThat(caRoot.counter).isEqualTo(1);
+            assertThat(caA.counter).isEqualTo(1);
+            assertThat(caABC.counter).isEqualTo(0);
 
             ab.debug(MSG);
-            assertThat(1).isEqualTo(caRoot.counter);
-            assertThat(1).isEqualTo(caA.counter);
-            assertThat(0).isEqualTo(caABC.counter);
+            assertThat(caRoot.counter).isEqualTo(1);
+            assertThat(caA.counter).isEqualTo(1);
+            assertThat(caABC.counter).isEqualTo(0);
 
             abc.debug(MSG);
-            assertThat(1).isEqualTo(caRoot.counter);
-            assertThat(1).isEqualTo(caA.counter);
-            assertThat(1).isEqualTo(caABC.counter);
+            assertThat(caRoot.counter).isEqualTo(1);
+            assertThat(caA.counter).isEqualTo(1);
+            assertThat(caABC.counter).isEqualTo(1);
             caRoot.stop();
             caA.stop();
             caABC.stop();
@@ -401,7 +401,7 @@ public class LoggerTest {
         root.trace("Discarded Message");
 
         final List<LogEvent> msgs = appender.getEvents();
-        assertThat(msgs.size()).isEqualTo(1);
+        assertThat(msgs).hasSize(1);
         final LogEvent event = msgs.get(0);
         assertThat(event.getLevel()).isEqualTo(org.apache.logging.log4j.Level.TRACE);
         assertThat(event.getMessage().getFormat()).isEqualTo("Message 1");
@@ -430,7 +430,7 @@ public class LoggerTest {
             root.trace("Discarded Message", ex);
 
             final List<LogEvent> msgs = appender.getEvents();
-            assertThat(msgs.size()).isEqualTo(1);
+            assertThat(msgs).hasSize(1);
             final LogEvent event = msgs.get(0);
             assertThat(event.getLevel()).isEqualTo(org.apache.logging.log4j.Level.TRACE);
             assertThat(event.getMessage().getFormattedMessage()).isEqualTo("Message 1");
@@ -478,7 +478,7 @@ public class LoggerTest {
             root.log(Priority.INFO, "Test msg2", null);
             root.log(Priority.INFO, "Test msg3");
             final List<String> msgs = appender.getMessages();
-            assertThat(msgs.size() == 3).describedAs("Incorrect number of messages").isTrue();
+            assertThat(msgs).describedAs("Incorrect number of messages").hasSize(3);
             final String msg = msgs.get(0);
             assertThat(msg.contains(LoggerTest.class.getName())).describedAs("Message contains incorrect class name: " + msg).isTrue();
             appender.stop();

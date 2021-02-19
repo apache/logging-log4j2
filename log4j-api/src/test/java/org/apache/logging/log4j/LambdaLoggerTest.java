@@ -226,7 +226,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().debug(marker, messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -242,7 +242,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().debug(messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -257,7 +257,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().debug(marker, messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -274,7 +274,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().debug(messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -290,7 +290,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().debug(marker, supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -306,7 +306,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().debug(supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -321,7 +321,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().debug(marker, supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -338,7 +338,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().debug(supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -354,7 +354,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().debug("abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -369,7 +369,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().debug(marker, "abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -385,7 +385,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().error(marker, messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -401,7 +401,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().error(messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -416,7 +416,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().error(marker, messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -433,7 +433,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().error(messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -449,7 +449,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().error(marker, supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -465,7 +465,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().error(supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -480,7 +480,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().error(marker, supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -497,7 +497,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().error(supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -513,7 +513,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().error("abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -528,7 +528,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().error(marker, "abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -544,7 +544,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().fatal(marker, messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -560,7 +560,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().fatal(messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -575,7 +575,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().fatal(marker, messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -592,7 +592,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().fatal(messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -608,7 +608,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().fatal(marker, supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -624,7 +624,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().fatal(supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -639,7 +639,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().fatal(marker, supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -656,7 +656,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().fatal(supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -672,7 +672,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().fatal("abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -688,7 +688,7 @@ public class LambdaLoggerTest {
         assertThat(supplier2.invoked).isFalse();
 
         logger2.enable().fatal("abc {}{}", supplierArray2);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
         assertThat(supplier2.invoked).isTrue();
 
@@ -704,7 +704,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().fatal(marker, "abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -720,7 +720,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().info(marker, messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -736,7 +736,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().info(messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -751,7 +751,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().info(marker, messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -768,7 +768,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().info(messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -784,7 +784,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().info(marker, supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -800,7 +800,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().info(supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -815,7 +815,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().info(marker, supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -832,7 +832,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().info(supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -848,7 +848,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().info("abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -863,7 +863,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().info(marker, "abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -879,7 +879,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().trace(marker, messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -895,7 +895,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().trace(messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -910,7 +910,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().trace(marker, messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -927,7 +927,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().trace(messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -943,7 +943,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().trace(marker, supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -959,7 +959,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().trace(supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -974,7 +974,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().trace(marker, supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -991,7 +991,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().trace(supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1007,7 +1007,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().trace("abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1022,7 +1022,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().trace(marker, "abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1038,7 +1038,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().warn(marker, messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1054,7 +1054,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().warn(messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1069,7 +1069,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().warn(marker, messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1086,7 +1086,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().warn(messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1102,7 +1102,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().warn(marker, supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1118,7 +1118,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().warn(supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1133,7 +1133,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().warn(marker, supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1150,7 +1150,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().warn(supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1166,7 +1166,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().warn("abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1181,7 +1181,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().warn(marker, "abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1197,7 +1197,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().log(Level.WARN, marker, messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1213,7 +1213,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().log(Level.WARN, messageSupplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1228,7 +1228,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().log(Level.WARN, marker, messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1245,7 +1245,7 @@ public class LambdaLoggerTest {
         assertThat(messageSupplier.invoked).isFalse();
 
         logger2.enable().log(Level.WARN, messageSupplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(messageSupplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1261,7 +1261,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().log(Level.WARN, marker, supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1277,7 +1277,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().log(Level.WARN, supplier);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1292,7 +1292,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().log(Level.WARN, marker, supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1309,7 +1309,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().log(Level.WARN, supplier, throwable);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1325,7 +1325,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().log(Level.WARN, "abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);
@@ -1340,7 +1340,7 @@ public class LambdaLoggerTest {
         assertThat(supplier.invoked).isFalse();
 
         logger2.enable().log(Level.WARN, marker, "abc {}", supplierArray1);
-        assertThat(logger2.list.size()).isEqualTo(1);
+        assertThat(logger2.list).hasSize(1);
         assertThat(supplier.invoked).isTrue();
 
         final LogEvent event = logger2.list.get(0);

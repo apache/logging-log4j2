@@ -81,7 +81,7 @@ public class PatternParserTest {
     public void defaultPattern() {
         final List<PatternFormatter> formatters = parser.parse(msgPattern);
         assertThat(formatters).isNotNull();
-        assertThat(2).isEqualTo(formatters.size());
+        assertThat(formatters).hasSize(2);
         validateConverter(formatters, 0, "Message");
         validateConverter(formatters, 1, "Line Sep");
     }
@@ -295,7 +295,7 @@ public class PatternParserTest {
         final List<PatternFormatter> formatters = parser.parse(pattern);
         assertThat(formatters).isNotNull();
         final String msg = formatters.toString();
-        assertThat(formatters.size()).describedAs(msg).isEqualTo(1);
+        assertThat(formatters).describedAs(msg).hasSize(1);
         assertTrue(checkClass.isInstance(formatters.get(0).getConverter()), msg);
     }
 
@@ -338,7 +338,7 @@ public class PatternParserTest {
     public void testDeeplyNestedPattern() {
         final List<PatternFormatter> formatters = parser.parse(deeplyNestedPattern);
         assertThat(formatters).isNotNull();
-        assertThat(formatters.size()).isEqualTo(1);
+        assertThat(formatters).hasSize(1);
 
         final StringMap mdc = ContextDataFactory.createContextData();
         mdc.putValue("var", "1234");
@@ -359,7 +359,7 @@ public class PatternParserTest {
     public void testClosingBracketButWrongPlace() {
         final List<PatternFormatter> formatters = parser.parse("}%d{");
         assertThat(formatters).isNotNull();
-        assertThat(formatters.size()).isEqualTo(2);
+        assertThat(formatters).hasSize(2);
 
         validateConverter(formatters, 0, "Literal");
         validateConverter(formatters, 1, "Date");
@@ -370,7 +370,7 @@ public class PatternParserTest {
         final List<PatternFormatter> formatters = parser
                 .parse("%d{DEFAULT} - %msg - %xEx{full}{filters(org.junit,org.eclipse)}%n");
         assertThat(formatters).isNotNull();
-        assertThat(formatters.size()).isEqualTo(6);
+        assertThat(formatters).hasSize(6);
         final PatternFormatter patternFormatter = formatters.get(4);
         final LogEventPatternConverter converter = patternFormatter.getConverter();
         assertThat(converter.getClass()).isEqualTo(ExtendedThrowablePatternConverter.class);
@@ -386,7 +386,7 @@ public class PatternParserTest {
         final List<PatternFormatter> formatters = parser
                 .parse("%d{DEFAULT} - %msg - %xEx{full}{filters(org.junit,org.eclipse)}{separator(|)}%n");
         assertThat(formatters).isNotNull();
-        assertThat(formatters.size()).isEqualTo(6);
+        assertThat(formatters).hasSize(6);
         final PatternFormatter patternFormatter = formatters.get(4);
         final LogEventPatternConverter converter = patternFormatter.getConverter();
         assertThat(converter.getClass()).isEqualTo(ExtendedThrowablePatternConverter.class);
@@ -405,7 +405,7 @@ public class PatternParserTest {
     public void testMapPatternConverter() {
         final List<PatternFormatter> formatters = parser.parse("%K");
         assertThat(formatters).isNotNull();
-        assertThat(1).isEqualTo(formatters.size());
+        assertThat(formatters).hasSize(1);
         PatternFormatter formatter = formatters.get(0);
         assertTrue(formatter.getConverter() instanceof MapPatternConverter, "Expected a MapPatternConverter");
     }

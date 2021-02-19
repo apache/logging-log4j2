@@ -43,7 +43,7 @@ public class AsyncLoggersWithAsyncAppenderTest {
         Thread.sleep(100);
         final List<String> list = context.getListAppender("List").getMessages();
         assertThat(list).describedAs("No events generated").isNotNull();
-        assertThat(list.size()).describedAs("Incorrect number of events ").isEqualTo(2);
+        assertThat(list).describedAs("Incorrect number of events ").hasSize(2);
         String msg = list.get(0);
         String expected = getClass().getName() + " This {} a test - [is] - This is a test";
         assertThat(msg).isEqualTo(expected);

@@ -54,20 +54,20 @@ public class RollingAppenderDeleteAccumulatedSizeTest {
 
         final File dir = new File(DIR);
         assertThat(dir.exists()).describedAs("Dir " + DIR + " should exist").isTrue();
-        assertThat(dir.listFiles().length > 0).describedAs("Dir " + DIR + " should contain files").isTrue();
+        assertThat(dir.listFiles()).describedAs("Dir " + DIR + " should contain files").hasSizeGreaterThan(0);
 
         final File[] files = dir.listFiles();
         for (final File file : files) {
             System.out.println(file + " (" + file.length() + "B) "
                     + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(file.lastModified()));
         }
-        assertThat(files.length).describedAs(Arrays.toString(files)).isEqualTo(4);
+        assertThat(files).describedAs(Arrays.toString(files)).hasSize(4);
         long total = 0;
         for (final File file : files) {
             // sometimes test-6.log remains
             assertThat(file.getName().startsWith("test-")).describedAs("unexpected file " + file).isTrue();
             total += file.length();
         }
-        assertThat(total <= 500).describedAs("accumulatedSize=" + total).isTrue();
+        assertThat(total).describedAs("accumulatedSize=" + total).isLessThanOrEqualTo(500);
     }
 }

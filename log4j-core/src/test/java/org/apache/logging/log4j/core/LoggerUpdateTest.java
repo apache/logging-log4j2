@@ -44,7 +44,7 @@ public class LoggerUpdateTest {
         final org.apache.logging.log4j.Logger logger = context.getLogger("com.apache.test");
         logger.traceEntry();
         List<LogEvent> events = app.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).isEqualTo(1);
+        assertThat(events).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).hasSize(1);
         app.clear();
         final LoggerContext ctx = LoggerContext.getContext(false);
         final Configuration config = ctx.getConfiguration();
@@ -56,7 +56,7 @@ public class LoggerUpdateTest {
         ctx.updateLoggers();  // This causes all Loggers to refetch information from their LoggerConfig.
         logger.traceEntry();
         events = app.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 0, actual " + events.size()).isEqualTo(0);
+        assertThat(events).describedAs("Incorrect number of events. Expected 0, actual " + events.size()).hasSize(0);
     }
 
     @Test

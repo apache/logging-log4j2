@@ -43,7 +43,7 @@ public class AsyncLoggersWithAsyncLoggerConfigTest {
         Thread.sleep(100);
         final List<String> list = context.getListAppender("List").getMessages();
         assertThat(list).describedAs("No events generated").isNotNull();
-        assertThat(list.size() == 2).describedAs("Incorrect number of events. Expected 2, got " + list.size()).isTrue();
+        assertThat(list).describedAs("Incorrect number of events. Expected 2, got " + list.size()).hasSize(2);
         String msg = list.get(0);
         String expected = getClass().getName() + " This is a test";
         assertThat(expected.equals(msg)).describedAs("Expected " + expected + ", Actual " + msg).isTrue();

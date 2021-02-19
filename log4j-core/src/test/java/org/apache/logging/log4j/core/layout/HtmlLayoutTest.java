@@ -185,9 +185,9 @@ public class HtmlLayoutTest {
         assertThat(list.get(4)).describedAs("Incorrect title").isEqualTo("<title>Log4j Log Messages</title>");
         assertThat(list.get(list.size() - 1)).describedAs("Incorrect footer").isEqualTo("</body></html>");
         if (includeLocation) {
-            assertThat(multiLine).describedAs("Incorrect multiline").isEqualTo(list.get(50));
+            assertThat(list.get(50)).describedAs("Incorrect multiline").isEqualTo(multiLine);
             assertTrue(html.contains("HtmlLayoutTest.java:"), "Missing location");
-            assertThat(body).describedAs("Incorrect body").isEqualTo(list.get(71));
+            assertThat(list.get(71)).describedAs("Incorrect body").isEqualTo(body);
         } else {
             assertFalse(html.contains("<td>HtmlLayoutTest.java:"), "Location should not be in the output table");
         }

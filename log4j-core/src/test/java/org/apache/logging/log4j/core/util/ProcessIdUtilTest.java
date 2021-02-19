@@ -26,6 +26,6 @@ public class ProcessIdUtilTest {
     @Test
     public void processIdTest() {
         String processId = ProcessIdUtil.getProcessId();
-        assertThat(ProcessIdUtil.DEFAULT_PROCESSID).describedAs("ProcessId is default").isNotEqualTo(processId);
+        assertThat(processId).describedAs("ProcessId is default").isNotEqualTo(ProcessIdUtil.DEFAULT_PROCESSID);
     }
 }

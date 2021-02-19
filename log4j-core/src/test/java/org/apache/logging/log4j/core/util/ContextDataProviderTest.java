@@ -54,7 +54,7 @@ public class ContextDataProviderTest {
         ThreadContext.put("loginId", "jdoe");
         logger.debug("This is a test");
         List<String> messages = appender.getMessages();
-        assertThat(messages.size()).describedAs("Incorrect number of messages").isEqualTo(1);
+        assertThat(messages).describedAs("Incorrect number of messages").hasSize(1);
         assertTrue(messages.get(0).contains("testKey=testValue"), "Context data missing");
     }
 

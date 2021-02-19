@@ -47,7 +47,7 @@ public class StrictXmlConfigTest {
         final EntryMessage entry = logger.traceEntry();
         logger.traceExit(entry);
         final List<LogEvent> events = app.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 2, actual " + events.size()).isEqualTo(2);
+        assertThat(events).describedAs("Incorrect number of events. Expected 2, actual " + events.size()).hasSize(2);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class StrictXmlConfigTest {
         logger.traceEntry();
         logger.traceExit();
         final List<LogEvent> events = app.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 2, actual " + events.size()).isEqualTo(2);
+        assertThat(events).describedAs("Incorrect number of events. Expected 2, actual " + events.size()).hasSize(2);
     }
 
     @Test
@@ -63,14 +63,14 @@ public class StrictXmlConfigTest {
         logger.traceEntry();
         logger.traceExit(0);
         final List<LogEvent> events = app.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 2, actual " + events.size()).isEqualTo(2);
+        assertThat(events).describedAs("Incorrect number of events. Expected 2, actual " + events.size()).hasSize(2);
     }
 
     @Test
     public void throwing() {
         logger.throwing(new IllegalArgumentException("Test Exception"));
         final List<LogEvent> events = app.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).isEqualTo(1);
+        assertThat(events).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).hasSize(1);
     }
 
     @Test
@@ -81,28 +81,28 @@ public class StrictXmlConfigTest {
             logger.catching(e);
         }
         final List<LogEvent> events = app.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).isEqualTo(1);
+        assertThat(events).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).hasSize(1);
     }
 
     @Test
     public void debug() {
         logger.debug("Debug message");
         final List<LogEvent> events = app.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).isEqualTo(1);
+        assertThat(events).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).hasSize(1);
     }
 
     @Test
     public void debugObject() {
         logger.debug(new Date());
         final List<LogEvent> events = app.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).isEqualTo(1);
+        assertThat(events).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).hasSize(1);
     }
 
     @Test
     public void debugWithParms() {
         logger.debug("Hello, {}", "World");
         final List<LogEvent> events = app.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).isEqualTo(1);
+        assertThat(events).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).hasSize(1);
     }
 
     @Test
@@ -112,7 +112,7 @@ public class StrictXmlConfigTest {
         ThreadContext.clearMap();
         logger.debug("Debug message");
         final List<LogEvent> events = app.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 2, actual " + events.size()).isEqualTo(2);
+        assertThat(events).describedAs("Incorrect number of events. Expected 2, actual " + events.size()).hasSize(2);
     }
 
     @Test
@@ -127,7 +127,7 @@ public class StrictXmlConfigTest {
         logger.info(MarkerManager.getMarker("EVENT"), msg);
         ThreadContext.clearMap();
         final List<LogEvent> events = app.getEvents();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).isEqualTo(1);
+        assertThat(events).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).hasSize(1);
     }
 }
 

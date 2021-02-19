@@ -108,7 +108,7 @@ public abstract class SyslogAppenderTestBase {
     }
 
     protected void checkTheNumberOfSentAndReceivedMessages() throws InterruptedException {
-        assertThat(getReceivedMessages(DEFAULT_TIMEOUT_IN_MS).size()).describedAs("The number of received messages should be equal with the number of sent messages").isEqualTo(sentMessages.size());
+        assertThat(getReceivedMessages(DEFAULT_TIMEOUT_IN_MS)).describedAs("The number of received messages should be equal with the number of sent messages").hasSameSizeAs(sentMessages);
     }
 
     protected void checkTheEqualityOfSentAndReceivedMessages(final Level expectedLevel) throws InterruptedException {

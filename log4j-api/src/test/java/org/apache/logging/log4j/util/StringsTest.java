@@ -51,21 +51,21 @@ public class StringsTest {
      */
     @Test
     public void testEMPTY() {
-        assertThat(Strings.EMPTY).isEqualTo("");
-        assertThat(Strings.EMPTY.length()).isEqualTo(0);
+        assertThat(Strings.EMPTY).isEmpty();
+        assertThat(Strings.EMPTY).hasSize(0);
     }
 
     @Test
     public void testJoin() {
         assertThat(Strings.join((Iterable<?>) null, '.')).isNull();
         assertThat(Strings.join((Iterator<?>) null, '.')).isNull();
-        assertThat(Strings.join((Collections.emptyList()), '.')).isEqualTo("");
+        assertThat(Strings.join((Collections.emptyList()), '.')).isEmpty();
 
         assertThat(Strings.join(Collections.singletonList("a"), '.')).isEqualTo("a");
         assertThat(Strings.join(Arrays.asList("a", "b"), '.')).isEqualTo("a.b");
         assertThat(Strings.join(Arrays.asList("a", "b", "c"), '.')).isEqualTo("a.b.c");
 
-        assertThat(Strings.join(Collections.singletonList((String) null), ':')).isEqualTo("");
+        assertThat(Strings.join(Collections.singletonList((String) null), ':')).isEmpty();
         assertThat(Strings.join(Arrays.asList(null, null), ':')).isEqualTo(":");
         assertThat(Strings.join(Arrays.asList("a", null), ':')).isEqualTo("a:");
         assertThat(Strings.join(Arrays.asList(null, "b"), ':')).isEqualTo(":b");

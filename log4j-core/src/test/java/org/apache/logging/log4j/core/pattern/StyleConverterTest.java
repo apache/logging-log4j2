@@ -48,7 +48,7 @@ public class StyleConverterTest {
 
         final List<String> msgs = app.getMessages();
         assertThat(msgs).isNotNull();
-        assertThat(msgs.size()).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).isEqualTo(1);
+        assertThat(msgs).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).hasSize(1);
         assertTrue(msgs.get(0).endsWith(EXPECTED),
                 "Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0));
     }

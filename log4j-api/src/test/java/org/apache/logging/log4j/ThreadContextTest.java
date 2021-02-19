@@ -36,8 +36,8 @@ public class ThreadContextTest {
     public void testPush() {
         ThreadContext.push("Hello");
         ThreadContext.push("{} is {}", ThreadContextTest.class.getSimpleName(), "running");
-        assertThat("ThreadContextTest is running").describedAs("Incorrect parameterized stack value").isEqualTo(ThreadContext.pop());
-        assertThat("Hello").describedAs("Incorrect simple stack value").isEqualTo(ThreadContext.pop());
+        assertThat(ThreadContext.pop()).describedAs("Incorrect parameterized stack value").isEqualTo("ThreadContextTest is running");
+        assertThat(ThreadContext.pop()).describedAs("Incorrect simple stack value").isEqualTo("Hello");
     }
 
     @Test

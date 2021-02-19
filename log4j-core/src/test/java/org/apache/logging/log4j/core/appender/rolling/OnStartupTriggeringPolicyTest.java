@@ -63,7 +63,7 @@ public class OnStartupTriggeringPolicyTest {
             copied = Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
         }
         final long size = Files.size(target);
-        assertThat(size > 0).isTrue();
+        assertThat(size).isGreaterThan(0);
         assertThat(size).isEqualTo(copied);
 
         final FileTime fileTime = FileTime.fromMillis(timeStamp);

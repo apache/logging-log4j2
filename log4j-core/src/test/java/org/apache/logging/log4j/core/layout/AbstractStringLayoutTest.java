@@ -54,11 +54,11 @@ public class AbstractStringLayoutTest {
         final String smallMessage = new String(new char[SMALL]);
         sb.append(smallMessage);
         assertThat(sb.capacity()).describedAs("capacity not grown").isEqualTo(initialCapacity);
-        assertThat(sb.length()).describedAs("length=msg length").isEqualTo(SMALL);
+        assertThat(sb).describedAs("length=msg length").hasSize(SMALL);
 
         final StringBuilder sb2 = ConcreteStringLayout.getStringBuilder();
         assertThat(initialCapacity).describedAs("capacity unchanged").isEqualTo(sb2.capacity());
-        assertThat(sb2.length()).describedAs("empty, ready for use").isEqualTo(0);
+        assertThat(sb2).describedAs("empty, ready for use").hasSize(0);
 
         final int LARGE = ConcreteStringLayout.MAX_STRING_BUILDER_SIZE * 2;
         final String largeMessage = new String(new char[LARGE]);
@@ -66,14 +66,14 @@ public class AbstractStringLayoutTest {
         assertTrue(sb2.capacity() >= LARGE, "capacity grown to fit msg length");
         assertTrue(sb2.capacity() >= ConcreteStringLayout.MAX_STRING_BUILDER_SIZE,
                 "capacity is now greater than max length");
-        assertThat(sb2.length()).describedAs("length=msg length").isEqualTo(LARGE);
+        assertThat(sb2).describedAs("length=msg length").hasSize(LARGE);
         sb2.setLength(0); // set 0 before next getStringBuilder() call
-        assertThat(sb2.length()).describedAs("empty, cleared").isEqualTo(0);
+        assertThat(sb2).describedAs("empty, cleared").hasSize(0);
         assertTrue(sb2.capacity() >= ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, "capacity remains very large");
 
         final StringBuilder sb3 = ConcreteStringLayout.getStringBuilder();
         assertThat(sb3.capacity()).describedAs("capacity, trimmed to MAX_STRING_BUILDER_SIZE").isEqualTo(ConcreteStringLayout.MAX_STRING_BUILDER_SIZE);
-        assertThat(sb3.length()).describedAs("empty, ready for use").isEqualTo(0);
+        assertThat(sb3).describedAs("empty, ready for use").hasSize(0);
     }
 
 }

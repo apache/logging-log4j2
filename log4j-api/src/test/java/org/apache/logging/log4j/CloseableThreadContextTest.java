@@ -112,7 +112,7 @@ public class CloseableThreadContextTest {
             assertThat(ignored).isNotNull();
             assertThat(ThreadContext.peek()).isEqualTo(message);
         }
-        assertThat(ThreadContext.peek()).isEqualTo("");
+        assertThat(ThreadContext.peek()).isEmpty();
     }
 
     @Test
@@ -123,7 +123,7 @@ public class CloseableThreadContextTest {
             assertThat(ignored).isNotNull();
             assertThat(ThreadContext.peek()).isEqualTo(message2);
         }
-        assertThat(ThreadContext.peek()).isEqualTo("");
+        assertThat(ThreadContext.peek()).isEmpty();
     }
 
     @Test
@@ -136,7 +136,7 @@ public class CloseableThreadContextTest {
             assertThat(ignored).isNotNull();
             assertThat(ThreadContext.peek()).isEqualTo(formattedMessage);
         }
-        assertThat(ThreadContext.peek()).isEqualTo("");
+        assertThat(ThreadContext.peek()).isEmpty();
     }
 
     @Test
@@ -157,7 +157,7 @@ public class CloseableThreadContextTest {
             assertThat(ThreadContext.peek()).isEqualTo(stackValue);
         }
         assertThat(ThreadContext.containsKey(key)).isFalse();
-        assertThat(ThreadContext.peek()).isEqualTo("");
+        assertThat(ThreadContext.peek()).isEmpty();
     }
 
     @Test
@@ -171,7 +171,7 @@ public class CloseableThreadContextTest {
         ctc.close();
 
         assertThat(ThreadContext.containsKey(key)).isFalse();
-        assertThat(ThreadContext.peek()).isEqualTo("");
+        assertThat(ThreadContext.peek()).isEmpty();
 
         final String anotherKey = "key2";
         final String anotherValue = "value2";
@@ -183,7 +183,7 @@ public class CloseableThreadContextTest {
         ctc.close();
 
         assertThat(ThreadContext.containsKey(anotherKey)).isFalse();
-        assertThat(ThreadContext.peek()).isEqualTo("");
+        assertThat(ThreadContext.peek()).isEmpty();
     }
 
     @Test
@@ -236,7 +236,7 @@ public class CloseableThreadContextTest {
             assertThat(ignored).isNotNull();
             assertThat(ThreadContext.peek()).isEqualTo(key);
         }
-        assertThat(ThreadContext.peek()).isEqualTo("");
+        assertThat(ThreadContext.peek()).isEmpty();
 
     }
 

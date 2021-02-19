@@ -51,7 +51,7 @@ public class RollingAppenderDeleteScriptTest {
 
         final File dir = new File(DIR);
         assertThat(dir.exists()).describedAs("Dir " + DIR + " should exist").isTrue();
-        assertThat(dir.listFiles().length > 0).describedAs("Dir " + DIR + " should contain files").isTrue();
+        assertThat(dir.listFiles()).describedAs("Dir " + DIR + " should contain files").hasSizeGreaterThan(0);
 
         final File[] files = dir.listFiles();
         for (final File file : files) {
@@ -62,7 +62,7 @@ public class RollingAppenderDeleteScriptTest {
             assertThat(file.getName().endsWith(".log")).describedAs(file.getName() + " ends with '.log'").isTrue();
             final String strIndex = file.getName().substring(5, file.getName().indexOf('.'));
             final int index = Integer.parseInt(strIndex);
-            assertThat(index % 2 == 1).describedAs(file + " should have odd index").isTrue();
+            assertThat(index % 2).describedAs(file + " should have odd index").isEqualTo(1);
         }
     }
 }

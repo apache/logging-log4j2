@@ -83,7 +83,7 @@ public class LogEventFactoryTest {
         logger.error("error message");
         final List<LogEvent> events = app.getEvents();
         assertThat(events).describedAs("No events").isNotNull();
-        assertThat(events.size()).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).isEqualTo(1);
+        assertThat(events).describedAs("Incorrect number of events. Expected 1, actual " + events.size()).hasSize(1);
         final LogEvent event = events.get(0);
         assertThat(event.getLoggerName()).describedAs("TestLogEventFactory wasn't used").isEqualTo("Test");
     }

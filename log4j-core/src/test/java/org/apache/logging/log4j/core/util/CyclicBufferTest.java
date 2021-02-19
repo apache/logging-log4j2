@@ -32,7 +32,7 @@ public class CyclicBufferTest {
         buffer.add(1);
         assertThat(buffer.isEmpty()).isTrue();
         Integer[] items = buffer.removeAll();
-        assertThat(items.length).describedAs("Incorrect number of items").isEqualTo(0);
+        assertThat(items).describedAs("Incorrect number of items").hasSize(0);
 
         assertThat(buffer.isEmpty()).isTrue();
         buffer.add(1);
@@ -40,7 +40,7 @@ public class CyclicBufferTest {
         buffer.add(3);
         buffer.add(4);
         items = buffer.removeAll();
-        assertThat(items.length).describedAs("Incorrect number of items").isEqualTo(0);
+        assertThat(items).describedAs("Incorrect number of items").hasSize(0);
         assertThat(buffer.isEmpty()).isTrue();
     }
 
@@ -52,7 +52,7 @@ public class CyclicBufferTest {
         buffer.add(1);
         assertThat(buffer.isEmpty()).isFalse();
         Integer[] items = buffer.removeAll();
-        assertThat(items.length).describedAs("Incorrect number of items").isEqualTo(1);
+        assertThat(items).describedAs("Incorrect number of items").hasSize(1);
 
         assertThat(buffer.isEmpty()).isTrue();
         buffer.add(1);
@@ -60,7 +60,7 @@ public class CyclicBufferTest {
         buffer.add(3);
         buffer.add(4);
         items = buffer.removeAll();
-        assertThat(items.length).describedAs("Incorrect number of items").isEqualTo(1);
+        assertThat(items).describedAs("Incorrect number of items").hasSize(1);
         assertThat(items).isEqualTo(new Integer[] { 4 });
         assertThat(buffer.isEmpty()).isTrue();
     }
@@ -73,7 +73,7 @@ public class CyclicBufferTest {
         buffer.add(1);
         assertThat(buffer.isEmpty()).isFalse();
         Integer[] items = buffer.removeAll();
-        assertThat(items.length).describedAs("Incorrect number of items").isEqualTo(1);
+        assertThat(items).describedAs("Incorrect number of items").hasSize(1);
 
         assertThat(buffer.isEmpty()).isTrue();
         buffer.add(1);
@@ -81,7 +81,7 @@ public class CyclicBufferTest {
         buffer.add(3);
         buffer.add(4);
         items = buffer.removeAll();
-        assertThat(items.length).describedAs("Incorrect number of items").isEqualTo(3);
+        assertThat(items).describedAs("Incorrect number of items").hasSize(3);
         assertThat(items).isEqualTo(new Integer[] { 2, 3, 4 });
         assertThat(buffer.isEmpty()).isTrue();
     }

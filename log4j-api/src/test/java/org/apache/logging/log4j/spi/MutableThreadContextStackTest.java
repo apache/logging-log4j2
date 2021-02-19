@@ -50,7 +50,7 @@ public class MutableThreadContextStackTest {
         stack.push("msg1");
         stack.add("msg2");
 
-        assertThat(stack.size()).isEqualTo(2);
+        assertThat(stack).hasSize(2);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class MutableThreadContextStackTest {
         stack.push("msg1");
         stack.add("msg2");
 
-        assertThat(stack.size()).isEqualTo(2);
+        assertThat(stack).hasSize(2);
         assertThat(stack.peek()).isEqualTo("msg2");
 
         stack.push("msg3");
@@ -74,15 +74,15 @@ public class MutableThreadContextStackTest {
         assertThat(stack.getDepth()).isEqualTo(3);
 
         assertThat(stack.pop()).isEqualTo("msg3");
-        assertThat(stack.size()).isEqualTo(2);
+        assertThat(stack).hasSize(2);
         assertThat(stack.getDepth()).isEqualTo(2);
 
         assertThat(stack.pop()).isEqualTo("msg2");
-        assertThat(stack.size()).isEqualTo(1);
+        assertThat(stack).hasSize(1);
         assertThat(stack.getDepth()).isEqualTo(1);
 
         assertThat(stack.pop()).isEqualTo("msg1");
-        assertThat(stack.size()).isEqualTo(0);
+        assertThat(stack).hasSize(0);
         assertThat(stack.getDepth()).isEqualTo(0);
     }
 
@@ -103,7 +103,7 @@ public class MutableThreadContextStackTest {
         final MutableThreadContextStack stack = createStack();
 
         stack.trim(1);
-        assertThat(stack.size()).isEqualTo(1);
+        assertThat(stack).hasSize(1);
         assertThat(stack.peek()).isEqualTo("msg1");
     }
 
@@ -112,29 +112,29 @@ public class MutableThreadContextStackTest {
         final MutableThreadContextStack stack = createStack();
 
         final ThreadContextStack copy = stack.copy();
-        assertThat(copy.size()).isEqualTo(3);
+        assertThat(copy).hasSize(3);
         assertThat(copy.containsAll(Arrays.asList("msg1", "msg2", "msg3"))).isTrue();
 
         // clearing stack does not affect copy
         stack.clear();
         assertThat(stack.isEmpty()).isTrue();
-        assertThat(copy.size()).isEqualTo(3); // not affected
+        assertThat(copy).hasSize(3); // not affected
         assertThat(copy.containsAll(Arrays.asList("msg1", "msg2", "msg3"))).isTrue();
 
         // adding to copy does not affect stack
         copy.add("other");
-        assertThat(copy.size()).isEqualTo(4); // not affected
+        assertThat(copy).hasSize(4); // not affected
         assertThat(stack.isEmpty()).isTrue();
 
         // adding to stack does not affect copy
         stack.push("newStackMsg");
-        assertThat(stack.size()).isEqualTo(1);
-        assertThat(copy.size()).isEqualTo(4); // not affected
+        assertThat(stack).hasSize(1);
+        assertThat(copy).hasSize(4); // not affected
 
         // clearing copy does not affect stack
         copy.clear();
         assertThat(copy.isEmpty()).isTrue();
-        assertThat(stack.size()).isEqualTo(1);
+        assertThat(stack).hasSize(1);
     }
 
     @Test
@@ -172,7 +172,7 @@ public class MutableThreadContextStackTest {
         stack1.push("msg1");
         stack1.add("msg2");
         stack1.push("msg3");
-        assertThat(stack1.size()).isEqualTo(3);
+        assertThat(stack1).hasSize(3);
         return stack1;
     }
 
@@ -223,12 +223,12 @@ public class MutableThreadContextStackTest {
         assertThat(stack.containsAll(Arrays.asList("msg1", "msg2", "msg3"))).isTrue();
 
         stack.remove("msg1");
-        assertThat(stack.size()).isEqualTo(2);
+        assertThat(stack).hasSize(2);
         assertThat(stack.containsAll(Arrays.asList("msg2", "msg3"))).isTrue();
         assertThat(stack.peek()).isEqualTo("msg3");
 
         stack.remove("msg3");
-        assertThat(stack.size()).isEqualTo(1);
+        assertThat(stack).hasSize(1);
         assertThat(stack.contains("msg2")).isTrue();
         assertThat(stack.peek()).isEqualTo("msg2");
     }
@@ -245,7 +245,7 @@ public class MutableThreadContextStackTest {
         final MutableThreadContextStack stack = createStack();
 
         stack.addAll(Arrays.asList("msg4", "msg5"));
-        assertThat(stack.size()).isEqualTo(5);
+        assertThat(stack).hasSize(5);
         assertThat(stack.contains("msg1")).isTrue();
         assertThat(stack.contains("msg2")).isTrue();
         assertThat(stack.contains("msg3")).isTrue();
@@ -258,7 +258,7 @@ public class MutableThreadContextStackTest {
         final MutableThreadContextStack stack = createStack();
 
         stack.removeAll(Arrays.asList("msg1", "msg3"));
-        assertThat(stack.size()).isEqualTo(1);
+        assertThat(stack).hasSize(1);
         assertThat(stack.contains("msg1")).isFalse();
         assertThat(stack.contains("msg2")).isTrue();
         assertThat(stack.contains("msg3")).isFalse();
@@ -269,7 +269,7 @@ public class MutableThreadContextStackTest {
         final MutableThreadContextStack stack = createStack();
 
         stack.retainAll(Arrays.asList("msg1", "msg3"));
-        assertThat(stack.size()).isEqualTo(2);
+        assertThat(stack).hasSize(2);
         assertThat(stack.contains("msg1")).isTrue();
         assertThat(stack.contains("msg2")).isFalse();
         assertThat(stack.contains("msg3")).isTrue();

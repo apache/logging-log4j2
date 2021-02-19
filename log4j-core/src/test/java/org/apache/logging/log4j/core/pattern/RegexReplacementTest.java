@@ -52,7 +52,7 @@ public class RegexReplacementTest {
         logger.error(this.getClass().getName());
         List<String> msgs = app.getMessages();
         assertThat(msgs).isNotNull();
-        assertThat(msgs.size()).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).isEqualTo(1);
+        assertThat(msgs).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).hasSize(1);
         assertTrue(
                 msgs.get(0).endsWith(EXPECTED), "Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0));
         app.clear();
@@ -60,7 +60,7 @@ public class RegexReplacementTest {
         logger.error("This is a test for ${ctx:MyKey}");
         msgs = app.getMessages();
         assertThat(msgs).isNotNull();
-        assertThat(msgs.size()).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).isEqualTo(1);
+        assertThat(msgs).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).hasSize(1);
         assertThat(msgs.get(0)).isEqualTo("LoggerTest This is a test for Apache" + Strings.LINE_SEPARATOR);
     }
 
@@ -69,7 +69,7 @@ public class RegexReplacementTest {
         logger2.error(this.getClass().getName());
         final List<String> msgs = app2.getMessages();
         assertThat(msgs).isNotNull();
-        assertThat(msgs.size()).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).isEqualTo(1);
+        assertThat(msgs).describedAs("Incorrect number of messages. Should be 1 is " + msgs.size()).hasSize(1);
         assertTrue(
                 msgs.get(0).endsWith(EXPECTED), "Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0));
     }
