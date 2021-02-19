@@ -16,17 +16,8 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.test.AvailablePortFinder;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,8 +30,17 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.test.AvailablePortFinder;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 //@Disabled("Currently needs better port choosing support")
 public class SocketReconnectTest {
@@ -128,8 +128,8 @@ public class SocketReconnectTest {
                 }
             }
         }
-        assertNotNull(msg, "No message");
-        assertEquals(message, msg);
+        assertThat(msg).describedAs("No message").isNotNull();
+        assertThat(msg).isEqualTo(message);
 
         logger.error(SHUTDOWN);
         server1.join();
@@ -167,8 +167,8 @@ public class SocketReconnectTest {
                 }
             }
         }
-        assertNotNull(msg, "No message");
-        assertEquals(message, msg);
+        assertThat(msg).describedAs("No message").isNotNull();
+        assertThat(msg).isEqualTo(message);
         logger.error(SHUTDOWN);
         server1.join();
     }
@@ -196,8 +196,8 @@ public class SocketReconnectTest {
                 }
             }
         }
-        assertNotNull(msg, "No message");
-        assertEquals(message, msg);
+        assertThat(msg).describedAs("No message").isNotNull();
+        assertThat(msg).isEqualTo(message);
 
         server1.shutdown();
         server1.join();
@@ -215,8 +215,8 @@ public class SocketReconnectTest {
                 }
             }
         }
-        assertNotNull(msg, "No message");
-        assertEquals(message, msg);
+        assertThat(msg).describedAs("No message").isNotNull();
+        assertThat(msg).isEqualTo(message);
 
         server2.shutdown();
         server2.join();

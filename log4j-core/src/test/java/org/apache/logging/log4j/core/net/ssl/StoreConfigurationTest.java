@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Disabled
 public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
@@ -31,8 +32,8 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
         final StoreConfiguration<Object> a = new StoreConfiguration<>(location, password);
         final StoreConfiguration<Object> b = new StoreConfiguration<>(location, password);
 
-        assertEquals(b, a);
-        assertEquals(a, b);
+        assertThat(a).isEqualTo(b);
+        assertThat(b).isEqualTo(a);
     }
 
     @Test
@@ -42,8 +43,8 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
         final StoreConfiguration<Object> a = new StoreConfiguration<>(location, password);
         final StoreConfiguration<Object> b = new StoreConfiguration<>(null, new MemoryPasswordProvider(null));
 
-        assertNotEquals(a, b);
-        assertNotEquals(b, a);
+        assertThat(b).isNotEqualTo(a);
+        assertThat(a).isNotEqualTo(b);
     }
 
     @Test
@@ -51,7 +52,7 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
         final StoreConfiguration<Object> a = new StoreConfiguration<>(null, new MemoryPasswordProvider(null));
         final StoreConfiguration<Object> b = new StoreConfiguration<>(null, new MemoryPasswordProvider(null));
 
-        assertEquals(b, a);
-        assertEquals(a, b);
+        assertThat(a).isEqualTo(b);
+        assertThat(b).isEqualTo(a);
     }
 }

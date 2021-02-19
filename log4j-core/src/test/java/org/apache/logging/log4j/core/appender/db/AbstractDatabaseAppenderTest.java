@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -28,7 +29,6 @@ import static org.mockito.Mockito.reset;
 
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Property;
@@ -84,16 +84,16 @@ public class AbstractDatabaseAppenderTest {
     public void testNameAndGetLayout01() {
         setUp("testName01");
 
-        assertEquals("The name is not correct.", "testName01", appender.getName());
-        assertNull("The layout should always be null.", appender.getLayout());
+        assertThat(appender.getName()).describedAs("The name is not correct.").isEqualTo("testName01");
+        assertThat(appender.getLayout()).describedAs("The layout should always be null.").isNull();
     }
 
     @Test
     public void testNameAndGetLayout02() {
         setUp("anotherName02");
 
-        assertEquals("The name is not correct.", "anotherName02", appender.getName());
-        assertNull("The layout should always be null.", appender.getLayout());
+        assertThat(appender.getName()).describedAs("The name is not correct.").isEqualTo("anotherName02");
+        assertThat(appender.getLayout()).describedAs("The layout should always be null.").isNull();
     }
 
     @Test
@@ -101,7 +101,7 @@ public class AbstractDatabaseAppenderTest {
         setUp("name");
 
         final LocalAbstractDatabaseManager oldManager = appender.getManager();
-        assertSame("The manager should be the same.", manager, oldManager);
+        assertThat(oldManager).describedAs("The manager should be the same.").isSameAs(manager);
 
         final LocalAbstractDatabaseManager newManager = mock(LocalAbstractDatabaseManager.class);
         appender.replaceManager(newManager);

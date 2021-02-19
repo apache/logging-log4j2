@@ -16,20 +16,20 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Locale;
 import org.apache.logging.log4j.core.appender.rolling.FileSize;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
-import java.util.Locale;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class FileSizeTest {
 
     @Test
     public void testParse() {
-        assertEquals(5 * 1024, FileSize.parse("5k", 0));
+        assertThat(FileSize.parse("5k", 0)).isEqualTo(5 * 1024);
     }
 
     @Test
@@ -39,7 +39,7 @@ public class FileSizeTest {
         Locale previousDefault = Locale.getDefault();
         try {
             Locale.setDefault(new Locale("de", "DE"));
-            assertEquals(1000, FileSize.parse("1,000", 0));
+            assertThat(FileSize.parse("1,000", 0)).isEqualTo(1000);
         } finally {
             Locale.setDefault(previousDefault);
         }

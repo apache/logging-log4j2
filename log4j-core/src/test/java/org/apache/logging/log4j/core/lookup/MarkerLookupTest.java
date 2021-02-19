@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -23,8 +26,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link MarkerLookup}.
@@ -47,7 +48,7 @@ public class MarkerLookupTest {
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
         final String value = strLookup.lookup(event, marker.getName());
-        assertEquals(markerName, value);
+        assertThat(value).isEqualTo(markerName);
     }
 
     @Test
@@ -58,7 +59,7 @@ public class MarkerLookupTest {
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
         final String value = strLookup.lookup(event, ABSENT_MARKER_NAME);
-        assertNull(value);
+        assertThat(value).isNull();
     }
 
     @Test
@@ -71,25 +72,25 @@ public class MarkerLookupTest {
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
         final String value = strLookup.lookup(event, ABSENT_MARKER_NAME);
-        assertEquals(markerName, value);
+        assertThat(value).isEqualTo(markerName);
     }
 
     @Test
     public void testLookupEventNullNonExistant() {
         final String value = strLookup.lookup(null, ABSENT_MARKER_NAME);
-        assertNull(value);
+        assertThat(value).isNull();
     }
 
     @Test
     public void testLookupExistant() {
         final String value = strLookup.lookup(MarkerManager.getMarker(markerName).getName());
-        assertEquals(markerName, value);
+        assertThat(value).isEqualTo(markerName);
     }
 
     @Test
     public void testLookupNonExistant() {
         final String value = strLookup.lookup(ABSENT_MARKER_NAME);
-        assertNull(value);
+        assertThat(value).isNull();
     }
 
 }

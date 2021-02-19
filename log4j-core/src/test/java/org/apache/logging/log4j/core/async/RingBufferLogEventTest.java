@@ -17,35 +17,36 @@
 
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterConsumer;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
-import org.apache.logging.log4j.util.FilteredObjectInputStream;
-import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
+import org.apache.logging.log4j.util.StringMap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.*;
 
 /**
  * Tests the RingBufferLogEvent class.
@@ -56,7 +57,7 @@ public class RingBufferLogEventTest {
     @Test
     public void testToImmutable() {
         final LogEvent logEvent = new RingBufferLogEvent();
-        Assert.assertNotSame(logEvent, logEvent.toImmutable());
+        assertThat(logEvent.toImmutable()).isNotSameAs(logEvent);
     }
     
     @Test
@@ -73,7 +74,7 @@ public class RingBufferLogEventTest {
         final StackTraceElement location = null;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
                 contextStack, -1, threadName, -1, location, new FixedPreciseClock(), new DummyNanoClock(1));
-        assertEquals(Level.OFF, evt.getLevel());
+        assertThat(evt.getLevel()).isEqualTo(Level.OFF);
     }
 
     @Test
@@ -90,7 +91,7 @@ public class RingBufferLogEventTest {
         final StackTraceElement location = null;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
                 contextStack, -1, threadName, -1, location, new FixedPreciseClock(), new DummyNanoClock(1));
-        assertNotNull(evt.getMessage());
+        assertThat(evt.getMessage()).isNotNull();
     }
 
     @Test
@@ -107,8 +108,8 @@ public class RingBufferLogEventTest {
         final StackTraceElement location = null;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
                 contextStack, -1, threadName, -1, location, new FixedPreciseClock(123, 456), new DummyNanoClock(1));
-        assertEquals(123, evt.getTimeMillis());
-        assertEquals(456, evt.getInstant().getNanoOfMillisecond());
+        assertThat(evt.getTimeMillis()).isEqualTo(123);
+        assertThat(evt.getInstant().getNanoOfMillisecond()).isEqualTo(456);
     }
 
     @Test
@@ -134,19 +135,19 @@ public class RingBufferLogEventTest {
 
         final ObjectInputStream in = new FilteredObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         final RingBufferLogEvent other = (RingBufferLogEvent) in.readObject();
-        assertEquals(loggerName, other.getLoggerName());
-        assertEquals(marker, other.getMarker());
-        assertEquals(fqcn, other.getLoggerFqcn());
-        assertEquals(level, other.getLevel());
-        assertEquals(data, other.getMessage());
-        assertNull("null after serialization", other.getThrown());
-        assertEquals(new ThrowableProxy(t), other.getThrownProxy());
-        assertEquals(evt.getContextData(), other.getContextData());
-        assertEquals(contextStack, other.getContextStack());
-        assertEquals(threadName, other.getThreadName());
-        assertEquals(location, other.getSource());
-        assertEquals(12345, other.getTimeMillis());
-        assertEquals(678, other.getInstant().getNanoOfMillisecond());
+        assertThat(other.getLoggerName()).isEqualTo(loggerName);
+        assertThat(other.getMarker()).isEqualTo(marker);
+        assertThat(other.getLoggerFqcn()).isEqualTo(fqcn);
+        assertThat(other.getLevel()).isEqualTo(level);
+        assertThat(other.getMessage()).isEqualTo(data);
+        assertThat(other.getThrown()).describedAs("null after serialization").isNull();
+        assertThat(other.getThrownProxy()).isEqualTo(new ThrowableProxy(t));
+        assertThat(other.getContextData()).isEqualTo(evt.getContextData());
+        assertThat(other.getContextStack()).isEqualTo(contextStack);
+        assertThat(other.getThreadName()).isEqualTo(threadName);
+        assertThat(other.getSource()).isEqualTo(location);
+        assertThat(other.getTimeMillis()).isEqualTo(12345);
+        assertThat(other.getInstant().getNanoOfMillisecond()).isEqualTo(678);
     }
 
     @SuppressWarnings("deprecation")
@@ -167,19 +168,19 @@ public class RingBufferLogEventTest {
         ((StringMap) evt.getContextData()).putValue("key", "value");
 
         final LogEvent actual = evt.createMemento();
-        assertEquals(evt.getLoggerName(), actual.getLoggerName());
-        assertEquals(evt.getMarker(), actual.getMarker());
-        assertEquals(evt.getLoggerFqcn(), actual.getLoggerFqcn());
-        assertEquals(evt.getLevel(), actual.getLevel());
-        assertEquals(evt.getMessage(), actual.getMessage());
-        assertEquals(evt.getThrown(), actual.getThrown());
-        assertEquals(evt.getContextData(), actual.getContextData());
-        assertEquals(evt.getContextStack(), actual.getContextStack());
-        assertEquals(evt.getThreadName(), actual.getThreadName());
-        assertEquals(evt.getTimeMillis(), actual.getTimeMillis());
-        assertEquals(evt.getInstant().getNanoOfMillisecond(), actual.getInstant().getNanoOfMillisecond());
-        assertEquals(evt.getSource(), actual.getSource());
-        assertEquals(evt.getThrownProxy(), actual.getThrownProxy());
+        assertThat(actual.getLoggerName()).isEqualTo(evt.getLoggerName());
+        assertThat(actual.getMarker()).isEqualTo(evt.getMarker());
+        assertThat(actual.getLoggerFqcn()).isEqualTo(evt.getLoggerFqcn());
+        assertThat(actual.getLevel()).isEqualTo(evt.getLevel());
+        assertThat(actual.getMessage()).isEqualTo(evt.getMessage());
+        assertThat(actual.getThrown()).isEqualTo(evt.getThrown());
+        assertThat(actual.getContextData()).isEqualTo(evt.getContextData());
+        assertThat(actual.getContextStack()).isEqualTo(evt.getContextStack());
+        assertThat(actual.getThreadName()).isEqualTo(evt.getThreadName());
+        assertThat(actual.getTimeMillis()).isEqualTo(evt.getTimeMillis());
+        assertThat(actual.getInstant().getNanoOfMillisecond()).isEqualTo(evt.getInstant().getNanoOfMillisecond());
+        assertThat(actual.getSource()).isEqualTo(evt.getSource());
+        assertThat(actual.getThrownProxy()).isEqualTo(evt.getThrownProxy());
     }
 
     @Test
@@ -203,9 +204,9 @@ public class RingBufferLogEventTest {
             ((StringMap) evt.getContextData()).putValue("key", "value");
 
             final Message actual = evt.createMemento().getMessage();
-            assertEquals("Hello {}!", actual.getFormat());
-            assertArrayEquals(new String[]{"World"}, actual.getParameters());
-            assertEquals("Hello World!", actual.getFormattedMessage());
+            assertThat(actual.getFormat()).isEqualTo("Hello {}!");
+            assertThat(actual.getParameters()).isEqualTo(new String[]{"World"});
+            assertThat(actual.getFormattedMessage()).isEqualTo("Hello World!");
         } finally {
             ReusableMessageFactory.release(message);
         }
@@ -233,7 +234,7 @@ public class RingBufferLogEventTest {
 
             final Message memento1 = evt.memento();
             final Message memento2 = evt.memento();
-            assertThat(memento1, sameInstance(memento2));
+            assertThat(memento1).isSameAs(memento2);
         } finally {
             ReusableMessageFactory.release(message);
         }

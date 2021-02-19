@@ -16,11 +16,12 @@
  */
 package org.apache.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -36,8 +37,8 @@ public class LoggingTest {
     public void testParent() {
         final Logger logger = Logger.getLogger("org.apache.test.logging.Test");
         final Category parent = logger.getParent();
-        assertNotNull("No parent Logger", parent);
-        assertEquals("Incorrect parent logger", "org.apache.test.logging", parent.getName());
+        assertThat(parent).describedAs("No parent Logger").isNotNull();
+        assertThat(parent.getName()).describedAs("Incorrect parent logger").isEqualTo("org.apache.test.logging");
     }
 
 }

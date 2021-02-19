@@ -16,10 +16,13 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.*;
+
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,9 +38,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.*;
 
 /**
  * Tests queue full scenarios with AsyncLoggers in configuration.
@@ -93,20 +93,18 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFull
         TRACE("After  stop() blockingAppender.logEvents.count=" + blockingAppender.logEvents.size());
 
         final Stack<String> actual = transform(blockingAppender.logEvents);
-        assertEquals("Logging in toString() #0", actual.pop());
+        assertThat(actual.pop()).isEqualTo("Logging in toString() #0");
         List<StatusData> statusDataList = StatusLogger.getLogger().getStatusData();
-        assertEquals("Jumped the queue: queue full",
-                "Logging in toString() #128", actual.pop());
+        assertThat(actual.pop()).describedAs("Jumped the queue: queue full").isEqualTo("Logging in toString() #128");
         StatusData mostRecentStatusData = statusDataList.get(statusDataList.size() - 1);
-        assertEquals("Expected warn level status message", Level.WARN, mostRecentStatusData.getLevel());
-        assertThat(mostRecentStatusData.getFormattedStatus(), containsString(
-                "Log4j2 logged an event out of order to prevent deadlock caused by domain " +
-                        "objects logging from their toString method when the async queue is full"));
+        assertThat(mostRecentStatusData.getLevel()).describedAs("Expected warn level status message").isEqualTo(Level.WARN);
+        assertThat(mostRecentStatusData.getFormattedStatus()).contains("Log4j2 logged an event out of order to prevent deadlock caused by domain " +
+                        "objects logging from their toString method when the async queue is full");
 
         for (int i = 1; i < 128; i++) {
-            assertEquals("First batch", "Logging in toString() #" + i, actual.pop());
+            assertThat(actual.pop()).describedAs("First batch").isEqualTo("Logging in toString() #" + i);
         }
-        assertEquals("logging naughty object #0 Who's bad?!", actual.pop());
-        assertTrue(actual.isEmpty());
+        assertThat(actual.pop()).isEqualTo("logging naughty object #0 Who's bad?!");
+        assertThat(actual.isEmpty()).isTrue();
     }
 }

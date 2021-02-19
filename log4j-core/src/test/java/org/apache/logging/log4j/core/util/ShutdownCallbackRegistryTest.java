@@ -16,9 +16,15 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -29,12 +35,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ShutdownCallbackRegistryTest {
 
@@ -54,12 +54,12 @@ public class ShutdownCallbackRegistryTest {
     @LoggerContextSource("ShutdownCallbackRegistryTest.xml")
     public void testShutdownCallbackRegistry(final LoggerContext context) {
         assertTrue(context.isStarted(), "LoggerContext should be started");
-        assertThat(Registry.CALLBACKS, hasSize(1));
+        assertThat(Registry.CALLBACKS).hasSize(1);
         Registry.shutdown();
         assertTrue(context.isStopped(), "LoggerContext should be stopped");
-        assertThat(Registry.CALLBACKS, hasSize(0));
+        assertThat(Registry.CALLBACKS).hasSize(0);
         final ContextSelector selector = ((Log4jContextFactory) LogManager.getFactory()).getSelector();
-        assertThat(selector.getLoggerContexts(), not(hasItem(context)));
+        assertThat(selector.getLoggerContexts()).doesNotContain(context);
     }
 
     public static class Registry implements ShutdownCallbackRegistry {

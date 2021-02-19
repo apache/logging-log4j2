@@ -16,23 +16,23 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.junit.CleanUpFiles;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.junit.CleanUpFiles;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.assertj.core.api.HamcrestCondition;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests that logged strings appear in the file, that the initial file size is the specified specified region length,
@@ -54,18 +54,18 @@ public class MemoryMappedFileAppenderTest {
         final Path logFile = Paths.get("target", "MemoryMappedFileAppenderTest.log");
         try {
             log.warn("Test log1");
-            assertTrue(Files.exists(logFile));
-            assertEquals(MemoryMappedFileManager.DEFAULT_REGION_LENGTH, Files.size(logFile));
+            assertThat(Files.exists(logFile)).isTrue();
+            assertThat(Files.size(logFile)).isEqualTo(MemoryMappedFileManager.DEFAULT_REGION_LENGTH);
             log.warn("Test log2");
-            assertEquals(MemoryMappedFileManager.DEFAULT_REGION_LENGTH, Files.size(logFile));
+            assertThat(Files.size(logFile)).isEqualTo(MemoryMappedFileManager.DEFAULT_REGION_LENGTH);
         } finally {
             context.stop();
         }
         final int LINESEP = System.lineSeparator().length();
-        assertEquals(18 + 2 * LINESEP, Files.size(logFile));
+        assertThat(Files.size(logFile)).isEqualTo(18 + 2 * LINESEP);
 
         final List<String> lines = Files.readAllLines(logFile);
-        assertThat(lines, both(hasSize(2)).and(contains("Test log1", "Test log2")));
+        assertThat(lines).is(new HamcrestCondition<>(both(hasSize(2)).and(contains("Test log1", "Test log2"))));
     }
 
     @Test
@@ -78,19 +78,19 @@ public class MemoryMappedFileAppenderTest {
         final String str = new String(text);
         try {
             log.warn("Test log1");
-            assertTrue(Files.exists(logFile));
-            assertEquals(256, Files.size(logFile));
+            assertThat(Files.exists(logFile)).isTrue();
+            assertThat(Files.size(logFile)).isEqualTo(256);
             log.warn(str);
-            assertEquals(2 * 256, Files.size(logFile));
+            assertThat(Files.size(logFile)).isEqualTo(2 * 256);
             log.warn(str);
-            assertEquals(3 * 256, Files.size(logFile));
+            assertThat(Files.size(logFile)).isEqualTo(3 * 256);
         } finally {
             context.stop();
         }
-        assertEquals(521 + 3 * System.lineSeparator().length(), Files.size(logFile), "Expected file size to shrink");
+        assertThat(Files.size(logFile)).describedAs("Expected file size to shrink").isEqualTo(521 + 3 * System.lineSeparator().length());
 
         final List<String> lines = Files.readAllLines(logFile);
-        assertThat(lines, both(hasSize(3)).and(contains("Test log1", str, str)));
+        assertThat(lines).is(new HamcrestCondition<>(both(hasSize(3)).and(contains("Test log1", str, str))));
     }
 
     @Test
@@ -99,22 +99,22 @@ public class MemoryMappedFileAppenderTest {
         final Logger log = context.getLogger(getClass());
         final Path logFile = Paths.get("target", "MemoryMappedFileAppenderLocationTest.log");
         final int expectedFileLength = Integers.ceilingNextPowerOfTwo(32000);
-        assertEquals(32768, expectedFileLength);
+        assertThat(expectedFileLength).isEqualTo(32768);
         try {
             log.warn("Test log1");
-            assertTrue(Files.exists(logFile));
-            assertEquals(expectedFileLength, Files.size(logFile));
+            assertThat(Files.exists(logFile)).isTrue();
+            assertThat(Files.size(logFile)).isEqualTo(expectedFileLength);
             log.warn("Test log2");
-            assertEquals(expectedFileLength, Files.size(logFile));
+            assertThat(Files.size(logFile)).isEqualTo(expectedFileLength);
         } finally {
             context.stop();
         }
-        assertEquals(272 + 2 * System.lineSeparator().length(), Files.size(logFile), "Expected file size to shrink");
+        assertThat(Files.size(logFile)).describedAs("Expected file size to shrink").isEqualTo(272 + 2 * System.lineSeparator().length());
 
         final List<String> lines = Files.readAllLines(logFile);
-        assertThat(lines, both(hasSize(2)).and(contains(
+        assertThat(lines).is(new HamcrestCondition<>(both(hasSize(2)).and(contains(
                 "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:104): Test log1",
                 "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:107): Test log2"
-        )));
+        ))));
     }
 }

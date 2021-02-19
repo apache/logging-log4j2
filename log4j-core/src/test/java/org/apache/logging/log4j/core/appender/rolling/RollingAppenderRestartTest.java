@@ -16,15 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.commons.io.file.PathUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.hamcrest.Matcher;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,12 +34,15 @@ import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertTrue;
+import org.apache.commons.io.file.PathUtils;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.hamcrest.Matcher;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 public class RollingAppenderRestartTest {
 
@@ -84,9 +84,7 @@ public class RollingAppenderRestartTest {
         logger.info("This is test message number 1");
         final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));
         final File[] files = DIR.toFile().listFiles();
-        assertTrue(
-                "was expecting files with '.gz' suffix, found: " + Arrays.toString(files),
-                hasGzippedFile.matches(files));
+        assertThat(hasGzippedFile.matches(files)).describedAs("was expecting files with '.gz' suffix, found: " + Arrays.toString(files)).isTrue();
     }
 
 }

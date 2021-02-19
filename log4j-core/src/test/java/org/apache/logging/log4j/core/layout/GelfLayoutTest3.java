@@ -16,8 +16,12 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -27,10 +31,6 @@ import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("GelfLayoutTest3.xml")
 @UsingAnyThreadContext
@@ -47,15 +47,15 @@ public class GelfLayoutTest3 {
         final String gelf = list.getMessages().get(0);
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(gelf);
-        assertEquals("My Test Message", json.get("short_message").asText());
-        assertEquals("myhost", json.get("host").asText());
-        assertNotNull(json.get("_loginId"));
-        assertEquals("rgoers", json.get("_loginId").asText());
-        assertNull(json.get("_internalId"));
-        assertNull(json.get("_requestId"));
+        assertThat(json.get("short_message").asText()).isEqualTo("My Test Message");
+        assertThat(json.get("host").asText()).isEqualTo("myhost");
+        assertThat(json.get("_loginId")).isNotNull();
+        assertThat(json.get("_loginId").asText()).isEqualTo("rgoers");
+        assertThat(json.get("_internalId")).isNull();
+        assertThat(json.get("_requestId")).isNull();
         String message = json.get("full_message").asText();
-        assertTrue(message.contains("loginId=rgoers"));
-        assertTrue(message.contains("GelfLayoutTest3"));
+        assertThat(message.contains("loginId=rgoers")).isTrue();
+        assertThat(message.contains("GelfLayoutTest3")).isTrue();
     }
 
 }

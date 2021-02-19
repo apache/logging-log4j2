@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -25,8 +28,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @UsingThreadContextMap
 public class MdcPatternConverterTest {
@@ -51,7 +52,7 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "{object=Log4j, subject=I, verb=love}";
-        assertEquals(expected, str, "Incorrect result. Expected " + expected + ", actual " + str);
+        assertThat(str).describedAs("Incorrect result. Expected " + expected + ", actual " + str).isEqualTo(expected);
     }
 
     @Test
@@ -68,7 +69,7 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "prefix {object=Log4j, subject=I, verb=love}";
-        assertEquals(expected, str, "Incorrect result. Expected " + expected + ", actual " + str);
+        assertThat(str).describedAs("Incorrect result. Expected " + expected + ", actual " + str).isEqualTo(expected);
     }
 
     @Test
@@ -85,7 +86,7 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "{}";
-        assertEquals(expected, str, "Incorrect result. Expected " + expected + ", actual " + str);
+        assertThat(str).describedAs("Incorrect result. Expected " + expected + ", actual " + str).isEqualTo(expected);
     }
 
     @Test
@@ -103,7 +104,7 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "{foo=bar}";
-        assertEquals(expected, str, "Incorrect result. Expected " + expected + ", actual " + str);
+        assertThat(str).describedAs("Incorrect result. Expected " + expected + ", actual " + str).isEqualTo(expected);
     }
 
     @Test
@@ -120,7 +121,7 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "Log4j";
-        assertEquals(expected, str);
+        assertThat(str).isEqualTo(expected);
     }
 
     @Test
@@ -137,7 +138,7 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "{object=Log4j, subject=I}";
-        assertEquals(expected, str);
+        assertThat(str).isEqualTo(expected);
     }
 
     @Test
@@ -155,7 +156,7 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "prefix {object=Log4j, subject=I}";
-        assertEquals(expected, str);
+        assertThat(str).isEqualTo(expected);
     }
 
     @Test
@@ -172,7 +173,7 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "{object=Log4j}";
-        assertEquals(expected, str);
+        assertThat(str).isEqualTo(expected);
     }
 
     @Test
@@ -190,7 +191,7 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "{}";
-        assertEquals(expected, str);
+        assertThat(str).isEqualTo(expected);
     }
 
 }

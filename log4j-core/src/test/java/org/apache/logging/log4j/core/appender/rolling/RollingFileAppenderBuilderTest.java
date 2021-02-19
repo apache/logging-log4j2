@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,6 +29,6 @@ public class RollingFileAppenderBuilderTest {
      */
     @Test
     public void testDefaultImmediateFlush() {
-        Assert.assertTrue(RollingFileAppender.newBuilder().isImmediateFlush());
+        assertThat(RollingFileAppender.newBuilder().isImmediateFlush()).isTrue();
     }
 }

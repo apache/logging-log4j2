@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.junit.Mutable;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -31,11 +32,11 @@ public class ParameterizedMessageTest {
         final String testMsg = "Test message {}";
         ParameterizedMessage msg = new ParameterizedMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
-        assertEquals(testMsg, result);
+        assertThat(result).isEqualTo(testMsg);
         final Object[] array = null;
         msg = new ParameterizedMessage(testMsg, array, null);
         result = msg.getFormattedMessage();
-        assertEquals(testMsg, result);
+        assertThat(result).isEqualTo(testMsg);
     }
 
     @Test
@@ -43,11 +44,11 @@ public class ParameterizedMessageTest {
         final String testMsg = "";
         ParameterizedMessage msg = new ParameterizedMessage(testMsg, new Object[]{"arg"});
         String result = msg.getFormattedMessage();
-        assertEquals(testMsg, result);
+        assertThat(result).isEqualTo(testMsg);
         final Object[] array = null;
         msg = new ParameterizedMessage(testMsg, array, null);
         result = msg.getFormattedMessage();
-        assertEquals(testMsg, result);
+        assertThat(result).isEqualTo(testMsg);
     }
 
     @Test
@@ -55,11 +56,11 @@ public class ParameterizedMessageTest {
         final String testMsg = "d";
         ParameterizedMessage msg = new ParameterizedMessage(testMsg, new Object[]{"arg"});
         String result = msg.getFormattedMessage();
-        assertEquals(testMsg, result);
+        assertThat(result).isEqualTo(testMsg);
         final Object[] array = null;
         msg = new ParameterizedMessage(testMsg, array, null);
         result = msg.getFormattedMessage();
-        assertEquals(testMsg, result);
+        assertThat(result).isEqualTo(testMsg);
     }
 
     @Test
@@ -67,7 +68,7 @@ public class ParameterizedMessageTest {
         final String testMsg = "Test message {}{} {}";
         final String[] args = { "a", "b", "c" };
         final String result = ParameterizedMessage.format(testMsg, args);
-        assertEquals("Test message ab c", result);
+        assertThat(result).isEqualTo("Test message ab c");
     }
 
     @Test
@@ -75,7 +76,7 @@ public class ParameterizedMessageTest {
         final String testMsg = "Test message {} {} {} {} {} {}";
         final String[] args = { "a", null, "c", null, null, null };
         final String result = ParameterizedMessage.format(testMsg, args);
-        assertEquals("Test message a null c null null null", result);
+        assertThat(result).isEqualTo("Test message a null c null null null");
     }
 
     @Test
@@ -83,7 +84,7 @@ public class ParameterizedMessageTest {
         final String testMsg = "Test message {}{} {}";
         final String[] args = { "a", "b", "c", "unnecessary", "superfluous" };
         final String result = ParameterizedMessage.format(testMsg, args);
-        assertEquals("Test message ab c", result);
+        assertThat(result).isEqualTo("Test message ab c");
     }
 
     @Test
@@ -91,7 +92,7 @@ public class ParameterizedMessageTest {
         final String testMsg = "Test message \\{}{} {}";
         final String[] args = { "a", "b", "c" };
         final String result = ParameterizedMessage.format(testMsg, args);
-        assertEquals("Test message {}a b", result);
+        assertThat(result).isEqualTo("Test message {}a b");
     }
 
     @Test
@@ -99,7 +100,7 @@ public class ParameterizedMessageTest {
         final String testMsg = "Test message {}{} {}\\";
         final String[] args = { "a", "b", "c" };
         final String result = ParameterizedMessage.format(testMsg, args);
-        assertEquals("Test message ab c\\", result);
+        assertThat(result).isEqualTo("Test message ab c\\");
     }
 
     @Test
@@ -107,7 +108,7 @@ public class ParameterizedMessageTest {
         final String testMsg = "Test message {}{} {}Text";
         final String[] args = { "a", "b", "c" };
         final String result = ParameterizedMessage.format(testMsg, args);
-        assertEquals("Test message ab cText", result);
+        assertThat(result).isEqualTo("Test message ab cText");
     }
 
     @Test
@@ -115,7 +116,7 @@ public class ParameterizedMessageTest {
         final String testMsg = "Test message {}{} {}\\\\";
         final String[] args = { "a", "b", "c" };
         final String result = ParameterizedMessage.format(testMsg, args);
-        assertEquals("Test message ab c\\\\", result);
+        assertThat(result).isEqualTo("Test message ab c\\\\");
     }
 
     @Test
@@ -123,7 +124,7 @@ public class ParameterizedMessageTest {
         final String testMsg = "Test message \\\\{}{} {}";
         final String[] args = { "a", "b", "c" };
         final String result = ParameterizedMessage.format(testMsg, args);
-        assertEquals("Test message \\ab c", result);
+        assertThat(result).isEqualTo("Test message \\ab c");
     }
 
     @Test
@@ -135,11 +136,11 @@ public class ParameterizedMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Test message XYZ", actual, "Should use current param value");
+        assertThat(actual).describedAs("Should use current param value").isEqualTo("Test message XYZ");
 
         // modify parameter after calling msg.getFormattedMessage
         param.set("000");
         final String after = msg.getFormattedMessage();
-        assertEquals("Test message XYZ", after, "Should not change after rendered once");
+        assertThat(after).describedAs("Should not change after rendered once").isEqualTo("Test message XYZ");
     }
 }

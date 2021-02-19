@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.config.builder;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -26,10 +30,6 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
-
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConfigurationBuilderTest {
 
@@ -101,7 +101,7 @@ public class ConfigurationBuilderTest {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         addTestFixtures("config name", builder);
         final String xmlConfiguration = builder.toXmlConfiguration();
-        assertEquals(expectedXml, xmlConfiguration);
+        assertThat(xmlConfiguration).isEqualTo(expectedXml);
     }
 
 }

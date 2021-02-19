@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
@@ -27,8 +31,6 @@ import org.apache.logging.log4j.message.ReusableParameterizedMessageTest;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class TraceLoggingTest extends AbstractLogger {
     static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");
@@ -218,7 +220,7 @@ public class TraceLoggingTest extends AbstractLogger {
 
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message data, final Throwable t) {
-        assertEquals(level, currentLevel, "Incorrect Level. Expected " + currentLevel + ", actual " + level);
+        assertThat(currentLevel).describedAs("Incorrect Level. Expected " + currentLevel + ", actual " + level).isEqualTo(level);
         if (marker == null) {
             if (currentEvent.markerName != null) {
                 fail("Incorrect marker. Expected " + currentEvent.markerName + ", actual is null");
@@ -227,9 +229,8 @@ public class TraceLoggingTest extends AbstractLogger {
             if (currentEvent.markerName == null) {
                 fail("Incorrect marker. Expected null. Actual is " + marker.getName());
             } else {
-                assertEquals(currentEvent.markerName, marker.getName(),
-                        "Incorrect marker. Expected " + currentEvent.markerName + ", actual " +
-                                marker.getName());
+                assertThat(marker.getName()).describedAs("Incorrect marker. Expected " + currentEvent.markerName + ", actual " +
+                                marker.getName()).isEqualTo(currentEvent.markerName);
             }
         }
         if (data == null) {
@@ -243,9 +244,8 @@ public class TraceLoggingTest extends AbstractLogger {
                 assertTrue(
                         data.getClass().isAssignableFrom(currentEvent.data.getClass()),
                         "Incorrect message type. Expected " + currentEvent.data + ", actual " + data);
-                assertEquals(currentEvent.data.getFormattedMessage(), data.getFormattedMessage(),
-                        "Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
-                                data.getFormattedMessage());
+                assertThat(data.getFormattedMessage()).describedAs("Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
+                                data.getFormattedMessage()).isEqualTo(currentEvent.data.getFormattedMessage());
             }
         }
         if (t == null) {
@@ -256,7 +256,7 @@ public class TraceLoggingTest extends AbstractLogger {
             if (currentEvent.t == null) {
                 fail("Incorrect Throwable. Expected null. Actual is " + t);
             } else {
-                assertEquals(currentEvent.t, t, "Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t);
+                assertThat(t).describedAs("Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t).isEqualTo(currentEvent.t);
             }
         }
     }
@@ -277,13 +277,13 @@ public class TraceLoggingTest extends AbstractLogger {
         trace("Some other message {}", 123);
 
         // ensure original entry message not overwritten
-        assertEquals("Tracy Logan", entry.getMessage().getFormattedMessage());
+        assertThat(entry.getMessage().getFormattedMessage()).isEqualTo("Tracy Logan");
 
         currentEvent = new LogEvent(EXIT_MARKER.getName(), fact.newExitMessage(entry), null);
         traceExit(entry);
 
         // ensure original entry message not overwritten
-        assertEquals("Tracy Logan", entry.getMessage().getFormattedMessage());
+        assertThat(entry.getMessage().getFormattedMessage()).isEqualTo("Tracy Logan");
     }
 
     @Test
@@ -303,12 +303,12 @@ public class TraceLoggingTest extends AbstractLogger {
         trace("Some other message {}", 123);
 
         // ensure original entry message not overwritten
-        assertEquals("Tracy Logan", entry.getMessage().getFormattedMessage());
+        assertThat(entry.getMessage().getFormattedMessage()).isEqualTo("Tracy Logan");
 
         currentEvent = new LogEvent(EXIT_MARKER.getName(), fact.newExitMessage(entry), null);
         traceExit(entry);
 
         // ensure original entry message not overwritten
-        assertEquals("Tracy Logan", entry.getMessage().getFormattedMessage());
+        assertThat(entry.getMessage().getFormattedMessage()).isEqualTo("Tracy Logan");
     }
 }

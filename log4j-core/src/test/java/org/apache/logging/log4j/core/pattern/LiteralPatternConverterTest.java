@@ -17,9 +17,10 @@
 
 package org.apache.logging.log4j.core.pattern;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the LiteralPatternConverter.
@@ -30,14 +31,14 @@ public class LiteralPatternConverterTest {
     public void testConvertBackslashes() {
         final String literal = "ABC\\tDEF\\nGHI\\rJKL\\'MNO\\f \\b \\\\DROPPED:\\x";
         final LiteralPatternConverter converter = new LiteralPatternConverter(null, literal, true);
-        assertEquals("ABC\tDEF\nGHI\rJKL\'MNO\f \b \\DROPPED:x", converter.getLiteral());
+        assertThat(converter.getLiteral()).isEqualTo("ABC\tDEF\nGHI\rJKL\'MNO\f \b \\DROPPED:x");
     }
 
     @Test
     public void testDontConvertBackslashes() {
         final String literal = "ABC\\tDEF\\nGHI\\rJKL\\'MNO\\f \\b \\\\DROPPED:\\x";
         final LiteralPatternConverter converter = new LiteralPatternConverter(null, literal, false);
-        assertEquals(literal, converter.getLiteral());
+        assertThat(converter.getLiteral()).isEqualTo(literal);
     }
 
 }

@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.util.regex.Matcher;
-
-import org.junit.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
+
+import java.util.regex.Matcher;
+import org.junit.Test;
 
 /**
  * Test getEligibleFiles method.
@@ -30,30 +30,30 @@ public class RolloverFilePatternTest {
     @Test
     public void testFilePatternWithoutPadding() throws Exception {
       final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%i.log.gz");
-      assertTrue(matcher.matches());
-      assertNull(matcher.group("ZEROPAD"));
-      assertNull(matcher.group("PADDING"));
+      assertThat(matcher.matches()).isTrue();
+      assertThat(matcher.group("ZEROPAD")).isNull();
+      assertThat(matcher.group("PADDING")).isNull();
     }
 
     @Test
     public void testFilePatternWithSpacePadding() throws Exception {
       final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%3i.log.gz");
-      assertTrue(matcher.matches());
-      assertNull(matcher.group("ZEROPAD"));
-      assertEquals("3", matcher.group("PADDING"));
+      assertThat(matcher.matches()).isTrue();
+      assertThat(matcher.group("ZEROPAD")).isNull();
+      assertThat(matcher.group("PADDING")).isEqualTo("3");
     }
 
     @Test
     public void testFilePatternWithZeroPadding() throws Exception {
       final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%03i.log.gz");
-      assertTrue(matcher.matches());
-      assertEquals("0", matcher.group("ZEROPAD"));
-      assertEquals("3", matcher.group("PADDING"));
+      assertThat(matcher.matches()).isTrue();
+      assertThat(matcher.group("ZEROPAD")).isEqualTo("0");
+      assertThat(matcher.group("PADDING")).isEqualTo("3");
     }
 
     @Test
     public void testFilePatternUnmatched() throws Exception {
       final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%n.log.gz");
-      assertFalse(matcher.matches());
+      assertThat(matcher.matches()).isFalse();
     }
 }

@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.GarbageCollectionHelper;
@@ -27,11 +32,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertTrue;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerTestArgumentFreedOnError {
@@ -60,8 +60,7 @@ public class AsyncLoggerTestArgumentFreedOnError {
         GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
         gcHelper.run();
         try {
-            assertTrue("Parameter should have been garbage collected",
-                    garbageCollectionLatch.await(30, TimeUnit.SECONDS));
+            assertThat(garbageCollectionLatch.await(30, TimeUnit.SECONDS)).describedAs("Parameter should have been garbage collected").isTrue();
         } finally {
             gcHelper.close();
         }

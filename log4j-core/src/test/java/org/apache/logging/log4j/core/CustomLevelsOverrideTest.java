@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
 
@@ -48,33 +49,33 @@ public class CustomLevelsOverrideTest {
         // assertEquals(350, warnLevel.intLevel());
         // assertEquals(450, infoLevel.intLevel());
         // assertEquals(550, debugLevel.intLevel());
-        assertNotEquals(350, warnLevel.intLevel());
-        assertNotEquals(450, infoLevel.intLevel());
-        assertNotEquals(550, debugLevel.intLevel());
+        assertThat(warnLevel.intLevel()).isNotEqualTo(350);
+        assertThat(infoLevel.intLevel()).isNotEqualTo(450);
+        assertThat(debugLevel.intLevel()).isNotEqualTo(550);
     }
 
     @Test
     public void testCustomLevelPresence() {
-        assertNotNull(warnLevel);
-        assertNotNull(infoLevel);
-        assertNotNull(debugLevel);
+        assertThat(warnLevel).isNotNull();
+        assertThat(infoLevel).isNotNull();
+        assertThat(debugLevel).isNotNull();
     }
 
     @Test
     public void testCustomLevelVsStdLevel() {
-        assertEquals(Level.WARN, warnLevel);
-        assertEquals(Level.INFO, infoLevel);
-        assertEquals(Level.DEBUG, debugLevel);
+        assertThat(warnLevel).isEqualTo(Level.WARN);
+        assertThat(infoLevel).isEqualTo(Level.INFO);
+        assertThat(debugLevel).isEqualTo(Level.DEBUG);
     }
 
     @Test
     public void testLog() {
-        assertThat(listAppender.getEvents(), hasSize(0));
+        assertThat(listAppender.getEvents()).hasSize(0);
         logger.debug("Hello, {}", "World");
-        assertThat(listAppender.getEvents(), hasSize(1));
+        assertThat(listAppender.getEvents()).hasSize(1);
         logger.log(warnLevel, "Hello DIAG");
-        assertThat(listAppender.getEvents(), hasSize(2));
-        assertEquals(listAppender.getEvents().get(1).getLevel(), warnLevel);
+        assertThat(listAppender.getEvents()).hasSize(2);
+        assertThat(warnLevel).isEqualTo(listAppender.getEvents().get(1).getLevel());
 
     }
 }

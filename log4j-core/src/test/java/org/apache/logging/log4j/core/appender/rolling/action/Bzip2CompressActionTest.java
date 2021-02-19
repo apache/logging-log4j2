@@ -17,17 +17,18 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Tests Bzip2CompressAction.
@@ -36,14 +37,12 @@ public class Bzip2CompressActionTest {
 
     @Test
     public void testConstructorDisallowsNullSource() {
-        assertThrows(NullPointerException.class,
-                () -> new CommonsCompressAction("bzip2", null, new File("any"), true));
+        assertThatThrownBy(() -> new CommonsCompressAction("bzip2", null, new File("any"), true)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testConstructorDisallowsNullDestination() {
-        assertThrows(NullPointerException.class,
-                () -> new CommonsCompressAction("bzip2", new File("any"), null, true));
+        assertThatThrownBy(() -> new CommonsCompressAction("bzip2", new File("any"), null, true)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -93,7 +92,7 @@ public class Bzip2CompressActionTest {
                 (byte) 0x82, (byte) 0x0B, (byte) 0x51, (byte) 0xBF, (byte) 0x24, (byte) 0x61, (byte) 0x7F, (byte) 0x17,
                 (byte) 0x72, (byte) 0x45, (byte) 0x38, (byte) 0x50, (byte) 0x90, (byte) 0x9C, (byte) 0xE1, (byte) 0xE8,
                 (byte) 0x2D };
-        assertEquals(bz2.length, destination.length());
+        assertThat(destination.length()).isEqualTo(bz2.length);
 
         // check the compressed contents
         try (FileInputStream fis = new FileInputStream(destination)) {
@@ -104,7 +103,7 @@ public class Bzip2CompressActionTest {
                 n = fis.read(actualBz2, offset, actualBz2.length - offset);
                 offset += n;
             } while (offset < actualBz2.length);
-            assertArrayEquals(bz2, actualBz2, "Compressed data corrupt");
+            assertThat(actualBz2).describedAs("Compressed data corrupt").isEqualTo(bz2);
         }
 
         // uncompress
@@ -115,7 +114,7 @@ public class Bzip2CompressActionTest {
             while ((n = bzin.read(buf, 0, buf.length)) > -1) {
                 sb.append(new String(buf, 0, n));
             }
-            assertEquals(LINE1 + LINE2 + LINE3, sb.toString());
+            assertThat(sb.toString()).isEqualTo(LINE1 + LINE2 + LINE3);
         }
     }
 }

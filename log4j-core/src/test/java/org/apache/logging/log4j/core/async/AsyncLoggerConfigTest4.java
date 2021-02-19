@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -25,15 +33,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerConfigTest4 {
@@ -52,7 +51,7 @@ public class AsyncLoggerConfigTest4 {
     @Test
     public void testParameters() throws Exception {
         final File file = new File("target", "AsyncLoggerConfigTest4.log");
-        assertTrue("Deleted old file before test", !file.exists() || file.delete());
+        assertThat(!file.exists() || file.delete()).describedAs("Deleted old file before test").isTrue();
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         log.info("Additive logging: {} for the price of {}!", 2, 1);
@@ -67,10 +66,10 @@ public class AsyncLoggerConfigTest4 {
         reader.close();
         file.delete();
 
-        assertThat(line1, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
-        assertThat(line2, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
-        assertThat(line3, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
-        assertThat(line4, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
-        assertNull("Expected only two lines to be logged", line5);
+        assertThat(line1).contains("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!");
+        assertThat(line2).contains("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!");
+        assertThat(line3).contains("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!");
+        assertThat(line4).contains("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!");
+        assertThat(line5).describedAs("Expected only two lines to be logged").isNull();
     }
 }

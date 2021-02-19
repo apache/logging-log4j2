@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -62,7 +62,7 @@ public class NameAbbreviatorTest {
         final StringBuilder destination = new StringBuilder();
         abbreviator.abbreviate(this.getClass().getName(), destination);
         final String actual = destination.toString();
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class NameAbbreviatorTest {
         final StringBuilder destination = new StringBuilder(PREFIX);
         abbreviator.abbreviate(this.getClass().getName(), destination);
         final String actual = destination.toString();
-        assertEquals(PREFIX + expected, actual);
+        assertThat(actual).isEqualTo(PREFIX + expected);
     }
 
     @Test
@@ -82,6 +82,6 @@ public class NameAbbreviatorTest {
         final StringBuilder destination = new StringBuilder(PREFIX);
         abbreviator.abbreviate(this.getClass().getName(), destination);
         final String actual = destination.toString();
-        assertEquals(PREFIX + expected, actual);
+        assertThat(actual).isEqualTo(PREFIX + expected);
     }
 }

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +31,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -41,8 +43,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link FileAppender}.
@@ -83,15 +83,15 @@ public class FileAppenderTest {
             .setCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on
-        assertEquals(createOnDemand, appender.getManager().isCreateOnDemand());
+        assertThat(appender.getManager().isCreateOnDemand()).isEqualTo(createOnDemand);
         try {
-            assertNotEquals(createOnDemand, Files.exists(PATH));
+            assertThat(Files.exists(PATH)).isNotEqualTo(createOnDemand);
             appender.start();
-            assertNotEquals(createOnDemand, Files.exists(PATH));
+            assertThat(Files.exists(PATH)).isNotEqualTo(createOnDemand);
         } finally {
             appender.stop();
         }
-        assertNotEquals(createOnDemand, Files.exists(PATH));
+        assertThat(Files.exists(PATH)).isNotEqualTo(createOnDemand);
     }
 
     private static PatternLayout createPatternLayout() {
@@ -119,10 +119,10 @@ public class FileAppenderTest {
             appender.start();
             final File file = new File(FILE_NAME);
             assertTrue(appender.isStarted(), "Appender did not start");
-            assertNotEquals(createOnDemand, Files.exists(PATH));
+            assertThat(Files.exists(PATH)).isNotEqualTo(createOnDemand);
             long curLen = file.length();
             long prevLen = curLen;
-            assertEquals(0, curLen, "File length: " + curLen);
+            assertThat(curLen).describedAs("File length: " + curLen).isEqualTo(0);
             for (int i = 0; i < 100; ++i) {
                 final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger") //
                         .setLoggerFqcn(FileAppenderTest.class.getName()).setLevel(Level.INFO) //
@@ -224,7 +224,7 @@ public class FileAppenderTest {
             .setCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on
-        assertEquals(createOnDemand, appender.getManager().isCreateOnDemand());
+        assertThat(appender.getManager().isCreateOnDemand()).isEqualTo(createOnDemand);
         try {
             appender.start();
             assertTrue(appender.isStarted(), "Appender did not start");
@@ -237,7 +237,7 @@ public class FileAppenderTest {
             if (concurrent && expectFileCreated) {
                 assertTrue(exists, msg);
             } else if (expectFileCreated) {
-                assertNotEquals(createOnDemand, exists, msg);
+                assertThat(exists).describedAs(msg).isNotEqualTo(createOnDemand);
             }
             for (int i = 0; i < logEventCount; ++i) {
                 final LogEvent logEvent = Log4jLogEvent.newBuilder().setLoggerName("TestLogger")
@@ -268,7 +268,7 @@ public class FileAppenderTest {
                 assertTrue(matcher.matches(), "Unexpected data: " + str);
             }
         }
-        assertEquals(count, lines);
+        assertThat(lines).isEqualTo(count);
     }
 
     public static class FileWriterRunnable implements Runnable {

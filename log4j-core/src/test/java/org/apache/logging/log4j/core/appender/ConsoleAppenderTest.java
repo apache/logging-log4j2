@@ -16,9 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.atLeastOnce;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -34,12 +40,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.atLeastOnce;
 
 @ExtendWith(MockitoExtension.class)
 public class ConsoleAppenderTest {
@@ -123,7 +123,7 @@ public class ConsoleAppenderTest {
     private void testFollowSystemPrintStream(final PrintStream ps, final Target target, final SystemSetter systemSetter) {
         final ConsoleAppender app = ConsoleAppender.newBuilder().setTarget(target).setFollow(true)
                 .setIgnoreExceptions(false).setName("test").build();
-        assertEquals(target, app.getTarget());
+        assertThat(app.getTarget()).isEqualTo(target);
         app.start();
         try {
             final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -141,7 +141,7 @@ public class ConsoleAppenderTest {
                 systemSetter.systemSet(ps);
             }
             final String msg = baos.toString();
-            assertNotNull(msg, "No message");
+            assertThat(msg).describedAs("No message").isNotNull();
             assertTrue(msg.endsWith("Test" + Strings.LINE_SEPARATOR), "Incorrect message: \"" + msg + "\"");
         } finally {
             app.stop();

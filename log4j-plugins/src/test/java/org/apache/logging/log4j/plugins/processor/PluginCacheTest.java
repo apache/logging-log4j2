@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.plugins.processor;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -24,7 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -37,16 +37,16 @@ public class PluginCacheTest {
         PluginCache cacheA = new PluginCache();
         createCategory(cacheA, "one", Arrays.asList("bravo", "alpha", "charlie"));
         createCategory(cacheA, "two", Arrays.asList("alpha", "charlie", "bravo"));
-        assertEquals(cacheA.getAllCategories().size(), 2);
-        assertEquals(cacheA.getAllCategories().get("one").size(), 3);
-        assertEquals(cacheA.getAllCategories().get("two").size(), 3);
+        assertThat(cacheA.getAllCategories()).hasSize(2);
+        assertThat(cacheA.getAllCategories().get("one")).hasSize(3);
+        assertThat(cacheA.getAllCategories().get("two")).hasSize(3);
         PluginCache cacheB = new PluginCache();
         createCategory(cacheB, "two", Arrays.asList("bravo", "alpha", "charlie"));
         createCategory(cacheB, "one", Arrays.asList("alpha", "charlie", "bravo"));
-        assertEquals(cacheB.getAllCategories().size(), 2);
-        assertEquals(cacheB.getAllCategories().get("one").size(), 3);
-        assertEquals(cacheB.getAllCategories().get("two").size(), 3);
-        assertEquals(Objects.toString(cacheA.getAllCategories()), Objects.toString(cacheB.getAllCategories()));
+        assertThat(cacheB.getAllCategories()).hasSize(2);
+        assertThat(cacheB.getAllCategories().get("one")).hasSize(3);
+        assertThat(cacheB.getAllCategories().get("two")).hasSize(3);
+        assertThat(Objects.toString(cacheB.getAllCategories())).isEqualTo(Objects.toString(cacheA.getAllCategories()));
     }
 
     private void createCategory(PluginCache cache, String categoryName, List<String> entryNames) {

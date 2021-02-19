@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerContextSelectorInitialStateTest {
@@ -28,6 +29,6 @@ public class AsyncLoggerContextSelectorInitialStateTest {
     @Test
     public void testLoggerContextsListInitiallyEmpty() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
-        assertTrue(selector.getLoggerContexts().isEmpty());
+        assertThat(selector.getLoggerContexts().isEmpty()).isTrue();
     }
 }

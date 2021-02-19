@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -65,7 +67,7 @@ public class RollingAppenderDirectWriteStartupSizeTest {
         RollingFileAppender.class);
     final RollingFileManager manager = rfAppender.getManager();
 
-    Assert.assertNotNull(manager);
-    Assert.assertEquals("Existing file size not preserved on startup", MESSAGE.getBytes().length, manager.size);
+    assertThat(manager).isNotNull();
+    assertThat(manager.size).describedAs("Existing file size not preserved on startup").isEqualTo(MESSAGE.getBytes().length);
   }
 }

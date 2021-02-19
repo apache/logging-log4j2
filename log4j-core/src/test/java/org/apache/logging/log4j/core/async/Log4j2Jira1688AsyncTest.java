@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -87,10 +88,10 @@ public class Log4j2Jira1688AsyncTest {
         ((ExtendedLogger)log4JLogger).logIfEnabled("test", Level.ERROR, null, "test {}", args);
 
         listAppender.countDownLatch.await(1, TimeUnit.SECONDS);
-        Assert.assertArrayEquals(Arrays.toString(args), originalArgs, args);
+        assertThat(args).describedAs(Arrays.toString(args)).isEqualTo(originalArgs);
 
         ((ExtendedLogger)log4JLogger).logIfEnabled("test", Level.ERROR, null, "test {}", args);
-        Assert.assertArrayEquals(Arrays.toString(args), originalArgs, args);
+        assertThat(args).describedAs(Arrays.toString(args)).isEqualTo(originalArgs);
     }
 
 }

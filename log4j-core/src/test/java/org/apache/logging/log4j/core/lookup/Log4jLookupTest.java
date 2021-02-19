@@ -15,6 +15,13 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_LOCATION;
+import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_PARENT_LOCATION;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.BDDMockito.given;
+
+import java.io.File;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
@@ -26,13 +33,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.File;
-
-import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_LOCATION;
-import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_PARENT_LOCATION;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class Log4jLookupTest {
@@ -63,7 +63,7 @@ public class Log4jLookupTest {
         final StrLookup log4jLookup = new Log4jLookup();
         ((ConfigurationAware) log4jLookup).setConfiguration(config);
         final String value = log4jLookup.lookup(KEY_CONFIG_LOCATION);
-        assertEquals(EXPECT.getAbsolutePath(), value);
+        assertThat(value).isEqualTo(EXPECT.getAbsolutePath());
     }
 
     @Test
@@ -71,6 +71,6 @@ public class Log4jLookupTest {
         final StrLookup log4jLookup = new Log4jLookup();
         ((ConfigurationAware) log4jLookup).setConfiguration(config);
         final String value = log4jLookup.lookup(KEY_CONFIG_PARENT_LOCATION);
-        assertEquals(EXPECT.getParentFile().getAbsolutePath(), value);
+        assertThat(value).isEqualTo(EXPECT.getParentFile().getAbsolutePath());
     }
 }

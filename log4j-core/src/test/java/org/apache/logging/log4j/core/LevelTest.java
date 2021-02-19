@@ -16,22 +16,22 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("log4j-Level.xml")
 public class LevelTest {
@@ -115,12 +115,10 @@ public class LevelTest {
         for (final Expected expected : expectedResults) {
             final String description = expected.description;
             final List<LogEvent> events = expected.appender.getEvents();
-            assertNotNull(events, description + ": No events");
-            assertThat(events, hasSize(expected.expectedEventCount));
+            assertThat(events).describedAs(description + ": No events").isNotNull();
+            assertThat(events).hasSize(expected.expectedEventCount);
             final LogEvent event = events.get(0);
-            assertEquals(
-                    event.getLevel().name(), expected.expectedInitialEventLevel,
-                    description + ": Expected level " + expected.expectedInitialEventLevel + ", got" + event.getLevel());
+            assertThat(expected.expectedInitialEventLevel).describedAs(description + ": Expected level " + expected.expectedInitialEventLevel + ", got" + event.getLevel()).isEqualTo(event.getLevel().name());
         }
     }
 }

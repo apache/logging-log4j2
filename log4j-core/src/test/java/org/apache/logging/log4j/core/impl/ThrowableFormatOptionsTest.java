@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.pattern.JAnsiTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.util.Strings;
 import org.fusesource.jansi.AnsiRenderer.Code;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@code ThrowableFormatOptions}.
@@ -49,15 +49,15 @@ public final class ThrowableFormatOptionsTest {
     private static ThrowableFormatOptions test(final String[] options, final int expectedLines,
             final String expectedSeparator, final List<String> expectedPackages) {
         final ThrowableFormatOptions tfo = ThrowableFormatOptions.newInstance(options);
-        assertEquals(expectedLines, tfo.getLines(), "getLines");
-        assertEquals(expectedSeparator, tfo.getSeparator(), "getSeparator");
-        assertEquals(expectedPackages, tfo.getIgnorePackages(), "getPackages");
-        assertEquals(expectedLines == Integer.MAX_VALUE, tfo.allLines(), "allLines");
-        assertEquals(expectedLines != 0, tfo.anyLines(), "anyLines");
-        assertEquals(0, tfo.minLines(0), "minLines");
-        assertEquals(expectedLines, tfo.minLines(Integer.MAX_VALUE), "minLines");
-        assertEquals(expectedPackages != null && !expectedPackages.isEmpty(), tfo.hasPackages(), "hasPackages");
-        assertNotNull(tfo.toString(), "toString");
+        assertThat(tfo.getLines()).describedAs("getLines").isEqualTo(expectedLines);
+        assertThat(tfo.getSeparator()).describedAs("getSeparator").isEqualTo(expectedSeparator);
+        assertThat(tfo.getIgnorePackages()).describedAs("getPackages").isEqualTo(expectedPackages);
+        assertThat(tfo.allLines()).describedAs("allLines").isEqualTo(expectedLines == Integer.MAX_VALUE);
+        assertThat(tfo.anyLines()).describedAs("anyLines").isEqualTo(expectedLines != 0);
+        assertThat(tfo.minLines(0)).describedAs("minLines").isEqualTo(0);
+        assertThat(tfo.minLines(Integer.MAX_VALUE)).describedAs("minLines").isEqualTo(expectedLines);
+        assertThat(tfo.hasPackages()).describedAs("hasPackages").isEqualTo(expectedPackages != null && !expectedPackages.isEmpty());
+        assertThat(tfo.toString()).describedAs("toString").isNotNull();
         return tfo;
     }
 
@@ -123,13 +123,13 @@ public final class ThrowableFormatOptionsTest {
 
     private void testFullAnsiEmptyConfig(final ThrowableFormatOptions tfo) {
         final TextRenderer textRenderer = tfo.getTextRenderer();
-        assertNotNull(textRenderer);
-        assertTrue(textRenderer instanceof JAnsiTextRenderer);
+        assertThat(textRenderer).isNotNull();
+        assertThat(textRenderer instanceof JAnsiTextRenderer).isTrue();
         final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
         final Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
         // We have defaults
-        assertFalse(styleMap.isEmpty());
-        assertNotNull(styleMap.get("Name"));
+        assertThat(styleMap.isEmpty()).isFalse();
+        assertThat(styleMap.get("Name")).isNotNull();
     }
 
     /**
@@ -140,11 +140,11 @@ public final class ThrowableFormatOptionsTest {
         final ThrowableFormatOptions tfo = test(new String[] { "full", "ansi(Warning=red)" },
                 Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
         final TextRenderer textRenderer = tfo.getTextRenderer();
-        assertNotNull(textRenderer);
-        assertTrue(textRenderer instanceof JAnsiTextRenderer);
+        assertThat(textRenderer).isNotNull();
+        assertThat(textRenderer instanceof JAnsiTextRenderer).isTrue();
         final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
         final Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
-        assertArrayEquals(new Code[] { Code.RED }, styleMap.get("Warning"));
+        assertThat(styleMap.get("Warning")).isEqualTo(new Code[] { Code.RED });
     }
 
     /**
@@ -155,13 +155,13 @@ public final class ThrowableFormatOptionsTest {
         final ThrowableFormatOptions tfo = test(new String[] { "full", "ansi(Warning=red Key=blue Value=cyan)" },
                 Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
         final TextRenderer textRenderer = tfo.getTextRenderer();
-        assertNotNull(textRenderer);
-        assertTrue(textRenderer instanceof JAnsiTextRenderer);
+        assertThat(textRenderer).isNotNull();
+        assertThat(textRenderer instanceof JAnsiTextRenderer).isTrue();
         final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
         final Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
-        assertArrayEquals(new Code[] { Code.RED }, styleMap.get("Warning"));
-        assertArrayEquals(new Code[] { Code.BLUE }, styleMap.get("Key"));
-        assertArrayEquals(new Code[] { Code.CYAN }, styleMap.get("Value"));
+        assertThat(styleMap.get("Warning")).isEqualTo(new Code[] { Code.RED });
+        assertThat(styleMap.get("Key")).isEqualTo(new Code[] { Code.BLUE });
+        assertThat(styleMap.get("Value")).isEqualTo(new Code[] { Code.CYAN });
     }
 
     /**
@@ -173,13 +173,13 @@ public final class ThrowableFormatOptionsTest {
                 new String[] { "full", "ansi(Warning=red Key=blue,bg_red Value=cyan,bg_black,underline)" }, Integer.MAX_VALUE,
                 Strings.LINE_SEPARATOR, null);
         final TextRenderer textRenderer = tfo.getTextRenderer();
-        assertNotNull(textRenderer);
-        assertTrue(textRenderer instanceof JAnsiTextRenderer);
+        assertThat(textRenderer).isNotNull();
+        assertThat(textRenderer instanceof JAnsiTextRenderer).isTrue();
         final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
         final Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
-        assertArrayEquals(new Code[] { Code.RED }, styleMap.get("Warning"));
-        assertArrayEquals(new Code[] { Code.BLUE, Code.BG_RED }, styleMap.get("Key"));
-        assertArrayEquals(new Code[] { Code.CYAN, Code.BG_BLACK, Code.UNDERLINE }, styleMap.get("Value"));
+        assertThat(styleMap.get("Warning")).isEqualTo(new Code[] { Code.RED });
+        assertThat(styleMap.get("Key")).isEqualTo(new Code[] { Code.BLUE, Code.BG_RED });
+        assertThat(styleMap.get("Value")).isEqualTo(new Code[] { Code.CYAN, Code.BG_BLACK, Code.UNDERLINE });
     }
 
     /**

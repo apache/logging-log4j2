@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextFactoryExtension;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ResourceLock("log4j2.LoggerContextFactory")
 public class TestConfiguratorError {
@@ -34,7 +35,7 @@ public class TestConfiguratorError {
     @Test
     public void testErrorNoClassLoader() throws Exception {
         try (final LoggerContext ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-config.xml")) {
-            assertNull(ctx, "No LoggerContext should have been returned");
+            assertThat(ctx).describedAs("No LoggerContext should have been returned").isNull();
         }
     }
 
@@ -42,7 +43,7 @@ public class TestConfiguratorError {
     public void testErrorNullClassLoader() throws Exception {
         try (final LoggerContext ctx = Configurator.initialize("Test1", null,
                 "target/test-classes/log4j2-config.xml")) {
-            assertNull(ctx, "No LoggerContext should have been returned");
+            assertThat(ctx).describedAs("No LoggerContext should have been returned").isNull();
         }
     }
 }

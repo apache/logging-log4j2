@@ -16,16 +16,16 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.assertj.core.api.HamcrestCondition;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -63,10 +63,10 @@ public class RollingAppenderReconfigureTest {
         }
 
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists());
+        assertThat(dir.exists()).describedAs("Directory not created").isTrue();
         final File[] files = dir.listFiles();
-        assertThat(files, hasItemInArray(that(hasName(that(endsWith(".current"))))));
-        assertThat(files, hasItemInArray(that(hasName(that(endsWith(".rolled"))))));
+        assertThat(files).is(new HamcrestCondition<>(hasItemInArray(that(hasName(that(endsWith(".current")))))));
+        assertThat(files).is(new HamcrestCondition<>(hasItemInArray(that(hasName(that(endsWith(".rolled")))))));
 
         final String originalXmlConfig = FileUtils.readFileToString(CONFIG_FILE, "UTF-8");
         try {
@@ -83,9 +83,9 @@ public class RollingAppenderReconfigureTest {
             }
 
             final File[] filesAfterReconfigured = dir.listFiles();
-            assertThat(filesAfterReconfigured, hasItemInArray(that(hasName(that(endsWith(".reconfigured"))))));
-            assertThat(filesAfterReconfigured, hasItemInArray(that(hasName(that(endsWith(".current"))))));
-            assertThat(filesAfterReconfigured, hasItemInArray(that(hasName(that(endsWith(".rolled"))))));
+            assertThat(filesAfterReconfigured).is(new HamcrestCondition<>(hasItemInArray(that(hasName(that(endsWith(".reconfigured")))))));
+            assertThat(filesAfterReconfigured).is(new HamcrestCondition<>(hasItemInArray(that(hasName(that(endsWith(".current")))))));
+            assertThat(filesAfterReconfigured).is(new HamcrestCondition<>(hasItemInArray(that(hasName(that(endsWith(".rolled")))))));
         } finally {
             FileUtils.write(CONFIG_FILE, originalXmlConfig, "UTF-8");
         }

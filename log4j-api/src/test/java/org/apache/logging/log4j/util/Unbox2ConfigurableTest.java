@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,11 +28,6 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests that the Unbox ring buffer size is configurable.
@@ -67,7 +67,7 @@ public class Unbox2ConfigurableTest {
     @Test
     public void testBoxConfiguredTo128Slots() {
         // next power of 2 that is 65 or more
-        assertEquals(128, Unbox.getRingbufferSize());
+        assertThat(Unbox.getRingbufferSize()).isEqualTo(128);
     }
 
     @Test
@@ -85,9 +85,9 @@ public class Unbox2ConfigurableTest {
             probe[i++] = Unbox.box(Short.MAX_VALUE);
         }
         for (int i = 0; i < probe.length - MAX; i++) {
-            assertSame(probe[i], probe[i + MAX], "probe[" + i +"], probe[" + (i + MAX) +"]");
+            assertThat(probe[i + MAX]).describedAs("probe[" + i +"], probe[" + (i + MAX) +"]").isSameAs(probe[i]);
             for (int j = 1; j < MAX - 1; j++) {
-                assertNotSame(probe[i], probe[i + j], "probe[" + i +"], probe[" + (i + j) +"]");
+                assertThat(probe[i + j]).describedAs("probe[" + i +"], probe[" + (i + j) +"]").isNotSameAs(probe[i]);
             }
         }
     }

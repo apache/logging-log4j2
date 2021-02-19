@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -31,18 +34,16 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.core.util.ProcessIdUtil;
 import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.apache.logging.log4j.core.util.ProcessIdUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
 public class Rfc5424LayoutTest {
@@ -139,7 +140,7 @@ public class Rfc5424LayoutTest {
                 try {
                     length = Integer.parseInt(messageLength);
                     // the ListAppender removes the ending newline, so we expect one less size
-                    assertEquals(frameLength, messageLength.length() + length);
+                    assertThat(messageLength.length() + length).isEqualTo(frameLength);
                 }
                 catch (final NumberFormatException e) {
                     fail("Not a valid RFC 5425 frame");
@@ -217,7 +218,7 @@ public class Rfc5424LayoutTest {
                 try {
                     length = Integer.parseInt(messageLength);
                     // the ListAppender removes the ending newline, so we expect one less size
-                    assertEquals(frameLength, messageLength.length() + length);
+                    assertThat(messageLength.length() + length).isEqualTo(frameLength);
                 }
                 catch (final NumberFormatException e) {
                     fail("Not a valid RFC 5425 frame");

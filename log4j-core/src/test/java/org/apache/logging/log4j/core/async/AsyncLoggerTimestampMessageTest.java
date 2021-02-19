@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -37,8 +39,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 /**
  * Confirms that if you log a {@link TimestampMessage} then there are no unnecessary calls to {@link Clock}.
@@ -72,17 +72,17 @@ public class AsyncLoggerTimestampMessageTest {
         // System.out.println(f.getAbsolutePath());
         file.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
-        assertFalse(PoisonClock.called);
+        assertThat(PoisonClock.called).isFalse();
         log.info((Message) new TimeMsg("Async logger msg with embedded timestamp", 123456789000L));
-        assertFalse(PoisonClock.called);
+        assertThat(PoisonClock.called).isFalse();
         CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
         reader.close();
         file.delete();
-        assertNotNull(line1);
-        assertTrue("line1 correct", line1.equals("123456789000 Async logger msg with embedded timestamp"));
+        assertThat(line1).isNotNull();
+        assertThat(line1.equals("123456789000 Async logger msg with embedded timestamp")).describedAs("line1 correct").isTrue();
     }
 
     public static class PoisonClock implements Clock {

@@ -17,9 +17,10 @@
 
 package org.apache.logging.log4j.core.util;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the Integers class.
@@ -29,13 +30,13 @@ public class IntegersTest {
     @Test
     public void testCeilingNextPowerOfTwoReturnsNextPowerOfTwo() {
         final int powerOfTwo = Integers.ceilingNextPowerOfTwo(1000);
-        assertEquals(1024, powerOfTwo);
+        assertThat(powerOfTwo).isEqualTo(1024);
     }
 
     @Test
     public void testCeilingNextPowerOfTwoReturnsExactPowerOfTwo() {
         final int powerOfTwo = Integers.ceilingNextPowerOfTwo(1024);
-        assertEquals(1024, powerOfTwo);
+        assertThat(powerOfTwo).isEqualTo(1024);
     }
 
 }

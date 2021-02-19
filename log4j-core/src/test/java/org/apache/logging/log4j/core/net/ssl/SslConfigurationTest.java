@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
-
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class SslConfigurationTest {
 
@@ -69,33 +69,32 @@ public class SslConfigurationTest {
 
     @Test
     public void testGettersFromScratchFiles() throws StoreConfigurationException {
-        assertNotNull(createTestSslConfigurationFiles().getProtocol());
-        assertNotNull(createTestSslConfigurationFiles().getKeyStoreConfig());
-        assertNotNull(createTestSslConfigurationFiles().getSslContext());
-        assertNotNull(createTestSslConfigurationFiles().getSslSocketFactory());
-        assertNotNull(createTestSslConfigurationFiles().getTrustStoreConfig());
+        assertThat(createTestSslConfigurationFiles().getProtocol()).isNotNull();
+        assertThat(createTestSslConfigurationFiles().getKeyStoreConfig()).isNotNull();
+        assertThat(createTestSslConfigurationFiles().getSslContext()).isNotNull();
+        assertThat(createTestSslConfigurationFiles().getSslSocketFactory()).isNotNull();
+        assertThat(createTestSslConfigurationFiles().getTrustStoreConfig()).isNotNull();
     }
 
     @Test
     public void testGettersFromScratchResources() throws StoreConfigurationException {
-        assertNotNull(createTestSslConfigurationResources().getProtocol());
-        assertNotNull(createTestSslConfigurationResources().getKeyStoreConfig());
-        assertNotNull(createTestSslConfigurationResources().getSslContext());
-        assertNotNull(createTestSslConfigurationResources().getSslSocketFactory());
-        assertNotNull(createTestSslConfigurationResources().getTrustStoreConfig());
+        assertThat(createTestSslConfigurationResources().getProtocol()).isNotNull();
+        assertThat(createTestSslConfigurationResources().getKeyStoreConfig()).isNotNull();
+        assertThat(createTestSslConfigurationResources().getSslContext()).isNotNull();
+        assertThat(createTestSslConfigurationResources().getSslSocketFactory()).isNotNull();
+        assertThat(createTestSslConfigurationResources().getTrustStoreConfig()).isNotNull();
     }
 
     @Test
     public void equals() {
-        assertEquals(SslConfiguration.createSSLConfiguration(null, null, null),
-                SslConfiguration.createSSLConfiguration(null, null, null));
+        assertThat(SslConfiguration.createSSLConfiguration(null, null, null)).isEqualTo(SslConfiguration.createSSLConfiguration(null, null, null));
     }
 
     @Test
         public void emptyConfigurationDoesntCauseNullSSLSocketFactory() {
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
         final SSLSocketFactory factory = sc.getSslSocketFactory();
-        assertNotNull(factory);
+        assertThat(factory).isNotNull();
     }
 
     @Test
@@ -104,7 +103,7 @@ public class SslConfigurationTest {
         final SSLSocketFactory factory = sc.getSslSocketFactory();
         try {
             try (final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT)) {
-                assertNotNull(clientSocket);
+                assertThat(clientSocket).isNotNull();
             }
         } catch (final UnknownHostException | ConnectException connectionTimeout) {
             // this exception is thrown on Windows when host is behind a proxy that does not allow connection to external network
@@ -120,7 +119,7 @@ public class SslConfigurationTest {
         try {
             try (final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT)) {
                 try (final OutputStream os = clientSocket.getOutputStream()) {
-                    assertThrows(IOException.class, () -> os.write("GET config/login_verify2?".getBytes()));
+                    assertThatThrownBy(() -> os.write("GET config/login_verify2?".getBytes())).isInstanceOf(IOException.class);
                 }
             }
         } catch (final UnknownHostException | ConnectException connectionTimeout) {
@@ -134,6 +133,6 @@ public class SslConfigurationTest {
                 new MemoryPasswordProvider(TestConstants.NULL_PWD), null, null);
         final SslConfiguration sslConf = SslConfiguration.createSSLConfiguration(null, ksc, null);
         final SSLSocketFactory factory = sslConf.getSslSocketFactory();
-        assertNotNull(factory);
+        assertThat(factory).isNotNull();
     }
 }

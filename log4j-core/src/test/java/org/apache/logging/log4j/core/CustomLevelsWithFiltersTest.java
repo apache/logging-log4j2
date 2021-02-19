@@ -16,17 +16,18 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
-import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("log4j-customLevelsWithFilters.xml")
 public class CustomLevelsWithFiltersTest {
@@ -42,12 +43,12 @@ public class CustomLevelsWithFiltersTest {
 
     @Test
     public void testConfiguration(final Configuration configuration, @Named("info") final FileAppender appender) {
-        assertNotNull(configuration);
-        assertNotNull(appender);
+        assertThat(configuration).isNotNull();
+        assertThat(appender).isNotNull();
         final CompositeFilter compFilter = (CompositeFilter) appender.getFilter();
-        assertNotNull(compFilter);
+        assertThat(compFilter).isNotNull();
         final Filter[] filters = compFilter.getFiltersArray();
-        assertNotNull(filters);
+        assertThat(filters).isNotNull();
         boolean foundLevel = false;
         for (final Filter filter : filters) {
             final ThresholdFilter tFilter = (ThresholdFilter) filter;
@@ -61,14 +62,14 @@ public class CustomLevelsWithFiltersTest {
 
     @Test
     public void testCustomLevelInts() {
-        assertEquals(399, infom1Level.intLevel());
-        assertEquals(401, infop1Level.intLevel());
+        assertThat(infom1Level.intLevel()).isEqualTo(399);
+        assertThat(infop1Level.intLevel()).isEqualTo(401);
     }
 
     @Test
     public void testCustomLevelPresence() {
-        assertNotNull(infom1Level);
-        assertNotNull(infop1Level);
+        assertThat(infom1Level).isNotNull();
+        assertThat(infop1Level).isNotNull();
     }
 
 }

@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.core.time.internal.format;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
 import org.apache.logging.log4j.core.time.internal.format.FastDateParser;
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,13 +48,12 @@ public class FastDateParser_TimeZoneStrategyTest {
                         parser.parse(tzDisplay);
                     }
                     catch(final Exception ex) {
-                        Assert.fail("'" + tzDisplay + "'"
+                        fail("'" + tzDisplay + "'"
                                 + " Locale: '" + locale.getDisplayName() + "'"
                                 + " TimeZone: " + zone[0]
                                 + " offset: " + t
                                 + " defaultLocale: " + Locale.getDefault()
-                                + " defaultTimeZone: " + TimeZone.getDefault().getDisplayName()
-                                );
+                                + " defaultTimeZone: " + TimeZone.getDefault().getDisplayName());
                     }
                 }
             }
@@ -65,6 +66,6 @@ public class FastDateParser_TimeZoneStrategyTest {
 
         final Date summer = parser.parse("26.10.2014 02:00:00 MESZ");
         final Date standard = parser.parse("26.10.2014 02:00:00 MEZ");
-        Assert.assertNotEquals(summer.getTime(), standard.getTime());
+        assertThat(standard.getTime()).isNotEqualTo(summer.getTime());
     }
 }

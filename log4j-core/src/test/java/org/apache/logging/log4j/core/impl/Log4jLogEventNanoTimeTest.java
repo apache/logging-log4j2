@@ -16,25 +16,25 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.SystemNanoClock;
+import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("functional")
 public class Log4jLogEventNanoTimeTest {
@@ -77,18 +77,18 @@ public class Log4jLogEventNanoTimeTest {
         }
         file.delete();
 
-        assertNotNull(line1, "line1");
-        assertNotNull(line2, "line2");
+        assertThat(line1).describedAs("line1").isNotNull();
+        assertThat(line2).describedAs("line2").isNotNull();
         final String[] line1Parts = line1.split(" AND ");
-        assertEquals("Use actual System.nanoTime()", line1Parts[2]);
-        assertEquals(line1Parts[0], line1Parts[1]);
+        assertThat(line1Parts[2]).isEqualTo("Use actual System.nanoTime()");
+        assertThat(line1Parts[1]).isEqualTo(line1Parts[0]);
         final long loggedNanoTime = Long.parseLong(line1Parts[0]);
         assertTrue(loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1), "used system nano time");
         
         final String[] line2Parts = line2.split(" AND ");
-        assertEquals("Use dummy nano clock", line2Parts[2]);
-        assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[0]);
-        assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[1]);
+        assertThat(line2Parts[2]).isEqualTo("Use dummy nano clock");
+        assertThat(line2Parts[0]).isEqualTo(String.valueOf(DUMMYNANOTIME));
+        assertThat(line2Parts[1]).isEqualTo(String.valueOf(DUMMYNANOTIME));
     }
 
 }

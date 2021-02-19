@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class LevelPatternConverterTest {
 
@@ -36,19 +37,19 @@ public class LevelPatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         LevelPatternConverter converter = LevelPatternConverter.newInstance(null);
         converter.format(event, sb);
-        assertEquals(Level.DEBUG.toString(), sb.toString());
+        assertThat(sb.toString()).isEqualTo(Level.DEBUG.toString());
         final String[] opts = new String[] { "length=" + length };
         converter = LevelPatternConverter.newInstance(opts);
         sb.setLength(0);
         converter.format(event, sb);
-        assertEquals(debug, sb.toString());
+        assertThat(sb.toString()).isEqualTo(debug);
         event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.WARN) //
                 .setMessage(msg).build();
         sb.setLength(0);
         converter.format(event, sb);
-        assertEquals(warn, sb.toString());
+        assertThat(sb.toString()).isEqualTo(warn);
     }
 
     @Test
@@ -81,19 +82,19 @@ public class LevelPatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         LevelPatternConverter converter = LevelPatternConverter.newInstance(null);
         converter.format(event, sb);
-        assertEquals(Level.DEBUG.toString(), sb.toString());
+        assertThat(sb.toString()).isEqualTo(Level.DEBUG.toString());
         final String[] opts = new String[] { "lowerCase=true" };
         converter = LevelPatternConverter.newInstance(opts);
         sb.setLength(0);
         converter.format(event, sb);
-        assertEquals("debug", sb.toString());
+        assertThat(sb.toString()).isEqualTo("debug");
         event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.WARN) //
                 .setMessage(msg).build();
         sb.setLength(0);
         converter.format(event, sb);
-        assertEquals("warn", sb.toString());
+        assertThat(sb.toString()).isEqualTo("warn");
     }
 
     @Test
@@ -106,19 +107,19 @@ public class LevelPatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         LevelPatternConverter converter = LevelPatternConverter.newInstance(null);
         converter.format(event, sb);
-        assertEquals(Level.DEBUG.toString(), sb.toString());
+        assertThat(sb.toString()).isEqualTo(Level.DEBUG.toString());
         final String[] opts = new String[] { "WARN=Warning, DEBUG=Debug, ERROR=Error, TRACE=Trace, INFO=Info" };
         converter = LevelPatternConverter.newInstance(opts);
         sb.setLength(0);
         converter.format(event, sb);
-        assertEquals("Debug", sb.toString());
+        assertThat(sb.toString()).isEqualTo("Debug");
         event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.WARN) //
                 .setMessage(msg).build();
         sb.setLength(0);
         converter.format(event, sb);
-        assertEquals("Warning", sb.toString());
+        assertThat(sb.toString()).isEqualTo("Warning");
     }
 
     @Test
@@ -131,19 +132,19 @@ public class LevelPatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         LevelPatternConverter converter = LevelPatternConverter.newInstance(null);
         converter.format(event, sb);
-        assertEquals(Level.DEBUG.toString(), sb.toString());
+        assertThat(sb.toString()).isEqualTo(Level.DEBUG.toString());
         final String[] opts = new String[] { "WARN=Warning, length=2" };
         converter = LevelPatternConverter.newInstance(opts);
         sb.setLength(0);
         converter.format(event, sb);
-        assertEquals("DE", sb.toString());
+        assertThat(sb.toString()).isEqualTo("DE");
         event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.WARN) //
                 .setMessage(msg).build();
         sb.setLength(0);
         converter.format(event, sb);
-        assertEquals("Warning", sb.toString());
+        assertThat(sb.toString()).isEqualTo("Warning");
     }
 
     @Test
@@ -156,19 +157,19 @@ public class LevelPatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         LevelPatternConverter converter = LevelPatternConverter.newInstance(null);
         converter.format(event, sb);
-        assertEquals(Level.DEBUG.toString(), sb.toString());
+        assertThat(sb.toString()).isEqualTo(Level.DEBUG.toString());
         final String[] opts = new String[] { "WARN=Warning, length=2, lowerCase=true" };
         converter = LevelPatternConverter.newInstance(opts);
         sb.setLength(0);
         converter.format(event, sb);
-        assertEquals("de", sb.toString());
+        assertThat(sb.toString()).isEqualTo("de");
         event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.WARN) //
                 .setMessage(msg).build();
         sb.setLength(0);
         converter.format(event, sb);
-        assertEquals("Warning", sb.toString());
+        assertThat(sb.toString()).isEqualTo("Warning");
     }
 
 }

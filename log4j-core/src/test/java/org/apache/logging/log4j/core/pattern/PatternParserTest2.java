@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PatternParserTest2 {
 
@@ -39,7 +39,7 @@ public class PatternParserTest2 {
         cal.set(Calendar.SECOND, 01);
         parse(pattern, convert, buf, cal.getTime(), 123);
 
-        assertEquals("23-53-01 \t ...", buf.toString());
+        assertThat(buf.toString()).isEqualTo("23-53-01 \t ...");
     }
 
     @Test
@@ -54,7 +54,7 @@ public class PatternParserTest2 {
         cal.set(Calendar.SECOND, 59);
         parse(pattern, convert, buf, cal.getTime(), 3);
 
-        assertEquals("13-24-59 \\t---", buf.toString());
+        assertThat(buf.toString()).isEqualTo("13-24-59 \\t---");
     }
 
     private void parse(final String pattern, final boolean convert, final StringBuilder buf, final Date date, final int i) {

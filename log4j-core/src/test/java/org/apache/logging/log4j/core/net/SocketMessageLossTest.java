@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +30,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
@@ -34,8 +37,6 @@ import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Disabled("Currently needs better port choosing support")
 @LoggerContextSource("log4j-socket2.xml")
@@ -61,7 +62,7 @@ public class SocketMessageLossTest {
             logger.error(message);
 
             final BufferedReader reader = new BufferedReader(new InputStreamReader(futureIn.get()));
-            assertEquals(message, reader.readLine());
+            assertThat(reader.readLine()).isEqualTo(message);
 
             //System.err.println("Closing server");
             closeQuietly(testServer);

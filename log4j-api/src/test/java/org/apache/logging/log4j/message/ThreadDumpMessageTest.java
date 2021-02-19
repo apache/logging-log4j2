@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreadDumpMessageTest {
 
@@ -68,9 +68,9 @@ public class ThreadDumpMessageTest {
     public void testToString() {
         final ThreadDumpMessage msg = new ThreadDumpMessage("Test");
         final String actual = msg.toString();
-        assertTrue(actual.contains("Test"));
-        assertTrue(actual.contains("RUNNABLE"));
-        assertTrue(actual.contains(getClass().getName()));
+        assertThat(actual.contains("Test")).isTrue();
+        assertThat(actual.contains("RUNNABLE")).isTrue();
+        assertThat(actual.contains(getClass().getName())).isTrue();
     }
 
     @Test
@@ -107,7 +107,7 @@ public class ThreadDumpMessageTest {
         message.formatTo(result);
         assertFalse(
                 result.toString().contains("ThreadWithCountDownLatch"), "no ThreadWithCountDownLatch captured");
-        assertEquals(initial, result.toString());
+        assertThat(result.toString()).isEqualTo(initial);
         keepAlive.countDown(); // allow thread to die
     }
 

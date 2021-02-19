@@ -17,14 +17,15 @@
 
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class MaxLengthConverterTest {
 
@@ -40,7 +41,7 @@ public class MaxLengthConverterTest {
             .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals("0123456789", sb.toString());
+        assertThat(sb.toString()).isEqualTo("0123456789");
     }
 
     @Test
@@ -53,7 +54,7 @@ public class MaxLengthConverterTest {
             .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals("0123456789", sb.toString());
+        assertThat(sb.toString()).isEqualTo("0123456789");
     }
 
     @Test
@@ -66,6 +67,6 @@ public class MaxLengthConverterTest {
             .build();
         final StringBuilder sb = new StringBuilder();
         MaxLengthConverter.newInstance(null, new String[]{"%m", "21"}).format(event, sb);
-        assertEquals("012345678901234567890...", sb.toString());
+        assertThat(sb.toString()).isEqualTo("012345678901234567890...");
     }
 }

@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.layout;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.logging.log4j.Level;
@@ -50,7 +51,7 @@ public class Log4j1XmlLayoutTest {
                 "<log4j:message><![CDATA[Hello, World]]></log4j:message>\r\n" +
                 "</log4j:event>\r\n\r\n";
 
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -82,7 +83,7 @@ public class Log4j1XmlLayoutTest {
                 "</log4j:properties>\r\n"+
                 "</log4j:event>\r\n\r\n";
 
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
 }

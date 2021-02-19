@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -23,8 +26,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link MarkerLookup}.
@@ -47,7 +48,7 @@ public class EventLookupTest {
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
         final String value = strLookup.lookup(event, "Marker");
-        assertEquals(markerName, value);
+        assertThat(value).isEqualTo(markerName);
     }
 
     @Test
@@ -59,7 +60,7 @@ public class EventLookupTest {
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage(msg)).build();
         final String value = strLookup.lookup(event, "Message");
-        assertEquals(msg, value);
+        assertThat(value).isEqualTo(msg);
     }
 
     @Test
@@ -71,7 +72,7 @@ public class EventLookupTest {
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage(msg)).build();
         final String value = strLookup.lookup(event, "Level");
-        assertEquals(Level.INFO.toString(), value);
+        assertThat(value).isEqualTo(Level.INFO.toString());
     }
 
     @Test
@@ -85,7 +86,7 @@ public class EventLookupTest {
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage(msg)).build();
         final String value = strLookup.lookup(event, "Timestamp");
-        assertEquals(Long.toString(now), value);
+        assertThat(value).isEqualTo(Long.toString(now));
     }
 
     @Test
@@ -97,7 +98,7 @@ public class EventLookupTest {
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage(msg)).build();
         final String value = strLookup.lookup(event, "Logger");
-        assertEquals(this.getClass().getName(), value);
+        assertThat(value).isEqualTo(this.getClass().getName());
     }
 
     @Test
@@ -110,7 +111,7 @@ public class EventLookupTest {
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage(msg)).build();
         final String value = strLookup.lookup(event, "ThreadName");
-        assertEquals("Main", value);
+        assertThat(value).isEqualTo("Main");
     }
 
 }

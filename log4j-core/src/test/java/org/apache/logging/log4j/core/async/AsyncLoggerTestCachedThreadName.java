@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -31,8 +33,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerTestCachedThreadName {
@@ -69,10 +69,10 @@ public class AsyncLoggerTestCachedThreadName {
         // System.out.println(line2);
         reader.close();
         file.delete();
-        assertNotNull("line1", line1);
-        assertNotNull("line2", line2);
-        assertTrue("line1", line1.endsWith(" INFO c.f.Bar [main]   Async logger msg "));
-        assertTrue("line2", line2.endsWith(" INFO c.f.Bar [main]   Async logger msg "));
+        assertThat(line1).describedAs("line1").isNotNull();
+        assertThat(line2).describedAs("line2").isNotNull();
+        assertThat(line1.endsWith(" INFO c.f.Bar [main]   Async logger msg ")).describedAs("line1").isTrue();
+        assertThat(line2.endsWith(" INFO c.f.Bar [main]   Async logger msg ")).describedAs("line2").isTrue();
     }
 
 }

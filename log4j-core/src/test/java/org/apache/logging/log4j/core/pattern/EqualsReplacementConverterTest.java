@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -23,8 +26,6 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class EqualsReplacementConverterTest {
 
@@ -65,9 +66,9 @@ public class EqualsReplacementConverterTest {
         final LoggerContext ctx = LoggerContext.getContext();
         final EqualsReplacementConverter converter = EqualsReplacementConverter.newInstance(ctx.getConfiguration(),
             options);
-        assertNotNull(converter);
+        assertThat(converter).isNotNull();
         converter.format(event, sb);
-        assertEquals(expectedValue, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expectedValue);
     }
 
     @Test
@@ -102,9 +103,9 @@ public class EqualsReplacementConverterTest {
             new String[]{"[%marker]", "[]", substitution});
 
         final StringBuilder sb = new StringBuilder();
-        assertNotNull(converter);
+        assertThat(converter).isNotNull();
         converter.parseSubstitution(event, sb);
         final String actual = sb.toString();
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 }

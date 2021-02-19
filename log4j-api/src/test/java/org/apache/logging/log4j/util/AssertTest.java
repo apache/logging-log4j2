@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AssertTest {
 
@@ -49,7 +49,7 @@ public class AssertTest {
     @ParameterizedTest
     @MethodSource("data")
     public void isEmpty(Object value, boolean isEmpty) throws Exception {
-        assertEquals(isEmpty, Assert.isEmpty(value));
+        assertThat(Assert.isEmpty(value)).isEqualTo(isEmpty);
     }
 
 }

@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.junit.JndiRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * JndiLookupTest
@@ -55,13 +55,13 @@ public class JndiLookupTest {
         final StrLookup lookup = new JndiLookup();
 
         String contextName = lookup.lookup(TEST_CONTEXT_RESOURCE_NAME);
-        assertEquals(TEST_CONTEXT_NAME, contextName);
+        assertThat(contextName).isEqualTo(TEST_CONTEXT_NAME);
 
         contextName = lookup.lookup(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME);
-        assertEquals(TEST_CONTEXT_NAME, contextName);
+        assertThat(contextName).isEqualTo(TEST_CONTEXT_NAME);
 
         final String nonExistingResource = lookup.lookup("logging/non-existing-resource");
-        assertNull(nonExistingResource);
+        assertThat(nonExistingResource).isNull();
     }
 
     @Test
@@ -69,8 +69,8 @@ public class JndiLookupTest {
         // LOG4J2-1310
         final StrLookup lookup = new JndiLookup();
         final String integralValue = lookup.lookup(TEST_INTEGRAL_NAME);
-        assertEquals(String.valueOf(TEST_INTEGRAL_VALUE), integralValue);
+        assertThat(integralValue).isEqualTo(String.valueOf(TEST_INTEGRAL_VALUE));
         final String collectionValue = lookup.lookup(TEST_STRINGS_NAME);
-        assertEquals(String.valueOf(TEST_STRINGS_COLLECTION), collectionValue);
+        assertThat(collectionValue).isEqualTo(String.valueOf(TEST_STRINGS_COLLECTION));
     }
 }

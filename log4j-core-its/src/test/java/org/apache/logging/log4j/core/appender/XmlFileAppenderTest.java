@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.Layouts;
@@ -66,11 +66,10 @@ public class XmlFileAppenderTest {
         };
 
         for (int i = 0; i < expect.length; i++) {
-            assertTrue("Expected line " + i + " to contain " + expect[i] + " but got: " + lines.get(i),
-                    lines.get(i).contains(expect[i]));
+            assertThat(lines.get(i).contains(expect[i])).describedAs("Expected line " + i + " to contain " + expect[i] + " but got: " + lines.get(i)).isTrue();
         }
 
         final String location = "testFlushAtEndOfBatch";
-        assertTrue("no location", !lines.get(0).contains(location));
+        assertThat(!lines.get(0).contains(location)).describedAs("no location").isTrue();
     }
 }

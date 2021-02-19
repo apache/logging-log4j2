@@ -17,6 +17,9 @@
 
 package org.apache.logging.log4j.core.config;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,10 +28,8 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import org.junit.jupiter.api.Test;
 
 @Tag("yaml")
 @LoggerContextSource("log4j2-2134.yml")
@@ -58,7 +59,7 @@ public class JiraLog4j2_2134Test {
 		ctx.stop();
 		ctx.start(config);
 
-		assertDoesNotThrow(() -> log.error("Info message"));
+		assertThatCode(() -> log.error("Info message")).doesNotThrowAnyException();
 	}
 
 	@Test
@@ -68,7 +69,7 @@ public class JiraLog4j2_2134Test {
 		final Configuration config = ctx.getConfiguration();
 		ctx.start(config);
 
-		assertDoesNotThrow(() -> log.error("Info message"));
+		assertThatCode(() -> log.error("Info message")).doesNotThrowAnyException();
 	}
 
 	@Test
@@ -78,7 +79,7 @@ public class JiraLog4j2_2134Test {
 		ctx.stop();
 		ctx.start();
 
-		assertDoesNotThrow(() -> log.error("Info message"));
+		assertThatCode(() -> log.error("Info message")).doesNotThrowAnyException();
 	}
 
 	@Test
@@ -89,7 +90,7 @@ public class JiraLog4j2_2134Test {
 		ctx.stop();
 		ctx.start(config);
 
-		assertDoesNotThrow(() -> log.error("Info message"));
+		assertThatCode(() -> log.error("Info message")).doesNotThrowAnyException();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -135,6 +136,6 @@ public class JiraLog4j2_2134Test {
 		ctx.stop();
 		ctx.start(config);
 
-		assertDoesNotThrow(() -> log.error("Info message"));
+		assertThatCode(() -> log.error("Info message")).doesNotThrowAnyException();
 	}
 }

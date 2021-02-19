@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class LegacyPropertiesCompatibilityTest {
 
@@ -88,6 +88,6 @@ public class LegacyPropertiesCompatibilityTest {
     public void compareNewWithOldName(final String newName, final String oldName) {
         final List<CharSequence> newTokens = PropertySource.Util.tokenize(newName);
         final List<CharSequence> oldTokens = PropertySource.Util.tokenize(oldName);
-        assertEquals(oldTokens, newTokens);
+        assertThat(newTokens).isEqualTo(oldTokens);
     }
 }

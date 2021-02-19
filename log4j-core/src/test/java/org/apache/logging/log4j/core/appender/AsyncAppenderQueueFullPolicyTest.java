@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.lang.reflect.Field;
+import java.util.concurrent.atomic.AtomicLong;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,11 +31,6 @@ import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.BlockingAppender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Field;
-import java.util.concurrent.atomic.AtomicLong;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the AsyncAppender (LOG4J2-1080) event routing logic:
@@ -71,7 +71,7 @@ public class AsyncAppenderQueueFullPolicyTest {
     public void testRouter() throws Exception {
         final Logger logger = LogManager.getLogger(AsyncAppenderQueueFullPolicyTest.class);
 
-        assertEquals(4, asyncAppender.getQueueCapacity());
+        assertThat(asyncAppender.getQueueCapacity()).isEqualTo(4);
         logger.error("event 1 - gets taken off the queue");
         logger.warn("event 2");
         logger.info("event 3");
@@ -80,8 +80,8 @@ public class AsyncAppenderQueueFullPolicyTest {
             Thread.yield(); // wait until background thread takes one element off the queue
         }
         logger.info("event 5 - now the queue is full");
-        assertEquals(0, asyncAppender.getQueueRemainingCapacity(), "queue remaining capacity");
-        assertEquals(0, policy.queueFull.get(), "EventRouter invocations");
+        assertThat(asyncAppender.getQueueRemainingCapacity()).describedAs("queue remaining capacity").isEqualTo(0);
+        assertThat(policy.queueFull.get()).describedAs("EventRouter invocations").isEqualTo(0);
 
         final Thread release = new Thread("AsyncAppenderReleaser") {
             @Override
@@ -99,7 +99,7 @@ public class AsyncAppenderQueueFullPolicyTest {
         release.setDaemon(true);
         release.start();
         logger.fatal("this blocks until queue space available");
-        assertEquals(1, policy.queueFull.get());
+        assertThat(policy.queueFull.get()).isEqualTo(1);
     }
 
     public static class CountingAsyncQueueFullPolicy extends DefaultAsyncQueueFullPolicy {

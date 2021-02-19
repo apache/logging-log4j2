@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.nio.charset.Charset;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.charset.Charset;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ConsoleAppenderBuilderTest {
 
@@ -31,7 +31,7 @@ public class ConsoleAppenderBuilderTest {
      */
     @Test
     public void testDefaultImmediateFlush() {
-        assertTrue(ConsoleAppender.newBuilder().isImmediateFlush());
+        assertThat(ConsoleAppender.newBuilder().isImmediateFlush()).isTrue();
     }
 
     /**
@@ -45,7 +45,7 @@ public class ConsoleAppenderBuilderTest {
         final PatternLayout layout = (PatternLayout) appender.getLayout();
         final String charsetName = System.getProperty("sun.stdout.encoding");
         final String expectedName = charsetName != null ? charsetName : Charset.defaultCharset().name();
-        assertEquals(expectedName, layout.getCharset().name());
+        assertThat(layout.getCharset().name()).isEqualTo(expectedName);
     }
 
     /**
@@ -55,10 +55,10 @@ public class ConsoleAppenderBuilderTest {
     public void testSetNullErrorHandlerIsNotAllowed() {
         final ConsoleAppender appender = ConsoleAppender.newBuilder().setName("test").build();
         ErrorHandler handler = appender.getHandler();
-        assertNotNull(handler);
+        assertThat(handler).isNotNull();
         // This could likely be allowed to throw, but we're just testing that
         // setting null does not actually set a null handler.
         appender.setHandler(null);
-        assertSame(handler, appender.getHandler());
+        assertThat(appender.getHandler()).isSameAs(handler);
     }
 }

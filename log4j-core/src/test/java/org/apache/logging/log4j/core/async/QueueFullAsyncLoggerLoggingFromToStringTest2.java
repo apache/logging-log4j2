@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -37,8 +39,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
@@ -95,14 +95,13 @@ public class QueueFullAsyncLoggerLoggingFromToStringTest2 extends QueueFullAbstr
         TRACE("After  stop() blockingAppender.logEvents.count=" + blockingAppender.logEvents.size());
 
         final Stack<String> actual = transform(blockingAppender.logEvents);
-        assertEquals("Jumped the queue: test(2)+domain1(65)+domain2(61)=128: queue full",
-                "Logging in toString() #127 (Log4j2 logged this message out of order to prevent deadlock caused by domain objects logging from their toString method when the async queue is full - LOG4J2-2031)", actual.pop());
-        assertEquals("Logging in toString() #128 (Log4j2 logged this message out of order to prevent deadlock caused by domain objects logging from their toString method when the async queue is full - LOG4J2-2031)", actual.pop());
-        assertEquals("logging naughty object #0 Who's bad?!", actual.pop());
+        assertThat(actual.pop()).describedAs("Jumped the queue: test(2)+domain1(65)+domain2(61)=128: queue full").isEqualTo("Logging in toString() #127 (Log4j2 logged this message out of order to prevent deadlock caused by domain objects logging from their toString method when the async queue is full - LOG4J2-2031)");
+        assertThat(actual.pop()).isEqualTo("Logging in toString() #128 (Log4j2 logged this message out of order to prevent deadlock caused by domain objects logging from their toString method when the async queue is full - LOG4J2-2031)");
+        assertThat(actual.pop()).isEqualTo("logging naughty object #0 Who's bad?!");
 
         for (int i = 0; i < 127; i++) {
-            assertEquals("First batch", "Logging in toString() #" + i, actual.pop());
+            assertThat(actual.pop()).describedAs("First batch").isEqualTo("Logging in toString() #" + i);
         }
-        assertTrue(actual.isEmpty());
+        assertThat(actual.isEmpty()).isTrue();
     }
 }

@@ -16,20 +16,20 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Locale;
-
 import org.apache.logging.log4j.junit.Mutable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class StringFormattedMessageTest {
@@ -43,11 +43,11 @@ public class StringFormattedMessageTest {
         StringFormattedMessage msg = new StringFormattedMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
         final String expected = "Test message null";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
         final Object[] array = null;
         msg = new StringFormattedMessage(testMsg, array, null);
         result = msg.getFormattedMessage();
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class StringFormattedMessageTest {
         final StringFormattedMessage msg = new StringFormattedMessage(testMsg, "Apache");
         final String result = msg.getFormattedMessage();
         final String expected = "Test message Apache";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class StringFormattedMessageTest {
         final StringFormattedMessage msg = new StringFormattedMessage(Locale.US, testMsg, Math.E);
         final String result = msg.getFormattedMessage();
         final String expected = "Test e =    +2.7183";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -74,7 +74,7 @@ public class StringFormattedMessageTest {
         final StringFormattedMessage msg = new StringFormattedMessage(Locale.FRANCE, testMsg, Math.E);
         final String result = msg.getFormattedMessage();
         final String expected = "Test e =    +2,7183";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -83,9 +83,9 @@ public class StringFormattedMessageTest {
         final MessageFormatMessage msg = new MessageFormatMessage(testMsg, "Apache", new NullPointerException("Null"));
         final String result = msg.getFormattedMessage();
         final String expected = "Test message Apache";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
         final Throwable t = msg.getThrowable();
-        assertNotNull(t, "No Throwable");
+        assertThat(t).describedAs("No Throwable").isNotNull();
     }
 
     @Test
@@ -97,7 +97,7 @@ public class StringFormattedMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Test message XYZ", actual, "Should use initial param value");
+        assertThat(actual).describedAs("Should use initial param value").isEqualTo("Test message XYZ");
     }
 
     @Test
@@ -110,7 +110,7 @@ public class StringFormattedMessageTest {
         msg.getFormattedMessage();
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Test message abc", actual, "Should use initial param value");
+        assertThat(actual).describedAs("Should use initial param value").isEqualTo("Test message abc");
     }
 
     @Test
@@ -123,9 +123,9 @@ public class StringFormattedMessageTest {
         final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         final ObjectInputStream in = new ObjectInputStream(bais);
         final StringFormattedMessage actual = (StringFormattedMessage) in.readObject();
-        assertEquals(expected, actual);
-        assertEquals(expected.getFormat(), actual.getFormat());
-        assertEquals(expected.getFormattedMessage(), actual.getFormattedMessage());
-        assertArrayEquals(expected.getParameters(), actual.getParameters());
+        assertThat(actual).isEqualTo(expected);
+        assertThat(actual.getFormat()).isEqualTo(expected.getFormat());
+        assertThat(actual.getFormattedMessage()).isEqualTo(expected.getFormattedMessage());
+        assertThat(actual.getParameters()).isEqualTo(expected.getParameters());
     }
 }

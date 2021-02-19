@@ -17,6 +17,10 @@
 
 package org.apache.logging.log4j.core.tools;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Method;
@@ -27,14 +31,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.TestLogger;
@@ -46,8 +48,6 @@ import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("functional")
 public class GenerateExtendedLoggerTest {
@@ -95,20 +95,20 @@ public class GenerateExtendedLoggerTest {
         final Class<?> cls = Class.forName(CLASSNAME);
 
         // check that all factory methods exist and are static
-        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create").getModifiers()));
-        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", Class.class).getModifiers()));
-        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", Object.class).getModifiers()));
-        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", String.class).getModifiers()));
-        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", Class.class, MessageFactory.class).getModifiers()));
-        assertTrue(Modifier
-                .isStatic(cls.getDeclaredMethod("create", Object.class, MessageFactory.class).getModifiers()));
-        assertTrue(Modifier
-                .isStatic(cls.getDeclaredMethod("create", String.class, MessageFactory.class).getModifiers()));
+        assertThat(Modifier.isStatic(cls.getDeclaredMethod("create").getModifiers())).isTrue();
+        assertThat(Modifier.isStatic(cls.getDeclaredMethod("create", Class.class).getModifiers())).isTrue();
+        assertThat(Modifier.isStatic(cls.getDeclaredMethod("create", Object.class).getModifiers())).isTrue();
+        assertThat(Modifier.isStatic(cls.getDeclaredMethod("create", String.class).getModifiers())).isTrue();
+        assertThat(Modifier.isStatic(cls.getDeclaredMethod("create", Class.class, MessageFactory.class).getModifiers())).isTrue();
+        assertThat(Modifier
+                .isStatic(cls.getDeclaredMethod("create", Object.class, MessageFactory.class).getModifiers())).isTrue();
+        assertThat(Modifier
+                .isStatic(cls.getDeclaredMethod("create", String.class, MessageFactory.class).getModifiers())).isTrue();
 
         // check that the extended log methods exist
         final String[] extendedMethods = { "diag", "notice", "verbose" };
         for (final String name : extendedMethods) {
-            assertDoesNotThrow(() -> {
+            assertThatCode(() -> {
                 cls.getDeclaredMethod(name, Marker.class, Message.class, Throwable.class);
                 cls.getDeclaredMethod(name, Marker.class, Object.class, Throwable.class);
                 cls.getDeclaredMethod(name, Marker.class, String.class, Throwable.class);
@@ -135,7 +135,7 @@ public class GenerateExtendedLoggerTest {
                 cls.getDeclaredMethod(name, String.class, Supplier[].class);
                 cls.getDeclaredMethod(name, Supplier.class);
                 cls.getDeclaredMethod(name, Supplier.class, Throwable.class);
-            });
+            }).doesNotThrowAnyException();
         }
 
         // now see if it actually works...
@@ -160,16 +160,16 @@ public class GenerateExtendedLoggerTest {
         final TestLogger underlying = (TestLogger) LogManager.getLogger("X.Y.Z");
         final List<String> lines = underlying.getEntries();
         for (int i = 0; i < lines.size() - 6; i++) {
-            assertEquals(" " + levels.get(i).name + " This is message " + i, lines.get(i));
+            assertThat(lines.get(i)).isEqualTo(" " + levels.get(i).name + " This is message " + i);
         }
         
         // test that the standard logging methods still work
         int i = lines.size() - 6;
-        assertEquals(" TRACE trace message", lines.get(i++));
-        assertEquals(" DEBUG debug message", lines.get(i++));
-        assertEquals(" INFO info message", lines.get(i++));
-        assertEquals(" WARN warn message", lines.get(i++));
-        assertEquals(" ERROR error message", lines.get(i++));
-        assertEquals(" FATAL fatal message", lines.get(i++));
+        assertThat(lines.get(i++)).isEqualTo(" TRACE trace message");
+        assertThat(lines.get(i++)).isEqualTo(" DEBUG debug message");
+        assertThat(lines.get(i++)).isEqualTo(" INFO info message");
+        assertThat(lines.get(i++)).isEqualTo(" WARN warn message");
+        assertThat(lines.get(i++)).isEqualTo(" ERROR error message");
+        assertThat(lines.get(i++)).isEqualTo(" FATAL fatal message");
     }
 }

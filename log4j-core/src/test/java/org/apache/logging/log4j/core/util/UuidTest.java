@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class UuidTest {
 
@@ -52,11 +52,11 @@ public class UuidTest {
                 }
             }
         }
-        assertEquals(0, errors, errors + " duplicate UUIDS");
+        assertThat(errors).describedAs(errors + " duplicate UUIDS").isEqualTo(0);
         final int variant = uuid.variant();
-        assertEquals(2, variant, "Incorrect variant. Expected 2 got " + variant);
+        assertThat(variant).describedAs("Incorrect variant. Expected 2 got " + variant).isEqualTo(2);
         final int version = uuid.version();
-        assertEquals(1, version, "Incorrect version. Expected 1 got " + version);
+        assertThat(version).describedAs("Incorrect version. Expected 1 got " + version).isEqualTo(1);
         final long node = uuid.node();
         assertTrue(node != 0, "Invalid node");
     }
@@ -104,7 +104,7 @@ public class UuidTest {
                 }
             }
         }
-        assertEquals(0, errors, errors + " duplicate UUIDS");
+        assertThat(errors).describedAs(errors + " duplicate UUIDS").isEqualTo(0);
     }
 
 

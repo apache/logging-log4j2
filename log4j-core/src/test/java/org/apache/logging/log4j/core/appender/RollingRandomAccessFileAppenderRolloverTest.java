@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Arrays;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
@@ -28,8 +30,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class RollingRandomAccessFileAppenderRolloverTest {
 
@@ -55,17 +55,17 @@ public class RollingRandomAccessFileAppenderRolloverTest {
 
         BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
-        assertTrue(line1.contains(msg));
+        assertThat(line1.contains(msg)).isTrue();
         reader.close();
 
-        assertFalse("afterRollover-1.log not created yet", after1.exists());
+        assertThat(after1.exists()).describedAs("afterRollover-1.log not created yet").isFalse();
 
         String exceed = "Long message that exceeds rollover size... ";
         final char[] padding = new char[250];
         Arrays.fill(padding, 'X');
         exceed += new String(padding);
         log.warn(exceed);
-        assertFalse("exceeded size but afterRollover-1.log not created yet", after1.exists());
+        assertThat(after1.exists()).describedAs("exceeded size but afterRollover-1.log not created yet").isFalse();
 
         final String trigger = "This message triggers rollover.";
         log.warn(trigger);
@@ -81,26 +81,26 @@ public class RollingRandomAccessFileAppenderRolloverTest {
             Thread.sleep(50);
         }
 
-        assertTrue("afterRollover-1.log created", after1.exists());
+        assertThat(after1.exists()).describedAs("afterRollover-1.log created").isTrue();
 
         reader = new BufferedReader(new FileReader(file));
         final String new1 = reader.readLine();
-        assertTrue("after rollover only new msg", new1.contains(trigger));
-        assertNull("No more lines", reader.readLine());
+        assertThat(new1.contains(trigger)).describedAs("after rollover only new msg").isTrue();
+        assertThat(reader.readLine()).describedAs("No more lines").isNull();
         reader.close();
         file.delete();
 
         reader = new BufferedReader(new FileReader(after1));
         final String old1 = reader.readLine();
-        assertTrue("renamed file line 1", old1.contains(msg));
+        assertThat(old1.contains(msg)).describedAs("renamed file line 1").isTrue();
         final String old2 = reader.readLine();
-        assertTrue("renamed file line 2", old2.contains(exceed));
+        assertThat(old2.contains(exceed)).describedAs("renamed file line 2").isTrue();
         String line = reader.readLine();
         if (line != null) {
-            assertTrue("strange...", line.contains("This message triggers rollover."));
+            assertThat(line.contains("This message triggers rollover.")).describedAs("strange...").isTrue();
             line = reader.readLine();
         }
-        assertNull("No more lines", line);
+        assertThat(line).describedAs("No more lines").isNull();
         reader.close();
         after1.delete();
     }

@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core.time.internal.format;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
 import org.apache.logging.log4j.core.time.internal.format.FastDateParser;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,9 +39,9 @@ public class FastDateParser_MoreOrLessTest {
         final FastDateParser parser = new FastDateParser("MM/dd", TimeZone.getDefault(), Locale.getDefault());
         final ParsePosition parsePosition = new ParsePosition(0);
         final Date date = parser.parse("A 3/23/61", parsePosition);
-        Assert.assertNull(date);
-        Assert.assertEquals(0, parsePosition.getIndex());      
-        Assert.assertEquals(0, parsePosition.getErrorIndex());        
+        assertThat(date).isNull();
+        assertThat(parsePosition.getIndex()).isEqualTo(0);      
+        assertThat(parsePosition.getErrorIndex()).isEqualTo(0);        
     }
 
     @Test
@@ -49,13 +50,13 @@ public class FastDateParser_MoreOrLessTest {
         //SimpleDateFormat parser = new SimpleDateFormat("M/d/y");
         final ParsePosition parsePosition = new ParsePosition(0);
         final Date date = parser.parse(" 3/ 23/ 1961", parsePosition);
-        Assert.assertEquals(12, parsePosition.getIndex());
+        assertThat(parsePosition.getIndex()).isEqualTo(12);
 
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        Assert.assertEquals(1961, calendar.get(Calendar.YEAR));
-        Assert.assertEquals(2, calendar.get(Calendar.MONTH));
-        Assert.assertEquals(23, calendar.get(Calendar.DATE));       
+        assertThat(calendar.get(Calendar.YEAR)).isEqualTo(1961);
+        assertThat(calendar.get(Calendar.MONTH)).isEqualTo(2);
+        assertThat(calendar.get(Calendar.DATE)).isEqualTo(23);       
     }
 
     @Test
@@ -63,28 +64,28 @@ public class FastDateParser_MoreOrLessTest {
         final FastDateParser parser = new FastDateParser("MM/dd", TimeZone.getDefault(), Locale.getDefault());
         final ParsePosition parsePosition = new ParsePosition(0);
         final Date date = parser.parse("3/23/61", parsePosition);
-        Assert.assertEquals(4, parsePosition.getIndex());
+        assertThat(parsePosition.getIndex()).isEqualTo(4);
 
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        Assert.assertEquals(2, calendar.get(Calendar.MONTH));
-        Assert.assertEquals(23, calendar.get(Calendar.DATE));       
+        assertThat(calendar.get(Calendar.MONTH)).isEqualTo(2);
+        assertThat(calendar.get(Calendar.DATE)).isEqualTo(23);       
     }
     
     @Test
     public void testInputHasWrongCharacters() {
         final FastDateParser parser = new FastDateParser("MM-dd-yyy", TimeZone.getDefault(), Locale.getDefault());
         final ParsePosition parsePosition = new ParsePosition(0);
-        Assert.assertNull(parser.parse("03/23/1961", parsePosition));
-        Assert.assertEquals(2, parsePosition.getErrorIndex());
+        assertThat(parser.parse("03/23/1961", parsePosition)).isNull();
+        assertThat(parsePosition.getErrorIndex()).isEqualTo(2);
     }
     
     @Test
     public void testInputHasLessCharacters() {
         final FastDateParser parser = new FastDateParser("MM/dd/yyy", TimeZone.getDefault(), Locale.getDefault());
         final ParsePosition parsePosition = new ParsePosition(0);
-        Assert.assertNull(parser.parse("03/23", parsePosition));
-        Assert.assertEquals(5, parsePosition.getErrorIndex());
+        assertThat(parser.parse("03/23", parsePosition)).isNull();
+        assertThat(parsePosition.getErrorIndex()).isEqualTo(5);
     }
     
     @Test
@@ -93,12 +94,12 @@ public class FastDateParser_MoreOrLessTest {
         
         final String input = "11:23 Pacific Standard Time";
         final ParsePosition parsePosition = new ParsePosition(0);
-        Assert.assertNotNull(parser.parse(input, parsePosition));
-        Assert.assertEquals(input.length(), parsePosition.getIndex());
+        assertThat(parser.parse(input, parsePosition)).isNotNull();
+        assertThat(parsePosition.getIndex()).isEqualTo(input.length());
         
         parsePosition.setIndex(0);
-        Assert.assertNull(parser.parse( "11:23 Pacific Standard ", parsePosition));
-        Assert.assertEquals(6, parsePosition.getErrorIndex());
+        assertThat(parser.parse( "11:23 Pacific Standard ", parsePosition)).isNull();
+        assertThat(parsePosition.getErrorIndex()).isEqualTo(6);
     }
     
     @Test
@@ -106,11 +107,11 @@ public class FastDateParser_MoreOrLessTest {
         final FastDateParser parser = new FastDateParser("EEEE, MM/dd/yyy", NEW_YORK, Locale.US);
         final String input = "Thursday, 03/23/61";
         final ParsePosition parsePosition = new ParsePosition(0);
-        Assert.assertNotNull(parser.parse(input, parsePosition));
-        Assert.assertEquals(input.length(), parsePosition.getIndex());
+        assertThat(parser.parse(input, parsePosition)).isNotNull();
+        assertThat(parsePosition.getIndex()).isEqualTo(input.length());
         
         parsePosition.setIndex(0);
-        Assert.assertNull(parser.parse( "Thorsday, 03/23/61", parsePosition));
-        Assert.assertEquals(0, parsePosition.getErrorIndex());
+        assertThat(parser.parse( "Thorsday, 03/23/61", parsePosition)).isNull();
+        assertThat(parsePosition.getErrorIndex()).isEqualTo(0);
     }
 }

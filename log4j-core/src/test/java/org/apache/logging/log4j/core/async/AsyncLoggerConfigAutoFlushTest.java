@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -28,8 +30,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerConfigAutoFlushTest {
@@ -43,7 +43,7 @@ public class AsyncLoggerConfigAutoFlushTest {
     @Test
     public void testFlushAtEndOfBatch() throws Exception {
         final File file = new File("target", "AsyncLoggerConfigAutoFlushTest.log");
-        assertTrue("Deleted old file before test", !file.exists() || file.delete());
+        assertThat(!file.exists() || file.delete()).describedAs("Deleted old file before test").isTrue();
         
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Message flushed with immediate flush=false";
@@ -53,7 +53,7 @@ public class AsyncLoggerConfigAutoFlushTest {
         final String line1 = reader.readLine();
         reader.close();
         file.delete();
-        assertNotNull("line1", line1);
-        assertTrue("line1 correct", line1.contains(msg));
+        assertThat(line1).describedAs("line1").isNotNull();
+        assertThat(line1.contains(msg)).describedAs("line1 correct").isTrue();
     }
 }

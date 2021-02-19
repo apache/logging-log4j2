@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class PropertySourceTokenizerTest {
 
@@ -51,6 +51,6 @@ public class PropertySourceTokenizerTest {
     @MethodSource("data")
     public void testTokenize(final CharSequence value, final List<CharSequence> expectedTokens) {
         List<CharSequence> tokens = PropertySource.Util.tokenize(value);
-        assertEquals(expectedTokens, tokens);
+        assertThat(tokens).isEqualTo(expectedTokens);
     }
 }

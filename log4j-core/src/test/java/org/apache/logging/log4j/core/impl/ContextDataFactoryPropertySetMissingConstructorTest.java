@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.lang.reflect.Field;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.lang.reflect.Field;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the ContextDataFactory class.
@@ -31,11 +31,11 @@ public class ContextDataFactoryPropertySetMissingConstructorTest {
     @Test
     public void intArgReturnsSortedArrayStringMapIfPropertySpecifiedButMissingIntConstructor() throws Exception {
         System.setProperty("log4j2.ContextData", FactoryTestStringMapWithoutIntConstructor.class.getName());
-        assertTrue(ContextDataFactory.createContextData(2) instanceof SortedArrayStringMap);
+        assertThat(ContextDataFactory.createContextData(2) instanceof SortedArrayStringMap).isTrue();
         final SortedArrayStringMap actual = (SortedArrayStringMap) ContextDataFactory.createContextData(2);
         final Field thresholdField = SortedArrayStringMap.class.getDeclaredField("threshold");
         thresholdField.setAccessible(true);
-        assertEquals(2, thresholdField.getInt(actual));
+        assertThat(thresholdField.getInt(actual)).isEqualTo(2);
         System.clearProperty("log4j2.ContextData");
     }
 }

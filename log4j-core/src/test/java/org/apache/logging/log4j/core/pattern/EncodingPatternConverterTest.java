@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class EncodingPatternConverterTest {
 
@@ -39,11 +40,9 @@ public class EncodingPatternConverterTest {
         final String[] options = new String[]{"%msg"};
         final EncodingPatternConverter converter = EncodingPatternConverter
             .newInstance(ctx.getConfiguration(), options);
-        assertNotNull(converter, "Error creating converter");
+        assertThat(converter).describedAs("Error creating converter").isNotNull();
         converter.format(event, sb);
-        assertEquals(
-            "Test \\r\\n&lt;div class=&quot;test&quot;&gt;this&lt;&#x2F;div&gt; &amp; &lt;div class=&apos;test&apos;&gt;that&lt;&#x2F;div&gt;",
-            sb.toString());
+        assertThat(sb.toString()).isEqualTo("Test \\r\\n&lt;div class=&quot;test&quot;&gt;this&lt;&#x2F;div&gt; &amp; &lt;div class=&apos;test&apos;&gt;that&lt;&#x2F;div&gt;");
     }
 
     @Test
@@ -59,10 +58,10 @@ public class EncodingPatternConverterTest {
         final String[] options = new String[]{"%msg", "JSON"};
         final EncodingPatternConverter converter = EncodingPatternConverter.newInstance(ctx.getConfiguration(), options);
 
-        assertNotNull(converter, "Error creating converter");
+        assertThat(converter).describedAs("Error creating converter").isNotNull();
         converter.format(event, sb);
 
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
     @Test
@@ -77,11 +76,9 @@ public class EncodingPatternConverterTest {
         final String[] options = new String[]{"%msg", "CRLF"};
         final EncodingPatternConverter converter = EncodingPatternConverter
             .newInstance(ctx.getConfiguration(), options);
-        assertNotNull(converter, "Error creating converter");
+        assertThat(converter).describedAs("Error creating converter").isNotNull();
         converter.format(event, sb);
-        assertEquals(
-            "Test \\r\\n<div class=\"test\">this\\r</div> & \\n<div class='test'>that</div>",
-            sb.toString());
+        assertThat(sb.toString()).isEqualTo("Test \\r\\n<div class=\"test\">this\\r</div> & \\n<div class='test'>that</div>");
     }
 
     @Test
@@ -96,11 +93,9 @@ public class EncodingPatternConverterTest {
         final String[] options = new String[]{"%msg", "XML"};
         final EncodingPatternConverter converter = EncodingPatternConverter
             .newInstance(ctx.getConfiguration(), options);
-        assertNotNull(converter, "Error creating converter");
+        assertThat(converter).describedAs("Error creating converter").isNotNull();
         converter.format(event, sb);
-        assertEquals(
-            "Test \r\n&lt;div class=&quot;test&quot;&gt;this&lt;/div&gt; &amp; &lt;div class=&apos;test&apos;&gt;that&lt;/div&gt;",
-            sb.toString());
+        assertThat(sb.toString()).isEqualTo("Test \r\n&lt;div class=&quot;test&quot;&gt;this&lt;/div&gt; &amp; &lt;div class=&apos;test&apos;&gt;that&lt;/div&gt;");
     }
 
 }

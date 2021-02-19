@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreadPriorityPatternConverterTest {
 
@@ -31,6 +32,6 @@ public class ThreadPriorityPatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         final ThreadPriorityPatternConverter converter = ThreadPriorityPatternConverter.newInstance(null);
         converter.format(event, sb);
-        assertEquals("1", sb.toString());
+        assertThat(sb.toString()).isEqualTo("1");
     }
 }

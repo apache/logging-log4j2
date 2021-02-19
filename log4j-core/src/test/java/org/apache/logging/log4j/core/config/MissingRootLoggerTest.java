@@ -16,21 +16,22 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.Map;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.junit.jupiter.api.Test;
-
 import static org.apache.logging.log4j.hamcrest.MapMatchers.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Map;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.assertj.core.api.HamcrestCondition;
+import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("missingRootLogger.xml")
 public class MissingRootLoggerTest {
@@ -41,35 +42,35 @@ public class MissingRootLoggerTest {
         assertTrue(logger.isInfoEnabled(), "Logger should have the INFO level enabled");
         assertFalse(logger.isDebugEnabled(), "Logger should have the DEBUG level disabled");
         final Configuration config = ctx.getConfiguration();
-        assertNotNull(config, "Config not null");
+        assertThat(config).describedAs("Config not null").isNotNull();
 //        final String MISSINGROOT = "MissingRootTest";
 //        assertTrue("Incorrect Configuration. Expected " + MISSINGROOT + " but found " + config.getName(),
 //                MISSINGROOT.equals(config.getName()));
         final Map<String, Appender> map = config.getAppenders();
-        assertNotNull(map, "Appenders not null");
-        assertThat("There should only be two appenders", map, hasSize(2));
-        assertThat(map, hasKey("List"));
-        assertThat(map, hasKey("DefaultConsole-2"));
+        assertThat(map).describedAs("Appenders not null").isNotNull();
+        assertThat(map).describedAs("There should only be two appenders").is(new HamcrestCondition<>(hasSize(2)));
+        assertThat(map).is(new HamcrestCondition<>(hasKey("List")));
+        assertThat(map).is(new HamcrestCondition<>(hasKey("DefaultConsole-2")));
 
         final Map<String, LoggerConfig> loggerMap = config.getLoggers();
-        assertNotNull(loggerMap, "loggerMap not null");
-        assertThat("There should only be one configured logger", loggerMap, hasSize(1));
+        assertThat(loggerMap).describedAs("loggerMap not null").isNotNull();
+        assertThat(loggerMap).describedAs("There should only be one configured logger").is(new HamcrestCondition<>(hasSize(1)));
         // only the sample logger, no root logger in loggerMap!
-        assertThat("contains key=sample", loggerMap, hasKey("sample"));
+        assertThat(loggerMap).describedAs("contains key=sample").is(new HamcrestCondition<>(hasKey("sample")));
 
         final LoggerConfig sample = loggerMap.get("sample");
         final Map<String, Appender> sampleAppenders = sample.getAppenders();
-        assertThat("The sample logger should only have one appender", sampleAppenders, hasSize(1));
+        assertThat(sampleAppenders).describedAs("The sample logger should only have one appender").is(new HamcrestCondition<>(hasSize(1)));
         // sample only has List appender, not Console!
-        assertThat("The sample appender should be a ListAppender", sampleAppenders, hasKey("List"));
-        assertThat(config, is(instanceOf(AbstractConfiguration.class)));
+        assertThat(sampleAppenders).describedAs("The sample appender should be a ListAppender").is(new HamcrestCondition<>(hasKey("List")));
+        assertThat(config).isInstanceOf(AbstractConfiguration.class);
         final AbstractConfiguration baseConfig = (AbstractConfiguration) config;
         final LoggerConfig root = baseConfig.getRootLogger();
         final Map<String, Appender> rootAppenders = root.getAppenders();
-        assertThat("The root logger should only have one appender", rootAppenders, hasSize(1));
+        assertThat(rootAppenders).describedAs("The root logger should only have one appender").is(new HamcrestCondition<>(hasSize(1)));
         // root only has Console appender!
-        assertThat("The root appender should be a ConsoleAppender", rootAppenders, hasKey("DefaultConsole-2"));
-        assertEquals(Level.ERROR, root.getLevel());
+        assertThat(rootAppenders).describedAs("The root appender should be a ConsoleAppender").is(new HamcrestCondition<>(hasKey("DefaultConsole-2")));
+        assertThat(root.getLevel()).isEqualTo(Level.ERROR);
     }
 
 }

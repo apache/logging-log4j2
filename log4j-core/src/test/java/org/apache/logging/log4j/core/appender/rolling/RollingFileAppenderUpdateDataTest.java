@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -101,8 +103,8 @@ public class RollingFileAppenderUpdateDataTest {
 
         // rebuild config with date based rollover
         loggerContext2 = Configurator.initialize(buildConfigB().build());
-        Assert.assertNotNull("No LoggerContext", loggerContext2);
-        Assert.assertTrue("Expected same logger context to be returned", loggerContext1 == loggerContext2);
+        assertThat(loggerContext2).describedAs("No LoggerContext").isNotNull();
+        assertThat(loggerContext1 == loggerContext2).describedAs("Expected same logger context to be returned").isTrue();
 		validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
     }
 
@@ -119,8 +121,8 @@ public class RollingFileAppenderUpdateDataTest {
 
     private void validateAppender(final LoggerContext loggerContext, final String expectedFilePattern) {
         final RollingFileAppender appender = loggerContext.getConfiguration().getAppender("fooAppender");
-        Assert.assertNotNull(appender);
-        Assert.assertEquals(expectedFilePattern, appender.getFilePattern());
+        assertThat(appender).isNotNull();
+        assertThat(appender.getFilePattern()).isEqualTo(expectedFilePattern);
         LogManager.getLogger("root").info("just to show it works.");
     }
 }

@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.contains;
+
+import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 
 @LoggerContextSource("SequenceNumberPatternConverterZeroPaddedTest.yml")
 public class SequenceNumberPatternConverterZeroPaddedTest {
@@ -43,6 +42,6 @@ public class SequenceNumberPatternConverterZeroPaddedTest {
 
         final List<String> messages = app.getMessages();
         // System.out.println("Written messages "+messages);
-        assertThat(messages, contains("001", "002", "003", "004", "005"));
+        assertThat(messages).containsExactly("001", "002", "003", "004", "005");
     }
 }

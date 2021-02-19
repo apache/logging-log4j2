@@ -17,12 +17,13 @@
 
 package org.apache.log4j.bridge;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 public class LogEventWrapperTest {
 
@@ -38,13 +39,13 @@ public class LogEventWrapperTest {
             }
         };
         LogEvent log4j2Event = new LogEventWrapper(log4j1Event);
-        assertEquals(currentThread.getId(), log4j2Event.getThreadId());
-        assertEquals(currentThread.getPriority(), log4j2Event.getThreadPriority());
+        assertThat(log4j2Event.getThreadId()).isEqualTo(currentThread.getId());
+        assertThat(log4j2Event.getThreadPriority()).isEqualTo(currentThread.getPriority());
     }
 
     @Test
     public void testToImmutable() {
         LogEventWrapper wrapper = new LogEventWrapper(new LoggingEvent());
-        assertSame(wrapper, wrapper.toImmutable());
+        assertThat(wrapper.toImmutable()).isSameAs(wrapper);
     }
 }

@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EnvironmentPropertySourceTest {
 
@@ -41,6 +41,6 @@ public class EnvironmentPropertySourceTest {
     @ParameterizedTest
     @MethodSource("data")
     public void testNormalFormFollowsEnvironmentVariableConventions(CharSequence expected, List<? extends CharSequence> tokens) {
-        assertEquals(expected, source.getNormalForm(tokens));
+        assertThat(source.getNormalForm(tokens)).isEqualTo(expected);
     }
 }

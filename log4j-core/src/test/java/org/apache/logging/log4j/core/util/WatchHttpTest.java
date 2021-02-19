@@ -16,6 +16,18 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.removeStub;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,7 +37,6 @@ import java.util.TimeZone;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
@@ -41,18 +52,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.removeStub;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 /**
  * Test the WatchManager
@@ -111,7 +110,7 @@ public class WatchHttpTest {
             watchManager.watch(new Source(url.toURI(), previous.getTimeInMillis()), new HttpWatcher(configuration, null,
                 listeners, previous.getTimeInMillis()));
             final String str = queue.poll(2, TimeUnit.SECONDS);
-            assertNotNull("File change not detected", str);
+            assertThat(str).describedAs("File change not detected").isNotNull();
         } finally {
             removeStub(stubMapping);
             watchManager.stop();
@@ -147,7 +146,7 @@ public class WatchHttpTest {
             watchManager.watch(new Source(url.toURI(), previous.getTimeInMillis()), new HttpWatcher(configuration, null,
                 listeners, previous.getTimeInMillis()));
             final String str = queue.poll(2, TimeUnit.SECONDS);
-            assertNull("File changed.", str);
+            assertThat(str).describedAs("File changed.").isNull();
         } finally {
             removeStub(stubMapping);
             watchManager.stop();

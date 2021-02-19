@@ -17,14 +17,14 @@
 
 package org.apache.logging.log4j.core.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
-
-import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class NetUtilsTest {
 
@@ -33,8 +33,8 @@ public class NetUtilsTest {
         final String config = "file:///path/to/something/on/unix";
         final URI uri = NetUtils.toURI(config);
 
-        assertNotNull(uri, "The URI should not be null.");
-        assertEquals("file:///path/to/something/on/unix", uri.toString(), "The URI is not correct.");
+        assertThat(uri).describedAs("The URI should not be null.").isNotNull();
+        assertThat(uri.toString()).describedAs("The URI is not correct.").isEqualTo("file:///path/to/something/on/unix");
     }
 
     @Test
@@ -43,8 +43,8 @@ public class NetUtilsTest {
         final String config = "file:///D:\\path\\to\\something/on/windows";
         final URI uri = NetUtils.toURI(config);
 
-        assertNotNull(uri, "The URI should not be null.");
-        assertEquals("file:///D:/path/to/something/on/windows", uri.toString(), "The URI is not correct.");
+        assertThat(uri).describedAs("The URI should not be null.").isNotNull();
+        assertThat(uri.toString()).describedAs("The URI is not correct.").isEqualTo("file:///D:/path/to/something/on/windows");
     }
 
     @Test
@@ -53,8 +53,8 @@ public class NetUtilsTest {
         final String config = "D:\\path\\to\\something\\on\\windows";
         final URI uri = NetUtils.toURI(config);
 
-        assertNotNull(uri, "The URI should not be null.");
-        assertEquals("file:/D:/path/to/something/on/windows", uri.toString(), "The URI is not correct.");
+        assertThat(uri).describedAs("The URI should not be null.").isNotNull();
+        assertThat(uri.toString()).describedAs("The URI is not correct.").isEqualTo("file:/D:/path/to/something/on/windows");
     }
 
 }

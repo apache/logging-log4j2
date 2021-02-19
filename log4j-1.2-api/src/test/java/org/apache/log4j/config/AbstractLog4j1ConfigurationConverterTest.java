@@ -1,5 +1,6 @@
 package org.apache.log4j.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
@@ -11,10 +12,8 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -76,7 +75,7 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
 
     private void checkUnnecessaryEscaping(Path tempFile) throws IOException {
         for (String line : Files.readAllLines(tempFile)) {
-            assertFalse(line.endsWith("&#xd;"));
+            assertThat(line.endsWith("&#xd;")).isFalse();
         }
 
     }

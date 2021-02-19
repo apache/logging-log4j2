@@ -16,7 +16,11 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -35,8 +39,7 @@ import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the SortedArrayStringMap class.
@@ -45,18 +48,18 @@ public class SortedArrayStringMapTest {
 
     @Test
     public void testConstructorDisallowsNegativeCapacity() {
-        assertThrows(IllegalArgumentException.class, () -> new SortedArrayStringMap(-1));
+        assertThatThrownBy(() -> new SortedArrayStringMap(-1)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void testConstructorAllowsZeroCapacity() {
         SortedArrayStringMap sortedArrayStringMap = new SortedArrayStringMap(0);
-        assertEquals(0, sortedArrayStringMap.size());
+        assertThat(sortedArrayStringMap.size()).isEqualTo(0);
     }
 
     @Test
     public void testConstructorIgnoresNull() {
-        assertEquals(0, new SortedArrayStringMap((SortedArrayStringMap) null).size());
+        assertThat(new SortedArrayStringMap((SortedArrayStringMap) null).size()).isEqualTo(0);
     }
 
     @Test
@@ -65,7 +68,7 @@ public class SortedArrayStringMapTest {
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
-        assertEquals("{3=3value, B=Bvalue, a=avalue}", original.toString());
+        assertThat(original.toString()).isEqualTo("{3=3value, B=Bvalue, a=avalue}");
     }
 
     @Test
@@ -77,7 +80,7 @@ public class SortedArrayStringMapTest {
 
         final byte[] binary = serialize(original);
         final SortedArrayStringMap copy = deserialize(binary);
-        assertEquals(original, copy);
+        assertThat(copy).isEqualTo(original);
     }
 
     @Test
@@ -94,7 +97,7 @@ public class SortedArrayStringMapTest {
         expected.putValue("a", "avalue");
         expected.putValue("B", "Bvalue");
         expected.putValue("unserializable", null);
-        assertEquals(expected, copy);
+        assertThat(copy).isEqualTo(expected);
     }
 
     @Test
@@ -184,16 +187,16 @@ public class SortedArrayStringMapTest {
 
         final SortedArrayStringMap other = new SortedArrayStringMap();
         other.putAll(original);
-        assertEquals(original, other);
+        assertThat(other).isEqualTo(original);
 
         other.putValue("3", "otherValue");
-        assertNotEquals(original, other);
+        assertThat(other).isNotEqualTo(original);
 
         other.putValue("3", null);
-        assertNotEquals(original, other);
+        assertThat(other).isNotEqualTo(original);
 
         other.putValue("3", "3value");
-        assertEquals(original, other);
+        assertThat(other).isEqualTo(original);
     }
 
     @Test
@@ -212,14 +215,14 @@ public class SortedArrayStringMapTest {
         other.putValue("c", "cc");
         original.putAll(other);
 
-        assertEquals(7, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("cc", original.getValue("c"));
-        assertEquals("dORIG", original.getValue("d"));
-        assertEquals("eORIG", original.getValue("e"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("22", original.getValue("2"));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(7);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("c")).isEqualTo("cc");
+        assertThat(original.<String>getValue("d")).isEqualTo("dORIG");
+        assertThat(original.<String>getValue("e")).isEqualTo("eORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue("2")).isEqualTo("22");
     }
 
     @Test
@@ -237,14 +240,14 @@ public class SortedArrayStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals(7, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("cORIG", original.getValue("c"));
-        assertEquals("dORIG", original.getValue("d"));
-        assertEquals("eORIG", original.getValue("e"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("nullORIG", original.getValue(null));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(7);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("c")).isEqualTo("cORIG");
+        assertThat(original.<String>getValue("d")).isEqualTo("dORIG");
+        assertThat(original.<String>getValue("e")).isEqualTo("eORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue(null)).isEqualTo("nullORIG");
     }
 
     @Test
@@ -261,13 +264,13 @@ public class SortedArrayStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals(6, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("22", original.getValue("2"));
-        assertEquals("33", original.getValue("3"));
-        assertEquals("nullORIG", original.getValue(null));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(6);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue("2")).isEqualTo("22");
+        assertThat(original.<String>getValue("3")).isEqualTo("33");
+        assertThat(original.<String>getValue(null)).isEqualTo("nullORIG");
     }
 
     @Test
@@ -285,14 +288,14 @@ public class SortedArrayStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals(7, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("cORIG", original.getValue("c"));
-        assertEquals("dORIG", original.getValue("d"));
-        assertEquals("eORIG", original.getValue("e"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("nullNEW", original.getValue(null));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(7);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("c")).isEqualTo("cORIG");
+        assertThat(original.<String>getValue("d")).isEqualTo("dORIG");
+        assertThat(original.<String>getValue("e")).isEqualTo("eORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue(null)).isEqualTo("nullNEW");
     }
 
     @Test
@@ -309,13 +312,13 @@ public class SortedArrayStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals(6, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("22", original.getValue("2"));
-        assertEquals("33", original.getValue("3"));
-        assertEquals("nullNEW", original.getValue(null));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(6);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue("2")).isEqualTo("22");
+        assertThat(original.<String>getValue("3")).isEqualTo("33");
+        assertThat(original.<String>getValue(null)).isEqualTo("nullNEW");
     }
 
     @Test
@@ -334,14 +337,14 @@ public class SortedArrayStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals(7, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("cORIG", original.getValue("c"));
-        assertEquals("dORIG", original.getValue("d"));
-        assertEquals("eORIG", original.getValue("e"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("nullNEW", original.getValue(null));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(7);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("c")).isEqualTo("cORIG");
+        assertThat(original.<String>getValue("d")).isEqualTo("dORIG");
+        assertThat(original.<String>getValue("e")).isEqualTo("eORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue(null)).isEqualTo("nullNEW");
     }
 
     @Test
@@ -359,13 +362,13 @@ public class SortedArrayStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals(6, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("22", original.getValue("2"));
-        assertEquals("33", original.getValue("3"));
-        assertEquals("nullNEW", original.getValue(null));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(6);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue("2")).isEqualTo("22");
+        assertThat(original.<String>getValue("3")).isEqualTo("33");
+        assertThat(original.<String>getValue(null)).isEqualTo("nullNEW");
     }
 
     @Test
@@ -382,12 +385,12 @@ public class SortedArrayStringMapTest {
         other.putValue("c", "cc");
         original.putAll(other);
 
-        assertEquals(5, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("cc", original.getValue("c"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("22", original.getValue("2"));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(5);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("c")).isEqualTo("cc");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue("2")).isEqualTo("22");
     }
 
     @Test
@@ -396,26 +399,26 @@ public class SortedArrayStringMapTest {
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
-        assertEquals(original, original); // equal to itself
+        assertThat(original).isEqualTo(original); // equal to itself
 
         final SortedArrayStringMap other = new SortedArrayStringMap();
         other.putValue("a", "avalue");
-        assertNotEquals(original, other);
+        assertThat(other).isNotEqualTo(original);
 
         other.putValue("B", "Bvalue");
-        assertNotEquals(original, other);
+        assertThat(other).isNotEqualTo(original);
 
         other.putValue("3", "3value");
-        assertEquals(original, other);
+        assertThat(other).isEqualTo(original);
 
         other.putValue("3", "otherValue");
-        assertNotEquals(original, other);
+        assertThat(other).isNotEqualTo(original);
 
         other.putValue("3", null);
-        assertNotEquals(original, other);
+        assertThat(other).isNotEqualTo(original);
 
         other.putValue("3", "3value");
-        assertEquals(original, other);
+        assertThat(other).isEqualTo(original);
     }
 
     @Test
@@ -430,7 +433,7 @@ public class SortedArrayStringMapTest {
         expected.put("B", "Bvalue");
         expected.put("3", "3value");
 
-        assertEquals(expected, original.toMap());
+        assertThat(original.toMap()).isEqualTo(expected);
 
         assertDoesNotThrow(() -> original.toMap().put("abc", "xyz"), "Expected map to be mutable");
     }
@@ -441,14 +444,14 @@ public class SortedArrayStringMapTest {
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
-        assertEquals(3, original.size(), "size");
+        assertThat(original.size()).describedAs("size").isEqualTo(3);
 
         // add empty context data
         original.putAll(new SortedArrayStringMap());
-        assertEquals(3, original.size(), "size after put empty");
-        assertEquals("aaa", original.getValue("a"));
-        assertEquals("bbb", original.getValue("b"));
-        assertEquals("ccc", original.getValue("c"));
+        assertThat(original.size()).describedAs("size after put empty").isEqualTo(3);
+        assertThat(original.<String>getValue("a")).isEqualTo("aaa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bbb");
+        assertThat(original.<String>getValue("c")).isEqualTo("ccc");
 
         final SortedArrayStringMap other = new SortedArrayStringMap();
         other.putValue("1", "111");
@@ -456,13 +459,13 @@ public class SortedArrayStringMapTest {
         other.putValue("3", "333");
         original.putAll(other);
 
-        assertEquals(6, original.size(), "size after put other");
-        assertEquals("aaa", original.getValue("a"));
-        assertEquals("bbb", original.getValue("b"));
-        assertEquals("ccc", original.getValue("c"));
-        assertEquals("111", original.getValue("1"));
-        assertEquals("222", original.getValue("2"));
-        assertEquals("333", original.getValue("3"));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(6);
+        assertThat(original.<String>getValue("a")).isEqualTo("aaa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bbb");
+        assertThat(original.<String>getValue("c")).isEqualTo("ccc");
+        assertThat(original.<String>getValue("1")).isEqualTo("111");
+        assertThat(original.<String>getValue("2")).isEqualTo("222");
+        assertThat(original.<String>getValue("3")).isEqualTo("333");
     }
 
     @Test
@@ -472,15 +475,15 @@ public class SortedArrayStringMapTest {
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
         original.putValue("d", "ddd");
-        assertEquals(4, original.size(), "size");
+        assertThat(original.size()).describedAs("size").isEqualTo(4);
 
         // add empty context data
         original.putAll(new SortedArrayStringMap());
-        assertEquals(4, original.size(), "size after put empty");
-        assertEquals("aaa", original.getValue("a"));
-        assertEquals("bbb", original.getValue("b"));
-        assertEquals("ccc", original.getValue("c"));
-        assertEquals("ddd", original.getValue("d"));
+        assertThat(original.size()).describedAs("size after put empty").isEqualTo(4);
+        assertThat(original.<String>getValue("a")).isEqualTo("aaa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bbb");
+        assertThat(original.<String>getValue("c")).isEqualTo("ccc");
+        assertThat(original.<String>getValue("d")).isEqualTo("ddd");
 
         final SortedArrayStringMap other = new SortedArrayStringMap();
         other.putValue("1", "111");
@@ -489,15 +492,15 @@ public class SortedArrayStringMapTest {
         other.putValue("4", "444");
         original.putAll(other);
 
-        assertEquals(8, original.size(), "size after put other");
-        assertEquals("aaa", original.getValue("a"));
-        assertEquals("bbb", original.getValue("b"));
-        assertEquals("ccc", original.getValue("c"));
-        assertEquals("ddd", original.getValue("d"));
-        assertEquals("111", original.getValue("1"));
-        assertEquals("222", original.getValue("2"));
-        assertEquals("333", original.getValue("3"));
-        assertEquals("444", original.getValue("4"));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(8);
+        assertThat(original.<String>getValue("a")).isEqualTo("aaa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bbb");
+        assertThat(original.<String>getValue("c")).isEqualTo("ccc");
+        assertThat(original.<String>getValue("d")).isEqualTo("ddd");
+        assertThat(original.<String>getValue("1")).isEqualTo("111");
+        assertThat(original.<String>getValue("2")).isEqualTo("222");
+        assertThat(original.<String>getValue("3")).isEqualTo("333");
+        assertThat(original.<String>getValue("4")).isEqualTo("444");
     }
 
     @Test
@@ -508,7 +511,7 @@ public class SortedArrayStringMapTest {
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
         original.putValue("d", "ddd");
-        assertEquals(5, original.size(), "size");
+        assertThat(original.size()).describedAs("size").isEqualTo(5);
 
         final SortedArrayStringMap other = new SortedArrayStringMap();
         for (int i = 0 ; i < 500; i++) {
@@ -517,14 +520,14 @@ public class SortedArrayStringMapTest {
         other.putValue(null, "otherVal");
         original.putAll(other);
 
-        assertEquals(505, original.size(), "size after put other");
-        assertEquals("otherVal", original.getValue(null));
-        assertEquals("aaa", original.getValue("a"));
-        assertEquals("bbb", original.getValue("b"));
-        assertEquals("ccc", original.getValue("c"));
-        assertEquals("ddd", original.getValue("d"));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(505);
+        assertThat(original.<String>getValue(null)).isEqualTo("otherVal");
+        assertThat(original.<String>getValue("a")).isEqualTo("aaa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bbb");
+        assertThat(original.<String>getValue("c")).isEqualTo("ccc");
+        assertThat(original.<String>getValue("d")).isEqualTo("ddd");
         for (int i = 0 ; i < 500; i++) {
-            assertEquals(String.valueOf(i), original.getValue(String.valueOf(i)));
+            assertThat(original.<String>getValue(String.valueOf(i))).isEqualTo(String.valueOf(i));
         }
     }
 
@@ -534,75 +537,75 @@ public class SortedArrayStringMapTest {
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
-        assertEquals(3, original.size(), "size");
+        assertThat(original.size()).describedAs("size").isEqualTo(3);
 
         // putAll with self
         original.putAll(original);
-        assertEquals(3, original.size(), "size after put empty");
-        assertEquals("aaa", original.getValue("a"));
-        assertEquals("bbb", original.getValue("b"));
-        assertEquals("ccc", original.getValue("c"));
+        assertThat(original.size()).describedAs("size after put empty").isEqualTo(3);
+        assertThat(original.<String>getValue("a")).isEqualTo("aaa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bbb");
+        assertThat(original.<String>getValue("c")).isEqualTo("ccc");
     }
 
     @Test
     public void testConcurrentModificationBiConsumerPut() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o) -> original.putValue("c", "other")));
+        assertThatThrownBy(() -> original.forEach((s, o) -> original.putValue("c", "other"))).isInstanceOf(ConcurrentModificationException.class);
     }
 
     @Test
     public void testConcurrentModificationBiConsumerPutValue() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o) -> original.putValue("c", "other")));
+        assertThatThrownBy(() -> original.forEach((s, o) -> original.putValue("c", "other"))).isInstanceOf(ConcurrentModificationException.class);
     }
 
     @Test
     public void testConcurrentModificationBiConsumerRemove() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o) -> original.remove("a")));
+        assertThatThrownBy(() -> original.forEach((s, o) -> original.remove("a"))).isInstanceOf(ConcurrentModificationException.class);
     }
 
     @Test
     public void testConcurrentModificationBiConsumerClear() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o) -> original.clear()));
+        assertThatThrownBy(() -> original.forEach((s, o) -> original.clear())).isInstanceOf(ConcurrentModificationException.class);
     }
 
     @Test
     public void testConcurrentModificationTriConsumerPut() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o, o2) -> original.putValue("c", "other"), null));
+        assertThatThrownBy(() -> original.forEach((s, o, o2) -> original.putValue("c", "other"), null)).isInstanceOf(ConcurrentModificationException.class);
     }
 
     @Test
     public void testConcurrentModificationTriConsumerPutValue() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o, o2) -> original.putValue("c", "other"), null));
+        assertThatThrownBy(() -> original.forEach((s, o, o2) -> original.putValue("c", "other"), null)).isInstanceOf(ConcurrentModificationException.class);
     }
 
     @Test
     public void testConcurrentModificationTriConsumerRemove() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o, o2) -> original.remove("a"), null));
+        assertThatThrownBy(() -> original.forEach((s, o, o2) -> original.remove("a"), null)).isInstanceOf(ConcurrentModificationException.class);
     }
 
     @Test
     public void testConcurrentModificationTriConsumerClear() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
-        assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o, o2) -> original.clear(), null));
+        assertThatThrownBy(() -> original.forEach((s, o, o2) -> original.clear(), null)).isInstanceOf(ConcurrentModificationException.class);
     }
 
     @Test
     public void testInitiallyNotFrozen() {
-        assertFalse(new SortedArrayStringMap().isFrozen());
+        assertThat(new SortedArrayStringMap().isFrozen()).isFalse();
     }
 
     @Test
@@ -617,7 +620,7 @@ public class SortedArrayStringMapTest {
     public void testFreezeProhibitsPutValue() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.freeze();
-        assertThrows(UnsupportedOperationException.class, () -> original.putValue("a", "aaa"));
+        assertThatThrownBy(() -> original.putValue("a", "aaa")).isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
@@ -625,7 +628,7 @@ public class SortedArrayStringMapTest {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("b", "bbb");
         original.freeze();
-        assertThrows(UnsupportedOperationException.class, () -> original.remove("b")); // existing key: modifies the collection
+        assertThatThrownBy(() -> original.remove("b")).isInstanceOf(UnsupportedOperationException.class); // existing key: modifies the collection
     }
 
     @Test
@@ -633,14 +636,14 @@ public class SortedArrayStringMapTest {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("b", "bbb");
         original.freeze();
-        assertDoesNotThrow(() -> original.remove("a"));
+        assertThatCode(() -> original.remove("a")).doesNotThrowAnyException();
     }
 
     @Test
     public void testFreezeAllowsRemoveIfEmpty() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.freeze();
-        assertDoesNotThrow(() -> original.remove("a"));
+        assertThatCode(() -> original.remove("a")).doesNotThrowAnyException();
     }
 
     @Test
@@ -667,20 +670,20 @@ public class SortedArrayStringMapTest {
         original.putValue("c", "cvalue");
         original.putValue("d", "dvalue");
 
-        assertEquals("avalue", original.getValue("a"));
-        assertEquals("avalue", original.getValueAt(2));
+        assertThat(original.<String>getValue("a")).isEqualTo("avalue");
+        assertThat(original.<String>getValueAt(2)).isEqualTo("avalue");
 
-        assertEquals("Bvalue", original.getValue("B"));
-        assertEquals("Bvalue", original.getValueAt(1));
+        assertThat(original.<String>getValue("B")).isEqualTo("Bvalue");
+        assertThat(original.<String>getValueAt(1)).isEqualTo("Bvalue");
 
-        assertEquals("3value", original.getValue("3"));
-        assertEquals("3value", original.getValueAt(0));
+        assertThat(original.<String>getValue("3")).isEqualTo("3value");
+        assertThat(original.<String>getValueAt(0)).isEqualTo("3value");
 
-        assertEquals("cvalue", original.getValue("c"));
-        assertEquals("cvalue", original.getValueAt(3));
+        assertThat(original.<String>getValue("c")).isEqualTo("cvalue");
+        assertThat(original.<String>getValueAt(3)).isEqualTo("cvalue");
 
-        assertEquals("dvalue", original.getValue("d"));
-        assertEquals("dvalue", original.getValueAt(4));
+        assertThat(original.<String>getValue("d")).isEqualTo("dvalue");
+        assertThat(original.<String>getValueAt(4)).isEqualTo("dvalue");
     }
 
     @Test
@@ -692,20 +695,20 @@ public class SortedArrayStringMapTest {
         original.putValue("c", "cvalue");
         original.putValue("d", "dvalue");
 
-        assertEquals("avalue", original.getValue("a"));
-        assertEquals("avalue", original.getValueAt(2));
+        assertThat(original.<String>getValue("a")).isEqualTo("avalue");
+        assertThat(original.<String>getValueAt(2)).isEqualTo("avalue");
 
-        assertEquals("Bvalue", original.getValue("B"));
-        assertEquals("Bvalue", original.getValueAt(1));
+        assertThat(original.<String>getValue("B")).isEqualTo("Bvalue");
+        assertThat(original.<String>getValueAt(1)).isEqualTo("Bvalue");
 
-        assertEquals("3value", original.getValue("3"));
-        assertEquals("3value", original.getValueAt(0));
+        assertThat(original.<String>getValue("3")).isEqualTo("3value");
+        assertThat(original.<String>getValueAt(0)).isEqualTo("3value");
 
-        assertEquals("cvalue", original.getValue("c"));
-        assertEquals("cvalue", original.getValueAt(3));
+        assertThat(original.<String>getValue("c")).isEqualTo("cvalue");
+        assertThat(original.<String>getValueAt(3)).isEqualTo("cvalue");
 
-        assertEquals("dvalue", original.getValue("d"));
-        assertEquals("dvalue", original.getValueAt(4));
+        assertThat(original.<String>getValue("d")).isEqualTo("dvalue");
+        assertThat(original.<String>getValueAt(4)).isEqualTo("dvalue");
     }
 
     @Test
@@ -716,24 +719,24 @@ public class SortedArrayStringMapTest {
         original.putValue("3", "3value");
         original.putValue("c", "cvalue");
         original.putValue("d", "dvalue");
-        assertEquals(5, original.size());
-        assertEquals("{3=3value, B=Bvalue, a=avalue, c=cvalue, d=dvalue}", original.toString());
+        assertThat(original.size()).isEqualTo(5);
+        assertThat(original.toString()).isEqualTo("{3=3value, B=Bvalue, a=avalue, c=cvalue, d=dvalue}");
 
         original.putValue(null, "nullvalue");
-        assertEquals(6, original.size());
-        assertEquals("{null=nullvalue, 3=3value, B=Bvalue, a=avalue, c=cvalue, d=dvalue}", original.toString());
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.toString()).isEqualTo("{null=nullvalue, 3=3value, B=Bvalue, a=avalue, c=cvalue, d=dvalue}");
 
         original.putValue(null, "otherNullvalue");
-        assertEquals("{null=otherNullvalue, 3=3value, B=Bvalue, a=avalue, c=cvalue, d=dvalue}", original.toString());
-        assertEquals(6, original.size());
+        assertThat(original.toString()).isEqualTo("{null=otherNullvalue, 3=3value, B=Bvalue, a=avalue, c=cvalue, d=dvalue}");
+        assertThat(original.size()).isEqualTo(6);
 
         original.putValue(null, "nullvalue");
-        assertEquals(6, original.size());
-        assertEquals("{null=nullvalue, 3=3value, B=Bvalue, a=avalue, c=cvalue, d=dvalue}", original.toString());
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.toString()).isEqualTo("{null=nullvalue, 3=3value, B=Bvalue, a=avalue, c=cvalue, d=dvalue}");
 
         original.putValue(null, "abc");
-        assertEquals(6, original.size());
-        assertEquals("{null=abc, 3=3value, B=Bvalue, a=avalue, c=cvalue, d=dvalue}", original.toString());
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.toString()).isEqualTo("{null=abc, 3=3value, B=Bvalue, a=avalue, c=cvalue, d=dvalue}");
     }
 
     @Test
@@ -744,7 +747,7 @@ public class SortedArrayStringMapTest {
         original.putValue("3", "3value");
         original.putValue("c", "cvalue");
         original.putValue("d", "dvalue");
-        assertEquals(5, original.size());
+        assertThat(original.size()).isEqualTo(5);
 
         final HashMap<String, String> expected = new HashMap<>();
         expected.put("a", "avalue");
@@ -752,43 +755,43 @@ public class SortedArrayStringMapTest {
         expected.put("3", "3value");
         expected.put("c", "cvalue");
         expected.put("d", "dvalue");
-        assertEquals(expected, original.toMap(), "initial");
+        assertThat(original.toMap()).describedAs("initial").isEqualTo(expected);
 
         original.putValue(null, "nullvalue");
         expected.put(null, "nullvalue");
-        assertEquals(6, original.size());
-        assertEquals(expected, original.toMap(), "with null key");
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.toMap()).describedAs("with null key").isEqualTo(expected);
 
         original.putValue(null, "otherNullvalue");
         expected.put(null, "otherNullvalue");
-        assertEquals(6, original.size());
-        assertEquals(expected, original.toMap(), "with null key value2");
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.toMap()).describedAs("with null key value2").isEqualTo(expected);
 
         original.putValue(null, "nullvalue");
         expected.put(null, "nullvalue");
-        assertEquals(6, original.size());
-        assertEquals(expected, original.toMap(), "with null key value1 again");
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.toMap()).describedAs("with null key value1 again").isEqualTo(expected);
 
         original.putValue(null, "abc");
         expected.put(null, "abc");
-        assertEquals(6, original.size());
-        assertEquals(expected, original.toMap(), "with null key value3");
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.toMap()).describedAs("with null key value3").isEqualTo(expected);
     }
 
     @Test
     public void testRemove() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
-        assertEquals(1, original.size());
-        assertEquals("avalue", original.getValue("a"));
+        assertThat(original.size()).isEqualTo(1);
+        assertThat(original.<String>getValue("a")).isEqualTo("avalue");
 
         original.remove("a");
-        assertEquals(0, original.size());
-        assertNull(original.getValue("a"), "no a val");
+        assertThat(original.size()).isEqualTo(0);
+        assertThat(original.<String>getValue("a")).describedAs("no a val").isNull();
 
         original.remove("B");
-        assertEquals(0, original.size());
-        assertNull(original.getValue("B"), "no B val");
+        assertThat(original.size()).isEqualTo(0);
+        assertThat(original.<String>getValue("B")).describedAs("no B val").isNull();
     }
 
     @Test
@@ -802,13 +805,13 @@ public class SortedArrayStringMapTest {
         original.remove("b");
         original.remove("c");
         original.remove("d");
-        assertNull(original.getValueAt(0));
+        assertThat(original.<String>getValueAt(0)).isNull();
 
         // ensure slots in the values array are nulled out
         final Field f = SortedArrayStringMap.class.getDeclaredField("values");
         f.setAccessible(true);
         final Object[] values = (Object[]) f.get(original);
-        assertAll(Arrays.stream(values).map(value -> () -> assertNull(value)));
+        assertAll(Arrays.stream(values).map(value -> () -> assertThat(value).isNull()));
     }
 
     @Test
@@ -825,16 +828,16 @@ public class SortedArrayStringMapTest {
     public void testNullValuesArePreserved() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
-        assertEquals(1, original.size());
-        assertEquals("avalue", original.getValue("a"));
+        assertThat(original.size()).isEqualTo(1);
+        assertThat(original.<String>getValue("a")).isEqualTo("avalue");
 
         original.putValue("a", null);
-        assertEquals(1, original.size());
-        assertNull(original.getValue("a"), "no a val");
+        assertThat(original.size()).isEqualTo(1);
+        assertThat(original.<String>getValue("a")).describedAs("no a val").isNull();
 
         original.putValue("B", null);
-        assertEquals(2, original.size());
-        assertNull(original.getValue("B"), "no B val");
+        assertThat(original.size()).isEqualTo(2);
+        assertThat(original.<String>getValue("B")).describedAs("no B val").isNull();
     }
 
     @Test
@@ -844,15 +847,15 @@ public class SortedArrayStringMapTest {
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
 
-        assertEquals("avalue", original.getValue("a"));
-        assertEquals("Bvalue", original.getValue("B"));
-        assertEquals("3value", original.getValue("3"));
+        assertThat(original.<String>getValue("a")).isEqualTo("avalue");
+        assertThat(original.<String>getValue("B")).isEqualTo("Bvalue");
+        assertThat(original.<String>getValue("3")).isEqualTo("3value");
 
         original.putValue("0", "0value");
-        assertEquals("0value", original.getValue("0"));
-        assertEquals("3value", original.getValue("3"));
-        assertEquals("Bvalue", original.getValue("B"));
-        assertEquals("avalue", original.getValue("a"));
+        assertThat(original.<String>getValue("0")).isEqualTo("0value");
+        assertThat(original.<String>getValue("3")).isEqualTo("3value");
+        assertThat(original.<String>getValue("B")).isEqualTo("Bvalue");
+        assertThat(original.<String>getValue("a")).isEqualTo("avalue");
     }
 
     @Test
@@ -862,24 +865,24 @@ public class SortedArrayStringMapTest {
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
 
-        assertEquals("avalue", original.getValue("a"));
-        assertEquals("avalue", original.getValueAt(2));
+        assertThat(original.<String>getValue("a")).isEqualTo("avalue");
+        assertThat(original.<String>getValueAt(2)).isEqualTo("avalue");
 
-        assertEquals("Bvalue", original.getValue("B"));
-        assertEquals("Bvalue", original.getValueAt(1));
+        assertThat(original.<String>getValue("B")).isEqualTo("Bvalue");
+        assertThat(original.<String>getValueAt(1)).isEqualTo("Bvalue");
 
-        assertEquals("3value", original.getValue("3"));
-        assertEquals("3value", original.getValueAt(0));
+        assertThat(original.<String>getValue("3")).isEqualTo("3value");
+        assertThat(original.<String>getValueAt(0)).isEqualTo("3value");
 
         original.putValue("0", "0value");
-        assertEquals("0value", original.getValue("0"));
-        assertEquals("0value", original.getValueAt(0));
-        assertEquals("3value", original.getValue("3"));
-        assertEquals("3value", original.getValueAt(1));
-        assertEquals("Bvalue", original.getValue("B"));
-        assertEquals("Bvalue", original.getValueAt(2));
-        assertEquals("avalue", original.getValue("a"));
-        assertEquals("avalue", original.getValueAt(3));
+        assertThat(original.<String>getValue("0")).isEqualTo("0value");
+        assertThat(original.<String>getValueAt(0)).isEqualTo("0value");
+        assertThat(original.<String>getValue("3")).isEqualTo("3value");
+        assertThat(original.<String>getValueAt(1)).isEqualTo("3value");
+        assertThat(original.<String>getValue("B")).isEqualTo("Bvalue");
+        assertThat(original.<String>getValueAt(2)).isEqualTo("Bvalue");
+        assertThat(original.<String>getValue("a")).isEqualTo("avalue");
+        assertThat(original.<String>getValueAt(3)).isEqualTo("avalue");
     }
 
     @Test
@@ -888,53 +891,53 @@ public class SortedArrayStringMapTest {
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
-        assertEquals(3, original.size());
+        assertThat(original.size()).isEqualTo(3);
 
         original.clear();
-        assertEquals(0, original.size());
+        assertThat(original.size()).isEqualTo(0);
 
         // ensure slots in the values array are nulled out
         final Field f = SortedArrayStringMap.class.getDeclaredField("values");
         f.setAccessible(true);
         final Object[] values = (Object[]) f.get(original);
-        assertAll(Arrays.stream(values).map(value -> () -> assertNull(value)));
+        assertAll(Arrays.stream(values).map(value -> () -> assertThat(value).isNull()));
     }
 
     @Test
     public void testIndexOfKey() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
-        assertEquals(0, original.indexOfKey("a"));
+        assertThat(original.indexOfKey("a")).isEqualTo(0);
 
         original.putValue("B", "Bvalue");
-        assertEquals(1, original.indexOfKey("a"));
-        assertEquals(0, original.indexOfKey("B"));
+        assertThat(original.indexOfKey("a")).isEqualTo(1);
+        assertThat(original.indexOfKey("B")).isEqualTo(0);
 
         original.putValue("3", "3value");
-        assertEquals(2, original.indexOfKey("a"));
-        assertEquals(1, original.indexOfKey("B"));
-        assertEquals(0, original.indexOfKey("3"));
+        assertThat(original.indexOfKey("a")).isEqualTo(2);
+        assertThat(original.indexOfKey("B")).isEqualTo(1);
+        assertThat(original.indexOfKey("3")).isEqualTo(0);
 
         original.putValue("A", "AAA");
-        assertEquals(3, original.indexOfKey("a"));
-        assertEquals(2, original.indexOfKey("B"));
-        assertEquals(1, original.indexOfKey("A"));
-        assertEquals(0, original.indexOfKey("3"));
+        assertThat(original.indexOfKey("a")).isEqualTo(3);
+        assertThat(original.indexOfKey("B")).isEqualTo(2);
+        assertThat(original.indexOfKey("A")).isEqualTo(1);
+        assertThat(original.indexOfKey("3")).isEqualTo(0);
 
         original.putValue("C", "CCC");
-        assertEquals(4, original.indexOfKey("a"));
-        assertEquals(3, original.indexOfKey("C"));
-        assertEquals(2, original.indexOfKey("B"));
-        assertEquals(1, original.indexOfKey("A"));
-        assertEquals(0, original.indexOfKey("3"));
+        assertThat(original.indexOfKey("a")).isEqualTo(4);
+        assertThat(original.indexOfKey("C")).isEqualTo(3);
+        assertThat(original.indexOfKey("B")).isEqualTo(2);
+        assertThat(original.indexOfKey("A")).isEqualTo(1);
+        assertThat(original.indexOfKey("3")).isEqualTo(0);
 
         original.putValue("2", "222");
-        assertEquals(5, original.indexOfKey("a"));
-        assertEquals(4, original.indexOfKey("C"));
-        assertEquals(3, original.indexOfKey("B"));
-        assertEquals(2, original.indexOfKey("A"));
-        assertEquals(1, original.indexOfKey("3"));
-        assertEquals(0, original.indexOfKey("2"));
+        assertThat(original.indexOfKey("a")).isEqualTo(5);
+        assertThat(original.indexOfKey("C")).isEqualTo(4);
+        assertThat(original.indexOfKey("B")).isEqualTo(3);
+        assertThat(original.indexOfKey("A")).isEqualTo(2);
+        assertThat(original.indexOfKey("3")).isEqualTo(1);
+        assertThat(original.indexOfKey("2")).isEqualTo(0);
     }
 
     @Test
@@ -974,52 +977,52 @@ public class SortedArrayStringMapTest {
     public void testGetValueAt() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
-        assertEquals("a", original.getKeyAt(0));
-        assertEquals("avalue", original.getValueAt(0));
+        assertThat(original.getKeyAt(0)).isEqualTo("a");
+        assertThat(original.<String>getValueAt(0)).isEqualTo("avalue");
 
         original.putValue("B", "Bvalue");
-        assertEquals("B", original.getKeyAt(0));
-        assertEquals("Bvalue", original.getValueAt(0));
-        assertEquals("a", original.getKeyAt(1));
-        assertEquals("avalue", original.getValueAt(1));
+        assertThat(original.getKeyAt(0)).isEqualTo("B");
+        assertThat(original.<String>getValueAt(0)).isEqualTo("Bvalue");
+        assertThat(original.getKeyAt(1)).isEqualTo("a");
+        assertThat(original.<String>getValueAt(1)).isEqualTo("avalue");
 
         original.putValue("3", "3value");
-        assertEquals("3", original.getKeyAt(0));
-        assertEquals("3value", original.getValueAt(0));
-        assertEquals("B", original.getKeyAt(1));
-        assertEquals("Bvalue", original.getValueAt(1));
-        assertEquals("a", original.getKeyAt(2));
-        assertEquals("avalue", original.getValueAt(2));
+        assertThat(original.getKeyAt(0)).isEqualTo("3");
+        assertThat(original.<String>getValueAt(0)).isEqualTo("3value");
+        assertThat(original.getKeyAt(1)).isEqualTo("B");
+        assertThat(original.<String>getValueAt(1)).isEqualTo("Bvalue");
+        assertThat(original.getKeyAt(2)).isEqualTo("a");
+        assertThat(original.<String>getValueAt(2)).isEqualTo("avalue");
     }
 
     @Test
     public void testSizeAndIsEmpty() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
-        assertEquals(0, original.size());
+        assertThat(original.size()).isEqualTo(0);
         assertTrue(original.isEmpty(), "initial");
 
         original.putValue("a", "avalue");
-        assertEquals(1, original.size());
+        assertThat(original.size()).isEqualTo(1);
         assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.putValue("B", "Bvalue");
-        assertEquals(2, original.size());
+        assertThat(original.size()).isEqualTo(2);
         assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.putValue("3", "3value");
-        assertEquals(3, original.size());
+        assertThat(original.size()).isEqualTo(3);
         assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.remove("B");
-        assertEquals(2, original.size());
+        assertThat(original.size()).isEqualTo(2);
         assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.remove("3");
-        assertEquals(1, original.size());
+        assertThat(original.size()).isEqualTo(1);
         assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.remove("a");
-        assertEquals(0, original.size());
+        assertThat(original.size()).isEqualTo(0);
         assertTrue(original.isEmpty(), "size=" + original.size());
     }
 
@@ -1034,8 +1037,8 @@ public class SortedArrayStringMapTest {
             int count = 0;
             @Override
             public void accept(final String key, final String value) {
-                assertEquals(key, original.getKeyAt(count), "key");
-                assertEquals(value, original.getValueAt(count), "val");
+                assertThat(original.getKeyAt(count)).describedAs("key").isEqualTo(key);
+                assertThat(original.<String>getValueAt(count)).describedAs("val").isEqualTo(value);
                 count++;
                 assertTrue(count <= original.size(), "count should not exceed size but was " + count);
             }
@@ -1047,8 +1050,8 @@ public class SortedArrayStringMapTest {
         int count;
     }
     static TriConsumer<String, String, State> COUNTER = (key, value, state) -> {
-        assertEquals(key, state.data.getKeyAt(state.count), "key");
-        assertEquals(value, state.data.getValueAt(state.count), "val");
+        assertThat(state.data.getKeyAt(state.count)).describedAs("key").isEqualTo(key);
+        assertThat(state.data.<String>getValueAt(state.count)).describedAs("val").isEqualTo(value);
         state.count++;
         assertTrue(
                 state.count <= state.data.size(), "count should not exceed size but was " + state.count);
@@ -1064,6 +1067,6 @@ public class SortedArrayStringMapTest {
         final State state = new State();
         state.data = original;
         original.forEach(COUNTER, state);
-        assertEquals(state.count, original.size());
+        assertThat(original.size()).isEqualTo(state.count);
     }
 }

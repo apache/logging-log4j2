@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EndOfBatchPatternConverterTest {
 
@@ -31,7 +32,7 @@ public class EndOfBatchPatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         final LogEventPatternConverter converter = EndOfBatchPatternConverter.newInstance(null);
         converter.format(event, sb);
-        assertEquals("true", sb.toString());
+        assertThat(sb.toString()).isEqualTo("true");
     }
 
     @Test
@@ -41,7 +42,7 @@ public class EndOfBatchPatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         final LogEventPatternConverter converter = EndOfBatchPatternConverter.newInstance(null);
         converter.format(event, sb);
-        assertEquals("false", sb.toString());
+        assertThat(sb.toString()).isEqualTo("false");
     }
 
 }

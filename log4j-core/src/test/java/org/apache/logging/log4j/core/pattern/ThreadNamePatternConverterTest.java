@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreadNamePatternConverterTest {
 
@@ -31,6 +32,6 @@ public class ThreadNamePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         final ThreadNamePatternConverter converter = ThreadNamePatternConverter.newInstance(null);
         converter.format(event, sb);
-        assertEquals("Hello-1", sb.toString());
+        assertThat(sb.toString()).isEqualTo("Hello-1");
     }
 }

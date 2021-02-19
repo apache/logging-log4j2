@@ -16,16 +16,11 @@
  */
 package org.apache.logging.log4j.core.parser;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LogEvent;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * Subclassed by JSON, XML, and YAML modules.
@@ -33,27 +28,25 @@ import static org.hamcrest.core.Is.is;
 public abstract class AbstractLogEventParserTest {
 
     protected void assertLogEvent(final LogEvent logEvent) {
-        assertThat(logEvent, is(notNullValue()));
-        assertThat(logEvent.getInstant().getEpochMillisecond(), equalTo(1493121664118L));
-        assertThat(logEvent.getThreadName(), equalTo("main"));
-        assertThat(logEvent.getThreadId(), equalTo(1L));
-        assertThat(logEvent.getThreadPriority(), equalTo(5));
-        assertThat(logEvent.getLevel(), equalTo(Level.INFO));
-        assertThat(logEvent.getLoggerName(), equalTo("HelloWorld"));
-        assertThat(logEvent.getMarker().getName(), equalTo("child"));
-        assertThat(logEvent.getMarker().getParents()[0].getName(), equalTo("parent"));
-        assertThat(logEvent.getMarker().getParents()[0].getParents()[0].getName(),
-                equalTo("grandparent"));
-        assertThat(logEvent.getMessage().getFormattedMessage(), equalTo("Hello, world!"));
-        assertThat(logEvent.getThrown(), is(nullValue()));
-        assertThat(logEvent.getThrownProxy().getMessage(), equalTo("error message"));
-        assertThat(logEvent.getThrownProxy().getName(), equalTo("java.lang.RuntimeException"));
-        assertThat(logEvent.getThrownProxy().getExtendedStackTrace()[0].getClassName(),
-                equalTo("logtest.Main"));
-        assertThat(logEvent.getLoggerFqcn(), equalTo("org.apache.logging.log4j.spi.AbstractLogger"));
-        assertThat(logEvent.getContextStack().asList(), equalTo(Arrays.asList("one", "two")));
-        assertThat(logEvent.getContextData().getValue("foo"), equalTo("FOO"));
-        assertThat(logEvent.getContextData().getValue("bar"), equalTo("BAR"));
-        assertThat(logEvent.getSource().getClassName(), equalTo("logtest.Main"));
+        assertThat(logEvent).isNotNull();
+        assertThat(logEvent.getInstant().getEpochMillisecond()).isEqualTo(1493121664118L);
+        assertThat(logEvent.getThreadName()).isEqualTo("main");
+        assertThat(logEvent.getThreadId()).isEqualTo(1L);
+        assertThat(logEvent.getThreadPriority()).isEqualTo(5);
+        assertThat(logEvent.getLevel()).isEqualTo(Level.INFO);
+        assertThat(logEvent.getLoggerName()).isEqualTo("HelloWorld");
+        assertThat(logEvent.getMarker().getName()).isEqualTo("child");
+        assertThat(logEvent.getMarker().getParents()[0].getName()).isEqualTo("parent");
+        assertThat(logEvent.getMarker().getParents()[0].getParents()[0].getName()).isEqualTo("grandparent");
+        assertThat(logEvent.getMessage().getFormattedMessage()).isEqualTo("Hello, world!");
+        assertThat(logEvent.getThrown()).isNull();
+        assertThat(logEvent.getThrownProxy().getMessage()).isEqualTo("error message");
+        assertThat(logEvent.getThrownProxy().getName()).isEqualTo("java.lang.RuntimeException");
+        assertThat(logEvent.getThrownProxy().getExtendedStackTrace()[0].getClassName()).isEqualTo("logtest.Main");
+        assertThat(logEvent.getLoggerFqcn()).isEqualTo("org.apache.logging.log4j.spi.AbstractLogger");
+        assertThat(logEvent.getContextStack().asList()).isEqualTo(Arrays.asList("one", "two"));
+        assertThat(logEvent.getContextData().<String>getValue("foo")).isEqualTo("FOO");
+        assertThat(logEvent.getContextData().<String>getValue("bar")).isEqualTo("BAR");
+        assertThat(logEvent.getSource().getClassName()).isEqualTo("logtest.Main");
     }
 }

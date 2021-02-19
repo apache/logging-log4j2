@@ -17,17 +17,17 @@
 
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the PatternProcessor class.
@@ -49,7 +49,7 @@ public class PatternProcessorTest {
 
         final StringBuilder buf = new StringBuilder();
         pp.formatFileName(buf, cal.getTime(), 23);
-        assertEquals("c:\\test\\new/app-16-02-15.log", buf.toString());
+        assertThat(buf.toString()).isEqualTo("c:\\test\\new/app-16-02-15.log");
     }
 
     @Test
@@ -64,7 +64,7 @@ public class PatternProcessorTest {
         final Calendar expected = Calendar.getInstance();
         expected.set(2014, Calendar.MARCH, 4, 11, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        assertThat(format(actual)).isEqualTo(format(expected.getTimeInMillis()));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class PatternProcessorTest {
         final Calendar expected = Calendar.getInstance();
         expected.set(2014, Calendar.MARCH, 5, 0, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        assertThat(format(actual)).isEqualTo(format(expected.getTimeInMillis()));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class PatternProcessorTest {
         final Calendar expected = Calendar.getInstance();
         expected.set(2016, Calendar.JANUARY, 1, 0, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        assertThat(format(actual)).isEqualTo(format(expected.getTimeInMillis()));
     }
 
     @Test
@@ -103,14 +103,14 @@ public class PatternProcessorTest {
         final Calendar initial = Calendar.getInstance();
         initial.set(2014, Calendar.MARCH, 4, 10, 31, 53); // Tue, March 4, 2014, 10:31:53.123
         initial.set(Calendar.MILLISECOND, 123);
-        assertEquals("2014/03/04 10:31:53.123", format(initial.getTimeInMillis()));
+        assertThat(format(initial.getTimeInMillis())).isEqualTo("2014/03/04 10:31:53.123");
         final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
         // expect Tue, March 4, 2014, 10:31:53.124
         final Calendar expected = Calendar.getInstance();
         expected.set(2014, Calendar.MARCH, 4, 10, 31, 53);
         expected.set(Calendar.MILLISECOND, 124);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        assertThat(format(actual)).isEqualTo(format(expected.getTimeInMillis()));
     }
 
     @Test
@@ -120,14 +120,14 @@ public class PatternProcessorTest {
         final Calendar initial = Calendar.getInstance();
         initial.set(2014, Calendar.MARCH, 4, 10, 31, 59); // Tue, March 4, 2014, 10:31
         initial.set(Calendar.MILLISECOND, 0);
-        assertEquals("2014/03/04 10:31:59.000", format(initial.getTimeInMillis()));
+        assertThat(format(initial.getTimeInMillis())).isEqualTo("2014/03/04 10:31:59.000");
         final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
         // expect Tue, March 4, 2014, 10:32
         final Calendar expected = Calendar.getInstance();
         expected.set(2014, Calendar.MARCH, 4, 10, 32, 0);
         expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        assertThat(format(actual)).isEqualTo(format(expected.getTimeInMillis()));
     }
 
     @Test
@@ -142,7 +142,7 @@ public class PatternProcessorTest {
         final Calendar expected = Calendar.getInstance();
         expected.set(2014, Calendar.NOVEMBER, 1, 0, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        assertThat(format(actual)).isEqualTo(format(expected.getTimeInMillis()));
     }
 
     @Test
@@ -157,7 +157,7 @@ public class PatternProcessorTest {
         final Calendar expected = Calendar.getInstance();
         expected.set(2014, Calendar.FEBRUARY, 1, 0, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        assertThat(format(actual)).isEqualTo(format(expected.getTimeInMillis()));
     }
 
     @Test
@@ -172,7 +172,7 @@ public class PatternProcessorTest {
         final Calendar expected = Calendar.getInstance();
         expected.set(2015, Calendar.JANUARY, 1, 0, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        assertThat(format(actual)).isEqualTo(format(expected.getTimeInMillis()));
     }
 
     @Test
@@ -187,7 +187,7 @@ public class PatternProcessorTest {
         final Calendar expected = Calendar.getInstance();
         expected.set(2016, Calendar.JANUARY, 1, 0, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        assertThat(format(actual)).isEqualTo(format(expected.getTimeInMillis()));
     }
 
     @Test
@@ -197,14 +197,14 @@ public class PatternProcessorTest {
         final Calendar initial = Calendar.getInstance();
         initial.set(2014, Calendar.MARCH, 4, 10, 31, 53); // Tue, March 4, 2014, 10:31:53
         initial.set(Calendar.MILLISECOND, 123);
-        assertEquals("2014/03/04 10:31:53.123", format(initial.getTimeInMillis()));
+        assertThat(format(initial.getTimeInMillis())).isEqualTo("2014/03/04 10:31:53.123");
         final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
         // expect Tue, March 4, 2014, 10:31:54
         final Calendar expected = Calendar.getInstance();
         expected.set(2014, Calendar.MARCH, 4, 10, 31, 54);
         expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        assertThat(format(actual)).isEqualTo(format(expected.getTimeInMillis()));
     }
 
     @Test
@@ -223,7 +223,7 @@ public class PatternProcessorTest {
             final Calendar expected = Calendar.getInstance();
             expected.set(2014, Calendar.MARCH, 10, 0, 0, 0);
             expected.set(Calendar.MILLISECOND, 0);
-            assertEquals(format(expected.getTimeInMillis()), format(actual));
+            assertThat(format(actual)).isEqualTo(format(expected.getTimeInMillis()));
         } finally {
             Locale.setDefault(old);
         }
@@ -245,7 +245,7 @@ public class PatternProcessorTest {
             final Calendar expected = Calendar.getInstance();
             expected.set(2014, Calendar.MARCH, 9, 0, 0, 0);
             expected.set(Calendar.MILLISECOND, 0);
-            assertEquals(format(expected.getTimeInMillis()), format(actual));
+            assertThat(format(actual)).isEqualTo(format(expected.getTimeInMillis()));
         } finally {
             Locale.setDefault(old);
         }
@@ -269,7 +269,7 @@ public class PatternProcessorTest {
             final Calendar expected = Calendar.getInstance();
             expected.set(2016, Calendar.JANUARY, 3, 0, 0, 0);
             expected.set(Calendar.MILLISECOND, 0);
-            assertEquals(format(expected.getTimeInMillis()), format(actual));
+            assertThat(format(actual)).isEqualTo(format(expected.getTimeInMillis()));
         } finally {
             Locale.setDefault(old);
         }

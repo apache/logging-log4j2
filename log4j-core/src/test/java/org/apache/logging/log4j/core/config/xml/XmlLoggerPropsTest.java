@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.*;
+
+import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.assertj.core.api.HamcrestCondition;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 public class XmlLoggerPropsTest {
 
@@ -44,13 +44,13 @@ public class XmlLoggerPropsTest {
     @Test
     @LoggerContextSource("log4j-loggerprops.xml")
     public void testWithProps(final LoggerContext context, @Named("List") final ListAppender listAppender) {
-        assertThat(context.getConfiguration(), is(instanceOf(XmlConfiguration.class)));
+        assertThat(context.getConfiguration()).isInstanceOf(XmlConfiguration.class);
         context.getLogger(getClass()).debug("Test with props");
         context.getLogger("tiny.bubbles").debug("Test on root");
         final List<String> events = listAppender.getMessages();
         listAppender.clear();
-        assertThat(events, hasSize(2));
-        assertThat(events.get(0), allOf(
+        assertThat(events).hasSize(2);
+        assertThat(events.get(0)).is(new HamcrestCondition<>(allOf(
                 containsString("user="),
                 containsString("phrasex=****"),
                 containsString("test=test"),
@@ -60,8 +60,8 @@ public class XmlLoggerPropsTest {
                 containsString("test5=test"),
                 containsString("attribKey=attribValue"),
                 containsString("duplicateKey=nodeValue")
-        ));
-        assertThat(events.get(1), allOf(
+        )));
+        assertThat(events.get(1)).is(new HamcrestCondition<>(allOf(
                 containsString("user="),
                 containsString("phrasex=****"),
                 containsString("test=test"),
@@ -71,6 +71,6 @@ public class XmlLoggerPropsTest {
                 containsString("test5=test"),
                 containsString("attribKey=attribValue"),
                 containsString("duplicateKey=nodeValue")
-        ));
+        )));
     }
 }

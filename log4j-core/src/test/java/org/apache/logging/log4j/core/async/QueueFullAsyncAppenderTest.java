@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -32,8 +34,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests queue full scenarios with AsyncAppender.
@@ -86,8 +86,8 @@ public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
 
         final Stack<String> actual = transform(blockingAppender.logEvents);
         for (int i = 0; i < 130; i++) {
-            assertEquals("logging innocent object #" + i + " I'm innocent", actual.pop());
+            assertThat(actual.pop()).isEqualTo("logging innocent object #" + i + " I'm innocent");
         }
-        assertTrue(actual.isEmpty());
+        assertThat(actual.isEmpty()).isTrue();
     }
 }

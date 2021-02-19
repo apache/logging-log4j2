@@ -16,14 +16,16 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ThrowablePatternConverterTest {
 
@@ -53,7 +55,7 @@ public class ThrowablePatternConverterTest {
     @Test
     public void testBadShortOption() {
         final String[] options = { "short.UNKNOWN" };
-        assertThrows(NumberFormatException.class, () -> ThrowablePatternConverter.newInstance(null, options));
+        assertThatThrownBy(() -> ThrowablePatternConverter.newInstance(null, options)).isInstanceOf(NumberFormatException.class);
     }
 
     @Test
@@ -100,7 +102,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals(packageName + "ThrowablePatternConverterTest", result, "The class names should be same");
+        assertThat(result).describedAs("The class names should be same").isEqualTo(packageName + "ThrowablePatternConverterTest");
     }
 
     @Test
@@ -118,7 +120,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("ThrowablePatternConverterTest.java", result, "The file names should be same");
+        assertThat(result).describedAs("The file names should be same").isEqualTo("ThrowablePatternConverterTest.java");
     }
 
     @Test
@@ -139,7 +141,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals(Integer.parseInt(result), expectedLineNumber, "The line numbers should be same");
+        assertThat(expectedLineNumber).describedAs("The line numbers should be same").isEqualTo(Integer.parseInt(result));
     }
 
     @Test
@@ -156,7 +158,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("I am localized.", result, "The messages should be same");
+        assertThat(result).describedAs("The messages should be same").isEqualTo("I am localized.");
     }
 
     @Test
@@ -174,7 +176,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("IllegalArgument", result, "The messages should be same");
+        assertThat(result).describedAs("The messages should be same").isEqualTo("IllegalArgument");
     }
 
     @Test
@@ -192,7 +194,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("testShortMethodName", result, "The method names should be same");
+        assertThat(result).describedAs("The method names should be same").isEqualTo("testShortMethodName");
     }
 
     @Test

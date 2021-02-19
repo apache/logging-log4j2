@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Testing FormattingInfo.
@@ -32,7 +33,7 @@ public class FormattingInfoTest {
 		final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, true);
 		formattingInfo.format(0, message);
 
-		assertEquals("world", message.toString());
+		assertThat(message.toString()).isEqualTo("world");
 	}
 
 	@Test
@@ -42,7 +43,7 @@ public class FormattingInfoTest {
 		final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, false);
 		formattingInfo.format(0, message);
 
-		assertEquals("Hello", message.toString());
+		assertThat(message.toString()).isEqualTo("Hello");
 	}
 
 	@Test
@@ -52,6 +53,6 @@ public class FormattingInfoTest {
 		final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, false);
 		formattingInfo.format(31, message);
 
-		assertEquals("2015-03-09 11:49:28,295; INFO  org.a", message.toString());
+		assertThat(message.toString()).isEqualTo("2015-03-09 11:49:28,295; INFO  org.a");
 	}
 }

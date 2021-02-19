@@ -17,9 +17,10 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the IfAccumulatedFileSize class.
@@ -28,14 +29,14 @@ public class IfAccumulatedFileSizeTest {
 
     @Test
     public void testGetThresholdBytes() {
-        assertEquals(2, create("2B").getThresholdBytes());
-        assertEquals(3, create("3 B").getThresholdBytes());
-        assertEquals(2 * 1024, create("2KB").getThresholdBytes());
-        assertEquals(3 * 1024, create("3 KB").getThresholdBytes());
-        assertEquals(2 * 1024 * 1024, create("2MB").getThresholdBytes());
-        assertEquals(3 * 1024 * 1024, create("3 MB").getThresholdBytes());
-        assertEquals(2L * 1024 * 1024 * 1024, create("2GB").getThresholdBytes());
-        assertEquals(3L * 1024 * 1024 * 1024, create("3 GB").getThresholdBytes());
+        assertThat(create("2B").getThresholdBytes()).isEqualTo(2);
+        assertThat(create("3 B").getThresholdBytes()).isEqualTo(3);
+        assertThat(create("2KB").getThresholdBytes()).isEqualTo(2 * 1024);
+        assertThat(create("3 KB").getThresholdBytes()).isEqualTo(3 * 1024);
+        assertThat(create("2MB").getThresholdBytes()).isEqualTo(2 * 1024 * 1024);
+        assertThat(create("3 MB").getThresholdBytes()).isEqualTo(3 * 1024 * 1024);
+        assertThat(create("2GB").getThresholdBytes()).isEqualTo(2L * 1024 * 1024 * 1024);
+        assertThat(create("3 GB").getThresholdBytes()).isEqualTo(3L * 1024 * 1024 * 1024);
     }
 
     private static IfAccumulatedFileSize create(final String size) {
@@ -49,7 +50,7 @@ public class IfAccumulatedFileSizeTest {
             final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
             final DummyFileAttributes attribs = new DummyFileAttributes();
             attribs.size = condition.getThresholdBytes();
-            assertFalse(condition.accept(null, null, attribs));
+            assertThat(condition.accept(null, null, attribs)).isFalse();
         }
     }
 
@@ -60,7 +61,7 @@ public class IfAccumulatedFileSizeTest {
             final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
             final DummyFileAttributes attribs = new DummyFileAttributes();
             attribs.size = condition.getThresholdBytes() + 1;
-            assertTrue(condition.accept(null, null, attribs));
+            assertThat(condition.accept(null, null, attribs)).isTrue();
         }
     }
 
@@ -71,7 +72,7 @@ public class IfAccumulatedFileSizeTest {
             final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
             final DummyFileAttributes attribs = new DummyFileAttributes();
             attribs.size = condition.getThresholdBytes() - 1;
-            assertFalse(condition.accept(null, null, attribs));
+            assertThat(condition.accept(null, null, attribs)).isFalse();
         }
     }
 
@@ -83,11 +84,11 @@ public class IfAccumulatedFileSizeTest {
             final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
             final long quarter = condition.getThresholdBytes() / 4;
             attribs.size = quarter;
-            assertFalse(condition.accept(null, null, attribs));
-            assertFalse(condition.accept(null, null, attribs));
-            assertFalse(condition.accept(null, null, attribs));
-            assertFalse(condition.accept(null, null, attribs));
-            assertTrue(condition.accept(null, null, attribs));
+            assertThat(condition.accept(null, null, attribs)).isFalse();
+            assertThat(condition.accept(null, null, attribs)).isFalse();
+            assertThat(condition.accept(null, null, attribs)).isFalse();
+            assertThat(condition.accept(null, null, attribs)).isFalse();
+            assertThat(condition.accept(null, null, attribs)).isTrue();
         }
     }
 
@@ -99,23 +100,23 @@ public class IfAccumulatedFileSizeTest {
 
         final long quarter = condition.getThresholdBytes() / 4;
         attribs.size = quarter;
-        assertFalse(condition.accept(null, null, attribs));
-        assertEquals(0, counter.getAcceptCount());
+        assertThat(condition.accept(null, null, attribs)).isFalse();
+        assertThat(counter.getAcceptCount()).isEqualTo(0);
 
-        assertFalse(condition.accept(null, null, attribs));
-        assertEquals(0, counter.getAcceptCount());
+        assertThat(condition.accept(null, null, attribs)).isFalse();
+        assertThat(counter.getAcceptCount()).isEqualTo(0);
 
-        assertFalse(condition.accept(null, null, attribs));
-        assertEquals(0, counter.getAcceptCount());
+        assertThat(condition.accept(null, null, attribs)).isFalse();
+        assertThat(counter.getAcceptCount()).isEqualTo(0);
 
-        assertFalse(condition.accept(null, null, attribs));
-        assertEquals(0, counter.getAcceptCount());
+        assertThat(condition.accept(null, null, attribs)).isFalse();
+        assertThat(counter.getAcceptCount()).isEqualTo(0);
 
-        assertTrue(condition.accept(null, null, attribs));
-        assertEquals(1, counter.getAcceptCount());
+        assertThat(condition.accept(null, null, attribs)).isTrue();
+        assertThat(counter.getAcceptCount()).isEqualTo(1);
 
-        assertTrue(condition.accept(null, null, attribs));
-        assertEquals(2, counter.getAcceptCount());
+        assertThat(condition.accept(null, null, attribs)).isTrue();
+        assertThat(counter.getAcceptCount()).isEqualTo(2);
     }
 
     @Test
@@ -124,7 +125,7 @@ public class IfAccumulatedFileSizeTest {
         final IfAccumulatedFileSize filter = IfAccumulatedFileSize.createFileSizeCondition("2GB", counter, counter,
                 counter);
         filter.beforeFileTreeWalk();
-        assertEquals(3, counter.getBeforeFileTreeWalkCount());
+        assertThat(counter.getBeforeFileTreeWalkCount()).isEqualTo(3);
     }
 
 }

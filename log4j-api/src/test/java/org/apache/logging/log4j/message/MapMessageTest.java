@@ -16,18 +16,19 @@
  */
 package org.apache.logging.log4j.message;
 
-import com.google.common.base.Strings;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.base.Strings;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -42,7 +43,7 @@ public class MapMessageTest {
         msg.put("project", "Log4j");
         final String result = msg.getFormattedMessage();
         final String expected = "message=\"Test message {}\" project=\"Log4j\"";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -53,7 +54,7 @@ public class MapMessageTest {
                 .with("project", "Log4j");
         final String result = msg.getFormattedMessage();
         final String expected = "message=\"Test message {}\" project=\"Log4j\"";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -66,7 +67,7 @@ public class MapMessageTest {
         final String expected = "<Map>\n  <Entry key=\"message\">Test message {}</Entry>\n" +
             "  <Entry key=\"project\">Log4j</Entry>\n" +
             "</Map>";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -77,7 +78,7 @@ public class MapMessageTest {
         final String result = msg.getFormattedMessage(new String[]{"XML"});
         final String expected = "<Map>\n  <Entry key=\"message\">Test message &lt;foo&gt;</Entry>\n" +
                 "</Map>";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -88,7 +89,7 @@ public class MapMessageTest {
         msg.put("project", "Log4j");
         final String result = msg.getFormattedMessage(new String[]{"JSON"});
         final String expected = "{'message':'Test message {}','project':'Log4j'}".replace('\'', '"');
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -98,7 +99,7 @@ public class MapMessageTest {
         msg.put("message", testMsg);
         final String result = msg.getFormattedMessage(new String[]{"JSON"});
         final String expected = "{\"message\":\"Test message \\\"Hello, World!\\\"\"}";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -109,7 +110,7 @@ public class MapMessageTest {
         final String result = msg.getFormattedMessage(new String[]{"JSON"});
         final String expected =
                 "{\"one\\ntwo\":\"hello\\tworld\\r\\nhh\\bere is it\\f\"}";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -152,7 +153,7 @@ public class MapMessageTest {
                 "'doubles':[2.0,2.1]," +
                 "'objects':['foo','bar']" +
                 "}}").replace('\'', '"');
-        assertEquals(expectedJson, actualJson);
+        assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     @Test
@@ -160,14 +161,14 @@ public class MapMessageTest {
         final List<Object> recursiveValue = Arrays.asList(1, null);
         // noinspection CollectionAddedToSelf
         recursiveValue.set(1, recursiveValue);
-        assertThrows(IllegalArgumentException.class, () -> new ObjectMapMessage()
+        assertThatThrownBy(() -> new ObjectMapMessage()
                 .with("key", recursiveValue)
-                .getFormattedMessage(new String[]{"JSON"}));
+                .getFormattedMessage(new String[]{"JSON"})).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void testJsonFormatterMaxDepthViolation() {
-        assertThrows(IllegalArgumentException.class, () -> testJsonFormatterMaxDepth(MapMessageJsonFormatter.MAX_DEPTH - 1));
+        assertThatThrownBy(() -> testJsonFormatterMaxDepth(MapMessageJsonFormatter.MAX_DEPTH - 1)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -179,7 +180,7 @@ public class MapMessageTest {
                         Strings.repeat("]", depth))
                 .replace('\'', '"');
         String actualJson = testJsonFormatterMaxDepth(depth);
-        assertEquals(expectedJson, actualJson);
+        assertThat(actualJson).isEqualTo(expectedJson);
     }
 
     public static String testJsonFormatterMaxDepth(int depth) {
@@ -201,7 +202,7 @@ public class MapMessageTest {
         msg.put("project", "Log4j");
         final String result = msg.getFormattedMessage(new String[]{"Java"});
         final String expected = "{message=\"Test message {}\", project=\"Log4j\"}";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -213,13 +214,13 @@ public class MapMessageTest {
         msg.put("key2", "value2");
         final String result = msg.getFormattedMessage(new String[]{"Java"});
         final String expected = "{key1=\"value1\", key2=\"value2\"}";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
 
         // modify parameter after calling msg.getFormattedMessage
         msg.put("key3", "value3");
         final String result2 = msg.getFormattedMessage(new String[]{"Java"});
         final String expected2 = "{key1=\"value1\", key2=\"value2\", key3=\"value3\"}";
-        assertEquals(expected2, result2);
+        assertThat(result2).isEqualTo(expected2);
     }
 
     @Test
@@ -227,7 +228,7 @@ public class MapMessageTest {
         final String key = "Key";
         final ObjectMapMessage msg = new ObjectMapMessage()
                 .with(key, 1L);
-        assertEquals("1", msg.get(key));
+        assertThat(msg.get(key)).isEqualTo("1");
     }
 
     @Test
@@ -235,7 +236,7 @@ public class MapMessageTest {
         final String key = "Key";
         final ObjectMapMessage msg = new ObjectMapMessage()
                 .with(key, 1L);
-        assertEquals("1", msg.remove(key));
+        assertThat(msg.remove(key)).isEqualTo("1");
     }
 
     @Test
@@ -243,7 +244,7 @@ public class MapMessageTest {
         final ObjectMapMessage msg = new ObjectMapMessage().with("key", 1L);
         final String result = msg.getFormattedMessage(new String[]{"JSON"});
         final String expected = "{'key':1}".replace('\'', '"');
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -252,7 +253,7 @@ public class MapMessageTest {
                 .with("key", 1L);
         final String result = msg.getFormattedMessage(new String[]{"XML"});
         final String expected = "<Map>\n  <Entry key=\"key\">1</Entry>\n</Map>";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -261,7 +262,7 @@ public class MapMessageTest {
                 .with("key", new FormattableTestType());
         final String result = msg.getFormattedMessage(new String[]{"XML"});
         final String expected = "<Map>\n  <Entry key=\"key\">formatTo</Entry>\n</Map>";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -270,7 +271,7 @@ public class MapMessageTest {
                 .with("key", new FormattableTestType());
         final String result = msg.getFormattedMessage(new String[]{"JSON"});
         final String expected = "{\"key\":\"formatTo\"}";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -279,7 +280,7 @@ public class MapMessageTest {
                 .with("key", new FormattableTestType());
         final String result = msg.getFormattedMessage(new String[]{"JAVA"});
         final String expected = "{key=\"formatTo\"}";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -288,7 +289,7 @@ public class MapMessageTest {
                 .with("key", new FormattableTestType());
         final String result = msg.getFormattedMessage(null);
         final String expected = "key=\"formatTo\"";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -298,7 +299,7 @@ public class MapMessageTest {
                 .with(key, new FormattableTestType());
         final String result = msg.get(key);
         final String expected = "formatTo";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -308,7 +309,7 @@ public class MapMessageTest {
                 .with(key, new FormattableTestType());
         final String result = msg.remove(key);
         final String expected = "formatTo";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     private static final class FormattableTestType implements StringBuilderFormattable {

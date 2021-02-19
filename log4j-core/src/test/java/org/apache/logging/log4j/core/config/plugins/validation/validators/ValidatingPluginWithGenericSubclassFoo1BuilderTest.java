@@ -16,16 +16,17 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
-import org.apache.logging.log4j.plugins.Node;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.validation.PluginWithGenericSubclassFoo1Builder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
 
@@ -38,7 +39,7 @@ public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<PluginWithGenericSubclassFoo1Builder>) manager.getPluginType("PluginWithGenericSubclassFoo1Builder");
-        assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
+        assertThat(plugin).describedAs("Rebuild this module to make sure annotation processing kicks in.").isNotNull();
         node = new Node(null, "Validator", plugin);
     }
 
@@ -48,7 +49,7 @@ public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
             .setConfiguration(new NullConfiguration())
             .setConfigurationNode(node)
             .build();
-        assertNull(validatingPlugin);
+        assertThat(validatingPlugin).isNull();
     }
 
     @Test
@@ -59,8 +60,8 @@ public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
             .setConfiguration(new NullConfiguration())
             .setConfigurationNode(node)
             .build();
-        assertNotNull(validatingPlugin);
-        assertEquals("thing1", validatingPlugin.getThing());
-        assertEquals("foo1", validatingPlugin.getFoo1());
+        assertThat(validatingPlugin).isNotNull();
+        assertThat(validatingPlugin.getThing()).isEqualTo("thing1");
+        assertThat(validatingPlugin.getFoo1()).isEqualTo("foo1");
     }
 }

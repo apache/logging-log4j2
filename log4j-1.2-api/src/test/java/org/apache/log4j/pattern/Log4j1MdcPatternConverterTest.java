@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.logging.log4j.Level;
@@ -71,7 +72,7 @@ public class Log4j1MdcPatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         final Log4j1MdcPatternConverter converter = Log4j1MdcPatternConverter.newInstance(options);
         converter.format(event, sb);
-        assertEquals(expected, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 
 }

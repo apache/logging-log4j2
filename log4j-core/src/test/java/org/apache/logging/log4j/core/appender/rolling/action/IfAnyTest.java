@@ -17,9 +17,10 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the Or composite condition.
@@ -30,15 +31,15 @@ public class IfAnyTest {
     public void test() {
         final PathCondition TRUE = new FixedCondition(true);
         final PathCondition FALSE = new FixedCondition(false);
-        assertTrue(IfAny.createOrCondition(TRUE, TRUE).accept(null, null, null));
-        assertTrue(IfAny.createOrCondition(FALSE, TRUE).accept(null, null, null));
-        assertTrue(IfAny.createOrCondition(TRUE, FALSE).accept(null, null, null));
-        assertFalse(IfAny.createOrCondition(FALSE, FALSE).accept(null, null, null));
+        assertThat(IfAny.createOrCondition(TRUE, TRUE).accept(null, null, null)).isTrue();
+        assertThat(IfAny.createOrCondition(FALSE, TRUE).accept(null, null, null)).isTrue();
+        assertThat(IfAny.createOrCondition(TRUE, FALSE).accept(null, null, null)).isTrue();
+        assertThat(IfAny.createOrCondition(FALSE, FALSE).accept(null, null, null)).isFalse();
     }
     
     @Test
     public void testEmptyIsFalse() {
-        assertFalse(IfAny.createOrCondition().accept(null, null, null));
+        assertThat(IfAny.createOrCondition().accept(null, null, null)).isFalse();
     }
     
     @Test
@@ -46,7 +47,7 @@ public class IfAnyTest {
         final CountingCondition counter = new CountingCondition(true);
         final IfAny or = IfAny.createOrCondition(counter, counter, counter);
         or.beforeFileTreeWalk();
-        assertEquals(3, counter.getBeforeFileTreeWalkCount());
+        assertThat(counter.getBeforeFileTreeWalkCount()).isEqualTo(3);
     }
 
 }

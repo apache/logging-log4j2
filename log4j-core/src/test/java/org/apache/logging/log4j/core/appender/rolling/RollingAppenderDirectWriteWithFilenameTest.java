@@ -16,15 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.File;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
+import java.io.File;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -50,6 +51,6 @@ public class RollingAppenderDirectWriteWithFilenameTest {
     @Test
     public void testAppender() throws Exception {
         final File dir = new File(DIR);
-        assertFalse("Directory created", dir.exists());
+        assertThat(dir.exists()).describedAs("Directory created").isFalse();
     }
 }

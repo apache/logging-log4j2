@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,12 +29,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the JdkMapAdapterStringMap class.
@@ -37,7 +40,7 @@ public class JdkMapAdapterStringMapTest {
 
     @Test
     public void testConstructorDisallowsNull() {
-        assertThrows(NullPointerException.class, () -> new JdkMapAdapterStringMap(null));
+        assertThatThrownBy(() -> new JdkMapAdapterStringMap(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -48,7 +51,7 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("B", "Bvalue");
         original.putValue("C", "Cvalue");
         original.putValue("3", "3value");
-        assertEquals("{3=3value, B=Bvalue, C=Cvalue, a=avalue, a2=bvalue}", original.toString());
+        assertThat(original.toString()).isEqualTo("{3=3value, B=Bvalue, C=Cvalue, a=avalue, a2=bvalue}");
     }
 
     @Test
@@ -60,7 +63,7 @@ public class JdkMapAdapterStringMapTest {
 
         final byte[] binary = serialize(original);
         final JdkMapAdapterStringMap copy = deserialize(binary);
-        assertEquals(original, copy);
+        assertThat(copy).isEqualTo(original);
     }
 
     private byte[] serialize(final JdkMapAdapterStringMap data) throws IOException {
@@ -86,16 +89,16 @@ public class JdkMapAdapterStringMapTest {
 
         final JdkMapAdapterStringMap other = new JdkMapAdapterStringMap();
         other.putAll(original);
-        assertEquals(original, other);
+        assertThat(other).isEqualTo(original);
 
         other.putValue("3", "otherValue");
-        assertNotEquals(original, other);
+        assertThat(other).isNotEqualTo(original);
 
         other.putValue("3", null);
-        assertNotEquals(original, other);
+        assertThat(other).isNotEqualTo(original);
 
         other.putValue("3", "3value");
-        assertEquals(original, other);
+        assertThat(other).isEqualTo(original);
     }
 
     @Test
@@ -114,14 +117,14 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("c", "cc");
         original.putAll(other);
 
-        assertEquals(7, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("cc", original.getValue("c"));
-        assertEquals("dORIG", original.getValue("d"));
-        assertEquals("eORIG", original.getValue("e"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("22", original.getValue("2"));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(7);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("c")).isEqualTo("cc");
+        assertThat(original.<String>getValue("d")).isEqualTo("dORIG");
+        assertThat(original.<String>getValue("e")).isEqualTo("eORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue("2")).isEqualTo("22");
     }
 
     @Test
@@ -139,14 +142,14 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals(7, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("cORIG", original.getValue("c"));
-        assertEquals("dORIG", original.getValue("d"));
-        assertEquals("eORIG", original.getValue("e"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("nullORIG", original.getValue(null));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(7);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("c")).isEqualTo("cORIG");
+        assertThat(original.<String>getValue("d")).isEqualTo("dORIG");
+        assertThat(original.<String>getValue("e")).isEqualTo("eORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue(null)).isEqualTo("nullORIG");
     }
 
     @Test
@@ -163,13 +166,13 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals(6, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("22", original.getValue("2"));
-        assertEquals("33", original.getValue("3"));
-        assertEquals("nullORIG", original.getValue(null));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(6);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue("2")).isEqualTo("22");
+        assertThat(original.<String>getValue("3")).isEqualTo("33");
+        assertThat(original.<String>getValue(null)).isEqualTo("nullORIG");
     }
 
     @Test
@@ -187,14 +190,14 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals(7, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("cORIG", original.getValue("c"));
-        assertEquals("dORIG", original.getValue("d"));
-        assertEquals("eORIG", original.getValue("e"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("nullNEW", original.getValue(null));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(7);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("c")).isEqualTo("cORIG");
+        assertThat(original.<String>getValue("d")).isEqualTo("dORIG");
+        assertThat(original.<String>getValue("e")).isEqualTo("eORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue(null)).isEqualTo("nullNEW");
     }
 
     @Test
@@ -211,13 +214,13 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals(6, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("22", original.getValue("2"));
-        assertEquals("33", original.getValue("3"));
-        assertEquals("nullNEW", original.getValue(null));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(6);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue("2")).isEqualTo("22");
+        assertThat(original.<String>getValue("3")).isEqualTo("33");
+        assertThat(original.<String>getValue(null)).isEqualTo("nullNEW");
     }
 
     @Test
@@ -236,14 +239,14 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals(7, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("cORIG", original.getValue("c"));
-        assertEquals("dORIG", original.getValue("d"));
-        assertEquals("eORIG", original.getValue("e"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("nullNEW", original.getValue(null));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(7);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("c")).isEqualTo("cORIG");
+        assertThat(original.<String>getValue("d")).isEqualTo("dORIG");
+        assertThat(original.<String>getValue("e")).isEqualTo("eORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue(null)).isEqualTo("nullNEW");
     }
 
     @Test
@@ -261,13 +264,13 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("a", "aa");
         original.putAll(other);
 
-        assertEquals(6, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("22", original.getValue("2"));
-        assertEquals("33", original.getValue("3"));
-        assertEquals("nullNEW", original.getValue(null));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(6);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue("2")).isEqualTo("22");
+        assertThat(original.<String>getValue("3")).isEqualTo("33");
+        assertThat(original.<String>getValue(null)).isEqualTo("nullNEW");
     }
 
     @Test
@@ -284,12 +287,12 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("c", "cc");
         original.putAll(other);
 
-        assertEquals(5, original.size(), "size after put other");
-        assertEquals("aa", original.getValue("a"));
-        assertEquals("bORIG", original.getValue("b"));
-        assertEquals("cc", original.getValue("c"));
-        assertEquals("11", original.getValue("1"));
-        assertEquals("22", original.getValue("2"));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(5);
+        assertThat(original.<String>getValue("a")).isEqualTo("aa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bORIG");
+        assertThat(original.<String>getValue("c")).isEqualTo("cc");
+        assertThat(original.<String>getValue("1")).isEqualTo("11");
+        assertThat(original.<String>getValue("2")).isEqualTo("22");
     }
 
     @Test
@@ -298,26 +301,26 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
-        assertEquals(original, original); // equal to itself
+        assertThat(original).isEqualTo(original); // equal to itself
 
         final JdkMapAdapterStringMap other = new JdkMapAdapterStringMap();
         other.putValue("a", "avalue");
-        assertNotEquals(original, other);
+        assertThat(other).isNotEqualTo(original);
 
         other.putValue("B", "Bvalue");
-        assertNotEquals(original, other);
+        assertThat(other).isNotEqualTo(original);
 
         other.putValue("3", "3value");
-        assertEquals(original, other);
+        assertThat(other).isEqualTo(original);
 
         other.putValue("3", "otherValue");
-        assertNotEquals(original, other);
+        assertThat(other).isNotEqualTo(original);
 
         other.putValue("3", null);
-        assertNotEquals(original, other);
+        assertThat(other).isNotEqualTo(original);
 
         other.putValue("3", "3value");
-        assertEquals(original, other);
+        assertThat(other).isEqualTo(original);
     }
 
     @Test
@@ -332,7 +335,7 @@ public class JdkMapAdapterStringMapTest {
         expected.put("B", "Bvalue");
         expected.put("3", "3value");
 
-        assertEquals(expected, original.toMap());
+        assertThat(original.toMap()).isEqualTo(expected);
 
         try {
             original.toMap().put("abc", "xyz");
@@ -347,14 +350,14 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
-        assertEquals(3, original.size(), "size");
+        assertThat(original.size()).describedAs("size").isEqualTo(3);
 
         // add empty context data
         original.putAll(new JdkMapAdapterStringMap());
-        assertEquals(3, original.size(), "size after put empty");
-        assertEquals("aaa", original.getValue("a"));
-        assertEquals("bbb", original.getValue("b"));
-        assertEquals("ccc", original.getValue("c"));
+        assertThat(original.size()).describedAs("size after put empty").isEqualTo(3);
+        assertThat(original.<String>getValue("a")).isEqualTo("aaa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bbb");
+        assertThat(original.<String>getValue("c")).isEqualTo("ccc");
 
         final JdkMapAdapterStringMap other = new JdkMapAdapterStringMap();
         other.putValue("1", "111");
@@ -362,13 +365,13 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("3", "333");
         original.putAll(other);
 
-        assertEquals(6, original.size(), "size after put other");
-        assertEquals("aaa", original.getValue("a"));
-        assertEquals("bbb", original.getValue("b"));
-        assertEquals("ccc", original.getValue("c"));
-        assertEquals("111", original.getValue("1"));
-        assertEquals("222", original.getValue("2"));
-        assertEquals("333", original.getValue("3"));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(6);
+        assertThat(original.<String>getValue("a")).isEqualTo("aaa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bbb");
+        assertThat(original.<String>getValue("c")).isEqualTo("ccc");
+        assertThat(original.<String>getValue("1")).isEqualTo("111");
+        assertThat(original.<String>getValue("2")).isEqualTo("222");
+        assertThat(original.<String>getValue("3")).isEqualTo("333");
     }
 
     @Test
@@ -378,15 +381,15 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
         original.putValue("d", "ddd");
-        assertEquals(4, original.size(), "size");
+        assertThat(original.size()).describedAs("size").isEqualTo(4);
 
         // add empty context data
         original.putAll(new JdkMapAdapterStringMap());
-        assertEquals(4, original.size(), "size after put empty");
-        assertEquals("aaa", original.getValue("a"));
-        assertEquals("bbb", original.getValue("b"));
-        assertEquals("ccc", original.getValue("c"));
-        assertEquals("ddd", original.getValue("d"));
+        assertThat(original.size()).describedAs("size after put empty").isEqualTo(4);
+        assertThat(original.<String>getValue("a")).isEqualTo("aaa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bbb");
+        assertThat(original.<String>getValue("c")).isEqualTo("ccc");
+        assertThat(original.<String>getValue("d")).isEqualTo("ddd");
 
         final JdkMapAdapterStringMap other = new JdkMapAdapterStringMap();
         other.putValue("1", "111");
@@ -395,15 +398,15 @@ public class JdkMapAdapterStringMapTest {
         other.putValue("4", "444");
         original.putAll(other);
 
-        assertEquals(8, original.size(), "size after put other");
-        assertEquals("aaa", original.getValue("a"));
-        assertEquals("bbb", original.getValue("b"));
-        assertEquals("ccc", original.getValue("c"));
-        assertEquals("ddd", original.getValue("d"));
-        assertEquals("111", original.getValue("1"));
-        assertEquals("222", original.getValue("2"));
-        assertEquals("333", original.getValue("3"));
-        assertEquals("444", original.getValue("4"));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(8);
+        assertThat(original.<String>getValue("a")).isEqualTo("aaa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bbb");
+        assertThat(original.<String>getValue("c")).isEqualTo("ccc");
+        assertThat(original.<String>getValue("d")).isEqualTo("ddd");
+        assertThat(original.<String>getValue("1")).isEqualTo("111");
+        assertThat(original.<String>getValue("2")).isEqualTo("222");
+        assertThat(original.<String>getValue("3")).isEqualTo("333");
+        assertThat(original.<String>getValue("4")).isEqualTo("444");
     }
 
     @Test
@@ -414,7 +417,7 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
         original.putValue("d", "ddd");
-        assertEquals(5, original.size(), "size");
+        assertThat(original.size()).describedAs("size").isEqualTo(5);
 
         final JdkMapAdapterStringMap other = new JdkMapAdapterStringMap();
         for (int i = 0 ; i < 500; i++) {
@@ -423,14 +426,14 @@ public class JdkMapAdapterStringMapTest {
         other.putValue(null, "otherVal");
         original.putAll(other);
 
-        assertEquals(505, original.size(), "size after put other");
-        assertEquals("otherVal", original.getValue(null));
-        assertEquals("aaa", original.getValue("a"));
-        assertEquals("bbb", original.getValue("b"));
-        assertEquals("ccc", original.getValue("c"));
-        assertEquals("ddd", original.getValue("d"));
+        assertThat(original.size()).describedAs("size after put other").isEqualTo(505);
+        assertThat(original.<String>getValue(null)).isEqualTo("otherVal");
+        assertThat(original.<String>getValue("a")).isEqualTo("aaa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bbb");
+        assertThat(original.<String>getValue("c")).isEqualTo("ccc");
+        assertThat(original.<String>getValue("d")).isEqualTo("ddd");
         for (int i = 0 ; i < 500; i++) {
-            assertEquals(String.valueOf(i), original.getValue(String.valueOf(i)));
+            assertThat(original.<String>getValue(String.valueOf(i))).isEqualTo(String.valueOf(i));
         }
     }
 
@@ -440,14 +443,14 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
         original.putValue("c", "ccc");
-        assertEquals(3, original.size(), "size");
+        assertThat(original.size()).describedAs("size").isEqualTo(3);
 
         // putAll with self
         original.putAll(original);
-        assertEquals(3, original.size(), "size after put empty");
-        assertEquals("aaa", original.getValue("a"));
-        assertEquals("bbb", original.getValue("b"));
-        assertEquals("ccc", original.getValue("c"));
+        assertThat(original.size()).describedAs("size after put empty").isEqualTo(3);
+        assertThat(original.<String>getValue("a")).isEqualTo("aaa");
+        assertThat(original.<String>getValue("b")).isEqualTo("bbb");
+        assertThat(original.<String>getValue("c")).isEqualTo("ccc");
     }
 
     @Test
@@ -534,7 +537,7 @@ public class JdkMapAdapterStringMapTest {
 
     @Test
     public void testInitiallyNotFrozen() {
-        assertFalse(new JdkMapAdapterStringMap().isFrozen());
+        assertThat(new JdkMapAdapterStringMap().isFrozen()).isFalse();
     }
 
     @Test
@@ -549,7 +552,7 @@ public class JdkMapAdapterStringMapTest {
     public void testFreezeProhibitsPutValue() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.freeze();
-        assertThrows(UnsupportedOperationException.class, () -> original.putValue("a", "aaa"));
+        assertThatThrownBy(() -> original.putValue("a", "aaa")).isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
@@ -557,7 +560,7 @@ public class JdkMapAdapterStringMapTest {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("b", "bbb");
         original.freeze();
-        assertThrows(UnsupportedOperationException.class, () -> original.remove("b")); // existing key: modifies the collection
+        assertThatThrownBy(() -> original.remove("b")).isInstanceOf(UnsupportedOperationException.class); // existing key: modifies the collection
     }
 
     @Test
@@ -580,7 +583,7 @@ public class JdkMapAdapterStringMapTest {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.freeze();
-        assertThrows(UnsupportedOperationException.class, original::clear);
+        assertThatThrownBy(original::clear).isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
@@ -598,23 +601,23 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("3", "3value");
         original.putValue("c", "cvalue");
         original.putValue("d", "dvalue");
-        assertEquals(5, original.size());
+        assertThat(original.size()).isEqualTo(5);
 
         original.putValue(null, "nullvalue");
-        assertEquals(6, original.size());
-        assertEquals("nullvalue", original.getValue(null));
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.<String>getValue(null)).isEqualTo("nullvalue");
 
         original.putValue(null, "otherNullvalue");
-        assertEquals("otherNullvalue", original.getValue(null));
-        assertEquals(6, original.size());
+        assertThat(original.<String>getValue(null)).isEqualTo("otherNullvalue");
+        assertThat(original.size()).isEqualTo(6);
 
         original.putValue(null, "nullvalue");
-        assertEquals(6, original.size());
-        assertEquals("nullvalue", original.getValue(null));
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.<String>getValue(null)).isEqualTo("nullvalue");
 
         original.putValue(null, "abc");
-        assertEquals(6, original.size());
-        assertEquals("abc", original.getValue(null));
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.<String>getValue(null)).isEqualTo("abc");
 
     }
 
@@ -626,7 +629,7 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("3", "3value");
         original.putValue("c", "cvalue");
         original.putValue("d", "dvalue");
-        assertEquals(5, original.size());
+        assertThat(original.size()).isEqualTo(5);
 
         final HashMap<String, String> expected = new HashMap<>();
         expected.put("a", "avalue");
@@ -634,43 +637,43 @@ public class JdkMapAdapterStringMapTest {
         expected.put("3", "3value");
         expected.put("c", "cvalue");
         expected.put("d", "dvalue");
-        assertEquals(expected, original.toMap(), "initial");
+        assertThat(original.toMap()).describedAs("initial").isEqualTo(expected);
 
         original.putValue(null, "nullvalue");
         expected.put(null, "nullvalue");
-        assertEquals(6, original.size());
-        assertEquals(expected, original.toMap(), "with null key");
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.toMap()).describedAs("with null key").isEqualTo(expected);
 
         original.putValue(null, "otherNullvalue");
         expected.put(null, "otherNullvalue");
-        assertEquals(6, original.size());
-        assertEquals(expected, original.toMap(), "with null key value2");
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.toMap()).describedAs("with null key value2").isEqualTo(expected);
 
         original.putValue(null, "nullvalue");
         expected.put(null, "nullvalue");
-        assertEquals(6, original.size());
-        assertEquals(expected, original.toMap(), "with null key value1 again");
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.toMap()).describedAs("with null key value1 again").isEqualTo(expected);
 
         original.putValue(null, "abc");
         expected.put(null, "abc");
-        assertEquals(6, original.size());
-        assertEquals(expected, original.toMap(), "with null key value3");
+        assertThat(original.size()).isEqualTo(6);
+        assertThat(original.toMap()).describedAs("with null key value3").isEqualTo(expected);
     }
 
     @Test
     public void testRemove() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
-        assertEquals(1, original.size());
-        assertEquals("avalue", original.getValue("a"));
+        assertThat(original.size()).isEqualTo(1);
+        assertThat(original.<String>getValue("a")).isEqualTo("avalue");
 
         original.remove("a");
-        assertEquals(0, original.size());
-        assertNull(original.getValue("a"), "no a val");
+        assertThat(original.size()).isEqualTo(0);
+        assertThat(original.<String>getValue("a")).describedAs("no a val").isNull();
 
         original.remove("B");
-        assertEquals(0, original.size());
-        assertNull(original.getValue("B"), "no B val");
+        assertThat(original.size()).isEqualTo(0);
+        assertThat(original.<String>getValue("B")).describedAs("no B val").isNull();
     }
 
     @Test
@@ -687,16 +690,16 @@ public class JdkMapAdapterStringMapTest {
     public void testNullValuesArePreserved() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
-        assertEquals(1, original.size());
-        assertEquals("avalue", original.getValue("a"));
+        assertThat(original.size()).isEqualTo(1);
+        assertThat(original.<String>getValue("a")).isEqualTo("avalue");
 
         original.putValue("a", null);
-        assertEquals(1, original.size());
-        assertNull(original.getValue("a"), "no a val");
+        assertThat(original.size()).isEqualTo(1);
+        assertThat(original.<String>getValue("a")).describedAs("no a val").isNull();
 
         original.putValue("B", null);
-        assertEquals(2, original.size());
-        assertNull(original.getValue("B"), "no B val");
+        assertThat(original.size()).isEqualTo(2);
+        assertThat(original.<String>getValue("B")).describedAs("no B val").isNull();
     }
 
     @Test
@@ -706,15 +709,15 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
 
-        assertEquals("avalue", original.getValue("a"));
-        assertEquals("Bvalue", original.getValue("B"));
-        assertEquals("3value", original.getValue("3"));
+        assertThat(original.<String>getValue("a")).isEqualTo("avalue");
+        assertThat(original.<String>getValue("B")).isEqualTo("Bvalue");
+        assertThat(original.<String>getValue("3")).isEqualTo("3value");
 
         original.putValue("0", "0value");
-        assertEquals("0value", original.getValue("0"));
-        assertEquals("3value", original.getValue("3"));
-        assertEquals("Bvalue", original.getValue("B"));
-        assertEquals("avalue", original.getValue("a"));
+        assertThat(original.<String>getValue("0")).isEqualTo("0value");
+        assertThat(original.<String>getValue("3")).isEqualTo("3value");
+        assertThat(original.<String>getValue("B")).isEqualTo("Bvalue");
+        assertThat(original.<String>getValue("a")).isEqualTo("avalue");
     }
 
     @Test
@@ -723,10 +726,10 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
-        assertEquals(3, original.size());
+        assertThat(original.size()).isEqualTo(3);
 
         original.clear();
-        assertEquals(0, original.size());
+        assertThat(original.size()).isEqualTo(0);
     }
 
     @Test
@@ -765,31 +768,31 @@ public class JdkMapAdapterStringMapTest {
     @Test
     public void testSizeAndIsEmpty() throws Exception {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
-        assertEquals(0, original.size());
+        assertThat(original.size()).isEqualTo(0);
         assertTrue(original.isEmpty(), "initial");
 
         original.putValue("a", "avalue");
-        assertEquals(1, original.size());
+        assertThat(original.size()).isEqualTo(1);
         assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.putValue("B", "Bvalue");
-        assertEquals(2, original.size());
+        assertThat(original.size()).isEqualTo(2);
         assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.putValue("3", "3value");
-        assertEquals(3, original.size());
+        assertThat(original.size()).isEqualTo(3);
         assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.remove("B");
-        assertEquals(2, original.size());
+        assertThat(original.size()).isEqualTo(2);
         assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.remove("3");
-        assertEquals(1, original.size());
+        assertThat(original.size()).isEqualTo(1);
         assertFalse(original.isEmpty(), "size=" + original.size());
 
         original.remove("a");
-        assertEquals(0, original.size());
+        assertThat(original.size()).isEqualTo(0);
         assertTrue(original.isEmpty(), "size=" + original.size());
     }
 
@@ -834,7 +837,7 @@ public class JdkMapAdapterStringMapTest {
         final JdkMapAdapterStringMapTest.State state = new JdkMapAdapterStringMapTest.State();
         state.data = original;
         original.forEach(COUNTER, state);
-        assertEquals(state.count, original.size());
+        assertThat(original.size()).isEqualTo(state.count);
     }
 
 }

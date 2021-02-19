@@ -15,6 +15,13 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_LOCATION;
+import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_PARENT_LOCATION;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.BDDMockito.given;
+
+import java.io.File;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
@@ -26,13 +33,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.File;
-
-import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_LOCATION;
-import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_PARENT_LOCATION;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class Log4jLookupWithSpacesTest {
@@ -62,9 +62,7 @@ public class Log4jLookupWithSpacesTest {
         final StrLookup log4jLookup = new Log4jLookup();
         ((ConfigurationAware) log4jLookup).setConfiguration(config);
         final String value = log4jLookup.lookup(KEY_CONFIG_LOCATION);
-        assertEquals(
-                new File(System.getProperty("user.home"), "/a a/b b/c c/d d/e e/log4j2 file.xml").getAbsolutePath(),
-                value);
+        assertThat(value).isEqualTo(new File(System.getProperty("user.home"), "/a a/b b/c c/d d/e e/log4j2 file.xml").getAbsolutePath());
     }
 
     @Test
@@ -72,6 +70,6 @@ public class Log4jLookupWithSpacesTest {
         final StrLookup log4jLookup = new Log4jLookup();
         ((ConfigurationAware) log4jLookup).setConfiguration(config);
         final String value = log4jLookup.lookup(KEY_CONFIG_PARENT_LOCATION);
-        assertEquals(new File(System.getProperty("user.home"), "/a a/b b/c c/d d/e e").getAbsolutePath(), value);
+        assertThat(value).isEqualTo(new File(System.getProperty("user.home"), "/a a/b b/c c/d d/e e").getAbsolutePath());
     }
 }

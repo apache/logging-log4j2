@@ -16,6 +16,8 @@
  */
 package org.apache.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,12 +27,12 @@ public class NDCTest {
     @Test
     public void testPopEmpty() {
         NDC.clear();
-        Assert.assertEquals(Strings.EMPTY, NDC.pop());
+        assertThat(NDC.pop()).isEqualTo(Strings.EMPTY);
     }
 
     @Test
     public void testPeekEmpty() {
         NDC.clear();
-        Assert.assertEquals(Strings.EMPTY, NDC.peek());
+        assertThat(NDC.peek()).isEqualTo(Strings.EMPTY);
     }
 }

@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -29,18 +40,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerCustomSelectorLocationTest {
@@ -77,12 +76,12 @@ public class AsyncLoggerCustomSelectorLocationTest {
         reader.close();
         file.delete();
         // By default we expect location to be disabled
-        assertThat(firstLine, containsString(msg));
-        assertThat(firstLine, not(containsString("testCustomAsyncSelectorLocation")));
+        assertThat(firstLine).contains(msg);
+        assertThat(firstLine).doesNotContain("testCustomAsyncSelectorLocation");
         // Configuration allows us to retain location
-        assertThat(secondLine, containsString(msg));
-        assertThat(secondLine, containsString("testCustomAsyncSelectorLocation"));
-        assertThat(thirdLine, nullValue());
+        assertThat(secondLine).contains(msg);
+        assertThat(secondLine).contains("testCustomAsyncSelectorLocation");
+        assertThat(thirdLine).isNull();
     }
 
     public static final class CustomAsyncContextSelector implements ContextSelector {

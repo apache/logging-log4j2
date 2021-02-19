@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -34,7 +36,7 @@ public class StructuredDataMessageTest {
         msg.put("memo", "This is a very long test memo to prevent regression of LOG4J2-114");
         final String result = msg.getFormattedMessage();
         final String expected = "Alert [MsgId@12345 memo=\"This is a very long test memo to prevent regression of LOG4J2-114\" message=\"Test message {}\" project=\"Log4j\"] Test message {}";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -46,7 +48,7 @@ public class StructuredDataMessageTest {
         msg.put("memo", "This is a very long test memo to prevent regression of LOG4J2-114");
         final String result = msg.getFormattedMessage(new String[] { "WHATEVER" });
         final String expected = "[MsgId@12345 memo=\"This is a very long test memo to prevent regression of LOG4J2-114\" message=\"Test message {}\" project=\"Log4j\"]";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -67,7 +69,7 @@ public class StructuredDataMessageTest {
                 + "  <Entry key=\"project\">Log4j</Entry>\n"
                 + "</Map>\n"
                 + "</StructuredData>\n";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -79,15 +81,15 @@ public class StructuredDataMessageTest {
                 .with("memo", "This is a very long test memo to prevent regression of LOG4J2-114");
         final String result = msg.getFormattedMessage();
         final String expected = "Alert [MsgId@12345 memo=\"This is a very long test memo to prevent regression of LOG4J2-114\" message=\"Test message {}\" project=\"Log4j\"] Test message {}";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
     public void testMsgWithKeyTooLong() {
         final String testMsg = "Test message {}";
         final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert");
-        assertThrows(IllegalArgumentException.class, () ->
-                msg.put("This is a very long key that will violate the key length validation", "Testing"));
+        assertThatThrownBy(() ->
+                msg.put("This is a very long key that will violate the key length validation", "Testing")).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -100,12 +102,12 @@ public class StructuredDataMessageTest {
         msg.put("project", "Log4j");
         final String result = msg.getFormattedMessage();
         final String expected = "Alert [MsgId@1 message=\"Test message {}\" project=\"Log4j\"] Test message {}";
-        assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
 
         // modify parameter after calling msg.getFormattedMessage
         msg.put("memo", "Added later");
         final String result2 = msg.getFormattedMessage();
         final String expected2 = "Alert [MsgId@1 memo=\"Added later\" message=\"Test message {}\" project=\"Log4j\"] Test message {}";
-        assertEquals(expected2, result2);
+        assertThat(result2).isEqualTo(expected2);
     }
 }

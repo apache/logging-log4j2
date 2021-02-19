@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class PropertiesPropertySourceTest {
 
@@ -42,6 +42,6 @@ public class PropertiesPropertySourceTest {
     @ParameterizedTest
     @MethodSource("data")
     public void testNormalFormFollowsCamelCaseConventions(final String expected, final List<CharSequence> tokens) {
-        assertEquals(expected, source.getNormalForm(tokens));
+        assertThat(source.getNormalForm(tokens)).isEqualTo(expected);
     }
 }

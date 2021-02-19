@@ -17,12 +17,12 @@
 
 package org.apache.log4j;
 
-import java.util.Locale;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
+import java.util.Locale;
 import org.apache.log4j.util.SerializationTestHelper;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 
 /**
@@ -55,13 +55,13 @@ public class LevelTest {
         final Object obj =
             SerializationTestHelper.deserializeStream(
                 "target/test-classes/witness/serialization/info.bin");
-        assertTrue(obj instanceof Level);
+        assertThat(obj instanceof Level).isTrue();
         final Level info = (Level) obj;
-        assertEquals("INFO", info.toString());
+        assertThat(info.toString()).isEqualTo("INFO");
         //
         //  JDK 1.1 doesn't support readResolve necessary for the assertion
         if (!System.getProperty("java.version").startsWith("1.1.")) {
-            assertTrue(obj == Level.INFO);
+            assertThat(obj == Level.INFO).isTrue();
         }
     }
 
@@ -75,12 +75,12 @@ public class LevelTest {
     public void testCustomLevelSerialization() throws Exception {
         final CustomLevel custom = new CustomLevel();
         final Object obj = SerializationTestHelper.serializeClone(custom);
-        assertTrue(obj instanceof CustomLevel);
+        assertThat(obj instanceof CustomLevel).isTrue();
 
         final CustomLevel clone = (CustomLevel) obj;
-        assertEquals(Level.INFO.level, clone.level);
-        assertEquals(Level.INFO.levelStr, clone.levelStr);
-        assertEquals(Level.INFO.syslogEquivalent, clone.syslogEquivalent);
+        assertThat(clone.level).isEqualTo(Level.INFO.level);
+        assertThat(clone.levelStr).isEqualTo(Level.INFO.levelStr);
+        assertThat(clone.syslogEquivalent).isEqualTo(Level.INFO.syslogEquivalent);
     }
 
     /**
@@ -107,7 +107,7 @@ public class LevelTest {
      */
     @Test
     public void testTraceInt() {
-        assertEquals(5000, Level.TRACE_INT);
+        assertThat(Level.TRACE_INT).isEqualTo(5000);
     }
 
     /**
@@ -115,9 +115,9 @@ public class LevelTest {
      */
     @Test
     public void testTrace() {
-        assertEquals("TRACE", Level.TRACE.toString());
-        assertEquals(5000, Level.TRACE.toInt());
-        assertEquals(7, Level.TRACE.getSyslogEquivalent());
+        assertThat(Level.TRACE.toString()).isEqualTo("TRACE");
+        assertThat(Level.TRACE.toInt()).isEqualTo(5000);
+        assertThat(Level.TRACE.getSyslogEquivalent()).isEqualTo(7);
     }
 
     /**
@@ -126,7 +126,7 @@ public class LevelTest {
     @Test
     public void testIntToTrace() {
         final Level trace = Level.toLevel(5000);
-        assertEquals("TRACE", trace.toString());
+        assertThat(trace.toString()).isEqualTo("TRACE");
     }
 
     /**
@@ -135,7 +135,7 @@ public class LevelTest {
     @Test
     public void testStringToTrace() {
         final Level trace = Level.toLevel("TRACE");
-        assertEquals("TRACE", trace.toString());
+        assertThat(trace.toString()).isEqualTo("TRACE");
     }
 
     /**
@@ -143,7 +143,7 @@ public class LevelTest {
      */
     @Test
     public void testLevelExtendsPriority() {
-        assertTrue(Priority.class.isAssignableFrom(Level.class));
+        assertThat(Priority.class.isAssignableFrom(Level.class)).isTrue();
     }
 
     /**
@@ -151,7 +151,7 @@ public class LevelTest {
      */
     @Test
     public void testOFF() {
-        assertTrue(Level.OFF instanceof Level);
+        assertThat(Level.OFF instanceof Level).isTrue();
     }
 
     /**
@@ -159,7 +159,7 @@ public class LevelTest {
      */
     @Test
     public void testFATAL() {
-        assertTrue(Level.FATAL instanceof Level);
+        assertThat(Level.FATAL instanceof Level).isTrue();
     }
 
     /**
@@ -167,7 +167,7 @@ public class LevelTest {
      */
     @Test
     public void testERROR() {
-        assertTrue(Level.ERROR instanceof Level);
+        assertThat(Level.ERROR instanceof Level).isTrue();
     }
 
     /**
@@ -175,7 +175,7 @@ public class LevelTest {
      */
     @Test
     public void testWARN() {
-        assertTrue(Level.WARN instanceof Level);
+        assertThat(Level.WARN instanceof Level).isTrue();
     }
 
     /**
@@ -183,7 +183,7 @@ public class LevelTest {
      */
     @Test
     public void testINFO() {
-        assertTrue(Level.INFO instanceof Level);
+        assertThat(Level.INFO instanceof Level).isTrue();
     }
 
     /**
@@ -191,7 +191,7 @@ public class LevelTest {
      */
     @Test
     public void testDEBUG() {
-        assertTrue(Level.DEBUG instanceof Level);
+        assertThat(Level.DEBUG instanceof Level).isTrue();
     }
 
     /**
@@ -199,7 +199,7 @@ public class LevelTest {
      */
     @Test
     public void testTRACE() {
-        assertTrue(Level.TRACE instanceof Level);
+        assertThat(Level.TRACE instanceof Level).isTrue();
     }
 
     /**
@@ -207,7 +207,7 @@ public class LevelTest {
      */
     @Test
     public void testALL() {
-        assertTrue(Level.ALL instanceof Level);
+        assertThat(Level.ALL instanceof Level).isTrue();
     }
 
     /**
@@ -216,7 +216,7 @@ public class LevelTest {
     @Test
     public void testIntToAll() {
         final Level level = Level.toLevel(Priority.ALL_INT);
-        assertEquals("ALL", level.toString());
+        assertThat(level.toString()).isEqualTo("ALL");
     }
 
     /**
@@ -225,7 +225,7 @@ public class LevelTest {
     @Test
     public void testIntToFatal() {
         final Level level = Level.toLevel(Priority.FATAL_INT);
-        assertEquals("FATAL", level.toString());
+        assertThat(level.toString()).isEqualTo("FATAL");
     }
 
 
@@ -235,7 +235,7 @@ public class LevelTest {
     @Test
     public void testIntToOff() {
         final Level level = Level.toLevel(Priority.OFF_INT);
-        assertEquals("OFF", level.toString());
+        assertThat(level.toString()).isEqualTo("OFF");
     }
 
     /**
@@ -244,7 +244,7 @@ public class LevelTest {
     @Test
     public void testToLevelUnrecognizedInt() {
         final Level level = Level.toLevel(17, Level.FATAL);
-        assertEquals("FATAL", level.toString());
+        assertThat(level.toString()).isEqualTo("FATAL");
     }
 
     /**
@@ -253,7 +253,7 @@ public class LevelTest {
     @Test
     public void testToLevelNull() {
         final Level level = Level.toLevel(null, Level.FATAL);
-        assertEquals("FATAL", level.toString());
+        assertThat(level.toString()).isEqualTo("FATAL");
     }
 
     /**
@@ -262,7 +262,7 @@ public class LevelTest {
     @Test
     public void testDotlessLowerI() {
         final Level level = Level.toLevel("\u0131nfo");
-        assertEquals("INFO", level.toString());
+        assertThat(level.toString()).isEqualTo("INFO");
     }
 
     /**
@@ -276,7 +276,7 @@ public class LevelTest {
         Locale.setDefault(turkey);
         final Level level = Level.toLevel("info");
         Locale.setDefault(defaultLocale);
-        assertEquals("INFO", level.toString());
+        assertThat(level.toString()).isEqualTo("INFO");
     }
 
 

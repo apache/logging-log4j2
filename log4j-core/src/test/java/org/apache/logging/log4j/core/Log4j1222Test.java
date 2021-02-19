@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.TestLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests logging during shutdown.
@@ -53,7 +54,7 @@ public class Log4j1222Test
 
 		private void trigger() {
 			Holder.LOGGER.info("Attempt to trigger");
-			assertTrue("Logger is of type " + Holder.LOGGER.getClass().getName(), Holder.LOGGER instanceof TestLogger);
+			assertThat(Holder.LOGGER instanceof TestLogger).describedAs("Logger is of type " + Holder.LOGGER.getClass().getName()).isTrue();
 			if (((TestLogger) Holder.LOGGER).getEntries().size() == 0) {
 				System.out.println("Logger contains no messages");
 			}

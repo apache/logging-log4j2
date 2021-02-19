@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.HashMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.HashMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link MapLookup}.
@@ -34,8 +34,8 @@ public class MapLookupTest {
     @Test
     public void testEmptyMap() {
         final MapLookup lookup = new MapLookup(new HashMap<String, String>());
-        assertNull(lookup.lookup(null));
-        assertNull(lookup.lookup("X"));
+        assertThat(lookup.lookup(null)).isNull();
+        assertThat(lookup.lookup("X")).isNull();
     }
 
     @Test
@@ -43,27 +43,27 @@ public class MapLookupTest {
         final HashMap<String, String> map = new HashMap<>();
         map.put("A", "B");
         final MapLookup lookup = new MapLookup(map);
-        assertNull(lookup.lookup(null));
-        assertEquals("B", lookup.lookup("A"));
+        assertThat(lookup.lookup(null)).isNull();
+        assertThat(lookup.lookup("A")).isEqualTo("B");
     }
 
     @Test
     public void testNullMap() {
         final MapLookup lookup = new MapLookup();
-        assertNull(lookup.lookup(null));
-        assertNull(lookup.lookup("X"));
+        assertThat(lookup.lookup(null)).isNull();
+        assertThat(lookup.lookup("X")).isNull();
     }
 
     @Test
     public void testMainMap() {
         MainMapLookup.setMainArguments("--file", "foo.txt");
         final MapLookup lookup = MainMapLookup.MAIN_SINGLETON;
-        assertNull(lookup.lookup(null));
-        assertNull(lookup.lookup("X"));
-        assertEquals("--file", lookup.lookup("0"));
-        assertEquals("foo.txt", lookup.lookup("1"));
-        assertEquals("foo.txt", lookup.lookup("--file"));
-        assertNull(lookup.lookup("foo.txt"));
+        assertThat(lookup.lookup(null)).isNull();
+        assertThat(lookup.lookup("X")).isNull();
+        assertThat(lookup.lookup("0")).isEqualTo("--file");
+        assertThat(lookup.lookup("1")).isEqualTo("foo.txt");
+        assertThat(lookup.lookup("--file")).isEqualTo("foo.txt");
+        assertThat(lookup.lookup("foo.txt")).isNull();
     }
 
     @Test
@@ -77,8 +77,8 @@ public class MapLookupTest {
                 .setMessage(message)
                 .build();
       final MapLookup lookup = new MapLookup(map);
-      assertEquals("B", lookup.lookup(event, "A"));
-      assertEquals("B1", lookup.lookup(event, "A1"));
+      assertThat(lookup.lookup(event, "A")).isEqualTo("B");
+      assertThat(lookup.lookup(event, "A1")).isEqualTo("B1");
     }
 
     @Test
@@ -92,8 +92,8 @@ public class MapLookupTest {
                 .setMessage(message)
                 .build();
         final MapLookup lookup = new MapLookup(map);
-        assertEquals("B", lookup.lookup(event, "A"));
-        assertEquals("11", lookup.lookup(event, "A1"));
+        assertThat(lookup.lookup(event, "A")).isEqualTo("B");
+        assertThat(lookup.lookup(event, "A1")).isEqualTo("11");
     }
 
     @Test
@@ -107,7 +107,7 @@ public class MapLookupTest {
                 .setMessage(message)
                 .build();
         final MapLookup lookup = new MapLookup(map);
-        assertEquals("ADefault", lookup.lookup(event, "A"));
+        assertThat(lookup.lookup(event, "A")).isEqualTo("ADefault");
     }
 
     @Test
@@ -115,6 +115,6 @@ public class MapLookupTest {
       final HashMap<String, String> map = new HashMap<>();
       map.put("A", "B");
       final MapLookup lookup = new MapLookup(map);
-      assertEquals("B", lookup.lookup(null, "A"));
+      assertThat(lookup.lookup(null, "A")).isEqualTo("B");
     }
 }

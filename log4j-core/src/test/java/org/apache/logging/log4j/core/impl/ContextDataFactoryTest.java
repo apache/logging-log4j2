@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.lang.reflect.Field;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.lang.reflect.Field;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the ContextDataFactory class.
@@ -29,12 +29,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ContextDataFactoryTest {
     @Test
     public void noArgReturnsSortedArrayStringMapIfNoPropertySpecified() throws Exception {
-        assertTrue(ContextDataFactory.createContextData() instanceof SortedArrayStringMap);
+        assertThat(ContextDataFactory.createContextData() instanceof SortedArrayStringMap).isTrue();
     }
 
     @Test
     public void intArgReturnsSortedArrayStringMapIfNoPropertySpecified() throws Exception {
-        assertTrue(ContextDataFactory.createContextData(2) instanceof SortedArrayStringMap);
+        assertThat(ContextDataFactory.createContextData(2) instanceof SortedArrayStringMap).isTrue();
     }
 
     @Test
@@ -42,6 +42,6 @@ public class ContextDataFactoryTest {
         final SortedArrayStringMap actual = (SortedArrayStringMap) ContextDataFactory.createContextData(2);
         final Field thresholdField = SortedArrayStringMap.class.getDeclaredField("threshold");
         thresholdField.setAccessible(true);
-        assertEquals(2, thresholdField.getInt(actual));
+        assertThat(thresholdField.getInt(actual)).isEqualTo(2);
     }
 }

@@ -1,18 +1,17 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.io.IOException;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.junit.StatusLoggerLevel;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @StatusLoggerLevel("WARN")
 public class AbstractActionTest {
@@ -24,15 +23,15 @@ public class AbstractActionTest {
         statusLogger.clear();
         new TestAction().run();
         List<StatusData> statusDataList = statusLogger.getStatusData();
-        assertThat(statusDataList, hasSize(1));
+        assertThat(statusDataList).hasSize(1);
         StatusData statusData = statusDataList.get(0);
-        assertEquals(Level.WARN, statusData.getLevel());
+        assertThat(statusData.getLevel()).isEqualTo(Level.WARN);
         String formattedMessage = statusData.getFormattedStatus();
-        assertThat(formattedMessage, containsString("Exception reported by action 'class org.apache."
+        assertThat(formattedMessage).contains("Exception reported by action 'class org.apache."
                 + "logging.log4j.core.appender.rolling.action.AbstractActionTest$TestAction' java.io.IOException: "
                 + "failed" + System.lineSeparator()
                 + "\tat org.apache.logging.log4j.core.appender.rolling.action.AbstractActionTest"
-                + "$TestAction.execute(AbstractActionTest.java:"));
+                + "$TestAction.execute(AbstractActionTest.java:");
     }
 
     @Test
@@ -46,11 +45,11 @@ public class AbstractActionTest {
             }
         }.run();
         List<StatusData> statusDataList = statusLogger.getStatusData();
-        assertThat(statusDataList, hasSize(1));
+        assertThat(statusDataList).hasSize(1);
         StatusData statusData = statusDataList.get(0);
-        assertEquals(Level.WARN, statusData.getLevel());
+        assertThat(statusData.getLevel()).isEqualTo(Level.WARN);
         String formattedMessage = statusData.getFormattedStatus();
-        assertThat(formattedMessage, containsString("Exception reported by action"));
+        assertThat(formattedMessage).contains("Exception reported by action");
     }
 
     @Test
@@ -64,11 +63,11 @@ public class AbstractActionTest {
             }
         }.run();
         List<StatusData> statusDataList = statusLogger.getStatusData();
-        assertThat(statusDataList, hasSize(1));
+        assertThat(statusDataList).hasSize(1);
         StatusData statusData = statusDataList.get(0);
-        assertEquals(Level.WARN, statusData.getLevel());
+        assertThat(statusData.getLevel()).isEqualTo(Level.WARN);
         String formattedMessage = statusData.getFormattedStatus();
-        assertThat(formattedMessage, containsString("Exception reported by action"));
+        assertThat(formattedMessage).contains("Exception reported by action");
     }
 
     private static final class TestAction extends AbstractAction {

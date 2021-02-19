@@ -188,6 +188,11 @@
       <artifactId>hamcrest-all</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Mocking framework for use with JUnit -->
     <dependency>
       <groupId>org.mockito</groupId>

@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -67,9 +68,9 @@ public class OutputStreamAppenderTest {
                 .setName("test")
                 .setFilter(filter);
         // @formatter:on
-        Assert.assertEquals(filter, builder.getFilter());
+        assertThat(builder.getFilter()).isEqualTo(filter);
         final OutputStreamAppender appender = builder.build();
-        Assert.assertEquals(filter, appender.getFilter());
+        assertThat(appender.getFilter()).isEqualTo(filter);
     }
 
     @Test
@@ -81,7 +82,7 @@ public class OutputStreamAppenderTest {
         addAppender(os, name);
         logger.error(TEST_MSG);
         final String actual = out.toString();
-        Assert.assertTrue(actual, actual.contains(TEST_MSG));
+        assertThat(actual.contains(TEST_MSG)).describedAs(actual).isTrue();
     }
 
     @Test
@@ -92,7 +93,7 @@ public class OutputStreamAppenderTest {
         addAppender(out, name);
         logger.error(TEST_MSG);
         final String actual = out.toString();
-        Assert.assertTrue(actual, actual.contains(TEST_MSG));
+        assertThat(actual.contains(TEST_MSG)).describedAs(actual).isTrue();
     }
 
     /**

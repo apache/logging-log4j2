@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -25,7 +26,6 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -81,8 +81,8 @@ public class RoutingAppenderWithPurgingTest {
         StructuredDataMessage msg = new StructuredDataMessage("1", "This is a test 1", "Service");
         EventLogger.logEvent(msg);
         final List<LogEvent> list = app.getEvents();
-        assertNotNull("No events generated", list);
-        assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
+        assertThat(list).describedAs("No events generated").isNotNull();
+        assertThat(list).describedAs("Incorrect number of events. Expected 1, got " + list.size()).hasSize(1);
         msg = new StructuredDataMessage("2", "This is a test 2", "Service");
         EventLogger.logEvent(msg);
         msg = new StructuredDataMessage("3", "This is a test 3", "Service");
@@ -93,46 +93,44 @@ public class RoutingAppenderWithPurgingTest {
         Set<String> expectedAppenderKeys = new HashSet<>(2);
         expectedAppenderKeys.add("1");
         expectedAppenderKeys.add("3");
-        assertEquals(expectedAppenderKeys, routingAppenderManual.getAppenders().keySet());
+        assertThat(routingAppenderManual.getAppenders().keySet()).isEqualTo(expectedAppenderKeys);
 
-        assertFalse(((ListAppender) loggerContextRule.getAppender("ReferencedList")).getEvents().isEmpty());
+        assertThat(((ListAppender) loggerContextRule.getAppender("ReferencedList")).getEvents().isEmpty()).isFalse();
 
-        assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 2, routingAppenderIdle.getAppenders().size());
-        assertEquals("Incorrect number of appenders with IdlePurgePolicy with HangingAppender.",
-                2, routingAppenderIdleWithHangingAppender.getAppenders().size());
-        assertEquals("Incorrect number of appenders manual purge.", 2, routingAppenderManual.getAppenders().size());
+        assertThat(routingAppenderIdle.getAppenders()).describedAs("Incorrect number of appenders with IdlePurgePolicy.").hasSize(2);
+        assertThat(routingAppenderIdleWithHangingAppender.getAppenders()).describedAs("Incorrect number of appenders with IdlePurgePolicy with HangingAppender.").hasSize(2);
+        assertThat(routingAppenderManual.getAppenders()).describedAs("Incorrect number of appenders manual purge.").hasSize(2);
 
         Thread.sleep(3000);
         EventLogger.logEvent(msg);
 
-        assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 1, routingAppenderIdle.getAppenders().size());
-        assertEquals("Incorrect number of appenders with manual purge.", 2, routingAppenderManual.getAppenders().size());
+        assertThat(routingAppenderIdle.getAppenders()).describedAs("Incorrect number of appenders with IdlePurgePolicy.").hasSize(1);
+        assertThat(routingAppenderManual.getAppenders()).describedAs("Incorrect number of appenders with manual purge.").hasSize(2);
 
         routingAppenderManual.deleteAppender("1");
         routingAppenderManual.deleteAppender("2");
         routingAppenderManual.deleteAppender("3");
 
-        assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 1, routingAppenderIdle.getAppenders().size());
-        assertEquals("Incorrect number of appenders with manual purge.", 0, routingAppenderManual.getAppenders().size());
+        assertThat(routingAppenderIdle.getAppenders()).describedAs("Incorrect number of appenders with IdlePurgePolicy.").hasSize(1);
+        assertThat(routingAppenderManual.getAppenders()).describedAs("Incorrect number of appenders with manual purge.").hasSize(0);
 
-        assertFalse("Reference based routes should not be stoppable",
-                loggerContextRule.getAppender("ReferencedList").isStopped());
+        assertThat(loggerContextRule.getAppender("ReferencedList").isStopped()).describedAs("Reference based routes should not be stoppable").isFalse();
 
         msg = new StructuredDataMessage("5", "This is a test 5", "Service");
         EventLogger.logEvent(msg);
 
-        assertEquals("Incorrect number of appenders with manual purge.", 1, routingAppenderManual.getAppenders().size());
+        assertThat(routingAppenderManual.getAppenders()).describedAs("Incorrect number of appenders with manual purge.").hasSize(1);
 
         routingAppenderManual.deleteAppender("5");
         routingAppenderManual.deleteAppender("5");
 
-        assertEquals("Incorrect number of appenders with manual purge.", 0, routingAppenderManual.getAppenders().size());
+        assertThat(routingAppenderManual.getAppenders()).describedAs("Incorrect number of appenders with manual purge.").hasSize(0);
     }
 
 
     private void assertFileExistance(final String... files) {
         for (final String file : files) {
-            assertTrue("File should exist - " + file + " file ", new File(file).exists());
+            assertThat(new File(file).exists()).describedAs("File should exist - " + file + " file ").isTrue();
         }
     }
 }

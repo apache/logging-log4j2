@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
-
 import org.apache.logging.log4j.junit.Mutable;
 import org.apache.logging.log4j.junit.SerialUtil;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link ObjectMessage}.
@@ -34,7 +34,7 @@ public class ObjectMessageTest {
     public void testNull() {
         final ObjectMessage msg = new ObjectMessage(null);
         final String result = msg.getFormattedMessage();
-        assertEquals("null", result);
+        assertThat(result).isEqualTo("null");
     }
 
     @Test
@@ -42,7 +42,7 @@ public class ObjectMessageTest {
         final String testMsg = "Test message {}";
         final ObjectMessage msg = new ObjectMessage(testMsg);
         final String result = msg.getFormattedMessage();
-        assertEquals(testMsg, result);
+        assertThat(result).isEqualTo(testMsg);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class ObjectMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("XYZ", actual, "Expected most recent param value");
+        assertThat(actual).describedAs("Expected most recent param value").isEqualTo("XYZ");
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ObjectMessageTest {
         msg.getFormattedMessage();
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("abc", actual, "Should use initial param value");
+        assertThat(actual).describedAs("Should use initial param value").isEqualTo("abc");
     }
 
     @Test
@@ -73,7 +73,7 @@ public class ObjectMessageTest {
         final BigDecimal big = BigDecimal.valueOf(123.456);
         final ObjectMessage msg = new ObjectMessage(big);
         final ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
-        assertEquals(msg, other);
+        assertThat(other).isEqualTo(msg);
     }
 
     @Test
@@ -90,25 +90,25 @@ public class ObjectMessageTest {
             }
         }
         final NonSerializable nonSerializable = new NonSerializable();
-        assertFalse(nonSerializable instanceof Serializable);
+        assertThat(nonSerializable instanceof Serializable).isFalse();
         final ObjectMessage msg = new ObjectMessage(nonSerializable);
         final ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
 
-        assertEquals(msg, other);
-        assertEquals(other, msg);
+        assertThat(other).isEqualTo(msg);
+        assertThat(msg).isEqualTo(other);
     }
 
     @Test
     public void formatTo_usesCachedMessageString() throws Exception {
         final StringBuilder charSequence = new StringBuilder("initial value");
         final ObjectMessage message = new ObjectMessage(charSequence);
-        assertEquals("initial value", message.getFormattedMessage());
+        assertThat(message.getFormattedMessage()).isEqualTo("initial value");
 
         charSequence.setLength(0);
         charSequence.append("different value");
 
         final StringBuilder result = new StringBuilder();
         message.formatTo(result);
-        assertEquals("initial value", result.toString());
+        assertThat(result.toString()).isEqualTo("initial value");
     }
 }

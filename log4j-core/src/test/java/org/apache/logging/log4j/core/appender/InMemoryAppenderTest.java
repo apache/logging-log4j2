@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -25,8 +28,6 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.appender.InMemoryAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryAppenderTest {
 
@@ -69,10 +70,10 @@ public class InMemoryAppenderTest {
         app.append(event);
         app.append(event);
         final String msg = app.toString();
-        assertNotNull(msg, "No message");
+        assertThat(msg).describedAs("No message").isNotNull();
         final String expectedHeader = header == null ? "" : header;
         final String expected = expectedHeader + "Test" + Strings.LINE_SEPARATOR + "Test" + Strings.LINE_SEPARATOR;
-        assertEquals(expected, msg, "Incorrect message: " + msg);
+        assertThat(msg).describedAs("Incorrect message: " + msg).isEqualTo(expected);
         app.stop();
         assertFalse(app.isStarted(), "Appender did not stop");
     }

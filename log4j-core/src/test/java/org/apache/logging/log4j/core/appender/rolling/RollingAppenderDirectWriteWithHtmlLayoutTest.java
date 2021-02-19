@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.*;
+
+import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -25,22 +36,12 @@ import org.apache.logging.log4j.core.util.IOUtils;
 import org.apache.logging.log4j.junit.CleanFolders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.assertj.core.api.HamcrestCondition;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-
-import java.io.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
-
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
 
 /**
  * Tests for LOG4J2-2760
@@ -92,10 +93,10 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
             stopped = true;
             Thread.sleep(50);
             final File dir = new File(DIR);
-            assertTrue("Directory not created", dir.exists());
+            assertThat(dir.exists()).describedAs("Directory not created").isTrue();
             final File[] files = dir.listFiles();
-            assertNotNull(files);
-            assertThat(files, hasItemInArray(that(hasName(that(endsWith(".html"))))));
+            assertThat(files).isNotNull();
+            assertThat(files).is(new HamcrestCondition<>(hasItemInArray(that(hasName(that(endsWith(".html")))))));
 
             int foundEvents = 0;
             final Pattern eventMatcher = Pattern.compile("title=\"Message\"");
@@ -105,15 +106,15 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                     String data = IOUtils.toString(reader).trim();
                     // check that every file starts with the header
-                    assertThat("header in file " + file, data, Matchers.startsWith("<!DOCTYPE"));
-                    assertThat("footer in file " + file, data, Matchers.endsWith("</html>"));
+                    assertThat(data).describedAs("header in file " + file).startsWith("<!DOCTYPE");
+                    assertThat(data).describedAs("footer in file " + file).endsWith("</html>");
                     final Matcher matcher = eventMatcher.matcher(data);
                     while (matcher.find()) {
                         foundEvents++;
                     }
                 }
             }
-            assertEquals("Incorrect number of events read.", count, foundEvents);
+            assertThat(foundEvents).describedAs("Incorrect number of events read.").isEqualTo(count);
         } finally {
             if (!stopped) {
                 appender.stop();

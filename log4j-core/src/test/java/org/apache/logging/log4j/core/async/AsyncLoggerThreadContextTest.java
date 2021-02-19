@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -32,8 +34,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerThreadContextTest {
@@ -69,11 +69,11 @@ public class AsyncLoggerThreadContextTest {
         final String line1 = reader.readLine();
         reader.close();
         file.delete();
-        assertNotNull("line1", line1);
-        assertTrue("line1 correct", line1.contains(msg));
+        assertThat(line1).describedAs("line1").isNotNull();
+        assertThat(line1.contains(msg)).describedAs("line1 correct").isTrue();
 
-        assertTrue("ThreadContext.map", line1.contains("mapvalue"));
-        assertTrue("ThreadContext.stack", line1.contains("stackvalue"));
+        assertThat(line1.contains("mapvalue")).describedAs("ThreadContext.map").isTrue();
+        assertThat(line1.contains("stackvalue")).describedAs("ThreadContext.stack").isTrue();
     }
 
 }

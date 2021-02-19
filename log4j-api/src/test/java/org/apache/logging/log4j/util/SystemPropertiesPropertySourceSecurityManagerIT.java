@@ -17,16 +17,16 @@
 
 package org.apache.logging.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNull;
+
 import java.security.Permission;
 import java.util.PropertyPermission;
-
 import org.apache.logging.log4j.junit.SecurityManagerTestRule;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import static org.junit.Assert.assertNull;
 
 /**
  * Test related to https://issues.apache.org/jira/browse/LOG4J2-2274.
@@ -85,6 +85,6 @@ public class SystemPropertiesPropertySourceSecurityManagerIT {
 	@Test
 	public void test() {
 		final PropertiesUtil propertiesUtil = new PropertiesUtil("src/test/resources/PropertiesUtilTest.properties");
-		assertNull(propertiesUtil.getStringProperty("a.1"));
+		assertThat(propertiesUtil.getStringProperty("a.1")).isNull();
 	}
 }

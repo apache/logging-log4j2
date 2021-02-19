@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the MemoryMappedFileManager class.
@@ -57,7 +57,7 @@ public class MemoryMappedFileManagerTest {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine();
             for (int i = 0; i < 1000; i++) {
-                assertNotNull(line, "line");
+                assertThat(line).describedAs("line").isNotNull();
                 assertTrue(line.contains("Message " + i), "line incorrect");
                 line = reader.readLine();
             }
@@ -75,7 +75,7 @@ public class MemoryMappedFileManagerTest {
             fos.write(new byte[initialLength], 0, initialLength);
             fos.flush();
         }
-        assertEquals(initialLength, file.length(), "all flushed to disk");
+        assertThat(file.length()).describedAs("all flushed to disk").isEqualTo(initialLength);
 
         final boolean isAppend = true;
         final boolean immediateFlush = false;
@@ -84,6 +84,6 @@ public class MemoryMappedFileManagerTest {
             manager.writeBytes(new byte[initialLength], 0, initialLength);
         }
         final int expected = initialLength * 2;
-        assertEquals(expected, file.length(), "appended, not overwritten");
+        assertThat(file.length()).describedAs("appended, not overwritten").isEqualTo(expected);
     }
 }

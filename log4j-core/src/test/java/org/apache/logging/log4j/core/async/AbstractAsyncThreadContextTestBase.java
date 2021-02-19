@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -37,8 +39,6 @@ import org.apache.logging.log4j.util.Unbox;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public abstract class AbstractAsyncThreadContextTestBase {
 
@@ -184,10 +184,10 @@ public abstract class AbstractAsyncThreadContextTestBase {
                 } else {
                     expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2} " + contextDesc + " i=" + i;
                 }
-                assertEquals(file.getName() + ": line " + i, expect, line);
+                assertThat(line).describedAs(file.getName() + ": line " + i).isEqualTo(expect);
             }
             final String noMoreLines = reader.readLine();
-            assertNull("done", noMoreLines);
+            assertThat(noMoreLines).describedAs("done").isNull();
         } finally {
             file.delete();
         }

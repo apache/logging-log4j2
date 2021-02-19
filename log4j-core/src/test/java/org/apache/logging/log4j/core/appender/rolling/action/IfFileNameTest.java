@@ -17,18 +17,19 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class IfFileNameTest {
 
     @Test
     public void testCreateNameConditionFailsIfBothRegexAndPathAreNull() {
-        assertThrows(IllegalArgumentException.class, () -> IfFileName.createNameCondition(null, null));
+        assertThatThrownBy(() -> IfFileName.createNameCondition(null, null)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -40,41 +41,41 @@ public class IfFileNameTest {
 
     @Test
     public void testGetSyntaxAndPattern() {
-        assertEquals("glob:path", IfFileName.createNameCondition("path", null).getSyntaxAndPattern());
-        assertEquals("glob:path", IfFileName.createNameCondition("glob:path", null).getSyntaxAndPattern());
-        assertEquals("regex:bar", IfFileName.createNameCondition(null, "bar").getSyntaxAndPattern());
-        assertEquals("regex:bar", IfFileName.createNameCondition(null, "regex:bar").getSyntaxAndPattern());
+        assertThat(IfFileName.createNameCondition("path", null).getSyntaxAndPattern()).isEqualTo("glob:path");
+        assertThat(IfFileName.createNameCondition("glob:path", null).getSyntaxAndPattern()).isEqualTo("glob:path");
+        assertThat(IfFileName.createNameCondition(null, "bar").getSyntaxAndPattern()).isEqualTo("regex:bar");
+        assertThat(IfFileName.createNameCondition(null, "regex:bar").getSyntaxAndPattern()).isEqualTo("regex:bar");
     }
 
     @Test
     public void testAcceptUsesPathPatternIfExists() {
         final IfFileName filter = IfFileName.createNameCondition("path", "regex");
         final Path relativePath = Paths.get("path");
-        assertTrue(filter.accept(null, relativePath, null));
+        assertThat(filter.accept(null, relativePath, null)).isTrue();
         
         final Path pathMatchingRegex = Paths.get("regex");
-        assertFalse(filter.accept(null, pathMatchingRegex, null));
+        assertThat(filter.accept(null, pathMatchingRegex, null)).isFalse();
     }
 
     @Test
     public void testAcceptUsesRegexIfNoPathPatternExists() {
         final IfFileName regexFilter = IfFileName.createNameCondition(null, "regex");
         final Path pathMatchingRegex = Paths.get("regex");
-        assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
+        assertThat(regexFilter.accept(null, pathMatchingRegex, null)).isTrue();
         
         final Path noMatch = Paths.get("nomatch");
-        assertFalse(regexFilter.accept(null, noMatch, null));
+        assertThat(regexFilter.accept(null, noMatch, null)).isFalse();
     }
 
     @Test
     public void testAcceptIgnoresBasePathAndAttributes() {
         final IfFileName pathFilter = IfFileName.createNameCondition("path", null);
         final Path relativePath = Paths.get("path");
-        assertTrue(pathFilter.accept(null, relativePath, null));
+        assertThat(pathFilter.accept(null, relativePath, null)).isTrue();
         
         final IfFileName regexFilter = IfFileName.createNameCondition(null, "regex");
         final Path pathMatchingRegex = Paths.get("regex");
-        assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
+        assertThat(regexFilter.accept(null, pathMatchingRegex, null)).isTrue();
     }
 
     @Test
@@ -83,20 +84,20 @@ public class IfFileNameTest {
         final IfFileName regexFilter = IfFileName.createNameCondition(null, "regex", counter);
         final Path pathMatchingRegex = Paths.get("regex");
         
-        assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
-        assertEquals(1, counter.getAcceptCount());
-        assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
-        assertEquals(2, counter.getAcceptCount());
-        assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
-        assertEquals(3, counter.getAcceptCount());
+        assertThat(regexFilter.accept(null, pathMatchingRegex, null)).isTrue();
+        assertThat(counter.getAcceptCount()).isEqualTo(1);
+        assertThat(regexFilter.accept(null, pathMatchingRegex, null)).isTrue();
+        assertThat(counter.getAcceptCount()).isEqualTo(2);
+        assertThat(regexFilter.accept(null, pathMatchingRegex, null)).isTrue();
+        assertThat(counter.getAcceptCount()).isEqualTo(3);
         
         final Path noMatch = Paths.get("nomatch");
-        assertFalse(regexFilter.accept(null, noMatch, null));
-        assertEquals(3, counter.getAcceptCount()); // no increase
-        assertFalse(regexFilter.accept(null, noMatch, null));
-        assertEquals(3, counter.getAcceptCount());
-        assertFalse(regexFilter.accept(null, noMatch, null));
-        assertEquals(3, counter.getAcceptCount());
+        assertThat(regexFilter.accept(null, noMatch, null)).isFalse();
+        assertThat(counter.getAcceptCount()).isEqualTo(3); // no increase
+        assertThat(regexFilter.accept(null, noMatch, null)).isFalse();
+        assertThat(counter.getAcceptCount()).isEqualTo(3);
+        assertThat(regexFilter.accept(null, noMatch, null)).isFalse();
+        assertThat(counter.getAcceptCount()).isEqualTo(3);
     }
 
     @Test
@@ -105,20 +106,20 @@ public class IfFileNameTest {
         final IfFileName globFilter = IfFileName.createNameCondition("glob", null, counter);
         final Path pathMatchingGlob = Paths.get("glob");
         
-        assertTrue(globFilter.accept(null, pathMatchingGlob, null));
-        assertEquals(1, counter.getAcceptCount());
-        assertTrue(globFilter.accept(null, pathMatchingGlob, null));
-        assertEquals(2, counter.getAcceptCount());
-        assertTrue(globFilter.accept(null, pathMatchingGlob, null));
-        assertEquals(3, counter.getAcceptCount());
+        assertThat(globFilter.accept(null, pathMatchingGlob, null)).isTrue();
+        assertThat(counter.getAcceptCount()).isEqualTo(1);
+        assertThat(globFilter.accept(null, pathMatchingGlob, null)).isTrue();
+        assertThat(counter.getAcceptCount()).isEqualTo(2);
+        assertThat(globFilter.accept(null, pathMatchingGlob, null)).isTrue();
+        assertThat(counter.getAcceptCount()).isEqualTo(3);
 
         final Path noMatch = Paths.get("nomatch");
-        assertFalse(globFilter.accept(null, noMatch, null));
-        assertEquals(3, counter.getAcceptCount()); // no increase
-        assertFalse(globFilter.accept(null, noMatch, null));
-        assertEquals(3, counter.getAcceptCount());
-        assertFalse(globFilter.accept(null, noMatch, null));
-        assertEquals(3, counter.getAcceptCount());
+        assertThat(globFilter.accept(null, noMatch, null)).isFalse();
+        assertThat(counter.getAcceptCount()).isEqualTo(3); // no increase
+        assertThat(globFilter.accept(null, noMatch, null)).isFalse();
+        assertThat(counter.getAcceptCount()).isEqualTo(3);
+        assertThat(globFilter.accept(null, noMatch, null)).isFalse();
+        assertThat(counter.getAcceptCount()).isEqualTo(3);
     }
 
     @Test
@@ -126,6 +127,6 @@ public class IfFileNameTest {
         final CountingCondition counter = new CountingCondition(true);
         final IfFileName pathFilter = IfFileName.createNameCondition("path", null, counter, counter, counter);
         pathFilter.beforeFileTreeWalk();
-        assertEquals(3, counter.getBeforeFileTreeWalkCount());
+        assertThat(counter.getBeforeFileTreeWalkCount()).isEqualTo(3);
     }
 }

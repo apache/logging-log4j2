@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.io.Closeable;
+import java.io.IOException;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import java.io.Closeable;
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
 public class LogManagerTest {
@@ -53,29 +53,29 @@ public class LogManagerTest {
     @Test
     public void testGetLogger() {
         Logger logger = LogManager.getLogger();
-        assertNotNull(logger, "No Logger returned");
-        assertEquals(LogManagerTest.class.getName(), logger.getName(), "Incorrect Logger name: " + logger.getName());
+        assertThat(logger).describedAs("No Logger returned").isNotNull();
+        assertThat(logger.getName()).describedAs("Incorrect Logger name: " + logger.getName()).isEqualTo(LogManagerTest.class.getName());
         logger = LogManager.getLogger(ParameterizedMessageFactory.INSTANCE);
-        assertNotNull(logger, "No Logger returned");
-        assertEquals(LogManagerTest.class.getName(), logger.getName(), "Incorrect Logger name: " + logger.getName());
+        assertThat(logger).describedAs("No Logger returned").isNotNull();
+        assertThat(logger.getName()).describedAs("Incorrect Logger name: " + logger.getName()).isEqualTo(LogManagerTest.class.getName());
         logger = LogManager.getLogger((Class<?>) null);
-        assertNotNull(logger, "No Logger returned");
-        assertEquals(LogManagerTest.class.getName(), logger.getName(), "Incorrect Logger name: " + logger.getName());
+        assertThat(logger).describedAs("No Logger returned").isNotNull();
+        assertThat(logger.getName()).describedAs("Incorrect Logger name: " + logger.getName()).isEqualTo(LogManagerTest.class.getName());
         logger = LogManager.getLogger((Class<?>) null, ParameterizedMessageFactory.INSTANCE);
-        assertNotNull(logger, "No Logger returned");
-        assertEquals(LogManagerTest.class.getName(), logger.getName(), "Incorrect Logger name: " + logger.getName());
+        assertThat(logger).describedAs("No Logger returned").isNotNull();
+        assertThat(logger.getName()).describedAs("Incorrect Logger name: " + logger.getName()).isEqualTo(LogManagerTest.class.getName());
         logger = LogManager.getLogger((String) null);
-        assertNotNull(logger, "No Logger returned");
-        assertEquals(LogManagerTest.class.getName(), logger.getName(), "Incorrect Logger name: " + logger.getName());
+        assertThat(logger).describedAs("No Logger returned").isNotNull();
+        assertThat(logger.getName()).describedAs("Incorrect Logger name: " + logger.getName()).isEqualTo(LogManagerTest.class.getName());
         logger = LogManager.getLogger((String) null, ParameterizedMessageFactory.INSTANCE);
-        assertNotNull(logger, "No Logger returned");
-        assertEquals(LogManagerTest.class.getName(), logger.getName(), "Incorrect Logger name: " + logger.getName());
+        assertThat(logger).describedAs("No Logger returned").isNotNull();
+        assertThat(logger.getName()).describedAs("Incorrect Logger name: " + logger.getName()).isEqualTo(LogManagerTest.class.getName());
         logger = LogManager.getLogger((Object) null);
-        assertNotNull(logger, "No Logger returned");
-        assertEquals(LogManagerTest.class.getName(), logger.getName(), "Incorrect Logger name: " + logger.getName());
+        assertThat(logger).describedAs("No Logger returned").isNotNull();
+        assertThat(logger.getName()).describedAs("Incorrect Logger name: " + logger.getName()).isEqualTo(LogManagerTest.class.getName());
         logger = LogManager.getLogger((Object) null, ParameterizedMessageFactory.INSTANCE);
-        assertNotNull(logger, "No Logger returned");
-        assertEquals(LogManagerTest.class.getName(), logger.getName(), "Incorrect Logger name: " + logger.getName());
+        assertThat(logger).describedAs("No Logger returned").isNotNull();
+        assertThat(logger.getName()).describedAs("Incorrect Logger name: " + logger.getName()).isEqualTo(LogManagerTest.class.getName());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class LogManagerTest {
             
             @Override
             public void close() throws IOException {
-                assertEquals("org.apache.logging.log4j.LogManagerTest$1", LOGGER.getName());
+                assertThat(LOGGER.getName()).isEqualTo("org.apache.logging.log4j.LogManagerTest$1");
             }
         };
         closeable.close();
@@ -100,7 +100,7 @@ public class LogManagerTest {
             
             @Override
             public void close() throws IOException {
-                assertEquals("org.apache.logging.log4j.LogManagerTest$2", LOGGER.getName());
+                assertThat(LOGGER.getName()).isEqualTo("org.apache.logging.log4j.LogManagerTest$2");
             }
         };
         closeable.close();
@@ -108,22 +108,22 @@ public class LogManagerTest {
 
     @Test
     public void testGetLoggerForInner() {
-        assertEquals("org.apache.logging.log4j.LogManagerTest.Inner", new Inner().LOGGER.getName());
+        assertThat(new Inner().LOGGER.getName()).isEqualTo("org.apache.logging.log4j.LogManagerTest.Inner");
     }
 
     @Test
     public void testGetLoggerForInnerByClass() {
-        assertEquals("org.apache.logging.log4j.LogManagerTest.InnerByClass", new InnerByClass().LOGGER.getName());
+        assertThat(new InnerByClass().LOGGER.getName()).isEqualTo("org.apache.logging.log4j.LogManagerTest.InnerByClass");
     }
 
     @Test
     public void testGetLoggerForStaticInner() {
-        assertEquals("org.apache.logging.log4j.LogManagerTest.StaticInner", StaticInner.LOGGER.getName());
+        assertThat(StaticInner.LOGGER.getName()).isEqualTo("org.apache.logging.log4j.LogManagerTest.StaticInner");
     }
 
     @Test
     public void testGetLoggerForStaticInnerByClass() {
-        assertEquals("org.apache.logging.log4j.LogManagerTest.StaticInnerByClass", StaticInnerByClass.LOGGER.getName());
+        assertThat(StaticInnerByClass.LOGGER.getName()).isEqualTo("org.apache.logging.log4j.LogManagerTest.StaticInnerByClass");
     }
 
     @Test

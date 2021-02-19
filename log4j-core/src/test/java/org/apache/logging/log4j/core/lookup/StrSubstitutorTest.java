@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class StrSubstitutorTest {
 
@@ -51,16 +51,16 @@ public class StrSubstitutorTest {
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         ThreadContext.put(TESTKEY, TESTVAL);
         String value = subst.replace("${TestKey}-${ctx:TestKey}-${sys:TestKey}");
-        assertEquals("TestValue-TestValue-TestValue", value);
+        assertThat(value).isEqualTo("TestValue-TestValue-TestValue");
         value = subst.replace("${BadKey}");
-        assertEquals("${BadKey}", value);
+        assertThat(value).isEqualTo("${BadKey}");
 
         value = subst.replace("${BadKey:-Unknown}-${ctx:BadKey:-Unknown}-${sys:BadKey:-Unknown}");
-        assertEquals("Unknown-Unknown-Unknown", value);
+        assertThat(value).isEqualTo("Unknown-Unknown-Unknown");
         value = subst.replace("${BadKey:-Unknown}-${ctx:BadKey}-${sys:BadKey:-Unknown}");
-        assertEquals("Unknown-${ctx:BadKey}-Unknown", value);
+        assertThat(value).isEqualTo("Unknown-${ctx:BadKey}-Unknown");
         value = subst.replace("${BadKey:-Unknown}-${ctx:BadKey:-}-${sys:BadKey:-Unknown}");
-        assertEquals("Unknown--Unknown", value);
+        assertThat(value).isEqualTo("Unknown--Unknown");
     }
 
     @Test
@@ -72,6 +72,6 @@ public class StrSubstitutorTest {
         ThreadContext.put(TESTKEY, TESTVAL);
         //String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
         final String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
-        assertEquals("TestValue", value);
+        assertThat(value).isEqualTo("TestValue");
     }
 }

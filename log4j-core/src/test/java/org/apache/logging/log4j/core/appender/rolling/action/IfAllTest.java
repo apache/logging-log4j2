@@ -17,9 +17,10 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the And composite condition.
@@ -30,15 +31,15 @@ public class IfAllTest {
     public void testAccept() {
         final PathCondition TRUE = new FixedCondition(true);
         final PathCondition FALSE = new FixedCondition(false);
-        assertTrue(IfAll.createAndCondition(TRUE, TRUE).accept(null, null, null));
-        assertFalse(IfAll.createAndCondition(FALSE, TRUE).accept(null, null, null));
-        assertFalse(IfAll.createAndCondition(TRUE, FALSE).accept(null, null, null));
-        assertFalse(IfAll.createAndCondition(FALSE, FALSE).accept(null, null, null));
+        assertThat(IfAll.createAndCondition(TRUE, TRUE).accept(null, null, null)).isTrue();
+        assertThat(IfAll.createAndCondition(FALSE, TRUE).accept(null, null, null)).isFalse();
+        assertThat(IfAll.createAndCondition(TRUE, FALSE).accept(null, null, null)).isFalse();
+        assertThat(IfAll.createAndCondition(FALSE, FALSE).accept(null, null, null)).isFalse();
     }
     
     @Test
     public void testEmptyIsFalse() {
-        assertFalse(IfAll.createAndCondition().accept(null, null, null));
+        assertThat(IfAll.createAndCondition().accept(null, null, null)).isFalse();
     }
     
     @Test
@@ -46,7 +47,7 @@ public class IfAllTest {
         final CountingCondition counter = new CountingCondition(true);
         final IfAll and = IfAll.createAndCondition(counter, counter, counter);
         and.beforeFileTreeWalk();
-        assertEquals(3, counter.getBeforeFileTreeWalkCount());
+        assertThat(counter.getBeforeFileTreeWalkCount()).isEqualTo(3);
     }
 
 }

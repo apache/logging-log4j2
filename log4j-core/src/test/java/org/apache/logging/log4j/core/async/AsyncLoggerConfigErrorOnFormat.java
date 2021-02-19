@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -28,15 +36,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerConfigErrorOnFormat {
@@ -58,7 +57,7 @@ public class AsyncLoggerConfigErrorOnFormat {
     @Test
     public void testError() throws Exception {
         final File file = new File("target", "AsyncLoggerConfigErrorOnFormat.log");
-        assertTrue("Deleted old file before test", !file.exists() || file.delete());
+        assertThat(!file.exists() || file.delete()).describedAs("Deleted old file before test").isTrue();
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         log.info(new ThrowsErrorOnFormatMessage());
@@ -71,8 +70,8 @@ public class AsyncLoggerConfigErrorOnFormat {
         reader.close();
         file.delete();
 
-        assertThat(line1, containsString("Second message"));
-        assertNull("Expected only one line", line2);
+        assertThat(line1).contains("Second message");
+        assertThat(line2).describedAs("Expected only one line").isNull();
     }
 
     @AsynchronouslyFormattable // Shouldn't call getFormattedMessage early

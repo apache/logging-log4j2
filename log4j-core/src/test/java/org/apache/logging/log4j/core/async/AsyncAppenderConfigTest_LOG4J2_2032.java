@@ -16,8 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -26,10 +30,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 
 @Category(AsyncLoggers.class)
 public class AsyncAppenderConfigTest_LOG4J2_2032 {
@@ -44,7 +44,7 @@ public class AsyncAppenderConfigTest_LOG4J2_2032 {
     @Test
     public void doNotProcessPlaceholdersTwice() throws Exception {
         final File file = new File("target", "AsyncAppenderConfigTest-LOG4J2-2032.log");
-        assertTrue("Deleted old file before test", !file.exists() || file.delete());
+        assertThat(!file.exists() || file.delete()).describedAs("Deleted old file before test").isTrue();
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         log.info("Text containing curly braces: {}", "Curly{}");
@@ -54,7 +54,7 @@ public class AsyncAppenderConfigTest_LOG4J2_2032 {
         try {
             final String line1 = reader.readLine();
             System.out.println(line1);
-            assertTrue("line1 correct", line1.contains(" Text containing curly braces: Curly{} "));
+            assertThat(line1.contains(" Text containing curly braces: Curly{} ")).describedAs("line1 correct").isTrue();
         } finally {
             reader.close();
             file.delete();

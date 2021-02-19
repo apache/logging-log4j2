@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.junit.jupiter.api.Test;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 public class CaseLookupTest {
 
@@ -30,11 +31,11 @@ public class CaseLookupTest {
         final String upper = "JABBERWOCKY";
         StrLookup lookup = new LowerLookup();
         String value = lookup.lookup(null, testStr);
-        assertNotNull(value);
-        assertEquals(lower, value);
+        assertThat(value).isNotNull();
+        assertThat(value).isEqualTo(lower);
         lookup = new UpperLookup();
         value = lookup.lookup(null, testStr);
-        assertNotNull(value);
-        assertEquals(upper, value);
+        assertThat(value).isNotNull();
+        assertThat(value).isEqualTo(upper);
     }
 }

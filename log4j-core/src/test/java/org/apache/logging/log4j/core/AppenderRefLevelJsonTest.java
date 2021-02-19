@@ -16,16 +16,17 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.hasSize;
+
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.hasSize;
 
 @Tag("json")
 @LoggerContextSource("log4j-reference-level.json")
@@ -55,8 +56,8 @@ public class AppenderRefLevelJsonTest {
         logger1.info("Info Message");
         logger1.warn("warn Message");
         logger1.traceExit();
-        assertThat(app1.getEvents(), hasSize(6));
-        assertThat(app2.getEvents(), hasSize(1));
+        assertThat(app1.getEvents()).hasSize(6);
+        assertThat(app2.getEvents()).hasSize(1);
     }
 
     @Test
@@ -67,8 +68,8 @@ public class AppenderRefLevelJsonTest {
         logger2.info("Info Message");
         logger2.warn("warn Message");
         logger2.traceExit();
-        assertThat(app1.getEvents(), hasSize(2));
-        assertThat(app2.getEvents(), hasSize(4));
+        assertThat(app1.getEvents()).hasSize(2);
+        assertThat(app2.getEvents()).hasSize(4);
     }
 
     @Test
@@ -79,7 +80,7 @@ public class AppenderRefLevelJsonTest {
         logger3.info(testMarker, "Info Message");
         logger3.warn("warn Message");
         logger3.traceExit();
-        assertThat(app1.getEvents(), hasSize(4));
+        assertThat(app1.getEvents()).hasSize(4);
     }
 }
 
