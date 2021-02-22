@@ -102,11 +102,15 @@ public class StatusConsoleListener implements StatusListener {
         }
         return false;
     }
+    
+    public boolean writesToSystemStream() {
+    	return this.stream == System.out || this.stream == System.err;
+    }
 
     @Override
     public void close() throws IOException {
         // only want to close non-system streams
-        if (this.stream != System.out && this.stream != System.err) {
+        if (!writesToSystemStream()) {
             this.stream.close();
         }
     }

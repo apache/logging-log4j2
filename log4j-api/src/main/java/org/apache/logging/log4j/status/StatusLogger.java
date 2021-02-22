@@ -205,6 +205,32 @@ public final class StatusLogger extends AbstractLogger {
             clear();
         }
     }
+    
+    /**
+     * Stop all the listeners except those writing to standard out or error. If
+     * no loggers write to standard out or error, then add one and stop the 
+     * others.
+     */
+    public void prepareToStop() {
+        final Collection<StatusListener> listenersToClose = new ArrayList<>(listeners.size());
+        boolean hasSystemStreamWriter = false;
+        for (final StatusListener listener : listeners) {
+        	if (listener instanceof StatusConsoleListener) {
+        		if (((StatusConsoleListener) listener).writesToSystemStream()) {
+        			hasSystemStreamWriter = true;
+        		} else {
+        			listenersToClose.add(listener);
+        			
+        		}
+        	}
+        }
+        if (!hasSystemStreamWriter) {
+        	registerListener(new StatusConsoleListener(getLevel()));
+        }
+        for (final StatusListener listener : listenersToClose) {
+        	removeListener(listener);
+        }
+    }
 
     private static void closeSilently(final Closeable resource) {
         try {
