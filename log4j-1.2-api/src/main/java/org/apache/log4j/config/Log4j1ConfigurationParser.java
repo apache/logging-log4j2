@@ -102,7 +102,7 @@ public class Log4j1ConfigurationParser {
             builder.setConfigurationName("Log4j1");
             // DEBUG
             final String debugValue = getLog4jValue("debug");
-            if (Boolean.valueOf(debugValue)) {
+            if (Boolean.parseBoolean(debugValue)) {
                 builder.setStatusLevel(Level.DEBUG);
             }
             // Root
