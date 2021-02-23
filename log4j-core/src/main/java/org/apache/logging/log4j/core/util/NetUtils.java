@@ -72,8 +72,7 @@ public final class NetUtils {
                     }
                 }
             } catch (final SocketException se) {
-                LOGGER.error("Could not determine local host name", uhe);
-                return UNKNOWN_LOCALHOST;
+                // ignore and log below.
             }
             LOGGER.error("Could not determine local host name", uhe);
             return UNKNOWN_LOCALHOST;

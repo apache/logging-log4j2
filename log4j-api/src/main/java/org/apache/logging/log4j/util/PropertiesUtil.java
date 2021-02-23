@@ -226,7 +226,6 @@ public final class PropertiesUtil {
             try {
                 return Double.parseDouble(prop);
             } catch (final Exception ignored) {
-                return defaultValue;
             }
         }
         return defaultValue;
@@ -246,7 +245,7 @@ public final class PropertiesUtil {
             try {
                 return Integer.parseInt(prop);
             } catch (final Exception ignored) {
-                return defaultValue;
+                // ignore
             }
         }
         return defaultValue;
@@ -283,7 +282,6 @@ public final class PropertiesUtil {
             try {
                 return Long.parseLong(prop);
             } catch (final Exception ignored) {
-                return defaultValue;
             }
         }
         return defaultValue;

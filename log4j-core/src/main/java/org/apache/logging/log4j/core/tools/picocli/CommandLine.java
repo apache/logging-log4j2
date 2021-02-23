@@ -2542,9 +2542,7 @@ public class CommandLine {
         @SuppressWarnings("unchecked")
         private Collection<Object> createCollection(final Class<?> collectionClass) throws Exception {
             if (collectionClass.isInterface()) {
-                if (List.class.isAssignableFrom(collectionClass)) {
-                    return new ArrayList<>();
-                } else if (SortedSet.class.isAssignableFrom(collectionClass)) {
+                if (SortedSet.class.isAssignableFrom(collectionClass)) {
                     return new TreeSet<>();
                 } else if (Set.class.isAssignableFrom(collectionClass)) {
                     return new LinkedHashSet<>();
