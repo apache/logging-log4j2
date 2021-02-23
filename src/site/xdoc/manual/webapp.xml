@@ -72,9 +72,18 @@
         <p>
           A Servlet 3.0 or newer web application is any <code>&lt;web-app&gt;</code> whose <code>version</code>
           attribute has a value of "3.0" or higher. Of course, the application must also be running in a compatible
-          web container. Some examples are: Tomcat 7.0 and higher, GlassFish 3.0 and higher, JBoss 7.0 and higher,
-          Oracle WebLogic 12c and higher, and IBM WebSphere 8.0 and higher.
+          web container.
         </p>
+        <p>
+          Some examples are:
+        </p>
+        <ul>
+          <li>Tomcat 7.0 and higher</li>
+          <li>GlassFish 3.0 and higher</li>
+          <li>JBoss 7.0 and higher</li>
+          <li>Oracle WebLogic 12c and higher</li>
+          <li>IBM WebSphere 8.0 and higher</li>
+        </ul>
         <h4>The Short Story</h4>
         <p>
           Log4j 2 "just works" in Servlet 3.0 and newer web applications. It is capable of automatically starting when
@@ -440,9 +449,9 @@ public class TestAsyncServlet extends HttpServlet {
 
 </Configuration>]]></pre>
         <p>
-          To avoid double logging of exceptions to the servlet context, you must use <code>%ex{none}</code> in your 
-          <code>PatternLayout</code> as shown in the example. The exception will be omitted from the message text but 
-          it is passed to the servlet context as the actual Throwable object. 
+          To avoid double logging of exceptions to the servlet context, you must use <code>%ex{none}</code> in your
+          <code>PatternLayout</code> as shown in the example. The exception will be omitted from the message text but
+          it is passed to the servlet context as the actual Throwable object.
         </p>
       </subsection>
     </section>
