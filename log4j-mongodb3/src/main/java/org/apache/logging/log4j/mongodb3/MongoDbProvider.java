@@ -149,13 +149,14 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                                     + "required.", factoryClassName, factoryMethodName);
                             return null;
                         }
-                    } else if (object == null) {
-                        LOGGER.error("The factory method [{}.{}()] returned null.", factoryClassName,
-                                factoryMethodName);
-                        return null;
                     } else {
-                        LOGGER.error("The factory method [{}.{}()] returned an unsupported type [{}].",
-                                factoryClassName, factoryMethodName, object.getClass().getName());
+                        if (object == null) {
+                            LOGGER.error("The factory method [{}.{}()] returned null.", factoryClassName,
+                                    factoryMethodName);
+                        } else {
+                            LOGGER.error("The factory method [{}.{}()] returned an unsupported type [{}].",
+                                    factoryClassName, factoryMethodName, object.getClass().getName());
+                        }
                         return null;
                     }
 

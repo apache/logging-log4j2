@@ -109,12 +109,13 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
                             + ", passwordHash=" + NameUtil.md5(password + CouchDbProvider.class.getName())
                             + ", maxConnections=" + properties.getMaxConnections() + ", connectionTimeout="
                             + properties.getConnectionTimeout() + ", socketTimeout=" + properties.getSocketTimeout();
-                } else if (object == null) {
-                    LOGGER.error("The factory method [{}.{}()] returned null.", factoryClassName, factoryMethodName);
-                    return null;
                 } else {
-                    LOGGER.error("The factory method [{}.{}()] returned an unsupported type [{}].", factoryClassName,
-                            factoryMethodName, object.getClass().getName());
+                    if (object == null) {
+                        LOGGER.error("The factory method [{}.{}()] returned null.", factoryClassName, factoryMethodName);
+                    } else {
+                        LOGGER.error("The factory method [{}.{}()] returned an unsupported type [{}].", factoryClassName,
+                                factoryMethodName, object.getClass().getName());
+                    }
                     return null;
                 }
             } catch (final ClassNotFoundException e) {
