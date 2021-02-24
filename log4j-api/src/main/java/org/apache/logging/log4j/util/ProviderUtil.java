@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.ServiceLoader;

@@ -24,7 +24,6 @@ import java.security.Permission;
 import java.util.PropertyPermission;
 
 import org.apache.logging.log4j.junit.SecurityManagerTestRule;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;

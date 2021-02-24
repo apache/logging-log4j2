@@ -47,7 +47,9 @@ public class CloseableThreadContext {
      * @return a new instance that will back out the changes when closed.
      */
     public static CloseableThreadContext.Instance push(final String message) {
-        return new CloseableThreadContext.Instance().push(message);
+        final CloseableThreadContext.Instance ctxt = new CloseableThreadContext.Instance();
+        ctxt.push(message);
+        return ctxt;
     }
 
     /**
@@ -59,7 +61,9 @@ public class CloseableThreadContext {
      * @return a new instance that will back out the changes when closed.
      */
     public static CloseableThreadContext.Instance push(final String message, final Object... args) {
-        return new CloseableThreadContext.Instance().push(message, args);
+        final CloseableThreadContext.Instance ctxt = new CloseableThreadContext.Instance();
+        ctxt.push(message, args);
+        return ctxt;
     }
 
     /**
@@ -72,7 +76,9 @@ public class CloseableThreadContext {
      * @return a new instance that will back out the changes when closed.
      */
     public static CloseableThreadContext.Instance put(final String key, final String value) {
-        return new CloseableThreadContext.Instance().put(key, value);
+        final CloseableThreadContext.Instance ctxt = new CloseableThreadContext.Instance();
+        ctxt.put(key, value);
+        return ctxt;
     }
 
     /**
@@ -84,7 +90,9 @@ public class CloseableThreadContext {
      * @since 2.8
      */
     public static CloseableThreadContext.Instance pushAll(final List<String> messages) {
-        return new CloseableThreadContext.Instance().pushAll(messages);
+        final CloseableThreadContext.Instance ctxt = new CloseableThreadContext.Instance();
+        ctxt.pushAll(messages);
+        return ctxt;
     }
 
     /**
@@ -97,7 +105,9 @@ public class CloseableThreadContext {
      * @since 2.8
      */
     public static CloseableThreadContext.Instance putAll(final Map<String, String> values) {
-        return new CloseableThreadContext.Instance().putAll(values);
+        final CloseableThreadContext.Instance ctxt = new CloseableThreadContext.Instance();
+        ctxt.putAll(values);
+        return ctxt;
     }
 
     public static class Instance implements AutoCloseable {

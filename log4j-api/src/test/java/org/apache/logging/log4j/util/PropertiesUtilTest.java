@@ -113,8 +113,6 @@ public class PropertiesUtilTest {
     @Test
     @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     public void testPublish() {
-        final Properties props = new Properties();
-        final PropertiesUtil util = new PropertiesUtil(props);
         String value = System.getProperty("Application");
         assertNotNull(value, "System property was not published");
         assertEquals("Log4j", value);

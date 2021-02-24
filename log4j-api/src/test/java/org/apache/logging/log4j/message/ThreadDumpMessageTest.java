@@ -142,7 +142,6 @@ public class ThreadDumpMessageTest {
     private static class ThreadWithCountDownLatch extends Thread {
         private final CountDownLatch started;
         private final CountDownLatch keepAlive;
-        volatile boolean finished;
 
         public ThreadWithCountDownLatch(final CountDownLatch started, final CountDownLatch keepAlive) {
             super("ThreadWithCountDownLatch");
@@ -159,7 +158,6 @@ public class ThreadDumpMessageTest {
             } catch (final InterruptedException e) {
                 // ignored
             }
-            finished = true;
         }
     }
 }

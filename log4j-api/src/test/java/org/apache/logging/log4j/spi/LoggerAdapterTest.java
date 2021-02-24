@@ -19,7 +19,6 @@ package org.apache.logging.log4j.spi;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.TestLogger;
 import org.apache.logging.log4j.TestLoggerContext;
-import org.apache.logging.log4j.TestLoggerContextFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.junit.jupiter.api.Test;
 
@@ -131,18 +130,18 @@ public class LoggerAdapterTest {
 
     @Test
     public void testCleanup() throws Exception {
-        final LoggerContextFactory factory = new TestLoggerContextFactory();
-        final TestLoggerAdapter2 adapter = new TestLoggerAdapter2();
-        for (int i = 0; i < 5; ++i) {
-            LoggerContext lc = adapter.getContext(Integer.toString(i));
-            lc.getLogger(Integer.toString(i));
+        try (final TestLoggerAdapter2 adapter = new TestLoggerAdapter2();) {
+        	for (int i = 0; i < 5; ++i) {
+        		LoggerContext lc = adapter.getContext(Integer.toString(i));
+        		lc.getLogger(Integer.toString(i));
+        	}
+        	assertEquals(5, adapter.registry.size(), "Expected 5 LoggerContexts");
+        	Set<LoggerContext> contexts = new HashSet<>(adapter.registry.keySet());
+        	for (LoggerContext context : contexts) {
+        		((TestLoggerContext2) context).shutdown();
+        	}
+        	assertEquals(0, adapter.registry.size(), "Expected 0 LoggerContexts");
         }
-        assertEquals(5, adapter.registry.size(), "Expected 5 LoggerContexts");
-        Set<LoggerContext> contexts = new HashSet<>(adapter.registry.keySet());
-        for (LoggerContext context : contexts) {
-            ((TestLoggerContext2) context).shutdown();
-        }
-        assertEquals(0, adapter.registry.size(), "Expected 0 LoggerContexts");
     }
 
 

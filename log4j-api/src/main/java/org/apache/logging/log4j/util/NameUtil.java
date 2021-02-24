@@ -18,8 +18,6 @@ package org.apache.logging.log4j.util;
 
 import java.security.MessageDigest;
 
-import org.apache.logging.log4j.util.Strings;
-
 /**
  *
  */

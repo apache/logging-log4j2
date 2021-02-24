@@ -32,8 +32,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TraceLoggingTest extends AbstractLogger {
     static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");
-    private int charSeqCount;
-    private int objectCount;
 
     private static class LogEvent {
 
@@ -53,21 +51,6 @@ public class TraceLoggingTest extends AbstractLogger {
     private static Level currentLevel;
 
     private LogEvent currentEvent;
-
-    private static Throwable t = new UnsupportedOperationException("Test");
-
-    private static Class<AbstractLogger> obj = AbstractLogger.class;
-    private static String pattern = "{}, {}";
-    private static String p1 = "Long Beach";
-
-    private static String p2 = "California";
-    private static Message charSeq = new SimpleMessage(CHAR_SEQ);
-    private static Message simple = new SimpleMessage("Hello");
-    private static Message object = new ObjectMessage(obj);
-
-    private static Message param = new ParameterizedMessage(pattern, p1, p2);
-
-    private static String marker = "TEST";
 
     @Override
     public Level getLevel() {
@@ -122,13 +105,11 @@ public class TraceLoggingTest extends AbstractLogger {
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final CharSequence data, final Throwable t) {
-        charSeqCount++;
         return isEnabled(level, marker, (Message) new SimpleMessage(data), t);
     }
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
-        objectCount++;
         return isEnabled(level, marker, new ObjectMessage(data), t);
     }
 

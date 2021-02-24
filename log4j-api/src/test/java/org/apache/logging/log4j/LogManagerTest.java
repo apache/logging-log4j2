@@ -17,7 +17,6 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
-import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -128,6 +127,6 @@ public class LogManagerTest {
 
     @Test
     public void testShutdown() {
-        final LoggerContext loggerContext = LogManager.getContext(false);
+        LogManager.getContext(false);
     }
 }
