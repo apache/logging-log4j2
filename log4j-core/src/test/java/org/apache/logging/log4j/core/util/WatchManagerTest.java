@@ -33,6 +33,7 @@ import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.condition.OS;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -72,7 +73,7 @@ public class WatchManagerTest {
             assertNotNull(f, "File change not detected");
         } finally {
             watchManager.stop();
-            scheduler.stop();
+            assertTrue(watchManager.getScheduler().isStopped());
         }
     }
 
@@ -105,7 +106,7 @@ public class WatchManagerTest {
             assertNull(f, "File change detected");
         } finally {
             watchManager.stop();
-            scheduler.stop();
+            assertTrue(watchManager.getScheduler().isStopped());
         }
     }
 
@@ -138,7 +139,7 @@ public class WatchManagerTest {
             assertNull(f, "File change detected");
         } finally {
             watchManager.stop();
-            scheduler.stop();
+            assertTrue(watchManager.getScheduler().isStopped());
         }
     }
 

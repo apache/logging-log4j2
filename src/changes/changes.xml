@@ -38,13 +38,13 @@
         Directly create a thread instead of using the common ForkJoin pool when initializing ThreadContextDataInjector"
       </action>
       <action issue="LOG4J2-2624" dev="mattsicker" type="fix" due-to="Tim Perry">
-        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a 
+        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a
         ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j.
         Register the listener at the top of web.xml to ensure the shutdown happens last.
       </action>
       <action issue="LOG4J2-1606" dev="mattsicker" type="fix" due-to="Tim Perry">
-        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a 
-        ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j. 
+        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a
+        ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j.
         Register the listener at the top of web.xml to ensure the shutdown happens last.
       </action>
       <action issue="LOG4J2-2998" dev="vy" type="fix">
@@ -82,6 +82,9 @@
       </action>
       <action issue="LOG4J2-3014" dev="ggregory" type="fix" due-to="Lee Breisacher, Gary Gregory">
         Log4j1ConfigurationConverter on Windows produces "&#xd;" at end of every line.
+      </action>
+      <action issue="LOG4J2-3026" dev="ggregory" type="fix" due-to="Gary Gregory">
+        WatchManager does not stop its ConfigurationScheduler thereby leaking a thread.
       </action>
       <!-- ADDS -->
       <action issue="LOG4J2-2962" dev="vy" type="add">
@@ -189,7 +192,7 @@
       </action>
       <action dev="ggregory" type="update">
         Update Woodstox 5.0.3 -> 6.2.3 to match Jackson 2.12.1.
-      </action>  
+      </action>
       <action dev="ggregory" type="update">
         Update org.apache.activemq:* 5.16.0 -> 5.16.1.
       </action>
