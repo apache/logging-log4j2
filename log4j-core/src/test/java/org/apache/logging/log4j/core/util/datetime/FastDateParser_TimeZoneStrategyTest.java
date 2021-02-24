@@ -31,6 +31,15 @@ import org.junit.Test;
 public class FastDateParser_TimeZoneStrategyTest {
 
     @Test
+    public void testLang1219() throws ParseException {
+        final FastDateParser parser = new FastDateParser("dd.MM.yyyy HH:mm:ss z", TimeZone.getDefault(), Locale.GERMAN);
+
+        final Date summer = parser.parse("26.10.2014 02:00:00 MESZ");
+        final Date standard = parser.parse("26.10.2014 02:00:00 MEZ");
+        Assert.assertNotEquals(summer.getTime(), standard.getTime());
+    }
+
+    @Test
     public void testTimeZoneStrategyPattern() {
         for(final Locale locale : Locale.getAvailableLocales()) {
             final FastDateParser parser = new FastDateParser("z", TimeZone.getDefault(), locale);
@@ -56,14 +65,5 @@ public class FastDateParser_TimeZoneStrategyTest {
                 }
             }
         }
-    }
-
-    @Test
-    public void testLang1219() throws ParseException {
-        final FastDateParser parser = new FastDateParser("dd.MM.yyyy HH:mm:ss z", TimeZone.getDefault(), Locale.GERMAN);
-
-        final Date summer = parser.parse("26.10.2014 02:00:00 MESZ");
-        final Date standard = parser.parse("26.10.2014 02:00:00 MEZ");
-        Assert.assertNotEquals(summer.getTime(), standard.getTime());
     }
 }

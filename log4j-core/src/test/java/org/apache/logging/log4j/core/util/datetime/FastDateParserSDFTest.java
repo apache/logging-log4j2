@@ -121,36 +121,6 @@ public class FastDateParserSDFTest {
         this.valid = valid;
     }
 
-    @Test
-    public void testOriginal() throws Exception {
-        checkParse(input);
-    }
-
-    @Test
-    public void testOriginalPP() throws Exception {
-        checkParsePosition(input);
-    }
-
-    @Test
-    public void testUpperCase() throws Exception {
-        checkParse(input.toUpperCase(locale));
-    }
-
-    @Test
-    public void testUpperCasePP() throws Exception {
-        checkParsePosition(input.toUpperCase(locale));
-    }
-
-    @Test
-    public void testLowerCase() throws Exception {
-        checkParse(input.toLowerCase(locale));
-    }
-
-    @Test
-    public void testLowerCasePP() throws Exception {
-        checkParsePosition(input.toLowerCase(locale));
-    }
-
     private void checkParse(final String formattedDate) {
         final SimpleDateFormat sdf = new SimpleDateFormat(format, locale);
         sdf.setTimeZone(timeZone);
@@ -191,6 +161,7 @@ public class FastDateParserSDFTest {
             assertEquals(locale.toString()+" "+formattedDate + " expected same Exception ", sdfE, fdfE);
         }
     }
+
     private void checkParsePosition(final String formattedDate) {
         final SimpleDateFormat sdf = new SimpleDateFormat(format, locale);
         sdf.setTimeZone(timeZone);
@@ -228,5 +199,34 @@ public class FastDateParserSDFTest {
             assertTrue("FDF error index ("+ fdferrorIndex + ") should approxiamate SDF index (" + sdferrorIndex + ")",
                     sdferrorIndex - fdferrorIndex <= 4);
         }
+    }
+
+    @Test
+    public void testLowerCase() throws Exception {
+        checkParse(input.toLowerCase(locale));
+    }
+
+    @Test
+    public void testLowerCasePP() throws Exception {
+        checkParsePosition(input.toLowerCase(locale));
+    }
+
+    @Test
+    public void testOriginal() throws Exception {
+        checkParse(input);
+    }
+
+    @Test
+    public void testOriginalPP() throws Exception {
+        checkParsePosition(input);
+    }
+
+    @Test
+    public void testUpperCase() throws Exception {
+        checkParse(input.toUpperCase(locale));
+    }
+    @Test
+    public void testUpperCasePP() throws Exception {
+        checkParsePosition(input.toUpperCase(locale));
     }
 }
