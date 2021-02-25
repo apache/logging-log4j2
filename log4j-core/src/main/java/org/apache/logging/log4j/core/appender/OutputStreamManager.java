@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
+import org.apache.logging.log4j.core.util.Constants;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -23,12 +29,6 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.layout.ByteBufferDestination;
-import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
-import org.apache.logging.log4j.core.util.Constants;
 
 /**
  * Manages an OutputStream so that it can be shared by multiple Appenders and will
@@ -278,10 +278,13 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      */
     protected synchronized void flushBuffer(final ByteBuffer buf) {
         ((Buffer) buf).flip();
-        if (buf.remaining() > 0) {
-            writeToDestination(buf.array(), buf.arrayOffset() + buf.position(), buf.remaining());
+        try {
+            if (buf.remaining() > 0) {
+                writeToDestination(buf.array(), buf.arrayOffset() + buf.position(), buf.remaining());
+            }
+        } finally {
+            buf.clear();
         }
-        buf.clear();
     }
 
     /**
