@@ -42,9 +42,24 @@ import static org.junit.jupiter.api.Assertions.*;
 @EnabledIfSystemProperty(named = "WatchManagerTest.forceRun", matches = "true")
 public class WatchManagerTest {
 
-    private final String testFile = "target/testWatchFile";
-    private final String originalFile = "target/test-classes/log4j-test1.xml";
+    private static class TestWatcher implements FileWatcher {
+
+        private final Queue<File> queue;
+
+        public TestWatcher(final Queue<File> queue) {
+            this.queue = queue;
+        }
+
+        @Override
+        public void fileModified(final File file) {
+            System.out.println(file.toString() + " was modified");
+            queue.add(file);
+        }
+    }
+
     private final String newFile = "target/test-classes/log4j-test1.yaml";
+    private final String originalFile = "target/test-classes/log4j-test1.xml";
+    private final String testFile = "target/testWatchFile";
 
     @Test
     public void testWatchManager() throws Exception {
@@ -72,7 +87,7 @@ public class WatchManagerTest {
             assertNotNull(f, "File change not detected");
         } finally {
             watchManager.stop();
-            scheduler.stop();
+            assertTrue(watchManager.getScheduler().isStopped());
         }
     }
 
@@ -105,7 +120,7 @@ public class WatchManagerTest {
             assertNull(f, "File change detected");
         } finally {
             watchManager.stop();
-            scheduler.stop();
+            assertTrue(watchManager.getScheduler().isStopped());
         }
     }
 
@@ -138,22 +153,7 @@ public class WatchManagerTest {
             assertNull(f, "File change detected");
         } finally {
             watchManager.stop();
-            scheduler.stop();
-        }
-    }
-
-    private static class TestWatcher implements FileWatcher {
-
-        private final Queue<File> queue;
-
-        public TestWatcher(final Queue<File> queue) {
-            this.queue = queue;
-        }
-
-        @Override
-        public void fileModified(final File file) {
-            System.out.println(file.toString() + " was modified");
-            queue.add(file);
+            assertTrue(watchManager.getScheduler().isStopped());
         }
     }
 }

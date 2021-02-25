@@ -53,6 +53,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test the WatchManager
@@ -115,7 +116,7 @@ public class WatchHttpTest {
         } finally {
             removeStub(stubMapping);
             watchManager.stop();
-            scheduler.stop();
+            assertTrue(watchManager.getScheduler().isStopped());
         }
     }
 
@@ -151,7 +152,7 @@ public class WatchHttpTest {
         } finally {
             removeStub(stubMapping);
             watchManager.stop();
-            scheduler.stop();
+            assertTrue(watchManager.getScheduler().isStopped());
         }
     }
 
