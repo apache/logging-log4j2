@@ -16,19 +16,13 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
-import org.apache.logging.log4j.core.config.ConfigurationScheduler;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +30,13 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
+import org.apache.logging.log4j.core.config.ConfigurationScheduler;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Manages {@link FileWatcher}s.
@@ -132,7 +133,7 @@ public class WatchManager extends AbstractLifeCycle {
     private final ConcurrentMap<Source, ConfigurationMonitor> watchers = new ConcurrentHashMap<>();
 
     public WatchManager(final ConfigurationScheduler scheduler) {
-        this.scheduler = scheduler;
+        this.scheduler = Objects.requireNonNull(scheduler, "scheduler");
         eventServiceList = getEventServices();
     }
 
