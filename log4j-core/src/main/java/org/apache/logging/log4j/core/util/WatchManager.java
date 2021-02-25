@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -133,7 +132,7 @@ public class WatchManager extends AbstractLifeCycle {
     private final ConcurrentMap<Source, ConfigurationMonitor> watchers = new ConcurrentHashMap<>();
 
     public WatchManager(final ConfigurationScheduler scheduler) {
-        this.scheduler = Objects.requireNonNull(scheduler, "scheduler");
+        this.scheduler = scheduler;
         eventServiceList = getEventServices();
     }
 
@@ -183,10 +182,6 @@ public class WatchManager extends AbstractLifeCycle {
      */
     public int getIntervalSeconds() {
         return this.intervalSeconds;
-    }
-
-    ConfigurationScheduler getScheduler() {
-        return scheduler;
     }
 
     /**
@@ -310,9 +305,6 @@ public class WatchManager extends AbstractLifeCycle {
         setStopping();
         for (WatchEventService service : eventServiceList) {
             service.unsubscribe(this);
-        }
-        if (scheduler.isStarted()) {
-            scheduler.stop(timeout, timeUnit);
         }
         final boolean stopped = stop(future);
         setStopped();
