@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -132,7 +133,7 @@ public class WatchManager extends AbstractLifeCycle {
     private final UUID id = LocalUUID.get();
 
     public WatchManager(final ConfigurationScheduler scheduler) {
-        this.scheduler = scheduler;
+        this.scheduler = Objects.requireNonNull(scheduler, "scheduler");
         eventServiceList = getEventServices();
     }
 
