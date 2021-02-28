@@ -94,6 +94,9 @@
         Support stack trace truncation in JsonTemplateLayout.
       </action>
       <!-- UPDATES -->
+      <action issue="LOG4J2-2893" dev="rgoers" type="update">
+        Allow reconfiguration when Log4j 1 configuration files are updated.
+      </action>
       <action dev="rgoers" type="update">
         Update Spring dependencies to 5.3.2, Spring Boot to 2.3.6, and Spring Cloud to Hoxton.SR9
       </action>
