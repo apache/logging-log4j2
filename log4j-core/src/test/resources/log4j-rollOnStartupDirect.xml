@@ -16,13 +16,14 @@
  limitations under the License.
 
 -->
-<Configuration status="OFF" name="XMLConfigTest" monitorInterval="1">
+<Configuration status="WARN" name="XMLConfigTest" monitorInterval="1">
   <Appenders>
-    <RollingFile name="RollingFile" fileName="target/onStartup/onStartup.log"
-                 filePattern="target/onStartup/onStartup-%d{MM-dd-yyyy}-%i.log">
-      <HTMLLayout title="test"/>
+    <RollingFile name="RollingFile" filePattern="target/onStartup/onStartup-%d{MM-dd-yyyy}-%i.log">
+      <PatternLayout>
+        <Pattern>%m%n</Pattern>
+      </PatternLayout>
       <Policies>
-        <OnStartupTriggeringPolicy />
+        <OnStartupTriggeringPolicy minSize="10"/>
       </Policies>
     </RollingFile>
   </Appenders>
