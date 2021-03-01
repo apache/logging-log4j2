@@ -111,18 +111,19 @@ public class RollingFileManager extends FileManager {
         if (!initialized) {
             LOGGER.debug("Initializing triggering policy {}", triggeringPolicy);
             initialized = true;
-            triggeringPolicy.initialize(this);
-            if (triggeringPolicy instanceof LifeCycle) {
-                ((LifeCycle) triggeringPolicy).start();
-            }
+            // LOG4J2-2981 - set the file size before initializing the triggering policy.
             if (directWrite) {
                 // LOG4J2-2485: Initialize size from the most recently written file.
                 File file = new File(getFileName());
                 if (file.exists()) {
                     size = file.length();
-				} else {
-					((DirectFileRolloverStrategy) rolloverStrategy).clearCurrentFileName();
-				}
+                } else {
+                    ((DirectFileRolloverStrategy) rolloverStrategy).clearCurrentFileName();
+                }
+            }
+            triggeringPolicy.initialize(this);
+            if (triggeringPolicy instanceof LifeCycle) {
+                ((LifeCycle) triggeringPolicy).start();
             }
         }
     }
@@ -291,7 +292,7 @@ public class RollingFileManager extends FileManager {
 	}
 
     public synchronized void rollover() {
-        if (!hasOutputStream() && !isCreateOnDemand()) {
+        if (!hasOutputStream() && !isCreateOnDemand() && !isDirectWrite()) {
             return;
         }
         if (rollover(rolloverStrategy)) {
