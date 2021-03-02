@@ -188,7 +188,7 @@ final class ParameterFormatter {
         for (int i = 0; i < argCount; i++) {
             buffer.append(messagePattern, previous, indices[i]);
             previous = indices[i] + 2;
-            recursiveDeepToString(arguments[i], buffer, null);
+            recursiveDeepToString(arguments[i], buffer);
         }
         buffer.append(messagePattern, previous, messagePattern.length());
     }
@@ -213,7 +213,7 @@ final class ParameterFormatter {
         for (int i = 0; i < argCount; i++) {
             buffer.append(messagePattern, previous, indices[i]);
             previous = indices[i] + 2;
-            recursiveDeepToString(arguments[i], buffer, null);
+            recursiveDeepToString(arguments[i], buffer);
         }
         buffer.append(messagePattern, previous, patternLength);
     }
@@ -365,7 +365,7 @@ final class ParameterFormatter {
     private static void writeArgOrDelimPair(final Object[] arguments, final int argCount, final int currentArgument,
             final StringBuilder buffer) {
         if (currentArgument < argCount) {
-            recursiveDeepToString(arguments[currentArgument], buffer, null);
+            recursiveDeepToString(arguments[currentArgument], buffer);
         } else {
             writeDelimPair(buffer);
         }
@@ -422,35 +422,54 @@ final class ParameterFormatter {
             return Byte.toString((Byte) o);
         }
         final StringBuilder str = new StringBuilder();
-        recursiveDeepToString(o, str, null);
+        recursiveDeepToString(o, str);
         return str.toString();
     }
 
     /**
-     * This method performs a deep toString of the given Object.
-     * Primitive arrays are converted using their respective Arrays.toString methods while
-     * special handling is implemented for "container types", i.e. Object[], Map and Collection because those could
-     * contain themselves.
+     * This method performs a deep {@code toString()} of the given {@code Object}.
      * <p>
-     * dejaVu is used in case of those container types to prevent an endless recursion.
-     * </p>
+     * Primitive arrays are converted using their respective {@code Arrays.toString()} methods, while
+     * special handling is implemented for <i>container types</i>, i.e. {@code Object[]}, {@code Map} and {@code Collection},
+     * because those could contain themselves.
      * <p>
-     * It should be noted that neither AbstractMap.toString() nor AbstractCollection.toString() implement such a
-     * behavior.
-     * They only check if the container is directly contained in itself, but not if a contained container contains the
-     * original one. Because of that, Arrays.toString(Object[]) isn't safe either.
-     * Confusing? Just read the last paragraph again and check the respective toString() implementation.
-     * </p>
+     * It should be noted that neither {@code AbstractMap.toString()} nor {@code AbstractCollection.toString()} implement such a behavior.
+     * They only check if the container is directly contained in itself, but not if a contained container contains the original one.
+     * Because of that, {@code Arrays.toString(Object[])} isn't safe either.
+     * Confusing? Just read the last paragraph again and check the respective {@code toString()} implementation.
      * <p>
-     * This means, in effect, that logging would produce a usable output even if an ordinary System.out.println(o)
-     * would produce a relatively hard-to-debug StackOverflowError.
-     * </p>
+     * This means, in effect, that logging would produce a usable output even if an ordinary {@code System.out.println(o)}
+     * would produce a relatively hard-to-debug {@code StackOverflowError}.
      *
-     * @param o      the Object to convert into a String
-     * @param str    the StringBuilder that o will be appended to
+     * @param o      the {@code Object} to convert into a {@code String}
+     * @param str    the {@code StringBuilder} that {@code o} will be appended to
+     */
+    static void recursiveDeepToString(final Object o, final StringBuilder str) {
+        recursiveDeepToString(o, str, null);
+    }
+
+    /**
+     * This method performs a deep {@code toString()} of the given {@code Object}.
+     * <p>
+     * Primitive arrays are converted using their respective {@code Arrays.toString()} methods, while
+     * special handling is implemented for <i>container types</i>, i.e. {@code Object[]}, {@code Map} and {@code Collection},
+     * because those could contain themselves.
+     * <p>
+     * {@code dejaVu} is used in case of those container types to prevent an endless recursion.
+     * <p>
+     * It should be noted that neither {@code AbstractMap.toString()} nor {@code AbstractCollection.toString()} implement such a behavior.
+     * They only check if the container is directly contained in itself, but not if a contained container contains the original one.
+     * Because of that, {@code Arrays.toString(Object[])} isn't safe either.
+     * Confusing? Just read the last paragraph again and check the respective {@code toString()} implementation.
+     * <p>
+     * This means, in effect, that logging would produce a usable output even if an ordinary {@code System.out.println(o)}
+     * would produce a relatively hard-to-debug {@code StackOverflowError}.
+     *
+     * @param o      the {@code Object} to convert into a {@code String}
+     * @param str    the {@code StringBuilder} that {@code o} will be appended to
      * @param dejaVu a set of container objects directly or transitively containing {@code o}
      */
-    static void recursiveDeepToString(final Object o, final StringBuilder str, final Set<Object> dejaVu) {
+    private static void recursiveDeepToString(final Object o, final StringBuilder str, final Set<Object> dejaVu) {
         if (appendSpecialTypes(o, str)) {
             return;
         }
