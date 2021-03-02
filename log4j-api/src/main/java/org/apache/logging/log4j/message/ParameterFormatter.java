@@ -519,9 +519,7 @@ final class ParameterFormatter {
             str.append(Arrays.toString((char[]) o));
         } else {
             // special handling of container Object[]
-            final Set<Object> effectiveDejaVu = dejaVu == null
-                    ? Collections.newSetFromMap(new IdentityHashMap<>())
-                    : dejaVu;
+            final Set<Object> effectiveDejaVu = getOrCreateDejaVu(dejaVu);
             final boolean seen = !effectiveDejaVu.add(o);
             if (seen) {
                 final String id = identityToString(o);
@@ -536,7 +534,7 @@ final class ParameterFormatter {
                     } else {
                         str.append(", ");
                     }
-                    recursiveDeepToString(current, str, effectiveDejaVu);
+                    recursiveDeepToString(current, str, cloneDejaVu(effectiveDejaVu));
                 }
                 str.append(']');
             }
@@ -550,9 +548,7 @@ final class ParameterFormatter {
             final Object o,
             final StringBuilder str,
             final Set<Object> dejaVu) {
-        final Set<Object> effectiveDejaVu = dejaVu == null
-                ? Collections.newSetFromMap(new IdentityHashMap<>())
-                : dejaVu;
+        final Set<Object> effectiveDejaVu = getOrCreateDejaVu(dejaVu);
         final boolean seen = !effectiveDejaVu.add(o);
         if (seen) {
             final String id = identityToString(o);
@@ -570,9 +566,9 @@ final class ParameterFormatter {
                 }
                 final Object key = current.getKey();
                 final Object value = current.getValue();
-                recursiveDeepToString(key, str, effectiveDejaVu);
+                recursiveDeepToString(key, str, cloneDejaVu(effectiveDejaVu));
                 str.append('=');
-                recursiveDeepToString(value, str, effectiveDejaVu);
+                recursiveDeepToString(value, str, cloneDejaVu(effectiveDejaVu));
             }
             str.append('}');
         }
@@ -585,9 +581,7 @@ final class ParameterFormatter {
             final Object o,
             final StringBuilder str,
             final Set<Object> dejaVu) {
-        final Set<Object> effectiveDejaVu = dejaVu == null
-                ? Collections.newSetFromMap(new IdentityHashMap<>())
-                : dejaVu;
+        final Set<Object> effectiveDejaVu = getOrCreateDejaVu(dejaVu);
         final boolean seen = !effectiveDejaVu.add(o);
         if (seen) {
             final String id = identityToString(o);
@@ -602,10 +596,26 @@ final class ParameterFormatter {
                 } else {
                     str.append(", ");
                 }
-                recursiveDeepToString(anOCol, str, effectiveDejaVu);
+                recursiveDeepToString(anOCol, str, cloneDejaVu(effectiveDejaVu));
             }
             str.append(']');
         }
+    }
+
+    private static Set<Object> getOrCreateDejaVu(Set<Object> dejaVu) {
+        return dejaVu == null
+                ? createDejaVu()
+                : dejaVu;
+    }
+
+    private static Set<Object> createDejaVu() {
+        return Collections.newSetFromMap(new IdentityHashMap<>());
+    }
+
+    private static Set<Object> cloneDejaVu(Set<Object> dejaVu) {
+        Set<Object> clonedDejaVu = createDejaVu();
+        clonedDejaVu.addAll(dejaVu);
+        return clonedDejaVu;
     }
 
     private static void tryObjectToString(final Object o, final StringBuilder str) {

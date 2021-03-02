@@ -19,6 +19,8 @@ package org.apache.logging.log4j.message;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -177,6 +179,20 @@ public class ParameterFormatterTest {
         list.add(2);
         final String actual = ParameterFormatter.deepToString(list);
         final String expected = "[1, [..." + ParameterFormatter.identityToString(list) + "...], 2]";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testDeepToStringUsingNonRecursiveButConsequentObjects() {
+        final List<Object> list = new ArrayList<>();
+        final Object item = Collections.singletonList(0);
+        list.add(1);
+        list.add(item);
+        list.add(2);
+        list.add(item);
+        list.add(3);
+        final String actual = ParameterFormatter.deepToString(list);
+        final String expected = "[1, [0], 2, [0], 3]";
         assertEquals(expected, actual);
     }
 
