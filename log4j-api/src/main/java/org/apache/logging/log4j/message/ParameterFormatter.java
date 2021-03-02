@@ -493,6 +493,8 @@ final class ParameterFormatter {
             appendMap(o, str, dejaVu);
         } else if (o instanceof Collection) {
             appendCollection(o, str, dejaVu);
+        } else {
+            throw new IllegalArgumentException("was expecting a container, found " + oClass);
         }
     }
 
