@@ -97,13 +97,13 @@ public class RollingAppenderOnStartupDirectTest {
 
     @AfterClass
     public static void afterClass() throws Exception {
+        Configurator.shutdown(loggerContext);
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {
                 Files.delete(path);
             }
         }
         Files.delete(Paths.get(DIR));
-        Configurator.shutdown(loggerContext);
     }
 
 }
