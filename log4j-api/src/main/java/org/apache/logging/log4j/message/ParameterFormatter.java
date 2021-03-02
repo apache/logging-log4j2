@@ -448,7 +448,7 @@ final class ParameterFormatter {
      *
      * @param o      the Object to convert into a String
      * @param str    the StringBuilder that o will be appended to
-     * @param dejaVu a list of container identities that were already used.
+     * @param dejaVu a set of container objects directly or transitively containing {@code o}
      */
     static void recursiveDeepToString(final Object o, final StringBuilder str, final Set<Object> dejaVu) {
         if (appendSpecialTypes(o, str)) {
