@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
@@ -42,7 +43,7 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
 
     // Note that the path is hardcoded in the configuration!
     private static final String DIR = "target/rolling-size-time-new-directory";
-    private static final String FILESEP = System.getProperty("file.separator");
+    private static final String FILESEP = Pattern.quote(System.getProperty("file.separator"));
 
     public static LoggerContextRule loggerContextRule =
             LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
