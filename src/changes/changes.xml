@@ -101,6 +101,9 @@
         Support stack trace truncation in JsonTemplateLayout.
       </action>
       <!-- UPDATES -->
+      <action issue="LOG4J2-2923" dev="rgoers" type="upd">
+        Add Rollover Listener to aid in unit test validation.
+      </action>
       <action issue="LOG4J2-2893" dev="rgoers" type="update">
         Allow reconfiguration when Log4j 1 configuration files are updated.
       </action>

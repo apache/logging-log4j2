@@ -16,27 +16,33 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import java.io.File;
-import java.util.Arrays;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-public class RollingDirectSizeTimeNewDirectoryTest {
+import static org.junit.Assert.assertTrue;
+
+/**
+ * This test attempts to validate that logging rolls when the file size exceeds 5KB or every second.
+ * When the file rolls by time it should create a new directory. When rolling by size it should
+ * create multiple files per directory.
+ */
+public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
 
     private static final String CONFIG = "log4j-rolling-size-time-new-directory.xml";
 
     // Note that the path is hardcoded in the configuration!
     private static final String DIR = "target/rolling-size-time-new-directory";
+    private static final String FILESEP = System.getProperty("file.separator");
 
     public static LoggerContextRule loggerContextRule =
             LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
@@ -44,9 +50,12 @@ public class RollingDirectSizeTimeNewDirectoryTest {
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
+    private Map<String, AtomicInteger> rolloverFiles = new HashMap<>();
+
     @Test
     public void streamClosedError() throws Exception {
-
+        ((RollingFileAppender) loggerContextRule.getAppender("RollingFile")).getManager()
+                .addRolloverListener(this);
         final Logger logger = loggerContextRule.getLogger(RollingDirectSizeTimeNewDirectoryTest.class);
 
         for (int i = 0; i < 1000; i++) {
@@ -57,50 +66,25 @@ public class RollingDirectSizeTimeNewDirectoryTest {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }
 
-        final File logDir = new File(DIR);
-        final File[] logFolders = logDir.listFiles();
-        assertNotNull("Not a folder: " + logDir, logFolders);
-        Arrays.sort(logFolders);
+        assertTrue("A time based rollover did not occur", rolloverFiles.size() > 1);
+        int maxFiles = Collections.max(rolloverFiles.values(), Comparator.comparing(AtomicInteger::get)).get();
+        assertTrue("No size based rollovers occurred", maxFiles > 1);
+    }
 
-        try {
-            final int minExpectedLogFolderCount = 2;
-            assertTrue(
-                    "was expecting at least " + minExpectedLogFolderCount + " folders, " + "found " + logFolders.length,
-                    logFolders.length >= minExpectedLogFolderCount);
-
-            for (int logFolderIndex = 0; logFolderIndex < logFolders.length; ++logFolderIndex) {
-
-                File logFolder = logFolders[logFolderIndex];
-                File[] logFiles = logFolder.listFiles();
-                assertNotNull("Not a folder: " + logFolder, logFiles);
-                Arrays.sort(logFiles);
-                if (logFolderIndex == 0 && logFolders.length > 0 && logFiles.length == 0) {
-                    // In a slow execution period, it is possible for the initial directory to be
-                    // empty because it has not received events yet. If this is the case, then the
-                    // next directory MUST contain at least one log file.
-                } else {
-                    assertTrue("no files found in folder: " + logFolder, ArrayUtils.isNotEmpty(logFiles));
-                }
-                final int minExpectedLogFileCount = 2;
-                if (logFolderIndex > 0 && logFolderIndex < logFolders.length - 1) {
-                    assertTrue(
-                            "was expecting at least " + minExpectedLogFileCount + " files, " + "found "
-                                    + logFiles.length + ": " + Arrays.toString(logFiles),
-                            logFiles.length >= minExpectedLogFileCount);
-                }
-            }
-
-        } catch (AssertionError error) {
-            System.out.format("log directory (%s) contents:%n", DIR);
-            int totalFileCount = 0;
-            for (final File file : FileUtils.listFilesAndDirs(logDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE)) {
-                totalFileCount++;
-                System.out.format("-> %s (%d)%n", file, file.length());
-            }
-            System.out.format("total file count: %d%n", totalFileCount);
-            throw new AssertionError("check failure", error);
-        }
+    @Override
+    public void rolloverTriggered(String fileName) {
 
     }
 
+    @Override
+    public void rolloverComplete(String fileName) {
+        String[] parts = fileName.split(FILESEP);
+        if (parts.length < 4) {
+            System.err.println("Invalid or missing filename: " + fileName);
+            return;
+        }
+        AtomicInteger fileCount = rolloverFiles.computeIfAbsent(parts[2], k -> new AtomicInteger(0));
+        fileCount.incrementAndGet();
+    }
 }
+
