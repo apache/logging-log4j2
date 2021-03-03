@@ -29,6 +29,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -70,6 +71,7 @@ public class RollingFileManager extends FileManager {
     private volatile boolean initialized;
     private volatile String fileName;
     private final boolean directWrite;
+    private final CopyOnWriteArrayList<RolloverListener> rolloverListeners = new CopyOnWriteArrayList<>();
 
     /* This executor pool will create a new Thread for every work async action to be performed. Using it allows
        us to make sure all the Threads are completed when the Manager is stopped. */
@@ -162,6 +164,22 @@ public class RollingFileManager extends FileManager {
         return narrow(RollingFileManager.class, getManager(name, new FactoryData(fileName, pattern, append,
             bufferedIO, policy, strategy, advertiseURI, layout, bufferSize, immediateFlush, createOnDemand,
             filePermissions, fileOwner, fileGroup, configuration), factory));
+    }
+
+    /**
+     * Add a RolloverListener.
+     * @param listener The RolloverListener.
+     */
+    public void addRolloverListener(RolloverListener listener) {
+        rolloverListeners.add(listener);
+    }
+
+    /**
+     * Remove a RolloverListener.
+     * @param listener The RolloverListener.
+     */
+    public void removeRolloverListener(RolloverListener listener) {
+        rolloverListeners.remove(listener);
     }
 
     /**
@@ -295,6 +313,17 @@ public class RollingFileManager extends FileManager {
         if (!hasOutputStream() && !isCreateOnDemand() && !isDirectWrite()) {
             return;
         }
+        String currentFileName = fileName;
+        if (rolloverListeners.size() > 0) {
+            for (RolloverListener listener : rolloverListeners) {
+                try {
+                    listener.rolloverTriggered(currentFileName);
+                } catch (Exception ex) {
+                    LOGGER.warn("Rollover Listener {} failed with {}: {}", listener.getClass().getSimpleName(),
+                            ex.getClass().getName(), ex.getMessage());
+                }
+            }
+        }
         if (rollover(rolloverStrategy)) {
             try {
                 size = 0;
@@ -302,6 +331,16 @@ public class RollingFileManager extends FileManager {
                 createFileAfterRollover();
             } catch (final IOException e) {
                 logError("Failed to create file after rollover", e);
+            }
+        }
+        if (rolloverListeners.size() > 0) {
+            for (RolloverListener listener : rolloverListeners) {
+                try {
+                    listener.rolloverComplete(currentFileName);
+                } catch (Exception ex) {
+                    LOGGER.warn("Rollover Listener {} failed with {}: {}", listener.getClass().getSimpleName(),
+                            ex.getClass().getName(), ex.getMessage());
+                }
             }
         }
     }
