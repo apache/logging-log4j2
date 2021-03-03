@@ -19,19 +19,19 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 import org.apache.logging.log4j.core.LogEvent;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 final class EventResolverFactories {
 
-    private EventResolverFactories() {}
+    private EventResolverFactories() {
+    }
 
-    private static final Map<String, TemplateResolverFactory<LogEvent, EventResolverContext, ? extends TemplateResolver<LogEvent>>> RESOLVER_FACTORY_BY_NAME =
-            createResolverFactoryByName();
+    private static final Map<String, TemplateResolverFactory<LogEvent, EventResolverContext, ? extends TemplateResolver<LogEvent>>> RESOLVER_FACTORY_BY_NAME = new ConcurrentHashMap<>();
 
-    private static Map<String, TemplateResolverFactory<LogEvent, EventResolverContext, ? extends TemplateResolver<LogEvent>>> createResolverFactoryByName() {
+    static {
 
         // Collect resolver factories.
         final List<EventResolverFactory<? extends EventResolver>> resolverFactories = Arrays.asList(
@@ -57,7 +57,7 @@ final class EventResolverFactories {
         for (final EventResolverFactory<? extends EventResolver> resolverFactory : resolverFactories) {
             resolverFactoryByName.put(resolverFactory.getName(), resolverFactory);
         }
-        return Collections.unmodifiableMap(resolverFactoryByName);
+        RESOLVER_FACTORY_BY_NAME.putAll(resolverFactoryByName);
 
     }
 
@@ -65,4 +65,14 @@ final class EventResolverFactories {
         return RESOLVER_FACTORY_BY_NAME;
     }
 
+    public static void registerResolver(String name, TemplateResolverFactory<LogEvent, EventResolverContext, ? extends TemplateResolver<LogEvent>> templateResolverFactory) {
+        if (RESOLVER_FACTORY_BY_NAME.containsKey(name)) {
+            throw new IllegalArgumentException("Resolver with same name : " + name + " already registered");
+        }
+        RESOLVER_FACTORY_BY_NAME.put(name, templateResolverFactory);
+    }
+
+    public static void unregisterResolver(String name) {
+        RESOLVER_FACTORY_BY_NAME.remove(name);
+    }
 }
