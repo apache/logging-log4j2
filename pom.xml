@@ -188,7 +188,7 @@
     <slf4jVersion>1.7.25</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.12.1</jackson2Version>
+    <jackson2Version>2.12.2</jackson2Version>
     <spring-boot.version>2.3.6.RELEASE</spring-boot.version>
     <springVersion>5.3.3</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
@@ -197,7 +197,7 @@
     <conversantDisruptorVersion>1.2.15</conversantDisruptorVersion> <!-- Version 1.2.16 requires Java 9 -->
     <elastic.version>7.6.2</elastic.version>
     <mongodb3.version>3.12.7</mongodb3.version>
-    <mongodb4.version>4.2.0</mongodb4.version>
+    <mongodb4.version>4.2.2</mongodb4.version>
     <!-- POM for jackson-dataformat-xml 2.12.1 depends on woodstox-core 6.2.3 -->
     <woodstox.version>6.2.4</woodstox.version>
     <groovy.version>3.0.7</groovy.version>
@@ -244,8 +244,8 @@
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
-    <junitJupiterVersion>5.7.0</junitJupiterVersion>
-    <mockitoVersion>3.7.7</mockitoVersion>
+    <junitJupiterVersion>5.7.1</junitJupiterVersion>
+    <mockitoVersion>3.8.0</mockitoVersion>
     <xmlunitVersion>2.8.2</xmlunitVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>
@@ -313,7 +313,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.11</version>
+        <version>3.12.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>

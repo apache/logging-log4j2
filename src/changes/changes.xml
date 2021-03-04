@@ -227,6 +227,26 @@
       <action dev="ggregory" type="update">
         Update net.javacrumbs.json-unit:json-unit 2.22.0 -> 2.23.0.
       </action>
+      <action dev="ggregory" type="update">
+        Update net.javacrumbs.json-unit:json-unit 2.22.0 -> 2.23.0.
+      </action>
+      <action dev="ggregory" type="update">
+        - com.fasterxml.jackson.core:jackson-annotations ................. 2.12.1 -> 2.12.2
+        - com.fasterxml.jackson.core:jackson-core ........................ 2.12.1 -> 2.12.2
+        - com.fasterxml.jackson.core:jackson-databind .................... 2.12.1 -> 2.12.2
+        - com.fasterxml.jackson.dataformat:jackson-dataformat-xml ........ 2.12.1 -> 2.12.2
+        - com.fasterxml.jackson.dataformat:jackson-dataformat-yaml ....... 2.12.1 -> 2.12.2
+        - com.fasterxml.jackson.module:jackson-module-jaxb-annotations ... 2.12.1 -> 2.12.2
+        - org.apache.commons:commons-lang3 ............................... 3.11   -> 3.12.0
+        - org.junit.jupiter:junit-jupiter-engine ......................... 5.7.0  -> 5.7.1
+        - org.junit.jupiter:junit-jupiter-migrationsupport ............... 5.7.0  -> 5.7.1
+        - org.junit.jupiter:junit-jupiter-params ......................... 5.7.0  -> 5.7.1
+        - org.junit.vintage:junit-vintage-engine ......................... 5.7.0  -> 5.7.1
+        - org.mockito:mockito-core ....................................... 3.7.7  -> 3.8.0
+        - org.mockito:mockito-junit-jupiter .............................. 3.7.7  -> 3.8.0
+        - org.mongodb:bson ............................................... 4.2.0  -> 4.2.2
+        - org.mongodb:mongodb-driver-sync ................................ 4.2.0  -> 4.2.2
+      </action>
     </release>
     <release version="2.14.0" date="2020-11-06" description="GA Release 2.14.0">
       <action issue="LOG4J2-2925" dev="rgoers" type="fix">
