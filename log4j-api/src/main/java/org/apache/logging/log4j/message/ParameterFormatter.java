@@ -16,15 +16,16 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.StringBuilders;
+
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Supports parameter formatting as used in ParameterizedMessage and ReusableParameterizedMessage.
@@ -60,7 +61,8 @@ final class ParameterFormatter {
     private static final char DELIM_STOP = '}';
     private static final char ESCAPE_CHAR = '\\';
 
-    private static ThreadLocal<SimpleDateFormat> threadLocalSimpleDateFormat = new ThreadLocal<>();
+    private static final ThreadLocal<SimpleDateFormat> SIMPLE_DATE_FORMAT_REF =
+            ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
 
     private ParameterFormatter() {
     }
@@ -186,7 +188,7 @@ final class ParameterFormatter {
         for (int i = 0; i < argCount; i++) {
             buffer.append(messagePattern, previous, indices[i]);
             previous = indices[i] + 2;
-            recursiveDeepToString(arguments[i], buffer, null);
+            recursiveDeepToString(arguments[i], buffer);
         }
         buffer.append(messagePattern, previous, messagePattern.length());
     }
@@ -211,7 +213,7 @@ final class ParameterFormatter {
         for (int i = 0; i < argCount; i++) {
             buffer.append(messagePattern, previous, indices[i]);
             previous = indices[i] + 2;
-            recursiveDeepToString(arguments[i], buffer, null);
+            recursiveDeepToString(arguments[i], buffer);
         }
         buffer.append(messagePattern, previous, patternLength);
     }
@@ -363,7 +365,7 @@ final class ParameterFormatter {
     private static void writeArgOrDelimPair(final Object[] arguments, final int argCount, final int currentArgument,
             final StringBuilder buffer) {
         if (currentArgument < argCount) {
-            recursiveDeepToString(arguments[currentArgument], buffer, null);
+            recursiveDeepToString(arguments[currentArgument], buffer);
         } else {
             writeDelimPair(buffer);
         }
@@ -420,35 +422,54 @@ final class ParameterFormatter {
             return Byte.toString((Byte) o);
         }
         final StringBuilder str = new StringBuilder();
-        recursiveDeepToString(o, str, null);
+        recursiveDeepToString(o, str);
         return str.toString();
     }
 
     /**
-     * This method performs a deep toString of the given Object.
-     * Primitive arrays are converted using their respective Arrays.toString methods while
-     * special handling is implemented for "container types", i.e. Object[], Map and Collection because those could
-     * contain themselves.
+     * This method performs a deep {@code toString()} of the given {@code Object}.
      * <p>
-     * dejaVu is used in case of those container types to prevent an endless recursion.
-     * </p>
+     * Primitive arrays are converted using their respective {@code Arrays.toString()} methods, while
+     * special handling is implemented for <i>container types</i>, i.e. {@code Object[]}, {@code Map} and {@code Collection},
+     * because those could contain themselves.
      * <p>
-     * It should be noted that neither AbstractMap.toString() nor AbstractCollection.toString() implement such a
-     * behavior.
-     * They only check if the container is directly contained in itself, but not if a contained container contains the
-     * original one. Because of that, Arrays.toString(Object[]) isn't safe either.
-     * Confusing? Just read the last paragraph again and check the respective toString() implementation.
-     * </p>
+     * It should be noted that neither {@code AbstractMap.toString()} nor {@code AbstractCollection.toString()} implement such a behavior.
+     * They only check if the container is directly contained in itself, but not if a contained container contains the original one.
+     * Because of that, {@code Arrays.toString(Object[])} isn't safe either.
+     * Confusing? Just read the last paragraph again and check the respective {@code toString()} implementation.
      * <p>
-     * This means, in effect, that logging would produce a usable output even if an ordinary System.out.println(o)
-     * would produce a relatively hard-to-debug StackOverflowError.
-     * </p>
+     * This means, in effect, that logging would produce a usable output even if an ordinary {@code System.out.println(o)}
+     * would produce a relatively hard-to-debug {@code StackOverflowError}.
      *
-     * @param o      the Object to convert into a String
-     * @param str    the StringBuilder that o will be appended to
-     * @param dejaVu a list of container identities that were already used.
+     * @param o      the {@code Object} to convert into a {@code String}
+     * @param str    the {@code StringBuilder} that {@code o} will be appended to
      */
-    static void recursiveDeepToString(final Object o, final StringBuilder str, final Set<String> dejaVu) {
+    static void recursiveDeepToString(final Object o, final StringBuilder str) {
+        recursiveDeepToString(o, str, null);
+    }
+
+    /**
+     * This method performs a deep {@code toString()} of the given {@code Object}.
+     * <p>
+     * Primitive arrays are converted using their respective {@code Arrays.toString()} methods, while
+     * special handling is implemented for <i>container types</i>, i.e. {@code Object[]}, {@code Map} and {@code Collection},
+     * because those could contain themselves.
+     * <p>
+     * {@code dejaVu} is used in case of those container types to prevent an endless recursion.
+     * <p>
+     * It should be noted that neither {@code AbstractMap.toString()} nor {@code AbstractCollection.toString()} implement such a behavior.
+     * They only check if the container is directly contained in itself, but not if a contained container contains the original one.
+     * Because of that, {@code Arrays.toString(Object[])} isn't safe either.
+     * Confusing? Just read the last paragraph again and check the respective {@code toString()} implementation.
+     * <p>
+     * This means, in effect, that logging would produce a usable output even if an ordinary {@code System.out.println(o)}
+     * would produce a relatively hard-to-debug {@code StackOverflowError}.
+     *
+     * @param o      the {@code Object} to convert into a {@code String}
+     * @param str    the {@code StringBuilder} that {@code o} will be appended to
+     * @param dejaVu a set of container objects directly or transitively containing {@code o}
+     */
+    private static void recursiveDeepToString(final Object o, final StringBuilder str, final Set<Object> dejaVu) {
         if (appendSpecialTypes(o, str)) {
             return;
         }
@@ -468,18 +489,9 @@ final class ParameterFormatter {
             return false;
         }
         final Date date = (Date) o;
-        final SimpleDateFormat format = getSimpleDateFormat();
+        final SimpleDateFormat format = SIMPLE_DATE_FORMAT_REF.get();
         str.append(format.format(date));
         return true;
-    }
-
-    private static SimpleDateFormat getSimpleDateFormat() {
-        SimpleDateFormat result = threadLocalSimpleDateFormat.get();
-        if (result == null) {
-            result = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            threadLocalSimpleDateFormat.set(result);
-        }
-        return result;
     }
 
     /**
@@ -489,8 +501,10 @@ final class ParameterFormatter {
         return o.getClass().isArray() || o instanceof Map || o instanceof Collection;
     }
 
-    private static void appendPotentiallyRecursiveValue(final Object o, final StringBuilder str,
-            final Set<String> dejaVu) {
+    private static void appendPotentiallyRecursiveValue(
+            final Object o,
+            final StringBuilder str,
+            final Set<Object> dejaVu) {
         final Class<?> oClass = o.getClass();
         if (oClass.isArray()) {
             appendArray(o, str, dejaVu, oClass);
@@ -498,10 +512,15 @@ final class ParameterFormatter {
             appendMap(o, str, dejaVu);
         } else if (o instanceof Collection) {
             appendCollection(o, str, dejaVu);
+        } else {
+            throw new IllegalArgumentException("was expecting a container, found " + oClass);
         }
     }
 
-    private static void appendArray(final Object o, final StringBuilder str, Set<String> dejaVu,
+    private static void appendArray(
+            final Object o,
+            final StringBuilder str,
+            final Set<Object> dejaVu,
             final Class<?> oClass) {
         if (oClass == byte[].class) {
             str.append(Arrays.toString((byte[]) o));
@@ -520,15 +539,13 @@ final class ParameterFormatter {
         } else if (oClass == char[].class) {
             str.append(Arrays.toString((char[]) o));
         } else {
-            if (dejaVu == null) {
-                dejaVu = new HashSet<>();
-            }
             // special handling of container Object[]
-            final String id = identityToString(o);
-            if (dejaVu.contains(id)) {
+            final Set<Object> effectiveDejaVu = getOrCreateDejaVu(dejaVu);
+            final boolean seen = !effectiveDejaVu.add(o);
+            if (seen) {
+                final String id = identityToString(o);
                 str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
             } else {
-                dejaVu.add(id);
                 final Object[] oArray = (Object[]) o;
                 str.append('[');
                 boolean first = true;
@@ -538,24 +555,26 @@ final class ParameterFormatter {
                     } else {
                         str.append(", ");
                     }
-                    recursiveDeepToString(current, str, new HashSet<>(dejaVu));
+                    recursiveDeepToString(current, str, cloneDejaVu(effectiveDejaVu));
                 }
                 str.append(']');
             }
-            //str.append(Arrays.deepToString((Object[]) o));
         }
     }
 
-    private static void appendMap(final Object o, final StringBuilder str, Set<String> dejaVu) {
-        // special handling of container Map
-        if (dejaVu == null) {
-            dejaVu = new HashSet<>();
-        }
-        final String id = identityToString(o);
-        if (dejaVu.contains(id)) {
+    /**
+     * Specialized handler for {@link Map}s.
+     */
+    private static void appendMap(
+            final Object o,
+            final StringBuilder str,
+            final Set<Object> dejaVu) {
+        final Set<Object> effectiveDejaVu = getOrCreateDejaVu(dejaVu);
+        final boolean seen = !effectiveDejaVu.add(o);
+        if (seen) {
+            final String id = identityToString(o);
             str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
         } else {
-            dejaVu.add(id);
             final Map<?, ?> oMap = (Map<?, ?>) o;
             str.append('{');
             boolean isFirst = true;
@@ -568,24 +587,27 @@ final class ParameterFormatter {
                 }
                 final Object key = current.getKey();
                 final Object value = current.getValue();
-                recursiveDeepToString(key, str, new HashSet<>(dejaVu));
+                recursiveDeepToString(key, str, cloneDejaVu(effectiveDejaVu));
                 str.append('=');
-                recursiveDeepToString(value, str, new HashSet<>(dejaVu));
+                recursiveDeepToString(value, str, cloneDejaVu(effectiveDejaVu));
             }
             str.append('}');
         }
     }
 
-    private static void appendCollection(final Object o, final StringBuilder str, Set<String> dejaVu) {
-        // special handling of container Collection
-        if (dejaVu == null) {
-            dejaVu = new HashSet<>();
-        }
-        final String id = identityToString(o);
-        if (dejaVu.contains(id)) {
+    /**
+     * Specialized handler for {@link Collection}s.
+     */
+    private static void appendCollection(
+            final Object o,
+            final StringBuilder str,
+            final Set<Object> dejaVu) {
+        final Set<Object> effectiveDejaVu = getOrCreateDejaVu(dejaVu);
+        final boolean seen = !effectiveDejaVu.add(o);
+        if (seen) {
+            final String id = identityToString(o);
             str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
         } else {
-            dejaVu.add(id);
             final Collection<?> oCol = (Collection<?>) o;
             str.append('[');
             boolean isFirst = true;
@@ -595,10 +617,26 @@ final class ParameterFormatter {
                 } else {
                     str.append(", ");
                 }
-                recursiveDeepToString(anOCol, str, new HashSet<>(dejaVu));
+                recursiveDeepToString(anOCol, str, cloneDejaVu(effectiveDejaVu));
             }
             str.append(']');
         }
+    }
+
+    private static Set<Object> getOrCreateDejaVu(Set<Object> dejaVu) {
+        return dejaVu == null
+                ? createDejaVu()
+                : dejaVu;
+    }
+
+    private static Set<Object> createDejaVu() {
+        return Collections.newSetFromMap(new IdentityHashMap<>());
+    }
+
+    private static Set<Object> cloneDejaVu(Set<Object> dejaVu) {
+        Set<Object> clonedDejaVu = createDejaVu();
+        clonedDejaVu.addAll(dejaVu);
+        return clonedDejaVu;
     }
 
     private static void tryObjectToString(final Object o, final StringBuilder str) {
