@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.net.ssl.LegacyBsdTlsSyslogInputStreamReader
 import org.apache.logging.log4j.core.net.ssl.TlsSyslogInputStreamReader;
 import org.apache.logging.log4j.core.net.ssl.TlsSyslogInputStreamReaderBase;
 import org.apache.logging.log4j.core.net.ssl.TlsSyslogMessageFormat;
-import org.apache.logging.log4j.util.Strings;
 
 public class MockTlsSyslogServer extends MockSyslogServer {
     private final SSLServerSocket serverSocket;
