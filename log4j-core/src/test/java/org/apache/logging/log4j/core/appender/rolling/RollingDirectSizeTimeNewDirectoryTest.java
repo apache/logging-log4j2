@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
@@ -30,6 +30,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -43,7 +44,6 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
 
     // Note that the path is hardcoded in the configuration!
     private static final String DIR = "target/rolling-size-time-new-directory";
-    private static final String FILESEP = Pattern.quote(System.getProperty("file.separator"));
 
     public static LoggerContextRule loggerContextRule =
             LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
@@ -79,12 +79,11 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
 
     @Override
     public void rolloverComplete(String fileName) {
-        String[] parts = fileName.split(FILESEP);
-        if (parts.length < 4) {
-            System.err.println("Invalid or missing filename: " + fileName);
-            return;
-        }
-        AtomicInteger fileCount = rolloverFiles.computeIfAbsent(parts[2], k -> new AtomicInteger(0));
+        File file = new File(fileName);
+        String logDir = file.getParentFile().getName();
+        AtomicInteger fileCount = rolloverFiles.computeIfAbsent(logDir, k -> new AtomicInteger(0));
         fileCount.incrementAndGet();
     }
 }
+
+
