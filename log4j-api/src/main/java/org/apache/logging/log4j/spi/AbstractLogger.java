@@ -2920,7 +2920,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     @Override
     public LogBuilder atLevel(Level level) {
         if (isEnabled(level)) {
-            return (getLogBuilder(level).reset(level));
+            return getLogBuilder(level).reset(level);
         } else {
             return LogBuilder.NOOP;
         }
