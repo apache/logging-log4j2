@@ -222,6 +222,13 @@ public class DefaultLogBuilder implements LogBuilder {
         }
     }
 
+    @Override
+    public void log() {
+        if (isValid()) {
+            logMessage(EMPTY_MESSAGE);
+        }
+    }
+
     private void logMessage(Message message) {
         try {
             logger.logMessage(level, marker, FQCN, location, message, throwable);
