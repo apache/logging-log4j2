@@ -28,30 +28,58 @@ public interface LogBuilder {
 
     public static final LogBuilder NOOP = new LogBuilder() {};
 
+    /**
+     * Includes a Marker in the log event. Interface default method does nothing.
+     * @param marker The Marker to log.
+     * @return The LogBuilder.
+     */
     default LogBuilder withMarker(Marker marker) {
         return this;
     }
 
+    /**
+     * Includes a Throwable in the log event. Interface default method does nothing.
+     * @param throwable The Throwable to log.
+     * @return the LogBuilder.
+     */
     default LogBuilder withThrowable(Throwable throwable) {
         return this;
     }
 
+    /**
+     * An implementation will calculate the caller's stack frame and include it in the log event.
+     * Interface default method does nothing.
+     * @return The LogBuilder.
+     */
     default LogBuilder withLocation() {
         return this;
     }
 
+    /**
+     * Adds the specified stack trace element to the log event. Interface default method does nothing.
+     * @param location The stack trace element to include in the log event.
+     * @return The LogBuilder.
+     */
     default LogBuilder withLocation(StackTraceElement location) {
         return this;
     }
 
+    /**
+     * Causes all the data collected to be logged along with the message. Interface default method does nothing.
+     * @param message The message to log.
+     */
     default void log(CharSequence message) {
     }
 
+    /**
+     * Causes all the data collected to be logged along with the message. Interface default method does nothing.
+     * @param message The message to log.
+     */
     default void log(String message) {
     }
 
     /**
-     * Logs a message with parameters.
+     * Logs a message with parameters. Interface default method does nothing.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param params parameters to the message.
@@ -61,21 +89,38 @@ public interface LogBuilder {
     default void log(String message, Object... params) {
     }
 
+    /**
+     * Causes all the data collected to be logged along with the message and parameters.
+     * Interface default method does nothing.
+     * @param message The message.
+     * @param params Parameters to the message.
+     */
     default void log(String message, Supplier<?>... params) {
     }
 
+    /**
+     * Causes all the data collected to be logged along with the message. Interface default method does nothing.
+     * @param message The message to log.
+     */
     default void log(Message message) {
     }
 
+    /**
+     * Causes all the data collected to be logged along with the message. Interface default method does nothing.
+     * @param messageSupplier The supplier of the message to log.
+     */
     default void log(Supplier<Message> messageSupplier) {
     }
 
+    /**
+     * Causes all the data collected to be logged along with the message. Interface default method does nothing.
+     * @param message The message to log.
+     */
     default void log(Object message) {
-
     }
 
     /**
-     * Logs a message with parameters.
+     * Logs a message with parameters. Interface default method does nothing.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -86,7 +131,7 @@ public interface LogBuilder {
     }
 
     /**
-     * Logs a message with parameters.
+     * Logs a message with parameters. Interface default method does nothing.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -98,7 +143,7 @@ public interface LogBuilder {
     }
 
     /**
-     * Logs a message with parameters.
+     * Logs a message with parameters. Interface default method does nothing.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -111,7 +156,7 @@ public interface LogBuilder {
     }
 
     /**
-     * Logs a message with parameters.
+     * Logs a message with parameters. Interface default method does nothing.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -125,7 +170,7 @@ public interface LogBuilder {
     }
 
     /**
-     * Logs a message with parameters.
+     * Logs a message with parameters. Interface default method does nothing.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -140,7 +185,7 @@ public interface LogBuilder {
     }
 
     /**
-     * Logs a message with parameters.
+     * Logs a message with parameters. Interface default method does nothing.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -173,7 +218,7 @@ public interface LogBuilder {
     }
 
     /**
-     * Logs a message with parameters.
+     * Logs a message with parameters. Interface default method does nothing.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -192,7 +237,7 @@ public interface LogBuilder {
     }
 
     /**
-     * Logs a message with parameters.
+     * Logs a message with parameters. Interface default method does nothing.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -212,7 +257,7 @@ public interface LogBuilder {
     }
 
     /**
-     * Logs a message with parameters.
+     * Logs a message with parameters. Interface default method does nothing.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -230,5 +275,11 @@ public interface LogBuilder {
      */
     default void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
             Object p7, Object p8, Object p9) {
+    }
+
+    /**
+     * Causes all the data collected to be logged. Default implementatoin does nothing.
+     */
+    default void log() {
     }
 }
