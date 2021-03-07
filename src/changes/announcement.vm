@@ -65,17 +65,11 @@ temporary objects) while logging. In addition, Log4j 2 will not lose events whil
 
 The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/download.html.
 
-This release contains a new Layout, JsonTemplateLayout, that is intended to ultimately replace JsonLayout. As its
-name suggests it uses a template to define the elements to include in the JSON. This Layout was contributed by the
-author of the log4j2-logstash-layout at GitHub, and who is now a member of the Log4j community.
-
-Log4j 2.14.0 adds support for MongoDB 4 and removes support for MongoDB 2.
-
-This release also contains a number of bug fixes which are listed below.
+This release contains a number of bug fixes and minor enhancements which are listed below.
 
 Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
 log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and
-later.
+later. SLF4J-2.0.0 alpha releases are not fully supported. See https://issues.apache.org/jira/browse/LOG4J2-2975.
 
 The Log4j ${relVersion} API, as well as many core components, maintains binary compatibility with previous releases.
 
