@@ -19,9 +19,16 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.TestPatternConverters;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -103,4 +110,36 @@ public class EncodingPatternConverterTest {
             sb.toString());
     }
 
+    @Test
+    public void testHandlesThrowable() {
+        final Configuration configuration = new DefaultConfiguration();
+        assertFalse(EncodingPatternConverter.newInstance(configuration, new String[]{"%msg", "XML"})
+            .handlesThrowable());
+        assertTrue(EncodingPatternConverter.newInstance(configuration, new String[]{"%xThrowable{full}", "JSON"})
+            .handlesThrowable());
+        assertTrue(EncodingPatternConverter.newInstance(configuration, new String[]{"%ex", "XML"})
+            .handlesThrowable());
+    }
+
+    @ConverterKeys("testhandlingthrowable")
+    @Plugin(name = "TestHandlingThrowableConverter", category = "Converter")
+    public static final class HandlingThrowableConverter extends LogEventPatternConverter {
+        private HandlingThrowableConverter() {
+            super("Format", "testhandlingthrowable");
+        }
+
+        public static HandlingThrowableConverter newInstance(final String[] options) {
+            return new HandlingThrowableConverter();
+        }
+
+        @Override
+        public boolean handlesThrowable() {
+            return true;
+        }
+
+        @Override
+        public void format(final LogEvent event, final StringBuilder toAppendTo) {
+            toAppendTo.append(event.getMessage().getFormat());
+        }
+    }
 }
