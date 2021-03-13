@@ -228,9 +228,20 @@ Useful for Graylog GELF TCP input. Cannot be used with compression.
 
 |messagePattern
 |String
-|The pattern to use to format the String. If not supplied only the text derived from the logging
-message will be used. See <<PatternLayout>> for information on the pattern
-strings
+|The pattern to use to format the String. A messagePattern and patternSelector cannot both be
+specified. If both are present the message pattern will be ignored and an error will be logged.
+If not supplied only the text derived from the logging message will be used. See
+link:#PatternLayout[PatternLayout]  for information on the pattern strings.
+
+|patternSelector
+|PatternSelector
+|The PatternSelector to use to format the String. A messagePattern and patternSelector cannot both be
+specified. If both are present the message pattern will be ignored and an error will be logged.
+If not supplied only the text derived from the logging message will be used.
+See link:#PatternSelectors[Pattern Selectors] for information on how to specify a
+PatternSelector.
+See link:#PatternLayout[PatternLayout] for information on the pattern strings.
+
 
 |threadContextExcludes
 |String
@@ -1785,6 +1796,7 @@ All the content that follows the level will be bright green.
 </PatternLayout>
 ----
 
+[#PatternSelectors]
 === Pattern Selectors
 
 The PatternLayout can be configured with a PatternSelector to allow it
