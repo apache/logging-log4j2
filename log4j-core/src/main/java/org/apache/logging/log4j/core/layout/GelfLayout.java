@@ -145,6 +145,8 @@ public final class GelfLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private String messagePattern = null;
 
+        @PluginElement("PatternSelector")
+        private PatternSelector patternSelector = null;
 
         public Builder() {
             setCharset(StandardCharsets.UTF_8);
@@ -177,8 +179,19 @@ public final class GelfLayout extends AbstractStringLayout {
                 checker = ListChecker.NOOP_CHECKER;
             }
             PatternLayout patternLayout = null;
+            if (messagePattern != null && patternSelector != null) {
+                LOGGER.error("A message pattern and PatternSelector cannot both be specified on GelfLayout, "
+                        + "ignoring message pattern");
+                messagePattern = null;
+            }
             if (messagePattern != null) {
                 patternLayout = PatternLayout.newBuilder().withPattern(messagePattern)
+                        .withAlwaysWriteExceptions(includeStacktrace)
+                        .withConfiguration(getConfiguration())
+                        .build();
+            }
+            if (patternSelector != null) {
+                patternLayout = PatternLayout.newBuilder().withPatternSelector(patternSelector)
                         .withAlwaysWriteExceptions(includeStacktrace)
                         .withConfiguration(getConfiguration())
                         .build();
@@ -307,6 +320,16 @@ public final class GelfLayout extends AbstractStringLayout {
          */
         public B setMessagePattern(final String pattern) {
             this.messagePattern = pattern;
+            return asBuilder();
+        }
+
+        /**
+         * The PatternSelector to use to format the message.
+         * @param patternSelector the PatternSelector.
+         * @return this builder
+         */
+        public B setPatternSelector(final PatternSelector patternSelector) {
+            this.patternSelector = patternSelector;
             return asBuilder();
         }
 

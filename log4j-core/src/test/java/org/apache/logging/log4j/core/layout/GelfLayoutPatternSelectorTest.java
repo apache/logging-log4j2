@@ -16,26 +16,32 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@LoggerContextSource("GelfLayoutTest3.xml")
+@LoggerContextSource("GelfLayoutPatternSelectorTest.xml")
 @UsingAnyThreadContext
 @Tag("json")
-public class GelfLayoutTest3 {
+public class GelfLayoutPatternSelectorTest {
 
     @Test
     public void gelfLayout(final LoggerContext context, @Named final ListAppender list) throws IOException {
@@ -44,9 +50,10 @@ public class GelfLayoutTest3 {
         ThreadContext.put("loginId", "rgoers");
         ThreadContext.put("internalId", "12345");
         logger.info("My Test Message");
-        final String gelf = list.getMessages().get(0);
+        logger.info(AbstractLogger.FLOW_MARKER, "My Test Message");
+        String gelf = list.getMessages().get(0);
         final ObjectMapper mapper = new ObjectMapper();
-        final JsonNode json = mapper.readTree(gelf);
+        JsonNode json = mapper.readTree(gelf);
         assertEquals("My Test Message", json.get("short_message").asText());
         assertEquals("myhost", json.get("host").asText());
         assertNotNull(json.get("_loginId"));
@@ -54,8 +61,21 @@ public class GelfLayoutTest3 {
         assertNull(json.get("_internalId"));
         assertNull(json.get("_requestId"));
         String message = json.get("full_message").asText();
+        assertFalse(message.contains("====="));
         assertTrue(message.contains("loginId=rgoers"));
-        assertTrue(message.contains("GelfLayoutTest3"));
+        assertTrue(message.contains("GelfLayoutPatternSelectorTest"));
+        gelf = list.getMessages().get(1);
+        json = mapper.readTree(gelf);
+        assertEquals("My Test Message", json.get("short_message").asText());
+        assertEquals("myhost", json.get("host").asText());
+        assertNotNull(json.get("_loginId"));
+        assertEquals("rgoers", json.get("_loginId").asText());
+        assertNull(json.get("_internalId"));
+        assertNull(json.get("_requestId"));
+        message = json.get("full_message").asText();
+        assertTrue(message.contains("====="));
+        assertTrue(message.contains("loginId=rgoers"));
+        assertTrue(message.contains("GelfLayoutPatternSelectorTest"));
     }
 
 }
