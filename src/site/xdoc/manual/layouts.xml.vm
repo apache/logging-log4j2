@@ -1604,6 +1604,16 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternRepeat"/>
+                <b>R</b>{string}{length}<br />
+                <b>repeat</b>{string}{length}
+              </td>
+              <td>Produces a string containing the requested number of instances of the specified string. For example,
+                "%repeat{*}{2}" will result in the string "**".
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
                 <a name="PatternReplace"/>
                 <b>replace</b>{pattern}{regex}{substitution}
               </td>
