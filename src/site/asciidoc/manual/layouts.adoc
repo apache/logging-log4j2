@@ -1362,6 +1362,11 @@ upper-case):
 |Outputs the number of milliseconds elapsed since the JVM was
 started until the creation of the logging event.
 
+|[[PatternRepeat]] *R*{string}{count} +
+*repeat*{string}{count}
+|Produces a string containing the requested number of instances of the specified string.
+For example, "%repeat{\*}{2}" will result in the string "**".
+
 |[[PatternReplace]] *replace*{pattern}{regex}{substitution}
 |Replaces occurrences of 'regex', a regular expression, with its
 replacement 'substitution' in the string resulting from evaluation of

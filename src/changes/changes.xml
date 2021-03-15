@@ -169,6 +169,9 @@
       </action>
     </release>
     <release version="2.15.0" date="2021-MM-DD" description="GA Release 2.15.0">
+      <action issue="LOG4J2-3044" dev="rgoers" type="add">
+        Add RepeatPatternConverter.
+      </action>
       <action issue="LOG4J2-3041" dev="rgoers" type="update">
         Allow a PatternSelector to be specified on GelfLayout.
       </action>
