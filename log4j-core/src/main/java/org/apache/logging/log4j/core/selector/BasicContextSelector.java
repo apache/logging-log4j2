@@ -71,6 +71,11 @@ public class BasicContextSelector implements ContextSelector {
     }
 
     @Override
+    public boolean isClassLoaderDependent() {
+        return false;
+    }
+
+    @Override
     public List<LoggerContext> getLoggerContexts() {
         final List<LoggerContext> list = new ArrayList<>();
         list.add(CONTEXT);

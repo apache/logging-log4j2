@@ -20,6 +20,7 @@ package org.apache.logging.log4j.jpl;
 import java.lang.System.Logger;
 import java.lang.System.LoggerFinder;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -38,6 +39,8 @@ public class Log4jSystemLoggerAdapter extends AbstractLoggerAdapter<Logger> {
 
     @Override
     protected LoggerContext getContext() {
-        return getContext(StackLocatorUtil.getCallerClass(LoggerFinder.class));
+        return getContext(LogManager.getFactory().isClassLoaderDependent()
+                ? StackLocatorUtil.getCallerClass(LoggerFinder.class)
+                : null);
     }
 }
