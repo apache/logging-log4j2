@@ -181,6 +181,11 @@
       <action issue="LOG4J2-3044" dev="rgoers" type="add">
         Add RepeatPatternConverter.
       </action>
+      <action issue="LOG4J2-2940" dev="ckozak" type="add">
+        Context selectors are aware of their dependence upon the callers ClassLoader, allowing
+        basic context selectors to avoid the unnecessary overhead of walking the stack to
+        determine the caller's ClassLoader.
+      </action>
       <action issue="LOG4J2-3041" dev="rgoers" type="update">
         Allow a PatternSelector to be specified on GelfLayout.
       </action>

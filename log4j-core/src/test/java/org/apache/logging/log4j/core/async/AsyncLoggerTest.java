@@ -72,6 +72,8 @@ public class AsyncLoggerTest {
 
         final String location = "testAsyncLogWritesToLog";
         assertTrue("no location", !line1.contains(location));
+
+        assertTrue(LogManager.getFactory().isClassLoaderDependent());
     }
 
     // NOTE: only define one @Test method per test class with Async Loggers to prevent spurious failures

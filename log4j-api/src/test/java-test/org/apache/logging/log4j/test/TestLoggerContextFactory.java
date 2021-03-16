@@ -43,4 +43,9 @@ public class TestLoggerContextFactory implements LoggerContextFactory {
     @Override
     public void removeContext(final LoggerContext context) {
     }
+
+    @Override
+    public boolean isClassLoaderDependent() {
+        return false;
+    }
 }
