@@ -106,5 +106,10 @@ public class AsyncLoggerCustomSelectorLocationTest {
         public void removeContext(final LoggerContext context) {
             // does not remove anything
         }
+
+        @Override
+        public boolean isClassLoaderDependent() {
+            return false;
+        }
     }
 }

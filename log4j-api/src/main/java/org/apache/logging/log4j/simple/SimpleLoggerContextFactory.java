@@ -44,4 +44,9 @@ public class SimpleLoggerContextFactory implements LoggerContextFactory {
     public void removeContext(final LoggerContext removeContext) {
         // do nothing
     }
+
+    @Override
+    public boolean isClassLoaderDependent() {
+        return false;
+    }
 }

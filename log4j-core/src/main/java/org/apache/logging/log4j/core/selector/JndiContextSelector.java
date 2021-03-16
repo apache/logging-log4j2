@@ -180,6 +180,11 @@ public class JndiContextSelector implements NamedContextSelector {
     }
 
     @Override
+    public boolean isClassLoaderDependent() {
+        return false;
+    }
+
+    @Override
     public LoggerContext removeContext(final String name) {
         return CONTEXT_MAP.remove(name);
     }
