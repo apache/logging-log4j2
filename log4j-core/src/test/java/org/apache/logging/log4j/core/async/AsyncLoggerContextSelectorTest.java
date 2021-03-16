@@ -65,4 +65,9 @@ public class AsyncLoggerContextSelectorTest {
         assertEquals(expectedContextName, context.getName());
     }
 
+    @Test
+    public void testDependentOnClassLoader() {
+        final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
+        assertTrue(selector.isClassLoaderDependent());
+    }
 }

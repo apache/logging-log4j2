@@ -25,9 +25,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public final class BasicContextSelectorTest {
-
 
     @BeforeClass
     public static void beforeClass() {
@@ -46,5 +46,10 @@ public final class BasicContextSelectorTest {
         assertEquals(LifeCycle.State.STARTED, context.getState());
         LogManager.shutdown();
         assertEquals(LifeCycle.State.STOPPED, context.getState());
+    }
+
+    @Test
+    public void testNotDependentOnClassLoader() {
+        assertFalse(LogManager.getFactory().isClassLoaderDependent());
     }
 }

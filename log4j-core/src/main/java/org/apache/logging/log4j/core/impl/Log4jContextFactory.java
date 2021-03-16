@@ -374,6 +374,11 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     }
 
     @Override
+    public boolean isClassLoaderDependent() {
+        return selector.isClassLoaderDependent();
+    }
+
+    @Override
     public Cancellable addShutdownCallback(final Runnable callback) {
         return isShutdownHookEnabled() ? shutdownCallbackRegistry.addShutdownCallback(callback) : null;
     }
