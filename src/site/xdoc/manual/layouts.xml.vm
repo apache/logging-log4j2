@@ -238,6 +238,17 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>Compress if data is larger than this number of bytes (optional, defaults to 1024)</td>
             </tr>
             <tr>
+              <td>includeMapMessage</td>
+              <td>boolean</td>
+              <td>Whether to include fields from MapMessages as additional fields (optional, default to true).</td>
+            </tr>
+            <tr>
+              <td>includeNullDelimiter</td>
+              <td>boolean</td>
+              <td>Whether to include NULL byte as delimiter after each event (optional, default to false).
+                Useful for Graylog GELF TCP input. Cannot be used with compression.</td>
+            </tr>
+            <tr>
               <td>includeStacktrace</td>
               <td>boolean</td>
               <td>Whether to include full stacktrace of logged Throwables (optional, default to true).
@@ -250,10 +261,19 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               <td>Whether to include thread context as additional fields (optional, default to true).</td>
             </tr>
             <tr>
-              <td>includeNullDelimiter</td>
-              <td>boolean</td>
-              <td>Whether to include NULL byte as delimiter after each event (optional, default to false).
-                  Useful for Graylog GELF TCP input. Cannot be used with compression.</td>
+              <td>mapMessageExcludes</td>
+              <td>String</td>
+              <td>A comma separated list of attributes from the MapMessage to exclude when formatting the event. This
+                attribute only applies when includeMapMessage="true" is specified. If mapMessageIncludes
+                are also specified this attribute will be ignored.</td>
+            </tr>
+            <tr>
+              <td>mapMessageIncludes</td>
+              <td>String</td>
+              <td>A comma separated list of attributes from the MapMessageto include when formatting the event. This
+                attribute only applies when includeMapMessage="true" is specified. If mapMessageExcludes
+                are also specified this attribute will override them. MapMessage fields specified here that
+                have no value will be omitted.</td>
             </tr>
             <tr>
               <td>messagePattern</td>

@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,38 @@ public class GelfLayout3Test {
         String message = json.get("full_message").asText();
         assertTrue(message.contains("loginId=rgoers"));
         assertTrue(message.contains("GelfLayout3Test"));
+        assertNull(json.get("arg1"));
+        assertNull(json.get("arg2"));
+    }
+
+    @Test
+    public void mapMessage(final LoggerContext context, @Named final ListAppender list) throws IOException {
+        list.clear();
+        final Logger logger = context.getLogger(getClass());
+        ThreadContext.put("loginId", "rgoers");
+        ThreadContext.put("internalId", "12345");
+        StringMapMessage message = new StringMapMessage();
+        message.put("arg1", "test1");
+        message.put("arg3", "test3");
+        message.put("message", "My Test Message");
+        logger.info(message);
+        final String gelf = list.getMessages().get(0);
+        final ObjectMapper mapper = new ObjectMapper();
+        final JsonNode json = mapper.readTree(gelf);
+        assertEquals("arg1=\"test1\" arg3=\"test3\" message=\"My Test Message\"",
+                json.get("short_message").asText());
+        assertEquals("myhost", json.get("host").asText());
+        assertNotNull(json.get("_loginId"));
+        assertEquals("rgoers", json.get("_loginId").asText());
+        assertNull(json.get("_internalId"));
+        assertNull(json.get("_requestId"));
+        String msg = json.get("full_message").asText();
+        assertTrue(msg.contains("loginId=rgoers"));
+        assertTrue(msg.contains("GelfLayout3Test"));
+        assertTrue(msg.contains("arg1=\"test1\""));
+        assertNull(json.get("arg2"));
+        assertEquals("test1", json.get("_arg1").asText());
+        assertEquals("test3", json.get("_arg3").asText());
     }
 
 }

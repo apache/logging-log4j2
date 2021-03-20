@@ -49,6 +49,7 @@ import org.apache.logging.log4j.core.util.JsonUtils;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -104,10 +105,12 @@ public final class GelfLayout extends AbstractStringLayout {
     private final String host;
     private final boolean includeStacktrace;
     private final boolean includeThreadContext;
+    private final boolean includeMapMessage;
     private final boolean includeNullDelimiter;
     private final boolean includeNewLineDelimiter;
     private final PatternLayout layout;
-    private final FieldWriter fieldWriter;
+    private final FieldWriter mdcWriter;
+    private final FieldWriter mapWriter;
 
     public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
         implements org.apache.logging.log4j.core.util.Builder<GelfLayout> {
@@ -143,6 +146,15 @@ public final class GelfLayout extends AbstractStringLayout {
         private String threadContextExcludes = null;
 
         @PluginBuilderAttribute
+        private String mapMessageIncludes = null;
+
+        @PluginBuilderAttribute
+        private String mapMessageExcludes = null;
+
+        @PluginBuilderAttribute
+        private boolean includeMapMessage = true;
+
+        @PluginBuilderAttribute
         private String messagePattern = null;
 
         @PluginElement("PatternSelector")
@@ -154,30 +166,8 @@ public final class GelfLayout extends AbstractStringLayout {
 
         @Override
         public GelfLayout build() {
-            ListChecker checker = null;
-            if (threadContextExcludes != null) {
-                final String[] array = threadContextExcludes.split(Patterns.COMMA_SEPARATOR);
-                if (array.length > 0) {
-                    List<String> excludes = new ArrayList<>(array.length);
-                    for (final String str : array) {
-                        excludes.add(str.trim());
-                    }
-                    checker = new ExcludeChecker(excludes);
-                }
-            }
-            if (threadContextIncludes != null) {
-                final String[] array = threadContextIncludes.split(Patterns.COMMA_SEPARATOR);
-                if (array.length > 0) {
-                    List<String> includes = new ArrayList<>(array.length);
-                    for (final String str : array) {
-                        includes.add(str.trim());
-                    }
-                    checker = new IncludeChecker(includes);
-                }
-            }
-            if (checker == null) {
-                checker = ListChecker.NOOP_CHECKER;
-            }
+            ListChecker mdcChecker = createChecker(threadContextExcludes, threadContextIncludes);
+            ListChecker mapChecker = createChecker(mapMessageExcludes, mapMessageIncludes);
             PatternLayout patternLayout = null;
             if (messagePattern != null && patternSelector != null) {
                 LOGGER.error("A message pattern and PatternSelector cannot both be specified on GelfLayout, "
@@ -197,8 +187,36 @@ public final class GelfLayout extends AbstractStringLayout {
                         .build();
             }
             return new GelfLayout(getConfiguration(), host, additionalFields, compressionType, compressionThreshold,
-                    includeStacktrace, includeThreadContext, includeNullDelimiter, includeNewLineDelimiter, checker,
-                    patternLayout);
+                    includeStacktrace, includeThreadContext, includeMapMessage, includeNullDelimiter,
+                    includeNewLineDelimiter, mdcChecker, mapChecker, patternLayout);
+        }
+
+        private ListChecker createChecker(String excludes, String includes) {
+            ListChecker checker = null;
+            if (excludes != null) {
+                final String[] array = excludes.split(Patterns.COMMA_SEPARATOR);
+                if (array.length > 0) {
+                    List<String> excludeList = new ArrayList<>(array.length);
+                    for (final String str : array) {
+                        excludeList.add(str.trim());
+                    }
+                    checker = new ExcludeChecker(excludeList);
+                }
+            }
+            if (includes != null) {
+                final String[] array = includes.split(Patterns.COMMA_SEPARATOR);
+                if (array.length > 0) {
+                    List<String> includeList = new ArrayList<>(array.length);
+                    for (final String str : array) {
+                        includeList.add(str.trim());
+                    }
+                    checker = new IncludeChecker(includeList);
+                }
+            }
+            if (checker == null) {
+                checker = ListChecker.NOOP_CHECKER;
+            }
+            return checker;
         }
 
         public String getHost() {
@@ -352,6 +370,36 @@ public final class GelfLayout extends AbstractStringLayout {
             this.threadContextExcludes = mdcExcludes;
             return asBuilder();
         }
+
+        /**
+         * Whether to include MapMessage fields as additional fields (optional, default to true).
+         *
+         * @return this builder
+         */
+        public B setIncludeMapMessage(final boolean includeMapMessage) {
+            this.includeMapMessage = includeMapMessage;
+            return asBuilder();
+        }
+
+        /**
+         * A comma separated list of thread context keys to include;
+         * @param mapMessageIncludes the list of keys.
+         * @return this builder
+         */
+        public B setMapMessageIncludes(final String mapMessageIncludes) {
+            this.mapMessageIncludes = mapMessageIncludes;
+            return asBuilder();
+        }
+
+        /**
+         * A comma separated list of MapMessage keys to exclude;
+         * @param mapMessageExcludes the list of keys.
+         * @return this builder
+         */
+        public B setMapMessageExcludes(final String mapMessageExcludes) {
+            this.mapMessageExcludes = mapMessageExcludes;
+            return asBuilder();
+        }
     }
 
     /**
@@ -360,14 +408,15 @@ public final class GelfLayout extends AbstractStringLayout {
     @Deprecated
     public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
                       final int compressionThreshold, final boolean includeStacktrace) {
-        this(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true, false, false,
-                null, null);
+        this(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true, true,
+                false, false, null, null, null);
     }
 
     private GelfLayout(final Configuration config, final String host, final KeyValuePair[] additionalFields,
             final CompressionType compressionType, final int compressionThreshold, final boolean includeStacktrace,
-            final boolean includeThreadContext, final boolean includeNullDelimiter, final boolean includeNewLineDelimiter,
-            final ListChecker listChecker, final PatternLayout patternLayout) {
+            final boolean includeThreadContext, final boolean includeMapMessage, final boolean includeNullDelimiter,
+            final boolean includeNewLineDelimiter, final ListChecker mdcChecker, final ListChecker mapChecker,
+            final PatternLayout patternLayout) {
         super(config, StandardCharsets.UTF_8, null, null);
         this.host = host != null ? host : NetUtils.getLocalHostname();
         this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
@@ -382,12 +431,14 @@ public final class GelfLayout extends AbstractStringLayout {
         this.compressionThreshold = compressionThreshold;
         this.includeStacktrace = includeStacktrace;
         this.includeThreadContext = includeThreadContext;
+        this.includeMapMessage = includeMapMessage;
         this.includeNullDelimiter = includeNullDelimiter;
         this.includeNewLineDelimiter = includeNewLineDelimiter;
         if (includeNullDelimiter && compressionType != CompressionType.OFF) {
             throw new IllegalArgumentException("null delimiter cannot be used with compression");
         }
-        this.fieldWriter = new FieldWriter(listChecker);
+        this.mdcWriter = new FieldWriter(mdcChecker);
+        this.mapWriter = new FieldWriter(mapChecker);
         this.layout = patternLayout;
     }
 
@@ -401,9 +452,13 @@ public final class GelfLayout extends AbstractStringLayout {
         sb.append(", includeThreadContext=").append(includeThreadContext);
         sb.append(", includeNullDelimiter=").append(includeNullDelimiter);
         sb.append(", includeNewLineDelimiter=").append(includeNewLineDelimiter);
-        String threadVars = fieldWriter.getChecker().toString();
+        String threadVars = mdcWriter.getChecker().toString();
         if (threadVars.length() > 0) {
             sb.append(", ").append(threadVars);
+        }
+        String mapVars = mapWriter.getChecker().toString();
+        if (mapVars.length() > 0) {
+            sb.append(", ").append(mapVars);
         }
         if (layout != null) {
             sb.append(", PatternLayout{").append(layout.toString()).append("}");
@@ -427,7 +482,8 @@ public final class GelfLayout extends AbstractStringLayout {
                 defaultBoolean = true) final boolean includeStacktrace) {
             // @formatter:on
         return new GelfLayout(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace,
-                true, false, false, null, null);
+                true, true, false, false,
+                null, null, null);
     }
 
     @PluginBuilderFactory
@@ -523,7 +579,10 @@ public final class GelfLayout extends AbstractStringLayout {
             }
         }
         if (includeThreadContext) {
-            event.getContextData().forEach(fieldWriter, builder);
+            event.getContextData().forEach(mdcWriter, builder);
+        }
+        if (includeMapMessage && event.getMessage() instanceof MapMessage) {
+            ((MapMessage<?, Object>) event.getMessage()).forEach((key, value) -> mapWriter.accept(key, value, builder));
         }
 
         if (event.getThrown() != null || layout != null) {

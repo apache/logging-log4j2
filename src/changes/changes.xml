@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.15.0" date="2021-MM-DD" description="GA Release 2.15.0">
+      <action issue="LOG4J2=3048" dev="rgoers" type="add">
+        Add improved MapMessge support to GelfLayout.
+      </action>
       <action issue="LOG4J2-3044" dev="rgoers" type="add">
         Add RepeatPatternConverter.
       </action>

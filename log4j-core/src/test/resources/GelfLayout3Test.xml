@@ -19,7 +19,8 @@
 <Configuration status="WARN" name="GelfLayoutTest3">
   <Appenders>
     <List name="list">
-      <GelfLayout host="myhost" includeThreadContext="true" threadContextIncludes="requestId,loginId">
+      <GelfLayout host="myhost" includeThreadContext="true" threadContextIncludes="requestId,loginId"
+                  mapMessageIncludes="arg1,arg2,arg3">
         <MessagePattern>%d [%t] %-5p %X{requestId, loginId} %C{1.}.%M:%L - %m%n"</MessagePattern>
         <KeyValuePair key="foo" value="FOO"/>
         <KeyValuePair key="runtime" value="$${java:runtime}"/>
