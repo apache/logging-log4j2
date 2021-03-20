@@ -210,6 +210,15 @@ Configure as follows to send to a Graylog 2.x server with TCP:
 |int
 |Compress if data is larger than this number of bytes (optional, defaults to 1024)
 
+|includeMapMessage
+|boolean
+|Whether to include fields from MapMessages as additional fields (optional, default to true).
+
+|includeNullDelimiter
+|boolean
+|Whether to include NULL byte as delimiter after each event (optional, default to false).
+Useful for Graylog GELF TCP input. Cannot be used with compression.
+
 |includeStacktrace
 |boolean
 |Whether to include full stacktrace of logged Throwables (optional, default to true).
@@ -221,10 +230,18 @@ will be included.
 |boolean
 |Whether to include thread context as additional fields (optional, default to true).
 
-|includeNullDelimiter
-|boolean
-|Whether to include NULL byte as delimiter after each event (optional, default to false).
-Useful for Graylog GELF TCP input. Cannot be used with compression.
+|mapMessageExcludes
+|String
+|A comma separated list of attributes from the MapMessage to exclude when formatting the event. This
+attribute only applies when includeMapMessage="true" is specified. If mapMessageIncludes
+are also specified this attribute will be ignored.
+
+|mapMessageIncludes
+|String
+|A comma separated list of attributes from the MapMessageto include when formatting the event. This
+attribute only applies when includeMapMessage="true" is specified. If mapMessageExcludes
+are also specified this attribute will override them. MapMessage fields specified here that
+have no value will be omitted.
 
 |messagePattern
 |String
