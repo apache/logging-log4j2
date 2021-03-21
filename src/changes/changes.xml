@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.15.0" date="2021-MM-DD" description="GA Release 2.15.0">
+      <action issue="LOG4J2-3050" dev="rgoers" type="add">
+        Allow AdditionalFields to be ignored if their value is null or a zero-length String.
+      </action>
       <action issue="LOG4J2-3049" dev="rgoers" type="add">
         Allow MapMessage and ThreadContext attributes to be prefixed.
       </action>

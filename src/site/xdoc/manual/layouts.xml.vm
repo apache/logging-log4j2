@@ -290,6 +290,13 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
                 <a href="#PatternLayout">PatternLayout</a> for information on the pattern strings.</td>
             </tr>
             <tr>
+              <td>omitEmptyFields</td>
+              <td>boolean</td>
+              <td>If true fields which are null or are zero-length strings will not be included as a field in
+              the Gelf JSON. This setting will not affect whether those fields appear in the message fields. The
+              default value is false.</td>
+            </tr>
+            <tr>
               <td>patternSelector</td>
               <td>PatternSelector</td>
               <td>The PatternSelector to use to format the String. A messagePattern and patternSelector cannot both be
