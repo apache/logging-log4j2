@@ -57,8 +57,10 @@ public class GelfLayout3Test {
         String message = json.get("full_message").asText();
         assertTrue(message.contains("loginId=rgoers"));
         assertTrue(message.contains("GelfLayout3Test"));
-        assertNull(json.get("arg1"));
-        assertNull(json.get("arg2"));
+        assertNull(json.get("_map.arg1"));
+        assertNull(json.get("_map.arg2"));
+        assertNull(json.get("_empty"));
+        assertEquals("FOO", json.get("_foo").asText());
     }
 
     @Test
@@ -69,13 +71,14 @@ public class GelfLayout3Test {
         ThreadContext.put("internalId", "12345");
         StringMapMessage message = new StringMapMessage();
         message.put("arg1", "test1");
+        message.put("arg2", "");
         message.put("arg3", "test3");
         message.put("message", "My Test Message");
         logger.info(message);
         final String gelf = list.getMessages().get(0);
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(gelf);
-        assertEquals("arg1=\"test1\" arg3=\"test3\" message=\"My Test Message\"",
+        assertEquals("arg1=\"test1\" arg2=\"\" arg3=\"test3\" message=\"My Test Message\"",
                 json.get("short_message").asText());
         assertEquals("myhost", json.get("host").asText());
         assertNotNull(json.get("_mdc.loginId"));
@@ -86,9 +89,11 @@ public class GelfLayout3Test {
         assertTrue(msg.contains("loginId=rgoers"));
         assertTrue(msg.contains("GelfLayout3Test"));
         assertTrue(msg.contains("arg1=\"test1\""));
-        assertNull(json.get("map.arg2"));
+        assertNull(json.get("_map.arg2"));
         assertEquals("test1", json.get("_map.arg1").asText());
         assertEquals("test3", json.get("_map.arg3").asText());
+        assertNull(json.get("_empty"));
+        assertEquals("FOO", json.get("_foo").asText());
     }
 
 }
