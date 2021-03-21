@@ -671,7 +671,7 @@ public final class GelfLayout extends AbstractStringLayout {
         public void accept(final String key, final Object value, final StringBuilder stringBuilder) {
             if (checker.check(key)) {
                 stringBuilder.append(QU);
-                JsonUtils.quoteAsString(prefix + key, stringBuilder);
+                JsonUtils.quoteAsString(Strings.concat(prefix, key), stringBuilder);
                 stringBuilder.append("\":\"");
                 JsonUtils.quoteAsString(toNullSafeString(String.valueOf(value)), stringBuilder);
                 stringBuilder.append(QC);

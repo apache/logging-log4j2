@@ -27,6 +27,8 @@ import java.util.Objects;
  */
 public final class Strings {
 
+    private static final ThreadLocal<StringBuilder> tempStr = ThreadLocal.withInitial(StringBuilder::new);
+
     /**
      * The empty string.
      */
@@ -283,6 +285,26 @@ public final class Strings {
     }
 
     /**
+     * Concatenates 2 Strings without allocation.
+     * @param str1 the first string.
+     * @param str2 the second string.
+     * @return the concatenated String.
+     */
+    public static String concat(String str1, String str2) {
+        if (isEmpty(str1)) {
+            return str2;
+        } else if (isEmpty(str2)) {
+            return str1;
+        }
+        StringBuilder sb = tempStr.get();
+        try {
+            return sb.append(str1).append(str2).toString();
+        } finally {
+            sb.setLength(0);
+        }
+    }
+
+    /**
      * Creates a new string repeating given {@code str} {@code count} times.
      * @param str input string
      * @param count the repetition count
@@ -294,11 +316,15 @@ public final class Strings {
         if (count < 0) {
             throw new IllegalArgumentException("count");
         }
-        StringBuilder sb = new StringBuilder(str.length() * count);
-        for (int index = 0; index < count; index++) {
-            sb.append(str);
+        StringBuilder sb = tempStr.get();
+        try {
+            for (int index = 0; index < count; index++) {
+                sb.append(str);
+            }
+            return sb.toString();
+        } finally {
+            sb.setLength(0);
         }
-        return sb.toString();
     }
 
 }
