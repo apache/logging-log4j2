@@ -50,11 +50,13 @@ public class GelfLayout3Test {
         final JsonNode json = mapper.readTree(gelf);
         assertEquals("My Test Message", json.get("short_message").asText());
         assertEquals("myhost", json.get("host").asText());
-        assertNotNull(json.get("_loginId"));
-        assertEquals("rgoers", json.get("_loginId").asText());
-        assertNull(json.get("_internalId"));
-        assertNull(json.get("_requestId"));
+        assertNotNull(json.get("_mdc.loginId"));
+        assertEquals("rgoers", json.get("_mdc.loginId").asText());
+        assertNull(json.get("_mdc.internalId"));
+        assertNull(json.get("_mdc.requestId"));
         String message = json.get("full_message").asText();
+        assertTrue(message.contains("loginId=rgoers"));
+        assertTrue(message.contains("GelfLayout3Test"));
         assertNull(json.get("arg1"));
         assertNull(json.get("arg2"));
     }
@@ -76,17 +78,17 @@ public class GelfLayout3Test {
         assertEquals("arg1=\"test1\" arg3=\"test3\" message=\"My Test Message\"",
                 json.get("short_message").asText());
         assertEquals("myhost", json.get("host").asText());
-        assertNotNull(json.get("_loginId"));
-        assertEquals("rgoers", json.get("_loginId").asText());
-        assertNull(json.get("_internalId"));
-        assertNull(json.get("_requestId"));
+        assertNotNull(json.get("_mdc.loginId"));
+        assertEquals("rgoers", json.get("_mdc.loginId").asText());
+        assertNull(json.get("_mdc.internalId"));
+        assertNull(json.get("_mdc.requestId"));
         String msg = json.get("full_message").asText();
         assertTrue(msg.contains("loginId=rgoers"));
         assertTrue(msg.contains("GelfLayout3Test"));
         assertTrue(msg.contains("arg1=\"test1\""));
-        assertNull(json.get("arg2"));
-        assertEquals("test1", json.get("_arg1").asText());
-        assertEquals("test3", json.get("_arg3").asText());
+        assertNull(json.get("map.arg2"));
+        assertEquals("test1", json.get("_map.arg1").asText());
+        assertEquals("test3", json.get("_map.arg3").asText());
     }
 
 }

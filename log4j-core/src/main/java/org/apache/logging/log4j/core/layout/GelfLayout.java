@@ -156,6 +156,12 @@ public final class GelfLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private String messagePattern = null;
 
+        @PluginBuilderAttribute
+        private String threadContextPrefix = "";
+
+        @PluginBuilderAttribute
+        private String mapPrefix = "";
+
         @PluginElement("PatternSelector")
         private PatternSelector patternSelector = null;
 
@@ -188,7 +194,7 @@ public final class GelfLayout extends AbstractStringLayout {
             }
             return new GelfLayout(getConfiguration(), host, additionalFields, compressionType, compressionThreshold,
                     includeStacktrace, includeThreadContext, includeMapMessage, includeNullDelimiter,
-                    includeNewLineDelimiter, mdcChecker, mapChecker, patternLayout);
+                    includeNewLineDelimiter, mdcChecker, mapChecker, patternLayout, threadContextPrefix, mapPrefix);
         }
 
         private ListChecker createChecker(String excludes, String includes) {
@@ -400,13 +406,37 @@ public final class GelfLayout extends AbstractStringLayout {
             this.mapMessageExcludes = mapMessageExcludes;
             return asBuilder();
         }
+
+        /**
+         * The String to prefix the ThreadContext attributes.
+         * @param prefix The prefix value. Null values will be ignored.
+         * @return this builder.
+         */
+        public B setThreadContextPrefix(final String prefix) {
+            if (prefix != null) {
+                this.threadContextPrefix = prefix;
+            }
+            return asBuilder();
+        }
+
+        /**
+         * The String to prefix the MapMessage attributes.
+         * @param prefix The prefix value. Null values will be ignored.
+         * @return this builder.
+         */
+        public B setMapPrefix(final String prefix) {
+            if (prefix != null) {
+                this.mapPrefix = prefix;
+            }
+            return asBuilder();
+        }
     }
 
     private GelfLayout(final Configuration config, final String host, final KeyValuePair[] additionalFields,
             final CompressionType compressionType, final int compressionThreshold, final boolean includeStacktrace,
             final boolean includeThreadContext, final boolean includeMapMessage, final boolean includeNullDelimiter,
             final boolean includeNewLineDelimiter, final ListChecker mdcChecker, final ListChecker mapChecker,
-            final PatternLayout patternLayout) {
+            final PatternLayout patternLayout, final String mdcPrefix, final String mapPrefix) {
         super(config, StandardCharsets.UTF_8, null, null);
         this.host = host != null ? host : NetUtils.getLocalHostname();
         this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
@@ -427,8 +457,8 @@ public final class GelfLayout extends AbstractStringLayout {
         if (includeNullDelimiter && compressionType != CompressionType.OFF) {
             throw new IllegalArgumentException("null delimiter cannot be used with compression");
         }
-        this.mdcWriter = new FieldWriter(mdcChecker);
-        this.mapWriter = new FieldWriter(mapChecker);
+        this.mdcWriter = new FieldWriter(mdcChecker, mdcPrefix);
+        this.mapWriter = new FieldWriter(mapChecker, mapPrefix);
         this.layout = patternLayout;
     }
 
@@ -603,16 +633,18 @@ public final class GelfLayout extends AbstractStringLayout {
 
     private static class FieldWriter implements TriConsumer<String, Object, StringBuilder> {
         private final ListChecker checker;
+        private final String prefix;
 
-        FieldWriter(ListChecker checker) {
+        FieldWriter(ListChecker checker, String prefix) {
             this.checker = checker;
+            this.prefix = prefix;
         }
 
         @Override
         public void accept(final String key, final Object value, final StringBuilder stringBuilder) {
             if (checker.check(key)) {
                 stringBuilder.append(QU);
-                JsonUtils.quoteAsString(key, stringBuilder);
+                JsonUtils.quoteAsString(prefix + key, stringBuilder);
                 stringBuilder.append("\":\"");
                 JsonUtils.quoteAsString(toNullSafeString(String.valueOf(value)), stringBuilder);
                 stringBuilder.append(QC);
@@ -622,7 +654,7 @@ public final class GelfLayout extends AbstractStringLayout {
         public ListChecker getChecker() {
             return checker;
         }
-    };
+    }
 
     private static final ThreadLocal<StringBuilder> messageStringBuilder = new ThreadLocal<>();
 

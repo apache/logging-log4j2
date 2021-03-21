@@ -243,6 +243,10 @@ attribute only applies when includeMapMessage="true" is specified. If mapMessage
 are also specified this attribute will override them. MapMessage fields specified here that
 have no value will be omitted.
 
+|mapPrefix
+|String
+|A String to prepend to all elements of the MapMessage when rendered as a field. Defaults to an empty String.
+
 |messagePattern
 |String
 |The pattern to use to format the String. A messagePattern and patternSelector cannot both be
@@ -259,7 +263,6 @@ See link:#PatternSelectors[Pattern Selectors] for information on how to specify 
 PatternSelector.
 See link:#PatternLayout[PatternLayout] for information on the pattern strings.
 
-
 |threadContextExcludes
 |String
 |A comma separated list of ThreadContext attributes to exclude when formatting the event. This
@@ -272,6 +275,10 @@ are also specified this attribute will be ignored.
 attribute only applies when includeThreadContext="true" is specified. If threadContextExcludes
 are also specified this attribute will override them. ThreadContext fields specified here that
 have no value will be omitted.
+
+|ThreadContextPrefix
+|String
+|A String to prepend to all elements of the ThreadContextMap when rendered as a field. Defaults to an empty String.
 |===
 
 To include any custom field in the output, use following syntax:
