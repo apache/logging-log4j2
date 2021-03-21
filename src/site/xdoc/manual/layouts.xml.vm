@@ -276,6 +276,12 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
                 have no value will be omitted.</td>
             </tr>
             <tr>
+              <td>mapPrefix</td>
+              <td>String</td>
+              <td>A String to prepend to all elements of the MapMessage when rendered as a field. Defaults to an
+              empty String.</td>
+            </tr>
+            <tr>
               <td>messagePattern</td>
               <td>String</td>
               <td>The pattern to use to format the String. A messagePattern and patternSelector cannot both be
@@ -307,6 +313,12 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
                 attribute only applies when includeThreadContext="true" is specified. If threadContextExcludes
                 are also specified this attribute will override them. ThreadContext fields specified here that
               have no value will be omitted.</td>
+            </tr>
+            <tr>
+              <td>ThreadContextPrefix</td>
+              <td>String</td>
+              <td>A String to prepend to all elements of the ThreadContextMap when rendered as a field. Defaults to an
+                empty String.</td>
             </tr>
             <caption align="top">GelfLayout Parameters</caption>
           </table>
