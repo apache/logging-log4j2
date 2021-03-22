@@ -119,6 +119,14 @@ public final class StackLocator {
     // migrated from Log4jLoggerFactory
     @PerformanceSensitive
     public Class<?> getCallerClass(final String fqcn, final String pkg) {
+        return getCallerClass(fqcn, pkg, 0);
+    }
+
+    @PerformanceSensitive
+    public Class<?> getCallerClass(final String fqcn, final String pkg, final int skipDepth) {
+        if (skipDepth < 0) {
+            throw new IllegalArgumentException("skipDepth cannot be negative");
+        }
         boolean next = false;
         Class<?> clazz;
         for (int i = 2; null != (clazz = getCallerClass(i)); i++) {
@@ -127,7 +135,9 @@ public final class StackLocator {
                 continue;
             }
             if (next && clazz.getName().startsWith(pkg)) {
-                return clazz;
+                return skipDepth == 0
+                        ? clazz
+                        : getCallerClass(i + skipDepth);
             }
         }
         // TODO: return Object.class
