@@ -48,11 +48,11 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
     @Override
     protected LoggerContext getContext() {
         final Class<?> anchor = LogManager.getFactory().isClassLoaderDependent()
-                ? StackLocatorUtil.getCallerClass(FQCN, PACKAGE)
+                ? StackLocatorUtil.getCallerClass(FQCN, PACKAGE, 1)
                 : null;
         return anchor == null
                 ? LogManager.getContext()
-                : getContext(StackLocatorUtil.getCallerClass(anchor));
+                : getContext(anchor);
     }
 
     Log4jMarkerFactory getMarkerFactory() {
