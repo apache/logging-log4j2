@@ -186,6 +186,11 @@
         basic context selectors to avoid the unnecessary overhead of walking the stack to
         determine the caller's ClassLoader.
       </action>
+      <action issue="LOG4J2-2940" dev="ckozak" type="add">
+        Add BasicAsyncLoggerContextSelector equivalent to AsyncLoggerContextSelector for
+        applications with a single LoggerContext. This selector avoids classloader lookup
+        overhead incurred by the existing AsyncLoggerContextSelector.
+      </action>
       <action issue="LOG4J2-3041" dev="rgoers" type="update">
         Allow a PatternSelector to be specified on GelfLayout.
       </action>
