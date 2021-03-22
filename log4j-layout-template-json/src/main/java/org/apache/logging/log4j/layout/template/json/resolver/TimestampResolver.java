@@ -191,7 +191,7 @@ import java.util.TimeZone;
  * </tr>
  * </table>
  */
-final class TimestampResolver implements EventResolver {
+public final class TimestampResolver implements EventResolver {
 
     private final EventResolver internalResolver;
 
@@ -381,7 +381,7 @@ final class TimestampResolver implements EventResolver {
 
         private Instant instant;
 
-        private char[] resolution = new char[
+        private final char[] resolution = new char[
                 /* integral: */ MAX_LONG_LENGTH +
                 /* dot: */ 1 +
                 /* fractional: */ MAX_LONG_LENGTH];

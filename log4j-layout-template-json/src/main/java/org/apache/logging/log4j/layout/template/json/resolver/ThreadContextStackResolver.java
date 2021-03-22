@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
  * }
  * </pre>
  */
-final class ThreadContextStackResolver implements EventResolver {
+public final class ThreadContextStackResolver implements EventResolver {
 
     private final Pattern itemPattern;
 

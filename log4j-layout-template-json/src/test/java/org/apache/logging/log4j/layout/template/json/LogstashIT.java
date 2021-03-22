@@ -109,10 +109,11 @@ class LogstashIT {
                     })
             .build();
 
+    // Note that EcsLayout doesn't support charset configuration, though it uses
+    // UTF-8 internally.
     private static final EcsLayout ECS_LAYOUT = EcsLayout
             .newBuilder()
             .setConfiguration(CONFIGURATION)
-            .setCharset(CHARSET)
             .setServiceName(SERVICE_NAME)
             .setEventDataset(EVENT_DATASET)
             .build();

@@ -16,4 +16,7 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+/**
+ * {@link TemplateResolver} specialized for {@link Throwable}s.
+ */
 interface StackTraceResolver extends TemplateResolver<Throwable> {}

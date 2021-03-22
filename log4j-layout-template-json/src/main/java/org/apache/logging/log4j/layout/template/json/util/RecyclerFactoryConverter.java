@@ -14,36 +14,21 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.resolver;
+package org.apache.logging.log4j.layout.template.json.util;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverter;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 
 /**
- * {@link TimestampResolver} factory.
+ * The default string (i.e., recycler factory spec) to {@link RecyclerFactory} type converter.
  */
-@Plugin(name = "TimestampResolverFactory", category = TemplateResolverFactory.CATEGORY)
-public final class TimestampResolverFactory implements EventResolverFactory {
-
-    private static final TimestampResolverFactory INSTANCE = new TimestampResolverFactory();
-
-    private TimestampResolverFactory() {}
-
-    @PluginFactory
-    public static TimestampResolverFactory getInstance() {
-        return INSTANCE;
-    }
+@Plugin(name = "RecyclerFactoryConverter", category = TypeConverters.CATEGORY)
+public final class RecyclerFactoryConverter implements TypeConverter<RecyclerFactory> {
 
     @Override
-    public String getName() {
-        return TimestampResolver.getName();
-    }
-
-    @Override
-    public TimestampResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        return new TimestampResolver(config);
+    public RecyclerFactory convert(final String recyclerFactorySpec) {
+        return RecyclerFactories.ofSpec(recyclerFactorySpec);
     }
 
 }

@@ -48,7 +48,7 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
  * }
  * </pre>
  */
-final class LoggerResolver implements EventResolver {
+public final class LoggerResolver implements EventResolver {
 
     private static final EventResolver NAME_RESOLVER =
             (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
@@ -71,9 +71,10 @@ final class LoggerResolver implements EventResolver {
     private static EventResolver createInternalResolver(
             final TemplateResolverConfig config) {
         final String fieldName = config.getString("field");
-        switch (fieldName) {
-            case "name": return NAME_RESOLVER;
-            case "fqcn": return FQCN_RESOLVER;
+        if ("name".equals(fieldName)) {
+            return NAME_RESOLVER;
+        } else if ("fqcn".equals(fieldName)) {
+            return FQCN_RESOLVER;
         }
         throw new IllegalArgumentException("unknown field: " + config);
     }

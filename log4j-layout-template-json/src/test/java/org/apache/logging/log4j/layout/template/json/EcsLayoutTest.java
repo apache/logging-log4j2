@@ -24,6 +24,8 @@ import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTem
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,8 @@ class EcsLayoutTest {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
 
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
+
     private static final String SERVICE_NAME = "test";
 
     private static final String EVENT_DATASET = SERVICE_NAME + ".log";
@@ -41,6 +45,7 @@ class EcsLayoutTest {
     private static final JsonTemplateLayout JSON_TEMPLATE_LAYOUT = JsonTemplateLayout
             .newBuilder()
             .setConfiguration(CONFIGURATION)
+            .setCharset(CHARSET)
             .setEventTemplateUri("classpath:EcsLayout.json")
             .setEventTemplateAdditionalFields(
                     new EventTemplateAdditionalField[]{
@@ -63,6 +68,11 @@ class EcsLayoutTest {
             .setServiceName(SERVICE_NAME)
             .setEventDataset(EVENT_DATASET)
             .build();
+
+    @Test
+    void test_EcsLayout_charset() {
+        Assertions.assertThat(ECS_LAYOUT.getCharset()).isEqualTo(CHARSET);
+    }
 
     @Test
     void test_lite_log_events() {

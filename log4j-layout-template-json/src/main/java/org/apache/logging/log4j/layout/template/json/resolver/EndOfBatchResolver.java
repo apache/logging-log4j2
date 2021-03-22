@@ -19,7 +19,10 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
-final class EndOfBatchResolver implements EventResolver {
+/**
+ * {@code endOfBatch} indicator resolver.
+ */
+public final class EndOfBatchResolver implements EventResolver {
 
     private static final EndOfBatchResolver INSTANCE = new EndOfBatchResolver();
 

@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.jctools.queues.MpmcArrayQueue;
@@ -50,14 +47,6 @@ public final class RecyclerFactories {
             return true;
         } catch (final ClassNotFoundException ignored) {
             return false;
-        }
-    }
-
-    @Plugin(name = "RecyclerFactory", category = TypeConverters.CATEGORY)
-    public static final class RecyclerFactoryConverter implements TypeConverter<RecyclerFactory> {
-        @Override
-        public RecyclerFactory convert(final String recyclerFactorySpec) {
-            return ofSpec(recyclerFactorySpec);
         }
     }
 

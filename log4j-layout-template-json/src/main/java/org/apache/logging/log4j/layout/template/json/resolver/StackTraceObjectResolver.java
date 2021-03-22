@@ -18,6 +18,9 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
+/**
+ * Exception stack trace to JSON object resolver used by {@link ExceptionResolver}.
+ */
 final class StackTraceObjectResolver implements StackTraceResolver {
 
     private final TemplateResolver<StackTraceElement> stackTraceElementResolver;

@@ -26,6 +26,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Exception stack trace to JSON string resolver used by {@link ExceptionResolver}.
+ */
 final class StackTraceStringResolver implements StackTraceResolver {
 
     private final Recycler<TruncatingBufferedPrintWriter> writerRecycler;

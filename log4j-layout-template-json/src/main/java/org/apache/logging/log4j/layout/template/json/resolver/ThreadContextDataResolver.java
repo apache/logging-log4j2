@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.LogEvent;
  *
  * @see ReadOnlyStringMapResolver
  */
-final class ThreadContextDataResolver extends ReadOnlyStringMapResolver {
+public final class ThreadContextDataResolver extends ReadOnlyStringMapResolver {
 
     ThreadContextDataResolver(
             final EventResolverContext context,

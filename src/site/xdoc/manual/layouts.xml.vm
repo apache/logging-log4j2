@@ -628,13 +628,14 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
     },
     "exception_message": {
       "${dollar}resolver": "exception",
-      "field": "message",
-      "stringified": true
+      "field": "message"
     },
     "stacktrace": {
       "${dollar}resolver": "exception",
       "field": "stackTrace",
-      "stringified": true
+      "stackTrace": {
+        "stringified": true
+      }
     }
   },
   "line_number": {

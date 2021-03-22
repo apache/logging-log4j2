@@ -40,7 +40,7 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
  * }
  * </pre>
  */
-final class MarkerResolver implements EventResolver {
+public final class MarkerResolver implements EventResolver {
 
     private static final TemplateResolver<LogEvent> NAME_RESOLVER =
             (final LogEvent logEvent, final JsonWriter jsonWriter) -> {

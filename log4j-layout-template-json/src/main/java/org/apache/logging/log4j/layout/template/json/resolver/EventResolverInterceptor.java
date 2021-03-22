@@ -16,34 +16,22 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
- * {@link TimestampResolver} factory.
+ * {@link TemplateResolverInterceptor} specialized for {@link LogEvent}s.
  */
-@Plugin(name = "TimestampResolverFactory", category = TemplateResolverFactory.CATEGORY)
-public final class TimestampResolverFactory implements EventResolverFactory {
+public interface EventResolverInterceptor
+        extends TemplateResolverInterceptor<LogEvent, EventResolverContext> {
 
-    private static final TimestampResolverFactory INSTANCE = new TimestampResolverFactory();
-
-    private TimestampResolverFactory() {}
-
-    @PluginFactory
-    public static TimestampResolverFactory getInstance() {
-        return INSTANCE;
+    @Override
+    default Class<LogEvent> getValueClass() {
+        return LogEvent.class;
     }
 
     @Override
-    public String getName() {
-        return TimestampResolver.getName();
-    }
-
-    @Override
-    public TimestampResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        return new TimestampResolver(config);
+    default Class<EventResolverContext> getContextClass() {
+        return EventResolverContext.class;
     }
 
 }
