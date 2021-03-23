@@ -184,6 +184,9 @@
       <action issue="LOG4J2-3041" dev="rgoers" type="update">
         Allow a PatternSelector to be specified on GelfLayout.
       </action>
+      <action issue="LOG4J2-3054" dev="ckozak" type="fix">
+        BasicContextSelector hasContext and shutdown take the default context into account
+      </action>
     </release>
     <release version="2.14.1" date="2021-03-06" description="GA Release 2.14.1">
       <!-- FIXES -->
