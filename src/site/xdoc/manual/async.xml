@@ -133,7 +133,8 @@
         <p>
           This is simplest to configure and gives the best performance. To make all loggers asynchronous,
           add the disruptor jar to the classpath and set the system property <tt>log4j2.contextSelector</tt>
-          to <tt>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</tt>.
+          to <tt>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</tt> or
+          <tt>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</tt>.
         </p>
         <p>
           By default, <a href="#Location">location</a> is not passed to the I/O thread by
@@ -147,6 +148,8 @@
 
 <!-- Don't forget to set system property
 -Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+or
+-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector
      to make all loggers asynchronous. -->
 
 <Configuration status="WARN">
@@ -165,9 +168,10 @@
   </Loggers>
 </Configuration>]]></pre>
         <p>
-          When <tt>AsyncLoggerContextSelector</tt> is used to make all loggers asynchronous, make sure to use normal
+          When <tt>AsyncLoggerContextSelector</tt> or <tt>BasicAsyncLoggerContextSelector</tt> is used to make all
+          loggers asynchronous, make sure to use normal
           <tt>&lt;root&gt;</tt> and <tt>&lt;logger&gt;</tt> elements in the configuration. The
-          AsyncLoggerContextSelector will ensure that all loggers are asynchronous, using a mechanism
+          context selector will ensure that all loggers are asynchronous, using a mechanism
           that is different from what happens when you configure <tt>&lt;asyncRoot&gt;</tt>
           or <tt>&lt;asyncLogger&gt;</tt>.
           The latter elements are intended for mixing async with sync loggers. If you use both mechanisms
