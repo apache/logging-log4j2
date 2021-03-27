@@ -18,6 +18,7 @@ package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -30,7 +31,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableParameterizedMessage implements ReusableMessage, ParameterVisitable, Clearable {
+public class ReusableParameterizedMessage implements ReusableMessage, ParameterVisitable, Clearable, MessageContentFormatterProvider {
 
     private static final int MIN_BUILDER_SIZE = 512;
     private static final int MAX_PARMS = 10;
@@ -39,8 +40,6 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
 
     private String messagePattern;
     private int argCount;
-    private int usedCount;
-    private final int[] indices = new int[256];
     private transient Object[] varargs;
     private transient Object[] params = new Object[MAX_PARMS];
     private transient Throwable throwable;
@@ -125,25 +124,31 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         this.varargs = null;
         this.messagePattern = messagePattern;
         this.argCount = argCount;
-        final int placeholderCount = count(messagePattern, indices);
-        initThrowable(paramArray, argCount, placeholderCount);
-        this.usedCount = Math.min(placeholderCount, argCount);
+
+        if (argCount > 0 && paramArray[argCount - 1] instanceof Throwable) {
+            int usedParams = count(messagePattern, null);
+            if (usedParams < argCount) {
+                // paramArray[argCount - 1] is definitely an instance of Throwable
+                this.throwable = (Throwable) paramArray[argCount - 1];
+            } else {
+                this.throwable = null;
+            }
+        }
     }
 
-    private static int count(final String messagePattern, final int[] indices) {
+    static int count(final String messagePattern, final int[] indices) {
+        if (indices == null) {
+            // if indices is null, we are counting only and don't care about
+            // retaining position information for fast substitution
+            // this is only used to determine if there is a Throwable in the params list
+            return ParameterFormatter.countArgumentPlaceholders(messagePattern);
+        }
+
         try {
             // try the fast path first
             return ParameterFormatter.countArgumentPlaceholders2(messagePattern, indices);
         } catch (final Exception ex) { // fallback if more than int[] length (256) parameter placeholders
             return ParameterFormatter.countArgumentPlaceholders(messagePattern);
-        }
-    }
-
-    private void initThrowable(final Object[] params, final int argCount, final int usedParams) {
-        if (usedParams < argCount && params[argCount - 1] instanceof Throwable) {
-            this.throwable = (Throwable) params[argCount - 1];
-        } else {
-            this.throwable = null;
         }
     }
 
@@ -323,11 +328,7 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
 
     @Override
     public void formatTo(final StringBuilder builder) {
-        if (indices[0] < 0) {
-            ParameterFormatter.formatMessage(builder, messagePattern, getParams(), argCount);
-        } else {
-            ParameterFormatter.formatMessage2(builder, messagePattern, getParams(), usedCount, indices);
-        }
+        Formatter.INSTANCE.formatTo(messagePattern, getParams(), argCount, builder);
     }
 
     /**
@@ -354,5 +355,42 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         varargs = null;
         messagePattern = null;
         throwable = null;
+    }
+
+    @Override
+    public MessageContentFormatter getMessageContentFormatter() {
+        return Formatter.INSTANCE;
+    }
+
+    private enum Formatter implements MessageContentFormatter {
+        INSTANCE;
+
+        private static final ThreadLocal<int[]> localIndices = new ThreadLocal<int[]>() {
+            @Override
+            protected int[] initialValue() {
+                return new int[256];
+            }
+        };
+
+        @Override
+        public void formatTo(String formatString, Object[] parameters, int parameterCount, StringBuilder buffer) {
+            // in the event that a parameter's toString generates a log message,
+            // avoids clobbering indices that were computed from the initial call
+            // see also LOG4J2-1583
+            if (AbstractLogger.getRecursionDepth() > 1) {
+                ParameterFormatter.formatMessage(buffer, formatString, parameters, parameterCount);
+                return;
+            }
+
+            int[] indices = localIndices.get();
+            int placeholderCount = ReusableParameterizedMessage.count(formatString, indices);
+            int usedCount = Math.min(placeholderCount, parameterCount);
+
+            if (indices[0] < 0) {
+                ParameterFormatter.formatMessage(buffer, formatString, parameters, parameterCount);
+            } else {
+                ParameterFormatter.formatMessage2(buffer, formatString, parameters, usedCount, indices);
+            }
+        }
     }
 }

@@ -42,7 +42,7 @@ import org.apache.logging.log4j.util.Strings;
  * Mutable implementation of the {@code LogEvent} interface.
  * @since 2.6
  */
-public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisitable {
+public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisitable, MessageContentFormatterProvider {
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
 
     private int threadPriority;
@@ -65,6 +65,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     private Marker marker;
     private String loggerFqcn;
     private StackTraceElement source;
+    private MessageContentFormatter messageContentFormatter;
     private ThreadContext.ContextStack contextStack;
     transient boolean reserved = false;
 
@@ -140,6 +141,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
             }
         }
         contextStack = null;
+        messageContentFormatter = null;
 
         // ThreadName should not be cleared: this field is set in the ReusableLogEventFactory
         // where this instance is kept in a ThreadLocal, so it usually does not change.
@@ -203,15 +205,32 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     @Override
     public Message getMessage() {
         if (message == null) {
-            return messageText == null ? EMPTY : this;
+            return (messageText == null && messageContentFormatter == null) ? EMPTY : this;
         }
         return message;
+    }
+
+    @Override
+    public MessageContentFormatter getMessageContentFormatter() {
+        // avoids re-formatting when another MutableLogEvent is initialized from
+        // this one, but formatting work has already been completed
+        if (messageText != null && messageText.length() > 0) {
+            return null;
+        }
+        return messageContentFormatter;
     }
 
     public void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
             final ReusableMessage reusable = (ReusableMessage) msg;
-            reusable.formatTo(getMessageTextForWriting());
+            if (Constants.FORMAT_MESSAGES_IN_BACKGROUND && msg instanceof MessageContentFormatterProvider) {
+                this.messageContentFormatter = ((MessageContentFormatterProvider) msg).getMessageContentFormatter();
+                if (messageContentFormatter == null) {
+                    reusable.formatTo(getMessageTextForWriting());
+                }
+            } else {
+                reusable.formatTo(getMessageTextForWriting());
+            }
             this.messageFormat = msg.getFormat();
             parameters = reusable.swapParameters(parameters == null ? new Object[10] : parameters);
             parameterCount = reusable.getParameterCount();
@@ -234,6 +253,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
      */
     @Override
     public String getFormattedMessage() {
+        if (messageContentFormatter != null && messageText.length() == 0) {
+            messageContentFormatter.formatTo(messageFormat, parameters, parameterCount, getMessageTextForWriting());
+        }
         return messageText.toString();
     }
 
@@ -275,6 +297,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
      */
     @Override
     public void formatTo(final StringBuilder buffer) {
+        if (messageContentFormatter != null && messageText.length() == 0) {
+            messageContentFormatter.formatTo(messageFormat, parameters, parameterCount, getMessageTextForWriting());
+        }
         buffer.append(messageText);
     }
 
@@ -302,7 +327,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     @Override
     public Message memento() {
         if (message == null) {
-            message = new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
+            message = new MementoMessage(getFormattedMessage(), messageFormat, getParameters());
         }
         return message;
     }

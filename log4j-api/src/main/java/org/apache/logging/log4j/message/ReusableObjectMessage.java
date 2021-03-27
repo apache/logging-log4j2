@@ -24,7 +24,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableObjectMessage implements ReusableMessage, ParameterVisitable, Clearable {
+public class ReusableObjectMessage implements ReusableMessage, ParameterVisitable, Clearable, MessageContentFormatterProvider {
     private static final long serialVersionUID = 6922476812535519960L;
 
     private transient Object obj;
@@ -134,5 +134,19 @@ public class ReusableObjectMessage implements ReusableMessage, ParameterVisitabl
     @Override
     public void clear() {
         obj = null;
+    }
+
+    @Override
+    public MessageContentFormatter getMessageContentFormatter() {
+        return Formatter.INSTANCE;
+    }
+
+    private enum Formatter implements MessageContentFormatter {
+        INSTANCE;
+
+        @Override
+        public void formatTo(String formatString, Object[] parameters, int parameterCount, StringBuilder buffer) {
+            StringBuilders.appendValue(buffer, parameters[0]);
+        }
     }
 }

@@ -45,10 +45,10 @@ import com.lmax.disruptor.EventFactory;
  * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
  * the life of the RingBuffer.
  */
-public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequence, ParameterVisitable {
+public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequence, ParameterVisitable, MessageContentFormatterProvider {
 
     /** The {@code EventFactory} for {@code RingBufferLogEvent}s. */
-    public static final Factory FACTORY = new Factory();
+    public static final EventFactory<RingBufferLogEvent> FACTORY = new Factory();
 
     private static final long serialVersionUID = 8462119088943934758L;
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
@@ -84,6 +84,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     private Marker marker;
     private String fqcn;
     private StackTraceElement location;
+    private MessageContentFormatter messageContentFormatter;
     private ContextStack contextStack;
 
     private transient AsyncLogger asyncLogger;
@@ -124,10 +125,27 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         return createMemento();
     }
 
+    @Override
+    public MessageContentFormatter getMessageContentFormatter() {
+        // avoids re-formatting when another RingBufferLogEvent is initialized from
+        // this one, but formatting work has already been completed
+        if (messageText != null && messageText.length() > 0) {
+            return null;
+        }
+        return messageContentFormatter;
+    }
+
     private void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
             final ReusableMessage reusable = (ReusableMessage) msg;
-            reusable.formatTo(getMessageTextForWriting());
+            if (Constants.FORMAT_MESSAGES_IN_BACKGROUND && msg instanceof MessageContentFormatterProvider) {
+                messageContentFormatter = ((MessageContentFormatterProvider) msg).getMessageContentFormatter();
+                if (messageContentFormatter == null) {
+                    reusable.formatTo(getMessageTextForWriting());
+                }
+            } else {
+                reusable.formatTo(getMessageTextForWriting());
+            }
             messageFormat = reusable.getFormat();
             parameters = reusable.swapParameters(parameters == null ? new Object[10] : parameters);
             parameterCount = reusable.getParameterCount();
@@ -207,7 +225,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     @Override
     public Message getMessage() {
         if (message == null) {
-            return messageText == null ? EMPTY : this;
+            return (messageText == null && messageContentFormatter == null) ? EMPTY : this;
         }
         return message;
     }
@@ -217,9 +235,13 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      */
     @Override
     public String getFormattedMessage() {
-        return messageText != null // LOG4J2-1527: may be null in web apps
-                ? messageText.toString() // note: please keep below "redundant" braces for readability
-                : (message == null ? null : message.getFormattedMessage());
+        if (messageText != null) { // LOG4J2-1527: may be null in web apps
+            if (messageContentFormatter != null && messageText.length() == 0) {
+                messageContentFormatter.formatTo(messageFormat, parameters, parameterCount, getMessageTextForWriting());
+            }
+            return messageText.toString();
+        }
+        return null;
     }
 
     /**
@@ -251,6 +273,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      */
     @Override
     public void formatTo(final StringBuilder buffer) {
+        if (messageContentFormatter != null && messageText.length() == 0) {
+            messageContentFormatter.formatTo(messageFormat, parameters, parameterCount, getMessageTextForWriting());
+        }
         buffer.append(messageText);
     }
 
@@ -287,7 +312,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     @Override
     public Message memento() {
         if (message == null) {
-            message = new MementoMessage(String.valueOf(messageText), messageFormat, getParameters());
+            message = new MementoMessage(getFormattedMessage(), messageFormat, getParameters());
         }
         return message;
     }
@@ -403,6 +428,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
                 contextData.clear();
             }
         }
+        messageContentFormatter = null;
 
         // ensure that excessively long char[] arrays are not kept in memory forever
         if (Constants.ENABLE_THREADLOCALS) {
