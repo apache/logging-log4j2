@@ -62,8 +62,10 @@
         Slf4j implementations walk the stack at most once rather than twice to determine the caller's class loader.
       </action>
       <action dev="ggregory" type="update">
-        - net.javacrumbs.json-unit:json-unit .................. 2.24.0 -> 2.25.0
+        - org.eclipse.persistence:javax.persistence ............. 2.1.1 -> 2.2.1
+        - org.eclipse.persistence:org.eclipse.persistence.jpa ... 2.6.5 -> 2.6.9
         - org.fusesource.jansi:jansi ............................ 2.3.1 -> 2.3.2
+        - net.javacrumbs.json-unit:json-unit .................. 2.24.0 -> 2.25.0
         - org.springframework:spring-aop ........................ 5.3.3 -> 5.3.5
         - org.springframework:spring-beans ...................... 5.3.3 -> 5.3.5
         - org.springframework:spring-context .................... 5.3.3 -> 5.3.5

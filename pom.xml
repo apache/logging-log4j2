@@ -236,7 +236,7 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
-    <javax.persistence>2.1.1</javax.persistence>
+    <javax.persistence>2.2.1</javax.persistence>
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
     <osgi.api.version>4.3.1</osgi.api.version>
     <activemq.version>5.16.1</activemq.version>
@@ -822,7 +822,7 @@
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
         <artifactId>org.eclipse.persistence.jpa</artifactId>
-        <version>2.6.5</version>
+        <version>2.7.8</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
