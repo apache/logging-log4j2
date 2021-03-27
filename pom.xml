@@ -190,7 +190,7 @@
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.12.2</jackson2Version>
     <spring-boot.version>2.3.6.RELEASE</spring-boot.version>
-    <springVersion>5.3.3</springVersion>
+    <springVersion>5.3.5</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.2</disruptorVersion>
@@ -455,7 +455,7 @@
       <dependency>
         <groupId>org.fusesource.jansi</groupId>
         <artifactId>jansi</artifactId>
-        <version>2.3.1</version>
+        <version>2.3.2</version>
         <optional>true</optional>
       </dependency>
       <dependency>
@@ -848,7 +848,7 @@
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit</artifactId>
-        <version>2.24.0</version>
+        <version>2.25.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -897,7 +897,7 @@
       <dependency>
         <groupId>org.tukaani</groupId>
         <artifactId>xz</artifactId>
-        <version>1.8</version>
+        <version>1.9</version>
         <scope>test</scope>
       </dependency>
       <!-- Used for the CSV layout -->

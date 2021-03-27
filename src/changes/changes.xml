@@ -61,6 +61,21 @@
       <action issue="LOG4J2-2940" dev="ckozak" type="fix">
         Slf4j implementations walk the stack at most once rather than twice to determine the caller's class loader.
       </action>
+      <action dev="ggregory" type="update">
+        - net.javacrumbs.json-unit:json-unit .................. 2.24.0 -> 2.25.0
+        - org.fusesource.jansi:jansi ............................ 2.3.1 -> 2.3.2
+        - org.springframework:spring-aop ........................ 5.3.3 -> 5.3.5
+        - org.springframework:spring-beans ...................... 5.3.3 -> 5.3.5
+        - org.springframework:spring-context .................... 5.3.3 -> 5.3.5
+        - org.springframework:spring-context-support ............ 5.3.3 -> 5.3.5
+        - org.springframework:spring-core ....................... 5.3.3 -> 5.3.5
+        - org.springframework:spring-expression ................. 5.3.3 -> 5.3.5
+        - org.springframework:spring-oxm ........................ 5.3.3 -> 5.3.5
+        - org.springframework:spring-test ....................... 5.3.3 -> 5.3.5
+        - org.springframework:spring-web ........................ 5.3.3 -> 5.3.5
+        - org.springframework:spring-webmvc ..................... 5.3.3 -> 5.3.5
+        - org.tukaani:xz ............................................ 1.8 -> 1.9
+      </action>
     </release>
     <release version="2.14.1" date="2021-03-06" description="GA Release 2.14.1">
       <!-- FIXES -->
