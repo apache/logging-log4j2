@@ -66,6 +66,7 @@
         - org.eclipse.persistence:org.eclipse.persistence.jpa ... 2.6.5 -> 2.6.9
         - org.fusesource.jansi:jansi ............................ 2.3.1 -> 2.3.2
         - net.javacrumbs.json-unit:json-unit .................. 2.24.0 -> 2.25.0
+        - org.liquibase:liquibase-core .......................... 3.5.3 -> 3.5.5
         - org.springframework:spring-aop ........................ 5.3.3 -> 5.3.5
         - org.springframework:spring-beans ...................... 5.3.3 -> 5.3.5
         - org.springframework:spring-context .................... 5.3.3 -> 5.3.5
