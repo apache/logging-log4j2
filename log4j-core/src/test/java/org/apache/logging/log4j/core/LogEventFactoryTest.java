@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;

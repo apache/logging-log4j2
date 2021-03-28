@@ -23,7 +23,7 @@ import java.util.Random;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.util.Timer;
-import org.apache.logging.log4j.categories.PerformanceTests;
+import org.apache.logging.log4j.core.categories.PerformanceTests;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.junit.BeforeClass;

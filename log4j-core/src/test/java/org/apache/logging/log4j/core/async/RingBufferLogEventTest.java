@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
@@ -111,6 +111,7 @@ public class RingBufferLogEventTest {
         assertEquals(456, evt.getInstant().getNanoOfMillisecond());
     }
 
+    @SuppressWarnings("BanSerializableRead")
     @Test
     public void testSerializationDeserialization() throws IOException, ClassNotFoundException {
         final RingBufferLogEvent evt = new RingBufferLogEvent();

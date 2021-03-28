@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.commons.io.file.PathUtils;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.junit.LoggerContextRule;
 import org.hamcrest.Matcher;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,8 +38,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.apache.logging.log4j.core.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertTrue;

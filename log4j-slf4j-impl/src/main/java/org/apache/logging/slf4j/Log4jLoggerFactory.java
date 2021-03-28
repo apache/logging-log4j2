@@ -41,12 +41,8 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
 
     @Override
     protected LoggerContext getContext() {
-        final Class<?> anchor = LogManager.getFactory().isClassLoaderDependent()
-                ? StackLocatorUtil.getCallerClass(FQCN, PACKAGE, 1)
-                : null;
-        return anchor == null
-                ? LogManager.getContext()
-                : getContext(anchor);
+        final Class<?> anchor = StackLocatorUtil.getCallerClass(FQCN, PACKAGE);
+        return anchor == null ? LogManager.getContext() : getContext(StackLocatorUtil.getCallerClass(anchor));
     }
 
     private LoggerContext validateContext(final LoggerContext context) {

@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.junit.LoggerContextSource;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;

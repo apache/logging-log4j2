@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.junit.StatusLoggerLevel;
+import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;

@@ -67,6 +67,7 @@ public class ThrowableProxyTest {
         ThrowableProxy proxy = new ThrowableProxy(new IOException("test"));
     }
 
+    @SuppressWarnings("BanSerializableRead")
     private ThrowableProxy deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
         final ObjectInputStream in = new ObjectInputStream(inArr);
@@ -367,6 +368,7 @@ public class ThrowableProxyTest {
      * unloaded known class (already compiled and available as a test resource:
      * org.apache.logging.log4j.core.impl.ForceNoDefClassFoundError.class).
      */
+    @SuppressWarnings("BanSerializableRead")
     @Test
     public void testStackWithUnloadableClass() throws Exception {
         final Stack<Class<?>> stack = new Stack<>();

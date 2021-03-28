@@ -282,7 +282,7 @@ attribute only applies when includeThreadContext="true" is specified. If threadC
 are also specified this attribute will override them. ThreadContext fields specified here that
 have no value will be omitted.
 
-|ThreadContextPrefix
+|threadContextPrefix
 |String
 |A String to prepend to all elements of the ThreadContextMap when rendered as a field. Defaults to an empty String.
 |===

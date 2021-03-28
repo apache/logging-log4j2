@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.async;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.logging.log4j.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.categories.AsyncLoggers;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

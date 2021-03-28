@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

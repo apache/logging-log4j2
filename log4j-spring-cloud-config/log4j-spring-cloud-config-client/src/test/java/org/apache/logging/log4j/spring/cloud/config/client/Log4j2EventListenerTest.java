@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.Watcher;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;

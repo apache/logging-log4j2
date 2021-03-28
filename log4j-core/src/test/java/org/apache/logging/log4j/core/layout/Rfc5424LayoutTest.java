@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;

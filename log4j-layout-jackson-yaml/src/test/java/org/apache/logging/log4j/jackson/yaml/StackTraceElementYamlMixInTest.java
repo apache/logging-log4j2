@@ -18,7 +18,7 @@ package org.apache.logging.log4j.jackson.yaml;
 
 import java.io.IOException;
 
-import org.apache.logging.log4j.categories.Layouts;
+import org.apache.logging.log4j.core.categories.Layouts;
 import org.apache.logging.log4j.jackson.Log4jStackTraceElementDeserializer;
 import org.junit.Assert;
 import org.junit.Test;

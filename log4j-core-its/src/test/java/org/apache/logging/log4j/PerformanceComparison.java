@@ -25,7 +25,7 @@ import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import org.apache.logging.log4j.categories.PerformanceTests;
+import org.apache.logging.log4j.core.categories.PerformanceTests;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Profiler;
 import org.junit.AfterClass;

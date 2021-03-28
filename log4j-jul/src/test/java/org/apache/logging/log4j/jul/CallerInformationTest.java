@@ -19,7 +19,7 @@ package org.apache.logging.log4j.jul;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

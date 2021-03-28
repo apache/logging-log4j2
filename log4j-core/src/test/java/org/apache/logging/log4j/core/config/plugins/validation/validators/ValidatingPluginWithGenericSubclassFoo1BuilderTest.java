@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.plugins.validation.PluginWithGenericSubclassFoo1Builder;
+import org.apache.logging.log4j.plugins.test.validation.PluginWithGenericSubclassFoo1Builder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

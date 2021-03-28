@@ -22,7 +22,7 @@ import java.sql.Statement;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.junit.LoggerContextRule;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 

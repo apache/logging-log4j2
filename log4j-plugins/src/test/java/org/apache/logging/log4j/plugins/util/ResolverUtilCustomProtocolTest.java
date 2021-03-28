@@ -17,8 +17,8 @@
 
 package org.apache.logging.log4j.plugins.util;
 
-import org.apache.logging.log4j.junit.CleanFolders;
-import org.apache.logging.log4j.junit.URLStreamHandlerFactoryRule;
+import org.apache.logging.log4j.test.junit.CleanFolders;
+import org.apache.logging.log4j.test.junit.URLStreamHandlerFactoryRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;

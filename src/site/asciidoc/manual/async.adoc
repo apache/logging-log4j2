@@ -119,8 +119,7 @@ required._
 This is simplest to configure and gives the best performance. To make
 all loggers asynchronous, add the disruptor jar to the classpath and set
 the system property `log4j2.contextSelector` to
-`org.apache.logging.log4j.core.async.AsyncLoggerContextSelector` or
-`org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector`.
+`org.apache.logging.log4j.core.async.AsyncLoggerContextSelector`.
 
 By default, link:#Location[location] is not passed to the I/O thread by
 asynchronous loggers. If one of your layouts or custom filters needs
@@ -135,8 +134,6 @@ A configuration that does not require location might look like:
 
 <!-- Don't forget to set system property
 -Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
-or
--Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector
      to make all loggers asynchronous. -->
 
 <Configuration status="WARN">
@@ -156,10 +153,9 @@ or
 </Configuration>
 ----
 
-When `AsyncLoggerContextSelector` or
-`BasicAsyncLoggerContextSelector` is used to make all loggers
+When `AsyncLoggerContextSelector` is used to make all loggers
 asynchronous, make sure to use normal `<root>` and `<logger>` elements
-in the configuration. The context selector will ensure that
+in the configuration. The AsyncLoggerContextSelector will ensure that
 all loggers are asynchronous, using a mechanism that is different from
 what happens when you configure `<asyncRoot>` or `<asyncLogger>`. The
 latter elements are intended for mixing async with sync loggers. If you

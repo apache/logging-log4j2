@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.junit.Named;
-import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.junit.Named;
+import org.apache.logging.log4j.core.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;

@@ -126,16 +126,4 @@ public interface ContextSelector {
      * @param context The context to remove.
      */
     void removeContext(LoggerContext context);
-
-    /**
-     * Determines whether or not this ContextSelector depends on the callers classloader.
-     * This method should be overridden by implementations, however a default method is provided which always
-     * returns {@code true} to preserve the old behavior.
-     *
-     * @return true if the class loader is required.
-     * @since 2.15.0
-     */
-    default boolean isClassLoaderDependent() {
-        return true;
-    }
 }

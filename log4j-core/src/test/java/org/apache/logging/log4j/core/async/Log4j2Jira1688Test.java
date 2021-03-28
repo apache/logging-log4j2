@@ -22,10 +22,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.junit.LoggerContextRule;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;

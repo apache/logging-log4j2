@@ -23,7 +23,9 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -152,15 +154,36 @@ public final class LoaderUtil {
         if (tcl != null) {
             classLoaders.add(tcl);
         }
-	if (!isForceTccl()) {
-            accumulateClassLoaders(LoaderUtil.class.getClassLoader(), classLoaders);
-            accumulateClassLoaders(tcl == null ? null : tcl.getParent(), classLoaders);
-            final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-            if (systemClassLoader != null) {
-                classLoaders.add(systemClassLoader);
+        ModuleLayer layer = LoaderUtil.class.getModule().getLayer();
+        if (layer == null) {
+            if (!isForceTccl()) {
+                accumulateClassLoaders(LoaderUtil.class.getClassLoader(), classLoaders);
+                accumulateClassLoaders(tcl == null ? null : tcl.getParent(), classLoaders);
+                final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+                if (systemClassLoader != null) {
+                    classLoaders.add(systemClassLoader);
+                }
+            }
+        } else {
+            accumulateLayerClassLoaders(layer, classLoaders);
+            if (layer != ModuleLayer.boot()) {
+                for (Module module : ModuleLayer.boot().modules()) {
+                    accumulateClassLoaders(module.getClassLoader(), classLoaders);
+                }
             }
         }
-        return classLoaders.toArray(new ClassLoader[classLoaders.size()]);
+        return classLoaders.toArray(new ClassLoader[0]);
+    }
+
+    private static void accumulateLayerClassLoaders(ModuleLayer layer, Collection<ClassLoader> classLoaders) {
+        for (Module module : layer.modules()) {
+            accumulateClassLoaders(module.getClassLoader(), classLoaders);
+        }
+        if (layer.parents().size() > 0) {
+            for (ModuleLayer parent : layer.parents()) {
+                accumulateLayerClassLoaders(parent, classLoaders);
+            }
+        }
     }
 
     /**
@@ -346,6 +369,13 @@ public final class LoaderUtil {
         return resources;
     }
 
+    /**
+     * This method will only find resources that follow the JPMS rules for encapsulation. Resources
+     * on the class path should be found as normal along with resources with no package name in all
+     * modules. Resources within packages in modules must declare those resources open to org.apache.logging.log4j.
+     * @param resource The resource to locate.
+     * @return The located resources.
+     */
     static Collection<UrlResource> findUrlResources(final String resource) {
         // @formatter:off
         final ClassLoader[] candidates = {

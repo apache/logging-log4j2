@@ -18,13 +18,13 @@ package org.apache.logging.slf4j;
 
 import java.io.Serializable;
 
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.logging.log4j.SerializableMatchers.serializesRoundTrip;
+import static org.apache.logging.log4j.test.SerializableMatchers.serializesRoundTrip;
 import static org.junit.Assert.*;
 
 /**

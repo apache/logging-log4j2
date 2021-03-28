@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.junit.UsingThreadContextMap;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;

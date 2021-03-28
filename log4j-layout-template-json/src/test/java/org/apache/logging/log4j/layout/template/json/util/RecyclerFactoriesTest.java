@@ -18,8 +18,8 @@ package org.apache.logging.log4j.layout.template.json.util;
 
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.convert.TypeConverterRegistry;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.core.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.junit.Named;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.assertj.core.api.Assertions;

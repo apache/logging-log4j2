@@ -50,6 +50,7 @@ public class SerializationTestHelper {
      * @throws IOException            on IO error.
      * @throws ClassNotFoundException if class not found.
      */
+    @SuppressWarnings("BanSerializableRead")
     public static Object serializeClone(final Object obj)
         throws IOException, ClassNotFoundException {
         final ByteArrayOutputStream memOut = new ByteArrayOutputStream();
@@ -70,6 +71,7 @@ public class SerializationTestHelper {
      * @return deserialized object.
      * @throws Exception thrown on IO or deserialization exception.
      */
+    @SuppressWarnings("BanSerializableRead")
     public static Object deserializeStream(final String witness) throws Exception {
         try (final ObjectInputStream objIs = new ObjectInputStream(new FileInputStream(witness))) {
             return objIs.readObject();

@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.categories.AsyncLoggers;
 import org.junit.experimental.categories.Category;
 
 // Note: the different ThreadContextMap implementations cannot be parameterized:

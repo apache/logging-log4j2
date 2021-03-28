@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.junit.Named;
-import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.junit.Named;
+import org.apache.logging.log4j.core.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;

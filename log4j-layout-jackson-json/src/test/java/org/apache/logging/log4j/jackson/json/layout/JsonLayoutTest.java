@@ -30,7 +30,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.categories.Layouts;
+import org.apache.logging.log4j.core.categories.Layouts;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;

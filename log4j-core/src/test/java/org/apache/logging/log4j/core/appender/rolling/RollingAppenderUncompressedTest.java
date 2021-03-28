@@ -25,7 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.junit.CleanFolders;
+import org.apache.logging.log4j.test.junit.CleanFolders;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

@@ -20,8 +20,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.logging.log4j.AbstractSerializationTest;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.test.AbstractSerializationTest;
 import org.junit.runners.Parameterized.Parameters;
 
 public class LoggerSerializationTest extends AbstractSerializationTest {

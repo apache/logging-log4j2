@@ -158,12 +158,6 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     @Override
-    public boolean isClassLoaderDependent() {
-        // By definition the ClassLoaderContextSelector depends on the callers class loader.
-        return true;
-    }
-
-    @Override
     public List<LoggerContext> getLoggerContexts() {
         final List<LoggerContext> list = new ArrayList<>();
         final Collection<AtomicReference<WeakReference<LoggerContext>>> coll = CONTEXT_MAP.values();

@@ -1725,9 +1725,6 @@ circumstances. See link:logsep.html[Log Separation] for more details.
 Available context selector implementation classes: +
 `org.apache.logging.log4j.core.async .AsyncLoggerContextSelector` -
 makes link:async.html[all loggers asynchronous]. +
-`org.apache.logging.log4j.core.async .BasicAsyncLoggerContextSelector` -
-makes link:async.html[all loggers asynchronous] using a single shared
-AsyncLoggerContext. +
 `org.apache.logging.log4j.core.selector .BasicContextSelector` - creates
 a single shared LoggerContext. +
 `org.apache.logging.log4j.core.selector .ClassLoaderContextSelector` -
