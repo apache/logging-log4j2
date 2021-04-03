@@ -18,32 +18,36 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
+
+import java.util.Collections;
 
 /**
- * {@link TimestampResolver} factory.
+ * Interceptor to add a root object key to the event template.
+ *
+ * @see JsonTemplateLayout.Builder#getEventTemplateRootObjectKey()
  */
-@Plugin(name = "TimestampResolverFactory", category = TemplateResolverFactory.CATEGORY)
-public final class TimestampResolverFactory implements EventResolverFactory {
+@Plugin(name = "EventRootObjectKeyInterceptor", category = TemplateResolverInterceptor.CATEGORY)
+public class EventRootObjectKeyInterceptor implements EventResolverInterceptor {
 
-    private static final TimestampResolverFactory INSTANCE = new TimestampResolverFactory();
+    private static final EventRootObjectKeyInterceptor INSTANCE =
+            new EventRootObjectKeyInterceptor();
 
-    private TimestampResolverFactory() {}
+    private EventRootObjectKeyInterceptor() {}
 
     @PluginFactory
-    public static TimestampResolverFactory getInstance() {
+    public static EventRootObjectKeyInterceptor getInstance() {
         return INSTANCE;
     }
 
     @Override
-    public String getName() {
-        return TimestampResolver.getName();
-    }
-
-    @Override
-    public TimestampResolver create(
+    public Object processTemplateBeforeResolverInjection(
             final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        return new TimestampResolver(config);
+            final Object node) {
+        String eventTemplateRootObjectKey = context.getEventTemplateRootObjectKey();
+        return eventTemplateRootObjectKey != null
+                ? Collections.singletonMap(eventTemplateRootObjectKey, node)
+                : node;
     }
 
 }

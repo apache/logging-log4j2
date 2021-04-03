@@ -22,13 +22,15 @@ import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 
 /**
  * Exception root cause resolver.
- *
+ * <p>
  * Note that this resolver is toggled by {@link
- * JsonTemplateLayout.Builder#setStackTraceEnabled(boolean)}.
+ * JsonTemplateLayout.Builder#setStackTraceEnabled(boolean) stackTraceEnabled}
+ * layout configuration, which is by default populated from <tt>log4j.layout.jsonTemplate.stackTraceEnabled</tt>
+ * system property.
  *
  * @see ExceptionResolver
  */
-final class ExceptionRootCauseResolver extends ExceptionResolver {
+public final class ExceptionRootCauseResolver extends ExceptionResolver {
 
     ExceptionRootCauseResolver(
             final EventResolverContext context,

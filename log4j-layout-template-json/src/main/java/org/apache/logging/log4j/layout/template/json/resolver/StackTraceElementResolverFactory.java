@@ -16,28 +16,41 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-final class StackTraceElementObjectResolverFactory
-        implements TemplateResolverFactory<StackTraceElement, StackTraceElementObjectResolverContext, StackTraceElementObjectResolver> {
+/**
+ * {@link StackTraceElementResolver} factory.
+ */
+final class StackTraceElementResolverFactory
+        implements TemplateResolverFactory<StackTraceElement, StackTraceElementResolverContext> {
 
-    private static final StackTraceElementObjectResolverFactory INSTANCE =
-            new StackTraceElementObjectResolverFactory();
+    private static final StackTraceElementResolverFactory INSTANCE =
+            new StackTraceElementResolverFactory();
 
-    private StackTraceElementObjectResolverFactory() {}
+    private StackTraceElementResolverFactory() {}
 
-    public static StackTraceElementObjectResolverFactory getInstance() {
+    static StackTraceElementResolverFactory getInstance() {
         return INSTANCE;
     }
 
     @Override
-    public String getName() {
-        return StackTraceElementObjectResolver.getName();
+    public Class<StackTraceElement> getValueClass() {
+        return StackTraceElement.class;
     }
 
     @Override
-    public StackTraceElementObjectResolver create(
-            final StackTraceElementObjectResolverContext context,
+    public Class<StackTraceElementResolverContext> getContextClass() {
+        return StackTraceElementResolverContext.class;
+    }
+
+    @Override
+    public String getName() {
+        return StackTraceElementResolver.getName();
+    }
+
+    @Override
+    public StackTraceElementResolver create(
+            final StackTraceElementResolverContext context,
             final TemplateResolverConfig config) {
-        return new StackTraceElementObjectResolver(config);
+        return new StackTraceElementResolver(config);
     }
 
 }

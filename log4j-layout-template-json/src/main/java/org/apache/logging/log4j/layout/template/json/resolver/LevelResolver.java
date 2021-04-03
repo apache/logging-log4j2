@@ -72,9 +72,9 @@ import java.util.stream.Collectors;
  * }
  * </pre>
  */
-final class LevelResolver implements EventResolver {
+public final class LevelResolver implements EventResolver {
 
-    private static String[] SEVERITY_CODE_RESOLUTION_BY_STANDARD_LEVEL_ORDINAL;
+    private static final String[] SEVERITY_CODE_RESOLUTION_BY_STANDARD_LEVEL_ORDINAL;
 
     static {
         final int levelCount = Level.values().length;
@@ -113,21 +113,20 @@ final class LevelResolver implements EventResolver {
             final TemplateResolverConfig config) {
         final JsonWriter jsonWriter = context.getJsonWriter();
         final String fieldName = config.getString("field");
-        switch (fieldName) {
-            case "name": return createNameResolver(jsonWriter);
-            case "severity": {
-                final String severityFieldName =
-                        config.getString(new String[]{"severity", "field"});
-                switch (severityFieldName) {
-                    case "keyword": return createSeverityKeywordResolver(jsonWriter);
-                    case "code": return SEVERITY_CODE_RESOLVER;
-                    default:
-                        throw new IllegalArgumentException(
-                                "unknown severity field: " + config);
-                }
+        if ("name".equals(fieldName)) {
+            return createNameResolver(jsonWriter);
+        } else if ("severity".equals(fieldName)) {
+            final String severityFieldName =
+                    config.getString(new String[]{"severity", "field"});
+            if ("keyword".equals(severityFieldName)) {
+                return createSeverityKeywordResolver(jsonWriter);
+            } else if ("code".equals(severityFieldName)) {
+                return SEVERITY_CODE_RESOLVER;
             }
-            default: throw new IllegalArgumentException("unknown field: " + config);
+            throw new IllegalArgumentException(
+                    "unknown severity field: " + config);
         }
+        throw new IllegalArgumentException("unknown field: " + config);
     }
 
     private static EventResolver createNameResolver(

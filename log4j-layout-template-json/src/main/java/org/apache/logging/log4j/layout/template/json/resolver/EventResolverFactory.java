@@ -18,4 +18,23 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
 
-interface EventResolverFactory<R extends TemplateResolver<LogEvent>> extends TemplateResolverFactory<LogEvent, EventResolverContext, R> {}
+/**
+ * {@link TemplateResolverFactory} specialized for {@link LogEvent}s.
+ *
+ * @see EventResolver
+ * @see EventResolverContext
+ */
+public interface EventResolverFactory
+        extends TemplateResolverFactory<LogEvent, EventResolverContext> {
+
+    @Override
+    default Class<LogEvent> getValueClass() {
+        return LogEvent.class;
+    }
+
+    @Override
+    default Class<EventResolverContext> getContextClass() {
+        return EventResolverContext.class;
+    }
+
+}

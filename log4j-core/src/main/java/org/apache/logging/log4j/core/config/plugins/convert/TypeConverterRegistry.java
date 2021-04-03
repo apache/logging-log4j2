@@ -86,8 +86,9 @@ public class TypeConverterRegistry {
             if (clazz.isEnum()) {
                 @SuppressWarnings({"unchecked","rawtypes"})
                 final EnumConverter<? extends Enum> converter = new EnumConverter(clazz.asSubclass(Enum.class));
-                registry.putIfAbsent(type, converter);
-                return converter;
+                synchronized (INSTANCE_LOCK) {
+                    return registerConverter(type, converter);
+                }
             }
         }
         // look for compatible converters
@@ -96,8 +97,9 @@ public class TypeConverterRegistry {
             if (TypeUtil.isAssignable(type, key)) {
                 LOGGER.debug("Found compatible TypeConverter<{}> for type [{}].", key, type);
                 final TypeConverter<?> value = entry.getValue();
-                registry.putIfAbsent(type, value);
-                return value;
+                synchronized (INSTANCE_LOCK) {
+                    return registerConverter(type, value);
+                }
             }
         }
         throw new UnknownFormatConversionException(type.toString());
@@ -119,11 +121,52 @@ public class TypeConverterRegistry {
                 final Class<? extends TypeConverter> pluginClass =  clazz.asSubclass(TypeConverter.class);
                 final Type conversionType = getTypeConverterSupportedType(pluginClass);
                 final TypeConverter<?> converter = ReflectionUtil.instantiate(pluginClass);
-                if (registry.putIfAbsent(conversionType, converter) != null) {
-                    LOGGER.warn("Found a TypeConverter [{}] for type [{}] that already exists.", converter,
-                        conversionType);
-                }
+                registerConverter(conversionType, converter);
             }
+        }
+    }
+
+    /**
+     * Attempts to register the given converter and returns the effective
+     * converter associated with the given type.
+     * <p>
+     * Registration will fail if there already exists a converter for the given
+     * type and neither the existing, nor the provided converter extends from {@link Comparable}.
+     */
+    private TypeConverter<?> registerConverter(
+            final Type conversionType,
+            final TypeConverter<?> converter) {
+        final TypeConverter<?> conflictingConverter = registry.get(conversionType);
+        if (conflictingConverter != null) {
+            final boolean overridable;
+            if (converter instanceof Comparable) {
+                @SuppressWarnings("unchecked")
+                final Comparable<TypeConverter<?>> comparableConverter =
+                        (Comparable<TypeConverter<?>>) converter;
+                overridable = comparableConverter.compareTo(conflictingConverter) < 0;
+            } else if (conflictingConverter instanceof Comparable) {
+                @SuppressWarnings("unchecked")
+                final Comparable<TypeConverter<?>> comparableConflictingConverter =
+                        (Comparable<TypeConverter<?>>) conflictingConverter;
+                overridable = comparableConflictingConverter.compareTo(converter) > 0;
+            } else {
+                overridable = false;
+            }
+            if (overridable) {
+                LOGGER.debug(
+                        "Replacing TypeConverter [{}] for type [{}] with [{}] after comparison.",
+                        conflictingConverter, conversionType, converter);
+                registry.put(conversionType, converter);
+                return converter;
+            } else {
+                LOGGER.warn(
+                        "Ignoring TypeConverter [{}] for type [{}] that conflicts with [{}], since they are not comparable.",
+                        converter, conversionType, conflictingConverter);
+                return conflictingConverter;
+            }
+        } else {
+            registry.put(conversionType, converter);
+            return converter;
         }
     }
 

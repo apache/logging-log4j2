@@ -16,35 +16,31 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-
-import java.util.List;
-import java.util.Map;
-
 /**
- * Context used to compile a template and passed to
- * {@link TemplateResolverFactory#create(TemplateResolverContext, TemplateResolverConfig)
- * template resolver factory creator}s.
+ * Main {@link TemplateResolver} compilation interception interface.
  *
- * @param <V> type of the value passed to the resolver as input
- * @param <C> type of the context passed to the {@link TemplateResolverFactory resolver factory}
- *
- * @see TemplateResolverFactory
+ * @param <V> type of the value passed to the {@link TemplateResolver resolver}
+ * @param <C> type of the context employed
  */
-interface TemplateResolverContext<V, C extends TemplateResolverContext<V, C>> {
-
-    Class<C> getContextClass();
-
-    Map<String, ? extends TemplateResolverFactory<V, C>> getResolverFactoryByName();
-
-    List<? extends TemplateResolverInterceptor<V, C>> getResolverInterceptors();
-
-    TemplateResolverStringSubstitutor<V> getSubstitutor();
-
-    JsonWriter getJsonWriter();
+public interface TemplateResolverInterceptor<V, C extends TemplateResolverContext<V, C>> {
 
     /**
-     * Process the read template before compiler (i.e.,
+     * Main plugin category for {@link TemplateResolverInterceptor} implementations.
+     */
+    String CATEGORY = "JsonTemplateResolverInterceptor";
+
+    /**
+     * The targeted value class.
+     */
+    Class<V> getValueClass();
+
+    /**
+     * The targeted {@link TemplateResolverContext} class.
+     */
+    Class<C> getContextClass();
+
+    /**
+     * Intercept the read template before compiler (i.e.,
      * {@link TemplateResolvers#ofTemplate(TemplateResolverContext, String)}
      * starts injecting resolvers.
      * <p>
@@ -53,7 +49,7 @@ interface TemplateResolverContext<V, C extends TemplateResolverContext<V, C>> {
      * @param node the root object of the read template
      * @return the root object of the template to be compiled
      */
-    default Object processTemplateBeforeResolverInjection(Object node) {
+    default Object processTemplateBeforeResolverInjection(C context, Object node) {
         return node;
     }
 

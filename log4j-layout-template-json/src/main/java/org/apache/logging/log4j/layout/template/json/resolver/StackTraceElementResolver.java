@@ -37,12 +37,12 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
  *
  * <pre>
  * {
- *   "$resolver": "source",
+ *   "$resolver": "stackTraceElement",
  *   "field": "lineNumber"
  * }
  * </pre>
  */
-final class StackTraceElementObjectResolver implements TemplateResolver<StackTraceElement> {
+final class StackTraceElementResolver implements TemplateResolver<StackTraceElement> {
 
     private static final TemplateResolver<StackTraceElement> CLASS_NAME_RESOLVER =
             (final StackTraceElement stackTraceElement, final JsonWriter jsonWriter) ->
@@ -62,24 +62,27 @@ final class StackTraceElementObjectResolver implements TemplateResolver<StackTra
 
     private final TemplateResolver<StackTraceElement> internalResolver;
 
-    StackTraceElementObjectResolver(final TemplateResolverConfig config) {
+    StackTraceElementResolver(final TemplateResolverConfig config) {
         this.internalResolver = createInternalResolver(config);
+    }
+
+    static String getName() {
+        return "stackTraceElement";
     }
 
     private TemplateResolver<StackTraceElement> createInternalResolver(
             final TemplateResolverConfig config) {
         final String fieldName = config.getString("field");
-        switch (fieldName) {
-            case "className": return CLASS_NAME_RESOLVER;
-            case "methodName": return METHOD_NAME_RESOLVER;
-            case "fileName": return FILE_NAME_RESOLVER;
-            case "lineNumber": return LINE_NUMBER_RESOLVER;
+        if ("className".equals(fieldName)) {
+            return CLASS_NAME_RESOLVER;
+        } else if ("methodName".equals(fieldName)) {
+            return METHOD_NAME_RESOLVER;
+        } else if ("fileName".equals(fieldName)) {
+            return FILE_NAME_RESOLVER;
+        } else if ("lineNumber".equals(fieldName)) {
+            return LINE_NUMBER_RESOLVER;
         }
         throw new IllegalArgumentException("unknown field: " + config);
-    }
-
-    static String getName() {
-        return "stackTraceElement";
     }
 
     @Override

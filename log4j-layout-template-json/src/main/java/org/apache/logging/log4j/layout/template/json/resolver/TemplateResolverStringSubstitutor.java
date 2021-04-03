@@ -16,34 +16,23 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 /**
- * {@link TimestampResolver} factory.
+ * A contextual {@link StrSubstitutor} abstraction.
+ *
+ * @param <V> {@link TemplateResolver} value
  */
-@Plugin(name = "TimestampResolverFactory", category = TemplateResolverFactory.CATEGORY)
-public final class TimestampResolverFactory implements EventResolverFactory {
+public interface TemplateResolverStringSubstitutor<V> {
 
-    private static final TimestampResolverFactory INSTANCE = new TimestampResolverFactory();
+    StrSubstitutor getInternalSubstitutor();
 
-    private TimestampResolverFactory() {}
+    /**
+     * A substitutor is stable if the replacement doesn't vary with the provided
+     * value. In such a case, value is always set to {@code null}.
+     */
+    boolean isStable();
 
-    @PluginFactory
-    public static TimestampResolverFactory getInstance() {
-        return INSTANCE;
-    }
-
-    @Override
-    public String getName() {
-        return TimestampResolver.getName();
-    }
-
-    @Override
-    public TimestampResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        return new TimestampResolver(config);
-    }
+    String replace(V value, String source);
 
 }

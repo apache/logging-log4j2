@@ -29,11 +29,14 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.core.layout.LockingStringBuilderEncoder;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
-import org.apache.logging.log4j.layout.template.json.resolver.StackTraceElementObjectResolverContext;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactories;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactory;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverInterceptor;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverInterceptors;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverStringSubstitutor;
 import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
 import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
@@ -44,6 +47,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import java.nio.charset.Charset;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -93,59 +97,56 @@ public class JsonTemplateLayout implements StringLayout {
         final String eventDelimiterSuffix = builder.isNullEventDelimiterEnabled() ? "\0" : "";
         this.eventDelimiter = builder.eventDelimiter + eventDelimiterSuffix;
         final Configuration configuration = builder.configuration;
-        final StrSubstitutor substitutor = configuration.getStrSubstitutor();
         final JsonWriter jsonWriter = JsonWriter
                 .newBuilder()
                 .setMaxStringLength(builder.maxStringLength)
                 .setTruncatedStringSuffix(builder.truncatedStringSuffix)
                 .build();
-        final TemplateResolver<StackTraceElement> stackTraceElementObjectResolver =
-                builder.stackTraceEnabled
-                        ? createStackTraceElementResolver(builder, substitutor, jsonWriter)
-                        : null;
         this.eventResolver = createEventResolver(
                 builder,
                 configuration,
-                substitutor,
                 charset,
-                jsonWriter,
-                stackTraceElementObjectResolver);
+                jsonWriter);
         this.contextRecycler = createContextRecycler(builder, jsonWriter);
-    }
-
-    private static TemplateResolver<StackTraceElement> createStackTraceElementResolver(
-            final Builder builder,
-            final StrSubstitutor substitutor,
-            final JsonWriter jsonWriter) {
-        final StackTraceElementObjectResolverContext stackTraceElementObjectResolverContext =
-                StackTraceElementObjectResolverContext
-                        .newBuilder()
-                        .setSubstitutor(substitutor)
-                        .setJsonWriter(jsonWriter)
-                        .build();
-        final String stackTraceElementTemplate = readStackTraceElementTemplate(builder);
-        return TemplateResolvers.ofTemplate(stackTraceElementObjectResolverContext, stackTraceElementTemplate);
     }
 
     private TemplateResolver<LogEvent> createEventResolver(
             final Builder builder,
             final Configuration configuration,
-            final StrSubstitutor substitutor,
             final Charset charset,
-            final JsonWriter jsonWriter,
-            final TemplateResolver<StackTraceElement> stackTraceElementObjectResolver) {
+            final JsonWriter jsonWriter) {
+
+        // Inject resolver factory and interceptor plugins.
+        final List<String> pluginPackages = configuration.getPluginPackages();
+        final Map<String, EventResolverFactory> resolverFactoryByName =
+                EventResolverFactories.populateResolverFactoryByName(pluginPackages);
+        final List<EventResolverInterceptor> resolverInterceptors =
+                EventResolverInterceptors.populateInterceptors(pluginPackages);
+        final EventResolverStringSubstitutor substitutor =
+                new EventResolverStringSubstitutor(configuration.getStrSubstitutor());
+
+        // Read event and stack trace element templates.
         final String eventTemplate = readEventTemplate(builder);
+        final String stackTraceElementTemplate = readStackTraceElementTemplate(builder);
+
+        // Determine the max. string byte count.
         final float maxByteCountPerChar = builder.charset.newEncoder().maxBytesPerChar();
         final int maxStringByteCount =
                 Math.toIntExact(Math.round(Math.ceil(
                         maxByteCountPerChar * builder.maxStringLength)));
+
+        // Replace null event template additional fields with an empty array.
         final EventTemplateAdditionalField[] eventTemplateAdditionalFields =
                 builder.eventTemplateAdditionalFields != null
                         ? builder.eventTemplateAdditionalFields
                         : new EventTemplateAdditionalField[0];
+
+        // Create the resolver context.
         final EventResolverContext resolverContext = EventResolverContext
                 .newBuilder()
                 .setConfiguration(configuration)
+                .setResolverFactoryByName(resolverFactoryByName)
+                .setResolverInterceptors(resolverInterceptors)
                 .setSubstitutor(substitutor)
                 .setCharset(charset)
                 .setJsonWriter(jsonWriter)
@@ -154,11 +155,14 @@ public class JsonTemplateLayout implements StringLayout {
                 .setTruncatedStringSuffix(builder.truncatedStringSuffix)
                 .setLocationInfoEnabled(builder.locationInfoEnabled)
                 .setStackTraceEnabled(builder.stackTraceEnabled)
-                .setStackTraceElementObjectResolver(stackTraceElementObjectResolver)
+                .setStackTraceElementTemplate(stackTraceElementTemplate)
                 .setEventTemplateRootObjectKey(builder.eventTemplateRootObjectKey)
                 .setEventTemplateAdditionalFields(eventTemplateAdditionalFields)
                 .build();
+
+        // Compile the resolver template.
         return TemplateResolvers.ofTemplate(resolverContext, eventTemplate);
+
     }
 
     private static String readEventTemplate(final Builder builder) {

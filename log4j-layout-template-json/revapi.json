@@ -449,6 +449,285 @@
         "code": "java.method.removed",
         "old": "method org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField.Type org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField::getType()",
         "justification": "LOG4J2-2973 Rename EventTemplateAdditionalField#type (conflicting with properties file parser) to #format."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.EndOfBatchResolverFactory org.apache.logging.log4j.layout.template.json.resolver.EndOfBatchResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.EndOfBatchResolverFactory org.apache.logging.log4j.layout.template.json.resolver.EndOfBatchResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.EndOfBatchResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.EndOfBatchResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"EndOfBatchResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.String org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext.Builder::getTruncatedStringSuffix()",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext.Builder org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext.Builder::setStackTraceElementObjectResolver(org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver<java.lang.StackTraceElement>)",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext.Builder org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext.Builder::setSubstitutor(===org.apache.logging.log4j.core.lookup.StrSubstitutor===)",
+        "new": "parameter org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext.Builder org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext.Builder::setSubstitutor(===org.apache.logging.log4j.layout.template.json.resolver.EventResolverStringSubstitutor===)",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method java.util.Map<java.lang.String, org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverFactory<org.apache.logging.log4j.core.LogEvent, org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext, ? extends org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver<org.apache.logging.log4j.core.LogEvent>>> org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext::getResolverFactoryByName()",
+        "new": "method java.util.Map<java.lang.String, org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactory> org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext::getResolverFactoryByName()",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method org.apache.logging.log4j.core.lookup.StrSubstitutor org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext::getSubstitutor()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.EventResolverStringSubstitutor org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext::getSubstitutor()",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.ExceptionResolverFactory org.apache.logging.log4j.layout.template.json.resolver.ExceptionResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.ExceptionResolverFactory org.apache.logging.log4j.layout.template.json.resolver.ExceptionResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.ExceptionResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.ExceptionResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"ExceptionResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.ExceptionRootCauseResolverFactory org.apache.logging.log4j.layout.template.json.resolver.ExceptionRootCauseResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.ExceptionRootCauseResolverFactory org.apache.logging.log4j.layout.template.json.resolver.ExceptionRootCauseResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.ExceptionRootCauseResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.ExceptionRootCauseResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"ExceptionRootCauseResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.LevelResolverFactory org.apache.logging.log4j.layout.template.json.resolver.LevelResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.LevelResolverFactory org.apache.logging.log4j.layout.template.json.resolver.LevelResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.LevelResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.LevelResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"LevelResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.LoggerResolverFactory org.apache.logging.log4j.layout.template.json.resolver.LoggerResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.LoggerResolverFactory org.apache.logging.log4j.layout.template.json.resolver.LoggerResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.LoggerResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.LoggerResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"LoggerResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.MainMapResolverFactory org.apache.logging.log4j.layout.template.json.resolver.MainMapResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.MainMapResolverFactory org.apache.logging.log4j.layout.template.json.resolver.MainMapResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.MainMapResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.MainMapResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"MainMapResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.MapResolverFactory org.apache.logging.log4j.layout.template.json.resolver.MapResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.MapResolverFactory org.apache.logging.log4j.layout.template.json.resolver.MapResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.MapResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.MapResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"MapResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.MarkerResolverFactory org.apache.logging.log4j.layout.template.json.resolver.MarkerResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.MarkerResolverFactory org.apache.logging.log4j.layout.template.json.resolver.MarkerResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.MarkerResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.MarkerResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"MarkerResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.MessageParameterResolverFactory org.apache.logging.log4j.layout.template.json.resolver.MessageParameterResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.MessageParameterResolverFactory org.apache.logging.log4j.layout.template.json.resolver.MessageParameterResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.MessageParameterResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.MessageParameterResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"MessageParameterResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.MessageResolverFactory org.apache.logging.log4j.layout.template.json.resolver.MessageResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.MessageResolverFactory org.apache.logging.log4j.layout.template.json.resolver.MessageResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.MessageResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.MessageResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"MessageResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.PatternResolverFactory org.apache.logging.log4j.layout.template.json.resolver.PatternResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.PatternResolverFactory org.apache.logging.log4j.layout.template.json.resolver.PatternResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.PatternResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.PatternResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"PatternResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.SourceResolverFactory org.apache.logging.log4j.layout.template.json.resolver.SourceResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.SourceResolverFactory org.apache.logging.log4j.layout.template.json.resolver.SourceResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.SourceResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.SourceResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"SourceResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.StackTraceElementObjectResolverContext",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.ThreadContextDataResolverFactory org.apache.logging.log4j.layout.template.json.resolver.ThreadContextDataResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.ThreadContextDataResolverFactory org.apache.logging.log4j.layout.template.json.resolver.ThreadContextDataResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.ThreadContextDataResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.ThreadContextDataResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"ThreadContextDataResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.ThreadContextStackResolverFactory org.apache.logging.log4j.layout.template.json.resolver.ThreadContextStackResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.ThreadContextStackResolverFactory org.apache.logging.log4j.layout.template.json.resolver.ThreadContextStackResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.ThreadContextStackResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.ThreadContextStackResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"ThreadContextDataResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.ThreadResolverFactory org.apache.logging.log4j.layout.template.json.resolver.ThreadResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.ThreadResolverFactory org.apache.logging.log4j.layout.template.json.resolver.ThreadResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.ThreadResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.ThreadResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"ThreadResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "method org.apache.logging.log4j.layout.template.json.resolver.TimestampResolverFactory org.apache.logging.log4j.layout.template.json.resolver.TimestampResolverFactory::getInstance()",
+        "new": "method org.apache.logging.log4j.layout.template.json.resolver.TimestampResolverFactory org.apache.logging.log4j.layout.template.json.resolver.TimestampResolverFactory::getInstance()",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.TimestampResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.TimestampResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"TimestampResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "class org.apache.logging.log4j.layout.template.json.resolver.ThreadContextStackResolverFactory",
+        "new": "class org.apache.logging.log4j.layout.template.json.resolver.ThreadContextStackResolverFactory",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.Plugin(name = \"ThreadContextStackResolverFactory\", category = \"JsonTemplateResolverFactory\")",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.annotation.attributeValueChanged",
+        "old": "class org.apache.logging.log4j.layout.template.json.util.RecyclerFactories.RecyclerFactoryConverter",
+        "new": "class org.apache.logging.log4j.layout.template.json.util.RecyclerFactories.RecyclerFactoryConverter",
+        "annotationType": "org.apache.logging.log4j.core.config.plugins.Plugin",
+        "attribute": "name",
+        "oldValue": "\"RecyclerFactory\"",
+        "newValue": "\"RecyclerFactoryConverter\"",
+        "justification": "LOG4J2-3004 Add plugin support."
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.layout.template.json.util.RecyclerFactories.RecyclerFactoryConverter",
+        "justification": "LOG4J2-3004 Add plugin support."
       }
     ]
   }

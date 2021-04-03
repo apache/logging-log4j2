@@ -16,34 +16,36 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+
+import java.util.Objects;
 
 /**
- * {@link TimestampResolver} factory.
+ * {@link TemplateResolverStringSubstitutor} specialized for {@link StackTraceElement}s.
  */
-@Plugin(name = "TimestampResolverFactory", category = TemplateResolverFactory.CATEGORY)
-public final class TimestampResolverFactory implements EventResolverFactory {
+final class StackTraceElementResolverStringSubstitutor
+        implements TemplateResolverStringSubstitutor<StackTraceElement> {
 
-    private static final TimestampResolverFactory INSTANCE = new TimestampResolverFactory();
+    private final StrSubstitutor substitutor;
 
-    private TimestampResolverFactory() {}
-
-    @PluginFactory
-    public static TimestampResolverFactory getInstance() {
-        return INSTANCE;
+    StackTraceElementResolverStringSubstitutor(
+            final StrSubstitutor substitutor) {
+        this.substitutor = Objects.requireNonNull(substitutor, "substitutor");
     }
 
     @Override
-    public String getName() {
-        return TimestampResolver.getName();
+    public StrSubstitutor getInternalSubstitutor() {
+        return substitutor;
     }
 
     @Override
-    public TimestampResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        return new TimestampResolver(config);
+    public boolean isStable() {
+        return true;
+    }
+
+    @Override
+    public String replace(final StackTraceElement ignored, final String source) {
+        return substitutor.replace(null, source);
     }
 
 }

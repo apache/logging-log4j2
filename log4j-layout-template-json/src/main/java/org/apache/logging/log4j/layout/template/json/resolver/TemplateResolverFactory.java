@@ -16,10 +16,31 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-interface TemplateResolverFactory<V, C extends TemplateResolverContext<V, C>, R extends TemplateResolver<V>> {
+/**
+ * {@link TemplateResolver} factory.
+ *
+ * @param <V> type of the value passed to the {@link TemplateResolver resolver}
+ * @param <C> type of the context passed to the {@link TemplateResolverFactory#create(TemplateResolverContext, TemplateResolverConfig)} creator}
+ */
+public interface TemplateResolverFactory<V, C extends TemplateResolverContext<V, C>> {
+
+    /**
+     * Main plugin category for {@link TemplateResolverFactory} implementations.
+     */
+    String CATEGORY = "JsonTemplateResolverFactory";
+
+    /**
+     * The targeted value class.
+     */
+    Class<V> getValueClass();
+
+    /**
+     * The targeted {@link TemplateResolverContext} class.
+     */
+    Class<C> getContextClass();
 
     String getName();
 
-    R create(C context, TemplateResolverConfig config);
+    TemplateResolver<V> create(C context, TemplateResolverConfig config);
 
 }

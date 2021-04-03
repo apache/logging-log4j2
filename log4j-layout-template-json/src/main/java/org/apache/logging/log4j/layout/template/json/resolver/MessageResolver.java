@@ -79,7 +79,7 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * that both emitted JSONs are of type <tt>object</tt> and have no
  * type-conflicting fields.
  */
-final class MessageResolver implements EventResolver {
+public final class MessageResolver implements EventResolver {
 
     private static final String[] FORMATS = { "JSON" };
 

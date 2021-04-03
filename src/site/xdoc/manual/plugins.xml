@@ -240,6 +240,9 @@
             Unlike other plugins, the plugin name of a <code>TypeConverter</code> is purely cosmetic. Appropriate
             type converters are looked up via the <code>Type</code> interface rather than via <code>Class&lt;?&gt;</code>
             objects only. Do note that <code>TypeConverter</code> plugins must have a default constructor.
+            When multiple converters match for a type, the first will be returned.
+            If any extends from <code>Comparable&lt;TypeConverter&lt;?&gt;&gt;</code>,
+            it will be used for determining the order.
           </p>
         </subsection>
       </section>
