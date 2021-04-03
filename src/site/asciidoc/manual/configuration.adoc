@@ -1795,6 +1795,12 @@ By default, `System.currentTimeMillis` is called on every log event. +
 You can also specify a fully qualified class name of a custom class that
 implements the `Clock` interface.
 
+|[[usePreciseClock]]log4j2.usePreciseClock
+|LOG4J_USE_PRECISE_CLOCK
+|false
+|When false the clock resolution will be in milliseconds. When true it will use the smallest granularity supported by
+the JVM. The precise clock is not garbage free. This setting only applies when Log4j's default SystemClock is used.
+
 |[[level]]log4j2.level +
 ([[org.apache.logging.log4j.level]]org.apache.logging.log4j.level)
 |LOG4J_LEVEL
