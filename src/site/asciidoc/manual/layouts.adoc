@@ -573,13 +573,14 @@ Logstash `JSONEventLayoutV1`]
     },
     "exception_message": {
       "$resolver": "exception",
-      "field": "message",
-      "stringified": true
+      "field": "message"
     },
     "stacktrace": {
       "$resolver": "exception",
       "field": "stackTrace",
-      "stringified": true
+      "stackTrace": {
+        "stringified": true
+      }
     }
   },
   "line_number": {

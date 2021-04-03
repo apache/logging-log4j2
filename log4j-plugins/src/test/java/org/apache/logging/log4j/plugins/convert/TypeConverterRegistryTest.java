@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.plugins.convert;
 
+import org.apache.logging.log4j.plugins.Plugin;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.instanceOf;
@@ -24,7 +25,7 @@ import static org.junit.Assert.*;
 public class TypeConverterRegistryTest {
 
     @Test(expected = NullPointerException.class)
-    public void testFindNullConverter() throws Exception {
+    public void testFindNullConverter() {
         TypeConverterRegistry.getInstance().findCompatibleConverter(null);
     }
 
@@ -77,4 +78,83 @@ public class TypeConverterRegistryTest {
         assertEquals(Foo.PITY, fooTypeConverter.convert("pity"));
         assertEquals(Foo.THE, fooTypeConverter.convert("THE"));
     }
+
+    public static final class CustomTestClass1 {
+
+        private CustomTestClass1() {}
+
+    }
+
+    @Plugin(name = "CustomTestClass1Converter1", category = TypeConverters.CATEGORY)
+    public static final class CustomTestClass1Converter1
+            implements TypeConverter<CustomTestClass1> {
+
+        @Override
+        public CustomTestClass1 convert(final String ignored) {
+            return new CustomTestClass1();
+        }
+
+    }
+
+    @SuppressWarnings("ComparableType")
+    @Plugin(name = "CustomTestClass1Converter2", category = TypeConverters.CATEGORY)
+    public static final class CustomTestClass1Converter2
+            implements TypeConverter<CustomTestClass1>, Comparable<TypeConverter<?>> {
+
+        @Override
+        public CustomTestClass1 convert(final String ignored) {
+            return new CustomTestClass1();
+        }
+
+        @Override
+        public int compareTo(@SuppressWarnings("NullableProblems") final TypeConverter<?> converter) {
+            return -1;
+        }
+
+    }
+
+    @Test
+    public void testMultipleComparableConverters() {
+        final TypeConverter<?> converter = TypeConverterRegistry
+                .getInstance()
+                .findCompatibleConverter(CustomTestClass1.class);
+        assertThat(converter, instanceOf(CustomTestClass1Converter2.class));
+    }
+
+    public static final class CustomTestClass2 {
+
+        private CustomTestClass2() {}
+
+    }
+
+    @Plugin(name = "CustomTestClass2Converter1", category = TypeConverters.CATEGORY)
+    public static final class CustomTestClass2Converter1
+            implements TypeConverter<CustomTestClass2> {
+
+        @Override
+        public CustomTestClass2 convert(final String ignored) {
+            return new CustomTestClass2();
+        }
+
+    }
+
+    @Plugin(name = "CustomTestClass2Converter2", category = TypeConverters.CATEGORY)
+    public static final class CustomTestClass2Converter2
+            implements TypeConverter<CustomTestClass2> {
+
+        @Override
+        public CustomTestClass2 convert(final String ignored) {
+            return new CustomTestClass2();
+        }
+
+    }
+
+    @Test
+    public void testMultipleIncomparableConverters() {
+        final TypeConverter<?> converter = TypeConverterRegistry
+                .getInstance()
+                .findCompatibleConverter(CustomTestClass2.class);
+        assertThat(converter, instanceOf(CustomTestClass2Converter1.class));
+    }
+
 }

@@ -18,20 +18,31 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
+import org.apache.logging.log4j.util.Strings;
 
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * {@link TemplateResolverContext} specialized for {@link LogEvent}s.
+ *
+ * @see EventResolver
+ * @see EventResolverFactory
+ */
 public final class EventResolverContext implements TemplateResolverContext<LogEvent, EventResolverContext> {
 
     private final Configuration configuration;
 
-    private final StrSubstitutor substitutor;
+    private final Map<String, EventResolverFactory> resolverFactoryByName;
+
+    private final List<EventResolverInterceptor> resolverInterceptors;
+
+    private final EventResolverStringSubstitutor substitutor;
 
     private final Charset charset;
 
@@ -47,14 +58,16 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
     private final boolean stackTraceEnabled;
 
-    private final TemplateResolver<Throwable> stackTraceObjectResolver;
+    private final String stackTraceElementTemplate;
 
     private final String eventTemplateRootObjectKey;
 
-    private final EventTemplateAdditionalField[] additionalFields;
+    private final EventTemplateAdditionalField[] eventTemplateAdditionalFields;
 
     private EventResolverContext(final Builder builder) {
         this.configuration = builder.configuration;
+        this.resolverFactoryByName = builder.resolverFactoryByName;
+        this.resolverInterceptors = builder.resolverInterceptors;
         this.substitutor = builder.substitutor;
         this.charset = builder.charset;
         this.jsonWriter = builder.jsonWriter;
@@ -63,21 +76,14 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         this.truncatedStringSuffix = builder.truncatedStringSuffix;
         this.locationInfoEnabled = builder.locationInfoEnabled;
         this.stackTraceEnabled = builder.stackTraceEnabled;
-        this.stackTraceObjectResolver = stackTraceEnabled
-                ? new StackTraceObjectResolver(builder.stackTraceElementObjectResolver)
-                : null;
+        this.stackTraceElementTemplate = builder.stackTraceElementTemplate;
         this.eventTemplateRootObjectKey = builder.eventTemplateRootObjectKey;
-        this.additionalFields = builder.eventTemplateAdditionalFields;
+        this.eventTemplateAdditionalFields = builder.eventTemplateAdditionalFields;
     }
 
     @Override
-    public Class<EventResolverContext> getContextClass() {
+    public final Class<EventResolverContext> getContextClass() {
         return EventResolverContext.class;
-    }
-
-    @Override
-    public Map<String, TemplateResolverFactory<LogEvent, EventResolverContext, ? extends TemplateResolver<LogEvent>>> getResolverFactoryByName() {
-        return EventResolverFactories.getResolverFactoryByName();
     }
 
     public Configuration getConfiguration() {
@@ -85,7 +91,17 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
     }
 
     @Override
-    public StrSubstitutor getSubstitutor() {
+    public Map<String, EventResolverFactory> getResolverFactoryByName() {
+        return resolverFactoryByName;
+    }
+
+    @Override
+    public List<EventResolverInterceptor> getResolverInterceptors() {
+        return resolverInterceptors;
+    }
+
+    @Override
+    public EventResolverStringSubstitutor getSubstitutor() {
         return substitutor;
     }
 
@@ -98,36 +114,36 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         return jsonWriter;
     }
 
-    RecyclerFactory getRecyclerFactory() {
+    public RecyclerFactory getRecyclerFactory() {
         return recyclerFactory;
     }
 
-    int getMaxStringByteCount() {
+    public int getMaxStringByteCount() {
         return maxStringByteCount;
     }
 
-    String getTruncatedStringSuffix() {
+    public String getTruncatedStringSuffix() {
         return truncatedStringSuffix;
     }
 
-    boolean isLocationInfoEnabled() {
+    public boolean isLocationInfoEnabled() {
         return locationInfoEnabled;
     }
 
-    boolean isStackTraceEnabled() {
+    public boolean isStackTraceEnabled() {
         return stackTraceEnabled;
     }
 
-    TemplateResolver<Throwable> getStackTraceObjectResolver() {
-        return stackTraceObjectResolver;
+    public String getStackTraceElementTemplate() {
+        return stackTraceElementTemplate;
     }
 
-    String getEventTemplateRootObjectKey() {
+    public String getEventTemplateRootObjectKey() {
         return eventTemplateRootObjectKey;
     }
 
-    EventTemplateAdditionalField[] getAdditionalFields() {
-        return additionalFields;
+    public EventTemplateAdditionalField[] getEventTemplateAdditionalFields() {
+        return eventTemplateAdditionalFields;
     }
 
     public static Builder newBuilder() {
@@ -138,7 +154,11 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         private Configuration configuration;
 
-        private StrSubstitutor substitutor;
+        private Map<String, EventResolverFactory> resolverFactoryByName;
+
+        private List<EventResolverInterceptor> resolverInterceptors;
+
+        private EventResolverStringSubstitutor substitutor;
 
         private Charset charset;
 
@@ -154,7 +174,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         private boolean stackTraceEnabled;
 
-        private TemplateResolver<StackTraceElement> stackTraceElementObjectResolver;
+        private String stackTraceElementTemplate;
 
         private String eventTemplateRootObjectKey;
 
@@ -169,7 +189,19 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             return this;
         }
 
-        public Builder setSubstitutor(final StrSubstitutor substitutor) {
+        public Builder setResolverFactoryByName(
+                final Map<String, EventResolverFactory> resolverFactoryByName) {
+            this.resolverFactoryByName = resolverFactoryByName;
+            return this;
+        }
+
+        public Builder setResolverInterceptors(
+                final List<EventResolverInterceptor> resolverInterceptors) {
+            this.resolverInterceptors = resolverInterceptors;
+            return this;
+        }
+
+        public Builder setSubstitutor(final EventResolverStringSubstitutor substitutor) {
             this.substitutor = substitutor;
             return this;
         }
@@ -194,10 +226,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             return this;
         }
 
-        public String getTruncatedStringSuffix() {
-            return truncatedStringSuffix;
-        }
-
         public Builder setTruncatedStringSuffix(final String truncatedStringSuffix) {
             this.truncatedStringSuffix = truncatedStringSuffix;
             return this;
@@ -213,9 +241,8 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             return this;
         }
 
-        public Builder setStackTraceElementObjectResolver(
-                final TemplateResolver<StackTraceElement> stackTraceElementObjectResolver) {
-            this.stackTraceElementObjectResolver = stackTraceElementObjectResolver;
+        public Builder setStackTraceElementTemplate(final String stackTraceElementTemplate) {
+            this.stackTraceElementTemplate = stackTraceElementTemplate;
             return this;
         }
 
@@ -237,6 +264,11 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         private void validate() {
             Objects.requireNonNull(configuration, "configuration");
+            Objects.requireNonNull(resolverFactoryByName, "resolverFactoryByName");
+            if (resolverFactoryByName.isEmpty()) {
+                throw new IllegalArgumentException("empty resolverFactoryByName");
+            }
+            Objects.requireNonNull(resolverInterceptors, "resolverInterceptors");
             Objects.requireNonNull(substitutor, "substitutor");
             Objects.requireNonNull(charset, "charset");
             Objects.requireNonNull(jsonWriter, "jsonWriter");
@@ -246,11 +278,13 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
                         "was expecting maxStringByteCount > 0: " +
                                 maxStringByteCount);
             }
-            if (stackTraceEnabled) {
-                Objects.requireNonNull(
-                        stackTraceElementObjectResolver,
-                        "stackTraceElementObjectResolver");
+            Objects.requireNonNull(truncatedStringSuffix, "truncatedStringSuffix");
+            if (stackTraceEnabled && Strings.isBlank(stackTraceElementTemplate)) {
+                throw new IllegalArgumentException(
+                        "stackTraceElementTemplate cannot be blank when stackTraceEnabled is set to true");
             }
+            Objects.requireNonNull(stackTraceElementTemplate, "stackTraceElementTemplate");
+            Objects.requireNonNull(eventTemplateAdditionalFields, "eventTemplateAdditionalFields");
         }
 
     }

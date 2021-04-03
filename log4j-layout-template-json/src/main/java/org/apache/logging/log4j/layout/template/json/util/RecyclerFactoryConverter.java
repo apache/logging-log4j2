@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,25 +14,21 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.resolver;
+package org.apache.logging.log4j.layout.template.json.util;
 
-import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.convert.TypeConverter;
+import org.apache.logging.log4j.plugins.convert.TypeConverters;
 
 /**
- * Mapped Diagnostic Context (MDC), aka. Thread Context Data, resolver.
- *
- * @see ReadOnlyStringMapResolver
+ * The default string (i.e., recycler factory spec) to {@link RecyclerFactory} type converter.
  */
-public final class ThreadContextDataResolver extends ReadOnlyStringMapResolver {
+@Plugin(name = "RecyclerFactoryConverter", category = TypeConverters.CATEGORY)
+public final class RecyclerFactoryConverter implements TypeConverter<RecyclerFactory> {
 
-    ThreadContextDataResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        super(context, config, LogEvent::getContextData);
-    }
-
-    static String getName() {
-        return "mdc";
+    @Override
+    public RecyclerFactory convert(final String recyclerFactorySpec) {
+        return RecyclerFactories.ofSpec(recyclerFactorySpec);
     }
 
 }

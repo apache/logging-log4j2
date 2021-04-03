@@ -16,15 +16,22 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-final class ExceptionResolverFactory
-        implements EventResolverFactory<ExceptionResolver> {
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
+/**
+ * {@link ExceptionResolver} factory.
+ */
+@Plugin(name = "ExceptionResolverFactory", category = TemplateResolverFactory.CATEGORY)
+public final class ExceptionResolverFactory implements EventResolverFactory {
 
     private static final ExceptionResolverFactory INSTANCE =
             new ExceptionResolverFactory();
 
     private ExceptionResolverFactory() {}
 
-    static ExceptionResolverFactory getInstance() {
+    @PluginFactory
+    public static ExceptionResolverFactory getInstance() {
         return INSTANCE;
     }
 

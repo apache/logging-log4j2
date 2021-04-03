@@ -53,14 +53,6 @@ public final class RecyclerFactories {
         }
     }
 
-    @Plugin(name = "RecyclerFactory", category = TypeConverters.CATEGORY)
-    public static final class RecyclerFactoryConverter implements TypeConverter<RecyclerFactory> {
-        @Override
-        public RecyclerFactory convert(final String recyclerFactorySpec) {
-            return ofSpec(recyclerFactorySpec);
-        }
-    }
-
     public static RecyclerFactory ofSpec(final String recyclerFactorySpec) {
 
         // Determine the default capacity.

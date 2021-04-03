@@ -53,7 +53,7 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
  *
  * @see MainMapResolver
  */
-final class MainMapResolver implements EventResolver {
+public final class MainMapResolver implements EventResolver {
 
     private static final MainMapLookup MAIN_MAP_LOOKUP = new MainMapLookup();
 

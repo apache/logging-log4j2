@@ -16,13 +16,22 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-final class EndOfBatchResolverFactory implements EventResolverFactory<EndOfBatchResolver> {
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
-    private static final EndOfBatchResolverFactory INSTANCE = new EndOfBatchResolverFactory();
+/**
+ * {@link EndOfBatchResolver} factory.
+ */
+@Plugin(name = "EndOfBatchResolverFactory", category = TemplateResolverFactory.CATEGORY)
+public final class EndOfBatchResolverFactory implements EventResolverFactory {
+
+    private static final EndOfBatchResolverFactory INSTANCE =
+            new EndOfBatchResolverFactory();
 
     private EndOfBatchResolverFactory() {}
 
-    static EndOfBatchResolverFactory getInstance() {
+    @PluginFactory
+    public static EndOfBatchResolverFactory getInstance() {
         return INSTANCE;
     }
 

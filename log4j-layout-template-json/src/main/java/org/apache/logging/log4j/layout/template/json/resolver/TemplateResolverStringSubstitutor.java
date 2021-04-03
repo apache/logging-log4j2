@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,23 +16,23 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 /**
- * Mapped Diagnostic Context (MDC), aka. Thread Context Data, resolver.
+ * A contextual {@link StrSubstitutor} abstraction.
  *
- * @see ReadOnlyStringMapResolver
+ * @param <V> {@link TemplateResolver} value
  */
-public final class ThreadContextDataResolver extends ReadOnlyStringMapResolver {
+public interface TemplateResolverStringSubstitutor<V> {
 
-    ThreadContextDataResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        super(context, config, LogEvent::getContextData);
-    }
+    StrSubstitutor getInternalSubstitutor();
 
-    static String getName() {
-        return "mdc";
-    }
+    /**
+     * A substitutor is stable if the replacement doesn't vary with the provided
+     * value. In such a case, value is always set to {@code null}.
+     */
+    boolean isStable();
+
+    String replace(V value, String source);
 
 }

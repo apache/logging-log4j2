@@ -16,15 +16,22 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-final class ThreadContextStackResolverFactory
-        implements EventResolverFactory<ThreadContextStackResolver> {
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
-    private static final ThreadContextStackResolverFactory INSTANCE
-            = new ThreadContextStackResolverFactory();
+/**
+ * {@link ThreadContextStackResolver} factory.
+ */
+@Plugin(name = "ThreadContextStackResolverFactory", category = TemplateResolverFactory.CATEGORY)
+public final class ThreadContextStackResolverFactory implements EventResolverFactory {
+
+    private static final ThreadContextStackResolverFactory INSTANCE =
+            new ThreadContextStackResolverFactory();
 
     private ThreadContextStackResolverFactory() {}
 
-    static ThreadContextStackResolverFactory getInstance() {
+    @PluginFactory
+    public static ThreadContextStackResolverFactory getInstance() {
         return INSTANCE;
     }
 

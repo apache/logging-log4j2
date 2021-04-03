@@ -228,7 +228,7 @@ If multiple Converters specify the same `ConverterKeys`, then the load
 order above determines which one will be used. For example, to override
 the `%date` converter which is provided by the built-in
 `DatePatternConverter` class, you would need to place your plugin in a
-JAR file in the CLASSPATH ahead of`log4j-core.jar`. This is not
+JAR file in the CLASSPATH ahead of `log4j-core.jar`. This is not
 recommended; pattern ConverterKeys collisions will cause a warning to be
 emitted. Try to use unique ConverterKeys for your custom pattern
 converters.
@@ -267,7 +267,7 @@ the type conversion system can be used in a `@PluginAttribute`
 parameter. Conversion of enum types are supported on demand and do not
 require custom `TypeConverter` classes. A large number of built-in Java
 classes are already supported; see
-link:../log4j-plugins/apidocs/org/apache/logging/log4j/plugins/convert/TypeConverters.html['TypeConverters']
+link:../log4j-plugins/apidocs/org/apache/logging/log4j/plugins/convert/TypeConverters.html[`TypeConverters`]
 and
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/config/plugins/convert/CoreConverters.html[`CoreConverters`]
 for a more exhaustive listing.
@@ -276,6 +276,9 @@ Unlike other plugins, the plugin name of a `TypeConverter` is purely
 cosmetic. Appropriate type converters are looked up via the `Type`
 interface rather than via `Class<?>` objects only. Do note that
 `TypeConverter` plugins must have a default constructor.
+
+When multiple converters match for a type, the first will be returned.
+If any extends from `Comparable<TypeConverter<?>>`, it will be used for determining the order.
 
 [#DeveloperNotes]
 == Developer Notes

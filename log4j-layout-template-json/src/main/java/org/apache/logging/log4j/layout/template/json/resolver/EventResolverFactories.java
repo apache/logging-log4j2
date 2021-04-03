@@ -18,51 +18,22 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-final class EventResolverFactories {
+/**
+ * Utility class for {@link EventResolverFactory}.
+ */
+public final class EventResolverFactories {
 
     private EventResolverFactories() {}
 
-    private static final Map<String, TemplateResolverFactory<LogEvent, EventResolverContext, ? extends TemplateResolver<LogEvent>>> RESOLVER_FACTORY_BY_NAME =
-            createResolverFactoryByName();
-
-    private static Map<String, TemplateResolverFactory<LogEvent, EventResolverContext, ? extends TemplateResolver<LogEvent>>> createResolverFactoryByName() {
-
-        // Collect resolver factories.
-        final List<EventResolverFactory<? extends EventResolver>> resolverFactories = Arrays.asList(
-                ThreadContextDataResolverFactory.getInstance(),
-                ThreadContextStackResolverFactory.getInstance(),
-                EndOfBatchResolverFactory.getInstance(),
-                ExceptionResolverFactory.getInstance(),
-                ExceptionRootCauseResolverFactory.getInstance(),
-                LevelResolverFactory.getInstance(),
-                LoggerResolverFactory.getInstance(),
-                MainMapResolverFactory.getInstance(),
-                MapResolverFactory.getInstance(),
-                MarkerResolverFactory.getInstance(),
-                MessageResolverFactory.getInstance(),
-                MessageParameterResolverFactory.getInstance(),
-                PatternResolverFactory.getInstance(),
-                SourceResolverFactory.getInstance(),
-                ThreadResolverFactory.getInstance(),
-                TimestampResolverFactory.getInstance());
-
-        // Convert collection to map.
-        final Map<String, TemplateResolverFactory<LogEvent, EventResolverContext, ? extends TemplateResolver<LogEvent>>> resolverFactoryByName = new LinkedHashMap<>();
-        for (final EventResolverFactory<? extends EventResolver> resolverFactory : resolverFactories) {
-            resolverFactoryByName.put(resolverFactory.getName(), resolverFactory);
-        }
-        return Collections.unmodifiableMap(resolverFactoryByName);
-
-    }
-
-    static Map<String, TemplateResolverFactory<LogEvent, EventResolverContext, ? extends TemplateResolver<LogEvent>>> getResolverFactoryByName() {
-        return RESOLVER_FACTORY_BY_NAME;
+    public static Map<String, EventResolverFactory> populateResolverFactoryByName(
+            final List<String> pluginPackages) {
+        return TemplateResolverFactories.populateFactoryByName(
+                pluginPackages,
+                LogEvent.class,
+                EventResolverContext.class);
     }
 
 }

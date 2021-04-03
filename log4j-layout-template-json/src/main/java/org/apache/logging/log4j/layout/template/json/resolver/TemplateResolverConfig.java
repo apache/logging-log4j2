@@ -20,7 +20,42 @@ import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
 
 import java.util.Map;
 
-class TemplateResolverConfig extends MapAccessor {
+/**
+ * Accessor to the resolver configuration JSON object read from the template.
+ * {@link TemplateResolver Template resolvers} can use this class to
+ * read the configuration associated with them.
+ * <p>
+ * For instance, given the following template:
+ * <pre>
+ * {
+ *   "@version": 1,
+ *   "message": {
+ *     "$resolver": "message",
+ *     "stringified": true
+ *   },
+ *   "level": {
+ *     "$resolver": "level",
+ *     "field": "severity",
+ *     "severity": {
+ *       "field": "code"
+ *     }
+ *   }
+ * }
+ * </pre>
+ * {@link LevelResolverFactory#create(EventResolverContext, TemplateResolverConfig)}
+ * will be called with a {@link TemplateResolverConfig} accessor to the
+ * following configuration JSON object block:
+ * <pre>
+ * {
+ *   "$resolver": "level",
+ *   "field": "severity",
+ *   "severity": {
+ *     "field": "code"
+ *   }
+ * }
+ * </pre>
+ */
+public class TemplateResolverConfig extends MapAccessor {
 
     TemplateResolverConfig(final Map<String, Object> map) {
         super(map);

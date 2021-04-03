@@ -18,33 +18,36 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
+
+import java.util.Collections;
 
 /**
- * {@link MessageParameterResolver} factory.
+ * Interceptor to add a root object key to the event template.
+ *
+ * @see JsonTemplateLayout.Builder#getEventTemplateRootObjectKey()
  */
-@Plugin(name = "MessageParameterResolverFactory", category = TemplateResolverFactory.CATEGORY)
-public final class MessageParameterResolverFactory implements EventResolverFactory {
+@Plugin(name = "EventRootObjectKeyInterceptor", category = TemplateResolverInterceptor.CATEGORY)
+public class EventRootObjectKeyInterceptor implements EventResolverInterceptor {
 
-    private static final MessageParameterResolverFactory INSTANCE =
-            new MessageParameterResolverFactory();
+    private static final EventRootObjectKeyInterceptor INSTANCE =
+            new EventRootObjectKeyInterceptor();
 
-    private MessageParameterResolverFactory() {}
+    private EventRootObjectKeyInterceptor() {}
 
     @PluginFactory
-    public static MessageParameterResolverFactory getInstance() {
+    public static EventRootObjectKeyInterceptor getInstance() {
         return INSTANCE;
     }
 
     @Override
-    public String getName() {
-        return MessageParameterResolver.getName();
-    }
-
-    @Override
-    public MessageParameterResolver create(
+    public Object processTemplateBeforeResolverInjection(
             final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        return new MessageParameterResolver(context, config);
+            final Object node) {
+        String eventTemplateRootObjectKey = context.getEventTemplateRootObjectKey();
+        return eventTemplateRootObjectKey != null
+                ? Collections.singletonMap(eventTemplateRootObjectKey, node)
+                : node;
     }
 
 }

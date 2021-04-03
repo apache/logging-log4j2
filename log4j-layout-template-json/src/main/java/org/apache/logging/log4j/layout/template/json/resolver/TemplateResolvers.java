@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Main class for compiling {@link TemplateResolver}s from a template.
+ */
 public final class TemplateResolvers {
 
     private TemplateResolvers() {}
@@ -87,73 +87,21 @@ public final class TemplateResolvers {
             throw new RuntimeException(message, error);
         }
 
-        if (context instanceof EventResolverContext) {
-
-            // Append the additional fields.
-            final EventResolverContext eventResolverContext = (EventResolverContext) context;
-            final EventTemplateAdditionalField[] additionalFields = eventResolverContext.getAdditionalFields();
-            appendAdditionalFields(node, additionalFields);
-
-            // Set the root object key, if given.
-            final String rootObjectKey = eventResolverContext.getEventTemplateRootObjectKey();
-            if (rootObjectKey != null) {
-                node = Collections.singletonMap(rootObjectKey, node);
-            }
-
+        // Perform contextual interception.
+        final List<? extends TemplateResolverInterceptor<V, C>> interceptors =
+                context.getResolverInterceptors();
+        // noinspection ForLoopReplaceableByForEach
+        for (int interceptorIndex = 0;
+             interceptorIndex < interceptors.size();
+             interceptorIndex++) {
+            final TemplateResolverInterceptor<V, C> interceptor =
+                    interceptors.get(interceptorIndex);
+            node = interceptor.processTemplateBeforeResolverInjection(context, node);
         }
 
         // Resolve the template.
         return ofObject(context, node);
 
-    }
-
-    private static void appendAdditionalFields(
-            final Object node,
-            EventTemplateAdditionalField[] additionalFields) {
-        if (additionalFields.length > 0) {
-
-            // Check that the root is an object node.
-            final Map<String, Object> objectNode;
-            try {
-                @SuppressWarnings("unchecked")
-                final Map<String, Object> map = (Map<String, Object>) node;
-                objectNode = map;
-            } catch (final ClassCastException error) {
-                final String message = String.format(
-                        "was expecting an object to merge additional fields: %s",
-                        node.getClass().getName());
-                throw new IllegalArgumentException(message);
-            }
-
-            // Merge additional fields.
-            for (final EventTemplateAdditionalField additionalField : additionalFields) {
-                final String additionalFieldKey = additionalField.getKey();
-                final Object additionalFieldValue;
-                switch (additionalField.getFormat()) {
-                    case STRING:
-                        additionalFieldValue = additionalField.getValue();
-                        break;
-                    case JSON:
-                        try {
-                            additionalFieldValue =  JsonReader.read(additionalField.getValue());
-                        } catch (final Exception error) {
-                            final String message = String.format(
-                                    "failed reading JSON provided by additional field: %s",
-                                    additionalFieldKey);
-                            throw new IllegalArgumentException(message, error);
-                        }
-                        break;
-                    default: {
-                        final String message = String.format(
-                                "unknown format %s for additional field: %s",
-                                additionalFieldKey, additionalField.getFormat());
-                        throw new IllegalArgumentException(message);
-                    }
-                }
-                objectNode.put(additionalFieldKey, additionalFieldValue);
-            }
-
-        }
     }
 
     private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofObject(
@@ -352,7 +300,7 @@ public final class TemplateResolvers {
         final String resolverName = (String) resolverNameObject;
 
         // Retrieve the resolver.
-        final TemplateResolverFactory<V, C, ? extends TemplateResolver<V>> resolverFactory =
+        final TemplateResolverFactory<V, C> resolverFactory =
                 context.getResolverFactoryByName().get(resolverName);
         if (resolverFactory == null) {
             throw new IllegalArgumentException("unknown resolver: " + resolverName);
@@ -366,24 +314,16 @@ public final class TemplateResolvers {
             final C context,
             final String fieldValue) {
 
-        // Check if substitution needed at all. (Copied logic from
-        // AbstractJacksonLayout.valueNeedsLookup() method.)
+        // Check if substitution is needed.
         final boolean substitutionNeeded = fieldValue.contains("${");
         final JsonWriter contextJsonWriter = context.getJsonWriter();
         if (substitutionNeeded) {
+            final TemplateResolverStringSubstitutor<V> substitutor = context.getSubstitutor();
 
-            // Use Log4j substitutor with LogEvent.
-            if (EventResolverContext.class.isAssignableFrom(context.getContextClass())) {
-                return (final V value, final JsonWriter jsonWriter) -> {
-                    final LogEvent logEvent = (LogEvent) value;
-                    final String replacedText = context.getSubstitutor().replace(logEvent, fieldValue);
-                    jsonWriter.writeString(replacedText);
-                };
-            }
-
-            // Use standalone Log4j substitutor.
-            else {
-                final String replacedText = context.getSubstitutor().replace(null, fieldValue);
+            // If the substitutor is stable, we can get the replacement right
+            // away and avoid runtime substitution.
+            if (substitutor.isStable()) {
+                final String replacedText = substitutor.replace(null, fieldValue);
                 if (replacedText == null) {
                     @SuppressWarnings("unchecked")
                     final TemplateResolver<V> resolver =
@@ -398,6 +338,15 @@ public final class TemplateResolvers {
                     return (final V value, final JsonWriter jsonWriter) ->
                             jsonWriter.writeRawString(escapedReplacedText);
                 }
+            }
+
+            // Otherwise, the unstable substitutor needs to be invoked always at
+            // runtime.
+            else {
+                return (final V value, final JsonWriter jsonWriter) -> {
+                    final String replacedText = substitutor.replace(value, fieldValue);
+                    jsonWriter.writeString(replacedText);
+                };
             }
 
         }

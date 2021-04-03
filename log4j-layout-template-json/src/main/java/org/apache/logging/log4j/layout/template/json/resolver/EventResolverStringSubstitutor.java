@@ -16,35 +16,36 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+
+import java.util.Objects;
 
 /**
- * {@link MessageParameterResolver} factory.
+ * {@link TemplateResolverStringSubstitutor} specialized for {@link LogEvent}s.
  */
-@Plugin(name = "MessageParameterResolverFactory", category = TemplateResolverFactory.CATEGORY)
-public final class MessageParameterResolverFactory implements EventResolverFactory {
+public final class EventResolverStringSubstitutor
+        implements TemplateResolverStringSubstitutor<LogEvent> {
 
-    private static final MessageParameterResolverFactory INSTANCE =
-            new MessageParameterResolverFactory();
+    private final StrSubstitutor substitutor;
 
-    private MessageParameterResolverFactory() {}
-
-    @PluginFactory
-    public static MessageParameterResolverFactory getInstance() {
-        return INSTANCE;
+    public EventResolverStringSubstitutor(final StrSubstitutor substitutor) {
+        this.substitutor = Objects.requireNonNull(substitutor, "substitutor");
     }
 
     @Override
-    public String getName() {
-        return MessageParameterResolver.getName();
+    public StrSubstitutor getInternalSubstitutor() {
+        return substitutor;
     }
 
     @Override
-    public MessageParameterResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        return new MessageParameterResolver(context, config);
+    public boolean isStable() {
+        return false;
+    }
+
+    @Override
+    public String replace(final LogEvent logEvent, final String source) {
+        return substitutor.replace(logEvent, source);
     }
 
 }

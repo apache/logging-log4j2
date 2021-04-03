@@ -16,13 +16,21 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-final class TimestampResolverFactory implements EventResolverFactory<TimestampResolver> {
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
+/**
+ * {@link TimestampResolver} factory.
+ */
+@Plugin(name = "TimestampResolverFactory", category = TemplateResolverFactory.CATEGORY)
+public final class TimestampResolverFactory implements EventResolverFactory {
 
     private static final TimestampResolverFactory INSTANCE = new TimestampResolverFactory();
 
     private TimestampResolverFactory() {}
 
-    static TimestampResolverFactory getInstance() {
+    @PluginFactory
+    public static TimestampResolverFactory getInstance() {
         return INSTANCE;
     }
 

@@ -16,35 +16,22 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
- * {@link MessageParameterResolver} factory.
+ * {@link TemplateResolverInterceptor} specialized for {@link LogEvent}s.
  */
-@Plugin(name = "MessageParameterResolverFactory", category = TemplateResolverFactory.CATEGORY)
-public final class MessageParameterResolverFactory implements EventResolverFactory {
+public interface EventResolverInterceptor
+        extends TemplateResolverInterceptor<LogEvent, EventResolverContext> {
 
-    private static final MessageParameterResolverFactory INSTANCE =
-            new MessageParameterResolverFactory();
-
-    private MessageParameterResolverFactory() {}
-
-    @PluginFactory
-    public static MessageParameterResolverFactory getInstance() {
-        return INSTANCE;
+    @Override
+    default Class<LogEvent> getValueClass() {
+        return LogEvent.class;
     }
 
     @Override
-    public String getName() {
-        return MessageParameterResolver.getName();
-    }
-
-    @Override
-    public MessageParameterResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        return new MessageParameterResolver(context, config);
+    default Class<EventResolverContext> getContextClass() {
+        return EventResolverContext.class;
     }
 
 }
