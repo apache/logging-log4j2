@@ -44,6 +44,7 @@ public class SimplePerfTest {
     private static Random rand = new SimpleRandom();
     private static int RAND_SIZE = 250;
     private static int[] values = new int[RAND_SIZE];
+    private static final String FORMAT = "Timer exceeded max time of %d by %d nanoseconds";
 
     @BeforeClass
     public static void setupClass() {
@@ -55,19 +56,21 @@ public class SimplePerfTest {
 			LoggerContext.getContext().start(new DefaultConfiguration());
 		}
 
+		long[] array = new long[RAND_SIZE];
         for (int i=0; i < WARMUP; ++i) {
-            overhead();
+            overhead(array);
         }
         System.gc();
         final Timer timer = new Timer("Setup", LOOP_CNT);
+        array = new long[RAND_SIZE];
         timer.start();
-        for (int i=0; i < (LOOP_CNT / 150); ++i) {
-            overhead();
+        for (int i=0; i < (LOOP_CNT / 100); ++i) {
+            overhead(array);
         }
         timer.stop();
         maxTime = timer.getElapsedNanoTime();
         System.gc();
-        System.out.println(timer.toString());
+        System.out.println(timer.toString() + " - Array value " + array[0]);
     }
 
     @Test
@@ -80,7 +83,8 @@ public class SimplePerfTest {
         }
         timer.stop();
         System.out.println(timer.toString());
-        assertTrue("Timer exceeded max time of " + maxTime, maxTime > timer.getElapsedNanoTime());
+        long elapsed = timer.getElapsedNanoTime();
+        assertTrue(String.format(FORMAT, maxTime, maxTime - elapsed), maxTime > elapsed);
     }
 
     @Test
@@ -93,7 +97,8 @@ public class SimplePerfTest {
         }
         timer.stop();
         System.out.println(timer.toString());
-        assertTrue("Timer exceeded max time of " + maxTime, maxTime > timer.getElapsedNanoTime());
+        long elapsed = timer.getElapsedNanoTime();
+        assertTrue(String.format(FORMAT, maxTime, maxTime - elapsed), maxTime > elapsed);
     }
 
     @Test
@@ -107,7 +112,8 @@ public class SimplePerfTest {
         }
         timer.stop();
         System.out.println(timer.toString());
-        assertTrue("Timer exceeded max time of " + maxTime, maxTime > timer.getElapsedNanoTime());
+        long elapsed = timer.getElapsedNanoTime();
+        assertTrue(String.format(FORMAT, maxTime, maxTime - elapsed), maxTime > elapsed);
     }
     /*
     @Test
@@ -125,12 +131,11 @@ public class SimplePerfTest {
      * Try to generate some overhead that can't be optimized well. Not sure how accurate this is,
      * but the point is simply to insure that changes made don't suddenly cause performance issues.
      */
-    private static void overhead() {
-        final int values[] = new int[RAND_SIZE];
+    private static void overhead(long[] values) {
         final Random rand = new SimpleRandom();
 
         for (int i = 0; i < RAND_SIZE; ++i) {
-            values[i] = rand.nextInt();
+            values[i] += rand.nextInt();
         }
         bubbleSort(values);
     }
@@ -155,12 +160,12 @@ public class SimplePerfTest {
      * Standard BubbleSort algorithm.
      * @param array The array to sort.
      */
-    private static void bubbleSort(final int array[]) {
+    private static void bubbleSort(final long array[]) {
         final int length = array.length;
         for (int i = 0; i < length; i++) {
             for (int j = 1; j > length - i; j++) {
                 if (array[j-1] > array[j]) {
-                    final int temp = array[j-1];
+                    final long temp = array[j-1];
                     array[j-1] = array[j];
                     array[j] = temp;
                 }
