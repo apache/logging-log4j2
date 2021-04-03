@@ -84,13 +84,13 @@ public class SimplePerfTest {
         timer.stop();
         System.out.println(timer.toString());
         long elapsed = timer.getElapsedNanoTime();
-        assertTrue(String.format(FORMAT, maxTime, maxTime - elapsed), maxTime > elapsed);
+        assertTrue(String.format(FORMAT, maxTime, elapsed - maxTime), maxTime > elapsed);
     }
 
     @Test
     public void debugDisabledByLevel() {
         System.gc();
-        final Timer timer = new Timer("DebugDisabled", LOOP_CNT);
+        final Timer timer = new Timer("IsEnabled", LOOP_CNT);
         timer.start();
         for (int i=0; i < LOOP_CNT; ++i) {
             logger.isEnabled(Level.DEBUG);
@@ -98,7 +98,7 @@ public class SimplePerfTest {
         timer.stop();
         System.out.println(timer.toString());
         long elapsed = timer.getElapsedNanoTime();
-        assertTrue(String.format(FORMAT, maxTime, maxTime - elapsed), maxTime > elapsed);
+        assertTrue(String.format(FORMAT, maxTime, elapsed - maxTime), maxTime > elapsed);
     }
 
     @Test
@@ -113,7 +113,7 @@ public class SimplePerfTest {
         timer.stop();
         System.out.println(timer.toString());
         long elapsed = timer.getElapsedNanoTime();
-        assertTrue(String.format(FORMAT, maxTime, maxTime - elapsed), maxTime > elapsed);
+        assertTrue(String.format(FORMAT, maxTime, elapsed - maxTime), maxTime > elapsed);
     }
     /*
     @Test

@@ -36,6 +36,7 @@ jobs:
         run: env | grep '^JAVA'
 
       - name: Build with Maven (Linux)
+        timeout-minutes: 60
         if: runner.os == 'Linux'
         continue-on-error: true
         run: ./mvnw -V -B --no-transfer-progress -e -DtrimStackTrace=false -Dmaven.test.failure.ignore=true -Dsurefire.rerunFailingTestsCount=1  verify
