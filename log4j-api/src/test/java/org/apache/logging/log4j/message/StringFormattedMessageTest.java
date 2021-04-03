@@ -23,7 +23,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Locale;
 
-import org.apache.logging.log4j.junit.Mutable;
+import org.apache.logging.log4j.test.junit.Mutable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -113,6 +113,7 @@ public class StringFormattedMessageTest {
         assertEquals("Test message abc", actual, "Should use initial param value");
     }
 
+    @SuppressWarnings("BanSerializableRead")
     @Test
     public void testSerialization() throws IOException, ClassNotFoundException {
         final StringFormattedMessage expected = new StringFormattedMessage("Msg", "a", "b", "c");

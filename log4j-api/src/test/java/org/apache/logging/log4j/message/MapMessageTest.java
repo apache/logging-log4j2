@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.message;
 
-import com.google.common.base.Strings;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

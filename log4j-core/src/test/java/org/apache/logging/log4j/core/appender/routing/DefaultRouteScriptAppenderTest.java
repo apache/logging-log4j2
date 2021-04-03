@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.AppenderControl;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Assert;
 import org.junit.Rule;

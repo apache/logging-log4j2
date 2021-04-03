@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.categories.AsyncLoggers;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.After;
 import org.junit.Before;

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.test.TestLoggerContextFactory;
 
 /**
  * Binding for the Log4j API.

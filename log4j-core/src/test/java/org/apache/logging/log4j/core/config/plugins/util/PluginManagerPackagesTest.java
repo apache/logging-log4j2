@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config.plugins.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;

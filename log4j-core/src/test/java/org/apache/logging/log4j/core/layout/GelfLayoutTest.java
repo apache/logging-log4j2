@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.layout.GelfLayout.CompressionType;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.test.appender.EncodingListAppender;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterAll;

@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core.config;/*
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.core.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
 

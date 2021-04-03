@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.junit.LoggerContextFactoryExtension;
+import org.apache.logging.log4j.test.junit.LoggerContextFactoryExtension;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;

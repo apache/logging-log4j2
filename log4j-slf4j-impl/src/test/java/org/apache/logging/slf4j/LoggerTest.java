@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.After;

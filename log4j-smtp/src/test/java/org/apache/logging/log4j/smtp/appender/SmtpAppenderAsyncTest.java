@@ -20,7 +20,7 @@ import org.apache.logging.dumbster.smtp.SimpleSmtpServer;
 import org.apache.logging.dumbster.smtp.SmtpMessage;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.After;
 import org.junit.AfterClass;

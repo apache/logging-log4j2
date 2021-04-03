@@ -66,25 +66,6 @@
   </dependencies>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-toolchains-plugin</artifactId>
-        <version>1.1</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>toolchain</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <toolchains>
-            <jdk>
-              <version>[8, )</version>
-            </jdk>
-          </toolchains>
-        </configuration>
-      </plugin>
       <!-- Include the standard NOTICE and LICENSE -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

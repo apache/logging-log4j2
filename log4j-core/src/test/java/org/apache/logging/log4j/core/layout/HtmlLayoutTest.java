@@ -43,7 +43,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
-import org.apache.logging.log4j.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;

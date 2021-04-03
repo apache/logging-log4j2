@@ -30,6 +30,8 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.test.junit.CleanFiles;
+import org.apache.logging.log4j.test.junit.CleanFolders;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;

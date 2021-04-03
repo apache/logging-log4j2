@@ -20,7 +20,7 @@ package org.apache.logging.log4j.message;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.logging.log4j.AbstractSerializationTest;
+import org.apache.logging.log4j.test.AbstractSerializationTest;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;

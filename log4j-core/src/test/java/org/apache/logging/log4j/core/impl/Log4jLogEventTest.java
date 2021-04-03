@@ -157,6 +157,7 @@ public class Log4jLogEventTest {
         return arr.toByteArray();
     }
 
+    @SuppressWarnings("BanSerializableRead")
     private Log4jLogEvent deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
         final ObjectInputStream in = new FilteredObjectInputStream(inArr);

@@ -19,8 +19,8 @@ package org.apache.logging.log4j.core.appender;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.core.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.junit.Named;
 import org.apache.logging.log4j.test.appender.FailOnceAppender;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterEach;
@@ -38,8 +38,8 @@ public class FailoverAppenderTest {
     private final Logger logger;
     private final Logger onceLogger;
 
-    public FailoverAppenderTest(
-            final LoggerContext context, @Named("List") final ListAppender app, @Named("Once") final FailOnceAppender foApp) {
+    public FailoverAppenderTest(final LoggerContext context, @Named("List") final ListAppender app,
+            @Named("Once") final FailOnceAppender foApp) {
         this.app = app;
         this.foApp = foApp;
         logger = context.getLogger("LoggerTest");

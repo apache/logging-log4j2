@@ -167,10 +167,11 @@ public enum GcFreeLoggingTestUtil {;
                         "pattern mismatch at line 1: " + line);
             }
 
-            // Check the rest of the lines.
+            // Check the rest of the lines. We are looking for the messages written to System.err
+            // in the sampleAllocation() method above in executeLogging().
             else {
                 assertFalse(
-                        line.contains("allocated") || line.contains("array"),
+                        line.contains(" allocated ") || line.contains(" array "),
                         "(allocated|array) pattern matches at line " + lineNumber + ": " + line);
             }
 

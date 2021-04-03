@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.Named;
-import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.junit.Named;
+import org.apache.logging.log4j.core.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.ExtendedLevels;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;

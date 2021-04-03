@@ -106,7 +106,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
         Method newMethod = null;
         try {
             if (setMethod != null) {
-                Class<?> clazz = Class.forName("org.apache.logging.log4j.util.internal.DefaultObjectInputFilter");
+                Class<?> clazz = Class.forName("org.apache.logging.log4j.internal.DefaultObjectInputFilter");
                 methods = clazz.getMethods();
                 for (Method method : methods) {
                     if (method.getName().equals("newInstance") && Modifier.isStatic(method.getModifiers())) {
@@ -552,6 +552,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
         }
     }
 
+    @SuppressWarnings("BanSerializableRead")
     private static Object unmarshall(final byte[] data, ObjectInputStream inputStream)
             throws IOException, ClassNotFoundException {
         final ByteArrayInputStream bin = new ByteArrayInputStream(data);
