@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 /**
  * <em>Consider this class private.</em> Determines the caller's class.
  */
-public class StackLocator {
+public final class StackLocator {
 
     private final static StackWalker walker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
@@ -41,14 +41,17 @@ public class StackLocator {
     private StackLocator() {
     }
 
+    @PerformanceSensitive
     public Class<?> getCallerClass(final String fqcn) {
         return getCallerClass(fqcn, "");
     }
 
+    @PerformanceSensitive
     public Class<?> getCallerClass(final String fqcn, final String pkg) {
         return getCallerClass(fqcn, pkg, 0);
     }
 
+    @PerformanceSensitive
     public Class<?> getCallerClass(final String fqcn, final String pkg, final int skipDepth) {
         return walker.walk(s -> s
                 .dropWhile(f -> !f.getClassName().equals(fqcn))
@@ -60,16 +63,19 @@ public class StackLocator {
                 .orElse(null);
     }
 
+    @PerformanceSensitive
     public Class<?> getCallerClass(final Class<?> anchor) {
         return walker.walk(s -> s.dropWhile(f -> !f.getDeclaringClass().equals(anchor)).
                 dropWhile(f -> f.getDeclaringClass().equals(anchor)).findFirst()).
                 map(StackWalker.StackFrame::getDeclaringClass).orElse(null);
     }
 
+    @PerformanceSensitive
     public Class<?> getCallerClass(final int depth) {
         return walker.walk(s -> s.skip(depth).findFirst()).map(StackWalker.StackFrame::getDeclaringClass).orElse(null);
     }
 
+    @PerformanceSensitive
     public Stack<Class<?>> getCurrentStackTrace() {
         // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
         if (PrivateSecurityManagerStackTraceUtil.isEnabled()) {
