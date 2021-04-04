@@ -41,7 +41,7 @@ public class EventLoggerTest {
     public void structuredData() {
         ThreadContext.put("loginId", "JohnDoe");
         ThreadContext.put("ipAddress", "192.168.0.120");
-        ThreadContext.put("locale", Locale.US.getDisplayName());
+        ThreadContext.put("locale", Locale.US.getDisplayName(Locale.US));
         final StructuredDataMessage msg = new StructuredDataMessage("Transfer@18060", "Transfer Complete", "Audit");
         msg.put("ToAccount", "123456");
         msg.put("FromAccount", "123457");
