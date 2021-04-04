@@ -44,38 +44,36 @@ public class SimplePerfTest {
     private static Random rand = new SimpleRandom();
     private static int RAND_SIZE = 250;
     private static int[] values = new int[RAND_SIZE];
-    private static final String FORMAT = "Timer exceeded max time of %d by %d nanoseconds";
 
     @BeforeClass
     public static void setupClass() {
 
 		final Configuration config = LoggerContext.getContext().getConfiguration();
-		
+
 		if (!DefaultConfiguration.DEFAULT_NAME.equals(config.getName())) {
 			System.out.println("Configuration was " + config.getName());
 			LoggerContext.getContext().start(new DefaultConfiguration());
 		}
 
-		long[] array = new long[RAND_SIZE];
         for (int i=0; i < WARMUP; ++i) {
-            overhead(array);
+            overhead();
         }
         System.gc();
         final Timer timer = new Timer("Setup", LOOP_CNT);
-        array = new long[RAND_SIZE];
         timer.start();
-        for (int i=0; i < (LOOP_CNT / 100); ++i) {
-            overhead(array);
+        for (int i=0; i < (LOOP_CNT / 150); ++i) {
+            overhead();
         }
         timer.stop();
         maxTime = timer.getElapsedNanoTime();
         System.gc();
-        System.out.println(timer.toString() + " - Array value " + array[0]);
+        System.out.println(timer.toString());
     }
 
     @Test
-    public void debugDisabled() {
+    public void debugDisabled() throws Exception {
         System.gc();
+        Thread.sleep(100);
         final Timer timer = new Timer("DebugDisabled", LOOP_CNT);
         timer.start();
         for (int i=0; i < LOOP_CNT; ++i) {
@@ -83,13 +81,13 @@ public class SimplePerfTest {
         }
         timer.stop();
         System.out.println(timer.toString());
-        long elapsed = timer.getElapsedNanoTime();
-        assertTrue(String.format(FORMAT, maxTime, elapsed - maxTime), maxTime > elapsed);
+        assertTrue("Timer exceeded max time of " + maxTime, maxTime > timer.getElapsedNanoTime());
     }
 
     @Test
-    public void debugDisabledByLevel() {
+    public void debugDisabledByLevel() throws Exception {
         System.gc();
+        Thread.sleep(100);
         final Timer timer = new Timer("IsEnabled", LOOP_CNT);
         timer.start();
         for (int i=0; i < LOOP_CNT; ++i) {
@@ -97,13 +95,13 @@ public class SimplePerfTest {
         }
         timer.stop();
         System.out.println(timer.toString());
-        long elapsed = timer.getElapsedNanoTime();
-        assertTrue(String.format(FORMAT, maxTime, elapsed - maxTime), maxTime > elapsed);
+        assertTrue("Timer exceeded max time of " + maxTime, maxTime > timer.getElapsedNanoTime());
     }
 
     @Test
-    public void debugLogger() {
+    public void debugLogger() throws Exception {
         System.gc();
+        Thread.sleep(100);
         final Timer timer = new Timer("DebugLogger", LOOP_CNT);
         final String msg = "This is a test";
         timer.start();
@@ -112,8 +110,7 @@ public class SimplePerfTest {
         }
         timer.stop();
         System.out.println(timer.toString());
-        long elapsed = timer.getElapsedNanoTime();
-        assertTrue(String.format(FORMAT, maxTime, elapsed - maxTime), maxTime > elapsed);
+        assertTrue("Timer exceeded max time of " + maxTime, maxTime > timer.getElapsedNanoTime());
     }
     /*
     @Test
@@ -131,11 +128,12 @@ public class SimplePerfTest {
      * Try to generate some overhead that can't be optimized well. Not sure how accurate this is,
      * but the point is simply to insure that changes made don't suddenly cause performance issues.
      */
-    private static void overhead(long[] values) {
+    private static void overhead() {
+        final int values[] = new int[RAND_SIZE];
         final Random rand = new SimpleRandom();
 
         for (int i = 0; i < RAND_SIZE; ++i) {
-            values[i] += rand.nextInt();
+            values[i] = rand.nextInt();
         }
         bubbleSort(values);
     }
@@ -160,12 +158,12 @@ public class SimplePerfTest {
      * Standard BubbleSort algorithm.
      * @param array The array to sort.
      */
-    private static void bubbleSort(final long array[]) {
+    private static void bubbleSort(final int array[]) {
         final int length = array.length;
         for (int i = 0; i < length; i++) {
             for (int j = 1; j > length - i; j++) {
                 if (array[j-1] > array[j]) {
-                    final long temp = array[j-1];
+                    final int temp = array[j-1];
                     array[j-1] = array[j];
                     array[j] = temp;
                 }
