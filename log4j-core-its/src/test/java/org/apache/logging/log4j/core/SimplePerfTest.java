@@ -71,8 +71,9 @@ public class SimplePerfTest {
     }
 
     @Test
-    public void debugDisabled() {
+    public void debugDisabled() throws Exception {
         System.gc();
+        Thread.sleep(100);
         final Timer timer = new Timer("DebugDisabled", LOOP_CNT);
         timer.start();
         for (int i=0; i < LOOP_CNT; ++i) {
@@ -84,9 +85,10 @@ public class SimplePerfTest {
     }
 
     @Test
-    public void debugDisabledByLevel() {
+    public void debugDisabledByLevel() throws Exception {
         System.gc();
-        final Timer timer = new Timer("DebugDisabled", LOOP_CNT);
+        Thread.sleep(100);
+        final Timer timer = new Timer("IsEnabled", LOOP_CNT);
         timer.start();
         for (int i=0; i < LOOP_CNT; ++i) {
             logger.isEnabled(Level.DEBUG);
@@ -97,8 +99,9 @@ public class SimplePerfTest {
     }
 
     @Test
-    public void debugLogger() {
+    public void debugLogger() throws Exception {
         System.gc();
+        Thread.sleep(100);
         final Timer timer = new Timer("DebugLogger", LOOP_CNT);
         final String msg = "This is a test";
         timer.start();
