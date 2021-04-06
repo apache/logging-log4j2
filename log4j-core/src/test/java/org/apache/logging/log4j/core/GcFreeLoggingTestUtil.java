@@ -29,10 +29,13 @@ import java.io.File;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
+import static java.lang.System.getProperty;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -130,16 +133,24 @@ public enum GcFreeLoggingTestUtil {;
     }
 
     public static void runTest(final Class<?> cls) throws Exception {
-        final String javaHome = System.getProperty("java.home");
+        final String javaHome = getProperty("java.home");
         final String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
-        final String classpath = System.getProperty("java.class.path");
+        final String classpath = getProperty("java.class.path");
         final String javaagent = "-javaagent:" + agentJar();
+        final String usePreciseClock = System.getProperty("log4j2.usePreciseClock");
 
         final File tempFile = File.createTempFile("allocations", ".txt");
         tempFile.deleteOnExit();
-
-        final ProcessBuilder builder = new ProcessBuilder( //
-                javaBin, javaagent, "-cp", classpath, cls.getName());
+        List<String> command = new ArrayList<>();
+        command.add(javaBin);
+        command.add(javaagent);
+        if (usePreciseClock != null) {
+            command.add("-Dlog4j2.usePreciseClock=" + usePreciseClock);
+        }
+        command.add("-cp");
+        command.add(classpath);
+        command.add(cls.getName());
+        final ProcessBuilder builder = new ProcessBuilder(command);
         builder.redirectError(ProcessBuilder.Redirect.to(tempFile));
         builder.redirectOutput(ProcessBuilder.Redirect.to(tempFile));
         final Process process = builder.start();
