@@ -78,9 +78,9 @@ public class KubernetesLookup extends AbstractLookup {
     private boolean initialize() {
         if (kubernetesInfo == null || (isSpringIncluded && !kubernetesInfo.isSpringActive)) {
             initLock.lock();
-            boolean isSpringActive = isSpringActive();
-            if (kubernetesInfo == null || (!kubernetesInfo.isSpringActive && isSpringActive)) {
-                try {
+            try {
+                boolean isSpringActive = isSpringActive();
+                if (kubernetesInfo == null || (!kubernetesInfo.isSpringActive && isSpringActive)) {
                     KubernetesInfo info = new KubernetesInfo();
                     KubernetesClient client = null;
                     info.isSpringActive = isSpringActive;
@@ -152,9 +152,9 @@ public class KubernetesLookup extends AbstractLookup {
 
                         kubernetesInfo = info;
                     }
-                } finally {
-                    initLock.unlock();
                 }
+            } finally {
+                initLock.unlock();
             }
         }
         return kubernetesInfo != null;
