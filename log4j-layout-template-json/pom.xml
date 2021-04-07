@@ -121,7 +121,92 @@
 
   <build>
     <plugins>
-
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>true</showWarnings>
+              <encoding>UTF-8</encoding>
+              <fork>true</fork>
+              <meminitial>256</meminitial>
+              <maxmem>1024</maxmem>
+              <compilerArgs>
+                <arg>-XDcompilePolicy=simple</arg>
+                <arg>-Xplugin:ErrorProne</arg>
+              </compilerArgs>
+              <compilerArguments>
+                <Xmaxwarns>10000</Xmaxwarns>
+                <Xlint />
+              </compilerArguments>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_core</artifactId>
+                  <version>${errorprone.version}</version>
+                </path>
+                <path>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-plugins</artifactId>
+                  <version>${project.version}</version>
+                </path>
+              </annotationProcessorPaths>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-testCompile</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>true</showWarnings>
+              <encoding>UTF-8</encoding>
+              <fork>true</fork>
+              <meminitial>256</meminitial>
+              <maxmem>1024</maxmem>
+              <compilerArgs>
+                <arg>-XDcompilePolicy=simple</arg>
+                <arg>-Xplugin:ErrorProne</arg>
+                <arg>-ApluginPackage=org.apache.logging.log4j.layout.template.json.plugins.test</arg>
+              </compilerArgs>
+              <compilerArguments>
+                <Xmaxwarns>10000</Xmaxwarns>
+                <Xlint />
+              </compilerArguments>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_core</artifactId>
+                  <version>${errorprone.version}</version>
+                </path>
+                <path>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-plugins</artifactId>
+                  <version>${project.version}</version>
+                </path>
+              </annotationProcessorPaths>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
