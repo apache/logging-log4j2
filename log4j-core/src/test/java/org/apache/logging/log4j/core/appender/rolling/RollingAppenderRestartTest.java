@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.commons.io.file.PathUtils;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.junit.LoggerContextRule;
 import org.hamcrest.Matcher;
 import org.junit.AfterClass;
@@ -37,20 +38,24 @@ import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.apache.logging.log4j.core.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class RollingAppenderRestartTest {
+public class RollingAppenderRestartTest implements RolloverListener {
 
     private static final String CONFIG = "log4j-rolling-restart.xml";
 
     // Note that both paths are hardcoded in the configuration!
     private static final Path DIR = Paths.get("target/rolling-restart");
     private static final Path FILE = DIR.resolve("test.log");
+    private static final CountDownLatch latch = new CountDownLatch(1);
 
     private final LoggerContextRule loggerContextRule =
             LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
@@ -81,7 +86,13 @@ public class RollingAppenderRestartTest {
     @Test
     public void testAppender() throws Exception {
         final Logger logger = loggerContextRule.getLogger();
+        final RollingFileAppender appender = (RollingFileAppender) loggerContextRule.getAppender("RollingFile");
+        assertNotNull("No RollingFile Appender", appender);
+        appender.getManager().addRolloverListener(this);
         logger.info("This is test message number 1");
+        latch.await(100, TimeUnit.MILLISECONDS);
+        // Delay to allow asynchronous gzip to complete.
+        Thread.sleep(200);
         final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));
         final File[] files = DIR.toFile().listFiles();
         assertTrue(
@@ -89,4 +100,13 @@ public class RollingAppenderRestartTest {
                 hasGzippedFile.matches(files));
     }
 
+    @Override
+    public void rolloverTriggered(String fileName) {
+
+    }
+
+    @Override
+    public void rolloverComplete(String fileName) {
+        latch.countDown();
+    }
 }
