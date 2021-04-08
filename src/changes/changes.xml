@@ -31,6 +31,9 @@
     -->
     <release version="2.15.0" date="2021-MM-DD" description="GA Release 2.15.0">
       <!-- ADDS -->
+      <action issue="LOG4J2-3056" dev="vy" type="add" due-to="Marcono1234">
+        Refactor MD5 usage for sharing sensitive information.
+      </action>
       <action issue="LOG4J2-3004" dev="vy" type="add">
         Add plugin support to JsonTemplateLayout.
       </action>

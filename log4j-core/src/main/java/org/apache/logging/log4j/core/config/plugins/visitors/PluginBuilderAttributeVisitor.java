@@ -23,7 +23,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -48,7 +47,7 @@ public class PluginBuilderAttributeVisitor extends AbstractPluginVisitor<PluginB
         final String rawValue = removeAttributeValue(attributes, name, this.aliases);
         final String replacedValue = this.substitutor.replace(event, rawValue);
         final Object value = convert(replacedValue, null);
-        final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
+        final Object debugValue = this.annotation.sensitive() ? "*****" : value;
         StringBuilders.appendKeyDqValue(log, name, debugValue);
         return value;
     }

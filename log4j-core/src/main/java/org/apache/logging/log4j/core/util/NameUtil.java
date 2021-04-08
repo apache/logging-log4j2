@@ -16,44 +16,55 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.security.MessageDigest;
-
 import org.apache.logging.log4j.util.Strings;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 /**
  *
  */
 public final class NameUtil {
 
-    private static final int MASK = 0xff;
-
-    private NameUtil() {
-    }
+    private NameUtil() {}
 
     public static String getSubName(final String name) {
-        if (Strings.isEmpty(name)) {
+        if (Strings.isBlank(name)) {
             return null;
         }
         final int i = name.lastIndexOf('.');
         return i > 0 ? name.substring(0, i) : Strings.EMPTY;
     }
 
-    public static String md5(final String string) {
+    /**
+     * Calculates the <a href="https://en.wikipedia.org/wiki/MD5">MD5</a> hash
+     * of the given input string.
+     * <p>
+     * <b>MD5 has severe vulnerabilities and should not be used for sharing any
+     * sensitive information.</b> This function should only be used to create
+     * unique identifiers, e.g., configuration element names.
+     *
+     * @return string composed of 32 hexadecimal digits of the calculated hash
+     */
+    public static String md5(final String input) {
+        Objects.requireNonNull(input, "input");
         try {
             final MessageDigest digest = MessageDigest.getInstance("MD5");
-            digest.update(string.getBytes());
+            digest.update(input.getBytes());
             final byte[] bytes = digest.digest();
             final StringBuilder md5 = new StringBuilder();
             for (final byte b : bytes) {
-                final String hex = Integer.toHexString(MASK & b);
+                final String hex = Integer.toHexString(0xFF & b);
                 if (hex.length() == 1) {
                     md5.append('0');
                 }
                 md5.append(hex);
             }
             return md5.toString();
-        } catch (final Exception ex) {
-            return string;
+        } catch (final NoSuchAlgorithmException error) {
+            throw new RuntimeException(error);
         }
     }
+
 }
