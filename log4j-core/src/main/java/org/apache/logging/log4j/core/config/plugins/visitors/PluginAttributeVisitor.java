@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config.plugins.visitors;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.inject.AbstractConfigurationInjector;
-import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
@@ -86,7 +85,7 @@ public class PluginAttributeVisitor extends AbstractConfigurationInjector<Plugin
     }
 
     private void debugLog(final Object value) {
-        final Object debugValue = annotation.sensitive() ? NameUtil.md5(value + getClass().getName()) : value;
+        final Object debugValue = annotation.sensitive() ? "*****" : value;
         StringBuilders.appendKeyDqValue(debugLog, name, debugValue);
     }
 }

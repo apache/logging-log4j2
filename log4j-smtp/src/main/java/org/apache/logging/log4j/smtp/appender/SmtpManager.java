@@ -108,7 +108,30 @@ public class SmtpManager extends AbstractManager {
             protocol = "smtp";
         }
 
+        final String managerName = createManagerName(to, cc, bcc, from, replyTo, subject, protocol, host, username, password, isDebug, filterName);
+        final Serializer subjectSerializer = PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(subject).build();
+
+        return getManager(managerName, FACTORY, new FactoryData(to, cc, bcc, from, replyTo, subjectSerializer,
+            protocol, host, port, username, password, isDebug, numElements, sslConfiguration));
+
+    }
+
+    private static String createManagerName(
+            final String to,
+            final String cc,
+            final String bcc,
+            final String from,
+            final String replyTo,
+            final String subject,
+            final String protocol,
+            final String host,
+            final String username,
+            final String password,
+            final boolean isDebug,
+            final String filterName) {
+
         final StringBuilder sb = new StringBuilder();
+
         if (to != null) {
             sb.append(to);
         }
@@ -144,11 +167,9 @@ public class SmtpManager extends AbstractManager {
         sb.append(isDebug ? ":debug:" : "::");
         sb.append(filterName);
 
-        final String name = "SMTP:" + NameUtil.md5(sb.toString());
-        final Serializer subjectSerializer = PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(subject).build();
+        final String hash = NameUtil.md5(sb.toString());
+        return "SMTP:" + hash;
 
-        return getManager(name, FACTORY, new FactoryData(to, cc, bcc, from, replyTo, subjectSerializer,
-            protocol, host, port, username, password, isDebug, numElements, sslConfiguration));
     }
 
     /**

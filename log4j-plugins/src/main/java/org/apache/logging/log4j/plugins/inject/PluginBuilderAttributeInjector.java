@@ -38,7 +38,7 @@ public class PluginBuilderAttributeInjector extends AbstractConfigurationInjecto
     }
 
     private void debugLog(final Object value) {
-        final Object debugValue = annotation.sensitive() ? NameUtil.md5(value + getClass().getName()) : value;
+        final Object debugValue = annotation.sensitive() ? "*****" : value;
         StringBuilders.appendKeyDqValue(debugLog, name, debugValue);
     }
 }
