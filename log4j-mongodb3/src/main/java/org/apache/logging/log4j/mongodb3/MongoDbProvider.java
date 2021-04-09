@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -178,8 +177,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                 MongoCredential mongoCredential = null;
                 description = "database=" + databaseName;
                 if (Strings.isNotEmpty(userName) && Strings.isNotEmpty(password)) {
-                    description += ", username=" + userName + ", passwordHash="
-                            + NameUtil.md5(password + MongoDbProvider.class.getName());
+                    description += ", username=" + userName;
                     mongoCredential = MongoCredential.createCredential(userName, databaseName, password.toCharArray());
                 }
                 try {
