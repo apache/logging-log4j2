@@ -26,9 +26,10 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.jctools.queues.MpscArrayQueue;
+import org.jctools.queues.MpscBlockingConsumerArrayQueue;
 
 /**
- * Factory for creating instances of BlockingQueues backed by JCTools {@link MpscArrayQueue}.
+ * Factory for creating instances of BlockingQueues backed by JCTools {@link MpscBlockingConsumerArrayQueue} or {@link MpscArrayQueue}.
  *
  * @since 2.7
  */
@@ -43,6 +44,9 @@ public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
 
     @Override
     public BlockingQueue<E> create(final int capacity) {
+        if (WaitStrategy.PARK.equals(waitStrategy)) {
+            return new MpscParkBlockingQueue<>(capacity);
+        }
         return new MpscBlockingQueue<>(capacity, waitStrategy);
     }
 
@@ -52,9 +56,6 @@ public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
         return new JCToolsBlockingQueueFactory<>(waitStrategy);
     }
 
-    /**
-     * BlockingQueue wrapper for JCTools multiple producer single consumer array queue.
-     */
     private static final class MpscBlockingQueue<E> extends MpscArrayQueue<E> implements BlockingQueue<E> {
 
         private final JCToolsBlockingQueueFactory.WaitStrategy waitStrategy;
@@ -144,6 +145,69 @@ public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
                 idleCounter = waitStrategy.idle(idleCounter);
             } while (!Thread.interrupted()); //clear interrupted flag
             throw new InterruptedException();
+        }
+    }
+
+    private static final class MpscParkBlockingQueue<E> extends MpscBlockingConsumerArrayQueue<E> implements BlockingQueue<E> {
+
+        private final JCToolsBlockingQueueFactory.WaitStrategy producerWaitStrategy;
+
+        MpscParkBlockingQueue(final int capacity) {
+            super(capacity);
+            this.producerWaitStrategy = JCToolsBlockingQueueFactory.WaitStrategy.PARK;
+        }
+
+        @Override
+        public int drainTo(final Collection<? super E> c) {
+            return drainTo(c, capacity());
+        }
+
+        @Override
+        public int drainTo(final Collection<? super E> c, final int maxElements) {
+            return drain(new Consumer<E>() {
+                @Override
+                public void accept(final E e) {
+                    c.add(e);
+                }
+            }, maxElements);
+        }
+
+        @Override
+        public boolean offer(final E e, final long timeout, final TimeUnit unit) throws InterruptedException {
+            int idleCounter = 0;
+            final long timeoutNanos = System.nanoTime() + unit.toNanos(timeout);
+            do {
+                if (offer(e)) {
+                    return true;
+                } else if (System.nanoTime() - timeoutNanos > 0) {
+                    return false;
+                }
+                idleCounter = producerWaitStrategy.idle(idleCounter);
+            } while (!Thread.interrupted()); //clear interrupted flag
+            throw new InterruptedException();
+        }
+
+        @Override
+        public void put(final E e) throws InterruptedException {
+            int idleCounter = 0;
+            do {
+                if (offer(e)) {
+                    return;
+                }
+                idleCounter = producerWaitStrategy.idle(idleCounter);
+            } while (!Thread.interrupted()); //clear interrupted flag
+            throw new InterruptedException();
+        }
+
+        @Override
+        public boolean offer(final E e) {
+            //keep 2 cache lines empty to avoid false sharing that will slow the consumer thread when queue is full.
+            return offerIfBelowThreshold(e, capacity() - 32);
+        }
+
+        @Override
+        public int remainingCapacity() {
+            return capacity() - size();
         }
     }
 
