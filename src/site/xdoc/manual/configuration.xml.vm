@@ -59,6 +59,170 @@
           Note that unlike Log4j 1.x, the public Log4j 2 API does not expose methods to add, modify or remove
           appenders and filters or manipulate the configuration in any way.
         </p>
+        <a name="Architecture"/>
+        <subsection name="Configuration Archhitecture">
+          <p>
+            In part because support for XML was added first, Log4j's configuration is reflected as a tree structure.
+            In fact every configuration dialect, including the ConfigurationBuilder, generates a Node for every
+            configuration element. A node is a fairly simple structure that contains a set of attributes, a set of
+            child nodes and a PluginType. It is important to note that every Node must have a corresponding plugn,
+            as the plugin is the component that actually performs the work represented by the node.
+          </p>
+          <p>
+            Every document type supported by Log4j has a ConfigurationFactory. The factory itself is a Log4j plugin
+            that declares what file extensions it supports and what its priority is. Properties have the highest
+            precedence with a value of 8, followed by yaml, json and xml. When autoconfiguration is performed Log4j
+            will call each of these factories in order to determine which, if any, support the specified configuration
+            file format. If one is found that factory will create the corresponding Configuratoin object and pass the
+            reference to the configuration data to it.
+          </p>
+          <p>Every configuration implementation, such as XMLConfiguration, YamlConfiguration, JsonConfiguration, etc.
+            has the primary task of converting the configuration text into the Node tree, typically by parsing the
+            text with whatever tool is available for that document type. It should be noted that while most of the
+            supported document types are inherintly tree structured, the Java properties syntax is not. Because of the
+            need to convert the syntax into a Node tree the Java properties syntax used by Log4j required all properties
+            follow a naming pattern that made the tree structure clear. As a consequence, the Java Properties format
+            tends to be more verbose than using a different document type.
+          </p>
+          <p>
+            Once the Node tree is created control is delegated to AbstractConfiguration, which convertes the Nodes into
+            their respective Java objects using Log4j's Plugin system and provides all the common functionality.
+          </p>
+        </subsection>
+        <a name="Arbiters"/>
+        <subsection name="Arbiters">
+          <p>
+            In some situations it is desirable to have a single logging configuration that can be used in any
+            deployment environment. For example, it may be necessary to have a different default logging level in
+            production then in development. Another case might be where one type of appender is used when running
+            natively but another is used when deployed to a docker container. One way to handle that is to use
+            a tool such as Spring Cloud Config Server that can be environment aware and serve a different file for
+            each environment. Another option is to include Arbiters in the configuration.
+          </p>
+          <p>
+            An Arbiter is a Log4j plugin that has the job of determining whether other configured elements should be
+            included in the generated configuration. While all other "Core" plugins are designed to execute as part of
+            Log4j's runtime logic Arbiters execute after the Node tree has been constructed but before the tree is
+            converted to a configuration. An Arbiter is a Node itself which is always removed from the Node tree
+            before it the tree is processed. All an arbiter really does is provide a method that returns a boolean
+            result that determines whether the child nodes of the arbiter should remain in the configuration or be
+            pruned.
+          </p>
+          <p>
+            Arbiters may occur anywhere an element is allowed in the configuration. So an Aribiter could encapsulate
+            something as simple as a single property declaration or a whole set of Appenders or Loggers. Arbiters
+            may also be nested although Arbiters that are the descendant of another arbiter will only be evalued if the
+            ancestor returned true. The child elements of an Arbiter must be valid elements for whatever element is
+            the parent of the Arbiter.
+          </p>
+          <p>
+            This example shows two Arbiters configured that will include either a Console Appender or a List Appender
+            depending on whether the value of the env System Property is "dev" or "prod".
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
+  <Appenders>
+
+    <SystemPropertyArbiter propertyName="env" propertyValue="dev">
+      <Console name="Out">
+        <PatternLayout pattern="%m%n"/>
+      </Console>
+    </SystemPropertyArbiter>
+    <SystemPropertyArbiter propertyName="env" propertyValue="prod">
+      <List name="Out">
+      </List>
+    </SystemPropertyArbiter>
+
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.test" level="trace" additivity="false">
+      <AppenderRef ref="Out"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Out"/>
+    </Root>
+  </Loggers>
+</Configuration>
+]]></pre>
+          <p>
+            Normally Arbiters act in isolation from other Arbiters. That is, the outcome of one Arbiter will not
+            impact any other Arbiters. This can be cumbersome when you simply want to use one of a set of choices. A
+            special plugin named "Select" can be used in this case. Each element under the Select is required to be
+            an Arbiter. The first Arbiter that returns a true value will be the one used while others are ignored.
+            If no Arbiter returns true a DefaultAtrbiter may be configured with the default configuration elements.
+            The DefaultArbiter is an Arbiter that always returns true, so using it outside of a Select would result in
+            its configured elements always being included just as if it hadn't been present.
+          </p>
+          <p>
+            This example shows an Arbiter that uses Javascript residing in a separate file to determine whether to
+            include the Console Appender. If the result is false then a List Appender will be included.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
+  <Appenders>
+    <Select>
+      <ScriptArbiter>
+        <ScriptFile language="JavaScript" path="src/test/resources/scripts/prodtest.js" charset="UTF-8" />
+        <Console name="Out">
+          <PatternLayout pattern="%m%n"/>
+        </Console>
+      </ScriptArbiter>
+      <DefaultArbiter>
+        <List name="Out">
+        </List>
+      </DefaultArbiter>
+    </Select>
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.test" level="trace" additivity="false">
+      <AppenderRef ref="Out"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Out"/>
+    </Root>
+  </Loggers>
+</Configuration>
+]]></pre>
+          <p>
+            Natively Log4j contains the SystemProperty Arbister that can evaluate whether to include elements based on
+            whether a SystemProperty is non-null or has a specific value, a ClassArbiter that makes its decision
+            based on whether the specified class is present, and a ScriptArbiter that makes its decision based
+            on the result of the script configured with it.
+          </p>
+          <p>
+            For Spring Boot users an Arbiter named <code>SpringProfile</code> has been provided. The specified profiles
+            are evaluated by Spring's <code>Environment.acceptsProfiles()</code> method, so any expressions it supports
+            may be used as the name attribute.
+          </p>
+          <p>This example will use a Console Appender when the Spring profile is "dev" or "staging" and a List
+          Appender when the active profile is "prod".
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
+  <Appenders>
+
+    <SpringProfile name="dev | staging">
+      <Console name="Out">
+        <PatternLayout pattern="%m%n"/>
+      </Console>
+    </SpringProfile>
+    <SpringProfile name="prod">
+      <List name="Out">
+      </List>
+    </SpringProfile>
+
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.test" level="trace" additivity="false">
+      <AppenderRef ref="Out"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Out"/>
+    </Root>
+  </Loggers>
+</Configuration>
+]]></pre>
+        </subsection>
         <a name="AutomaticConfiguration"/>
         <subsection name="Automatic Configuration">
           <p>
@@ -1740,7 +1904,7 @@ public class AwesomeTest {
       Available context selector implementation classes:<br />
     <!-- deliberately inserted spaces to allow line break -->
       <tt>org.apache.logging.log4j.core.async .AsyncLoggerContextSelector</tt> - makes <a href="async.html">all loggers asynchronous</a>.<br />
-      <tt>org.apache.logging.log4j.core.async .BasicAsyncLoggerContextSelector</tt> - makes <a href="async.html"> all loggers asynchronous using a single shared AsyncLoggerContext.<br />
+      <tt>org.apache.logging.log4j.core.async .BasicAsyncLoggerContextSelector</tt> - makes <a href="async.html"> all loggers asynchronous using a single shared AsyncLoggerContext.</a><br />
       <tt>org.apache.logging.log4j.core.selector .BasicContextSelector</tt> - creates a single shared LoggerContext.<br />
       <tt>org.apache.logging.log4j.core.selector .ClassLoaderContextSelector</tt> - separate LoggerContexts for each web application.<br />
       <tt>org.apache.logging.log4j.core.selector .JndiContextSelector</tt> - use JNDI to locate each web application's LoggerContext.<br/>

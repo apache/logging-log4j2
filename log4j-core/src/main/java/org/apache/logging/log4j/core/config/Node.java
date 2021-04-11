@@ -36,7 +36,7 @@ public class Node {
      */
     public static final String CATEGORY = "Core";
 
-    private final Node parent;
+    private Node parent;
     private final String name;
     private String value;
     private final PluginType<?> type;
@@ -75,6 +75,10 @@ public class Node {
             this.children.add(new Node(child));
         }
         this.object = node.object;
+    }
+
+    public void setParent(Node parent) {
+        this.parent = parent;
     }
 
     public Map<String, String> getAttributes() {
