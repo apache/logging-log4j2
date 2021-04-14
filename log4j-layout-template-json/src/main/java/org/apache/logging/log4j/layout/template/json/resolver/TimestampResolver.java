@@ -237,7 +237,7 @@ public final class TimestampResolver implements EventResolver {
                 final TemplateResolverConfig config) {
             final String format = readFormat(config);
             final TimeZone timeZone = readTimeZone(config);
-            final Locale locale = readLocale(config);
+            final Locale locale = config.getLocale(new String[]{"pattern", "locale"});
             final FastDateFormat fastDateFormat =
                     FastDateFormat.getInstance(format, timeZone, locale);
             return new FormatResolverContext(timeZone, locale, fastDateFormat);
@@ -275,20 +275,6 @@ public final class TimestampResolver implements EventResolver {
                         "invalid timestamp time zone: " + config);
             }
             return TimeZone.getTimeZone(timeZoneId);
-        }
-
-        private static Locale readLocale(final TemplateResolverConfig config) {
-            final String locale = config.getString(new String[]{"pattern", "locale"});
-            if (locale == null) {
-                return JsonTemplateLayoutDefaults.getLocale();
-            }
-            final String[] localeFields = locale.split("_", 3);
-            switch (localeFields.length) {
-                case 1: return new Locale(localeFields[0]);
-                case 2: return new Locale(localeFields[0], localeFields[1]);
-                case 3: return new Locale(localeFields[0], localeFields[1], localeFields[2]);
-            }
-            throw new IllegalArgumentException("invalid timestamp locale: " + config);
         }
 
     }

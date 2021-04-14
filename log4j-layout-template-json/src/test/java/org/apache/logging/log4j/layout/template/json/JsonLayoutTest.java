@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.logging.log4j.layout.template.json.LayoutComparisonHelpers.renderUsing;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
 
 class JsonLayoutTest {
 
@@ -76,12 +76,12 @@ class JsonLayoutTest {
 
     private static Map<String, Object> renderUsingJsonTemplateLayout(
             final LogEvent logEvent) {
-        return renderUsing(logEvent, JSON_TEMPLATE_LAYOUT);
+        return serializeUsingLayout(logEvent, JSON_TEMPLATE_LAYOUT);
     }
 
     private static Map<String, Object> renderUsingJsonLayout(
             final LogEvent logEvent) {
-        return renderUsing(logEvent, JSON_LAYOUT);
+        return serializeUsingLayout(logEvent, JSON_LAYOUT);
     }
 
 }
