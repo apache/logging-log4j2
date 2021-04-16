@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.junit.Mutable;
+import org.apache.logging.log4j.test.junit.Mutable;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

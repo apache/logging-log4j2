@@ -22,10 +22,11 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 /**
  * Resolver for the {@link StackTraceElement} returned by {@link LogEvent#getSource()}.
- *
+ * <p>
  * Note that this resolver is toggled by {@link
- * JsonTemplateLayout.Builder#setLocationInfoEnabled(boolean)}
- * method.
+ * JsonTemplateLayout.Builder#setLocationInfoEnabled(boolean) locationInfoEnabled}
+ * layout configuration, which is by default populated from {@code log4j.layout.jsonTemplate.locationInfoEnabled}
+ * system property.
  *
  * <h3>Configuration</h3>
  *
@@ -48,7 +49,7 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
  * }
  * </pre>
  */
-final class SourceResolver implements EventResolver {
+public final class SourceResolver implements EventResolver {
 
     private static final EventResolver NULL_RESOLVER =
             (final LogEvent value, final JsonWriter jsonWriter) ->
@@ -116,11 +117,14 @@ final class SourceResolver implements EventResolver {
             return NULL_RESOLVER;
         }
         final String fieldName = config.getString("field");
-        switch (fieldName) {
-            case "className": return CLASS_NAME_RESOLVER;
-            case "fileName": return FILE_NAME_RESOLVER;
-            case "lineNumber": return LINE_NUMBER_RESOLVER;
-            case "methodName": return METHOD_NAME_RESOLVER;
+        if ("className".equals(fieldName)) {
+            return CLASS_NAME_RESOLVER;
+        } else if ("fileName".equals(fieldName)) {
+            return FILE_NAME_RESOLVER;
+        } else if ("lineNumber".equals(fieldName)) {
+            return LINE_NUMBER_RESOLVER;
+        } else if ("methodName".equals(fieldName)) {
+            return METHOD_NAME_RESOLVER;
         }
         throw new IllegalArgumentException("unknown field: " + config);
     }

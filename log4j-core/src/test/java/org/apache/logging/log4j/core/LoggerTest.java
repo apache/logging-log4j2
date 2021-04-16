@@ -24,9 +24,9 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.apache.logging.log4j.junit.Named;
-import org.apache.logging.log4j.junit.ReconfigurationPolicy;
+import org.apache.logging.log4j.core.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.junit.Named;
+import org.apache.logging.log4j.core.junit.ReconfigurationPolicy;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
@@ -390,8 +390,8 @@ public class LoggerTest {
         final Configuration config = context.getConfiguration();
         final LoggerConfig loggerConfig = config.getLoggerConfig("org.apache.logging.log4j.core.LoggerTest");
         assertNotNull(loggerConfig);
-        assertEquals(loggerConfig.getName(), "org.apache.logging.log4j.core.LoggerTest");
-        assertEquals(loggerConfig.getLevel(), Level.DEBUG);
+        assertEquals("org.apache.logging.log4j.core.LoggerTest", loggerConfig.getName());
+        assertEquals(Level.DEBUG, loggerConfig.getLevel());
         final Logger localLogger = context.getLogger("org.apache.logging.log4j.core.LoggerTest");
         assertSame(localLogger.getLevel(), Level.DEBUG, "Incorrect level - expected DEBUG, actual " + localLogger.getLevel());
     }

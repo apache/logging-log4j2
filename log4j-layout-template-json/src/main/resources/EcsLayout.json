@@ -6,6 +6,7 @@
       "timeZone": "UTC"
     }
   },
+  "ecs.version": "1.2.0",
   "log.level": {
     "$resolver": "level",
     "field": "name"

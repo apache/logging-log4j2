@@ -32,10 +32,10 @@
     <!-- maven plugin versions -->
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
     <maven.checkstyle.version>3.0.0</maven.checkstyle.version>
-    <maven.findbugs.version>3.0.5</maven.findbugs.version>
+    <spotbugs.plugin.version>4.0.4</spotbugs.plugin.version>
     <maven.google.code.findbugs.version>3.0.2</maven.google.code.findbugs.version>
     <maven.google.code.findbugs.findbugs.version>3.0.1</maven.google.code.findbugs.findbugs.version>
-    <maven.jacoco.version>0.8.1</maven.jacoco.version>
+    <maven.jacoco.version>0.8.6</maven.jacoco.version>
     <maven.pmd.version>3.9.0</maven.pmd.version>
     <site.plugin.version>3.4</site.plugin.version>
     <!-- maven plugin config -->
@@ -140,7 +140,7 @@
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>3.0.5</version>
+        <version>${spotbugs.plugin.version}</version>
         <configuration>
           <skip>true</skip>
         </configuration>

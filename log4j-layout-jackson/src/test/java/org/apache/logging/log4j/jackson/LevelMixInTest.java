@@ -19,7 +19,7 @@ package org.apache.logging.log4j.jackson;
 import java.io.IOException;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.categories.Layouts;
+import org.apache.logging.log4j.core.categories.Layouts;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

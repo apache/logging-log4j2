@@ -23,8 +23,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.CleanFiles;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.test.junit.CleanFiles;
+import org.apache.logging.log4j.core.junit.LoggerContextRule;
 import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;

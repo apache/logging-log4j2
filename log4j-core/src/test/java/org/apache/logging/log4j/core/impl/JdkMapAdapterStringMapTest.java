@@ -70,6 +70,7 @@ public class JdkMapAdapterStringMapTest {
         return arr.toByteArray();
     }
 
+    @SuppressWarnings("BanSerializableRead")
     private JdkMapAdapterStringMap deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
         final ObjectInputStream in = new ObjectInputStream(inArr);

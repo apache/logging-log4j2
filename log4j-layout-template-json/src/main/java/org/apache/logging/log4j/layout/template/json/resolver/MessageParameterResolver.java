@@ -71,7 +71,7 @@ import org.apache.logging.log4j.message.ParameterVisitable;
  * }
  * </pre>
  */
-final class MessageParameterResolver implements EventResolver {
+public final class MessageParameterResolver implements EventResolver {
 
     private final Recycler<ParameterConsumerState> parameterConsumerStateRecycler;
 

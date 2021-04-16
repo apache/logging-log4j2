@@ -16,13 +16,22 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-final class MessageParameterResolverFactory implements EventResolverFactory<MessageParameterResolver> {
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
-    private static final MessageParameterResolverFactory INSTANCE = new MessageParameterResolverFactory();
+/**
+ * {@link MessageParameterResolver} factory.
+ */
+@Plugin(name = "MessageParameterResolverFactory", category = TemplateResolverFactory.CATEGORY)
+public final class MessageParameterResolverFactory implements EventResolverFactory {
+
+    private static final MessageParameterResolverFactory INSTANCE =
+            new MessageParameterResolverFactory();
 
     private MessageParameterResolverFactory() {}
 
-    static MessageParameterResolverFactory getInstance() {
+    @PluginFactory
+    public static MessageParameterResolverFactory getInstance() {
         return INSTANCE;
     }
 

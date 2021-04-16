@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.junit.CleanUpFiles;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;

@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
@@ -103,4 +105,14 @@ public class EncodingPatternConverterTest {
             sb.toString());
     }
 
+    @Test
+    public void testHandlesThrowable() {
+        final Configuration configuration = new DefaultConfiguration();
+        assertFalse(EncodingPatternConverter.newInstance(configuration, new String[]{"%msg", "XML"})
+            .handlesThrowable());
+        assertTrue(EncodingPatternConverter.newInstance(configuration, new String[]{"%xThrowable{full}", "JSON"})
+            .handlesThrowable());
+        assertTrue(EncodingPatternConverter.newInstance(configuration, new String[]{"%ex", "XML"})
+            .handlesThrowable());
+    }
 }

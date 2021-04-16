@@ -367,8 +367,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
             sb.append("  <Entry key=\"")
                     .append(data.getKeyAt(i))
                     .append("\">");
-            int size = sb.length();
-            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
+            final int size = sb.length();
+            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb);
             StringBuilders.escapeXml(sb, size);
             sb.append("</Entry>\n");
         }
@@ -418,7 +418,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
                 sb.append(' ');
             }
             sb.append(data.getKeyAt(i)).append(Chars.EQ).append(Chars.DQUOTE);
-            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
+            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb);
             sb.append(Chars.DQUOTE);
         }
     }
@@ -445,7 +445,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
             if (quoted) {
                 sb.append(Chars.DQUOTE);
             }
-            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb, null);
+            ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb);
             if (quoted) {
                 sb.append(Chars.DQUOTE);
             }
@@ -474,7 +474,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     }
 
     @Override
-    public void formatTo(String[] formats, StringBuilder buffer) {
+    public void formatTo(final String[] formats, final StringBuilder buffer) {
         format(getFormat(formats), buffer);
     }
 

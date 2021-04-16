@@ -15,6 +15,7 @@
 
 .project
 .idea
+.metadata
 **/*.iml
 **/target
 target/

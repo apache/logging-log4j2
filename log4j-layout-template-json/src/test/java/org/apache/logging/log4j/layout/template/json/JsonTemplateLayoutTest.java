@@ -28,12 +28,20 @@ import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
 import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolver;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactory;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverConfig;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverFactory;
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
@@ -73,6 +81,7 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -1794,6 +1803,115 @@ class JsonTemplateLayoutTest {
     }
 
     @Test
+    void test_inline_stack_trace_element_template() {
+
+        // Create the event template.
+        final String eventTemplate = writeJson(asMap(
+                "stackTrace", asMap(
+                        "$resolver", "exception",
+                        "field", "stackTrace",
+                        "stackTrace", asMap(
+                                "elementTemplate", asMap(
+                                        "$resolver", "stackTraceElement",
+                                        "field", "className")))));
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        // Create the log event.
+        final Throwable error = new RuntimeException("foo");
+        final SimpleMessage message = new SimpleMessage("foo");
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setMessage(message)
+                .setThrown(error)
+                .build();
+
+        // Check the serialized log event.
+        final String expectedClassName = JsonTemplateLayoutTest.class.getCanonicalName();
+        usingSerializedLogEventAccessor(layout, logEvent, accessor -> Assertions
+                .assertThat(accessor.getList("stackTrace", String.class))
+                .contains(expectedClassName));
+
+    }
+
+    @Test
+    void test_custom_resolver() {
+
+        // Create the event template.
+        final String eventTemplate = writeJson(asMap(
+                "customField", asMap("$resolver", "custom")));
+
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        // Create the log event.
+        final SimpleMessage message = new SimpleMessage("foo");
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setLoggerName(LOGGER_NAME)
+                .setMessage(message)
+                .build();
+
+        // Check the serialized log event.
+        final String expectedClassName = JsonTemplateLayoutTest.class.getCanonicalName();
+        usingSerializedLogEventAccessor(layout, logEvent, accessor -> Assertions
+                .assertThat(accessor.getString("customField"))
+                .matches("CustomValue-[0-9]+"));
+
+    }
+
+    private static final class CustomResolver implements EventResolver {
+
+        private static final AtomicInteger COUNTER = new AtomicInteger(0);
+
+        private CustomResolver() {}
+
+        @Override
+        public void resolve(
+                final LogEvent value,
+                final JsonWriter jsonWriter) {
+            jsonWriter.writeString("CustomValue-" + COUNTER.getAndIncrement());
+        }
+
+    }
+
+    @Plugin(name = "CustomResolverFactory", category = TemplateResolverFactory.CATEGORY)
+    public static final class CustomResolverFactory implements EventResolverFactory {
+
+        private static final CustomResolverFactory INSTANCE = new CustomResolverFactory();
+
+        private CustomResolverFactory() {}
+
+        @PluginFactory
+        public static CustomResolverFactory getInstance() {
+            return INSTANCE;
+        }
+
+        @Override
+        public String getName() {
+            return "custom";
+        }
+
+        @Override
+        public TemplateResolver<LogEvent> create(
+                final EventResolverContext context,
+                final TemplateResolverConfig config) {
+            return new CustomResolver();
+        }
+
+    }
+
+    @Test
     void test_null_eventDelimiter() {
 
         // Create the event template.
@@ -2291,9 +2409,9 @@ class JsonTemplateLayoutTest {
             final Consumer<MapAccessor> accessorConsumer) {
         final String serializedLogEventJson = layout.toSerializable(logEvent);
         @SuppressWarnings("unchecked")
-        final Map<String, Object> serializedLogEvent =
+        final Map<String, Object> deserializedLogEvent =
                 (Map<String, Object>) readJson(serializedLogEventJson);
-        final MapAccessor serializedLogEventAccessor = new MapAccessor(serializedLogEvent);
+        final MapAccessor serializedLogEventAccessor = new MapAccessor(deserializedLogEvent);
         accessorConsumer.accept(serializedLogEventAccessor);
     }
 
@@ -2304,7 +2422,7 @@ class JsonTemplateLayoutTest {
     private static Map<String, Object> asMap(final Object... pairs) {
         final Map<String, Object> map = new LinkedHashMap<>();
         if (pairs.length % 2 != 0) {
-            throw new IllegalArgumentException("odd number of arguments");
+            throw new IllegalArgumentException("odd number of arguments: " + pairs.length);
         }
         for (int i = 0; i < pairs.length; i += 2) {
             final String key = (String) pairs[i];

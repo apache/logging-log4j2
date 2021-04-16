@@ -38,13 +38,6 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
     </dependency>
-    <!-- Classes and resources to be shaded into the core jar -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-plugins-java9</artifactId>
-      <scope>provided</scope>
-      <type>zip</type>
-    </dependency>
     <!-- Used for OSGi bundle support -->
     <dependency>
       <groupId>org.osgi</groupId>
@@ -64,10 +57,12 @@
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
@@ -79,31 +74,14 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.0.2</version>
+        <artifactId>maven-clean-plugin</artifactId>
         <executions>
           <execution>
-            <id>unpack-classes</id>
-            <phase>prepare-package</phase>
+            <id>clean</id>
+            <phase>initialize</phase>
             <goals>
-              <goal>unpack</goal>
+              <goal>clean</goal>
             </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-plugins-java9</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                  <overWrite>false</overWrite>
-                </artifactItem>
-              </artifactItems>
-              <includes>**/*.class</includes>
-              <excludes>**/*.java</excludes>
-              <outputDirectory>${project.build.directory}</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -111,16 +89,14 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <executions>
           <execution>
-            <!-- disable annotation processing for first pass -->
-            <id>generate-plugins</id>
-            <phase>process-classes</phase>
+            <!-- build the plugin processor -->
+            <id>compile-processor</id>
+            <phase>generate-sources</phase>
             <goals>
               <goal>compile</goal>
             </goals>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
+            <configuration combine.self="override">
+              <proc>none</proc>
             </configuration>
           </execution>
           <execution>
@@ -129,36 +105,134 @@
             <goals>
               <goal>compile</goal>
             </goals>
-            <phase>process-classes</phase>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
+            <phase>generate-sources</phase>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
               <proc>only</proc>
+              <compilerArguments>
+                <processor>org.apache.logging.log4j.plugins.processor.PluginProcessor</processor>
+              </compilerArguments>
             </configuration>
           </execution>
           <execution>
-            <!-- disable annotation processing for first pass -->
-            <id>generate-test-plugins</id>
-            <phase>generate-test-sources</phase>
+            <!-- then compile the test plugins -->
+            <id>process-test-plugins</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <annotationProcessors>
+                <annotationProcessor>org.apache.logging.log4j.plugins.processor.PluginProcessor</annotationProcessor>
+              </annotationProcessors>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
+              </compileSourceRoots>
+              <parameters>true</parameters>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- compile the source -->
+            <id>default-compile</id>
             <goals>
               <goal>compile</goal>
             </goals>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-              <proc>only</proc>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>true</showWarnings>
+              <encoding>UTF-8</encoding>
+              <fork>true</fork>
+              <meminitial>256</meminitial>
+              <maxmem>1024</maxmem>
+              <compilerArgs>
+                <arg>-XDcompilePolicy=simple</arg>
+                <arg>-Xplugin:ErrorProne</arg>
+              </compilerArgs>
+              <compilerArguments>
+                <Xmaxwarns>10000</Xmaxwarns>
+                <Xlint />
+              </compilerArguments>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_core</artifactId>
+                  <version>${errorprone.version}</version>
+                </path>
+              </annotationProcessorPaths>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
             </configuration>
           </execution>
           <execution>
-            <!-- disable annotation processing for first pass -->
-            <id>default-compile</id>
+            <!-- compile the test source -->
+            <id>default-test-compile</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>true</showWarnings>
+              <encoding>UTF-8</encoding>
+              <fork>true</fork>
+              <meminitial>256</meminitial>
+              <maxmem>1024</maxmem>
+              <compilerArgs>
+                <arg>-XDcompilePolicy=simple</arg>
+                <arg>-Xplugin:ErrorProne</arg>
+              </compilerArgs>
+              <compilerArguments>
+                <Xmaxwarns>10000</Xmaxwarns>
+                <Xlint />
+              </compilerArguments>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_core</artifactId>
+                  <version>${errorprone.version}</version>
+                </path>
+              </annotationProcessorPaths>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>add-module</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
             <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-              <proc>none</proc>
+              <sources>
+                <source>src/main/java9</source>
+              </sources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-test-module</id>
+            <phase>process-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/test/java9</source>
+              </sources>
             </configuration>
           </execution>
         </executions>
@@ -166,6 +240,7 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <useModulePath>false</useModulePath>
           <excludedGroups>
             org.apache.logging.log4j.categories.PerformanceTests
           </excludedGroups>
@@ -203,20 +278,19 @@
                   <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
                   <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
                   <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                  <Automatic-Module-Name>org.apache.logging.log4j.plugins</Automatic-Module-Name>
-                  <Multi-Release>true</Multi-Release>
                 </manifestEntries>
               </archive>
             </configuration>
           </execution>
           <execution>
-            <id>default</id>
+            <id>test-jar</id>
             <goals>
               <goal>test-jar</goal>
             </goals>
+            <phase>process-resources</phase>
             <configuration>
               <archive>
-                <manifestFile>${manifestfile}</manifestFile>
+                <!--<manifestFile>${manifestfile}</manifestFile>-->
                 <manifestEntries>
                   <Specification-Title>${project.name}</Specification-Title>
                   <Specification-Version>${project.version}</Specification-Version>

@@ -34,18 +34,20 @@ public class BasicContextSelector implements ContextSelector {
 
     @Override
     public void shutdown(String fqcn, ClassLoader loader, boolean currentContext, boolean allContexts) {
-        ContextAnchor.THREAD_CONTEXT.get().stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
+        LoggerContext ctx = getContext(fqcn, loader, currentContext);
+        if (ctx != null && ctx.isStarted()) {
+            ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
+        }
     }
 
     @Override
     public boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {
-        LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+        LoggerContext ctx = getContext(fqcn, loader, currentContext);
         return ctx != null && ctx.isStarted();
     }
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
-
         final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         return ctx != null ? ctx : CONTEXT;
     }
@@ -66,6 +68,11 @@ public class BasicContextSelector implements ContextSelector {
     @Override
     public void removeContext(final LoggerContext context) {
         // does not remove anything
+    }
+
+    @Override
+    public boolean isClassLoaderDependent() {
+        return false;
     }
 
     @Override

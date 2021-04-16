@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -49,6 +51,13 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
         super("encode", "encode");
         this.formatters = formatters;
         this.escapeFormat = escapeFormat;
+    }
+
+    @Override
+    public boolean handlesThrowable() {
+        return formatters != null && formatters.stream()
+                .map(PatternFormatter::getConverter)
+                .anyMatch(LogEventPatternConverter::handlesThrowable);
     }
 
     /**

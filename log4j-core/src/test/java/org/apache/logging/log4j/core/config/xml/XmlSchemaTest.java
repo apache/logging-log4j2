@@ -53,6 +53,9 @@ public class XmlSchemaTest {
     private static final String TARGET_NAMESPACE = "http://logging.apache.org/log4j/2.0/config";
 
     private static final List<String> IGNORE_CONFIGS = Arrays.asList( //
+            "log4j2-arbiters.xml", // Arbiters violate XML schema as they can appear anywhere
+            "log4j2-scriptArbiters.xml",
+            "log4j2-selectArbiters.xml",
             "gcFreeLogging.xml", // has 2 <Pattern> tags defined
             "legacy-plugins.xml", //
             "logback", // logback configs

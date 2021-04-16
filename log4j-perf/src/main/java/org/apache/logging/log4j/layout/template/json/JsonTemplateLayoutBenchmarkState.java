@@ -145,12 +145,19 @@ public class JsonTemplateLayoutBenchmarkState {
     }
 
     private static EcsLayout createEcsLayout() {
-        return EcsLayout
+        final EcsLayout layout = EcsLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
-                .setCharset(CHARSET)
                 .setServiceName("benchmark")
                 .build();
+        final Charset layoutCharset = layout.getCharset();
+        // Note that EcsLayout doesn't support charset configuration, though it
+        // uses UTF-8 internally.
+        if (CHARSET.equals(layoutCharset)) {
+            throw new IllegalArgumentException(
+                    "invalid EcsLayout charset: " + layoutCharset);
+        }
+        return layout;
     }
 
     private static GelfLayout createGelfLayout() {

@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
+import org.apache.logging.log4j.core.junit.LoggerContextRule;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -46,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  *
  * This appender will use {@link Layout#toByteArray(LogEvent)}.
  *
- * @see org.apache.logging.log4j.junit.LoggerContextRule#getListAppender(String) ILC.getListAppender
+ * @see LoggerContextRule#getListAppender(String) ILC.getListAppender
  */
 @Plugin(name = "List", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class ListAppender extends AbstractAppender {
@@ -279,7 +280,7 @@ public class ListAppender extends AbstractAppender {
      * @param name
      *            the name of the ListAppender
      * @return the named ListAppender or {@code null} if it does not exist
-     * @see org.apache.logging.log4j.junit.LoggerContextRule#getListAppender(String)
+     * @see LoggerContextRule#getListAppender(String)
      */
     public static ListAppender getListAppender(final String name) {
         return ((ListAppender) (LoggerContext.getContext(false)).getConfiguration().getAppender(name));

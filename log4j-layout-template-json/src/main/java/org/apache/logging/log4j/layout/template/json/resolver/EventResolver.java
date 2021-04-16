@@ -18,4 +18,7 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
 
-interface EventResolver extends TemplateResolver<LogEvent> {}
+/**
+ * {@link TemplateResolver} specialized for {@link LogEvent}s.
+ */
+public interface EventResolver extends TemplateResolver<LogEvent> {}

@@ -210,6 +210,15 @@ Configure as follows to send to a Graylog 2.x server with TCP:
 |int
 |Compress if data is larger than this number of bytes (optional, defaults to 1024)
 
+|includeMapMessage
+|boolean
+|Whether to include fields from MapMessages as additional fields (optional, default to true).
+
+|includeNullDelimiter
+|boolean
+|Whether to include NULL byte as delimiter after each event (optional, default to false).
+Useful for Graylog GELF TCP input. Cannot be used with compression.
+
 |includeStacktrace
 |boolean
 |Whether to include full stacktrace of logged Throwables (optional, default to true).
@@ -221,16 +230,44 @@ will be included.
 |boolean
 |Whether to include thread context as additional fields (optional, default to true).
 
-|includeNullDelimiter
-|boolean
-|Whether to include NULL byte as delimiter after each event (optional, default to false).
-Useful for Graylog GELF TCP input. Cannot be used with compression.
+|mapMessageExcludes
+|String
+|A comma separated list of attributes from the MapMessage to exclude when formatting the event. This
+attribute only applies when includeMapMessage="true" is specified. If mapMessageIncludes
+are also specified this attribute will be ignored.
+
+|mapMessageIncludes
+|String
+|A comma separated list of attributes from the MapMessageto include when formatting the event. This
+attribute only applies when includeMapMessage="true" is specified. If mapMessageExcludes
+are also specified this attribute will override them. MapMessage fields specified here that
+have no value will be omitted.
+
+|mapPrefix
+|String
+|A String to prepend to all elements of the MapMessage when rendered as a field. Defaults to an empty String.
 
 |messagePattern
 |String
-|The pattern to use to format the String. If not supplied only the text derived from the logging
-message will be used. See <<PatternLayout>> for information on the pattern
-strings
+|The pattern to use to format the String. A messagePattern and patternSelector cannot both be
+specified. If both are present the message pattern will be ignored and an error will be logged.
+If not supplied only the text derived from the logging message will be used. See
+link:#PatternLayout[PatternLayout]  for information on the pattern strings.
+
+|omitEmptyFields
+|boolean
+|If true fields which are null or are zero-length strings will not be included as a field in
+the Gelf JSON. This setting will not affect whether those fields appear in the message fields. The
+default value is false.
+
+|patternSelector
+|PatternSelector
+|The PatternSelector to use to format the String. A messagePattern and patternSelector cannot both be
+specified. If both are present the message pattern will be ignored and an error will be logged.
+If not supplied only the text derived from the logging message will be used.
+See link:#PatternSelectors[Pattern Selectors] for information on how to specify a
+PatternSelector.
+See link:#PatternLayout[PatternLayout] for information on the pattern strings.
 
 |threadContextExcludes
 |String
@@ -244,6 +281,10 @@ are also specified this attribute will be ignored.
 attribute only applies when includeThreadContext="true" is specified. If threadContextExcludes
 are also specified this attribute will override them. ThreadContext fields specified here that
 have no value will be omitted.
+
+|threadContextPrefix
+|String
+|A String to prepend to all elements of the ThreadContextMap when rendered as a field. Defaults to an empty String.
 |===
 
 To include any custom field in the output, use following syntax:
@@ -532,13 +573,14 @@ Logstash `JSONEventLayoutV1`]
     },
     "exception_message": {
       "$resolver": "exception",
-      "field": "message",
-      "stringified": true
+      "field": "message"
     },
     "stacktrace": {
       "$resolver": "exception",
       "field": "stackTrace",
-      "stringified": true
+      "stackTrace": {
+        "stringified": true
+      }
     }
   },
   "line_number": {
@@ -1351,6 +1393,11 @@ upper-case):
 |Outputs the number of milliseconds elapsed since the JVM was
 started until the creation of the logging event.
 
+|[[PatternRepeat]] *R*{string}{count} +
+*repeat*{string}{count}
+|Produces a string containing the requested number of instances of the specified string.
+For example, "%repeat{\*}{2}" will result in the string "**".
+
 |[[PatternReplace]] *replace*{pattern}{regex}{substitution}
 |Replaces occurrences of 'regex', a regular expression, with its
 replacement 'substitution' in the string resulting from evaluation of
@@ -1785,6 +1832,7 @@ All the content that follows the level will be bright green.
 </PatternLayout>
 ----
 
+[#PatternSelectors]
 === Pattern Selectors
 
 The PatternLayout can be configured with a PatternSelector to allow it

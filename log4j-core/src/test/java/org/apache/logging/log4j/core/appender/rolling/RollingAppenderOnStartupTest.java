@@ -26,21 +26,14 @@ import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertTrue;
 
@@ -51,22 +44,12 @@ public class RollingAppenderOnStartupTest {
 
     private static final String SOURCE = "src/test/resources/__files";
     private static final String DIR = "target/onStartup";
-    private static final String CONFIG = "log4j-test4.xml";
+    private static final String CONFIG = "log4j-rollOnStartup.xml";
     private static final String FILENAME = "onStartup.log";
+    private static final String PREFIX = "This is test message number ";
+    private static final String ROLLED = "onStartup-";
 
-    private Logger logger;
-
-    @Rule
-    public LoggerContextRule loggerContextRule;
-
-    public RollingAppenderOnStartupTest() {
-        this.loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        this.logger = this.loggerContextRule.getLogger(RollingAppenderOnStartupTest.class.getName());
-    }
+    private static LoggerContext loggerContext;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -85,30 +68,37 @@ public class RollingAppenderOnStartupTest {
         Files.getFileAttributeView(target, BasicFileAttributeView.class).setTimes(newTime, newTime, newTime);
     }
 
+    @Test
+    public void performTest() throws Exception {
+        boolean rolled = false;
+        loggerContext = Configurator.initialize("Test", CONFIG);
+        final Logger logger = loggerContext.getLogger(RollingAppenderOnStartupTest.class);
+        for (int i = 3; i < 10; ++i) {
+            logger.debug(PREFIX + i);
+        }
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+            for (final Path path : directoryStream) {
+                if (path.toFile().getName().startsWith(ROLLED)) {
+                    rolled = true;
+                    List<String> lines = Files.readAllLines(path);
+                    assertTrue("No messages in " + path.toFile().getName(), lines.size() > 0);
+                    assertTrue("Missing message for " + path.toFile().getName(),
+                            lines.get(0).startsWith(PREFIX + "1"));
+                }
+            }
+        }
+        assertTrue("File did not roll", rolled);
+    }
+
     @AfterClass
     public static void afterClass() throws Exception {
+        Configurator.shutdown(loggerContext);
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
-            boolean rolled = false;
             for (final Path path : directoryStream) {
-                if (!path.toFile().getName().endsWith(FILENAME)) {
-                    rolled = true;
-                }
-                try (Stream<String> stream = Files.lines(path)) {
-                    List<String> lines = stream.collect(Collectors.toList());
-                    assertTrue("No header present for " + path.toFile().getName(), lines.get(0).startsWith("<!DOCTYPE HTML"));
-                }
                 Files.delete(path);
             }
-            assertTrue("File did not roll", rolled);
         }
-        Files.delete(Paths.get("target/onStartup"));
+        Files.delete(Paths.get(DIR));
     }
 
-    @Test
-    public void testAppender() throws Exception {
-        for (int i = 0; i < 100; ++i) {
-            logger.debug("This is test message number " + i);
-        }
-
-    }
 }

@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.util.Stack;
 
 import org.junit.Test;
@@ -26,7 +23,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.ParentRunner;
 
-import static org.apache.logging.log4j.junit.ClassMatchers.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.junit.Assume.assumeThat;
@@ -37,14 +33,8 @@ public class StackLocatorUtilTest {
 
     @Test
     public void testStackTraceEquivalence() throws Throwable {
-        String reflectionClassName = "sun.reflect.Reflection";
-        assumeThat("Running in a JDK without deprecated " + reflectionClassName,
-                reflectionClassName, is(loadableClassName()));
-        Class<?> reflectionClass = LoaderUtil.loadClass(reflectionClassName);
-        MethodHandle getCallerClass = MethodHandles.lookup()
-                .findStatic(reflectionClass, "getCallerClass", MethodType.methodType(Class.class, int.class));
         for (int i = 1; i < 15; i++) {
-            final Class<?> expected = (Class<?>) getCallerClass.invoke(i + StackLocator.JDK_7u25_OFFSET);
+            final Class<?> expected = StackLocatorUtilTest.class;
             final Class<?> actual = StackLocatorUtil.getCallerClass(i);
             final Class<?> fallbackActual = Class.forName(
                 StackLocatorUtil.getStackTraceElement(i).getClassName());

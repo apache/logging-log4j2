@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j;
 
+import java.lang.reflect.Method;
+
+import org.apache.logging.log4j.ThreadContext;
+
+import static org.junit.jupiter.api.Assertions.fail;
+
 /**
  * <p>
  * Utility class to access package protected methods in {@code ThreadContext}.
@@ -29,6 +35,13 @@ public final class ThreadContextTestAccess {
     }
 
     public static void init() {
-        ThreadContext.init();
+        try {
+            Class<ThreadContext> clazz = ThreadContext.class;
+            Method method = clazz.getDeclaredMethod("init");
+            method.setAccessible(true);
+            method.invoke(null);
+        } catch (Exception ex) {
+            fail("Unable to reinitialize ThreadContext");
+        }
     }
 }

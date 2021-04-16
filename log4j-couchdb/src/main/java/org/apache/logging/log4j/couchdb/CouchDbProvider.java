@@ -28,7 +28,6 @@ import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
@@ -106,7 +105,6 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
                     final CouchDbProperties properties = (CouchDbProperties) object;
                     client = new CouchDbClient(properties);
                     description = "uri=" + client.getDBUri() + ", username=" + properties.getUsername()
-                            + ", passwordHash=" + NameUtil.md5(password + CouchDbProvider.class.getName())
                             + ", maxConnections=" + properties.getMaxConnections() + ", connectionTimeout="
                             + properties.getConnectionTimeout() + ", socketTimeout=" + properties.getSocketTimeout();
                 } else if (object == null) {
@@ -149,8 +147,7 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
             }
 
             client = new CouchDbClient(databaseName, false, protocol, server, portInt, username, password);
-            description = "uri=" + client.getDBUri() + ", username=" + username + ", passwordHash="
-                    + NameUtil.md5(password + CouchDbProvider.class.getName());
+            description = "uri=" + client.getDBUri() + ", username=" + username;
         } else {
             LOGGER.error("No factory method was provided so the database name is required.");
             return null;

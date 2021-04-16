@@ -82,6 +82,17 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
             throw new IllegalArgumentException("Cannot configure both Agents and Properties.");
         }
 
+        final String managerName = createManagerName(name, agents, properties);
+        return getManager(managerName, factory,
+                new FactoryData(name, agents, properties, batchSize, dataDir));
+
+    }
+
+    private static String createManagerName(
+            final String name,
+            final Agent[] agents,
+            final Property[] properties) {
+
         final StringBuilder sb = new StringBuilder();
         boolean first = true;
 
@@ -106,8 +117,9 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
             }
             sb.append(NameUtil.md5(props.toString()));
         }
-        return getManager(sb.toString(), factory,
-                new FactoryData(name, agents, properties, batchSize, dataDir));
+
+        return sb.toString();
+
     }
 
     @Override

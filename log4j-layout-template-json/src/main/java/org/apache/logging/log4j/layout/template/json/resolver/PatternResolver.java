@@ -51,7 +51,7 @@ import java.util.Optional;
  * }
  * </pre>
  */
-final class PatternResolver implements EventResolver {
+public final class PatternResolver implements EventResolver {
 
     private final BiConsumer<StringBuilder, LogEvent> emitter;
 

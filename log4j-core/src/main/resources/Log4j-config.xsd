@@ -521,7 +521,33 @@
 
    <complexType name="GelfLayoutType">
       <sequence minOccurs="0">
-         <element name="MessagePattern" type="string" minOccurs="0" />
+         <choice minOccurs="0">
+            <element name="LevelPatternSelector">
+               <complexType>
+                  <sequence>
+                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+                  </sequence>
+                  <anyAttribute processContents="lax" />
+               </complexType>
+            </element>
+            <element name="MarkerPatternSelector">
+               <complexType>
+                  <sequence>
+                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+                  </sequence>
+                  <anyAttribute processContents="lax" />
+               </complexType>
+            </element>
+            <element name="ScriptPatternSelector">
+               <complexType>
+                  <sequence>
+                     <any processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+                  </sequence>
+                  <anyAttribute processContents="lax" />
+               </complexType>
+            </element>
+            <element name="MessagePattern" type="string" minOccurs="0" />
+         </choice>
          <element name="KeyValuePair" type="tns:KeyValuePairType" minOccurs="0" maxOccurs="unbounded">
             <annotation>
                <documentation>
@@ -547,6 +573,11 @@
       <attribute name="messagePattern" type="string" />
       <attribute name="threadContextExcludes" type="string" />
       <attribute name="threadContextIncludes" type="string" />
+      <attribute name="threadContextPrefix" type="string"/>
+      <attribute name="mapMessageExcludes" type="string" />
+      <attribute name="mapMessageIncludes" type="string" />
+      <attribute name="mapPrefix" type="string"/>
+      <attribute name="omitEmptyFields" type="tns:BooleanType"/>
    </complexType>
 
    <complexType name="JsonLayoutType">

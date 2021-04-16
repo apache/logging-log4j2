@@ -41,6 +41,7 @@ public class LogEventTest {
     private static Message MESSAGE = new SimpleMessage("This is a test");
     private static TestClass TESTER = new TestClass();
 
+    @SuppressWarnings("BanSerializableRead")
     @Test
     public void testSerialization() throws Exception {
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
@@ -78,6 +79,7 @@ public class LogEventTest {
         }
     }
 
+    @SuppressWarnings("BanSerializableRead")
     @Test
     public void testNanoTimeIsNotSerialized1() throws Exception {
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
@@ -103,6 +105,7 @@ public class LogEventTest {
         assertEquals(0, actual.getNanoTime(), "deserialized nanoTime is zero");
     }
 
+    @SuppressWarnings("BanSerializableRead")
     @Test
     public void testNanoTimeIsNotSerialized2() throws Exception {
         final LogEvent event1 = Log4jLogEvent.newBuilder() //

@@ -16,13 +16,21 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-final class MapResolverFactory implements EventResolverFactory<MapResolver> {
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
+/**
+ * {@link MapResolver} factory.
+ */
+@Plugin(name = "MapResolverFactory", category = TemplateResolverFactory.CATEGORY)
+public final class MapResolverFactory implements EventResolverFactory {
 
     private static final MapResolverFactory INSTANCE = new MapResolverFactory();
 
     private MapResolverFactory() {}
 
-    static MapResolverFactory getInstance() {
+    @PluginFactory
+    public static MapResolverFactory getInstance() {
         return INSTANCE;
     }
 

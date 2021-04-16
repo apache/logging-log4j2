@@ -17,12 +17,14 @@
 
 package org.apache.logging.log4j.core.appender;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
@@ -51,4 +53,28 @@ public class OutputStreamManagerTest {
                 data.getThrowable().toString());
     }
 
+    @Test
+    public void testOutputStreamAppenderFlushClearsBufferOnException() {
+        IOException exception = new IOException();
+        final OutputStream throwingOutputStream = new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                throw exception;
+            }
+        };
+
+        final int bufferSize = 3;
+        OutputStreamManager outputStreamManager = new OutputStreamManager(throwingOutputStream, "test", null, false, bufferSize);
+
+        for (int i = 0; i < bufferSize - 1; i++) {
+            outputStreamManager.getByteBuffer().put((byte) 0);
+        }
+
+        assertEquals(outputStreamManager.getByteBuffer().remaining(), 1);
+
+        AppenderLoggingException appenderLoggingException = assertThrows(AppenderLoggingException.class, () -> outputStreamManager.flushBuffer(outputStreamManager.getByteBuffer()));
+        assertEquals(appenderLoggingException.getCause(), exception);
+
+        assertEquals(outputStreamManager.getByteBuffer().limit(), outputStreamManager.getByteBuffer().capacity());
+    }
 }

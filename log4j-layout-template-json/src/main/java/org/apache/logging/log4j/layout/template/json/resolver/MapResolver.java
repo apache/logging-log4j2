@@ -26,7 +26,7 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
  *
  * @see ReadOnlyStringMapResolver
  */
-final class MapResolver extends ReadOnlyStringMapResolver {
+public final class MapResolver extends ReadOnlyStringMapResolver {
 
     MapResolver(
             final EventResolverContext context,

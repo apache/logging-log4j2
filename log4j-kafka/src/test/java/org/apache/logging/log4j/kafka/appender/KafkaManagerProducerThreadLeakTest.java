@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.kafka.appender;
 
-import org.apache.logging.log4j.categories.Appenders;
+import org.apache.logging.log4j.core.categories.Appenders;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.junit.LoggerContextSource;
 import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.Test;
 

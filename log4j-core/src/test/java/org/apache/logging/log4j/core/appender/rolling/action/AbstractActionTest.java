@@ -1,7 +1,7 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.StatusLoggerLevel;
+import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;

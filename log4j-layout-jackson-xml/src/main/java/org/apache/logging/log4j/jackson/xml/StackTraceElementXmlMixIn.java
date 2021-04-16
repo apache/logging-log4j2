@@ -12,14 +12,29 @@ abstract class StackTraceElementXmlMixIn extends StackTraceElementMixIn {
     @JsonCreator
     protected StackTraceElementXmlMixIn(
     // @formatter:off
+            @JsonProperty(StackTraceElementConstants.ATTR_CLASS_LOADER_NAME) final String classLoaderName,
+            @JsonProperty(StackTraceElementConstants.ATTR_MODULE) final String moduleName,
+            @JsonProperty(StackTraceElementConstants.ATTR_MODULE_VERSION) final String moduleVersion,
             @JsonProperty(StackTraceElementConstants.ATTR_CLASS) final String declaringClass,
             @JsonProperty(StackTraceElementConstants.ATTR_METHOD) final String methodName,
             @JsonProperty(StackTraceElementConstants.ATTR_FILE) final String fileName,
             @JsonProperty(StackTraceElementConstants.ATTR_LINE) final int lineNumber)
     // @formatter:on
     {
-        super(declaringClass, methodName, fileName, lineNumber);
+        super(classLoaderName, moduleName, moduleVersion, declaringClass, methodName, fileName, lineNumber);
     }
+
+    @Override
+    @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_CLASS_LOADER_NAME, isAttribute = true)
+    protected abstract String getClassLoaderName();
+
+    @Override
+    @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_MODULE, isAttribute = true)
+    protected abstract String getModuleName();
+
+    @Override
+    @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_MODULE_VERSION, isAttribute = true)
+    protected abstract String getModuleVersion();
 
     @Override
     @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_CLASS, isAttribute = true)

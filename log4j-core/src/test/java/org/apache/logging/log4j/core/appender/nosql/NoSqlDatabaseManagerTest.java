@@ -39,7 +39,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.junit.ThreadContextStackRule;
+import org.apache.logging.log4j.test.junit.ThreadContextStackRule;
 import org.apache.logging.log4j.message.Message;
 import org.junit.Before;
 import org.junit.Rule;
