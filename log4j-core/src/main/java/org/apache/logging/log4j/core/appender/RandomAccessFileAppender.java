@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.NoUnresolvedVariables;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -47,6 +48,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             implements org.apache.logging.log4j.plugins.util.Builder<RandomAccessFileAppender> {
 
         @PluginBuilderAttribute("fileName")
+        @NoUnresolvedVariables
         private String fileName;
 
         @PluginBuilderAttribute("append")

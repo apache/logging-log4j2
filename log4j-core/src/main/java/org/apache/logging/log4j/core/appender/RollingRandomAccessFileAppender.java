@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrateg
 import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.NoUnresolvedVariables;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -57,9 +58,11 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         }
 
         @PluginBuilderAttribute("fileName")
+        @NoUnresolvedVariables
         private String fileName;
 
         @PluginBuilderAttribute("filePattern")
+        @NoUnresolvedVariables
         private String filePattern;
 
         @PluginBuilderAttribute("append")
