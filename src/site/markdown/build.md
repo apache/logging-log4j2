@@ -66,4 +66,4 @@ To rebuild from scratch, add "clean", for example: `mvn clean test`
 
 ## Releasing Log4j
 
-Please see the wiki [Log4j2ReleaseGuide](https://wiki.apache.org/logging/Log4j2ReleaseGuide).
+Please see the [Log4j 2 Release Process](https://cwiki.apache.org/confluence/display/LOGGING/Log4j+2+Release+Process) wiki page.
