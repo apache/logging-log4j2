@@ -96,7 +96,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
                 setName(value);
             }
         }
-        statusConfig.initialize();
+        statusConfig.initialize(configurations.get(0).getLoggerContext().getName());
     }
 
     @Override

@@ -126,7 +126,16 @@ public class RollingAppenderDirectWrite1906Test {
 
         @Override
         public void close() throws IOException {
-
+        }
+        
+        @Override
+        public String getContextName() {
+        	return "JUnit-NoopStatusListener";
+        }
+        
+        @Override
+        public boolean writesToSystemStream() {
+        	return false;
         }
     }
 }

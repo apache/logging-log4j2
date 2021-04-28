@@ -136,7 +136,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 }
             }
             initializeWatchers(this, configSource, monitorIntervalSeconds);
-            statusConfig.initialize();
+            statusConfig.initialize(loggerContext.getName());
         } catch (final SAXException | IOException | ParserConfigurationException e) {
             LOGGER.error("Error parsing " + configSource.getLocation(), e);
         }

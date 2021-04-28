@@ -177,14 +177,14 @@ public class StatusConfiguration {
     /**
      * Configures and initializes the StatusLogger using the configured options in this instance.
      */
-    public void initialize() {
+    public void initialize(String contextName) {
         if (!this.initialized) {
             if (this.status == Level.OFF) {
                 this.initialized = true;
             } else {
                 final boolean configured = configureExistingStatusConsoleListener();
                 if (!configured) {
-                    registerNewStatusConsoleListener();
+                    registerNewStatusConsoleListener(contextName);
                 }
                 migrateSavedLogMessages();
             }
@@ -193,23 +193,25 @@ public class StatusConfiguration {
 
     private boolean configureExistingStatusConsoleListener() {
         boolean configured = false;
-        for (final StatusListener statusListener : this.logger.getListeners()) {
-            if (statusListener instanceof StatusConsoleListener) {
-                final StatusConsoleListener listener = (StatusConsoleListener) statusListener;
-                listener.setLevel(this.status);
-                this.logger.updateListenerLevel(this.status);
-                if (this.verbosity == Verbosity.QUIET) {
-                    listener.setFilters(this.verboseClasses);
+        if (destination != System.out && destination != System.err) {
+            for (final StatusListener statusListener : this.logger.getListeners()) {
+                if (statusListener instanceof StatusConsoleListener) {
+                    final StatusConsoleListener listener = (StatusConsoleListener) statusListener;
+                    listener.setLevel(this.status);
+                    this.logger.updateListenerLevel(this.status);
+                    if (this.verbosity == Verbosity.QUIET) {
+                        listener.setFilters(this.verboseClasses);
+                    }
+                    configured = true;
                 }
-                configured = true;
             }
         }
         return configured;
     }
 
 
-    private void registerNewStatusConsoleListener() {
-        final StatusConsoleListener listener = new StatusConsoleListener(this.status, this.destination);
+    private void registerNewStatusConsoleListener(String contextName) {
+        final StatusConsoleListener listener = new StatusConsoleListener(this.status, this.destination, contextName);
         if (this.verbosity == Verbosity.QUIET) {
             listener.setFilters(this.verboseClasses);
         }

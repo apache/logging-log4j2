@@ -94,7 +94,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 }
             }
             initializeWatchers(this, configSource, monitorIntervalSeconds);
-            statusConfig.initialize();
+            statusConfig.initialize(loggerContext.getName());
             if (getName() == null) {
                 setName(configSource.getLocation());
             }

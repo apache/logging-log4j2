@@ -97,5 +97,15 @@ public class ValidatingPluginWithFailoverTest {
 
         @Override
         public void close() {}
+        
+        @Override
+        public String getContextName() {
+        	return "JUnit-StoringStatusListener";
+        }
+        
+        @Override
+        public boolean writesToSystemStream() {
+        	return false;
+        }
     }
 }

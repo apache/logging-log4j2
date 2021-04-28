@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static org.apache.logging.log4j.core.hamcrest.MapMatchers.hasSize;
 import static org.hamcrest.MatcherAssert.*;
@@ -393,7 +394,8 @@ public class TestConfigurator {
                 add(builder.newAppenderRef("Stdout")).
                 addAttribute("additivity", false));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
-        ctx = Configurator.initialize(builder.build());
+        BuiltConfiguration buildRes = builder.build();
+        ctx = Configurator.initialize(buildRes);
         final Configuration config = ctx.getConfiguration();
         assertNotNull(config, "No configuration");
         assertEquals("BuilderTest", config.getName(), "Unexpected Configuration");

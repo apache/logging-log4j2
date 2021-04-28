@@ -28,6 +28,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -211,24 +212,28 @@ public final class StatusLogger extends AbstractLogger {
      * no loggers write to standard out or error, then add one and stop the 
      * others.
      */
-    public void prepareToStop() {
-        final Collection<StatusListener> listenersToClose = new ArrayList<>(listeners.size());
-        boolean hasSystemStreamWriter = false;
-        for (final StatusListener listener : listeners) {
-        	if (listener instanceof StatusConsoleListener) {
-        		if (((StatusConsoleListener) listener).writesToSystemStream()) {
-        			hasSystemStreamWriter = true;
-        		} else {
-        			listenersToClose.add(listener);
-        			
-        		}
-        	}
-        }
-        if (!hasSystemStreamWriter) {
-        	registerListener(new StatusConsoleListener(getLevel()));
-        }
-        for (final StatusListener listener : listenersToClose) {
-        	removeListener(listener);
+    public void stopContext(String closingContextName) {
+        listenersLock.writeLock().lock();
+        try {
+            final Collection<StatusListener> listenersToClose = new ArrayList<>(listeners.size());
+            for (final StatusListener listener : listeners) {
+                if (Objects.equals(listener.getContextName(), closingContextName)) {     
+                    if (!listener.writesToSystemStream()) {
+                        listenersToClose.add(listener);
+                    }
+                }
+            }
+            int numClosing = listenersToClose.size();
+            int numListeners = listeners.size();
+            if (numClosing == numListeners) {
+                registerListener(new StatusConsoleListener(getLevel(), getClass().getName()));
+            }
+            for (final StatusListener listener : listenersToClose) {
+                removeListener(listener);
+            }
+
+        } finally {
+            listenersLock.writeLock().unlock();
         }
     }
 

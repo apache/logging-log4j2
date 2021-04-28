@@ -166,6 +166,11 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
     private long nowMillis() {
         return System.currentTimeMillis();
     }
+    
+    @Override
+    public boolean writesToSystemStream() {
+    	return false;
+    }
 
     @Override
     public void close() throws IOException {

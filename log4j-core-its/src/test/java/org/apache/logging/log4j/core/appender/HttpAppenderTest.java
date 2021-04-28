@@ -264,6 +264,16 @@ public class HttpAppenderTest {
 
             @Override
             public void close() throws IOException { }
+
+            @Override
+            public String getContextName() {
+                return "JUnit-testAppendErrorIgnore()";
+            }
+
+            @Override
+            public boolean writesToSystemStream() { 
+                return false; 
+            }
         });
 
         error = null;

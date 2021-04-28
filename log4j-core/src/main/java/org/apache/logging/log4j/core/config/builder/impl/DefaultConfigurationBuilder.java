@@ -218,7 +218,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         } catch (final Exception ex) {
             throw new IllegalArgumentException("Invalid Configuration class specified", ex);
         }
-        configuration.getStatusConfiguration().initialize();
+        configuration.getStatusConfiguration().initialize(loggerContext.getName());
         if (initialize) {
             configuration.initialize();
         }

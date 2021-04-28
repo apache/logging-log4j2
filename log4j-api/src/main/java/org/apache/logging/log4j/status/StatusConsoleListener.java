@@ -30,13 +30,15 @@ public class StatusConsoleListener implements StatusListener {
     private Level level = Level.FATAL;
     private String[] filters;
     private final PrintStream stream;
+    private final String contextName;
 
     /**
      * Creates the StatusConsoleListener using the supplied Level.
      * @param level The Level of status messages that should appear on the console.
+     * @param contextName of context this listener applies to
      */
-    public StatusConsoleListener(final Level level) {
-        this(level, System.out);
+    public StatusConsoleListener(final Level level, final String contextName) {
+        this(level, System.out, contextName);
     }
 
     /**
@@ -44,14 +46,21 @@ public class StatusConsoleListener implements StatusListener {
      * to avoid creating an infinite loop of indirection!
      * @param level The Level of status messages that should appear on the console.
      * @param stream The PrintStream to write to.
+     * @param contextName of context this listener applies to
      * @throws IllegalArgumentException if the PrintStream argument is {@code null}.
      */
-    public StatusConsoleListener(final Level level, final PrintStream stream) {
+    public StatusConsoleListener(final Level level, final PrintStream stream, final String contextName) {
         if (stream == null) {
             throw new IllegalArgumentException("You must provide a stream to use for this listener.");
         }
         this.level = level;
         this.stream = stream;
+        this.contextName = contextName;
+    }
+    
+    @Override
+    public String getContextName() {
+    	return contextName;
     }
 
     /**
@@ -103,6 +112,7 @@ public class StatusConsoleListener implements StatusListener {
         return false;
     }
     
+    @Override
     public boolean writesToSystemStream() {
     	return this.stream == System.out || this.stream == System.err;
     }

@@ -405,7 +405,7 @@ public class LoggerContext extends AbstractLifeCycle
             }
         }
         LOGGER.debug("Stopped LoggerContext[name={}, {}] with status {}", getName(), this, true);
-    	StatusLogger.getLogger().prepareToStop();
+    	StatusLogger.getLogger().stopContext(contextName);
         return true;
     }
 

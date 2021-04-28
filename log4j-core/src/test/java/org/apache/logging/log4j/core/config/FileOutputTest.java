@@ -20,6 +20,7 @@ import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.apache.logging.log4j.core.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
 
+import java.io.PrintStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

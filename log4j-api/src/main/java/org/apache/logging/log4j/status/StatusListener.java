@@ -37,4 +37,16 @@ public interface StatusListener extends Closeable, EventListener {
      * @return the Log Level.
      */
     Level getStatusLevel();
+
+    /**
+     * Return the context name this listener is attached to.
+     * @return the contextName
+     */
+    String getContextName();
+
+    /**
+     * Check if this listener writes to standard out or standard err
+     * @return if listener writes to standard out or err, otherwise false
+     */
+    boolean writesToSystemStream();
 }
