@@ -722,7 +722,7 @@ public class XmlConfiguration extends Log4j1Configuration {
         }
 
         final StatusConfiguration statusConfig = new StatusConfiguration().setStatus(status);
-        statusConfig.initialize();
+        statusConfig.initialize(getLoggerContext().getName());
 
         forEachElement(element.getChildNodes(), (currentElement) -> {
             switch (currentElement.getTagName()) {

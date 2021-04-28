@@ -298,7 +298,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
         }
 
         final StatusConfiguration statusConfig = new StatusConfiguration().setStatus(status);
-        statusConfig.initialize();
+        statusConfig.initialize(getLoggerContext().getName());
 
         configureRoot(properties);
         parseLoggers(properties);
