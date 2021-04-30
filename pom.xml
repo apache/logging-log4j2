@@ -193,7 +193,7 @@
     <springVersion>5.3.5</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
-    <disruptorVersion>3.4.2</disruptorVersion>
+    <disruptorVersion>3.4.4</disruptorVersion>
     <conversantDisruptorVersion>1.2.15</conversantDisruptorVersion> <!-- Version 1.2.16 requires Java 9 -->
     <elastic.version>7.6.2</elastic.version>
     <mongodb3.version>3.12.7</mongodb3.version>
