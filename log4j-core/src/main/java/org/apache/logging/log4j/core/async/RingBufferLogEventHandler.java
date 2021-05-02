@@ -43,7 +43,13 @@ public class RingBufferLogEventHandler implements
     public void onEvent(final RingBufferLogEvent event, final long sequence,
             final boolean endOfBatch) throws Exception {
         try {
-            event.execute(endOfBatch);
+            // RingBufferLogEvents are populated by an EventTranslator. If an exception is thrown during event
+            // translation, the event may not be fully populated, but Disruptor requires that the associated sequence
+            // still be published since a slot has already been claimed in the ring buffer. Ignore any such unpopulated
+            // events. The exception that occurred during translation will have already been propagated.
+            if (event.isPopulated()) {
+                event.execute(endOfBatch);
+            }
         }
         finally {
             event.clear();
