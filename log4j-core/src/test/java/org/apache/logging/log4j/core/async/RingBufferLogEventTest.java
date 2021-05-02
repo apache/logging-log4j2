@@ -58,7 +58,32 @@ public class RingBufferLogEventTest {
         final LogEvent logEvent = new RingBufferLogEvent();
         Assert.assertNotSame(logEvent, logEvent.toImmutable());
     }
-    
+
+    @Test
+    public void testIsPopulated() {
+        final RingBufferLogEvent evt = new RingBufferLogEvent();
+        final String loggerName = null;
+        final Marker marker = null;
+        final String fqcn = null;
+        final Level level = null;
+        final Message data = null;
+        final Throwable t = null;
+        final ContextStack contextStack = null;
+        final String threadName = null;
+        final StackTraceElement location = null;
+
+        assertFalse(evt.isPopulated());
+
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
+                contextStack, -1, threadName, -1, location, new FixedPreciseClock(), new DummyNanoClock(1));
+
+        assertTrue(evt.isPopulated());
+
+        evt.clear();
+
+        assertFalse(evt.isPopulated());
+    }
+
     @Test
     public void testGetLevelReturnsOffIfNullLevelSet() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
