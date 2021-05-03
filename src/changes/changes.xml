@@ -227,6 +227,9 @@
       <action issue="LOG4J2-2940" dev="ckozak" type="fix">
         Slf4j implementations walk the stack at most once rather than twice to determine the caller's class loader.
       </action>
+      <action issue="LOG4J2-2965" dev="ckozak" type="fix">
+        Fixed a deadlock between the AsyncLoggerContextSelector and java.util.logging.LogManager by updating Disruptor to 3.4.4.
+      </action>
       <!-- UPDATES -->
       <action dev="ggregory" type="update">
         - org.eclipse.persistence:javax.persistence ............. 2.1.1 -> 2.2.1
