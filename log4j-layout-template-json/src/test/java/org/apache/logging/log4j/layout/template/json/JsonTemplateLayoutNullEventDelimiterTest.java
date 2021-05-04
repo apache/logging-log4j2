@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.Duration;
@@ -71,6 +72,8 @@ public class JsonTemplateLayoutNullEventDelimiterTest {
             final byte[] actualBytes = server.getReceivedBytes();
             Assertions.assertThat(actualBytes).startsWith(expectedBytes);
 
+        } catch (BindException bindException) {
+            System.err.println("Required port " + PORT + " not available, skipping " + getClass().getSimpleName());
         }
 
     }
