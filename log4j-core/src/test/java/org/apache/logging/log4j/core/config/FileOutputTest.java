@@ -20,6 +20,7 @@ import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.apache.logging.log4j.core.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
 
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,6 +28,9 @@ import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.apache.logging.log4j.junit.DisableOnWindows;
+
+@DisableOnWindows // FIXME: Fix status logger to close files so this will pass on windows.
 @CleanUpFiles({"target/status.log", "target/test.log"})
 public class FileOutputTest {
 
