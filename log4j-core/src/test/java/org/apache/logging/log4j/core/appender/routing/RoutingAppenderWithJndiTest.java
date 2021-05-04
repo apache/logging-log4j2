@@ -23,10 +23,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.EventLogger;
-import org.apache.logging.log4j.core.junit.JndiRule;
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.JndiRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;

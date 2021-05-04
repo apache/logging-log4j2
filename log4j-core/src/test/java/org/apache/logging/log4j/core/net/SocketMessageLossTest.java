@@ -30,8 +30,8 @@ import java.util.concurrent.Future;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

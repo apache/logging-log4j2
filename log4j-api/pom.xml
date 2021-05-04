@@ -36,28 +36,38 @@
   <dependencies>
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
+      <artifactId>org.osgi.framework</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.resource</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-migrationsupport</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
@@ -95,40 +105,33 @@
               <goal>clean</goal>
             </goals>
           </execution>
+          <execution>
+            <id>delete-test-module-info</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <configuration>
+              <excludeDefaultDirectories>true</excludeDefaultDirectories>
+              <verbose>true</verbose>
+              <filesets>
+                <fileset>
+                  <directory>${project.build.testOutputDirectory}</directory>
+                  <followSymlinks>false</followSymlinks>
+                  <useDefaultExcludes>true</useDefaultExcludes>
+                  <includes>
+                    <include>module-info.class</include>
+                  </includes>
+                </fileset>
+              </filesets>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <executions>
           <execution>
-            <!-- compile first without module-info -->
-            <id>base-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
-            </configuration>
-          </execution>
-          <execution>
-            <!-- compile only the classes used by other modules. -->
-            <id>compile-test-utils</id>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
-              <compileSourceRoots>
-                <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
-              </compileSourceRoots>
-            </configuration>
-          </execution>
-          <execution>
-            <!-- compile the source -->
             <id>default-compile</id>
             <goals>
               <goal>compile</goal>
@@ -160,8 +163,44 @@
               </annotationProcessorPaths>
               <forceJavacCompilerUse>true</forceJavacCompilerUse>
               <parameters>true</parameters>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- compile only the classes used by other modules. -->
+            <id>compile-test-utils</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <phase>generate-test-sources</phase>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>true</showWarnings>
+              <encoding>UTF-8</encoding>
+              <fork>true</fork>
+              <meminitial>256</meminitial>
+              <maxmem>1024</maxmem>
+              <compilerArgs>
+                <arg>-XDcompilePolicy=simple</arg>
+                <arg>-Xplugin:ErrorProne</arg>
+              </compilerArgs>
+              <compilerArguments>
+                <Xmaxwarns>10000</Xmaxwarns>
+                <Xlint />
+              </compilerArguments>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_core</artifactId>
+                  <version>${errorprone.version}</version>
+                </path>
+              </annotationProcessorPaths>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
               <compileSourceRoots>
-                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
               </compileSourceRoots>
             </configuration>
           </execution>
@@ -198,24 +237,6 @@
               </annotationProcessorPaths>
               <forceJavacCompilerUse>true</forceJavacCompilerUse>
               <parameters>true</parameters>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.2.0</version>
-        <executions>
-          <execution>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>src/main/java9</source>
-              </sources>
             </configuration>
           </execution>
         </executions>
@@ -268,7 +289,7 @@
             <goals>
               <goal>test-jar</goal>
             </goals>
-            <phase>process-resources</phase>
+            <phase>process-test-sources</phase>
             <configuration>
               <archive>
                 <manifestFile>${manifestfile}</manifestFile>
@@ -313,7 +334,7 @@
               sun.reflect;resolution:=optional,
               *
             </Import-Package>
-            <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
+            <Bundle-Activator>org.apache.logging.log4j.osgi.Activator</Bundle-Activator>
             <_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
           </instructions>
         </configuration>

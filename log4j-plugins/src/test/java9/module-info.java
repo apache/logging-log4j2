@@ -1,8 +1,10 @@
 open module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins;
+    exports org.apache.logging.log4j.plugins.test.validation;
 
     requires java.compiler;
     requires org.apache.logging.log4j;
+    requires org.apache.logging.log4j.test;
     requires org.junit.jupiter.api;
     requires org.junit.jupiter.engine;
     requires org.junit.platform.commons;

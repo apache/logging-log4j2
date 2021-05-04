@@ -28,7 +28,7 @@ module org.apache.logging.log4j.plugins {
 
     requires java.compiler;
     requires org.apache.logging.log4j;
-    requires transitive org.osgi.core;
+    requires transitive org.osgi.framework;
 
     provides org.apache.logging.log4j.plugins.processor.PluginService with org.apache.logging.log4j.plugins.convert.plugins.Log4jPlugins;
     provides javax.annotation.processing.Processor with org.apache.logging.log4j.plugins.processor.PluginProcessor;

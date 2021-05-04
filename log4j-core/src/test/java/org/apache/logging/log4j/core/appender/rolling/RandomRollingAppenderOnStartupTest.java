@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

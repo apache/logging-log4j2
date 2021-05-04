@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.filter.RegexFilter;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.Description;

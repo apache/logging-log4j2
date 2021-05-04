@@ -18,10 +18,10 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.junit.Named;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 

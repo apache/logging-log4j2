@@ -160,6 +160,14 @@ public class SortedArrayStringMap implements IndexedStringMap {
         }
     }
 
+    /**
+     * For unit testing.
+     * @return The threshold.
+     */
+    public int getThreshold() {
+        return threshold;
+    }
+
     private void assertNotFrozen() {
         if (immutable) {
             throw new UnsupportedOperationException(FROZEN);

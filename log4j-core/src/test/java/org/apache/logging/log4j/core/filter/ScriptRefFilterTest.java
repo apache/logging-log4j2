@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import org.apache.logging.log4j.core.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 
 @LoggerContextSource("log4j-scriptRef-filters.xml")
 public class ScriptRefFilterTest extends AbstractScriptFilterTest {

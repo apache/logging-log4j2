@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.junit.JndiRule;
+import org.apache.logging.log4j.core.test.junit.JndiRule;
 import org.junit.Rule;
 import org.junit.Test;
 

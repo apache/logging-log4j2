@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.SocketAppenderTest.TcpSocketTestServer;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;

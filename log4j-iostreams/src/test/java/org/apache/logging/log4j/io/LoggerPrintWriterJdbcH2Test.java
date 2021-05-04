@@ -23,7 +23,7 @@ import java.sql.SQLException;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.Assert;

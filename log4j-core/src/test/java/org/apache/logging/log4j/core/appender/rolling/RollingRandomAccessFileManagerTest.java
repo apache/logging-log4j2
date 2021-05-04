@@ -37,10 +37,10 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
 import java.util.concurrent.locks.LockSupport;
 
-import static org.apache.logging.log4j.core.hamcrest.FileMatchers.beforeNow;
-import static org.apache.logging.log4j.core.hamcrest.FileMatchers.hasLength;
-import static org.apache.logging.log4j.core.hamcrest.FileMatchers.isEmpty;
-import static org.apache.logging.log4j.core.hamcrest.FileMatchers.lastModified;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.beforeNow;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasLength;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.isEmpty;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.lastModified;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertEquals;

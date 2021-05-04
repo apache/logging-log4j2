@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.categories.Appenders;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.smtp.MimeMessageBuilder;
-import org.apache.logging.log4j.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

@@ -43,7 +43,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.apache.logging.log4j.core.hamcrest.MapMatchers.hasSize;
+import static org.apache.logging.log4j.core.test.hamcrest.MapMatchers.hasSize;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;

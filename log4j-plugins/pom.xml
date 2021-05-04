@@ -41,7 +41,12 @@
     <!-- Used for OSGi bundle support -->
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
+      <artifactId>org.osgi.framework</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.resource</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -83,6 +88,33 @@
               <goal>clean</goal>
             </goals>
           </execution>
+          <execution>
+            <id>delete-test-module-info</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <configuration>
+              <excludeDefaultDirectories>true</excludeDefaultDirectories>
+              <verbose>true</verbose>
+              <filesets>
+                <fileset>
+                  <directory>${project.build.testOutputDirectory}</directory>
+                  <followSymlinks>false</followSymlinks>
+                  <useDefaultExcludes>true</useDefaultExcludes>
+                  <includes>
+                    <include>module-info.class</include>
+                    <include>**/Log4jPlugins.class</include>
+                  </includes>
+                </fileset>
+                <fileset>
+                  <directory>${project.build.directory}/generated-test-sources/test-annotations</directory>
+                  <followSymlinks>false</followSymlinks>
+                  <useDefaultExcludes>true</useDefaultExcludes>
+                </fileset>
+              </filesets>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -101,7 +133,7 @@
           </execution>
           <execution>
             <!-- then do a processing-only pass to generate plugins -->
-            <id>process-plugins</id>
+            <id>preprocess-plugins</id>
             <goals>
               <goal>compile</goal>
             </goals>
@@ -116,8 +148,8 @@
             </configuration>
           </execution>
           <execution>
-            <!-- then compile the test plugins -->
-            <id>process-test-plugins</id>
+            <!-- capture the test plugins -->
+            <id>preprocess-test-plugins</id>
             <goals>
               <goal>testCompile</goal>
             </goals>
@@ -125,12 +157,36 @@
             <configuration combine.self="override">
               <source>${maven.compiler.source}</source>
               <target>${maven.compiler.target}</target>
+              <proc>only</proc>
               <annotationProcessors>
                 <annotationProcessor>org.apache.logging.log4j.plugins.processor.PluginProcessor</annotationProcessor>
               </annotationProcessors>
               <compileSourceRoots>
                 <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
               </compileSourceRoots>
+              <parameters>true</parameters>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- capture the test plugins -->
+            <id>preprocess-unit-test-plugins</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <proc>only</proc>
+              <annotationProcessors>
+                <annotationProcessor>org.apache.logging.log4j.plugins.processor.PluginProcessor</annotationProcessor>
+              </annotationProcessors>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/test/java</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
+              </compileSourceRoots>
+              <generatedTestSourcesDirectory>${project.build.directory}/generated-test-sources/unit-test-annotations</generatedTestSourcesDirectory>
+              <outputDirectory>${project.build.directory}/unit-test-classes</outputDirectory>
               <parameters>true</parameters>
             </configuration>
           </execution>
@@ -167,11 +223,33 @@
               </annotationProcessorPaths>
               <forceJavacCompilerUse>true</forceJavacCompilerUse>
               <parameters>true</parameters>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+              </compileSourceRoots>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- then compile the test module-->
+            <id>process-test-plugins</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <phase>process-classes</phase>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <proc>none</proc>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/test/java-test9</compileSourceRoot>
+              </compileSourceRoots>
+              <parameters>true</parameters>
             </configuration>
           </execution>
           <execution>
             <!-- compile the test source -->
-            <id>default-test-compile</id>
+            <id>default-testCompile</id>
             <goals>
               <goal>testCompile</goal>
             </goals>
@@ -193,6 +271,8 @@
                 <Xmaxwarns>10000</Xmaxwarns>
                 <Xlint />
               </compilerArguments>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
               <annotationProcessorPaths>
                 <path>
                   <groupId>com.google.errorprone</groupId>
@@ -200,39 +280,36 @@
                   <version>${errorprone.version}</version>
                 </path>
               </annotationProcessorPaths>
-              <forceJavacCompilerUse>true</forceJavacCompilerUse>
-              <parameters>true</parameters>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/test/java</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/test/java9</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
+                <compileSourceRoot>${project.build.directory}/generated-test-sources/unit-test-annotations</compileSourceRoot>
+              </compileSourceRoots>
             </configuration>
           </execution>
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.2.0</version>
+        <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
-            <id>add-module</id>
-            <phase>process-sources</phase>
+            <id>copy-service</id>
+            <phase>process-classes</phase>
             <goals>
-              <goal>add-source</goal>
+              <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <sources>
-                <source>src/main/java9</source>
-              </sources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>add-test-module</id>
-            <phase>process-test-sources</phase>
-            <goals>
-              <goal>add-test-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>src/test/java9</source>
-              </sources>
+              <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/unit-test-classes</directory>
+                  <includes>
+                    <include>**/*</include>
+                  </includes>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>
@@ -287,7 +364,7 @@
             <goals>
               <goal>test-jar</goal>
             </goals>
-            <phase>process-resources</phase>
+            <phase>process-classes</phase>
             <configuration>
               <archive>
                 <!--<manifestFile>${manifestfile}</manifestFile>-->

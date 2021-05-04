@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.junit.JndiRule;
+import org.apache.logging.log4j.core.test.junit.JndiRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;

@@ -21,13 +21,13 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-import static org.apache.logging.log4j.core.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.hamcrest.FileMatchers.hasName;
+import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertTrue;

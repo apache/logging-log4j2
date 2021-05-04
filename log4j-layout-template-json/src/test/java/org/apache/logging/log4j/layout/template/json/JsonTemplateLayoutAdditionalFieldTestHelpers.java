@@ -19,7 +19,7 @@ package org.apache.logging.log4j.layout.template.json;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.assertj.core.api.Assertions;
 
 import java.util.Arrays;

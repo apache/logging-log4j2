@@ -31,7 +31,7 @@ public class AbstractActionTest {
         assertThat(formattedMessage, containsString("Exception reported by action 'class org.apache."
                 + "logging.log4j.core.appender.rolling.action.AbstractActionTest$TestAction' java.io.IOException: "
                 + "failed" + System.lineSeparator()
-                + "\tat org.apache.logging.log4j.core.appender.rolling.action.AbstractActionTest"
+                + "\tat org.apache.logging.log4j.core/org.apache.logging.log4j.core.appender.rolling.action.AbstractActionTest"
                 + "$TestAction.execute(AbstractActionTest.java:"));
     }
 

@@ -48,7 +48,7 @@ import org.apache.logging.log4j.jackson.xml.Log4jXmlObjectMapper;
 import org.apache.logging.log4j.test.junit.ThreadContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

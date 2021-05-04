@@ -21,9 +21,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.junit.Named;
-import org.apache.logging.log4j.core.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-customLevels.xml")

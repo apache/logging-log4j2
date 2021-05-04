@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.config.plugins.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -37,13 +38,14 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PluginManagerPackagesTest {
+    private static final String TEST_SOURCE = "target/test-classes/customPlugin/FixedStringLayout.java";
     private static Configuration config;
     private static ListAppender listAppender;
     private static LoggerContext ctx;
@@ -51,8 +53,23 @@ public class PluginManagerPackagesTest {
     @AfterAll
     public static void cleanupClass() {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
+        if (ctx != null) {
+            ctx.reconfigure();
+        }
         StatusLogger.getLogger().reset();
+    }
+
+    @AfterAll
+    public static void afterClass() {
+        File file = new File(TEST_SOURCE);
+        File parent = file.getParentFile();
+        if (file.exists()) {
+            file.delete();
+        }
+        file = new File(parent, "FixedStringLayout.class");
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
     @Test
@@ -61,7 +78,7 @@ public class PluginManagerPackagesTest {
         // To ensure our custom plugin is NOT included in the log4j plugin metadata file,
         // we make sure the class does not exist until after the build is finished.
         // So we don't create the custom plugin class until this test is run.
-        final File orig = new File("target/test-classes/customplugin/FixedStringLayout.java.source");
+        final File orig = new File(TEST_SOURCE + ".source");
         final File f = new File(orig.getParentFile(), "FixedStringLayout.java");
         assertTrue(orig.renameTo(f), "renamed source file failed");
         compile(f);
@@ -92,10 +109,10 @@ public class PluginManagerPackagesTest {
         try (final StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
             final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(
                     Collections.singletonList(f));
-
+            List<String> options =
+                    new ArrayList<>(Arrays.asList("-classpath", System.getProperty("jdk.module.path")));
+            options.add("-proc:none");
             // compile generated source
-            // (switch off annotation processing: no need to create Log4j2Plugins.dat)
-            final List<String> options = Collections.singletonList("-proc:none");
             compiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits).call();
 
             // check we don't have any compilation errors

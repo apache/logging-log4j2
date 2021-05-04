@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.GarbageCollectionHelper;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;

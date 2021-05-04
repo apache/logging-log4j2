@@ -185,16 +185,16 @@
     <!--<Log4jReleaseManager>Matt Sicker</Log4jReleaseManager> -->
     <!--<Log4jReleaseKey>748F15B2CF9BA8F024155E6ED7C92B70FA1C814D</Log4jReleaseKey> -->
     <!-- note that any properties you want available in velocity templates must not use periods! -->
-    <slf4jVersion>1.7.25</slf4jVersion>
+    <slf4jVersion>1.7.30</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.11.2</jackson2Version>
+    <jackson2Version>2.12.3</jackson2Version>
     <spring-boot.version>2.3.6.RELEASE</spring-boot.version>
     <springVersion>5.3.2</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
-    <conversantDisruptorVersion>1.2.15</conversantDisruptorVersion>
+    <conversantDisruptorVersion>1.2.19</conversantDisruptorVersion>
     <elastic.version>7.6.2</elastic.version>
     <mongodb3.version>3.12.4</mongodb3.version>
     <mongodb4.version>4.0.3</mongodb4.version>
@@ -239,14 +239,15 @@
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <javax.persistence>2.2.1</javax.persistence>
-    <osgi.api.version>6.0.0</osgi.api.version>
+    <osgi.api.version>1.10.0</osgi.api.version>
     <activemq.version>5.15.9</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
-    <jctoolsVersion>3.1.0</jctoolsVersion>
+    <jctoolsVersion>3.3.0</jctoolsVersion>
     <junitVersion>4.13.1</junitVersion>
     <junitJupiterVersion>5.7.0</junitJupiterVersion>
-    <mockitoVersion>3.5.5</mockitoVersion>
+    <mockitoVersion>3.9.0</mockitoVersion>
+    <byteBuddyVersion>1.11.0</byteBuddyVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>11</javaTargetVersion>
     <module.name />
@@ -449,14 +450,20 @@
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
-        <artifactId>org.osgi.core</artifactId>
+        <artifactId>org.osgi.framework</artifactId>
         <version>${osgi.api.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.resource</artifactId>
+        <version>1.0.1</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.fusesource.jansi</groupId>
         <artifactId>jansi</artifactId>
-        <version>1.17.1</version>
+        <version>2.3.2</version>
         <optional>true</optional>
       </dependency>
       <dependency>
@@ -762,6 +769,18 @@
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>${byteBuddyVersion}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy-agent</artifactId>
+        <version>${byteBuddyVersion}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-aop</artifactId>
         <version>${springVersion}</version>
@@ -780,6 +799,12 @@
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
         <version>${springVersion}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jcl</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
@@ -850,8 +875,14 @@
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit</artifactId>
-        <version>1.31.1</version>
+        <version>2.25.0</version>
         <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
@@ -864,6 +895,12 @@
         <artifactId>xmlunit-matchers</artifactId>
         <version>2.6.2</version>
         <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -888,6 +925,12 @@
         <artifactId>wiremock</artifactId>
         <scope>test</scope>
         <version>2.19.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.github.jknack</groupId>
+            <artifactId>handlebars-helpers</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <!-- Used for compressing to formats other than zip and gz -->
       <dependency>
@@ -912,6 +955,12 @@
         <groupId>com.google.code.java-allocation-instrumenter</groupId>
         <artifactId>java-allocation-instrumenter</artifactId>
         <version>3.3.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava-testlib</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.hdrhistogram</groupId>
@@ -996,6 +1045,11 @@
           <artifactId>maven-pmd-plugin</artifactId>
           <version>${pmd.plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.bsc.maven</groupId>
+          <artifactId>maven-processor-plugin</artifactId>
+          <version>5.0-rc1</version>
+        </plugin>
         <!-- some nice default compiler options -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1007,6 +1061,7 @@
             <release>${maven.compiler.release}</release>
             <showDeprecation>true</showDeprecation>
             <showWarnings>true</showWarnings>
+            <verbose>false</verbose>
             <encoding>UTF-8</encoding>
             <fork>true</fork>
             <meminitial>256</meminitial>
@@ -1021,14 +1076,14 @@
             </compilerArguments>
             <annotationProcessorPaths>
               <path>
-                <groupId>com.google.errorprone</groupId>
-                <artifactId>error_prone_core</artifactId>
-                <version>${errorprone.version}</version>
-              </path>
-              <path>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-plugins</artifactId>
                 <version>${project.version}</version>
+              </path>
+              <path>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_core</artifactId>
+                <version>${errorprone.version}</version>
               </path>
             </annotationProcessorPaths>
             <forceJavacCompilerUse>true</forceJavacCompilerUse>

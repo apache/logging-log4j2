@@ -53,7 +53,7 @@
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
+      <artifactId>org.osgi.framework</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

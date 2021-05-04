@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

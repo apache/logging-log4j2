@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.core.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;

@@ -47,7 +47,12 @@
     <!-- Used for OSGi bundle support -->
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
+      <artifactId>org.osgi.framework</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.resource</artifactId>
       <scope>provided</scope>
     </dependency>
     <!-- Required for AsyncLoggers -->
@@ -154,11 +159,6 @@
       <artifactId>slf4j-api</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-ext</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- JUnit, naturally -->
     <dependency>
       <groupId>org.junit.vintage</groupId>
@@ -179,6 +179,11 @@
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Mocking framework for use with JUnit -->
@@ -209,17 +214,6 @@
     </dependency>
     <!-- JNDI and JMS tests -->
     <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-broker</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.geronimo.specs</groupId>
-          <artifactId>geronimo-jms_1.1_spec</artifactId>
-        </exclusion>
-      </exclusions>    
-    </dependency>
-    <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <scope>test</scope>
@@ -233,27 +227,6 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- OSGi tests -->
-    <dependency>
-      <groupId>org.eclipse.tycho</groupId>
-      <artifactId>org.eclipse.osgi</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.framework</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-core</artifactId>
       <scope>test</scope>
     </dependency>
     <!--  GELF -->
@@ -309,12 +282,6 @@
       <artifactId>groovy-dateutil</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- GC-free -->
-    <dependency>
-      <groupId>com.google.code.java-allocation-instrumenter</groupId>
-      <artifactId>java-allocation-instrumenter</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.hdrhistogram</groupId>
       <artifactId>HdrHistogram</artifactId>
@@ -343,14 +310,217 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>delete-test-module-info</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <configuration>
+              <excludeDefaultDirectories>true</excludeDefaultDirectories>
+              <verbose>true</verbose>
+              <filesets>
+                <fileset>
+                  <directory>${project.build.testOutputDirectory}</directory>
+                  <followSymlinks>false</followSymlinks>
+                  <useDefaultExcludes>true</useDefaultExcludes>
+                  <includes>
+                    <include>module-info.class</include>
+                    <include>**/Log4jPlugins.class</include>
+                  </includes>
+                </fileset>
+                <fileset>
+                  <directory>${project.build.directory}/generated-test-sources/test-annotations</directory>
+                  <followSymlinks>false</followSymlinks>
+                  <useDefaultExcludes>true</useDefaultExcludes>
+                </fileset>
+              </filesets>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- compile the source except for module-info.java -->
+            <id>default-compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- compile the module-info.java -->
+            <id>compile-module</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+              </compileSourceRoots>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- compile only the classes used by other modules. -->
+            <id>compile-test-utils</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/test/java-test9</compileSourceRoot>
+              </compileSourceRoots>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- Compile unit tests without module-info -->
+            <id>compile-unit-tests</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <phase>process-test-sources</phase>
+            <configuration>
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
+              <compilerArgs>
+                <arg>-ApluginPackage=org.apache.logging.log4j.core.test</arg>
+              </compilerArgs>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/test/java</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
+              </compileSourceRoots>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- compile the unit tests module-info -->
+            <id>default-testCompile</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/test/java9</compileSourceRoot>
+              </compileSourceRoots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <phase>generate-test-sources</phase>
+            <configuration>
+              <target>
+                <move todir="${project.build.directory}/saved-classes">
+                  <fileset dir="${project.build.outputDirectory}">
+                    <include name="module-info.class"/>
+                  </fileset>
+                </move>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Include the standard NOTICE and LICENSE -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>default-resources</id>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+          <execution>
+            <id>copy-to-test</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource>
+                  <directory>${project.build.outputDirectory}</directory>
+                  <includes>
+                    <include>org/apache/logging/log4j/core/**/*.class</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>restore-module-info</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/saved-classes</directory>
+                  <includes>
+                    <include>module-info.class</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <excludedGroups>
-            org.apache.logging.log4j.categories.PerformanceTests
+            org.apache.logging.log4j.categories.PerformanceTests,
           </excludedGroups>
-          <systemPropertyVariables>
-            <org.apache.activemq.SERIALIZABLE_PACKAGES>*</org.apache.activemq.SERIALIZABLE_PACKAGES>
-          </systemPropertyVariables>
+          <argLine>--add-opens java.base/java.lang.reflect=org.apache.commons.lang3
+            --add-opens org.apache.logging.log4j.plugins.test/org.apache.logging.log4j.plugins.test.validation=org.apache.logging.log4j.core
+          </argLine>
         </configuration>
       </plugin>
       <plugin>
@@ -382,8 +552,6 @@
                   <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
                   <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
                   <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                  <Automatic-Module-Name>org.apache.logging.log4j.core</Automatic-Module-Name>
-                  <Multi-Release>true</Multi-Release>
                 </manifestEntries>
               </archive>
             </configuration>
@@ -393,6 +561,7 @@
             <goals>
               <goal>test-jar</goal>
             </goals>
+            <phase>process-classes</phase>
             <configuration>
               <archive>
                 <manifestFile>${manifestfile}</manifestFile>

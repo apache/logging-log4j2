@@ -69,6 +69,9 @@ public class PluginProcessor extends AbstractProcessor {
     private static final String SERVICE_FILE_NAME =
             "META-INF/services/org.apache.logging.log4j.plugins.processor.PluginService";
 
+    public PluginProcessor() {
+    }
+
     @Override
     public SourceVersion getSupportedSourceVersion() {
         return SourceVersion.latest();
@@ -86,6 +89,7 @@ public class PluginProcessor extends AbstractProcessor {
                 messager.printMessage(Kind.NOTE, "No elements to process");
                 return false;
             }
+            messager.printMessage(Kind.NOTE, "Retrieved " + elements.size() + " Plugin elements");
             List<PluginEntry> list = new ArrayList<>();
             packageName = collectPlugins(packageName, elements, list);
             writeClassFile(packageName, list);

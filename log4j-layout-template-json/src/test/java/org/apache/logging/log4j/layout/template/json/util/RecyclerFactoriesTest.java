@@ -21,7 +21,7 @@ import org.apache.logging.log4j.plugins.convert.TypeConverterRegistry;
 import org.apache.logging.log4j.core.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.junit.Named;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.assertj.core.api.Assertions;
 import org.jctools.queues.MpmcArrayQueue;
 import org.junit.jupiter.api.Test;

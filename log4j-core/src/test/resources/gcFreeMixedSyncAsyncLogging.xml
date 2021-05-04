@@ -69,7 +69,7 @@
     </RandomAccessFile>
   </Appenders>
   <Loggers>
-    <AsyncLogger name="org.apache.logging.log4j.core.GcFreeMixedSyncAyncLoggingTest"
+    <AsyncLogger name="org.apache.logging.log4j.core.test.gc.GcFreeMixedSyncAyncLoggingTest"
         level="trace" includeLocation="false">
       <Property name="prop1">value1</Property>
       <Property name="prop2">value2</Property>

@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
-import org.apache.logging.log4j.core.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

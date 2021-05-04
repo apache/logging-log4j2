@@ -24,9 +24,9 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.junit.Named;
-import org.apache.logging.log4j.core.junit.ReconfigurationPolicy;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.junit.ReconfigurationPolicy;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
@@ -34,7 +34,7 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -84,7 +84,7 @@ public class LoggerTest {
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 3);
         assertEquals(
-                "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:80)", events.get(0).getSource().toString(),
+                "org.apache.logging.log4j.core/org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:80)", events.get(0).getSource().toString(),
                 "Incorrect location");
         assertEquals(Level.DEBUG, events.get(0).getLevel(), "Incorrect Level");
         MatcherAssert.assertThat("Incorrect message", events.get(1).getMessage().getFormattedMessage(), equalTo("Hello John"));

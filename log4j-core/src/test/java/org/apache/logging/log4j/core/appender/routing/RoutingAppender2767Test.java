@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.appender.routing;
 
 import org.apache.logging.log4j.EventLogger;
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.After;
 import org.junit.Before;
