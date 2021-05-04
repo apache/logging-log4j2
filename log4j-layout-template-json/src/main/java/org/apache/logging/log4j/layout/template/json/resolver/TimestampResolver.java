@@ -230,7 +230,6 @@ public final class TimestampResolver implements EventResolver {
             this.timestampFormat = timestampFormat;
             this.formattedTimestampBuilder = new StringBuilder();
             this.calendar = Calendar.getInstance(timeZone, locale);
-            timestampFormat.format(calendar, formattedTimestampBuilder);
         }
 
         private static FormatResolverContext fromConfig(
@@ -311,7 +310,7 @@ public final class TimestampResolver implements EventResolver {
 
             // Format timestamp if it doesn't match the last cached one.
             final long timestampMillis = logEvent.getTimeMillis();
-            if (formatResolverContext.calendar.getTimeInMillis() != timestampMillis) {
+            if (formatResolverContext.formattedTimestampBuilder.length() == 0 || formatResolverContext.calendar.getTimeInMillis() != timestampMillis) {
 
                 // Format the timestamp.
                 formatResolverContext.formattedTimestampBuilder.setLength(0);
