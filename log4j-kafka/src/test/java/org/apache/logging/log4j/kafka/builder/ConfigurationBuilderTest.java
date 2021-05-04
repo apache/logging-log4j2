@@ -16,9 +16,14 @@
  */
 package org.apache.logging.log4j.kafka.builder;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
@@ -28,6 +33,7 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.junit.Test;
+import org.w3c.dom.Document;
 
 public class ConfigurationBuilderTest {
 
@@ -106,14 +112,25 @@ public class ConfigurationBuilderTest {
                 INDENT + "</Loggers>" + EOL +
             "</Configuration>" + EOL;
 
-    // TODO make test run properly on Windows
     @Test
     public void testXmlConstructing() throws Exception {
-        //assumeTrue(System.lineSeparator().length() == 1); // Only run test on platforms with single character line endings (such as Linux), not on Windows
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         addTestFixtures("config name", builder);
         final String xmlConfiguration = builder.toXmlConfiguration();
-        assertEquals(expectedXml, xmlConfiguration);
-    }
+        
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        dbf.setCoalescing(true);
+        dbf.setIgnoringElementContentWhitespace(true);
+        dbf.setIgnoringComments(true);
+        DocumentBuilder db = dbf.newDocumentBuilder();
 
+        Document expected = db.parse(new ByteArrayInputStream(expectedXml.getBytes(StandardCharsets.UTF_8)));
+        expected.normalizeDocument();
+
+        Document actual = db.parse(new ByteArrayInputStream(xmlConfiguration.getBytes(StandardCharsets.UTF_8)));
+        actual.normalizeDocument();
+
+        assertTrue(actual.isEqualNode(expected), "Generated XML did not match expected XML.");
+    }
 }
