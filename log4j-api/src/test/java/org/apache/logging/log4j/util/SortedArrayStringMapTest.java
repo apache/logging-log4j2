@@ -110,7 +110,10 @@ public class SortedArrayStringMapTest {
             fout.flush();
         }
         final String classpath = createClassPath(SortedArrayStringMap.class, DeserializerHelper.class);
-        final Process process = new ProcessBuilder("java", "-cp", classpath,
+        final String command = System.getProperty("java.home")
+                + File.separatorChar + "bin"
+                + File.separatorChar + (System.getProperty("os.name", "").toLowerCase().contains("windows") ? "java.exe" : "java");
+        final Process process = new ProcessBuilder(command, "-cp", classpath,
                 DeserializerHelper.class.getName(), file.getPath()).start();
         final BufferedReader in = new BufferedReader(new InputStreamReader(process.getErrorStream()));
         final int exitValue = process.waitFor();
