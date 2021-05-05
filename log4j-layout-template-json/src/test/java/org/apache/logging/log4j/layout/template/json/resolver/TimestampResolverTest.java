@@ -14,32 +14,38 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json;
+package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.layout.template.json.LogEventFixture;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.junit.jupiter.api.RepeatedTest;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class JsonTemplateLayoutTimestampTest
+class TimestampResolverTest
 {
-    private static final Configuration CONFIGURATION = new DefaultConfiguration();
+    private static final TemplateResolverConfig TEMPLATE_RESOLVER_CONFIG = new TemplateResolverConfig(
+            Collections.singletonMap("pattern", Collections.singletonMap("format", "yyyy-MM-dd")));
 
     /**
      * Tests LOG4J2-3087 race when creating layout on the same instant as the log event would result in an unquoted date in the JSON
      */
     @RepeatedTest( 20 )
     void test_timestamp_pattern_race() {
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setEventTemplate("{\"t\":{\"$resolver\":\"timestamp\",\"pattern\":{\"format\":\"yyyy-MM-dd\"}}}")
+        JsonWriter jsonWriter = JsonWriter.newBuilder()
+                .setMaxStringLength(32)
+                .setTruncatedStringSuffix("…")
                 .build();
 
+        final TimestampResolver resolver = new TimestampResolver(TEMPLATE_RESOLVER_CONFIG);
+
         final LogEvent logEvent = LogEventFixture.createLiteLogEvents(1).get(0);
-        final String json = layout.toSerializable(logEvent);
-        assertThat(json).matches("\\{\"t\":\"\\d{4}-\\d{2}-\\d{2}\"}\\R*");
+
+        resolver.resolve(logEvent, jsonWriter);
+
+        assertThat(jsonWriter.getStringBuilder().toString()).matches("\"\\d{4}-\\d{2}-\\d{2}\"");
     }
 }
