@@ -41,7 +41,7 @@ import java.time.Duration;
 public class JsonTemplateLayoutNullEventDelimiterTest {
     @Test
     public void test() throws Exception {
-        File tempConfig = File.createTempFile("nullEventDelimitedJsonTemplateLayoutLogging", ".xml");
+        final File tempConfig = File.createTempFile("nullEventDelimitedJsonTemplateLayoutLogging", ".xml");
         // Set the expected bytes.
         final byte[] expectedBytes = {
                 '"', 'f', 'o', 'o', '"', '\0',
@@ -78,11 +78,11 @@ public class JsonTemplateLayoutNullEventDelimiterTest {
     }
 
     public void makeTempConfig(final int serverPort, final File tempConfigFile) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(tempConfigFile);
-                OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-                BufferedWriter bw = new BufferedWriter(osw);) {
-            for (String line : Files.readAllLines(
-                    new File("src/test/resources/nullEventDelimitedJsonTemplateLayoutLogging.xml").toPath())) {
+        try (final FileOutputStream fos = new FileOutputStream(tempConfigFile);
+                final OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+                final BufferedWriter bw = new BufferedWriter(osw);) {
+            final File xmlTemplate = new File("src/test/resources/nullEventDelimitedJsonTemplateLayoutLogging.xml");
+            for (final String line : Files.readAllLines(xmlTemplate.toPath())) {
                 bw.write(line.replace("TARGET_PORT_NUMBER", Integer.toString(serverPort)));
                 bw.newLine();
             }
