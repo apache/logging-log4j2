@@ -66,6 +66,9 @@
         Allow a PatternSelector to be specified on GelfLayout.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3087" dev="vy" type="fix" due-to="Anton Klarén">
+        Fix race in JsonTemplateLayout where a timestamp could end up unquoted.
+      </action>
       <action issue="LOG4J2-3070" dev="vy" type="fix" due-to="Romain Manni-Bucau">
         Ensure EncodingPatternConverter#handlesThrowable is implemented.
       </action>
