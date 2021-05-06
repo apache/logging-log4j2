@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.layout.template.json.LogEventFixture;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.junit.jupiter.api.RepeatedTest;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
@@ -33,7 +35,7 @@ class TimestampResolverTest
     /**
      * Tests LOG4J2-3087 race when creating layout on the same instant as the log event would result in an unquoted date in the JSON
      */
-    @RepeatedTest( 20 )
+    @Test
     void test_timestamp_pattern_race() {
         JsonWriter jsonWriter = JsonWriter.newBuilder()
                 .setMaxStringLength(32)
@@ -42,10 +44,22 @@ class TimestampResolverTest
 
         final TimestampResolver resolver = new TimestampResolver(TEMPLATE_RESOLVER_CONFIG);
 
-        final LogEvent logEvent = LogEventFixture.createLiteLogEvents(1).get(0);
+        final LogEvent logEvent = createLogEvent(resolver.getCalendar().getTimeInMillis() );
 
         resolver.resolve(logEvent, jsonWriter);
 
         assertThat(jsonWriter.getStringBuilder().toString()).matches("\"\\d{4}-\\d{2}-\\d{2}\"");
+    }
+
+    private static LogEvent createLogEvent(final long timeMillis) {
+        return Log4jLogEvent
+                .newBuilder()
+                .setLoggerName("a.B")
+                .setLoggerFqcn("f.q.c.n")
+                .setLevel(Level.DEBUG)
+                .setMessage(new SimpleMessage("LogEvent message"))
+                .setTimeMillis(timeMillis)
+                .setNanoTime(timeMillis * 2)
+                .build();
     }
 }

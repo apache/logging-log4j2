@@ -504,4 +504,11 @@ public final class TimestampResolver implements EventResolver {
         internalResolver.resolve(logEvent, jsonWriter);
     }
 
+    /**
+     * Visible for tests
+     */
+    Calendar getCalendar() {
+        return ((FormatResolver) internalResolver).formatResolverContext.calendar;
+    }
+
 }
