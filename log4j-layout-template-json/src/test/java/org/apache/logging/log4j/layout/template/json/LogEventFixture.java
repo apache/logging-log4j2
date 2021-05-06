@@ -30,13 +30,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class LogEventFixture {
+final class LogEventFixture {
 
     private LogEventFixture() {}
 
     private static final int TIME_OVERLAPPING_CONSECUTIVE_EVENT_COUNT = 10;
 
-    public static List<LogEvent> createLiteLogEvents(final int logEventCount) {
+    static List<LogEvent> createLiteLogEvents(final int logEventCount) {
         final List<LogEvent> logEvents = new ArrayList<>(logEventCount);
         final long startTimeMillis = System.currentTimeMillis();
         for (int logEventIndex = 0; logEventIndex < logEventCount; logEventIndex++) {
