@@ -69,6 +69,7 @@ open module org.apache.logging.log4j.core {
     requires transitive org.jctools.core;
     requires transitive org.osgi.framework;
     requires transitive com.conversantmedia.disruptor;
+    requires transitive net.bytebuddy;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
     requires transitive com.fasterxml.jackson.dataformat.xml;
