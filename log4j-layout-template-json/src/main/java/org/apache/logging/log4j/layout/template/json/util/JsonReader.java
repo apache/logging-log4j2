@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A simple JSON parser mapping tokens to basic Java types.
@@ -88,13 +89,16 @@ public final class JsonReader {
 
     private Object readToken;
 
-    private StringBuilder buffer = new StringBuilder();
+    private final StringBuilder buffer;
 
-    private JsonReader() {}
+    private JsonReader() {
+         this.buffer = new StringBuilder();
+    }
 
-    public static Object read(final String string) {
+    public static Object read(final String json) {
+        Objects.requireNonNull(json, "json");
         final JsonReader reader = new JsonReader();
-        return reader.read(new StringCharacterIterator(string));
+        return reader.read(new StringCharacterIterator(json));
     }
 
     private Object read(final CharacterIterator ci) {

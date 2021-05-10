@@ -454,10 +454,135 @@ similar to the following:
 The complete list of available event template resolvers are provided below in
 detail.
 
+[#event-template-resolver-caseConverter]
+===== `caseConverter`
+
+[source]
+----
+config                = case , input , [ locale ] , [ errorHandlingStrategy ]
+input                 = JSON
+case                  = "case" -> ( "upper" | "lower" )
+locale                = "locale" -> (
+                            language                                   |
+                          ( language , "_" , country )                 |
+                          ( language , "_" , country , "_" , variant )
+                        )
+errorHandlingStrategy = "errorHandlingStrategy" -> (
+                          "fail"    |
+                          "pass"    |
+                          "replace"
+                        )
+replacement           = "replacement" -> JSON
+----
+
+Converts the case of string values.
+
+`input` can be any available template value;  e.g., a JSON literal, a lookup
+string, an object pointing to another resolver.
+
+Unless provided, `locale` points to the one returned by
+`JsonTemplateLayoutDefaults.getLocale()`, which is configured by
+`log4j.layout.jsonTemplate.locale` system property and by default set to the
+default system locale.
+
+`errorHandlingStrategy` determines the behavior when either the input doesn't
+resolve to a string value or case conversion throws an exception:
+
+* `fail` propagates the failure
+* `pass` causes the resolved value to be passed as is
+* `replace` suppresses the failure and replaces it with the `replacement`,
+which is set to `null` by default
+
+`errorHandlingStrategy` is set to `replace` by default.
+
+Most of the time JSON logs are persisted to a storage solution (e.g.,
+Elasticsearch) that keeps a statically-typed index on fields. Hence, if a field
+is always expected to be of type string, using non-string ``replacement``s or
+`pass` in `errorHandlingStrategy` might result in type incompatibility issues at
+the storage level.
+
+Unless the input value is ``pass``ed intact or ``replace``d, case conversion is
+not garbage-free.
+
+====== Examples
+
+Convert the resolved log level strings to upper-case:
+
+[source,json]
+----
+{
+  "$resolver": "caseConverter",
+  "case": "upper",
+  "input": {
+    "$resolver": "level",
+    "field": "name"
+  }
+}
+----
+
+Convert the resolved `USER` environment variable to lower-case using `nl_NL`
+locale:
+
+[source,json]
+----
+{
+  "$resolver": "caseConverter",
+  "case": "lower",
+  "locale": "nl_NL",
+  "input": "${dollar}{env:USER}"
+}
+----
+
+Convert the resolved `sessionId` thread context data (MDC) to lower-case:
+
+[source,json]
+----
+{
+  "$resolver": "caseConverter",
+  "case": "lower",
+  "input": {
+    "$resolver": "mdc",
+    "key": "sessionId"
+  }
+}
+----
+
+Above, if `sessionId` MDC resolves to a, say, number, case conversion will fail.
+Since `errorHandlingStrategy` is set to `replace` and replacement is set to
+`null` by default, the resolved value will be `null`. One can suppress this
+behavior  and let the resolved `sessionId` number be left as is:
+
+[source,json]
+----
+{
+  "$resolver": "caseConverter",
+  "case": "lower",
+  "input": {
+    "$resolver": "mdc",
+    "key": "sessionId"
+  },
+  "errorHandlingStrategy": "pass"
+}
+----
+
+or replace it with a custom string:
+
+[source,json]
+----
+{
+  "$resolver": "caseConverter",
+  "case": "lower",
+  "input": {
+    "$resolver": "mdc",
+    "key": "sessionId"
+  },
+  "errorHandlingStrategy": "replace",
+  "replacement": "unknown"
+}
+----
+
 [#event-template-resolver-endOfBatch]
 ===== `endOfBatch`
-
-Resolves `logEvent.isEndOfBatch()` boolean flag:
 
 [source,json]
 ----
@@ -465,6 +590,8 @@ Resolves `logEvent.isEndOfBatch()` boolean flag:
   "$resolver": "endOfBatch"
 }
 ----
+
+Resolves `logEvent.isEndOfBatch()` boolean flag.
 
 [#event-template-resolver-exception]
 ===== `exception`

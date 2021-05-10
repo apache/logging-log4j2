@@ -22,6 +22,7 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -78,6 +79,10 @@ public final class TemplateResolvers {
             final C context,
             final String template) {
 
+        // Check arguments.
+        Objects.requireNonNull(context, "context");
+        Objects.requireNonNull(template, "template");
+
         // Read the template.
         Object node;
         try {
@@ -104,7 +109,7 @@ public final class TemplateResolvers {
 
     }
 
-    private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofObject(
+    static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofObject(
             final C context,
             final Object object) {
         if (object == null) {
@@ -289,10 +294,14 @@ public final class TemplateResolvers {
 
     private static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofResolver(
             final C context,
-            final Map<String, Object> map) {
+            final Map<String, Object> configMap) {
+
+        // Check arguments.
+        Objects.requireNonNull(context, "context");
+        Objects.requireNonNull(configMap, "configMap");
 
         // Extract the resolver name.
-        final Object resolverNameObject = map.get(RESOLVER_FIELD_NAME);
+        final Object resolverNameObject = configMap.get(RESOLVER_FIELD_NAME);
         if (!(resolverNameObject instanceof String)) {
             throw new IllegalArgumentException(
                     "invalid resolver name: " + resolverNameObject);
@@ -305,7 +314,7 @@ public final class TemplateResolvers {
         if (resolverFactory == null) {
             throw new IllegalArgumentException("unknown resolver: " + resolverName);
         }
-        final TemplateResolverConfig resolverConfig = new TemplateResolverConfig(map);
+        final TemplateResolverConfig resolverConfig = new TemplateResolverConfig(configMap);
         return resolverFactory.create(context, resolverConfig);
 
     }

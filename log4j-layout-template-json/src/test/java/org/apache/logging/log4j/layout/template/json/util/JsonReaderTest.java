@@ -28,6 +28,14 @@ import java.util.LinkedHashMap;
 class JsonReaderTest {
 
     @Test
+    void test_null() {
+        Assertions
+                .assertThatThrownBy(() -> JsonReader.read(null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("json");
+    }
+
+    @Test
     void test_valid_null() {
         test("null", null);
         test("[null, null]", Arrays.asList(null, null));
