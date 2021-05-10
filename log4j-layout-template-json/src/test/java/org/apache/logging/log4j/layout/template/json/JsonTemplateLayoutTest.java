@@ -22,11 +22,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -42,9 +40,7 @@ import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFacto
 import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
 import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverConfig;
 import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverFactory;
-import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ObjectMessage;
@@ -82,24 +78,19 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.CONFIGURATION;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.asMap;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.usingSerializedLogEventAccessor;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.writeJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("DoubleBraceInitialization")
 class JsonTemplateLayoutTest {
 
-    private static final Configuration CONFIGURATION = new DefaultConfiguration();
-
     private static final List<LogEvent> LOG_EVENTS = LogEventFixture.createFullLogEvents(5);
-
-    private static final JsonWriter JSON_WRITER = JsonWriter
-            .newBuilder()
-            .setMaxStringLength(10_000)
-            .setTruncatedStringSuffix("…")
-            .build();
 
     private static final ObjectMapper OBJECT_MAPPER = JacksonFixture.getObjectMapper();
 
@@ -1863,7 +1854,6 @@ class JsonTemplateLayoutTest {
                 .build();
 
         // Check the serialized log event.
-        final String expectedClassName = JsonTemplateLayoutTest.class.getCanonicalName();
         usingSerializedLogEventAccessor(layout, logEvent, accessor -> Assertions
                 .assertThat(accessor.getString("customField"))
                 .matches("CustomValue-[0-9]+"));
@@ -2390,46 +2380,6 @@ class JsonTemplateLayoutTest {
                 assertThat(accessor.getObject(new String[]{"event", "message"}))
                         .isEqualTo("LOG4J2-2985"));
 
-    }
-
-    private static synchronized String writeJson(final Object value) {
-        final StringBuilder stringBuilder = JSON_WRITER.getStringBuilder();
-        stringBuilder.setLength(0);
-        try {
-            JSON_WRITER.writeValue(value);
-            return stringBuilder.toString();
-        } finally {
-            stringBuilder.setLength(0);
-        }
-    }
-
-    private static void usingSerializedLogEventAccessor(
-            final Layout<String> layout,
-            final LogEvent logEvent,
-            final Consumer<MapAccessor> accessorConsumer) {
-        final String serializedLogEventJson = layout.toSerializable(logEvent);
-        @SuppressWarnings("unchecked")
-        final Map<String, Object> deserializedLogEvent =
-                (Map<String, Object>) readJson(serializedLogEventJson);
-        final MapAccessor serializedLogEventAccessor = new MapAccessor(deserializedLogEvent);
-        accessorConsumer.accept(serializedLogEventAccessor);
-    }
-
-    private static Object readJson(final String json) {
-        return JsonReader.read(json);
-    }
-
-    private static Map<String, Object> asMap(final Object... pairs) {
-        final Map<String, Object> map = new LinkedHashMap<>();
-        if (pairs.length % 2 != 0) {
-            throw new IllegalArgumentException("odd number of arguments: " + pairs.length);
-        }
-        for (int i = 0; i < pairs.length; i += 2) {
-            final String key = (String) pairs[i];
-            final Object value = pairs[i + 1];
-            map.put(key, value);
-        }
-        return map;
     }
 
 }

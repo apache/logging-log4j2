@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.logging.log4j.layout.template.json.LayoutComparisonHelpers.renderUsing;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
 
 class GelfLayoutTest {
 
@@ -86,12 +86,12 @@ class GelfLayoutTest {
 
     private static Map<String, Object> renderUsingJsonTemplateLayout(
             final LogEvent logEvent) {
-        return renderUsing(logEvent, JSON_TEMPLATE_LAYOUT);
+        return serializeUsingLayout(logEvent, JSON_TEMPLATE_LAYOUT);
     }
 
     private static Map<String, Object> renderUsingGelfLayout(
             final LogEvent logEvent) {
-        return renderUsing(logEvent, GELF_LAYOUT);
+        return serializeUsingLayout(logEvent, GELF_LAYOUT);
     }
 
     /**
