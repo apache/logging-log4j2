@@ -19,7 +19,7 @@ package org.apache.logging.log4j.jackson.xml.parser;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.parser.AbstractLogEventParserTest;
+import org.apache.logging.log4j.core.test.parser.AbstractLogEventParserTest;
 import org.apache.logging.log4j.core.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;

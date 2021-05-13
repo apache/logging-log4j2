@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 import java.io.PrintStream;
 import java.util.List;
 
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.ClassRule;
 import org.junit.Test;

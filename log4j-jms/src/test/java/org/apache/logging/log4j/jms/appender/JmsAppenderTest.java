@@ -40,11 +40,11 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.categories.Appenders;
+import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.junit.JndiRule;
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.JndiRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
@@ -78,7 +78,7 @@ public class JmsAppenderTest {
     private final MapMessage mapMessage = mock(MapMessage.class);
 
     private final JndiRule jndiRule = new JndiRule(createBindings());
-    private final LoggerContextRule ctx = new LoggerContextRule("JmsAppenderTest.xml");
+    private final LoggerContextRule ctx = new LoggerContextRule("src/test/resources/JmsAppenderTest.xml");
 
     @Rule
     public RuleChain rules = RuleChain.outerRule(jndiRule).around(ctx);

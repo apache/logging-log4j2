@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.jpa.converter;
 
-import org.apache.logging.log4j.core.categories.Appenders;
+import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Before;

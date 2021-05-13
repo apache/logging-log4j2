@@ -292,9 +292,9 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.eclipse.tycho</groupId>
+        <groupId>org.eclipse.platform</groupId>
         <artifactId>org.eclipse.osgi</artifactId>
-        <version>3.13.0.v20180226-1711</version>
+        <version>3.16.200</version>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
@@ -365,9 +365,8 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core-java9</artifactId>
+        <artifactId>log4j-layout-template-json</artifactId>
         <version>${project.version}</version>
-        <type>zip</type>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -1642,6 +1641,7 @@
     <module>log4j-api</module>
     <module>log4j-plugins</module>
     <module>log4j-core</module>
+    <module>log4j-gctests</module>
     <module>log4j-layout-jackson</module>
     <module>log4j-layout-jackson-json</module>
     <module>log4j-layout-jackson-xml</module>

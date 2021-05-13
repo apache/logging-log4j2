@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.List;
 
-import org.apache.logging.log4j.core.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

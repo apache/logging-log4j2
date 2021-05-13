@@ -276,8 +276,8 @@
             <exclude>**/ForceNoDefClassFoundError.*</exclude>
           </excludes>
           <groups>
-            org.apache.logging.log4j.core.categories.PerformanceTests,
-            org.apache.logging.log4j.core.categories.Appenders$Jms
+            org.apache.logging.log4j.core.test.categories.PerformanceTests,
+            org.apache.logging.log4j.core.test.categories.Appenders$Jms
           </groups>
         </configuration>
       </plugin>

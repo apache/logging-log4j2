@@ -25,7 +25,7 @@ import javax.servlet.jsp.tagext.Tag;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.ClassRule;
 import org.junit.Test;

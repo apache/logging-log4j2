@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 
-import org.apache.logging.log4j.core.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.junit.jupiter.api.Test;
 

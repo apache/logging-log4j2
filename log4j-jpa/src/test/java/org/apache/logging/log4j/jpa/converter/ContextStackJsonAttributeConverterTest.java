@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNull;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.categories.Appenders;
+import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.test.junit.ThreadContextStackRule;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.Before;

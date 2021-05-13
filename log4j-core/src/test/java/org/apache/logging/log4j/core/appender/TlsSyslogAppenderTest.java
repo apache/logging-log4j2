@@ -24,12 +24,12 @@ import javax.net.ssl.SSLServerSocketFactory;
 
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
-import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
+import org.apache.logging.log4j.core.test.net.mock.MockSyslogServerFactory;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
-import org.apache.logging.log4j.core.net.ssl.TestConstants;
-import org.apache.logging.log4j.core.net.ssl.TlsSyslogMessageFormat;
+import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
+import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat;
 import org.apache.logging.log4j.core.net.ssl.TlsSyslogTestUtil;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.apache.logging.log4j.util.EnglishEnums;

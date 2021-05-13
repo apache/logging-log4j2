@@ -56,7 +56,7 @@ public class XmlSchemaTest {
             "log4j2-arbiters.xml", // Arbiters violate XML schema as they can appear anywhere
             "log4j2-scriptArbiters.xml",
             "log4j2-selectArbiters.xml",
-            "gcFreeLogging.xml", // has 2 <Pattern> tags defined
+            "log4j-core-gctests/src/test/resources/gcFreeLogging.xml", // has 2 <Pattern> tags defined
             "legacy-plugins.xml", //
             "logback", // logback configs
             "log4j-xinclude", //

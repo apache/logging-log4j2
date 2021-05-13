@@ -483,6 +483,26 @@
               <overwrite>true</overwrite>
               <resources>
                 <resource>
+                  <directory>src/test/resources</directory>
+                  <includes>
+                    <include>log4j2-calling-class.xml</include>
+                    <include>log4j2-1482.xml</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-to-unit-test</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource>
                   <directory>${project.build.outputDirectory}</directory>
                   <includes>
                     <include>org/apache/logging/log4j/core/**/*.class</include>

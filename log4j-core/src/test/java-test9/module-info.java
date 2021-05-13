@@ -1,8 +1,13 @@
 module org.apache.logging.log4j.core.test {
     exports org.apache.logging.log4j.core.test;
     exports org.apache.logging.log4j.core.test.appender;
+    exports org.apache.logging.log4j.core.test.categories;
     exports org.apache.logging.log4j.core.test.hamcrest;
     exports org.apache.logging.log4j.core.test.junit;
+    exports org.apache.logging.log4j.core.test.layout;
+    exports org.apache.logging.log4j.core.test.net.mock;
+    exports org.apache.logging.log4j.core.test.parser;
+    exports org.apache.logging.log4j.core.test.util;
 
     requires java.naming;
     requires org.apache.logging.log4j;

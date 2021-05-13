@@ -18,8 +18,8 @@ package org.apache.logging.log4j.mongodb4;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.categories.Appenders;
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.categories.Appenders;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.mongodb4.MongoDb4TestRule.LoggingTarget;
 import org.apache.logging.log4j.core.test.AvailablePortSystemPropertyTestRule;

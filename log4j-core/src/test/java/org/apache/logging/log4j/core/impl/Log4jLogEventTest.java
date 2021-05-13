@@ -30,6 +30,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.test.util.FixedTimeClock;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.time.ClockFactoryTest;
@@ -52,21 +53,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Log4jLogEventTest {
 
     private static final Base64.Decoder decoder = Base64.getDecoder();
-
-    /** Helper class */
-    public static class FixedTimeClock implements Clock {
-        public static final long FIXED_TIME = 1234567890L;
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see org.apache.logging.log4j.core.helpers.Clock#currentTimeMillis()
-         */
-        @Override
-        public long currentTimeMillis() {
-            return FIXED_TIME;
-        }
-    }
 
     @BeforeAll
     public static void beforeClass() {

@@ -20,7 +20,7 @@ import java.util.List;
 import javax.servlet.jsp.tagext.Tag;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;

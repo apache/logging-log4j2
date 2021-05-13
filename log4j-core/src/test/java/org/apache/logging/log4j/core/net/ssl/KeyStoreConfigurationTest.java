@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
 import org.junit.jupiter.api.Test;
 
 import java.security.KeyStore;

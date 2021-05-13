@@ -24,10 +24,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.categories.Appenders;
+import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.util.ExecutorServices;
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class JeroMqAppenderTest {
     private static final int DEFAULT_TIMEOUT_MILLIS = 60000;
     
     @ClassRule
-    public static LoggerContextRule ctx = new LoggerContextRule("JeroMqAppenderTest.xml");
+    public static LoggerContextRule ctx = new LoggerContextRule("src/test/resources/JeroMqAppenderTest.xml");
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testAppenderLifeCycle() throws Exception {

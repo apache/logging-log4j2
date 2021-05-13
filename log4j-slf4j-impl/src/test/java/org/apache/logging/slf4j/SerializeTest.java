@@ -18,7 +18,7 @@ package org.apache.logging.slf4j;
 
 import java.io.Serializable;
 
-import org.apache.logging.log4j.core.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
