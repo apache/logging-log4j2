@@ -43,6 +43,26 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 == English
 
+* http://makeseleniumeasy.com/2021/05/01/log4j2-tutorial-8-xml-configuration-for-default-rollover-strategy-with-sizebasedtriggeringpolicy/[Log4j2 Tutorial 8 – XML Configuration For Default Rollover Strategy With SizeBasedTriggeringPolicy]
+(May 1, 2021)
+* https://medium.com/codex/log4j2-create-custom-log-levels-and-how-to-use-them-48685e133fd1[Log4J2 | Create custom log levels and how to use them]
+(April 29, 2021)
+* http://makeseleniumeasy.com/2021/04/26/log4j2-tutorial-7-working-mechanism-of-default-rollover-strategy/[Log4j2 Tutorial 7 – Working Mechanism Of Default Rollover Strategy]
+(April 26, 2021)
+* http://makeseleniumeasy.com/2021/04/20/log4j2-tutorial-6-introduction-to-rollingfileappender-and-its-triggers-and-strategies/[Log4j2 Tutorial 6 – Introduction To RollingFileAppender And Its Triggers And Strategies]
+(April 20, 2021)
+* http://makeseleniumeasy.com/2021/04/13/log4j2-tutorial-5-xml-configuration-file-to-log-into-file-and-console-using-log4j2-together/[Log4j2 Tutorial 5 – XML Configuration File To Log Into File And Console Using Log4j2 Together]
+(April, 13, 2021)
+* http://makeseleniumeasy.com/2021/04/09/log4j2-tutorial-4-print-logs-in-external-file-using-xml-configuration-file-of-log4j2/[Log4j2 Tutorial 4 – Print Logs In External File Using XML Configuration File Of Log4J2]
+(April 9, 2021)
+* http://makeseleniumeasy.com/2021/03/24/log4j2-tutorial-3-setup-console-appender-using-xml-configuration-file/[Log4j2 Tutorial 3 – Setup Console Appender Using XML Configuration File]
+(March 24, 2021)
+* http://makeseleniumeasy.com/2021/03/17/log4j2-tutorial-2-creating-log4j2-maven-project-with-default-configuration-file/[Log4j2 Tutorial 2 – Creating Log4j2 Maven Project With Default Configuration File]
+(March 17, 2021)
+* http://makeseleniumeasy.com/2021/03/11/log4j2-tutorial-1-introduction-to-apache-log4j2/[Log4j2 Tutorial 1 – Introduction To Apache Log4j2]
+(March 11, 2021)
+* https://petrepopescu.tech/2021/03/how-to-make-a-custom-message-converter-for-log4j2/[How to make a custom message converter for Log4J2]
+(March 4, 2021)
 * http://www.mastertheboss.com/jboss-server/jboss-log/how-to-use-log4j2-in-your-wildfly-applications[How to configure Log4j2 in your WildFly applications]
 (August 16, 2020)
 * http://www.masterspringboot.com/configuration/logging/configuring-log4j2-in-spring-boot-applications[Configuring Log4j2 in a Spring Boot 2 application]
