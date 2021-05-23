@@ -22,6 +22,8 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -32,12 +34,14 @@ public class ScriptAppenderSelectorTest {
 
     @Test
     @LoggerContextSource("log4j-appender-selector-javascript.xml")
+    @DisabledForJreRange(min = JRE.JAVA_15, disabledReason = "JEP 372: Remove the Nashorn JavaScript Engine")
     void testJavaScriptSelector(final Configuration config) {
         verify(config);
     }
 
     @Test
     @LoggerContextSource("log4j-appender-selector-groovy.xml")
+    @DisabledForJreRange(min = JRE.JAVA_12, disabledReason = "Groovy ScriptEngine incompatibilities")
     void testGroovySelector(final Configuration config) {
         verify(config);
     }

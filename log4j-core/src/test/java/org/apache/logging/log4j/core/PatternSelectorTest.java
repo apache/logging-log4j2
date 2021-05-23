@@ -24,6 +24,8 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,13 +43,14 @@ public class PatternSelectorTest {
         assertEquals(3, messages.size(),
                 "Incorrect number of messages. Expected 3, Actual " + messages.size() + ": " + messages);
         final String expect = String.format("[TRACE] TestMarkerPatternSelector ====== "
-                + "o.a.l.l.c.PatternSelectorTest.testMarkerPatternSelector:36 Enter ======%n");
+                + "o.a.l.l.c.PatternSelectorTest.testMarkerPatternSelector:38 Enter ======%n");
         assertEquals(expect, messages.get(0));
         assertEquals("[INFO ] TestMarkerPatternSelector Hello World" + Strings.LINE_SEPARATOR, messages.get(1));
         app.clear();
     }
 
     @Test
+    @DisabledForJreRange(min = JRE.JAVA_15, disabledReason = "JEP 372: Remove the Nashorn JavaScript Engine")
     public void testScriptPatternSelector(@Named("List2") final ListAppender app) {
         final org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestScriptPatternSelector");
         final org.apache.logging.log4j.Logger logger2 = LogManager.getLogger("NoLocation");
@@ -70,6 +73,7 @@ public class PatternSelectorTest {
     }
 
     @Test
+    @DisabledForJreRange(min = JRE.JAVA_15, disabledReason = "JEP 372: Remove the Nashorn JavaScript Engine")
     public void testJavaScriptPatternSelector(@Named("List3") final ListAppender app) {
         final org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestJavaScriptPatternSelector");
         final org.apache.logging.log4j.Logger logger2 = LogManager.getLogger("JavascriptNoLocation");

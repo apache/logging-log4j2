@@ -26,6 +26,8 @@ import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public abstract class AbstractScriptFilterTest {
 
     @Test
+    @DisabledForJreRange(min = JRE.JAVA_12, disabledReason = "Groovy ScriptEngine incompatibilities")
     public void testGroovyFilter(final LoggerContext context, @Named("List") final ListAppender app) throws Exception {
         final Logger logger = context.getLogger("TestGroovyFilter");
         logger.traceEntry();
@@ -51,6 +54,7 @@ public abstract class AbstractScriptFilterTest {
     }
 
     @Test
+    @DisabledForJreRange(min = JRE.JAVA_15, disabledReason = "JEP 372: Remove the Nashorn JavaScript Engine")
     public void testJavascriptFilter(final LoggerContext context, @Named("List") final ListAppender app) throws Exception {
         final Logger logger = context.getLogger("TestJavaScriptFilter");
         logger.traceEntry();
